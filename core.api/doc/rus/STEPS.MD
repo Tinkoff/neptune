@@ -18,62 +18,6 @@
 ```java
 package org.my.pack;
 
-import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
-import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
-
-//Формирует параметры вызова конструктора
-//Предполагается, что для этого используются значения различных переменных окружения
-//среды, в которой выполняются тесты
-@CreateWith(provider = MyParameterProvider.class)
-//Если конструктор аннотируемого класса не имеет параметров, аннотацию можно не 
-//указывать
-public class MyTestContext extends Context<MyTestContext> { //generic сигнатура для того,
-    //чтобы ограничить возможность шагам для других контекстов использовать 
-    //объекты данного класса
-    
-    //Рекомендуемый способ доступа до объектов контекста
-    public static MyTestContext myTestContext() {
-        return getInstance(MyTestContext.class);
-    }
-    
-    //Конструктор может содержать параметры
-    protected MyTestContext(/*Параметры*/) {
-        //Логика инициализации
-    }
-
-    //пример
-    public Object getSomeResource() {
-        return //Возврат какого-нибудь проинициализированного объекта
-        //для использования в шагах (рекомендуется)
-        //для использования напрямую (не рекомендуется)
-    }
-}
-```
-
-```java
-package org.my.pack;
-
-import ru.tinkoff.qa.neptune.core.api.steps.context.ParameterProvider;
-
-public class MyParameterProvider implements ParameterProvider {
-    
-    @Override
-    public Object[] provide() {
-        //Создает параметры вызова конструктора MyTestContext
-    }
-}
-```
-
-## Шаги
-
-### Произвольные шаги, которые могут быть описаны в тесте
-
-Данный механизм можно использовать, чтобы сгруппировать в коде/логе/репорте
-множество простых действий или шагов в один произвольный шаг верхнего уровня.
-
-```java
-package org.my.pack;
-
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
@@ -131,7 +75,56 @@ public class MyTestContext extends Context<MyTestContext> { //generic сигна
         //для использования напрямую (не рекомендуется)
     }
 }
+```
 
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.context.ParameterProvider;
+
+public class MyParameterProvider implements ParameterProvider {
+    
+    @Override
+    public Object[] provide() {
+        //Создает параметры вызова конструктора MyTestContext
+    }
+}
+```
+
+## Шаги
+
+### Произвольные шаги, которые могут быть описаны в тесте
+
+Данный механизм можно использовать, чтобы сгруппировать в коде/логе/репорте
+множество простых действий или шагов в один произвольный шаг верхнего уровня.
+
+```java
+package org.my.pack;
+
+import org.testng.annotations.Test;
+
+import static ru.tinkoff.qa.neptune.core.api.steps.Step.$;
+
+public class SomeTest {
+
+    @Test
+    public void test() {
+        //Шаг просто выполняется и ничего не возвращает
+        $("Given: что-то в некотором состоянии", () -> {
+            //Некоторые действия
+        });
+        
+        //Шаг выполняется и возвращает какое-то значение
+        var result = $("When: что-то делаем и получаем", () -> {
+            //Некоторые действия
+            return //возврат некоторого значения
+        });
+        
+        $("Then: проверяем то, что получили", () -> {
+            assetThat(result, /*Параметры проверки*/);
+        });
+    }
+}
 ```
 
 Ниже речь пойдет о механизме, при помощи которого можно описать базовый набор шагов для того
@@ -142,6 +135,9 @@ public class MyTestContext extends Context<MyTestContext> { //generic сигна
 Для описания набора действий с возвратом некоторого результата в рамках некоторого действия используется 
 наследники `ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier`. Ниже пример, демонстрирующий
 работу и принцип данного класса.
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 ```java
 package org.my.pack;
@@ -286,6 +282,7 @@ public class MyGetStepSupplier<T, M, P>
     }
 }
 ```
+</details>
 
 Пример связи контекста и шага в тесте
 
@@ -318,12 +315,15 @@ public class SomeTest {
 классов — наследников `ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier` согласно одной из часто 
 встречающихся ситуаций.
 
-#### Шаг, который возвращает объект (`java.lang.Object` и наследники).
+#### Шаг, который возвращает объект (`java.lang.Object` и его наследники).
 
 Подходит для ситуаций, когда результат выполнения шага рассматривается как один объект, а не коллекция или массив 
 объектов. 
 
 - 1
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 ```java
 package org.my.pack;
@@ -419,8 +419,12 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetObjectSte
     }
 }
 ```
+</details>
 
 - 2
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 ```java
 package org.my.pack;
@@ -548,6 +552,7 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObject
     }
 }
 ```
+</details>
 
 Пример связи контекста и шага в тесте
 
@@ -557,6 +562,7 @@ import org.testng.annotations.Test;
 import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
 import static org.my.pack.MyGetStepSupplier.something;
+import static org.my.pack.MyGetSomeOtherValue.someOtherValue;
 import static org.my.pack.MyTestContext.myTestContext;
 
 public class SomeTest {
@@ -577,6 +583,543 @@ public class SomeTest {
 
 Дальнейшие примеры работают по тем же принципам, что и примеры выше. Поэтому в примерах ниже больше 
 фокус на принципиальных отличиях.
+
+#### Шаг, который возвращает один из объектов, входящих в состав Iterable<?>.
+
+Подходит для ситуаций, когда в результате вычислений получается объект `java.lang.Iterable`, из состава 
+которого необходимо вернуть только один объект (первый попавшийся или подходящий под некоторые критерии)
+
+- 1
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
+
+import java.time.Duration;
+import java.util.Collection;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+/**
+ * Так описывается шаг, возвращающий некий объект-результат, выбранный из коллекции или другого java.lang.Iterable.
+ * В данном случае наличие "посредника" не предусматривается, т.е. коллекция получается напрямую от входного параметра.
+ * Критерии проверяют на соответствие все объекты, входящие в коллекцию, и если такой объект был найден - он возвращается
+ * в качестве результата.
+ */
+@ThrowWhenNoData(toThrow = IllegalStateException.class, startDescription = "Can't get:")
+public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetObjectFromIterableStepSupplier<
+        MyTestContext,
+        T,
+        MyGetStepSupplier<T>>
+{
+
+    protected MyGetStepSupplier() {
+        this(myTestContext -> {
+            var o = myTestContext.getSomeResource();
+            ///дальнейшие вычисления
+            return //возврат КОЛЛЕКЦИИ или какого либо другого Iterable
+        });
+    }
+
+    protected MyGetStepSupplier(Function<MyTestContext, Collection<T>> originalFunction) {
+        /**или к функции, переданной через данный конструктор**/
+        super(originalFunction);
+    }
+
+    //..........
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
+    //которым должен соответствовать конечный результат
+    @Override
+    public MyGetStepSupplier<T> criteria(Criteria<? super T> criteria) {
+        return super.criteria(criteria);
+    }
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
+    //которым должен соответствовать конечный результат
+    @Override
+    public MyGetStepSupplier<T> criteria(String description, Predicate<? super T> predicate) {
+        return super.criteria(description, predicate);
+    }
+}
+```
+</details>
+
+- 2
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
+
+import java.util.Collection;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+/**
+ * Так описывается шаг, возвращающий некий объект-результат, выбранный из коллекции или другого java.lang.Iterable.
+ * В данном случае наличие "посредника" предусматривается.
+ * 
+ * Критерии проверяют на соответствие все объекты, входящие в коллекцию, и если такой объект был найден - он возвращается
+ * в качестве результата.
+ */
+@ThrowWhenNoData(toThrow = IllegalStateException.class, startDescription = "Can't get:")
+public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<
+        MyTestContext,
+        T,
+        M,
+        MyGetStepSupplier<T, M>>
+{
+
+    protected MyGetStepSupplier() {
+        this(m -> {
+            ///дальнейшие вычисления
+            return //возврат КОЛЛЕКЦИИ или какого либо другого Iterable
+        });
+    }
+
+    protected MyGetStepSupplier(Function<M, Collection<T>> originalFunction) {
+        /**или к функции, переданной через данный конструктор**/
+        super(originalFunction);
+    }
+
+    //..........
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
+    //которым должен соответствовать конечный результат
+    @Override
+    public MyGetStepSupplier<T, M> criteria(Criteria<? super T> criteria) {
+        return super.criteria(criteria);
+    }
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
+    //которым должен соответствовать конечный результат
+    @Override
+    public MyGetStepSupplier<T, M> criteria(String description, Predicate<? super T> predicate) {
+        return super.criteria(description, predicate);
+    }
+}
+```
+</details>
+
+#### Шаг, который возвращает один из объектов, входящих в состав массива.
+
+Подходит для ситуаций, когда в результате вычислений получается массив, из состава которого необходимо вернуть только 
+один объект (первый попавшийся или подходящий под некоторые критерии)
+
+- 1
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
+
+import java.util.Collection;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+/**
+ * Так описывается шаг, возвращающий некий объект-результат, выбранный из массива.
+ * В данном случае наличие "посредника" не предусматривается, т.е. массив получается напрямую от входного параметра.
+ * Критерии проверяют на соответствие все объекты, входящие в массив, и если такой объект был найден - он возвращается
+ * в качестве результата.
+ */
+@ThrowWhenNoData(toThrow = IllegalStateException.class, startDescription = "Can't get:")
+public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetObjectFromArrayStepSupplier<
+        MyTestContext,
+        T,
+        MyGetStepSupplier<T>>
+{
+
+    protected MyGetStepSupplier() {
+        this(myTestContext -> {
+            var o = myTestContext.getSomeResource();
+            ///дальнейшие вычисления
+            return //возврат МАССИВА
+        });
+    }
+
+    protected MyGetStepSupplier(Function<MyTestContext, T[]> originalFunction) {
+        /**или к функции, переданной через данный конструктор**/
+        super(originalFunction);
+    }
+
+    //..........
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
+    //которым должен соответствовать конечный результат
+    @Override
+    public MyGetStepSupplier<T> criteria(Criteria<? super T> criteria) {
+        return super.criteria(criteria);
+    }
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
+    //которым должен соответствовать конечный результат
+    @Override
+    public MyGetStepSupplier<T> criteria(String description, Predicate<? super T> predicate) {
+        return super.criteria(description, predicate);
+    }
+}
+```
+</details>
+
+- 2
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
+
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+/**
+ * Так описывается шаг, возвращающий некий объект-результат, выбранный из массива.
+ * В данном случае наличие "посредника" предусматривается.
+ * 
+ * Критерии проверяют на соответствие все объекты, входящие в массив, и если такой объект был найден - он возвращается
+ * в качестве результата.
+ */
+@ThrowWhenNoData(toThrow = IllegalStateException.class, startDescription = "Can't get:")
+public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier<
+        MyTestContext,
+        T,
+        M,
+        MyGetStepSupplier<T, M>>
+{
+
+    protected MyGetStepSupplier() {
+        this(m -> {
+            ///дальнейшие вычисления
+            return //возврат МАССИВА
+        });
+    }
+
+    protected MyGetStepSupplier(Function<M, T[]> originalFunction) {
+        /**или к функции, переданной через данный конструктор**/
+        super(originalFunction);
+    }
+
+    //..........
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
+    //которым должен соответствовать конечный результат
+    @Override
+    public MyGetStepSupplier<T> criteria(Criteria<? super T> criteria) {
+        return super.criteria(criteria);
+    }
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
+    //которым должен соответствовать конечный результат
+    @Override
+    public MyGetStepSupplier<T> criteria(String description, Predicate<? super T> predicate) {
+        return super.criteria(description, predicate);
+    }
+}
+```
+</details>
+
+#### Шаг, который возвращает Iterable<?>.
+
+Подходит для ситуаций, когда в результате вычислений получается объект `java.lang.Iterable`, и нужно его вернуть (целиком 
+или оставив в его составе элементы, подходящие под некоторые критерии).
+
+- 1
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
+
+import java.util.Collection;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+/**
+ * Так описывается шаг, возвращающий коллекцию или другой java.lang.Iterable.
+ * 
+ * В данном случае наличие "посредника" не предусматривается, т.е. коллекция получается напрямую от входного параметра.
+ * Критерии проверяют на соответствие все объекты, входящие в коллекцию, и если такие объекты были найдены - они возвращается
+ * в качестве результата.
+ * 
+ * Если по истечении времени, отведенного на выполнение шага, коллекция/Iterable не были получены - может вернуться null 
+ * (зависит от реализации шага).
+ * Если по истечении времени, отведенного на выполнение шага, в коллекции/Iterable не было элементов, подходящих под критерии -
+ * вернется пустая коллекция/Iterable
+ */
+@ThrowWhenNoData(toThrow = IllegalStateException.class, startDescription = "Can't get:")
+public class MyGetStepSupplier<T, S extends Iterable<T>> extends SequentialGetStepSupplier.GetIterableStepSupplier<
+        MyTestContext,
+        S,
+        T,
+        MyGetStepSupplier<T, S>>
+{
+
+    protected MyGetStepSupplier() {
+        this(myTestContext -> {
+            var o = myTestContext.getSomeResource();
+            ///дальнейшие вычисления
+            return //возврат КОЛЛЕКЦИИ или какого либо другого Iterable
+        });
+    }
+
+    protected MyGetStepSupplier(Function<MyTestContext, S> originalFunction) {
+        /**или к функции, переданной через данный конструктор**/
+        super(originalFunction);
+    }
+
+    //..........
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
+    //которым должен соответствовать конечный результат
+    @Override
+    public MyGetStepSupplier<T, S> criteria(Criteria<? super T> criteria) {
+        return super.criteria(criteria);
+    }
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
+    //которым должен соответствовать конечный результат
+    @Override
+    public MyGetStepSupplier<T, S> criteria(String description, Predicate<? super T> predicate) {
+        return super.criteria(description, predicate);
+    }
+}
+```
+</details>
+
+- 2
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
+
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+/**
+ * Так описывается шаг, возвращающий коллекцию или другой java.lang.Iterable.
+ * 
+ * В данном случае наличие "посредника" предусматривается.
+ * 
+ * Критерии проверяют на соответствие все объекты, входящие в коллекцию, и если такие объекты были найдены - они возвращается
+ * в качестве результата.
+ * 
+ * Если по истечении времени, отведенного на выполнение шага, коллекция/Iterable не были получены - может вернуться null 
+ * (зависит от реализации шага).
+ * Если по истечении времени, отведенного на выполнение шага, в коллекции/Iterable не было элементов, подходящих под критерии -
+ * вернется пустая коллекция/Iterable
+ */
+@ThrowWhenNoData(toThrow = IllegalStateException.class, startDescription = "Can't get:")
+public class MyGetStepSupplier<T, M, S extends Iterable<T>> extends SequentialGetStepSupplier.GetIterableChainedStepSupplier<
+        MyTestContext,
+        S,
+        M,
+        T,
+        MyGetStepSupplier<T, M, S>>
+{
+
+    protected MyGetStepSupplier() {
+        this(m -> {
+            ///дальнейшие вычисления
+            return //возврат КОЛЛЕКЦИИ или какого либо другого Iterable
+        });
+    }
+
+    protected MyGetStepSupplier(Function<M, S> originalFunction) {
+        /**или к функции, переданной через данный конструктор**/
+        super(originalFunction);
+    }
+
+    //..........
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
+    //которым должен соответствовать конечный результат
+    @Override
+    public MyGetStepSupplier<T, M, S> criteria(Criteria<? super T> criteria) {
+        return super.criteria(criteria);
+    }
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
+    //которым должен соответствовать конечный результат
+    @Override
+    public MyGetStepSupplier<T, M, S> criteria(String description, Predicate<? super T> predicate) {
+        return super.criteria(description, predicate);
+    }
+}
+```
+</details>
+
+#### Шаг, который возвращает массив.
+
+Подходит для ситуаций, когда в результате вычислений получается массив, и нужно его вернуть (целиком
+или оставив в его составе элементы, подходящие под некоторые критерии).
+
+- 1
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
+
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+/**
+ * Так описывается шаг, возвращающий массив.
+ *
+ * В данном случае наличие "посредника" не предусматривается, т.е. массив получается напрямую от входного параметра.
+ * Критерии проверяют на соответствие все объекты, входящие в массив, и если такие объекты были найдены - они возвращается
+ * в качестве результата.
+ *
+ * Если по истечении времени, отведенного на выполнение шага, массив не был получен - может вернуться null
+ * (зависит от реализации шага).
+ * Если по истечении времени, отведенного на выполнение шага, в массиве не было элементов, подходящих под критерии -
+ * вернется пустой массив
+ */
+@ThrowWhenNoData(toThrow = IllegalStateException.class, startDescription = "Can't get:")
+public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetArrayStepSupplier<
+        MyTestContext,
+        T,
+        MyGetStepSupplier<T>>
+{
+
+    protected MyGetStepSupplier() {
+        this(myTestContext -> {
+            var o = myTestContext.getSomeResource();
+            ///дальнейшие вычисления
+            return //возврат МАССИВА
+        });
+    }
+
+    protected MyGetStepSupplier(Function<MyTestContext, T[]> originalFunction) {
+        /**или к функции, переданной через данный конструктор**/
+        super(originalFunction);
+    }
+
+    //..........
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
+    //которым должен соответствовать конечный результат
+    @Override
+    public MyGetStepSupplier<T> criteria(Criteria<? super T> criteria) {
+        return super.criteria(criteria);
+    }
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
+    //которым должен соответствовать конечный результат
+    @Override
+    public MyGetStepSupplier<T> criteria(String description, Predicate<? super T> predicate) {
+        return super.criteria(description, predicate);
+    }
+}
+```
+</details>
+
+- 2
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
+
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+/**
+ * Так описывается шаг, возвращающий массив.
+ *
+ * В данном случае наличие "посредника" предусматривается.
+ *
+ * Критерии проверяют на соответствие все объекты, входящие в массив, и если такие объекты были найдены - они возвращается
+ * в качестве результата.
+ *
+ * Если по истечении времени, отведенного на выполнение шага, массив не был получен - может вернуться null
+ * (зависит от реализации шага).
+ * Если по истечении времени, отведенного на выполнение шага, в массиве не было элементов, подходящих под критерии -
+ * вернется пустой массив
+ */
+@ThrowWhenNoData(toThrow = IllegalStateException.class, startDescription = "Can't get:")
+public class MyGetStepSupplier12<T, M> extends SequentialGetStepSupplier.GetArrayChainedStepSupplier<
+        MyTestContext,
+        M,
+        T,
+        MyGetStepSupplier12<T, M>>
+{
+
+    protected MyGetStepSupplier12() {
+        this(myTestContext -> {
+            ///дальнейшие вычисления
+            return //возврат МАССИВА
+        });
+    }
+
+    protected MyGetStepSupplier12(Function<M, T[]> originalFunction) {
+        /**или к функции, переданной через данный конструктор**/
+        super(originalFunction);
+    }
+
+    //..........
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
+    //которым должен соответствовать конечный результат
+    @Override
+    public MyGetStepSupplier12<T, M> criteria(Criteria<? super T> criteria) {
+        return super.criteria(criteria);
+    }
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
+    //которым должен соответствовать конечный результат
+    @Override
+    public MyGetStepSupplier12<T, M> criteria(String description, Predicate<? super T> predicate) {
+        return super.criteria(description, predicate);
+    }
+}
+```
+</details>
 
 #### Критерии
 
