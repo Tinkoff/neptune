@@ -422,6 +422,162 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetObjectSte
 
 - 2
 
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
+
+import java.time.Duration;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+/**
+ * Так описывается шаг, возвращающий некий объект-результат. В данном случае предусматривается наличие
+ * "посредника". Критерии проверяют на соответствие сам объект, который может быть возвращен в результате
+ * вычисления.
+ */
+@ThrowWhenNoData(toThrow = IllegalStateException.class, startDescription = "Can't get:")
+public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<
+        MyTestContext,
+        T,
+        M,
+        MyGetStepSupplier<T, M>>
+{
+
+    protected MyGetStepSupplier() {
+        this(m -> {
+            /**логика выполнения шага сводится к строчкам внутри этого лямбда-выражения**/
+            ///дальнейшие вычисления
+            return //возврат результата
+        });
+    }
+
+    protected MyGetStepSupplier(Function<M, T> originalFunction) {
+        /**или к функции, переданной через данный конструктор**/
+        super(originalFunction);
+    }
+
+
+    @Description("Something by parameters {a}, {b}, {c}")
+    public static <T, M> MyGetStepSupplier<T, M> something(
+            @DescriptionFragment("a") Object a, //параметры, которые формируют
+            @DescriptionFragment("b") Object b,  //название шага.
+            @DescriptionFragment("c") Object c) { //Об этом будет ниже
+        return //возвращает представление/построитель шага
+    }
+
+    //здесь появляется новая опция.
+    //Можно указать шаг, который должен предшествовать данному шагу.
+    //У этого шага тип входного параметра тот же, что и у текущего,
+    //а тип результирующего значения тот же, что и у значения-"посредника"
+    //данного шага. Оба шага образуют иерархическую последовательность выполнения
+    //действий, т.е. в рамках данного шага будет выполнен тот, что был указан при
+    //вызове метода.
+    //
+    //Не обязательно данный метод перекрывать и делать его публичным. Данным методом
+    //можно воспользоваться при реализации внутренней логики класса, например в конструкторе
+    //или статическом методе выше.
+    @Override
+    protected MyGetStepSupplier<T, M> from(SequentialGetStepSupplier<MyTestContext, ? extends M, ?, ?, ?> from) {
+        return super.from(from);
+    }
+
+    //Аналогично методу выше. Только вместо подготовленного шага используем
+    //некую функцию, которая принимает на вход значение того же типа, что и тип входных
+    //данных у этого шага, и возвращает значение того же типа, что и значение-"посредник"
+    //данного шага
+    @Override
+    protected MyGetStepSupplier<T, M> from(Function<MyTestContext, ? extends M> from) {
+        return super.from(from);
+    }
+
+    //Аналогично методам выше. В данном случае значение того же типа, что и значение-"посредник"
+    //данного шага, используется напрямую.
+    @Override
+    protected MyGetStepSupplier<T, M> from(M from) {
+        return super.from(from);
+    }
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать время,
+    //в пределах которого конечный результат должен быть получен
+    @Override
+    public MyGetStepSupplier<T, M> timeOut(Duration timeOut) {
+        return super.timeOut(timeOut);
+    }
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать паузу между попытками
+    //получить нужный конечный результат.
+    //Попытки совершаются циклически в пределах времени, указанного в timeOut(Duration timeOut)
+    @Override
+    public MyGetStepSupplier<T, M> pollingInterval(Duration pollingTime) {
+        return super.pollingInterval(pollingTime);
+    }
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
+    //которым должен соответствовать конечный результат
+    @Override
+    public MyGetStepSupplier<T, M> criteria(Criteria<? super T> criteria) {
+        return super.criteria(criteria);
+    }
+
+    // Аналогично примеру выше. В данном случае критерий задается в виде предиката с пояснительным
+    // описанием критерия
+    @Override
+    public MyGetStepSupplier<T, M> criteria(String description, Predicate<? super T> predicate) {
+        return super.criteria(description, predicate);
+    }
+
+    @Override //перекрывать необязательно, уже писали ранее. Для наглядности
+    protected void onStart(M m) {
+        //Какая-то логика
+    }
+
+    @Override //перекрывать необязательно, уже писали ранее. Для наглядности
+    protected void onSuccess(T t) {
+        //Какая-то логика
+    }
+
+
+    @Override //перекрывать необязательно, уже писали ранее. Для наглядности
+    protected void onFailure(M m, Throwable throwable) {
+        //Какая-то логика
+    }
+}
+```
+
+Пример связи контекста и шага в тесте
+
+```java
+import org.testng.annotations.Test;
+
+import static java.time.Duration.ofMillis;
+import static java.time.Duration.ofSeconds;
+import static org.my.pack.MyGetStepSupplier.something;
+import static org.my.pack.MyTestContext.myTestContext;
+
+public class SomeTest {
+
+    @Test
+    public void test() {
+        var result = myTestContext().get(something(1, 2, 3)
+                .criteria("Some criteria", o -> )
+                //если надо
+                .criteria("One more criteria", o -> )
+                .timeOut(ofSeconds(10))
+                .pollingInterval(ofMillis(500))
+                .from(someOtherValue()) // <--!!!!!!!!!!!!!
+                .throwOnNoResult());
+    }
+}
+```
+
+Дальнейшие примеры работают по тем же принципам, что и примеры выше. Поэтому в примерах ниже больше 
+фокус на принципиальных отличиях.
+
 #### Критерии
 
 ### Шаги, которые выполняют действие
