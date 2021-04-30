@@ -51,7 +51,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return an instance of {@link HttpResponse}
      */
     public <T> HttpResponse<T> responseOf(RequestBuilder requestBuilder, HttpResponse.BodyHandler<T> bodyHandler) {
-        return response(requestBuilder, bodyHandler).get().apply(this);
+        return get(response(requestBuilder, bodyHandler));
     }
 
     /**
@@ -73,7 +73,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return an instance of {@code <R>}
      */
     public <T, R> R bodyData(GetObjectFromBodyStepSupplier<T, R, ?> object) {
-        return object.get().apply(this);
+        return get(object);
     }
 
 
@@ -87,7 +87,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return an instance of {@code <R>}
      */
     public <T, R> R bodyData(GetObjectFromArrayBodyStepSupplier<T, R, ?> oneOfArray) {
-        return oneOfArray.get().apply(this);
+        return get(oneOfArray);
     }
 
     /**
@@ -100,7 +100,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return an instance of {@code <R>}
      */
     public <T, R> R bodyData(GetObjectFromIterableBodyStepSupplier<T, R, ?> oneOfIterable) {
-        return oneOfIterable.get().apply(this);
+        return get(oneOfIterable);
     }
 
     /**
@@ -113,7 +113,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return an array of {@code <R>}
      */
     public <T, R> R[] bodyData(GetObjectsFromArrayBodyStepSupplier<T, R, ?> array) {
-        return array.get().apply(this);
+        return get(array);
     }
 
     /**
@@ -127,7 +127,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return an instance of {@code <S>}
      */
     public <T, R, S extends Iterable<R>> S bodyData(GetObjectsFromIterableBodyStepSupplier<T, R, S, ?> iterable) {
-        return iterable.get().apply(this);
+        return get(iterable);
     }
 
     /**
