@@ -1325,18 +1325,19 @@ public final class MyCriteriaLib {
     }
 
     @Description("Some criteria with parameters: {param1}, {param2}") //Заголовок/название критерия, об этом будет ниже
-    public static <T> Criteria<T> someCriteria(@DescriptionFragment("param1") Object param1, //параметры, которые формируют 
-                                        @DescriptionFragment("param2") Object param2) { //название критерия.
-                                        //Об этом будет ниже
+    public static <T> Criteria<T> someCriteria(@DescriptionFragment("param1") Object param1, //параметры, которые формируют
+                                               @DescriptionFragment("param2") Object param2) { //название шага.
+        //Об этом будет ниже
         return condition(t -> /* предикат, т.е выражение, возвращающее boolean */);
     }
 
     @Description("One more criteria with parameters: {param1}, {param2}")
-    public static <T> Criteria<T> oneMoreCriteria(@DescriptionFragment("param1") Object param1, 
+    public static <T> Criteria<T> oneMoreCriteria(@DescriptionFragment("param1") Object param1,
                                                   @DescriptionFragment("param2") Object param2) {
         return condition(t -> /* предикат, т.е выражение, возвращающее boolean */);
     }
 }
+
 ```
 
 и тогда
