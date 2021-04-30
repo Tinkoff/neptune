@@ -1332,7 +1332,8 @@ public final class MyCriteriaLib {
     }
 
     @Description("One more criteria with parameters: {param1}, {param2}")
-    public static <T> Criteria<T> oneMoreCriteria(@DescriptionFragment("param1") Object param1, @DescriptionFragment("param2") Object param2) {
+    public static <T> Criteria<T> oneMoreCriteria(@DescriptionFragment("param1") Object param1, 
+                                                  @DescriptionFragment("param2") Object param2) {
         return condition(t -> /* предикат, т.е выражение, возвращающее boolean */);
     }
 }
