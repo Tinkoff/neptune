@@ -27,10 +27,10 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 //Предполагается, что для этого используются значения различных переменных окружения
 //среды, в которой выполняются тесты
 @CreateWith(provider = MyParameterProvider.class)
-//Если конструктор аннотируемого класса не имеет параметров, аннотацию можно не
+//Если конструктор класса не имеет параметров, аннотацию можно не
 //указывать
 public class MyTestContext extends Context<MyTestContext> { //generic сигнатура для того,
-    //чтобы ограничить возможность шагам для других контекстов использовать
+    //чтобы предотвратить возможность шагам для других контекстов использовать
     //объекты данного класса
 
     //Рекомендуемый способ доступа до объектов контекста.
@@ -100,8 +100,6 @@ public class MyParameterProvider implements ParameterProvider {
 
 ```java
 package org.my.pack;
-
-import org.testng.annotations.Test;
 
 import static ru.tinkoff.qa.neptune.core.api.steps.Step.$;
 
@@ -559,7 +557,7 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObject
 Пример связи контекста и шага в тесте
 
 ```java
-import org.testng.annotations.Test;
+package org.my.pack;
 
 import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
@@ -1244,8 +1242,6 @@ public class MyActionStepSupplier<T> extends SequentialActionSupplier<
 ```java
 package org.my.pack;
 
-import org.testng.annotations.Test;
-
 import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
 import static org.my.pack.MyActionStepSupplier.someAction;
@@ -1387,8 +1383,6 @@ public class SomeTest {
 ```java
 package org.my.pack;
 
-import org.testng.annotations.Test;
-
 import static org.my.pack.MyCriteriaLib.oneMoreCriteria;
 import static org.my.pack.MyCriteriaLib.someCriteria;
 import static org.my.pack.MyGetStepSupplier4.something;
@@ -1490,5 +1484,118 @@ public class SomeTest {
 ```
 
 ### Присутствие и отсутствие
+
+По умолчанию, любой [контекст](#Контекст) может работать с шагами, определяющими присутствие или отсутствие чего-либо. 
+Это актуально для контекстов, которые описывают такие вещи, как UI приложения, где элементы могут как 
+появляться так и исчезать, в зависимости от пользовательских действий. Или дата-стораджи в связке с back-end приложения.
+И цель выполнения таких шагов — убедиться, что что-то либо присутствует/появилось, либо отсутствует/пропало (получить true 
+или false).
+
+Методы, которые работают с такими функциями-шагам, имеют модификатор видимости `protected`, т.к. они актуальны не для 
+каждого контекста. В тех контекстах, где нужна такая возможность, эти методы можно перекрыть со сменой модификатора 
+видимости на `public`, или реализовать свои методы, в теле которых выполняются проверки на наличие/отсутствие.
+
+#### Присутствие/появление
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+Доработаем контекст
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
+import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
+
+@CreateWith(provider = MyParameterProvider.class)
+public class MyTestContext extends Context<MyTestContext> {
+
+    public static MyTestContext myTestContext() {
+        return getInstance(MyTestContext.class);
+    }
+
+    //Конструктор может содержать параметры
+    protected MyTestContext(/*Параметры*/) {
+        //Логика инициализации
+    }
+
+    public <T> T get(SequentialGetStepSupplier<MyTestContext, T, ?, ?, ?> getStepSupplier) {
+        return getStepSupplier.get().apply(this);
+    }
+
+    public MyTestContext perform(SequentialActionSupplier<MyTestContext, ?, ?> sequentialActionSupplier) {
+        sequentialActionSupplier.get().performAction(this);
+        return this;
+    }
+
+    public Object getSomeResource() {
+        return //Возврат какого-нибудь проинициализированного объекта
+        //для использования в шагах (рекомендуется)
+        //для использования напрямую (не рекомендуется)
+    }
+
+    // Проверяет на присутствие/появление некоторого значения, описываемого шагом, возвращающим результат
+    // Вернет true, если шаг за отведенное время вернет значение, соответствующее переданным критериям.
+    // Если переданный шаг вернет null/пустые коллекцию или массив - результат будет false
+    //
+    // В метод передается список классов исключений, которые могут возникать в ходе выполнения указанного шага,
+    // и которые должны быть проигнорированы.
+    @SafeVarargs
+    public final boolean presence(SequentialGetStepSupplier<MyTestContext, ?, ?, ?, ?> getStepSupplier,
+                                  Class<? extends Throwable>... toIgnore) {
+        return super.presenceOf(getStepSupplier, toIgnore);
+    }
+
+    // Проверяет на присутствие/появление некоторого значения, описываемого шагом, возвращающим результат.
+    // Вернет true, если переданный шаг за отведенное время вернет значение, соответствующее указанным критериям.
+    // Если переданный шаг вернет null/пустые коллекцию или массив - будет выброшено исключение.
+    //
+    // В метод передается список классов исключений, которые могут возникать в ходе выполнения указанного шага,
+    // и которые должны быть проигнорированы.
+    @SafeVarargs
+    public final boolean presenceOrThrow(SequentialGetStepSupplier<MyTestContext, ?, ?, ?, ?> getStepSupplier,
+                                         Class<? extends Throwable>... toIgnore) {
+        return super.presenceOfOrThrow(getStepSupplier, toIgnore);
+    }
+}
+```
+
+Пример использования
+
+```java
+package org.my.pack;
+
+import static java.time.Duration.ofMillis;
+import static java.time.Duration.ofSeconds;
+import static org.my.pack.MyGetStepSupplier4.something;
+import static org.my.pack.MyTestContext.myTestContext;
+
+public class SomeTest {
+
+    @Test
+    public void test() {
+
+        //должно вернется true или false
+        boolean result = myTestContext().presence(something(1, 2, 3)
+                .criteria("Some criteria", o -> {/* предикат, выражение позвращающ */}) //теперь это критерии
+                .criteria("One more criteria", o ->) //того, что должно присутствовать/появиться
+                .timeOut(ofSeconds(10)) //теперь это время ожидания появления
+                .pollingInterval(ofMillis(500)));
+
+        //должно вернется true или выброситься исключение
+        boolean result2 = myTestContext().presenceOrThrow(something(1, 2, 3)
+                .criteria("Some criteria", o -> {/* предикат, выражение позвращающ */}) //теперь это критерии
+                .criteria("One more criteria", o ->) //того, что должно присутствовать/появиться
+                .timeOut(ofSeconds(10)) //теперь это время ожидания появления
+                .pollingInterval(ofMillis(500)));
+    }
+}
+```
+</details>
+
+#### Отсутствие/исчезновение
 
 ## Вложенность/глубина шагов
