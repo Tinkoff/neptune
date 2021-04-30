@@ -1249,7 +1249,7 @@ import org.testng.annotations.Test;
 import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
 import static org.my.pack.MyActionStepSupplier.someAction;
-import static org.my.pack.MyGetStepSupplier4.something;
+import static org.my.pack.MyGetStepSupplier.something;
 import static org.my.pack.MyTestContext.myTestContext;
 
 public class SomeTest {
@@ -1277,6 +1277,215 @@ public class SomeTest {
 ```
 
 ### Критерии
+
+Критерии нужны для того, чтобы уточнить значение, которое должен вернуть [шаг, возвращающий результат](#Шаги,-которые-возвращают-результат). 
+Для этих целей используются объекты класса `ru.tinkoff.qa.neptune.core.api.steps.Criteria`.
+
+```java
+package org.my.pack;
+
+import static org.my.pack.MyGetStepSupplier.something;
+import static org.my.pack.MyTestContext.myTestContext;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
+
+public class SomeTest {
+
+    @Test
+    public void test() {
+        var result = myTestContext().get(something(1, 2, 3)
+                //Критерий, записанный в свободной форме,
+                //в виде пояснительной строки и предиката.
+                //Объект ru.tinkoff.qa.neptune.core.api.steps.Criteria создается внутри вызванного метода.
+                .criteria("Some criteria", o -> {/* предикат, т.е выражение, возвращающее boolean */})
+                //Критерий, записанный в свободной форме, в виде пояснительной строки и предиката.
+                //Все это явно передано в виде объекта ru.tinkoff.qa.neptune.core.api.steps.Criteria,
+                //созданного статическим методом ru.tinkoff.qa.neptune.core.api.steps.Criteria#condition
+                .criteria(condition("One more criteria", o -> {/* предикат, т.е выражение, возвращающее boolean */})));
+    }
+}
+```
+
+Критерии можно указывать в свободной форме, в виде пояснительной строки и предиката.
+
+Ниже пример того, что можно сделать, если один и тот же критерий используется многократно.
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
+
+public final class MyCriteriaLib {
+
+    private MyCriteriaLib() {
+        super();
+    }
+
+    @Description("Some criteria with parameters: {param1}, {param2}") //Заголовок/название критерия, об этом будет ниже
+    public static <T> Criteria<T> someCriteria(@DescriptionFragment("param1") Object param1, //параметры, которые формируют 
+                                        @DescriptionFragment("param2") Object param2) { //название критерия.
+                                        //Об этом будет ниже
+        return condition(t -> /* предикат, т.е выражение, возвращающее boolean */);
+    }
+
+    @Description("One more criteria with parameters: {param1}, {param2}")
+    public static <T> Criteria<T> oneMoreCriteria(@DescriptionFragment("param1") Object param1, @DescriptionFragment("param2") Object param2) {
+        return condition(t -> /* предикат, т.е выражение, возвращающее boolean */);
+    }
+}
+```
+
+и тогда
+
+```java
+package org.my.pack;
+
+import static org.my.pack.MyCriteriaLib.oneMoreCriteria;
+import static org.my.pack.MyCriteriaLib.someCriteria;
+import static org.my.pack.MyGetStepSupplier4.something;
+import static org.my.pack.MyTestContext.myTestContext;
+
+public class SomeTest {
+
+    @Test
+    public void test() {
+        var result = myTestContext().get(something(1, 2, 3)
+                .criteria(someCriteria("A", "B"))
+                .criteria(oneMoreCriteria(4, 5)));
+    }
+}
+```
+
+#### Объединение критериев в один логическим И(AND) 
+
+```java
+package org.my.pack;
+
+import static org.my.pack.MyCriteriaLib.oneMoreCriteria;
+import static org.my.pack.MyCriteriaLib.someCriteria;
+import static org.my.pack.MyGetStepSupplier4.something;
+import static org.my.pack.MyTestContext.myTestContext;
+
+public class SomeTest {
+
+    @Test
+    public void test() {
+        var result = myTestContext().get(something(1, 2, 3)
+                .criteria(someCriteria("A", "B")) //В данном примере все указанные критерии объединяются 
+                .criteria(oneMoreCriteria(4, 5))); // в одно И-выражение.
+    }
+}
+```
+
+Но если надо явно объединить несколько критериев в один, тогда
+
+```java
+package org.my.pack;
+
+import org.testng.annotations.Test;
+
+import static org.my.pack.MyCriteriaLib.oneMoreCriteria;
+import static org.my.pack.MyCriteriaLib.someCriteria;
+import static org.my.pack.MyGetStepSupplier4.something;
+import static org.my.pack.MyTestContext.myTestContext;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.AND;
+
+public class SomeTest {
+
+    @Test
+    public void test() {
+        var result = myTestContext().get(something(1, 2, 3)
+                .criteria(AND(someCriteria("A", "B"), oneMoreCriteria(4, 5))));
+    }
+}
+```
+
+#### Объединение критериев в один логическим ИЛИ (OR)
+
+```java
+package org.my.pack;
+
+import static org.my.pack.MyCriteriaLib.oneMoreCriteria;
+import static org.my.pack.MyCriteriaLib.someCriteria;
+import static org.my.pack.MyGetStepSupplier4.something;
+import static org.my.pack.MyTestContext.myTestContext;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.OR;
+
+public class SomeTest {
+
+    @Test
+    public void test() {
+        var result = myTestContext().get(something(1, 2, 3)
+                .criteria(OR(someCriteria("A", "B"), oneMoreCriteria(4, 5))));
+    }
+}
+```
+
+#### Объединение критериев в один исключающим ИЛИ (XOR)
+
+```java
+package org.my.pack;
+
+import static org.my.pack.MyCriteriaLib.oneMoreCriteria;
+import static org.my.pack.MyCriteriaLib.someCriteria;
+import static org.my.pack.MyGetStepSupplier4.something;
+import static org.my.pack.MyTestContext.myTestContext;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.XOR;
+
+public class SomeTest {
+
+    @Test
+    public void test() {
+        var result = myTestContext().get(something(1, 2, 3)
+                .criteria(XOR(someCriteria("A", "B"), oneMoreCriteria(4, 5))));
+    }
+}
+```
+
+#### Инверсия критериев (NOT)
+
+```java
+package org.my.pack;
+
+import static org.my.pack.MyCriteriaLib.oneMoreCriteria;
+import static org.my.pack.MyCriteriaLib.someCriteria;
+import static org.my.pack.MyGetStepSupplier4.something;
+import static org.my.pack.MyTestContext.myTestContext;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.NOT;
+
+public class SomeTest {
+
+    @Test
+    public void test() {
+        var result = myTestContext().get(something(1, 2, 3)
+                .criteria(someCriteria("A", "B"))
+                .criteria(NOT(oneMoreCriteria(4, 5)))); //<-- критерий инвертирован
+    }
+}
+```
+
+```java
+package org.my.pack;
+
+import static org.my.pack.MyCriteriaLib.oneMoreCriteria;
+import static org.my.pack.MyCriteriaLib.someCriteria;
+import static org.my.pack.MyGetStepSupplier4.something;
+import static org.my.pack.MyTestContext.myTestContext;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.NOT;
+
+public class SomeTest {
+
+    @Test
+    public void test() {
+        var result = myTestContext().get(something(1, 2, 3)
+                .criteria(NOT(someCriteria("A", "B"), oneMoreCriteria(4, 5))));
+        //И-выражение, в котором каждый из критериев инвертирован
+    }
+}
+```
 
 ### Присутствие и отсутствие
 
