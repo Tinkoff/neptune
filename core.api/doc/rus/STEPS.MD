@@ -132,7 +132,7 @@ public class SomeTest {
 
 ### Шаги, которые возвращают результат
 
-Для описания набора действий с возвратом некоторого результата в рамках некоторого действия используется 
+Для описания набора действий с возвратом некоторого результата, в рамках некоторого контекста, используется 
 наследники `ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier`. Ниже пример, демонстрирующий
 работу и принцип данного класса.
 
@@ -297,11 +297,14 @@ public class SomeTest {
     @Test
     public void test() {
         var result = myTestContext().get(something(1, 2, 3)
-                .criteria("Some criteria", o -> ) //Можно указать критерий результат, который надо получить
+                //Можно указать критерий результата, который надо получить
+                .criteria("Some criteria", o -> )
                 //если надо
                 .criteria("One more criteria", o -> ) //и еще один
-                .timeOut(ofSeconds(10)) //можно указать время, за которое нужно получить требуемый резултат
-                .pollingInterval(ofMillis(500)) //паузу между попытками получить требуемые данные, в рамках указанного 
+                //можно указать время, за которое нужно получить требуемый результат
+                .timeOut(ofSeconds(10))
+                //паузу между попытками получить требуемые данные, в рамках указанного 
+                .pollingInterval(ofMillis(500))
                 //времени ожидания
                 .throwOnNoResult()); //Если ничего походящего/значимого шаг не вернул, и тут нужно выбросить
         //исключение и уронить тест. Будет выброшено исключения, указанное аннотацией
@@ -492,7 +495,7 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObject
 
     //Аналогично методу выше. Только вместо подготовленного шага используем
     //некую функцию, которая принимает на вход значение того же типа, что и тип входных
-    //данных у этого шага, и возвращает значение того же типа, что и значение-"посредник"
+    //данных у текущего шага, и возвращает значение того же типа, что и значение-"посредник"
     //данного шага
     @Override
     protected MyGetStepSupplier<T, M> from(Function<MyTestContext, ? extends M> from) {
@@ -570,7 +573,6 @@ public class SomeTest {
     public void test() {
         var result = myTestContext().get(something(1, 2, 3)
                 .criteria("Some criteria", o -> )
-                //если надо
                 .criteria("One more criteria", o -> )
                 .timeOut(ofSeconds(10))
                 .pollingInterval(ofMillis(500))
@@ -1083,21 +1085,21 @@ import java.util.function.Predicate;
  * вернется пустой массив
  */
 @ThrowWhenNoData(toThrow = IllegalStateException.class, startDescription = "Can't get:")
-public class MyGetStepSupplier12<T, M> extends SequentialGetStepSupplier.GetArrayChainedStepSupplier<
+public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetArrayChainedStepSupplier<
         MyTestContext,
         M,
         T,
-        MyGetStepSupplier12<T, M>>
+        MyGetStepSupplier<T, M>>
 {
 
-    protected MyGetStepSupplier12() {
+    protected MyGetStepSupplier() {
         this(myTestContext -> {
             ///дальнейшие вычисления
             return //возврат МАССИВА
         });
     }
 
-    protected MyGetStepSupplier12(Function<M, T[]> originalFunction) {
+    protected MyGetStepSupplier(Function<M, T[]> originalFunction) {
         /**или к функции, переданной через данный конструктор**/
         super(originalFunction);
     }
@@ -1107,23 +1109,174 @@ public class MyGetStepSupplier12<T, M> extends SequentialGetStepSupplier.GetArra
     //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
     //которым должен соответствовать конечный результат
     @Override
-    public MyGetStepSupplier12<T, M> criteria(Criteria<? super T> criteria) {
+    public MyGetStepSupplier<T, M> criteria(Criteria<? super T> criteria) {
         return super.criteria(criteria);
     }
 
     //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
     //которым должен соответствовать конечный результат
     @Override
-    public MyGetStepSupplier12<T, M> criteria(String description, Predicate<? super T> predicate) {
+    public MyGetStepSupplier<T, M> criteria(String description, Predicate<? super T> predicate) {
         return super.criteria(description, predicate);
     }
 }
 ```
 </details>
 
-#### Критерии
-
 ### Шаги, которые выполняют действие
+
+Для описания набора действий без возврата результата, в рамках некоторого контекста, используется
+наследники `ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier`. Ниже пример, демонстрирующий
+работу и принцип данного класса.
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.Action;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+
+import java.util.function.Function;
+
+// Данный класс строит шаг, который выполняет некоторое действие без возврата конечного результата.
+// Входным значением является объект-контекст, содержащий нужные ресурсы для выполнения.
+// С его помощью получается некоторое значение, которое служит объектом для выполнения действия
+@Description("Something with parameters {a}, {b}, {c}") //Заголовок/название шага, об этом будет ниже
+public class MyActionStepSupplier<T> extends SequentialActionSupplier<
+        MyTestContext, //Тип входного параметра для результирующей функции-шага.
+        //Как правило это контекст, в рамках которого данное действие может быть выполнено
+        T, //Тип результата, который должна возвращать функция-шаг
+        MyActionStepSupplier<T>> //здесь желательного указывать тип самого класса или расширяющий
+        //тип. Наследники SequentialActionSupplier работают как Builder, и многие методы
+        //возвращают ссылку на объект, от которого ини были вызваны
+{
+
+    @DescriptionFragment("a") //параметры, которые формируют
+    private final Object a;
+    //название шага и используются для выполнения действия
+    @DescriptionFragment("b")
+    private final Object b;
+    //Об этом будет ниже
+    @DescriptionFragment("c")
+    private final Object c;
+
+    public MyActionStepSupplier(Object a, Object b, Object c) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+    }
+
+    //возвращает представление/построитель шага
+    public static <T> MyActionStepSupplier<T> someAction(Object a, Object b, Object c) {
+        return new MyActionStepSupplier<>(a, b, c);
+    }
+
+    //C помощью метода `performOn` можно указать шаг, у которого на выходе получается значение,
+    //которое является объектом для выполнения действия.
+    //У этого шага тип входного параметра тот же, что и у текущего.
+    //
+    // Оба шага образуют иерархическую последовательность выполнения
+    //действий, т.е. в рамках данного шага будет выполнен тот, что был указан при
+    //вызове метода.
+    //
+    //Не обязательно данный метод перекрывать и делать его публичным. Данным методом
+    //можно воспользоваться при реализации внутренней логики класса, например в конструкторе
+    //или статическом методе выше.
+    public MyActionStepSupplier<T> on(SequentialGetStepSupplier<MyTestContext, T, ?, ?, ?> getStep) {
+        return super.performOn(getStep);
+    }
+
+    //Аналогично методу выше. Только вместо подготовленного шага используем
+    //некую функцию, которая принимает на вход значение того же типа, что и тип входных
+    //данных у текущего шага, и возвращает значение того же типа, что и тип значения-объекта 
+    //реализуемого действия
+    public MyActionStepSupplier<T> on(Function<MyTestContext, T> f) {
+        return super.performOn(f);
+    }
+
+    //Аналогично методам выше. В данном случае значение того же типа, что и значение-объект
+    //реализуемого действия, используется напрямую.
+    public MyActionStepSupplier<T> on(T t) {
+        return super.performOn(t);
+    }
+
+    // здесь можно описать что-то, что выполнятся до того, как действие шага начинается.
+    // По умолчанию данный метод пустой, но не абстрактный, т.к. в большинстве случаев
+    // никаких дополнительных действий выполнять не нужно.
+    @Override
+    protected void onStart(MyTestContext myTestContext) {
+        //Какая-то логика
+    }
+
+    // здесь можно описать действия, выполняемые после того, как было выброшено
+    // исключение.
+    // По умолчанию данный метод пустой, но не абстрактный, т.к. в большинстве случаев
+    // никаких дополнительных действий выполнять не нужно.
+    @Override
+    protected void onFailure(MyTestContext myTestContext, Throwable throwable) {
+        //Какая-то логика
+    }
+
+    @Override //в данном методе необходимо реализовать
+    //действие, выполняемое шагом
+    protected void howToPerform(T value) {
+        //логика шага
+    }
+
+    @Override //Результирующее действие-шаг возвращается данным методом
+    //Добавлено для наглядности
+    public Action<MyTestContext> get() {
+        return super.get();
+    }
+}
+```
+
+</details>
+
+Пример связи контекста и шага в тесте
+
+```java
+package org.my.pack;
+
+import org.testng.annotations.Test;
+
+import static java.time.Duration.ofMillis;
+import static java.time.Duration.ofSeconds;
+import static org.my.pack.MyActionStepSupplier.someAction;
+import static org.my.pack.MyGetStepSupplier4.something;
+import static org.my.pack.MyTestContext.myTestContext;
+
+public class SomeTest {
+
+    @Test
+    public void test() {
+        var result = myTestContext().perform(someAction(1, 2, 3) //указываем действие 
+                //ниже указываем то, как найти-получить объект для его выполнения
+                .on(something(1, 2, 3)
+                        //Можно указать критерий результата, который надо получить
+                        .criteria("Some criteria", o ->)
+                        //если надо
+                        .criteria("One more criteria", o ->) //и еще один
+                        //можно указать время, за которое нужно получить требуемый результат
+                        .timeOut(ofSeconds(10))
+                        //паузу между попытками получить требуемые данные, в рамках указанного 
+                        .pollingInterval(ofMillis(500))
+                        //времени ожидания
+                        .throwOnNoResult())); //Если ничего походящего/значимого шаг не вернул, и тут нужно выбросить
+        //исключение и уронить тест. 
+
+
+    }
+}
+```
+
+### Критерии
 
 ### Присутствие и отсутствие
 
