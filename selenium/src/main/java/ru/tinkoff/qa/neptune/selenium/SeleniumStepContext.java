@@ -291,7 +291,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     public List<HarEntry> get(BrowserProxyGetStepSupplier browserProxyGetStepSupplier) {
         checkArgument(Objects.nonNull(browserProxyGetStepSupplier), "Browser proxy supplier is not defined");
         changeContentIfNecessary();
-        return get(browserProxyGetStepSupplier);
+        return super.get(browserProxyGetStepSupplier);
     }
 
     /**
