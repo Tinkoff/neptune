@@ -6,6 +6,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 
 import java.net.CookieManager;
 import java.net.HttpCookie;
@@ -18,7 +19,7 @@ import java.util.function.Function;
 @Description("Http cookies")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Http cookie criteria")
 public final class GetHttpCookiesSupplier extends SequentialGetStepSupplier
-        .GetIterableChainedStepSupplier<CookieManager, List<HttpCookie>, CookieManager, HttpCookie, GetHttpCookiesSupplier> {
+        .GetIterableChainedStepSupplier<HttpStepContext, List<HttpCookie>, CookieManager, HttpCookie, GetHttpCookiesSupplier> {
 
     @StepParameter(value = "Associated with URI", doNotReportNullValues = true)
     private final URI uri;
@@ -26,12 +27,13 @@ public final class GetHttpCookiesSupplier extends SequentialGetStepSupplier
     private GetHttpCookiesSupplier() {
         super(cookieManager -> new ArrayList<>(cookieManager.getCookieStore().getCookies()));
         uri = null;
-        from(cookieManager -> cookieManager);
+        from(new GetCookieManager());
     }
 
     private GetHttpCookiesSupplier(URI uri) {
         super(cookieManager -> new ArrayList<>(cookieManager.getCookieStore().get(uri)));
         this.uri = uri;
+        from(new GetCookieManager());
     }
 
     /**
@@ -58,8 +60,14 @@ public final class GetHttpCookiesSupplier extends SequentialGetStepSupplier
         return super.criteria(criteria);
     }
 
-    @Override
-    protected GetHttpCookiesSupplier from(Function<CookieManager, ? extends CookieManager> from) {
-        return super.from(from);
+    private static class GetCookieManager implements Function<HttpStepContext, CookieManager> {
+
+        @Override
+        public CookieManager apply(HttpStepContext httpStepContext) {
+            return (CookieManager) httpStepContext
+                    .getCurrentClient()
+                    .cookieHandler()
+                    .orElseThrow(() -> new IllegalStateException("There is no cookie manager"));
+        }
     }
 }

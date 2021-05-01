@@ -5,7 +5,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 
 import java.net.CookieManager;
 import java.net.CookieStore;
@@ -24,10 +24,21 @@ import static java.util.Optional.ofNullable;
  */
 @Description("Delete http cookies")
 public abstract class DeleteHttpCookiesActionSupplier<R, S extends DeleteHttpCookiesActionSupplier<R, S>>
-        extends SequentialActionSupplier<CookieManager, R, S> {
+        extends SequentialActionSupplier<HttpStepContext, R, S> {
+
+    CookieStore cookieStore;
 
     private DeleteHttpCookiesActionSupplier() {
         super();
+    }
+
+    @Override
+    protected void onStart(HttpStepContext httpStepContext) {
+        cookieStore = httpStepContext
+                .getCurrentClient()
+                .cookieHandler()
+                .map(cookieHandler -> ((CookieManager) cookieHandler).getCookieStore())
+                .orElseThrow(() -> new IllegalStateException("There is no cookie manager"));
     }
 
     /**
@@ -65,45 +76,40 @@ public abstract class DeleteHttpCookiesActionSupplier<R, S extends DeleteHttpCoo
 
     @MaxDepthOfReporting(0)
     @Description("Delete all http cookies")
-    private static final class DeleteAllHttpCookies extends DeleteHttpCookiesActionSupplier<CookieStore, DeleteAllHttpCookies> {
+    private static final class DeleteAllHttpCookies extends DeleteHttpCookiesActionSupplier<HttpStepContext, DeleteAllHttpCookies> {
 
         private DeleteAllHttpCookies() {
             super();
-            performOn(CookieManager::getCookieStore);
+            performOn(httpStepContext -> httpStepContext);
         }
 
         @Override
-        protected void howToPerform(CookieStore value) {
-            value.removeAll();
+        protected void howToPerform(HttpStepContext value) {
+            cookieStore.removeAll();
         }
     }
 
 
     @MaxDepthOfReporting(0)
-    private static final class DeleteDefinedHttpCookies extends DeleteHttpCookiesActionSupplier<CookieStore, DeleteDefinedHttpCookies> {
-
-        @StepParameter(value = "Http cookies to delete")
-        private final Collection<HttpCookie> toDelete;
+    @DefinePerformOnParameterName("Http cookies to delete")
+    private static final class DeleteDefinedHttpCookies extends DeleteHttpCookiesActionSupplier<Collection<HttpCookie>, DeleteDefinedHttpCookies> {
 
         private DeleteDefinedHttpCookies(Collection<HttpCookie> toDelete) {
             super();
             checkArgument(nonNull(toDelete) && toDelete.size() > 0,
                     "Should be defined at least one cookie");
-            this.toDelete = toDelete;
-            performOn(CookieManager::getCookieStore);
+            performOn(toDelete);
         }
 
         @Override
-        protected void howToPerform(CookieStore value) {
-            toDelete.forEach(httpCookie -> value.remove(null, httpCookie));
+        protected void howToPerform(Collection<HttpCookie> value) {
+            value.forEach(httpCookie -> cookieStore.remove(null, httpCookie));
         }
     }
 
     @MaxDepthOfReporting(0)
     @IncludeParamsOfInnerGetterStep
     private static final class DeleteFoundHttpCookies extends DeleteHttpCookiesActionSupplier<List<HttpCookie>, DeleteFoundHttpCookies> {
-
-        private CookieStore cookieStore;
 
         @SafeVarargs
         private DeleteFoundHttpCookies(URI uri, Criteria<HttpCookie>... toBeRemoved) {
@@ -116,11 +122,6 @@ public abstract class DeleteHttpCookiesActionSupplier<R, S extends DeleteHttpCoo
                     .orElseGet(GetHttpCookiesSupplier::httpCookies);
             stream(toBeRemoved).forEach(getCookies::criteria);
             performOn(getCookies);
-        }
-
-        @Override
-        protected void onStart(CookieManager cookieManager) {
-            cookieStore = cookieManager.getCookieStore();
         }
 
         @Override

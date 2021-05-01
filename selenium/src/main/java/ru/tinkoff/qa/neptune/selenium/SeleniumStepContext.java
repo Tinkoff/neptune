@@ -115,8 +115,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public <T extends Widget & Clickable> SeleniumStepContext click(SearchSupplier<T> toFind) {
         changeContentIfNecessary();
-        perform(on(toFind));
-        return this;
+        return perform(on(toFind));
     }
 
     /**
@@ -127,8 +126,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext click(SequentialGetStepSupplier<Object, WebElement, ?, ?, ?> toFind) {
         changeContentIfNecessary();
-        perform(on(toFind));
-        return this;
+        return perform(on(toFind));
+
     }
 
     /**
@@ -140,8 +139,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public <T extends Widget & Clickable> SeleniumStepContext click(T widget) {
         changeContentIfNecessary();
-        perform(on(widget));
-        return this;
+        return perform(on(widget));
     }
 
     /**
@@ -152,8 +150,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext click(WebElement element) {
         changeContentIfNecessary();
-        perform(on(element));
-        return this;
+        return perform(on(element));
     }
 
 
@@ -166,8 +163,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public <T extends Widget & Expandable> SeleniumStepContext expand(SearchSupplier<T> toFind) {
         changeContentIfNecessary();
-        perform(ExpandActionSupplier.expand(toFind));
-        return this;
+        return perform(ExpandActionSupplier.expand(toFind));
     }
 
     /**
@@ -179,8 +175,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public <T extends Widget & Expandable> SeleniumStepContext expand(T widget) {
         changeContentIfNecessary();
-        perform(ExpandActionSupplier.expand(widget));
-        return this;
+        return perform(ExpandActionSupplier.expand(widget));
     }
 
     /**
@@ -192,8 +187,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public <T extends Widget & Expandable> SeleniumStepContext collapse(SearchSupplier<T> toFind) {
         changeContentIfNecessary();
-        perform(CollapseActionSupplier.collapse(toFind));
-        return this;
+        return perform(CollapseActionSupplier.collapse(toFind));
     }
 
     /**
@@ -205,8 +199,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public <T extends Widget & Expandable> SeleniumStepContext collapse(T widget) {
         changeContentIfNecessary();
-        perform(CollapseActionSupplier.collapse(widget));
-        return this;
+        return perform(CollapseActionSupplier.collapse(widget));
     }
 
 
@@ -221,8 +214,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public <R, T extends Widget & Editable<R>> SeleniumStepContext edit(SearchSupplier<T> toFind, R value) {
         changeContentIfNecessary();
-        perform(valueOfThe(toFind, value));
-        return this;
+        return perform(valueOfThe(toFind, value));
     }
 
     /**
@@ -237,8 +229,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
         checkNotNull(value);
         changeContentIfNecessary();
         checkArgument(value.length > 0, "");
-        perform(valueOfThe(toFind, asList(value)));
-        return this;
+        return perform(valueOfThe(toFind, asList(value)));
     }
 
     /**
@@ -252,8 +243,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public <R, T extends Widget & Editable<R>> SeleniumStepContext edit(T editable, R value) {
         changeContentIfNecessary();
-        perform(valueOfThe(editable, value));
-        return this;
+        return perform(valueOfThe(editable, value));
     }
 
     /**
@@ -267,8 +257,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
         checkNotNull(value);
         changeContentIfNecessary();
         checkArgument(value.length > 0, "");
-        perform(valueOfThe(t, asList(value)));
-        return this;
+        return perform(valueOfThe(t, asList(value)));
     }
 
     /**
@@ -389,7 +378,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     /**
      * Checks is window present. If it is not present then it throws an exception.
      *
-     * @param getWindow    is a description of a window to be present
+     * @param getWindow is a description of a window to be present
      * @return is window present or not
      */
     public boolean presenceOfOrThrow(GetWindowSupplier getWindow) {
@@ -413,7 +402,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     /**
      * Checks is frame present. If it is not present then it throws an exception.
      *
-     * @param getFrame     is a description of a frame to be present
+     * @param getFrame is a description of a frame to be present
      * @return is frame present or not
      */
     public boolean presenceOfOrThrow(GetFrameSupplier getFrame) {
@@ -437,7 +426,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     /**
      * Checks are cookies present or not. If they are not present then it throws an exception.
      *
-     * @param getCookies   is a description of cookies to be present
+     * @param getCookies is a description of cookies to be present
      * @return are cookies present or not
      */
     public boolean presenceOfOrThrow(GetSeleniumCookieSupplier getCookies) {
@@ -459,7 +448,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     /**
      * Checks is alert present. If it is not present then it throws an exception.
      *
-     * @param getAlert     is a description of an alert to be present
+     * @param getAlert is a description of an alert to be present
      * @return is alert present or not
      */
     public boolean presenceOfOrThrow(GetAlertSupplier getAlert) {
@@ -483,7 +472,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     /**
      * Checks are required requests/responses present. If they are not present then it throws an exception.
      *
-     * @param getTraffic   is a description of requests/responses to be caught
+     * @param getTraffic is a description of requests/responses to be caught
      * @return are requests/responses present or not
      */
     public boolean presenceOfOrThrow(BrowserProxyGetStepSupplier getTraffic) {
@@ -509,8 +498,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     /**
      * Checks is element is absent. If it is present then it throws an exception.
      *
-     * @param toBeAbsent       is how to find the element
-     * @param timeOut          is a time to wait for the element is absent.
+     * @param toBeAbsent is how to find the element
+     * @param timeOut    is a time to wait for the element is absent.
      * @return is element absent or not
      */
     public boolean absenceOfOrThrow(SearchSupplier<?> toBeAbsent,
@@ -537,8 +526,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     /**
      * Checks are elements absent. If they are present then it throws an exception.
      *
-     * @param toBeAbsent       is how to find elements
-     * @param timeOut          is a time to wait for elements are absent.
+     * @param toBeAbsent is how to find elements
+     * @param timeOut    is a time to wait for elements are absent.
      * @return are elements absent or not
      */
     public boolean absenceOfOrThrow(MultipleSearchSupplier<?> toBeAbsent,
@@ -563,8 +552,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     /**
      * Checks is window absent. If it is present then it throws an exception.
      *
-     * @param toBeAbsent   is a description of a window to be absent
-     * @param timeOut      is a time to wait for a window is absent.
+     * @param toBeAbsent is a description of a window to be absent
+     * @param timeOut    is a time to wait for a window is absent.
      * @return is window absent or not
      */
     public boolean absenceOfOrThrow(GetWindowSupplier toBeAbsent, Duration timeOut) {
@@ -588,8 +577,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     /**
      * Checks is frame absent. If it is present then it throws an exception.
      *
-     * @param toBeAbsent   is a description of a frame to be absent
-     * @param timeOut      is a time to wait for a frame is absent.
+     * @param toBeAbsent is a description of a frame to be absent
+     * @param timeOut    is a time to wait for a frame is absent.
      * @return is frame absent or not
      */
     public boolean absenceOfOrThrow(GetFrameSupplier toBeAbsent, Duration timeOut) {
@@ -613,8 +602,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     /**
      * Checks whenever cookies are absent. If they are present then it throws an exception.
      *
-     * @param toBeAbsent   is a description of cookies to be absent
-     * @param timeOut      is a time to wait for cookies are absent.
+     * @param toBeAbsent is a description of cookies to be absent
+     * @param timeOut    is a time to wait for cookies are absent.
      * @return are cookies absent or not
      */
     public boolean absenceOfOrThrow(GetSeleniumCookieSupplier toBeAbsent, Duration timeOut) {
@@ -637,8 +626,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     /**
      * Checks is alert absent. If it is present then it throws an exception.
      *
-     * @param toBeAbsent   is a description of an alert to be absent
-     * @param timeOut      is a time to wait for an alert is absent.
+     * @param toBeAbsent is a description of an alert to be absent
+     * @param timeOut    is a time to wait for an alert is absent.
      * @return is alert absent or not
      */
     public boolean absenceOfOrThrow(GetAlertSupplier toBeAbsent, Duration timeOut) {
@@ -653,8 +642,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext removeCookies() {
         changeContentIfNecessary();
-        perform(deleteCookies());
-        return this;
+        return perform(deleteCookies());
     }
 
     /**
@@ -668,8 +656,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     public final SeleniumStepContext removeCookies(Duration timeToFindCookies,
                                                    Criteria<Cookie>... toBeRemoved) {
         changeContentIfNecessary();
-        perform(deleteCookies(timeToFindCookies, toBeRemoved));
-        return this;
+        return perform(deleteCookies(timeToFindCookies, toBeRemoved));
     }
 
     /**
@@ -692,8 +679,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext removeCookies(Collection<Cookie> cookies) {
         changeContentIfNecessary();
-        perform(deleteCookies(cookies));
-        return this;
+        return perform(deleteCookies(cookies));
     }
 
     /**
@@ -715,8 +701,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext addCookies(Collection<Cookie> cookies) {
         changeContentIfNecessary();
-        perform(AddCookiesActionSupplier.addCookies(cookies));
-        return this;
+        return perform(AddCookiesActionSupplier.addCookies(cookies));
     }
 
     /**
@@ -769,8 +754,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext navigateBack() {
         changeContentIfNecessary();
-        perform(back());
-        return this;
+        return perform(back());
     }
 
     /**
@@ -781,8 +765,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext navigateBack(GetWindowSupplier windowSupplier) {
         changeContentIfNecessary();
-        perform(back(windowSupplier));
-        return this;
+        return perform(back(windowSupplier));
     }
 
     /**
@@ -793,8 +776,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext navigateBack(Window window) {
         changeContentIfNecessary();
-        perform(back(window));
-        return this;
+        return perform(back(window));
     }
 
     /**
@@ -804,8 +786,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext navigateForward() {
         changeContentIfNecessary();
-        perform(forward());
-        return this;
+        return perform(forward());
     }
 
     /**
@@ -816,8 +797,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext navigateForward(GetWindowSupplier windowSupplier) {
         changeContentIfNecessary();
-        perform(forward(windowSupplier));
-        return this;
+        return perform(forward(windowSupplier));
     }
 
     /**
@@ -828,8 +808,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext navigateForward(Window window) {
         changeContentIfNecessary();
-        perform(forward(window));
-        return this;
+        return perform(forward(window));
     }
 
 
@@ -840,8 +819,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext refresh() {
         changeContentIfNecessary();
-        perform(refreshWindow());
-        return this;
+        return perform(refreshWindow());
     }
 
     /**
@@ -852,8 +830,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext refresh(GetWindowSupplier windowSupplier) {
         changeContentIfNecessary();
-        perform(refreshWindow(windowSupplier));
-        return this;
+        return perform(refreshWindow(windowSupplier));
     }
 
     /**
@@ -864,8 +841,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext refresh(Window window) {
         changeContentIfNecessary();
-        perform(refreshWindow(window));
-        return this;
+        return perform(refreshWindow(window));
     }
 
 
@@ -877,8 +853,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext navigateTo(URL url) {
         changeContentIfNecessary();
-        perform(toUrl(url));
-        return this;
+        return perform(toUrl(url));
     }
 
     /**
@@ -890,8 +865,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext navigateTo(URL url, GetWindowSupplier in) {
         changeContentIfNecessary();
-        perform(toUrl(in, url));
-        return this;
+        return perform(toUrl(in, url));
     }
 
     /**
@@ -903,8 +877,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext navigateTo(URL url, Window in) {
         changeContentIfNecessary();
-        perform(toUrl(in, url));
-        return this;
+        return perform(toUrl(in, url));
     }
 
     /**
@@ -916,8 +889,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext navigateTo(String url) {
         changeContentIfNecessary();
-        perform(toUrl(url));
-        return this;
+        return perform(toUrl(url));
     }
 
     /**
@@ -930,8 +902,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext navigateTo(String url, GetWindowSupplier in) {
         changeContentIfNecessary();
-        perform(toUrl(in, url));
-        return this;
+        return perform(toUrl(in, url));
     }
 
     /**
@@ -944,8 +915,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext navigateTo(String url, Window in) {
         changeContentIfNecessary();
-        perform(toUrl(in, url));
-        return this;
+        return perform(toUrl(in, url));
     }
 
     /**
@@ -965,8 +935,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext switchTo(GetActiveElementSupplier getActiveElement) {
         changeContentIfNecessary();
-        perform(to(getActiveElement));
-        return this;
+        return perform(to(getActiveElement));
     }
 
     /**
@@ -977,8 +946,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext switchTo(GetAlertSupplier getAlert) {
         changeContentIfNecessary();
-        perform(to(getAlert));
-        return this;
+        return perform(to(getAlert));
     }
 
     /**
@@ -996,8 +964,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext switchTo(DefaultContentSupplier getDefaultContent) {
         changeContentIfNecessary();
-        perform(to(getDefaultContent));
-        return this;
+        return perform(to(getDefaultContent));
     }
 
     /**
@@ -1013,8 +980,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext switchTo(ParentFrameSupplier getParentFrame) {
         changeContentIfNecessary();
-        perform(to(getParentFrame));
-        return this;
+        return perform(to(getParentFrame));
     }
 
     /**
@@ -1025,8 +991,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext switchTo(GetFrameSupplier getFrame) {
         changeContentIfNecessary();
-        perform(to(getFrame));
-        return this;
+        return perform(to(getFrame));
     }
 
     /**
@@ -1037,8 +1002,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext switchTo(Frame frame) {
         changeContentIfNecessary();
-        perform(to(frame));
-        return this;
+        return perform(to(frame));
     }
 
     /**
@@ -1049,8 +1013,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext switchTo(GetWindowSupplier getWindow) {
         changeContentIfNecessary();
-        perform(to(getWindow));
-        return this;
+        return perform(to(getWindow));
     }
 
     /**
@@ -1061,8 +1024,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext switchTo(Window window) {
         changeContentIfNecessary();
-        perform(to(window));
-        return this;
+        return perform(to(window));
     }
 
     /**
@@ -1203,8 +1165,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext closeWindow() {
         changeContentIfNecessary();
-        perform(CloseWindowActionSupplier.closeWindow());
-        return this;
+        return perform(CloseWindowActionSupplier.closeWindow());
     }
 
     /**
@@ -1215,8 +1176,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext closeWindow(GetWindowSupplier supplier) {
         changeContentIfNecessary();
-        perform(CloseWindowActionSupplier.closeWindow(supplier));
-        return this;
+        return perform(CloseWindowActionSupplier.closeWindow(supplier));
     }
 
     /**
@@ -1227,8 +1187,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext closeWindow(Window window) {
         changeContentIfNecessary();
-        perform(CloseWindowActionSupplier.closeWindow(window));
-        return this;
+        return perform(CloseWindowActionSupplier.closeWindow(window));
     }
 
 
@@ -1241,8 +1200,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext changeWindowPosition(int x, int y) {
         changeContentIfNecessary();
-        perform(setWindowPosition(new Point(x, y)));
-        return this;
+        return perform(setWindowPosition(new Point(x, y)));
     }
 
     /**
@@ -1255,8 +1213,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext changeWindowPosition(GetWindowSupplier supplier, int x, int y) {
         changeContentIfNecessary();
-        perform(setPositionOf(supplier, new Point(x, y)));
-        return this;
+        return perform(setPositionOf(supplier, new Point(x, y)));
     }
 
     /**
@@ -1269,8 +1226,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext changeWindowPosition(Window window, int x, int y) {
         changeContentIfNecessary();
-        perform(setPositionOf(window, new Point(x, y)));
-        return this;
+        return perform(setPositionOf(window, new Point(x, y)));
     }
 
 
@@ -1283,8 +1239,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext changeWindowSize(int width, int height) {
         changeContentIfNecessary();
-        perform(setWindowSize(new Dimension(width, height)));
-        return this;
+        return perform(setWindowSize(new Dimension(width, height)));
     }
 
     /**
@@ -1297,8 +1252,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext changeWindowSize(GetWindowSupplier supplier, int width, int height) {
         changeContentIfNecessary();
-        perform(setSizeOf(supplier, new Dimension(width, height)));
-        return this;
+        return perform(setSizeOf(supplier, new Dimension(width, height)));
     }
 
     /**
@@ -1311,8 +1265,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext changeWindowSize(Window window, int width, int height) {
         changeContentIfNecessary();
-        perform(setSizeOf(window, new Dimension(width, height)));
-        return this;
+        return perform(setSizeOf(window, new Dimension(width, height)));
     }
 
 
@@ -1323,8 +1276,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext fullScreen() {
         changeContentIfNecessary();
-        perform(FullScreenWindowSupplier.fullScreen());
-        return this;
+        return perform(FullScreenWindowSupplier.fullScreen());
     }
 
     /**
@@ -1335,8 +1287,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext fullScreen(GetWindowSupplier supplier) {
         changeContentIfNecessary();
-        perform(FullScreenWindowSupplier.fullScreen(supplier));
-        return this;
+        return perform(FullScreenWindowSupplier.fullScreen(supplier));
     }
 
     /**
@@ -1347,8 +1298,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext fullScreen(Window window) {
         changeContentIfNecessary();
-        perform(FullScreenWindowSupplier.fullScreen(window));
-        return this;
+        return perform(FullScreenWindowSupplier.fullScreen(window));
     }
 
 
@@ -1360,8 +1310,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext accept(GetAlertSupplier getAlert) {
         changeContentIfNecessary();
-        perform(acceptAlert(getAlert));
-        return this;
+        return perform(acceptAlert(getAlert));
     }
 
     /**
@@ -1372,8 +1321,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext accept(Alert alert) {
         changeContentIfNecessary();
-        perform(acceptAlert(alert));
-        return this;
+        return perform(acceptAlert(alert));
     }
 
 
@@ -1385,8 +1333,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext dismiss(GetAlertSupplier getAlert) {
         changeContentIfNecessary();
-        perform(dismissAlert(getAlert));
-        return this;
+        return perform(dismissAlert(getAlert));
     }
 
     /**
@@ -1397,8 +1344,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext dismiss(Alert alert) {
         changeContentIfNecessary();
-        perform(dismissAlert(alert));
-        return this;
+        return perform(dismissAlert(alert));
     }
 
 
@@ -1411,8 +1357,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext alertSendKeys(GetAlertSupplier getAlert, String keys) {
         changeContentIfNecessary();
-        perform(sendKeysToAlert(getAlert, keys));
-        return this;
+        return perform(sendKeysToAlert(getAlert, keys));
     }
 
     /**
@@ -1424,8 +1369,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext alertSendKeys(Alert alert, String keys) {
         changeContentIfNecessary();
-        perform(sendKeysToAlert(alert, keys));
-        return this;
+        return perform(sendKeysToAlert(alert, keys));
     }
 
     /**
@@ -1436,8 +1380,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public SeleniumStepContext interactive(InteractiveAction action) {
         changeContentIfNecessary();
-        perform(action);
-        return this;
+        return perform(action);
     }
 
     /**
