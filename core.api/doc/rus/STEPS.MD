@@ -48,25 +48,26 @@ public class MyTestContext extends Context<MyTestContext> { //generic сигна
 
     // Простой пример того, как связать шаги, возвращающие результат, с данным контекстом,
     // и ограничить множество таких шагов только теми, которые могут выть выполнены в рамках данного контекста.
-    public <T> T get(SequentialGetStepSupplier< //Об этом классе и его наследниках речь пойдет ниже
+    public <T> T retrieve(SequentialGetStepSupplier< //Об этом классе и его наследниках речь пойдет ниже
             MyTestContext, //контекст как входной параметр
             T, // тип возвращаемого результата
             ?,
             ?,
             ?> getStepSupplier) {
-        //Шаг, возвращающий результат, выполняется так
-        return getStepSupplier.get().apply(this);
+        //Шаг, возвращающий результат, выполняется так.
+        return get(getStepSupplier); //Данный метод имеет модификаторы protected и final, и предназначен только для 
+        //перекрытия внутри методов, как в этом примере
     }
 
     // Простой пример того, как связать шаги, выполняющие действие, с данным контекстом,
     // и ограничить множество таких шагов только теми, которые могут выть выполнены в рамках данного контекста.
-    public MyTestContext perform(SequentialActionSupplier< //Об этом классе и его наследниках речь пойдет ниже
+    public MyTestContext execute(SequentialActionSupplier< //Об этом классе и его наследниках речь пойдет ниже
             MyTestContext, //контекст как входной параметр
             ?,
             ?> sequentialActionSupplier) {
         //Шаг-действие выполняется так
-        sequentialActionSupplier.get().performAction(this);
-        return this;
+        return perform(sequentialActionSupplier); //Данный метод имеет модификаторы protected и final, и предназначен только для 
+        //перекрытия внутри методов, как в этом примере
     }
 
     public Object getSomeResource() {
@@ -294,7 +295,7 @@ public class SomeTest {
 
     @Test
     public void test() {
-        var result = myTestContext().get(something(1, 2, 3)
+        var result = myTestContext().retrieve(something(1, 2, 3)
                 //Можно указать критерий результата, который надо получить
                 .criteria("Some criteria", o -> )
                 //если надо
@@ -569,7 +570,7 @@ public class SomeTest {
 
     @Test
     public void test() {
-        var result = myTestContext().get(something(1, 2, 3)
+        var result = myTestContext().retrieve(something(1, 2, 3)
                 .criteria("Some criteria", o -> )
                 .criteria("One more criteria", o -> )
                 .timeOut(ofSeconds(10))
@@ -1252,7 +1253,7 @@ public class SomeTest {
 
     @Test
     public void test() {
-        var result = myTestContext().perform(someAction(1, 2, 3) //указываем действие 
+        var result = myTestContext().execute(someAction(1, 2, 3) //указываем действие 
                 //ниже указываем то, как найти-получить объект для его выполнения
                 .on(something(1, 2, 3)
                         //Можно указать критерий результата, который надо получить
@@ -1288,7 +1289,7 @@ public class SomeTest {
 
     @Test
     public void test() {
-        var result = myTestContext().get(something(1, 2, 3)
+        var result = myTestContext().retrieve(something(1, 2, 3)
                 //Критерий, записанный в свободной форме,
                 //в виде пояснительной строки и предиката.
                 //Объект ru.tinkoff.qa.neptune.core.api.steps.Criteria создается внутри вызванного метода.
@@ -1350,7 +1351,7 @@ public class SomeTest {
 
     @Test
     public void test() {
-        var result = myTestContext().get(something(1, 2, 3)
+        var result = myTestContext().retrieve(something(1, 2, 3)
                 .criteria(someCriteria("A", "B"))
                 .criteria(oneMoreCriteria(4, 5)));
     }
@@ -1371,7 +1372,7 @@ public class SomeTest {
 
     @Test
     public void test() {
-        var result = myTestContext().get(something(1, 2, 3)
+        var result = myTestContext().retrieve(something(1, 2, 3)
                 .criteria(someCriteria("A", "B")) //В данном примере все указанные критерии объединяются 
                 .criteria(oneMoreCriteria(4, 5))); // в одно И-выражение.
     }
@@ -1393,7 +1394,7 @@ public class SomeTest {
 
     @Test
     public void test() {
-        var result = myTestContext().get(something(1, 2, 3)
+        var result = myTestContext().retrieve(something(1, 2, 3)
                 .criteria(AND(someCriteria("A", "B"), oneMoreCriteria(4, 5))));
     }
 }
@@ -1414,7 +1415,7 @@ public class SomeTest {
 
     @Test
     public void test() {
-        var result = myTestContext().get(something(1, 2, 3)
+        var result = myTestContext().retrieve(something(1, 2, 3)
                 .criteria(OR(someCriteria("A", "B"), oneMoreCriteria(4, 5))));
     }
 }
@@ -1435,7 +1436,7 @@ public class SomeTest {
 
     @Test
     public void test() {
-        var result = myTestContext().get(something(1, 2, 3)
+        var result = myTestContext().retrieve(something(1, 2, 3)
                 .criteria(XOR(someCriteria("A", "B"), oneMoreCriteria(4, 5))));
     }
 }
@@ -1456,7 +1457,7 @@ public class SomeTest {
 
     @Test
     public void test() {
-        var result = myTestContext().get(something(1, 2, 3)
+        var result = myTestContext().retrieve(something(1, 2, 3)
                 .criteria(someCriteria("A", "B"))
                 .criteria(NOT(oneMoreCriteria(4, 5)))); //<-- критерий инвертирован
     }
@@ -1476,7 +1477,7 @@ public class SomeTest {
 
     @Test
     public void test() {
-        var result = myTestContext().get(something(1, 2, 3)
+        var result = myTestContext().retrieve(something(1, 2, 3)
                 .criteria(NOT(someCriteria("A", "B"), oneMoreCriteria(4, 5))));
         //И-выражение, в котором каждый из критериев инвертирован
     }
@@ -1522,13 +1523,12 @@ public class MyTestContext extends Context<MyTestContext> {
         //Логика инициализации
     }
 
-    public <T> T get(SequentialGetStepSupplier<MyTestContext, T, ?, ?, ?> getStepSupplier) {
-        return getStepSupplier.get().apply(this);
+    public <T> T retrieve(SequentialGetStepSupplier<MyTestContext, T, ?, ?, ?> getStepSupplier) {
+        return get(getStepSupplier);
     }
 
-    public MyTestContext perform(SequentialActionSupplier<MyTestContext, ?, ?> sequentialActionSupplier) {
-        sequentialActionSupplier.get().performAction(this);
-        return this;
+    public MyTestContext execute(SequentialActionSupplier<MyTestContext, ?, ?> sequentialActionSupplier) {
+        return perform(sequentialActionSupplier);
     }
 
     public Object getSomeResource() {
