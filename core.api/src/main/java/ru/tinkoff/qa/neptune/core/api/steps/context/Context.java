@@ -4,6 +4,7 @@ import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 import org.objenesis.ObjenesisStd;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.proxy.MethodInterceptor;
 import ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyCreationFailureException;
@@ -101,6 +102,28 @@ public abstract class Context<THIS extends Context<THIS>> {
     }
 
     /**
+     * Auxiliary method that performs some get-step and then returns a result.
+     *
+     * @param toGet is a supplier of a get-step to be performed
+     * @param <T>   is a type of a resulted value
+     * @return a result of the performing of a get-step
+     */
+    protected final <T> T get(SequentialGetStepSupplier<? super THIS, T, ?, ?, ?> toGet) {
+        return toGet.get().apply((THIS) this);
+    }
+
+    /**
+     * Auxiliary method that performs some action-step.
+     *
+     * @param toPerform is a supplier of an action to be performed
+     * @return self-reference
+     */
+    protected final THIS perform(SequentialActionSupplier<? super THIS, ?, ?> toPerform) {
+        toPerform.get().performAction((THIS) this);
+        return (THIS) this;
+    }
+
+    /**
      * Checks is some object present. When it is not present then it throws an exception.
      *
      * @param toBePresent is a supplier of a function that retrieves a value
@@ -111,11 +134,9 @@ public abstract class Context<THIS extends Context<THIS>> {
     protected final boolean presenceOfOrThrow(SequentialGetStepSupplier<? super THIS, ?, ?, ?, ?> toBePresent,
                                               Class<? extends Throwable>... toIgnore) {
 
-        return presence(toBePresent)
+        return get(presence(toBePresent)
                 .addIgnored(ignoredExceptions(toIgnore))
-                .throwOnNoResult()
-                .get()
-                .apply((THIS) this);
+                .throwOnNoResult());
     }
 
     /**
@@ -128,10 +149,8 @@ public abstract class Context<THIS extends Context<THIS>> {
     @SafeVarargs
     protected final boolean presenceOf(SequentialGetStepSupplier<? super THIS, ?, ?, ?, ?> toBePresent,
                                        Class<? extends Throwable>... toIgnore) {
-        return presence(toBePresent)
-                .addIgnored(ignoredExceptions(toIgnore))
-                .get()
-                .apply((THIS) this);
+        return get(presence(toBePresent)
+                .addIgnored(ignoredExceptions(toIgnore)));
     }
 
     /**
@@ -144,10 +163,8 @@ public abstract class Context<THIS extends Context<THIS>> {
      */
     protected final boolean absenceOf(SequentialGetStepSupplier<? super THIS, ?, ?, ?, ?> toBeAbsent,
                                       Duration timeOut) {
-        return absence(toBeAbsent)
-                .timeOut(timeOut)
-                .get()
-                .apply((THIS) this);
+        return get(absence(toBeAbsent)
+                .timeOut(timeOut));
     }
 
     /**
@@ -160,10 +177,8 @@ public abstract class Context<THIS extends Context<THIS>> {
      */
     protected final boolean absenceOfOrThrow(SequentialGetStepSupplier<? super THIS, ?, ?, ?, ?> toBeAbsent,
                                              Duration timeOut) {
-        return absence(toBeAbsent)
+        return get(absence(toBeAbsent)
                 .timeOut(timeOut)
-                .throwOnNoResult()
-                .get()
-                .apply((THIS) this);
+                .throwOnNoResult());
     }
 }

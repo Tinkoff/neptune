@@ -6,7 +6,10 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.response.*;
 
-import java.net.*;
+import java.net.HttpCookie;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
@@ -51,7 +54,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return an instance of {@link HttpResponse}
      */
     public <T> HttpResponse<T> responseOf(RequestBuilder requestBuilder, HttpResponse.BodyHandler<T> bodyHandler) {
-        return response(requestBuilder, bodyHandler).get().apply(this);
+        return get(response(requestBuilder, bodyHandler));
     }
 
     /**
@@ -73,7 +76,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return an instance of {@code <R>}
      */
     public <T, R> R bodyData(GetObjectFromBodyStepSupplier<T, R, ?> object) {
-        return object.get().apply(this);
+        return get(object);
     }
 
 
@@ -87,7 +90,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return an instance of {@code <R>}
      */
     public <T, R> R bodyData(GetObjectFromArrayBodyStepSupplier<T, R, ?> oneOfArray) {
-        return oneOfArray.get().apply(this);
+        return get(oneOfArray);
     }
 
     /**
@@ -100,7 +103,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return an instance of {@code <R>}
      */
     public <T, R> R bodyData(GetObjectFromIterableBodyStepSupplier<T, R, ?> oneOfIterable) {
-        return oneOfIterable.get().apply(this);
+        return get(oneOfIterable);
     }
 
     /**
@@ -113,7 +116,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return an array of {@code <R>}
      */
     public <T, R> R[] bodyData(GetObjectsFromArrayBodyStepSupplier<T, R, ?> array) {
-        return array.get().apply(this);
+        return get(array);
     }
 
     /**
@@ -127,7 +130,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return an instance of {@code <S>}
      */
     public <T, R, S extends Iterable<R>> S bodyData(GetObjectsFromIterableBodyStepSupplier<T, R, S, ?> iterable) {
-        return iterable.get().apply(this);
+        return get(iterable);
     }
 
     /**
@@ -140,9 +143,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
     public final List<HttpCookie> getCookies(Criteria<HttpCookie>... cookieCriteria) {
         var getCookies = httpCookies();
         stream(cookieCriteria).forEach(getCookies::criteria);
-        return getCookies.get().apply((CookieManager) getCurrentClient()
-                .cookieHandler()
-                .orElseThrow(() -> new IllegalStateException("There is no cookie manager")));
+        return get(getCookies);
     }
 
     /**
@@ -156,9 +157,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
     public final List<HttpCookie> getCookies(URI uri, Criteria<HttpCookie>... cookieCriteria) {
         var getCookies = httpCookies(uri);
         stream(cookieCriteria).forEach(getCookies::criteria);
-        return getCookies.get().apply((CookieManager) getCurrentClient()
-                .cookieHandler()
-                .orElseThrow(() -> new IllegalStateException("There is no cookie manager")));
+        return get(getCookies);
     }
 
     /**
@@ -199,12 +198,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return self-reference
      */
     public HttpStepContext addCookies(URI uri, List<HttpCookie> cookies) {
-        addHttpCookies(uri, cookies)
-                .get()
-                .performAction((CookieManager) getCurrentClient()
-                        .cookieHandler()
-                        .orElseThrow(() -> new IllegalStateException("There is no cookie manager")));
-        return this;
+        return perform(addHttpCookies(uri, cookies));
     }
 
     /**
@@ -359,11 +353,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return self-reference
      */
     public HttpStepContext removeCookies() {
-        deleteCookies().get()
-                .performAction((CookieManager) getCurrentClient()
-                        .cookieHandler()
-                        .orElseThrow(() -> new IllegalStateException("There is no cookie manager")));
-        return this;
+        return perform(deleteCookies());
     }
 
     /**
@@ -376,11 +366,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
     @SafeVarargs
     public final HttpStepContext removeCookies(URI uri,
                                                Criteria<HttpCookie>... toBeRemoved) {
-        deleteCookies(uri, toBeRemoved).get()
-                .performAction((CookieManager) getCurrentClient()
-                        .cookieHandler()
-                        .orElseThrow(() -> new IllegalStateException("There is no cookie manager")));
-        return this;
+        return perform(deleteCookies(uri, toBeRemoved));
     }
 
     /**
@@ -401,11 +387,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return self-reference
      */
     public HttpStepContext removeCookies(Collection<HttpCookie> cookies) {
-        deleteCookies(cookies).get()
-                .performAction((CookieManager) getCurrentClient()
-                        .cookieHandler()
-                        .orElseThrow(() -> new IllegalStateException("There is no cookie manager")));
-        return this;
+        return perform(deleteCookies(cookies));
     }
 
     /**
