@@ -1578,14 +1578,14 @@ public class SomeTest {
     @Test
     public void test() {
 
-        //должно вернется true или false
+        //должно вернется true, если что-то нужное есть или появилось, или false - в противном случае
         boolean result = myTestContext().presence(something(1, 2, 3)
                 .criteria("Some criteria", o -> {/* предикат, выражение позвращающ */}) //теперь это критерии
                 .criteria("One more criteria", o ->) //того, что должно присутствовать/появиться
                 .timeOut(ofSeconds(10)) //теперь это время ожидания появления
                 .pollingInterval(ofMillis(500)));
 
-        //должно вернется true или выброситься исключение
+        //должно вернется true, если что-то нужное есть или появилось, или выброситься исключение - в противном случае
         boolean result2 = myTestContext().presenceOrThrow(something(1, 2, 3)
                 .criteria("Some criteria", o -> {/* предикат, выражение позвращающ */}) //теперь это критерии
                 .criteria("One more criteria", o ->) //того, что должно присутствовать/появиться
