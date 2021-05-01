@@ -1344,7 +1344,7 @@ package org.my.pack;
 
 import static org.my.pack.MyCriteriaLib.oneMoreCriteria;
 import static org.my.pack.MyCriteriaLib.someCriteria;
-import static org.my.pack.MyGetStepSupplier4.something;
+import static org.my.pack.MyGetStepSupplier.something;
 import static org.my.pack.MyTestContext.myTestContext;
 
 public class SomeTest {
@@ -1365,7 +1365,7 @@ package org.my.pack;
 
 import static org.my.pack.MyCriteriaLib.oneMoreCriteria;
 import static org.my.pack.MyCriteriaLib.someCriteria;
-import static org.my.pack.MyGetStepSupplier4.something;
+import static org.my.pack.MyGetStepSupplier.something;
 import static org.my.pack.MyTestContext.myTestContext;
 
 public class SomeTest {
@@ -1386,7 +1386,7 @@ package org.my.pack;
 
 import static org.my.pack.MyCriteriaLib.oneMoreCriteria;
 import static org.my.pack.MyCriteriaLib.someCriteria;
-import static org.my.pack.MyGetStepSupplier4.something;
+import static org.my.pack.MyGetStepSupplier.something;
 import static org.my.pack.MyTestContext.myTestContext;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.AND;
 
@@ -1407,7 +1407,7 @@ package org.my.pack;
 
 import static org.my.pack.MyCriteriaLib.oneMoreCriteria;
 import static org.my.pack.MyCriteriaLib.someCriteria;
-import static org.my.pack.MyGetStepSupplier4.something;
+import static org.my.pack.MyGetStepSupplier.something;
 import static org.my.pack.MyTestContext.myTestContext;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.OR;
 
@@ -1428,7 +1428,7 @@ package org.my.pack;
 
 import static org.my.pack.MyCriteriaLib.oneMoreCriteria;
 import static org.my.pack.MyCriteriaLib.someCriteria;
-import static org.my.pack.MyGetStepSupplier4.something;
+import static org.my.pack.MyGetStepSupplier.something;
 import static org.my.pack.MyTestContext.myTestContext;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.XOR;
 
@@ -1449,7 +1449,7 @@ package org.my.pack;
 
 import static org.my.pack.MyCriteriaLib.oneMoreCriteria;
 import static org.my.pack.MyCriteriaLib.someCriteria;
-import static org.my.pack.MyGetStepSupplier4.something;
+import static org.my.pack.MyGetStepSupplier.something;
 import static org.my.pack.MyTestContext.myTestContext;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.NOT;
 
@@ -1469,7 +1469,7 @@ package org.my.pack;
 
 import static org.my.pack.MyCriteriaLib.oneMoreCriteria;
 import static org.my.pack.MyCriteriaLib.someCriteria;
-import static org.my.pack.MyGetStepSupplier4.something;
+import static org.my.pack.MyGetStepSupplier.something;
 import static org.my.pack.MyTestContext.myTestContext;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.NOT;
 
@@ -1570,7 +1570,9 @@ package org.my.pack;
 
 import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
-import static org.my.pack.MyGetStepSupplier4.something;
+import static org.my.pack.MyCriteriaLib.oneMoreCriteria;
+import static org.my.pack.MyCriteriaLib.someCriteria;
+import static org.my.pack.MyGetStepSupplier.something;
 import static org.my.pack.MyTestContext.myTestContext;
 
 public class SomeTest {
@@ -1578,17 +1580,17 @@ public class SomeTest {
     @Test
     public void test() {
 
-        //должно вернется true, если что-то нужное есть или появилось, или false - в противном случае
+        //должно вернется true или false
         boolean result = myTestContext().presence(something(1, 2, 3)
-                .criteria("Some criteria", o -> {/* предикат, выражение позвращающ */}) //теперь это критерии
-                .criteria("One more criteria", o ->) //того, что должно присутствовать/появиться
+                .criteria(someCriteria("A", "B")) //теперь это критерии
+                .criteria(oneMoreCriteria(4, 5)) //того, что должно присутствовать/появиться
                 .timeOut(ofSeconds(10)) //теперь это время ожидания появления
                 .pollingInterval(ofMillis(500)));
 
-        //должно вернется true, если что-то нужное есть или появилось, или выброситься исключение - в противном случае
+        //должно вернется true или выброситься исключение
         boolean result2 = myTestContext().presenceOrThrow(something(1, 2, 3)
-                .criteria("Some criteria", o -> {/* предикат, выражение позвращающ */}) //теперь это критерии
-                .criteria("One more criteria", o ->) //того, что должно присутствовать/появиться
+                .criteria(someCriteria("A", "B")) //теперь это критерии
+                .criteria(oneMoreCriteria(4, 5)) //того, что должно присутствовать/появиться
                 .timeOut(ofSeconds(10)) //теперь это время ожидания появления
                 .pollingInterval(ofMillis(500)));
     }
