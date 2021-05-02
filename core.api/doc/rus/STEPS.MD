@@ -23,10 +23,10 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 
-//Формирует параметры вызова конструктора
+@CreateWith(provider = MyParameterProvider.class) //<-- Формирует параметры вызова конструктора
 //Предполагается, что для этого используются значения различных переменных окружения
 //среды, в которой выполняются тесты
-@CreateWith(provider = MyParameterProvider.class)
+//
 //Если конструктор класса не имеет параметров, аннотацию можно не
 //указывать
 public class MyTestContext extends Context<MyTestContext> { //generic сигнатура для того,
@@ -1546,7 +1546,9 @@ public class MyTestContext extends Context<MyTestContext> {
     @SafeVarargs
     public final boolean presence(SequentialGetStepSupplier<MyTestContext, ?, ?, ?, ?> getStepSupplier,
                                   Class<? extends Throwable>... toIgnore) {
-        return super.presenceOf(getStepSupplier, toIgnore);
+        return super.presenceOf(getStepSupplier, toIgnore); //Данный метод имеет модификаторы protected и final,
+        // и предназначен только для 
+        //перекрытия внутри методов, как в этом примере
     }
 
     // Проверяет на присутствие/появление некоторого значения, описываемого шагом, возвращающим результат.
@@ -1558,7 +1560,9 @@ public class MyTestContext extends Context<MyTestContext> {
     @SafeVarargs
     public final boolean presenceOrThrow(SequentialGetStepSupplier<MyTestContext, ?, ?, ?, ?> getStepSupplier,
                                          Class<? extends Throwable>... toIgnore) {
-        return super.presenceOfOrThrow(getStepSupplier, toIgnore);
+        return super.presenceOfOrThrow(getStepSupplier, toIgnore); //Данный метод имеет модификаторы protected и final, 
+        // и предназначен только для 
+        //перекрытия внутри методов, как в этом примере
     }
 }
 ```
@@ -1599,5 +1603,113 @@ public class SomeTest {
 </details>
 
 #### Отсутствие/исчезновение
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+Доработаем контекст
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
+import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
+
+import java.time.Duration;
+
+@CreateWith(provider = MyParameterProvider.class)
+public class MyTestContext extends Context<MyTestContext> {
+
+    public static MyTestContext myTestContext() {
+        return getInstance(MyTestContext.class);
+    }
+
+    //Конструктор может содержать параметры
+    protected MyTestContext(/*Параметры*/) {
+        //Логика инициализации
+    }
+
+    public <T> T retrieve(SequentialGetStepSupplier<MyTestContext, T, ?, ?, ?> getStepSupplier) {
+        return get(getStepSupplier);
+    }
+
+    public MyTestContext execute(SequentialActionSupplier<MyTestContext, ?, ?> sequentialActionSupplier) {
+        return perform(sequentialActionSupplier);
+    }
+
+    public Object getSomeResource() {
+        return //Возврат какого-нибудь проинициализированного объекта
+        //для использования в шагах (рекомендуется)
+        //для использования напрямую (не рекомендуется)
+    }
+
+    // Проверяет на отсутствие/исчезновение чего-либо, описываемого шагом, возвращающим результат.
+    // Вернет true, если шаг за отведенное время перестанет возвращать значение, соответствующее переданным критериям,
+    // (т.е вернет null/пустые коллекцию или массив). В противном случае - результат будет false.
+    //
+    // В метод передается время ожидания того, что значение, описанное объектом класса SequentialGetStepSupplier,
+    // перестанет возвращаться. Если у переданного объекта SequentialGetStepSupplier был вызван метод `.timeOut(Duration)` -
+    // это время игнорируется.
+    //
+    public boolean absence(SequentialGetStepSupplier<MyTestContext, ?, ?, ?, ?> getStepSupplier, //описание того, что должно
+                           //отсутствовать или пропасть
+                           Duration timeOut) { //время на то, чтобы что-то исчезло
+        return super.absenceOf(getStepSupplier, timeOut); //Данный метод имеет модификаторы protected и final,
+        // и предназначен только для
+        //перекрытия внутри методов, как в этом примере
+    }
+
+    // Проверяет на отсутствие/исчезновение чего-либо, описываемого шагом, возвращающим результат.
+    // Вернет true, если шаг за отведенное время перестанет возвращать значение, соответствующее переданным критериям,
+    // (т.е вернет null/пустые коллекцию или массив). В противном случае - будет выброшено исключение.
+    //
+    // В метод передается время ожидания того, что значение, описанное объектом класса SequentialGetStepSupplier,
+    // перестанет возвращаться. Если у переданного объекта SequentialGetStepSupplier был вызван метод `.timeOut(Duration)` -
+    // это время игнорируется.
+    public boolean absenceOrThrow(SequentialGetStepSupplier<MyTestContext, ?, ?, ?, ?> getStepSupplier, //описание того, что должно
+                                  //отсутствовать или пропасть
+                                  Duration timeOut) { //время на то, чтобы что-то исчезло
+        return super.absenceOfOrThrow(getStepSupplier, timeOut); //Данный метод имеет модификаторы protected и final,
+        // и предназначен только для
+        //перекрытия внутри методов, как в этом примере
+    }
+}
+```
+
+Пример использования
+
+```java
+package org.my.pack;
+
+import static java.time.Duration.ofSeconds;
+import static org.my.pack.MyCriteriaLib.oneMoreCriteria;
+import static org.my.pack.MyCriteriaLib.someCriteria;
+import static org.my.pack.MyGetStepSupplier4.something;
+import static org.my.pack.MyTestContext.myTestContext;
+
+public class SomeTest {
+
+    @Test
+    public void test() {
+
+        //должно вернется true или false
+        boolean result = myTestContext().absence(something(1, 2, 3)
+                        .criteria(someCriteria("A", "B")) //теперь это критерии
+                        .criteria(oneMoreCriteria(4, 5)), //того, что должно отсутствовать/исчезнуть
+                        //.timeOut(ofSeconds(10)) //<-- Игнорируется
+                ofSeconds(10)); //время на то, чтобы описанное значение пропало
+
+        //должно вернется true или выброситься исключение
+        boolean result2 = myTestContext().absence(something(1, 2, 3)
+                        .criteria(someCriteria("A", "B")) //теперь это критерии
+                        .criteria(oneMoreCriteria(4, 5)), //того, что должно отсутствовать/исчезнуть
+                        //.timeOut(ofSeconds(10)) //<-- Игнорируется
+                ofSeconds(10)); //время на то, чтобы описанное значение пропало
+    }
+}
+```
+</details>
 
 ## Вложенность/глубина шагов
