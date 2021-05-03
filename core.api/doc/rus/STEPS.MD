@@ -303,8 +303,15 @@ public class SomeTest {
                 //можно указать время, за которое нужно получить требуемый результат
                 .timeOut(ofSeconds(10))
                 //паузу между попытками получить требуемые данные, в рамках указанного 
-                .pollingInterval(ofMillis(500))
                 //времени ожидания
+                .pollingInterval(ofMillis(500))
+                //Может быть так, что в процессе выполнения шага (при какой-то из попыток получить результат),
+                //возникает исключение, потому что в данный момент нужное значение не вычислимо, т.к. 
+                //тестируемая система работает не синхронно с нашим тестом, и в данный (какой-то) момент времени
+                //нет условий для получения нужного результата. Чтобы избежать ложных срабатываний теста, можно
+                //указать исключения, которые следует игнорировать. Можно указать конкретные классы, или 
+                //классы-родители выбрасываемых исключений
+                .addIgnored(RuntimeException.class)
                 .throwOnNoResult()); //Если ничего походящего/значимого шаг не вернул, и тут нужно выбросить
         //исключение и уронить тест. Будет выброшено исключения, указанное аннотацией
         //ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData над классом из 
@@ -1710,4 +1717,243 @@ public class SomeTest {
 ```
 </details>
 
-## Вложенность/глубина шагов
+
+## Аннотации
+
+Ниже описываются аннотации, которые используются при описании шагов и критериев. 
+
+### Название
+
+Параметры, переданные через аннотации `ru.tinkoff.qa.neptune.core.api.steps.annotations.Description`, 
+`ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefineGetImperativeParameterName` и 
+`ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefinePerformOnParameterName` используются 
+[локализацией](./LOCALIZATION.MD).
+
+#### Для шагов 
+
+Пример ниже актуален для классов — наследников `SequentialGetStepSupplier` и `SequentialActionSupplier`.
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+
+@Description("Something with parameters [{a}, {b}, {c}]") //Общее название действия, которое должно быть
+//выполнено, или описание значения, которое должно быть получено. Это название/описание может быть как
+// статическим, так и динамическим. В случае с динамическим названием/описанием, параметры заключаются в {}
+@SequentialGetStepSupplier.DefineGetImperativeParameterName("Calculate:") // Дополнительный параметр, который как бы
+// поясняет, что этот шаг будет делать ("Получить:", "Рассчитать:" и т.п.). Используется для наследников класса
+// SequentialGetStepSupplier.
+// Данный параметр необязателен, его можно не указывать. Если его не указать, то по умолчанию императив будет - "Get:".
+@SequentialActionSupplier.DefinePerformOnParameterName("Do:") // Дополнительный параметр, который как бы
+// поясняет, что этот шаг будет делать ("Сделать:", "Выполнить:" и т.п.). Используется для наследников класса
+// SequentialActionSupplier.
+// Данный параметр необязателен, его можно не указывать. Если его не указать, то по умолчанию императив будет - "Perform:".
+public class MyStepClass /*extends a subclass of SequentialGetStepSupplier, or SequentialActionSupplier*/
+{
+    @DescriptionFragment("a") //значение, которое, помимо всего прочего,
+    //формирует динамическое название действия/описание значения. Название фрагмента
+    //должно соответствовать маске параметра, заключенного в {} (см. аннотацию Description над
+    // классом)
+    private final Object a;
+
+    @DescriptionFragment("b") //значение, которое, помимо всего прочего,
+    //формирует динамическое название действия/описание значения. Название фрагмента
+    //должно соответствовать маске параметра, заключенного в {} (см. аннотацию Description над
+    // классом)
+    private final Object b;
+
+    //значение, которое, помимо всего прочего,
+    @DescriptionFragment(value = "c", makeReadableBy = ExampleGetParameterValue.class)
+    //формирует динамическое название действия/описание значения. Название фрагмента
+    //должно соответствовать маске параметра, заключенного в {} (см. аннотацию Description над
+    // классом). По умолчанию, используется значение, которое возвращает метод
+    // toString() того объекта, который в данный момент является значением поля.
+    //Но это значение не всегда бывает удобным для чтения. Для таких случаев можно
+    //использовать классы, реализующие интерфейс
+    // ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter,
+    // цель которых - представить объект в читаемом формате.
+    private final Object c;
+
+    public MyStepClass(Object a, Object b, Object c) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+    }
+
+    //Шаг, который получится из вернувшегося объекта, в момент выполнения будет иметь заголовок:
+    //`Calculate: Something with parameters [1, 2, 3]` или `Do: Something with parameters [1, 2, 3]`
+    // (в зависимости от класса-предка).
+    //Т.е. используются данные, объявленные над классом и полями
+    public static MyStepClass myStep() {
+        return new MyStepClass(1, 2, 3);
+    }
+
+    //Аналогично примеру выше. используются данные, объявленные над классом и полями
+    public static MyStepClass myStep(String param) {
+        return new MyStepClass("A", "B", param);
+    }
+
+    //Ниже пример того, как можно перекрыть общее название действия, которое должно быть
+    //выполнено, или описание значения, которое должно быть получено.
+    //Переопределенное название/описание может быть как
+    //статическим, так и динамическим. В случае с динамическим названием/описанием,
+    // параметры заключаются в {}.
+    //
+    // Шаг, который получится из вернувшегося объекта, в момент выполнения будет иметь заголовок:
+    //`Calculate: Something else with parameters [<...>]` или `Do: Something else with parameters [<...>]`
+    // (в зависимости от класса-предка).
+    //Т.е. используются данные, объявленные над классом (императивы) и над методом.
+    @Description("Something else with parameters [{b}, {c}]")
+    public static MyStepClass myStep(
+            @DescriptionFragment( //значение, которое, помимо всего прочего,
+                    value = "b", //формирует динамическое название действия/описание значения. Название фрагмента
+                    //должно соответствовать маске параметра, заключенного в {} (см. аннотацию Description над
+                    // методом).
+                    makeReadableBy = ExampleGetParameterValue.class) boolean param, //По умолчанию, используется значение,
+            // которое возвращает метод toString() того объекта, который в данный момент
+            // является значением параметра вызова метода.
+            //Но это значение не всегда бывает удобным для чтения. Для таких случаев можно
+            //использовать классы, реализующие интерфейс
+            // ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter,
+            // цель которых - представить объект в читаемом формате.
+            @DescriptionFragment("c") String param2) //значение, которое, помимо всего прочего,
+    //формирует динамическое название действия/описание значения. Название фрагмента
+    //должно соответствовать маске параметра, заключенного в {} (см. аннотацию Description над
+    // методом)
+    {
+        return new MyStepClass(1, param, param2);
+    }
+}
+```
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
+
+public class ExampleGetParameterValue 
+        implements ParameterValueGetter<Object> //Данный интерфейс имеет тип-параметр.
+    //Реализация должна иметь тот же тип-парамер, что и тип поля класса/параметра сигнатуры метода,
+    //для которых данная реализация используется.
+{
+    @Override
+    public String getParameterValue(Object fieldValue) {
+        return /*Преобразование объекта в читаемую строку*/;
+    }
+}
+```
+</details>
+
+#### Для критериев
+
+В данном примере описания критериев, которые подготовлены для многократного повторного использования.
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
+
+public final class MyCriteriaLib {
+
+    private MyCriteriaLib() {
+        super();
+    }
+
+    //Название критерия может быть статическим или динамическим.
+    //В случае с динамическим названием/описанием, параметры заключаются в {}
+    @Description("Some criteria with parameters: {param1}, {param2}")
+    public static <T> Criteria<T> someCriteria(
+            @DescriptionFragment( //значение, которое, помимо всего прочего,
+                    value = "param1", //формирует динамическое название критерия. Название фрагмента
+                    //должно соответствовать маске параметра, заключенного в {} (см. аннотацию Description над
+                    // методом).
+                    makeReadableBy = ExampleGetParameterValue.class) Object param1, //По умолчанию, используется значение,
+            // которое возвращает метод toString() того объекта, который в данный момент
+            // является значением параметра вызова метода.
+            //Но это значение не всегда бывает удобным для чтения. Для таких случаев можно
+            //использовать классы, реализующие интерфейс
+            // ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter,
+            // цель которых - представить объект в читаемом формате.
+            @DescriptionFragment("param2") Object param2) //значение, которое, помимо всего прочего,
+    //формирует динамическое название критерия. Название фрагмента
+    //должно соответствовать маске параметра, заключенного в {} (см. аннотацию Description над
+    // методом
+    {
+        return condition(t -> /* предикат, т.е выражение, возвращающее boolean */);
+    }
+
+    @Description("One more criteria with parameters: {param1}, {param2}")
+    public static <T> Criteria<T> oneMoreCriteria(@DescriptionFragment("param1") Object param1,
+                                                  @DescriptionFragment("param2") Object param2) {
+        return condition(t -> /* предикат, т.е выражение, возвращающее boolean */);
+    }
+}
+```
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
+
+public class ExampleGetParameterValue 
+        implements ParameterValueGetter<Object> //Данный интерфейс имеет тип-параметр.
+    //Реализация должна иметь тот же тип-парамер, что и тип поля класса/параметра сигнатуры метода,
+    //для которых данная реализация используется.
+{
+    @Override
+    public String getParameterValue(Object fieldValue) {
+        return /*Преобразование объекта в читаемую строку*/;
+    }
+}
+```
+
+</details>
+
+#### Для произвольного объекта
+
+Данный механизм можно использовать, если требуется перевод/локализация объектов класса, который находится на поддержке
+и не входит в описанные выше примеры.
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+
+import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
+
+@Description("Статическое или динамическое строковое представление объекта")
+public class MyCustomObject {
+
+    public String toString() {
+        //Вызов метода, предназначенного для перевода/локализации
+        return translate(this);
+    }
+}
+```
+
+</details>
+
+### Параметры
+
+### Исключения
+
+### Аттачи
+
+### Вложенность/глубина шагов
