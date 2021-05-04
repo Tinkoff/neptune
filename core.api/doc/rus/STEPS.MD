@@ -1981,7 +1981,8 @@ import java.util.function.Predicate;
 // когда шаг начнет свое выполнение.
 //Данные параметры - это стандартный набор параметров, которыми может обладать
 //любой шаг, построенный объектом класса, который расширяет `SequentialGetStepSupplier`.
-@SequentialGetStepSupplier.DefineTimeOutParameterName("Timeout") //Название параметра, описывающего время ожидания нужного результата
+@SequentialGetStepSupplier.DefineTimeOutParameterName("Timeout") //Название параметра, описывающего время ожидания нужного 
+// результата
 @SequentialGetStepSupplier.DefinePollingTimeParameterName("Sleep time") //Название параметра, описывающего паузу между попытками
 //получить нужный результат
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Result criteria") //Название параметра, описывающего критерий нужного
