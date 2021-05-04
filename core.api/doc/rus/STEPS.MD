@@ -1726,7 +1726,7 @@ public class SomeTest {
 
 Параметры, переданные через аннотации `ru.tinkoff.qa.neptune.core.api.steps.annotations.Description`, 
 `ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefineGetImperativeParameterName` и 
-`ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefinePerformOnParameterName` используются 
+`ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefinePerformImperativeParameterName` используются 
 [локализацией](./LOCALIZATION.MD).
 
 #### Для шагов 
@@ -1751,7 +1751,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 // поясняет, что этот шаг будет делать ("Получить:", "Рассчитать:" и т.п.). Используется для наследников класса
 // SequentialGetStepSupplier.
 // Данный параметр необязателен, его можно не указывать. Если его не указать, то по умолчанию императив будет - "Get:".
-@SequentialActionSupplier.DefinePerformOnParameterName("Do:") // Дополнительный параметр, который как бы
+@SequentialActionSupplier.DefinePerformImperativeParameterName("Do:") // Дополнительный параметр, который как бы
 // поясняет, что этот шаг будет делать ("Сделать:", "Выполнить:" и т.п.). Используется для наследников класса
 // SequentialActionSupplier.
 // Данный параметр необязателен, его можно не указывать. Если его не указать, то по умолчанию императив будет - "Perform:".
@@ -1951,6 +1951,138 @@ public class MyCustomObject {
 </details>
 
 ### Параметры
+
+Параметры, переданные через аннотации `ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefineTimeOutParameterName`,
+`ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefinePollingTimeParameterName`, 
+`ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefineCriteriaParameterName`, 
+`ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefineFromParameterName`, 
+`ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefineResultDescriptionParameterName`, 
+`ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefinePerformOnParameterName` и 
+`ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter` используются [локализацией](./LOCALIZATION.MD).
+
+#### Предопределенные параметры шагов, возвращающих результат
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
+
+import java.time.Duration;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+//Аннотации, приведенные в данном примере, добавляют пояснительную информацию к шагу,
+//который строится объектом данного класса. Эта информация будет выведена на консоль/в отчет о тестировании,
+// когда шаг начнет свое выполнение.
+//Данные параметры - это стандартный набор параметров, которыми может обладать
+//любой шаг, построенный объектом класса, который расширяет `SequentialGetStepSupplier`.
+@SequentialGetStepSupplier.DefineTimeOutParameterName("Timeout") //Название параметра, описывающего время ожидания нужного результата
+@SequentialGetStepSupplier.DefinePollingTimeParameterName("Sleep time") //Название параметра, описывающего паузу между попытками
+//получить нужный результат
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Result criteria") //Название параметра, описывающего критерий нужного
+//результата
+@SequentialGetStepSupplier.DefineFromParameterName("From") //Название параметра, описывающего значение (вычисленное от контекста
+// прямо или опосредованно), от которого вычисляется результат шага, который строится данным классом. Данная аннотация актуальна
+// для классов-наследников:
+// - GetObjectChainedStepSupplier
+// - GetObjectFromIterableChainedStepSupplier
+// - GetObjectFromArrayChainedStepSupplier
+// - GetIterableChainedStepSupplier
+// - GetArrayChainedStepSupplier
+@SequentialGetStepSupplier.DefineResultDescriptionParameterName("Resulted value") //Пояснение к результату, который должен
+// возвращать шаг, построенный объектом данного класса. Эта информация выводится на консоль/в отчет о тестировании,
+// когда шаг завершается.
+@IncludeParamsOfInnerGetterStep //Данная аннотация актуальна для классов-наследников:
+// - GetObjectChainedStepSupplier
+// - GetObjectFromIterableChainedStepSupplier
+// - GetObjectFromArrayChainedStepSupplier
+// - GetIterableChainedStepSupplier
+// - GetArrayChainedStepSupplier
+//Присутствие данной аннотации означает, что если результат вычисляется через контекст опосредованно,
+//и способ вычисления значения-посредника передан через объект класса-наследника SequentialGetStepSupplier,
+//то параметры переданного объекта будут включены в параметры шага, который построил объект данного класса.
+public class MyGetStepSupplier<T, M, P>
+        extends SequentialGetStepSupplier<MyTestContext, T, M, P, MyGetStepSupplier<T, M, P>> //Такое наследование просто,
+        //чтобы схематично описать общий случай. Актуальные варианты ниже:
+        //extends SequentialGetStepSupplier.GetObjectStepSupplier<>
+        //extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<>
+        //extends SequentialGetStepSupplier.GetObjectFromIterableStepSupplier<>
+        //extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<>
+        //extends SequentialGetStepSupplier.GetObjectFromArrayStepSupplier<>
+        //extends SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier<>
+        //extends SequentialGetStepSupplier.GetIterableStepSupplier<>
+        //extends SequentialGetStepSupplier.GetIterableChainedStepSupplier<>
+        //extends SequentialGetStepSupplier.GetArrayStepSupplier<>
+        //extends SequentialGetStepSupplier.GetArrayChainedStepSupplier<>
+{
+
+    @Override //в момент выполнения к шагу добавится параметр с названием `Timeout`
+    public MyGetStepSupplier<T, M, P> timeOut(Duration timeOut) {
+        return super.timeOut(timeOut);
+    }
+
+    @Override //в момент выполнения к шагу добавится параметр с названием `Sleep time`
+    public MyGetStepSupplier<T, M, P> pollingInterval(Duration pollingTime) {
+        return super.pollingInterval(pollingTime);
+    }
+
+    @Override //в момент выполнения к шагу добавится параметр с названием `Result criteria`.
+    //Если параметр с таким названием уже есть - добавится `Result criteria 2`, `Result criteria 3`
+    // и т.д.
+    public MyGetStepSupplier<T, M, P> criteria(Criteria<? super P> criteria) {
+        return super.criteria(criteria);
+    }
+
+    @Override //в момент выполнения к шагу добавится параметр с названием `Result criteria`.
+    //Если параметр с таким названием уже есть - добавится `Result criteria 2`, `Result criteria 3`
+    // и т.д.
+    public MyGetStepSupplier<T, M, P> criteria(String description, Predicate<? super P> predicate) {
+        return super.criteria(description, predicate);
+    }
+
+    @Override //в момент выполнения к шагу добавится параметр с названием `From`. Т.к.
+    //над классом стоит аннотация IncludeParamsOfInnerGetterStep, то в параметры построенного шага
+    //будут включены параметры переданного через данный метод объекта.
+    protected GetObjectChainedStepSupplier from(SequentialGetStepSupplier from) {
+        return super.from(from);
+    }
+
+    @Override //в момент выполнения к шагу добавится параметр с названием `From`
+    // при условии, что `toString()` класса переданной функции перекрыт и возвращает читабельный
+    // текст
+    protected GetObjectChainedStepSupplier from(Function from) {
+        return super.from(from);
+    }
+
+    @Override //в момент выполнения к шагу добавится параметр с названием `From`
+    // при условии, что `toString()` класса переданного объекта перекрыт и возвращает читабельный
+    // текст
+    protected GetObjectChainedStepSupplier from(Object from) {
+        return super.from(from);
+    }
+}
+```
+
+</details>
+
+#### Предопределенные параметры шагов, выполняющих действия
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+</details>
+
+#### Другие параметры
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+</details>
 
 ### Исключения
 
