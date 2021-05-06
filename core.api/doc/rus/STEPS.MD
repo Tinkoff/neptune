@@ -2253,6 +2253,9 @@ public class ExampleGetParameterValue
 Пример ниже актуален для классов — наследников `SequentialGetStepSupplier`. Параметр `startDescription` 
 аннотации `ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData` используются [локализацией](./LOCALIZATION.MD).
 
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
 ```java
 package org.my.pack;
 
@@ -2290,6 +2293,7 @@ public class MyGetStepSupplier<T, M, P>
     //реализация поведения
 }
 ```
+</details>
 
 ### Аттачи
 
