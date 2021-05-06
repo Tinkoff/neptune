@@ -160,6 +160,18 @@ public class AbsenceTest {
 
     @Test
     public void test11() {
+        var start = currentTimeMillis();
+        assertThat(testContext.absence(getTestSupplier(FAILED_EXCEPTION)
+                        .timeOut(ofSeconds(100))
+                        .throwOnNoResult(),
+                ofSeconds(5)), is(true));
+        var end = currentTimeMillis();
+        assertThat(new BigDecimal(end - start),
+                closeTo(new BigDecimal(ofMillis(0).toMillis()), new BigDecimal(500)));
+    }
+
+    @Test
+    public void test12() {
         PresenceSuccessCaptor.CAUGHT.clear();
         AbcnceSuccessCaptor.CAUGHT.clear();
         assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsArray(ofSeconds(5)).run()), ofSeconds(10)),
@@ -170,7 +182,7 @@ public class AbsenceTest {
     }
 
     @Test
-    public void test12() {
+    public void test13() {
         PresenceSuccessCaptor.CAUGHT.clear();
         AbcnceSuccessCaptor.CAUGHT.clear();
         assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsObject(ofSeconds(10)).run()), ofSeconds(5)),
