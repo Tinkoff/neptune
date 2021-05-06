@@ -162,11 +162,12 @@ import java.util.function.Predicate;
 // Результат типа T должен соответствовать некоторым критериям, которые проверяют результат по значению
 // типа P.
 
-//Здесь описывается исключение, которое может быть выброшено, если в результате выполнения
-//не было получено значение, соответствующее указанным критериям, и за указанное время.
+//Здесь описывается исключение, которое может быть выброшено, если в результате выполнения 
+// построенного шага не было получено значение, соответствующее указанным критериям, и за указанное время.
 //Указывается класс исключения, у которого есть публичный конструктор с параметром типа
 //String (текст сообщения). В данном примере может быть выброшено IllegalStateException,
-//с текстом Can't get: <описание получаемого значения и параметров шага, об этом будет ниже>
+//с текстом Can't get: <описание получаемого значения и параметров шага>
+//
 //Аннотацию можно не указывать, т.к. по умолчанию может быть выброшено
 // ru.tinkoff.qa.neptune.core.api.steps.NotPresentException с текстом "Not present: <текст>"
 @ThrowWhenNoData(toThrow = IllegalStateException.class, startDescription = "Can't get:")
@@ -312,8 +313,9 @@ public class SomeTest {
                 //указать исключения, которые следует игнорировать. Можно указать конкретные классы, или 
                 //классы-родители выбрасываемых исключений
                 .addIgnored(RuntimeException.class)
-                .throwOnNoResult()); //Если ничего походящего/значимого шаг не вернул, и тут нужно выбросить
-        //исключение и уронить тест. Будет выброшено исключения, указанное аннотацией
+                .throwOnNoResult()); //Если ничего походящего/значимого построенный шаг не вернет, 
+        // и в этом случая нужно выбросить исключение и уронить тест. 
+        // Будет выброшено исключения, указанное аннотацией
         //ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData над классом из 
         //примера
     }
@@ -1840,7 +1842,8 @@ import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 public class ExampleGetParameterValue 
         implements ParameterValueGetter<Object> //Данный интерфейс имеет тип-параметр.
-    //Реализация должна иметь тот же тип-парамер, что и тип поля класса/параметра сигнатуры метода,
+    //Реализация должна иметь тот же тип-парамер (либо родительский тип), 
+    // что и тип поля класса / параметра сигнатуры метода,
     //для которых данная реализация используется.
 {
     @Override
@@ -1911,8 +1914,9 @@ import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 public class ExampleGetParameterValue 
         implements ParameterValueGetter<Object> //Данный интерфейс имеет тип-параметр.
-    //Реализация должна иметь тот же тип-парамер, что и тип поля класса/параметра сигнатуры метода,
-    //для которых данная реализация используется.
+        //Реализация должна иметь тот же тип-парамер (либо родительский тип), 
+        // что и тип поля класса / параметра сигнатуры метода,
+        //для которых данная реализация используется.
 {
     @Override
     public String getParameterValue(Object fieldValue) {
@@ -1981,13 +1985,13 @@ import java.util.function.Predicate;
 // когда шаг начнет свое выполнение.
 //Данные параметры - это стандартный набор параметров, которыми может обладать
 //любой шаг, построенный объектом класса, который расширяет `SequentialGetStepSupplier`.
-@SequentialGetStepSupplier.DefineTimeOutParameterName("Timeout") //Название параметра, описывающего время ожидания нужного 
+@SequentialGetStepSupplier.DefineTimeOutParameterName("Timeout") //Название параметра, кратко именующее время ожидания нужного 
 // результата
-@SequentialGetStepSupplier.DefinePollingTimeParameterName("Sleep time") //Название параметра, описывающего паузу между попытками
+@SequentialGetStepSupplier.DefinePollingTimeParameterName("Sleep time") //Название параметра, кратко именующее паузу между попытками
 //получить нужный результат
-@SequentialGetStepSupplier.DefineCriteriaParameterName("Result criteria") //Название параметра, описывающего критерий нужного
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Result criteria") //Название параметра, кратко именующее критерий нужного
 //результата
-@SequentialGetStepSupplier.DefineFromParameterName("From") //Название параметра, описывающего значение (вычисленное от контекста
+@SequentialGetStepSupplier.DefineFromParameterName("From") //Название параметра, кратко именующее значение (вычисленное от контекста
 // прямо или опосредованно), от которого вычисляется результат шага, который строится данным классом. Данная аннотация актуальна
 // для классов-наследников:
 // - GetObjectChainedStepSupplier
@@ -2049,21 +2053,21 @@ public class MyGetStepSupplier<T, M, P>
     @Override //в момент выполнения к шагу добавится параметр с названием `From`. Т.к.
     //над классом стоит аннотация IncludeParamsOfInnerGetterStep, то в параметры построенного шага
     //будут включены параметры переданного через данный метод объекта.
-    protected GetObjectChainedStepSupplier from(SequentialGetStepSupplier from) {
+    protected GetObjectChainedStepSupplier from(SequentialGetStepSupplier<MyTestContext, ? extends M, ?, ?, ?> from) {
         return super.from(from);
     }
 
     @Override //в момент выполнения к шагу добавится параметр с названием `From`
     // при условии, что `toString()` класса переданной функции перекрыт и возвращает читабельный
     // текст
-    protected GetObjectChainedStepSupplier from(Function from) {
+    protected GetObjectChainedStepSupplier from(Function<MyTestContext, ? extends M> from) {
         return super.from(from);
     }
 
     @Override //в момент выполнения к шагу добавится параметр с названием `From`
     // при условии, что `toString()` класса переданного объекта перекрыт и возвращает читабельный
     // текст
-    protected GetObjectChainedStepSupplier from(Object from) {
+    protected GetObjectChainedStepSupplier from(M from) {
         return super.from(from);
     }
 }
@@ -2076,16 +2080,216 @@ public class MyGetStepSupplier<T, M, P>
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
+
+import java.util.function.Function;
+
+@SequentialActionSupplier.DefinePerformOnParameterName("Perform on:") //Название параметра, кратко именующее значение (вычисленное от контекста
+// прямо или опосредованно), которое является объектом для выполняемого действия
+@IncludeParamsOfInnerGetterStep //Присутствие данной аннотации означает, что если
+// способ вычисления значения, являющегося объектом для выполняемого действия,
+// передан через объект класса-наследника SequentialGetStepSupplier,
+// то параметры переданного объекта будут включены в параметры шага, который построил объект данного класса.
+public class MyActionStepSupplier<T> extends SequentialActionSupplier<MyTestContext, T, MyActionStepSupplier<T>> {
+
+    //в момент выполнения к шагу добавится параметр с названием `Perform on:`. Т.к.
+    //над классом стоит аннотация IncludeParamsOfInnerGetterStep, то в параметры построенного шага
+    //будут включены параметры переданного через данный метод объекта.
+    public MyActionStepSupplier<T> on(SequentialGetStepSupplier<MyTestContext, T, ?, ?, ?> getStep) {
+        return super.performOn(getStep);
+    }
+
+    //в момент выполнения к шагу добавится параметр с названием `Perform on:`
+    // при условии, что `toString()` класса переданной функции перекрыт и возвращает читабельный
+    // текст
+    public MyActionStepSupplier<T> on(Function<MyTestContext, T> f) {
+        return super.performOn(f);
+    }
+
+    //в момент выполнения к шагу добавится параметр с названием `Perform on:`
+    // при условии, что `toString()` класса переданного объекта перекрыт и возвращает читабельный
+    // текст
+    public MyActionStepSupplier<T> on(T t) {
+        return super.performOn(t);
+    }
+
+
+    @Override
+    protected void howToPerform(T value) {
+        //логика шага
+    }
+}
+```
+
 </details>
 
 #### Другие параметры
 
+Выше описано, как обозначить стандартный набор параметров для шагов определенных классов. 
+Ниже описано, как обозначить набор кастомных параметров.
+
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
+```java
+package org.my.pack;
+
+
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+
+public class MyStepClass /*extends a subclass of SequentialGetStepSupplier, or SequentialActionSupplier*/
+{
+
+    @StepParameter("Parameter A") //Так обозначается имя параметра,
+    // значение которого должно использоваться в процессе выполнения шага.
+    // Параметр и его значение будут выведены в консоль или отчет о проведении теста.
+    private Object a;
+
+    @StepParameter(value = "Parameter B",
+            doNotReportNullValues = true) //Если на момент выполнения построенного шага 
+    //это значение не будет заполнено, тогда оно не будет выведено в консоль или отчет 
+    // о проведении теста.
+    private Object b;
+
+    @StepParameter(value = "Parameter C",
+            makeReadableBy = ExampleGetParameterValue.class) //По умолчанию, используется значение, 
+    // которое возвращает метод toString() того объекта, который в данный момент является значением поля.
+    //Но это значение не всегда бывает удобным для чтения. Для таких случаев можно
+    //использовать классы, реализующие интерфейс
+    // ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter,
+    // цель которых - представить объект в читаемом формате.
+    private Object c;
+
+    //Иногда параметров может быть слишком много и не все они могут понадобиться, 
+    // и может быть удобнее передавать их не по одному, а в виде POJO/бина. Тогда
+    // можно реализовать класс объекта, пример которого будет приведен ниже.
+    private ParameterPojo parameterPojo;
+
+    public MyStepClass setA(Object a) {
+        this.a = a;
+        return this;
+    }
+
+    public MyStepClass setB(Object b) {
+        this.b = b;
+        return this;
+    }
+
+    public MyStepClass setC(Object c) {
+        this.c = c;
+        return this;
+    }
+
+    public MyStepClass setParameterPojo(ParameterPojo parameterPojo) {
+        this.parameterPojo = parameterPojo;
+        return this;
+    }
+}
+```
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterWrapper;
+
+public class ParameterPojo extends StepParameterWrapper { //класс объектов, цель которых - собирать 
+    //все параметры определенного шага/набора шагов
+
+    //все тоже самое, что в примере выше
+    @StepParameter("Pojo Parameter 1")
+    private Boolean param1;
+    @StepParameter(value = "Pojo Parameter 2", doNotReportNullValues = true)
+    private String param2;
+    private Integer param3;
+
+    public Boolean getParam1() {
+        return param1;
+    }
+
+    public ParameterPojo setParam1(Boolean param1) {
+        this.param1 = param1;
+        return this;
+    }
+
+    public String getParam2() {
+        return param2;
+    }
+
+    public ParameterPojo setParam2(String param2) {
+        this.param2 = param2;
+        return this;
+    }
+}
+```
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
+
+public class ExampleGetParameterValue 
+        implements ParameterValueGetter<Object> //Данный интерфейс имеет тип-параметр.
+        //Реализация должна иметь тот же тип-парамер (либо родительский тип), 
+        // что и тип поля класса / параметра сигнатуры метода,
+        //для которых данная реализация используется.
+{
+    @Override
+    public String getParameterValue(Object fieldValue) {
+        return /*Преобразование объекта в читаемую строку*/;
+    }
+}
+```
+
 </details>
 
-### Исключения
+### Выбрасываемые исключения
+
+Пример ниже актуален для классов — наследников `SequentialGetStepSupplier`. Параметр `startDescription` 
+аннотации `ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData` используются [локализацией](./LOCALIZATION.MD).
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
+
+//Здесь описывается исключение, которое может быть выброшено, если в результате выполнения 
+//построенного шага не было получено значение, соответствующее указанным критериям, и за указанное время.
+//Указывается класс исключения, у которого есть публичный конструктор с параметром типа
+//String (текст сообщения). В данном примере может быть выброшено IllegalStateException,
+//с текстом Can't get: <описание получаемого значения и параметров шага>
+//
+//Аннотацию можно не указывать, т.к. по умолчанию может быть выброшено
+// ru.tinkoff.qa.neptune.core.api.steps.NotPresentException с текстом "Not present: <текст>"
+//
+// Исключение выбрасывается, если у объекта данного данного класса был вызван метод
+// `throwOnNoResult()` и построенный шаг вернул null (а так же пустые коллекцию/массив, в зависимости
+// от того, от какого класса происходит наследование)
+@ThrowWhenNoData(toThrow = IllegalStateException.class,
+        startDescription = "Can't get:")
+public class MyGetStepSupplier<T, M, P>
+        extends SequentialGetStepSupplier<MyTestContext, T, M, P, MyGetStepSupplier<T, M, P>> //Такое наследование просто,
+        //чтобы схематично описать общий случай. Актуальные варианты ниже:
+        //extends SequentialGetStepSupplier.GetObjectStepSupplier<>
+        //extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<>
+        //extends SequentialGetStepSupplier.GetObjectFromIterableStepSupplier<>
+        //extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<>
+        //extends SequentialGetStepSupplier.GetObjectFromArrayStepSupplier<>
+        //extends SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier<>
+        //extends SequentialGetStepSupplier.GetIterableStepSupplier<>
+        //extends SequentialGetStepSupplier.GetIterableChainedStepSupplier<>
+        //extends SequentialGetStepSupplier.GetArrayStepSupplier<>
+        //extends SequentialGetStepSupplier.GetArrayChainedStepSupplier<>
+{
+    //реализация поведения
+}
+```
 
 ### Аттачи
 
