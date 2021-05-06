@@ -88,7 +88,13 @@ public final class Absence<T> extends SequentialGetStepSupplier.GetObjectChained
 
         var resulted = getSingle((Function<T, Object>) t -> {
             lastCaught = null;
-            var result = preFunction.apply(t);
+
+            Object result;
+            try {
+                result = preFunction.apply(t);
+            } catch (Throwable thrown) {
+                return true;
+            }
 
             if (result == null) {
                 return true;
