@@ -161,8 +161,8 @@ public final class BrowserProxyCriteria {
      * @return criteria that checks HAR entry
      */
     @Description("request containing query parameters '{params}'")
-    public static Criteria<HarEntry> recordedRequestContainsQueryParams(@DescriptionFragment("param") String queryParam,
-                                                                        @DescriptionFragment("valueExpression") String valueExpression) {
+    public static Criteria<HarEntry> recordedRequestQueryParamMatches(@DescriptionFragment("param") String queryParam,
+                                                                      @DescriptionFragment("valueExpression") String valueExpression) {
         checkArgument(isNotBlank(queryParam), "Query parameter should not be blank or null string");
         checkArgument(isNotBlank(valueExpression), "Query parameter value substring/RegExp should be defined");
 
