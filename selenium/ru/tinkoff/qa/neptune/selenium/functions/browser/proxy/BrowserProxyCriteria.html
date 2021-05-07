@@ -182,21 +182,13 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>static ru.tinkoff.qa.neptune.core.api.steps.Criteria&lt;com.browserup.harreader.model.HarEntry&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#recordedRequestContainsQueryParams(java.lang.String,java.lang.String)">recordedRequestContainsQueryParams</a></span>&#8203;(java.lang.String&nbsp;queryParam,
-                                  java.lang.String&nbsp;valueExpression)</code></th>
-<td class="colLast">
-<div class="block">Checks query parameters of request.</div>
-</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>static ru.tinkoff.qa.neptune.core.api.steps.Criteria&lt;com.browserup.harreader.model.HarEntry&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#recordedRequestHeader(java.lang.String,java.lang.String)">recordedRequestHeader</a></span>&#8203;(java.lang.String&nbsp;name,
                      java.lang.String&nbsp;value)</code></th>
 <td class="colLast">
 <div class="block">Checks header of request.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static ru.tinkoff.qa.neptune.core.api.steps.Criteria&lt;com.browserup.harreader.model.HarEntry&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#recordedRequestHeaderMatches(java.lang.String,java.lang.String)">recordedRequestHeaderMatches</a></span>&#8203;(java.lang.String&nbsp;name,
                             java.lang.String&nbsp;valueExpression)</code></th>
@@ -204,26 +196,34 @@ extends java.lang.Object</pre>
 <div class="block">Checks header of request.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static ru.tinkoff.qa.neptune.core.api.steps.Criteria&lt;com.browserup.harreader.model.HarEntry&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#recordedRequestHttpVersion(java.net.http.HttpClient.Version)">recordedRequestHttpVersion</a></span>&#8203;(java.net.http.HttpClient.Version&nbsp;version)</code></th>
 <td class="colLast">
 <div class="block">Checks HTTP version of request.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static ru.tinkoff.qa.neptune.core.api.steps.Criteria&lt;com.browserup.harreader.model.HarEntry&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#recordedRequestMethod(com.browserup.harreader.model.HttpMethod)">recordedRequestMethod</a></span>&#8203;(com.browserup.harreader.model.HttpMethod&nbsp;method)</code></th>
 <td class="colLast">
 <div class="block">Checks HTTP method of request.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static ru.tinkoff.qa.neptune.core.api.steps.Criteria&lt;com.browserup.harreader.model.HarEntry&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#recordedRequestQueryParam(java.lang.String,java.lang.String)">recordedRequestQueryParam</a></span>&#8203;(java.lang.String&nbsp;queryParam,
                          java.lang.String&nbsp;value)</code></th>
 <td class="colLast">
 <div class="block">Checks query parameter of request.</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>static ru.tinkoff.qa.neptune.core.api.steps.Criteria&lt;com.browserup.harreader.model.HarEntry&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#recordedRequestQueryParamMatches(java.lang.String,java.lang.String)">recordedRequestQueryParamMatches</a></span>&#8203;(java.lang.String&nbsp;queryParam,
+                                java.lang.String&nbsp;valueExpression)</code></th>
+<td class="colLast">
+<div class="block">Checks query parameters of request.</div>
 </td>
 </tr>
 <tr id="i10" class="altColor">
@@ -421,14 +421,14 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a id="recordedRequestContainsQueryParams(java.lang.String,java.lang.String)">
+<a id="recordedRequestQueryParamMatches(java.lang.String,java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>recordedRequestContainsQueryParams</h4>
-<pre class="methodSignature">public static&nbsp;ru.tinkoff.qa.neptune.core.api.steps.Criteria&lt;com.browserup.harreader.model.HarEntry&gt;&nbsp;recordedRequestContainsQueryParams&#8203;(java.lang.String&nbsp;queryParam,
-                                                                                                                                       java.lang.String&nbsp;valueExpression)</pre>
+<h4>recordedRequestQueryParamMatches</h4>
+<pre class="methodSignature">public static&nbsp;ru.tinkoff.qa.neptune.core.api.steps.Criteria&lt;com.browserup.harreader.model.HarEntry&gt;&nbsp;recordedRequestQueryParamMatches&#8203;(java.lang.String&nbsp;queryParam,
+                                                                                                                                     java.lang.String&nbsp;valueExpression)</pre>
 <div class="block">Checks query parameters of request.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
