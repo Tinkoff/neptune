@@ -2297,4 +2297,149 @@ public class MyGetStepSupplier<T, M, P>
 
 ### Аттачи
 
+Подробнее о механизме создания приложений к отчетам о проведении тестов [здесь](./EVENTS.MD#Аттачи). Ниже примеры того,
+как он используется при описании построителей шагов.
+
+Предположим, у нас есть следующие классы, объекты которых могут создавать приложения к отчетам. Примеры описаны схематично.
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
+
+//Предположим, что объект-контекст может содержать данные,
+// которые можно использовать как текстовое приложение к отчету о тесте
+public class ExampleCaptor extends Captor<MyTestContext, String> {
+
+    @Override
+    public String getData(MyTestContext caught) {
+        return //возврат какой-то строки
+    }
+
+    @Override
+    public MyTestContext getCaptured(Object toBeCaptured) {
+        return //убеждаемся, что объект типа MyTestContext / приводим объект к этому типу
+        // или создаем объект этого типа
+    }
+}
+```
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
+
+public class ExampleCaptor2 extends Captor<T, String> {
+
+    @Override
+    public String getData(T caught) {
+        return //возврат какой-то строки
+    }
+
+    @Override
+    public T getCaptured(Object toBeCaptured) {
+        return //убеждаемся, что объект типа T / приводим объект к этому типу
+        // или создаем объект этого типа
+    }
+}
+```
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
+
+public class ExampleCaptor3 extends Captor<M, String> {
+
+    @Override
+    public String getData(M caught) {
+        return //возврат какой-то строки
+    }
+
+    @Override
+    public M getCaptured(Object toBeCaptured) {
+        return //убеждаемся, что объект типа M / приводим объект к этому типу
+        // или создаем объект этого типа
+    }
+}
+```
+
+#### Аттачи для шагов, которые возвращают результат
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+
+@CaptureOnSuccess(by = ExampleCaptor2.class /**Можно указать несколько классов через запятую. Указанные классы
+не должны иметь объявленных конструкторов, или среди объявленных конструкторов должен быть тот, что не содержит параметров.
+Может быть указан абстрактный класс. В этом случае неявно будут работать объекты его классов-наследников*/) //Здесь
+// указывается список классов, объекты которых могут обработать результат построенного шага в момент завершения
+// его выполнения. Объекты перечисленных классов создают аттачи, которые прикладываются к отчету о выполнении тестов
+@CaptureOnFailure(by = ExampleCaptor3.class /**Можно указать несколько классов через запятую. Указанные классы
+не должны иметь объявленных конструкторов, или среди объявленных конструкторов должен быть тот, что не содержит параметров.
+Может быть указан абстрактный класс. В этом случае неявно будут работать объекты его классов-наследников*/) //Здесь
+// указывается список классов, объекты которых могут обработать значение (контекст или значение-посредник,
+// в зависимости от того, от какого класса был унаследован данный класс), с помощью которого построенный шаг
+// должен был получить результат. Объекты перечисленных классов создают аттачи, которые прикладываются к отчету о
+// выполнении тестов, когда построенный шаг выбросил исключение (либо это исключение возникло в ходе выполнения шага и
+// его не удалось проигнорировать, либо это исключение возникло из-за того, что завершившийся шаг не вернул значимого
+// результата, т.е. вернулся null или пустые массив / коллекция, в зависимости от того, от какого класса был унаследован
+// данный класс)
+public class MyGetStepSupplier<T, M, P>
+        extends SequentialGetStepSupplier<MyTestContext, T, M, P, MyGetStepSupplier<T, M, P>> //Такое наследование просто,
+        //чтобы схематично описать общий случай. Актуальные варианты ниже:
+        //extends SequentialGetStepSupplier.GetObjectStepSupplier<>
+        //extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<>
+        //extends SequentialGetStepSupplier.GetObjectFromIterableStepSupplier<>
+        //extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<>
+        //extends SequentialGetStepSupplier.GetObjectFromArrayStepSupplier<>
+        //extends SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier<>
+        //extends SequentialGetStepSupplier.GetIterableStepSupplier<>
+        //extends SequentialGetStepSupplier.GetIterableChainedStepSupplier<>
+        //extends SequentialGetStepSupplier.GetArrayStepSupplier<>
+        //extends SequentialGetStepSupplier.GetArrayChainedStepSupplier<>
+{
+    //реализация поведения
+}
+```
+</details>
+
+#### Аттачи для шагов, которые выполняют действие
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+
+@CaptureOnSuccess(by = ExampleCaptor2.class /**Можно указать несколько классов через запятую. Указанные классы
+не должны иметь объявленных конструкторов, или среди объявленных конструкторов должен быть тот, что не содержит параметров.
+Может быть указан абстрактный класс. В этом случае неявно будут работать объекты его классов-наследников*/) //Здесь
+// указывается список классов, объекты которых могут обработать значение-объект выполнения действия построенного шага.
+// Объекты перечисленных классов создают аттачи, которые прикладываются к отчету о выполнении тестов, если действие
+// построенного шага завершилось успешно.
+@CaptureOnFailure(by = {ExampleCaptor.class,  ExampleCaptor2.class}/**Можно указать несколько классов через запятую. Указанные классы
+не должны иметь объявленных конструкторов, или среди объявленных конструкторов должен быть тот, что не содержит параметров.
+Может быть указан абстрактный класс. В этом случае неявно будут работать объекты его классов-наследников*/) //Здесь
+// указывается список классов, объекты которых могут обработать значение-объект выполнения действия построенного шага.
+// Так же можно указать классы, объекты которых могут обработать объект-контекст выполнения действия построенного шага.
+// Объекты перечисленных классов создают аттачи, которые прикладываются к отчету о выполнении тестов, если действие
+// построенного шага завершилось выбрасыванием исключения.
+public class MyActionStepSupplier<T> extends SequentialActionSupplier<MyTestContext, T, MyActionStepSupplier<T>>
+{
+    //реализация поведения
+}
+```
+</details>
+
 ### Вложенность/глубина шагов
