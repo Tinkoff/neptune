@@ -1722,7 +1722,9 @@ public class SomeTest {
 
 ## Аннотации
 
-Ниже описываются аннотации, которые используются при описании шагов и критериев. 
+Ниже представлены аннотации, которые используются при описании шагов и критериев. Параметры, передаваемые этими 
+аннотациями, наследуются от класса-родителя к классу-наследнику. Так же есть возможность перекрытия с помощью 
+объявления какой-то из этих аннотаций в классе-наследнике.
 
 ### Название
 
@@ -2443,3 +2445,157 @@ public class MyActionStepSupplier<T> extends SequentialActionSupplier<MyTestCont
 </details>
 
 ### Вложенность/глубина шагов
+
+С помощью представленных выше классов можно описывать структурированные последовательности действий неограниченной глубины.
+Не всегда бывает необходимо видеть все действия, которые происходят внутри того или иного шага. Построенный отчет о 
+проведении теста, в котором отображено много технической/промежуточной информации о выполнении шагов, бывает неудобным 
+для чтения.
+
+Регулирование глубины отображения информации о выполнении шагов происходит с помощью [настроек](./SETTINGS.MD#TO_LIMIT_REPORT_DEPTH) 
+и с помощью механизма, описанного ниже.
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+
+//С помощью данной аннотации можно указать максимальную глубину отображения шага, который строит данный 
+//класс. И если шаг выполняется на уровне ниже, чем указанный, и свойство/переменная окружения 
+// TO_LIMIT_REPORT_DEPTH = true, то шаг не будет отображен в консоли/построенном отчете о проведенном тесте,
+//а так же не будут отображены шаги, выполненные в рамках этого шага.
+@MaxDepthOfReporting(0) //Указанное значение должно быть в диапазоне от 0 до максимального значения Integer
+//Аннотацию можно не указывать. Тогда глубина считается неограниченной.
+public class MyGetStepSupplier<T, M, P>
+        extends SequentialGetStepSupplier<MyTestContext, T, M, P, MyGetStepSupplier<T, M, P>> //Такое наследование просто,
+        //чтобы схематично описать общий случай. Актуальные варианты ниже:
+        //extends SequentialGetStepSupplier.GetObjectStepSupplier<>
+        //extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<>
+        //extends SequentialGetStepSupplier.GetObjectFromIterableStepSupplier<>
+        //extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<>
+        //extends SequentialGetStepSupplier.GetObjectFromArrayStepSupplier<>
+        //extends SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier<>
+        //extends SequentialGetStepSupplier.GetIterableStepSupplier<>
+        //extends SequentialGetStepSupplier.GetIterableChainedStepSupplier<>
+        //extends SequentialGetStepSupplier.GetArrayStepSupplier<>
+        //extends SequentialGetStepSupplier.GetArrayChainedStepSupplier<>
+{
+
+    @Description("Something by parameters {a}, {b}, {c}")
+    public static <T, M> MyGetStepSupplier<T, M> something(
+            @DescriptionFragment("a") Object a, //параметры, которые формируют
+            @DescriptionFragment("b") Object b,  //название шага.
+            @DescriptionFragment("c") Object c) { //Об этом будет ниже
+        return //возвращает представление/построитель шага
+    }
+    
+    //реализация поведения
+}
+```
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+
+@MaxDepthOfReporting(0) //все тоже самое, что в примере выше.
+public class MyActionStepSupplier<T> extends SequentialActionSupplier<MyTestContext, T, MyActionStepSupplier<T>>
+{
+    
+    public static <T> MyActionStepSupplier<T> someAction(Object a, Object b, Object c) {
+        return new MyActionStepSupplier<>(a, b, c);
+    }
+
+    //реализация поведения
+    
+    public MyActionStepSupplier<T> on(SequentialGetStepSupplier<MyTestContext, T, ?, ?, ?> getStep) {
+        return super.performOn(getStep);
+    }
+    //реализация поведения
+}
+```
+
+```java
+package org.my.pack;
+
+import static org.my.pack.MyGetStepSupplier.something;
+import static org.my.pack.MyGetSomeOtherValue.someOtherValue;
+import static org.my.pack.MyTestContext.myTestContext;
+
+public class SomeTest {
+
+    @Test
+    public void test() {
+        //шаг, построенный объектом, вернувшимся из вызова метода 
+        // `something`, будет выведен на консоль/попадет в отчет,
+        //т.к. здесь глубина его выполнения == 0
+        var result = myTestContext().retrieve(something(1, 2, 3));
+    }
+}
+```
+
+```java
+package org.my.pack;
+
+import static org.my.pack.MyActionStepSupplier.someAction;
+import static org.my.pack.MyGetStepSupplier.something;
+import static org.my.pack.MyTestContext.myTestContext;
+
+public class SomeTest {
+
+    @Test
+    public void test() {
+        //шаг, построенный объектом, вернувшимся из вызова метода 
+        // `someAction`, будет выведен на консоль/попадет в отчет,
+        //т.к. здесь глубина его выполнения == 0
+        var result = myTestContext().execute(someAction(1, 2, 3) //указываем действие 
+                // шаг, построенный объектом, вернувшимся из вызова метода 
+                // `something`, НЕ будет выведен на консоль/НЕ попадет в отчет,
+                // т.к. здесь глубина его выполнения == 1, т.е. его 
+                // выполнение происходит в рамках выполнения шага, строенного
+                // объектом, вернувшимся из вызова метода `someAction`
+                .on(something(1, 2, 3)));
+
+
+    }
+}
+```
+
+```java
+package org.my.pack;
+
+import static org.my.pack.MyActionStepSupplier.someAction;
+import static org.my.pack.MyGetStepSupplier.something;
+import static org.my.pack.MyTestContext.myTestContext;
+
+import static ru.tinkoff.qa.neptune.core.api.steps.Step.$;
+
+public class SomeTest {
+
+    @Test
+    public void test() {
+        //На величину глубины не влияют шаги, созданные методами `$`
+        $("Какой-то шаг", () -> {
+
+            //шаг, построенный объектом, вернувшимся из вызова метода 
+            // `someAction`, будет выведен на консоль/попадет в отчет,
+            //т.к. здесь глубина его выполнения == 0
+            var result = myTestContext().execute(someAction(1, 2, 3) //указываем действие 
+                    // шаг, построенный объектом, вернувшимся из вызова метода 
+                    // `something`, НЕ будет выведен на консоль/НЕ попадет в отчет,
+                    // т.к. здесь глубина его выполнения == 1, т.е. его 
+                    // выполнение происходит в рамках выполнения шага, строенного
+                    // объектом, вернувшимся из вызова метода `someAction`
+                    .on(something(1, 2, 3)));
+            
+            //дальнейшие действия
+        });
+    }
+}
+```
+
+</details>
