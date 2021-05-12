@@ -32,7 +32,6 @@ uploadArchives {
                 packaging 'jar'
                 name 'allure.integration'
                 version version
-                description 'Java client for Appium Mobile Webdriver'
                 url 'https://github.com/TinkoffCreditSystems/neptune'
                 developers {
                     developer {

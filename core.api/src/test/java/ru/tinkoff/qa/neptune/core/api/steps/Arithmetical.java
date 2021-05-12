@@ -1,15 +1,17 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import java.math.BigDecimal;
 import java.util.function.Function;
 
-@MakeStringCapturesOnFinishing
-@MakeCaptureOnFinishing(typeOfCapture = String.class)
-@MakeFileCapturesOnFinishing
+@CaptureOnSuccess(by = {TestNumberCaptor.class, TestStringCaptor.class, TestFileCaptor.class})
+@CaptureOnFailure(by = {TestNumberCaptor.class, TestStringCaptor.class, TestCaptor.class})
+@MaxDepthOfReporting(2)
 class Arithmetical extends SequentialGetStepSupplier.GetObjectStepSupplier<CalculatorSteps, Number, Arithmetical> {
 
     private Arithmetical(Function<CalculatorSteps, Number> originalFunction) {

@@ -35,7 +35,6 @@ import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.WhereJunction.or
 @SuppressWarnings("ConstantConditions")
 public class SelectByTypedQuery extends BaseDbOperationTest {
 
-    private static final String TEST_SUPPLIER = "Test exception";
     private Book journeyToIxtlan;
     private Author carlosCastaneda;
     private Book ruslanAndLudmila;
@@ -454,50 +453,41 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         }
     }
 
-    @Test(expectedExceptions = NothingIsSelectedException.class,
-            expectedExceptionsMessageRegExp = "Test exception",
-            dependsOnGroups = "positive tests")
+    @Test(expectedExceptions = NothingIsSelectedException.class, dependsOnGroups = "positive tests")
     public void selectEmptyListByQueryWithExceptionThrowing() {
         inDataBase().select(listOf(Catalog.class, byJDOQuery(QCatalog.class)
                 .addWhere(qCatalog -> qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(carlosCastaneda))))
-                .throwWhenResultEmpty(TEST_SUPPLIER));
+                .throwOnNoResult());
 
         fail("Exception was expected");
     }
 
-    @Test(expectedExceptions = NothingIsSelectedException.class,
-            expectedExceptionsMessageRegExp = "Test exception",
-            dependsOnGroups = "positive tests")
+    @Test(expectedExceptions = NothingIsSelectedException.class, dependsOnGroups = "positive tests")
     public void selectNullByQueryWithExceptionThrowing() {
 
         inDataBase().select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
                 .addWhere(qCatalog -> qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(carlosCastaneda))))
-                .throwWhenResultEmpty(TEST_SUPPLIER));
+                .throwOnNoResult());
 
         fail("Exception was expected");
     }
 
-    @Test(expectedExceptions = NothingIsSelectedException.class,
-            expectedExceptionsMessageRegExp = "Test exception",
-            dependsOnGroups = "positive tests")
+    @Test(expectedExceptions = NothingIsSelectedException.class, dependsOnGroups = "positive tests")
     public void selectEmptyListByQueryAndConditionWithExceptionThrowing() {
         inDataBase().select(listOf(Catalog.class, byJDOQuery(QCatalog.class)
                 .addWhere(qCatalog -> qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(alexanderPushkin))))
                 .criteria("Published in 1995", catalog -> catalog.getYearOfPublishing().equals(1995))
-                .throwWhenResultEmpty(TEST_SUPPLIER));
+                .throwOnNoResult());
 
         fail("Exception was expected");
     }
 
-    @Test(expectedExceptions = NothingIsSelectedException.class,
-            expectedExceptionsMessageRegExp = "Test exception",
-            dependsOnGroups = "positive tests")
+    @Test(expectedExceptions = NothingIsSelectedException.class, dependsOnGroups = "positive tests")
     public void selectNullByQueryAndConditionWithExceptionThrowing() {
         inDataBase().select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
                 .addWhere(qCatalog -> qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(alexanderPushkin))))
-                .criteria("Published in 1995", catalog -> catalog
-                        .getYearOfPublishing().equals(1995))
-                .throwWhenResultEmpty(TEST_SUPPLIER));
+                .criteria("Published in 1995", catalog -> catalog.getYearOfPublishing().equals(1995))
+                .throwOnNoResult());
 
         fail("Exception was expected");
     }

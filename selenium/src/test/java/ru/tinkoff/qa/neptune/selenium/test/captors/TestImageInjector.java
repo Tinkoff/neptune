@@ -10,6 +10,10 @@ public class TestImageInjector implements CapturedImageInjector {
 
     static final Map<BufferedImage, String> INJECTED = new HashMap<>();
 
+    public TestImageInjector() {
+        super();
+    }
+
     @Override
     public void inject(BufferedImage toBeInjected, String message) {
         INJECTED.put(toBeInjected, message);

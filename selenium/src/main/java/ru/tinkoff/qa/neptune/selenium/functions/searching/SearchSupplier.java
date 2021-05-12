@@ -1,22 +1,23 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
 import org.openqa.selenium.*;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
+import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
+import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
 
 import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
-import static java.lang.String.format;
-import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.OR;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindWebElements.webElements;
@@ -25,38 +26,28 @@ import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FI
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
 
 @SuppressWarnings({"unused"})
-@MakeImageCapturesOnFinishing
-@MakeFileCapturesOnFinishing
-@SequentialGetStepSupplier.DefaultParameterNames(
-        timeOut = "Time of the waiting for the element",
-        from = "Parent element",
-        criteria = "Element criteria",
-        imperative = "Find"
-)
+@SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for the element")
+@SequentialGetStepSupplier.DefineFromParameterName("Parent element")
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Element criteria")
+@SequentialGetStepSupplier.DefineGetImperativeParameterName(value = "Find:")
+@SequentialGetStepSupplier.DefineResultDescriptionParameterName("Found element")
+@MaxDepthOfReporting(0)
+@CaptureOnSuccess(by = WebElementImageCaptor.class)
+@CaptureOnFailure(by = {WebDriverImageCaptor.class, WebElementImageCaptor.class})
+@ThrowWhenNoData(toThrow = NoSuchElementException.class, startDescription = "Not found:")
 public final class SearchSupplier<R extends SearchContext>
-        extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<SearchContext, R, SearchContext, SearchSupplier<R>> {
+        extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<Object, R, SearchContext, SearchSupplier<R>> {
 
     private <S extends Iterable<R>> SearchSupplier(Function<SearchContext, S> originalFunction) {
         super(originalFunction);
-        from(searchContext -> searchContext);
+        from(new SearchingInitialFunction());
         timeOut(ELEMENT_WAITING_DURATION.get());
         addIgnored(StaleElementReferenceException.class);
         if (FIND_ONLY_VISIBLE_ELEMENTS.get()) {
             criteria(visible());
         }
-        throwOnEmptyResult(noSuchElementException(this));
+        throwOnNoResult();
     }
-
-    private static Supplier<NoSuchElementException> noSuchElementException(SearchSupplier<?> supplier) {
-        return () -> {
-            var description = format("Nothing was found. Attempt to get %s", supplier.toString());
-            var exceptionText = ofNullable(supplier.getCriteria())
-                    .map(c -> format("%s. Criteria: %s", description, c.toString()))
-                    .orElse(description);
-            return new NoSuchElementException(exceptionText);
-        };
-    }
-
 
     /**
      * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
@@ -66,7 +57,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @param by locator strategy to find an element
      * @return an instance of {@link SearchSupplier}
      */
-    @Description("Web element located {by}")
+    @Description("Web element located '{by}'")
     public static SearchSupplier<WebElement> webElement(@DescriptionFragment("by") By by) {
         var webElements = webElements(by);
         return new SearchSupplier<>(webElements);
@@ -81,8 +72,9 @@ public final class SearchSupplier<R extends SearchContext>
      * @param text that the desired element should have
      * @return an instance of {@link SearchSupplier}
      */
-    @Description("Web element located {by}")
-    public static SearchSupplier<WebElement> webElement(@DescriptionFragment("by") By by, String text) {
+    @Description("Web element located '{by}' with text '{text}'")
+    public static SearchSupplier<WebElement> webElement(@DescriptionFragment("by") By by,
+                                                        @DescriptionFragment("text") String text) {
         var shouldHaveText = text(text);
         var webElements = webElements(by);
         var search = new SearchSupplier<>(webElements);
@@ -101,10 +93,13 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
      */
-    @Description("{widgetClass} {textOrLabel}")
-    public static <T extends Widget> SearchSupplier<T> widget(@DescriptionFragment(value = "widgetClass",
-            makeReadableBy = WidgetNameGetter.class) Class<T> tClass,
-                                                              @DescriptionFragment("textOrLabel") String textOrLabel) {
+    @Description("{widgetClass} '{textOrLabel}'")
+    public static <T extends Widget> SearchSupplier<T> widget(
+            @DescriptionFragment(
+                    value = "widgetClass",
+                    makeReadableBy = WidgetDescriptionValueGetter.class)
+                    Class<T> tClass,
+            @DescriptionFragment("textOrLabel") String textOrLabel) {
         return new SearchSupplier<>(widgets(tClass))
                 .criteria(OR(
                         text(textOrLabel),
@@ -123,7 +118,9 @@ public final class SearchSupplier<R extends SearchContext>
      */
     @Description("{tClass}")
     public static <T extends Widget> SearchSupplier<T> widget(
-            @DescriptionFragment(value = "tClass", makeReadableBy = WidgetNameGetter.class) Class<T> tClass) {
+            @DescriptionFragment(
+                    value = "tClass",
+                    makeReadableBy = WidgetDescriptionValueGetter.class) Class<T> tClass) {
         var widgets = widgets(tClass);
         return new SearchSupplier<>(widgets);
     }
@@ -678,19 +675,6 @@ public final class SearchSupplier<R extends SearchContext>
      * @return self-reference
      */
     public <Q extends SearchContext> SearchSupplier<R> foundFrom(Q from) {
-        return super.from(from);
-    }
-
-    /**
-     * Constructs the chained searching from result of some function applying. This function should take some
-     * {@link SearchContext} as the input parameter and return some found instance of {@link SearchContext}.
-     *
-     * @param from is a function that takes some {@link SearchContext} as the input parameter and returns some
-     *             found instance of {@link SearchContext}.
-     * @param <Q>  is a type of the parent element.
-     * @return self-reference
-     */
-    public <Q extends SearchContext> SearchSupplier<R> foundFrom(Function<SearchContext, Q> from) {
         return super.from(from);
     }
 

@@ -1,8 +1,11 @@
 package ru.tinkoff.qa.neptune.core.api.event.firing;
 
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+
 import java.util.List;
 
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 
 /**
  * This class is designed to catch different objects for the logging/report.
@@ -10,13 +13,19 @@ import static java.util.Optional.ofNullable;
  * @param <T> is a type of an object to be caught for the logging/reporting.
  * @param <S> is a type of produced data.
  */
+@Description("Attachment")
 public abstract class Captor<T, S> {
 
     private final String message;
     protected final List<? extends CapturedDataInjector<S>> injectors;
 
-    public Captor(String message, List<? extends CapturedDataInjector<S>> injectors) {
+    protected Captor(String message, List<? extends CapturedDataInjector<S>> injectors) {
         this.message = message;
+        this.injectors = injectors;
+    }
+
+    public Captor(List<? extends CapturedDataInjector<S>> injectors) {
+        this.message = translate(this);
         this.injectors = injectors;
     }
 

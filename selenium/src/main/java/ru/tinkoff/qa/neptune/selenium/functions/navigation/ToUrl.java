@@ -1,11 +1,15 @@
 package ru.tinkoff.qa.neptune.selenium.functions.navigation;
 
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
@@ -20,12 +24,11 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.currentWindow;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 
-@MakeImageCapturesOnFinishing
-@MakeFileCapturesOnFinishing
-@SequentialActionSupplier.DefaultParameterNames(
-        performOn = "Window/tab to perform navigation"
-)
-@Description("Navigate to URL")
+@CaptureOnFailure(by = WebDriverImageCaptor.class)
+@CaptureOnSuccess(by = WebDriverImageCaptor.class)
+@SequentialActionSupplier.DefinePerformOnParameterName("Window/tab to perform navigation")
+@MaxDepthOfReporting(1)
+@IncludeParamsOfInnerGetterStep
 public final class ToUrl extends SequentialActionSupplier<SeleniumStepContext, Window, ToUrl> {
 
     @StepParameter("Navigate to")
@@ -64,7 +67,8 @@ public final class ToUrl extends SequentialActionSupplier<SeleniumStepContext, W
      * @param url            is a page url
      * @return built navigation action
      */
-    public static ToUrl toUrl(GetWindowSupplier windowSupplier, URL url) {
+    @Description("Navigate to URL {URL}")
+    public static ToUrl toUrl(GetWindowSupplier windowSupplier, @DescriptionFragment("URL") URL url) {
         return new ToUrl(url).performOn(windowSupplier);
     }
 
@@ -75,7 +79,8 @@ public final class ToUrl extends SequentialActionSupplier<SeleniumStepContext, W
      * @param url    is a page url
      * @return built navigation action
      */
-    public static ToUrl toUrl(Window window, URL url) {
+    @Description("Navigate to URL {URL}")
+    public static ToUrl toUrl(Window window, @DescriptionFragment("URL") URL url) {
         return new ToUrl(url).performOn(window);
     }
 
@@ -85,8 +90,9 @@ public final class ToUrl extends SequentialActionSupplier<SeleniumStepContext, W
      * @param url the url to navigate to.
      * @return built navigation action
      */
-    public static ToUrl toUrl(URL url) {
-        return toUrl(currentWindow(), url);
+    @Description("Navigate to URL {URL}")
+    public static ToUrl toUrl(@DescriptionFragment("URL") URL url) {
+        return new ToUrl(url).performOn(currentWindow());
     }
 
     /**
@@ -96,8 +102,9 @@ public final class ToUrl extends SequentialActionSupplier<SeleniumStepContext, W
      * @return built navigation action
      * @see ru.tinkoff.qa.neptune.selenium.properties.URLProperties#BASE_WEB_DRIVER_URL_PROPERTY
      */
-    public static ToUrl toUrl(String url) {
-        return toUrl(checkUrl(url));
+    @Description("Navigate to URL {URL}")
+    public static ToUrl toUrl(@DescriptionFragment("URL") String url) {
+        return new ToUrl(checkUrl(url)).performOn(currentWindow());
     }
 
     /**
@@ -108,8 +115,9 @@ public final class ToUrl extends SequentialActionSupplier<SeleniumStepContext, W
      * @return built navigation action
      * @see ru.tinkoff.qa.neptune.selenium.properties.URLProperties#BASE_WEB_DRIVER_URL_PROPERTY
      */
-    public static ToUrl toUrl(GetWindowSupplier windowSupplier, String url) {
-        return toUrl(windowSupplier, checkUrl(url));
+    @Description("Navigate to URL {URL}")
+    public static ToUrl toUrl(GetWindowSupplier windowSupplier, @DescriptionFragment("URL") String url) {
+        return new ToUrl(checkUrl(url)).performOn(windowSupplier);
     }
 
     /**
@@ -120,13 +128,14 @@ public final class ToUrl extends SequentialActionSupplier<SeleniumStepContext, W
      * @return built navigation action
      * @see ru.tinkoff.qa.neptune.selenium.properties.URLProperties#BASE_WEB_DRIVER_URL_PROPERTY
      */
-    public static ToUrl toUrl(Window window, String url) {
-        return toUrl(window, checkUrl(url));
+    @Description("Navigate to URL {URL}")
+    public static ToUrl toUrl(Window window, @DescriptionFragment("URL") String url) {
+        return new ToUrl(checkUrl(url)).performOn(window);
     }
 
 
     @Override
-    protected void performActionOn(Window value) {
+    protected void howToPerform(Window value) {
         value.to(url);
     }
 }

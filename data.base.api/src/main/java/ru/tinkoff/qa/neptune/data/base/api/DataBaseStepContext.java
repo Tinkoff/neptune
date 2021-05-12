@@ -22,13 +22,14 @@ import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.data.base.api.data.operations.DataOperation.*;
 
+@SuppressWarnings("unchecked")
 public class DataBaseStepContext extends Context<DataBaseStepContext> implements Stoppable {
 
     private static final DataBaseStepContext context = getInstance(DataBaseStepContext.class);
     private final Set<JDOPersistenceManager> jdoPersistenceManagerSet = synchronizedSet(new HashSet<>());
 
     private static  <T> T returnSingleWhenNecessary(List<T> ts) {
-        if (ts.size() == 0) {
+        if (ts == null || ts.size() == 0) {
             return null;
         }
         return ts.get(0);
@@ -61,26 +62,26 @@ public class DataBaseStepContext extends Context<DataBaseStepContext> implements
     }
 
     public final <T, R extends List<T>> R select(SelectList<?, R> selectList) {
-        return selectList.get().apply(this);
+        return get(selectList);
     }
 
     public final <T> T select(SelectASingle<T> selectOne) {
-        return selectOne.get().apply(this);
+        return get(selectOne);
     }
 
     @SafeVarargs
     public final <T extends PersistableObject> T update(SelectASingle<T> howToSelect, UpdateExpression<T>... set) {
-        return returnSingleWhenNecessary(updated(howToSelect, set).get().apply(this));
+        return (T) returnSingleWhenNecessary(get(updated(howToSelect, set)));
     }
 
     @SafeVarargs
     public final <T extends PersistableObject> List<T> update(SelectList<?, List<T>> howToSelect, UpdateExpression<T>... set) {
-        return updated(howToSelect, set).get().apply(this);
+        return (List<T>) get(updated(howToSelect, set));
     }
 
     @SafeVarargs
     public final <T extends PersistableObject> List<T> update(Collection<T> toUpdate, UpdateExpression<T>... set) {
-        return updated(toUpdate, set).get().apply(this);
+        return (List<T>) get(updated(toUpdate, set));
     }
 
     @SafeVarargs
@@ -89,15 +90,15 @@ public class DataBaseStepContext extends Context<DataBaseStepContext> implements
     }
 
     public final <T extends PersistableObject> T delete(SelectASingle<T> howToSelect) {
-        return returnSingleWhenNecessary(deleted(howToSelect).get().apply(this));
+        return (T) returnSingleWhenNecessary(get(deleted(howToSelect)));
     }
 
     public final <T extends PersistableObject> List<T> delete(SelectList<T, List<T>> howToSelect) {
-        return deleted(howToSelect).get().apply(this);
+        return (List<T>) get(deleted(howToSelect));
     }
 
     public final <T extends PersistableObject> List<T> delete(Collection<T> toDelete) {
-        return deleted(toDelete).get().apply(this);
+        return (List<T>) get(deleted(toDelete));
     }
 
     @SafeVarargs
@@ -111,7 +112,7 @@ public class DataBaseStepContext extends Context<DataBaseStepContext> implements
     }
 
     public final <T extends PersistableObject> List<T> insert(Collection<T> toInsert) {
-        return inserted(toInsert).get().apply(this);
+        return get(inserted(toInsert));
     }
 
     @SafeVarargs
@@ -132,19 +133,27 @@ public class DataBaseStepContext extends Context<DataBaseStepContext> implements
         return super.presenceOf(selectOne);
     }
 
+    public final boolean presenceOfOrThrow(SelectList<?, ?> selectList) {
+        return super.presenceOfOrThrow(selectList);
+    }
+
+    public final boolean presenceOfOrThrow(SelectASingle<?> selectOne) {
+        return super.presenceOfOrThrow(selectOne);
+    }
+
     public final boolean absenceOf(SelectList<?, ?> selectList, Duration timeOut) {
         return super.absenceOf(selectList, timeOut);
     }
 
-    public final boolean absenceOf(SelectList<?, ?> selectList, Duration timeOut, String exceptionMessage) {
-        return super.absenceOf(selectList, timeOut, exceptionMessage);
+    public final boolean absenceOfOrThrow(SelectList<?, ?> selectList, Duration timeOut) {
+        return super.absenceOfOrThrow(selectList, timeOut);
     }
 
     public final boolean absenceOf(SelectASingle<?> selectOne, Duration timeOut) {
         return super.absenceOf(selectOne, timeOut);
     }
 
-    public final boolean absenceOf(SelectASingle<?> selectOne, Duration timeOut, String exceptionMessage) {
-        return super.absenceOf(selectOne, timeOut, exceptionMessage);
+    public final boolean absenceOfOrThrow(SelectASingle<?> selectOne, Duration timeOut) {
+        return super.absenceOfOrThrow(selectOne, timeOut);
     }
 }

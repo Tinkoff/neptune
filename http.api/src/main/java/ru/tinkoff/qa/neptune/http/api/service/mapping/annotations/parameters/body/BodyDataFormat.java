@@ -4,10 +4,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper;
 
+import java.util.Date;
 import java.util.Optional;
 
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.http.api.properties.date.format.ApiDateFormatProperty.API_DATE_FORMAT_PROPERTY;
 
 public enum BodyDataFormat {
     /**
@@ -16,6 +18,12 @@ public enum BodyDataFormat {
     NONE {
         @Override
         public Object format(Object object, Class<?>... mixIns) {
+            if (object instanceof Date) {
+                return ofNullable(API_DATE_FORMAT_PROPERTY.get())
+                        .map(simpleDateFormat -> (Object) simpleDateFormat.format((Date) object))
+                        .orElse(object);
+            }
+
             return object;
         }
     },

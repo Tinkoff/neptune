@@ -8,11 +8,12 @@ import ru.tinkoff.qa.neptune.core.api.properties.booleans.BooleanValuePropertySu
         "Is it necessary to free unused resources, e.g. opened browser, connections to databases etc.",
         section = "General properties. Resource management")
 @PropertyName("TO_FREE_RESOURCES_ON_INACTIVITY")
-public class FreeResourcesOnInactivity implements BooleanValuePropertySupplier {
+public final class FreeResourcesOnInactivity implements BooleanValuePropertySupplier {
 
     private FreeResourcesOnInactivity() {
         super();
     }
+
     /**
      * Reads the property value and is used to get access to its value.
      */

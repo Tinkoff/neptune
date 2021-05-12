@@ -1,15 +1,21 @@
 package ru.tinkoff.qa.neptune.check;
 
 import org.hamcrest.Matcher;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 
+import java.util.Objects;
 import java.util.function.Function;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.String.valueOf;
+import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 
 /**
  * This class is designed to perform the matching of values.
@@ -18,15 +24,18 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *            value to be checked
  * @param <R> is a generic type of {@link Matcher}
  */
-@MakeCaptureOnFinishing(typeOfCapture = Object.class)
-@SequentialActionSupplier.DefaultParameterNames(performOn = "Check evaluation result")
+@SequentialActionSupplier.DefinePerformImperativeParameterName("Assert:")
+@MaxDepthOfReporting(1)
 public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchAction<T, R>> {
 
-    @StepParameter("Match criteria")
+    private final String assertDescription;
     private final Matcher<? super R> criteria;
 
-    MatchAction(Matcher<? super R> criteria) {
+    MatchAction(String assertDescription, Matcher<? super R> criteria) {
         super();
+        checkArgument(!Objects.equals(EMPTY, valueOf(assertDescription).trim()),
+                "Description shouldn't be an empty string");
+        this.assertDescription = assertDescription;
         this.criteria = criteria;
     }
 
@@ -37,9 +46,9 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
      * @param <T>     is a type of a value to be checked
      * @return a new {@link MatchAction}
      */
-    @Description("Check object. Assert: {matcher}")
+    @Description("{matcher}")
     public static <T> MatchAction<T, T> match(@DescriptionFragment("matcher") Matcher<? super T> matcher) {
-        return new MatchAction<T, T>(matcher)
+        return new MatchAction<T, T>(null, matcher)
                 .performOn(t -> t);
     }
 
@@ -53,14 +62,22 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
      * @param <R>         is a type of a value to be evaluated
      * @return a new {@link MatchAction}
      */
-    @Description("Check {description}. Assert: {matcher}")
-    public static <T, R> MatchAction<T, R> match(@DescriptionFragment("description") String description, Function<T, R> eval, @DescriptionFragment("matcher") Matcher<? super R> matcher) {
-        return new MatchAction<T, R>(matcher)
-                .performOn(new CalculateGetSupplier<>(eval).setDescription(description));
+    @Description("{description} {matcher}")
+    public static <T, R> MatchAction<T, R> match(
+            @DescriptionFragment(
+                    value = "description",
+                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class) String description,
+            Function<T, R> eval,
+            @DescriptionFragment("matcher") Matcher<? super R> matcher) {
+        var translated = translate(description);
+        return new MatchAction<T, R>(translated, matcher)
+                .performOn(new CalculateGetSupplier<>(eval).setDescription(translated));
     }
 
     @Override
-    protected void performActionOn(R value) {
-        assertThat(value, new InnerMatcher<>(this.toString(), criteria));
+    protected void howToPerform(R value) {
+        ofNullable(assertDescription).ifPresentOrElse(
+                s -> assertThat(s, value, criteria),
+                () -> assertThat(value, criteria));
     }
 }

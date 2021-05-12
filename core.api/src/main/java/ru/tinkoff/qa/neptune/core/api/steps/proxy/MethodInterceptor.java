@@ -6,7 +6,6 @@ import net.bytebuddy.implementation.bind.annotation.RuntimeType;
 import net.bytebuddy.implementation.bind.annotation.This;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
 import ru.tinkoff.qa.neptune.core.api.concurrency.ObjectContainer;
-import ru.tinkoff.qa.neptune.core.api.steps.context.ConstructorParameters;
 import ru.tinkoff.qa.neptune.core.api.utils.ConstructorUtil;
 
 import java.lang.reflect.Constructor;
@@ -19,10 +18,10 @@ import static java.util.Optional.ofNullable;
 public class MethodInterceptor<T> {
 
     private final Class<T> classToInstantiate;
-    private final ConstructorParameters constructorParameters;
+    private final Object[] constructorParameters;
     private final ThreadLocal<ObjectContainer<T>> threadLocal;
 
-    public MethodInterceptor(Class<T> classToInstantiate, ConstructorParameters constructorParameters) {
+    public MethodInterceptor(Class<T> classToInstantiate, Object[] constructorParameters) {
         this.classToInstantiate = classToInstantiate;
         this.constructorParameters = constructorParameters;
         threadLocal = new ThreadLocal<>();
@@ -38,11 +37,10 @@ public class MethodInterceptor<T> {
                         threadLocal.set(tObjectContainer);
                         return tObjectContainer.getWrappedObject();
                     }).orElseGet(() -> {
-                        var params = constructorParameters.getParameterValues();
                         Constructor<T> c;
 
                         try {
-                            c = ConstructorUtil.findSuitableConstructor(classToInstantiate, params);
+                            c = ConstructorUtil.findSuitableConstructor(classToInstantiate, constructorParameters);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -50,7 +48,7 @@ public class MethodInterceptor<T> {
 
                         T t;
                         try {
-                            t = c.newInstance(constructorParameters.getParameterValues());
+                            t = c.newInstance(constructorParameters);
                             if (Stoppable.class.isAssignableFrom(t.getClass())) {
                                 getRuntime().addShutdownHook(new Thread(((Stoppable) t)::stop));
                             }

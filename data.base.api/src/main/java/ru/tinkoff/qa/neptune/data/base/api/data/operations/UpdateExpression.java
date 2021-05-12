@@ -9,6 +9,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 
 /**
  * This class describes the updating operation.
@@ -44,7 +45,7 @@ public final class UpdateExpression<T extends PersistableObject> {
      * @return a new {@link UpdateExpression}
      */
     public static <T extends PersistableObject> UpdateExpression<T> change(String description, Consumer<T> setAction) {
-        return new UpdateExpression<>(description, setAction);
+        return new UpdateExpression<>(translate(description), setAction);
     }
 
     @Override

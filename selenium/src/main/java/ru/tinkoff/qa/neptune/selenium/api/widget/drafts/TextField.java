@@ -1,10 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.api.widget.drafts;
 
-import ru.tinkoff.qa.neptune.selenium.api.widget.Editable;
-import ru.tinkoff.qa.neptune.selenium.api.widget.HasValue;
-import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
-import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import org.openqa.selenium.WebElement;
+import ru.tinkoff.qa.neptune.selenium.api.widget.*;
 
 import java.util.List;
 
@@ -12,6 +9,7 @@ import java.util.List;
  * Text input, text area or something like that
  */
 @Name("Text field")
+@NameMultiple("Text fields")
 public abstract class TextField extends Widget implements Editable<List<CharSequence>>,
         HasValue<String> {
 

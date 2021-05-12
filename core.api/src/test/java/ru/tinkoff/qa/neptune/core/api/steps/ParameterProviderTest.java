@@ -1,16 +1,16 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.steps.context.*;
+import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
+import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
+import ru.tinkoff.qa.neptune.core.api.steps.context.ParameterProvider;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 
 public class ParameterProviderTest {
 
-    private static Integer FIVE = 5;
+    private static final Integer FIVE = 5;
 
     @Test
     public void testOfProviderOfEmptyParameters() {
@@ -28,8 +28,8 @@ public class ParameterProviderTest {
 
     private static class ParameterizedParameterProvider implements ParameterProvider {
         @Override
-        public ConstructorParameters provide() {
-            return ConstructorParameters.params(FIVE);
+        public Object[] provide() {
+            return new Object[]{FIVE};
         }
     }
 

@@ -2,8 +2,8 @@ package ru.tinkoff.qa.neptune.selenium.functions.browser.proxy;
 
 import com.browserup.harreader.model.*;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import java.net.http.HttpClient;
 import java.util.Date;
@@ -128,21 +128,26 @@ public final class BrowserProxyCriteria {
     }
 
     /**
-     * Checks query parameters of request.
+     * Checks query parameter of request.
      *
-     * @param params is the {@link HarQueryParam} list of query parameters request is supposed to have
+     * @param queryParam is the name of http query parameter
+     * @param value      is required value of http query parameter
      * @return criteria that checks HAR entry
      */
-    @Description("request with query parameters '{params}'")
-    public static Criteria<HarEntry> recordedRequestQueryParams(@DescriptionFragment("params") List<HarQueryParam> params) {
-        checkArgument(nonNull(params), "Query params list should be defined");
-        checkArgument(params.size() > 0, "Query params list can'entry be empty");
+    @Description("request has query parameter '{param}' with value '{value}'")
+    public static Criteria<HarEntry> recordedRequestQueryParam(@DescriptionFragment("param") String queryParam,
+                                                               @DescriptionFragment("value") String value) {
+        checkArgument(isNotBlank(queryParam), "Query parameter should not be blank or null string");
+        checkArgument(isNotBlank(value), "Value of query parameter should not be blank or null string");
 
         return condition(entry -> {
             List<HarQueryParam> queryParams = entry.getRequest().getQueryString();
 
             return ofNullable(queryParams)
-                    .map(qParams -> qParams.size() == params.size() && qParams.containsAll(params))
+                    .map(parameters ->
+                            parameters.stream()
+                                    .anyMatch(param ->
+                                            param.getName().equals(queryParam) && param.getValue().equals(value)))
                     .orElse(false);
         });
     }
@@ -150,99 +155,37 @@ public final class BrowserProxyCriteria {
     /**
      * Checks query parameters of request.
      *
-     * @param params is the {@link HarQueryParam} list of query parameters request is supposed to contain
+     * @param queryParam      is the name of http query parameter
+     * @param valueExpression is the substring the query parameter value is supposed to have or
+     *                        the RegExp the value is predicted to match
      * @return criteria that checks HAR entry
      */
-    @Description("request containing query parameters '{params}'")
-    public static Criteria<HarEntry> recordedRequestContainsQueryParams(@DescriptionFragment("params") List<HarQueryParam> params) {
-        checkArgument(nonNull(params), "Query params list should be defined");
-        checkArgument(params.size() > 0, "Query params list can'entry be empty");
+    @Description("request has query parameter '{param}' with value contains/matches RegExp pattern '{valueExpression}'")
+    public static Criteria<HarEntry> recordedRequestQueryParamMatches(@DescriptionFragment("param") String queryParam,
+                                                                      @DescriptionFragment("valueExpression") String valueExpression) {
+        checkArgument(isNotBlank(queryParam), "Query parameter should not be blank or null string");
+        checkArgument(isNotBlank(valueExpression), "Query parameter value substring/RegExp should be defined");
 
         return condition(entry -> {
             List<HarQueryParam> queryParams = entry.getRequest().getQueryString();
 
             return ofNullable(queryParams)
-                    .map(qParams -> qParams.containsAll(params))
-                    .orElse(false);
-        });
-    }
+                    .map(params ->
+                            params.stream().anyMatch(param -> {
+                                if (param.getValue().contains(valueExpression)) {
+                                    return true;
+                                }
 
-    /**
-     * Checks headers of request.
-     *
-     * @param headers is the {@link HarHeader} list of headers request is supposed to have
-     * @return criteria that checks HAR entry
-     */
-    @Description("request with headers '{headers}'")
-    public static Criteria<HarEntry> recordedRequestHeaders(@DescriptionFragment("headers") List<HarHeader> headers) {
-        checkArgument(nonNull(headers), "Request headers list should be defined");
-        checkArgument(headers.size() > 0, "Request headers list can'entry be empty");
+                                try {
+                                    var pattern = compile(valueExpression);
+                                    var matcher = pattern.matcher(param.getValue());
 
-        return condition(entry -> {
-            List<HarHeader> requestHeaders = entry.getRequest().getHeaders();
-
-            return ofNullable(requestHeaders)
-                    .map(reqHeaders -> reqHeaders.size() == headers.size() && reqHeaders.containsAll(headers))
-                    .orElse(false);
-        });
-    }
-
-    /**
-     * Checks headers of request.
-     *
-     * @param headers headers is the {@link HarHeader} list of headers request is supposed to contain
-     * @return criteria that checks HAR entry
-     */
-    @Description("request with headers '{headers}'")
-    public static Criteria<HarEntry> recordedRequestHeadersContains(@DescriptionFragment("headers") List<HarHeader> headers) {
-        checkArgument(nonNull(headers), "Request headers list should be defined");
-        checkArgument(headers.size() > 0, "Request headers list can'entry be empty");
-
-        return condition(entry -> {
-            List<HarHeader> requestHeaders = entry.getRequest().getHeaders();
-
-            return ofNullable(requestHeaders)
-                    .map(reqHeaders -> reqHeaders.containsAll(headers))
-                    .orElse(false);
-        });
-    }
-
-    /**
-     * Checks headers of response.
-     *
-     * @param headers headers is the {@link HarHeader} list of headers response is supposed to have
-     * @return criteria that checks HAR entry
-     */
-    @Description("response with headers '{headers}'")
-    public static Criteria<HarEntry> recordedResponseHeaders(@DescriptionFragment("headers") List<HarHeader> headers) {
-        checkArgument(nonNull(headers), "Response headers list should be defined");
-        checkArgument(headers.size() > 0, "Response headers list can'entry be empty");
-
-        return condition(entry -> {
-            List<HarHeader> responseHeaders = entry.getResponse().getHeaders();
-
-            return ofNullable(responseHeaders)
-                    .map(respHeaders -> respHeaders.size() == headers.size() && respHeaders.containsAll(headers))
-                    .orElse(false);
-        });
-    }
-
-    /**
-     * Checks headers of response.
-     *
-     * @param headers headers is the {@link HarHeader} list of headers response is supposed to contain
-     * @return criteria that checks HAR entry
-     */
-    @Description("response with headers '{headers}'")
-    public static Criteria<HarEntry> recordedResponseHeadersContains(@DescriptionFragment("headers") List<HarHeader> headers) {
-        checkArgument(nonNull(headers), "Response headers list should be defined");
-        checkArgument(headers.size() > 0, "Response headers list can'entry be empty");
-
-        return condition(entry -> {
-            List<HarHeader> responseHeaders = entry.getResponse().getHeaders();
-
-            return ofNullable(responseHeaders)
-                    .map(respHeaders -> respHeaders.containsAll(headers))
+                                    return matcher.matches();
+                                } catch (Throwable thrown) {
+                                    thrown.printStackTrace();
+                                    return false;
+                                }
+                            }))
                     .orElse(false);
         });
     }
@@ -316,6 +259,7 @@ public final class BrowserProxyCriteria {
      * @param value is the value of header response is supposed to have
      * @return criteria that checks HAR entry
      */
+    @Description("response has header '{name}' with value '{value}'")
     public static Criteria<HarEntry> recordedResponseHeader(String name, String value) {
         checkArgument(isNotBlank(name), "Response header name should be defined");
         checkArgument(isNotBlank(value), "Response header value should be defined");
@@ -482,7 +426,8 @@ public final class BrowserProxyCriteria {
      * @param status is the status code response is supposed to have
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> recordedResponseStatusCode(int status) {
+    @Description("status code of response is {code}")
+    public static Criteria<HarEntry> recordedResponseStatusCode(@DescriptionFragment("code") int status) {
         return condition(format("response status code is '%s'", status), entry -> {
             var statusCode = entry.getResponse().getStatus();
             return statusCode == status;

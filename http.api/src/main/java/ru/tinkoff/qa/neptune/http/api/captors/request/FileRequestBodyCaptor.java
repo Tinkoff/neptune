@@ -1,16 +1,20 @@
 package ru.tinkoff.qa.neptune.http.api.captors.request;
 
-import ru.tinkoff.qa.neptune.core.api.event.firing.captors.FileCaptor;
+import ru.tinkoff.qa.neptune.core.api.event.firing.captors.CapturedFileInjector;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.http.api.request.body.FileBody;
+import ru.tinkoff.qa.neptune.http.api.request.body.RequestBody;
 
 import java.io.File;
 
 import static java.util.List.of;
+import static ru.tinkoff.qa.neptune.core.api.utils.SPIUtil.loadSPI;
 
-public final class FileRequestBodyCaptor extends FileCaptor<FileBody> implements BaseRequestBodyCaptor {
+@Description("Request body. File")
+public final class FileRequestBodyCaptor extends AbstractRequestBodyCaptor<FileBody, File> {
 
     public FileRequestBodyCaptor() {
-        super("Request body. File");
+        super(loadSPI(CapturedFileInjector.class), of(FileBody.class));
     }
 
     @Override
@@ -19,7 +23,7 @@ public final class FileRequestBodyCaptor extends FileCaptor<FileBody> implements
     }
 
     @Override
-    public FileBody getCaptured(Object toBeCaptured) {
-        return (FileBody) getCaptured(toBeCaptured, of(FileBody.class));
+    FileBody convertTo(RequestBody<?> requestBody) {
+        return (FileBody) requestBody;
     }
 }

@@ -3,26 +3,28 @@ package ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.WebDriver;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 
 import java.time.Duration;
 
-import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.GetFrameFunction.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_FRAME_SWITCHING_DURATION;
 
-@MakeImageCapturesOnFinishing
-@MakeFileCapturesOnFinishing
-@SequentialGetStepSupplier.DefaultParameterNames(
-        timeOut = "Time of the waiting for the frame"
-)
+@CaptureOnFailure(by = WebDriverImageCaptor.class)
+@CaptureOnSuccess(by = WebDriverImageCaptor.class)
+@SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for the frame")
+@MaxDepthOfReporting(0)
+@ThrowWhenNoData(toThrow = NoSuchFrameException.class)
 public final class GetFrameSupplier extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<SeleniumStepContext, Frame, WebDriver, GetFrameSupplier>
         implements TargetLocatorSupplier<Frame> {
 
@@ -30,8 +32,7 @@ public final class GetFrameSupplier extends SequentialGetStepSupplier.GetObjectC
     private GetFrameSupplier(GetFrameFunction getFrame) {
         super(getFrame);
         timeOut(WAITING_FRAME_SWITCHING_DURATION.get());
-        throwOnEmptyResult(() -> new NoSuchFrameException(format("Can't find/switch to the frame %s",
-                getFrame.toString())));
+        throwOnNoResult();
     }
 
     /**

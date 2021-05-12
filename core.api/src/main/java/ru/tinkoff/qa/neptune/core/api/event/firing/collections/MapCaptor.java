@@ -2,33 +2,21 @@ package ru.tinkoff.qa.neptune.core.api.event.firing.collections;
 
 import com.google.common.collect.Iterables;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import java.util.Arrays;
 import java.util.Map;
 
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
-import static java.lang.System.lineSeparator;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
+@Description("Resulted map")
 public class MapCaptor extends StringCaptor<Map<?, ?>> {
 
-    private static final String LINE_SEPARATOR = lineSeparator();
-
-    public MapCaptor() {
-        super("Resulted map");
-    }
-
-    /**
-     * Constructor for situations when it is necessary to override the class
-     *
-     * @param message is a name of attachment
-     */
-    protected MapCaptor(String message) {
-        super(message);
-    }
+    private static final String LINE_SEPARATOR = "\r\n";
 
     private String stringValueOf(Object o) {
         return ofNullable(o)

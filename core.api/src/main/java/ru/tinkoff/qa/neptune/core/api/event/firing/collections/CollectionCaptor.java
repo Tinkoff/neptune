@@ -1,5 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.event.firing.collections;
 
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -8,20 +10,8 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
+@Description("Resulted collection")
 public class CollectionCaptor extends IterableCaptor<List<?>> {
-
-    public CollectionCaptor() {
-        this("Resulted collection");
-    }
-
-    /**
-     * Constructor for situations when it is necessary to override the class
-     *
-     * @param message is a name of attachment
-     */
-    protected CollectionCaptor(String message) {
-        super(message);
-    }
 
     @Override
     public List<?> getCaptured(Object toBeCaptured) {

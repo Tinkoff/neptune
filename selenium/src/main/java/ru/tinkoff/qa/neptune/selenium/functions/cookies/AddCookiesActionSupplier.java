@@ -2,9 +2,10 @@ package ru.tinkoff.qa.neptune.selenium.functions.cookies;
 
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import java.util.Collection;
@@ -17,6 +18,7 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentF
  * This class is designed to build an action that adds cookies to browser's "cookie jar".
  */
 @Description("Add cookies to browsers cookie jar")
+@MaxDepthOfReporting(0)
 public final class AddCookiesActionSupplier extends SequentialActionSupplier<SeleniumStepContext, WebDriver, AddCookiesActionSupplier> {
 
     @StepParameter("Cookies to add")
@@ -41,7 +43,7 @@ public final class AddCookiesActionSupplier extends SequentialActionSupplier<Sel
     }
 
     @Override
-    protected void performActionOn(WebDriver value) {
+    protected void howToPerform(WebDriver value) {
         cookies.forEach(cookie -> value.manage().addCookie(cookie));
     }
 }

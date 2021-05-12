@@ -3,22 +3,24 @@ package ru.tinkoff.qa.neptune.selenium.functions.elements;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasSize;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
-import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
-
-@SequentialGetStepSupplier.DefaultParameterNames(
-        from = "Element to get size of"
-)
-@Description("Size of the element")
+@Description("Size of the {element}")
+@MaxDepthOfReporting(0)
+@IncludeParamsOfInnerGetterStep
 public final class GetElementSizeSupplier extends SequentialGetStepSupplier
-        .GetObjectChainedStepSupplier<SeleniumStepContext, Dimension, SearchContext, GetElementSizeSupplier> {
+        .GetObjectChainedStepSupplier<Object, Dimension, SearchContext, GetElementSizeSupplier> {
 
-    private GetElementSizeSupplier() {
+    @DescriptionFragment("element")
+    final Object element;
+
+    private GetElementSizeSupplier(Object element) {
         super(s -> {
             var cls = s.getClass();
 
@@ -32,6 +34,17 @@ public final class GetElementSizeSupplier extends SequentialGetStepSupplier
 
             throw new UnsupportedOperationException("It is not possible to get size of " + s.toString());
         });
+        this.element = element;
+    }
+
+    private GetElementSizeSupplier(SearchContext context) {
+        this((Object) context);
+        from(context);
+    }
+
+    private <T extends SearchContext> GetElementSizeSupplier(SearchSupplier<T> supplier) {
+        this((Object) supplier);
+        from(supplier);
     }
 
     /**
@@ -41,7 +54,7 @@ public final class GetElementSizeSupplier extends SequentialGetStepSupplier
      * @return Supplier of a function which gets size.
      */
     public static <T extends SearchContext> GetElementSizeSupplier elementSize(SearchSupplier<T> supplier) {
-        return new GetElementSizeSupplier().from(supplier.get().compose(currentContent()));
+        return new GetElementSizeSupplier(supplier);
     }
 
     /**
@@ -51,6 +64,6 @@ public final class GetElementSizeSupplier extends SequentialGetStepSupplier
      * @return Supplier of a function which gets size.
      */
     public static GetElementSizeSupplier elementSize(SearchContext context) {
-        return new GetElementSizeSupplier().from(context);
+        return new GetElementSizeSupplier(context);
     }
 }

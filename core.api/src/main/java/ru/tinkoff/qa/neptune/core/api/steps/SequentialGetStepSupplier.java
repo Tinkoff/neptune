@@ -1,17 +1,16 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.CaptorFilterByProducedType;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakesCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.captors.FileCaptor;
-import ru.tinkoff.qa.neptune.core.api.event.firing.captors.ImageCaptor;
-import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.AdditionalMetadata;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.util.*;
 import java.util.function.Function;
@@ -25,11 +24,16 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.SPACE;
 import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure.CaptureOnFailureReader.readCaptorsOnFailure;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess.CaptureOnSuccessReader.readCaptorsOnSuccess;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting.MaxDepthOfReportingReader.getMaxDepth;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.AND;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
-import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultParameterNames.DefaultGetParameterReader.*;
-import static ru.tinkoff.qa.neptune.core.api.steps.StepFunction.toGet;
+import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultGetParameterReader.*;
+import static ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter.StepParameterCreator.createStepParameter;
+import static ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData.ThrowWhenNoDataReader.getDeclaredBy;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromArray.getFromArray;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
@@ -39,7 +43,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 /**
- * This class is designed to build and supply chained functions to get desired value.
+ * This class is designed to build and to supply sequential functions to get desired value.
  * There are protected methods to be overridden/re-used as public when it is necessary.
  *
  * @param <T>    is a type of an input value
@@ -49,19 +53,18 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
  * @param <THIS> this is the self-type. It is used for the method chaining.
  */
 @SuppressWarnings("unchecked")
-@SequentialGetStepSupplier.DefaultParameterNames
+@SequentialGetStepSupplier.DefineGetImperativeParameterName
+@SequentialGetStepSupplier.DefineResultDescriptionParameterName
+@ThrowWhenNoData
 public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends SequentialGetStepSupplier<T, R, M, P, THIS>> implements Cloneable,
-        Supplier<Function<T, R>>, MakesCapturesOnFinishing<THIS>, StepParameterPojo {
+        Supplier<Function<T, R>>, StepParameterPojo {
 
     private String description;
-
-    protected SequentialGetStepSupplier() {
-        MakesCapturesOnFinishing.makeCaptureSettings(this);
-    }
+    final List<Captor<Object, Object>> successCaptors = new ArrayList<>();
+    final List<Captor<Object, Object>> failureCaptors = new ArrayList<>();
+    protected boolean toReport = true;
 
     final Set<Class<? extends Throwable>> ignored = new HashSet<>();
-
-    private final List<CaptorFilterByProducedType> captorFilters = new ArrayList<>();
 
     final List<Criteria<P>> conditions = new ArrayList<>();
 
@@ -75,6 +78,16 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     Supplier<? extends RuntimeException> exceptionSupplier;
 
+    protected SequentialGetStepSupplier() {
+        readCaptorsOnFailure(this.getClass(), failureCaptors);
+        readCaptorsOnSuccess(this.getClass(), successCaptors);
+    }
+
+    public static <T extends SequentialGetStepSupplier<?, ?, ?, ?, ?>> T turnReportingOff(T t) {
+        return (T) t.turnReportingOff();
+    }
+
+    @SuppressWarnings("unused")
     protected THIS setDescription(String description) {
         this.description = description;
         return (THIS) this;
@@ -82,32 +95,73 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     @Override
     public Map<String, String> getParameters() {
-        var result = new LinkedHashMap<>(StepParameterPojo.super.getParameters());
+        var result = new LinkedHashMap<String, String>();
+        fillCustomParameters(result);
+
         var cls = (Class<?>) this.getClass();
+        fillCriteriaParameters(result);
+        fillTimeParameters(result);
 
-        int i = 0;
-        for (var c : conditions) {
-            var criteria = i == 0 ? translate(getCriteriaPseudoField(cls)) : translate(getCriteriaPseudoField(cls)) + " " + (i + 1);
-            result.put(criteria, c.toString());
-            i++;
-        }
-
-        ofNullable(timeToGet).ifPresent(duration -> {
-            if (duration.toMillis() > 0) {
-                result.put(translate(getTimeOutPseudoField(cls)), formatDurationHMS(duration.toMillis()));
-            }
-        });
-        ofNullable(sleepingTime).ifPresent(duration -> {
-            if (duration.toMillis() > 0) {
-                result.put(translate(getPollingTimePseudoField(cls)), formatDurationHMS(duration.toMillis()));
+        ofNullable(getFromMetadata(cls, true)).ifPresent(metaData -> {
+            if (isLoggable(from) && nonNull(from)) {
+                result.put(translate(metaData), valueOf(from));
             }
         });
 
-        if (isLoggable(from) && nonNull(from)) {
-            result.put(translate(getFromPseudoField(cls)), valueOf(from));
+        if ((from instanceof SequentialGetStepSupplier<?, ?, ?, ?, ?>)
+                && this.getClass().getAnnotation(IncludeParamsOfInnerGetterStep.class) != null) {
+            var get = (SequentialGetStepSupplier<?, ?, ?, ?, ?>) from;
+            get.fillCustomParameters(result);
+            get.fillCriteriaParameters(result);
+            get.fillTimeParameters(result);
         }
 
         return result;
+    }
+
+    /**
+     * Means that the starting/ending/result of the build-step won't be reported
+     *
+     * @return self-reference
+     */
+    THIS turnReportingOff() {
+        toReport = false;
+        return (THIS) this;
+    }
+
+    void fillCustomParameters(Map<String, String> parameters) {
+        parameters.putAll(StepParameterPojo.super.getParameters());
+    }
+
+    void fillCriteriaParameters(Map<String, String> parameters) {
+        var cls = (Class<?>) this.getClass();
+
+        ofNullable(getCriteriaMetadata(cls, true)).ifPresent(metaData -> {
+            int i = 0;
+            for (var c : conditions) {
+                var criteria = i == 0 ? translate(metaData) : translate(metaData) + " " + (i + 1);
+                parameters.put(criteria, c.toString());
+                i++;
+            }
+        });
+    }
+
+    void fillTimeParameters(Map<String, String> parameters) {
+        var cls = (Class<?>) this.getClass();
+
+        ofNullable(getTimeOutMetadata(cls, true)).ifPresent(metaData ->
+                ofNullable(timeToGet).ifPresent(duration -> {
+                    if (duration.toMillis() > 0) {
+                        parameters.put(translate(metaData), formatDurationHMS(duration.toMillis()));
+                    }
+                }));
+
+        ofNullable(getPollingTimeMetadata(cls, true)).ifPresent(metaData ->
+                ofNullable(sleepingTime).ifPresent(duration -> {
+                    if (duration.toMillis() > 0) {
+                        parameters.put(translate(metaData), formatDurationHMS(duration.toMillis()));
+                    }
+                }));
     }
 
     /**
@@ -164,15 +218,33 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     }
 
     /**
-     * This method defines an exception to be thrown when no valuable result is returned.
+     * This method says that it is necessary to throw an exception and to fail a test when
+     * no valuable data is returned.
      *
-     * @param exceptionSupplier is a supplier of exception to be thrown when invocation of {@link Function#apply(Object)}
-     *                          doesn't return any valuable result. {@link Function#apply(Object)} is invoked on the resulted function
      * @return self-reference
      */
-    protected THIS throwOnEmptyResult(Supplier<? extends RuntimeException> exceptionSupplier) {
-        this.exceptionSupplier = exceptionSupplier;
+    public THIS throwOnNoResult() {
+        var toThrow = getExceptionMessageStartMetadata(this.getClass(), true);
+        this.exceptionSupplier = () -> {
+            try {
+                var c = toThrow.getDeclaringClass().getAnnotation(ThrowWhenNoData.class).toThrow().getConstructor(String.class);
+                c.setAccessible(true);
+                return c.newInstance(getExceptionMessage(translate(toThrow)));
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        };
         return (THIS) this;
+    }
+
+    String getExceptionMessage(String messageStarting) {
+        var stringBuilder = new StringBuilder(messageStarting).append(SPACE).append(description);
+        getParameters().forEach((key, value) -> stringBuilder.append("\r\n")
+                .append("- ")
+                .append(key)
+                .append(":")
+                .append(value));
+        return stringBuilder.toString();
     }
 
     /**
@@ -224,115 +296,67 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     }
 
     /**
-     * Marks that it is needed to produce a {@link java.awt.image.BufferedImage} after invocation of
-     * {@link java.util.function.Function#apply(Object)} on built resulted {@link java.util.function.Function}.
-     * This image is produced by {@link Captor#getData(java.lang.Object)}
+     * Some additional action on start of the getting step-function
      *
-     * <p>NOTE 1</p>
-     * This image is produced if there is any subclass of {@link ImageCaptor}
-     * or {@link Captor} that may produce a {@link java.awt.image.BufferedImage}.
-     *
-     * <p>NOTE 2</p>
-     * A subclass of {@link ImageCaptor} or
-     * {@link Captor} should be able to handle resulted values {@code R}
-     * on success or input values {@code T} on failure.
-     *
-     * @return self-reference
+     * @param m is a mediator value is used to get the required result
      */
-    @Override
-    public THIS makeImageCaptureOnFinish() {
-        captorFilters.add(new CaptorFilterByProducedType(BufferedImage.class));
-        return (THIS) this;
+    protected void onStart(M m) {
     }
 
     /**
-     * Marks that it is needed to produce a {@link java.io.File} after invocation of
-     * {@link java.util.function.Function#apply(Object)} on built resulted {@link java.util.function.Function}.
-     * This image is produced by {@link Captor#getData(java.lang.Object)}
+     * Some additional action if the step is successful
      *
-     * <p>NOTE 1</p>
-     * This file is produced if there is any subclass of {@link FileCaptor}
-     * or {@link Captor} that may produce a {@link java.io.File}.
-     *
-     * <p>NOTE 2</p>
-     * A subclass of {@link FileCaptor} or
-     * {@link Captor} should be able to handle resulted values {@code R}
-     * on success or input values {@code T} on failure.
-     *
-     * @return self-reference
+     * @param r is a result value
      */
-    @Override
-    public THIS makeFileCaptureOnFinish() {
-        captorFilters.add(new CaptorFilterByProducedType(File.class));
-        return (THIS) this;
+    protected void onSuccess(R r) {
     }
 
     /**
-     * Marks that it is needed to produce a {@link java.lang.StringBuilder} after invocation of
-     * {@link java.util.function.Function#apply(Object)} on built resulted {@link java.util.function.Function}.
-     * This image is produced by {@link Captor#getData(java.lang.Object)}
+     * Some additional action if the step is failed
      *
-     * <p>NOTE 1</p>
-     * This string builder is produced if there is any subclass of {@link StringCaptor}
-     * or {@link Captor} that may produce a {@link java.lang.StringBuilder}.
-     *
-     * <p>NOTE 2</p>
-     * A subclass of {@link StringCaptor} or
-     * {@link Captor} should be able to handle resulted values {@code R}
-     * on success or input values {@code T} on failure.
-     *
-     * @return self-reference
+     * @param m         is a mediator value is used to get the required result
+     * @param throwable is a thrown exception/error
      */
-    @Override
-    public THIS makeStringCaptureOnFinish() {
-        captorFilters.add(new CaptorFilterByProducedType(StringBuilder.class));
-        return (THIS) this;
-    }
-
-    /**
-     * Marks that it is needed to produce some value after invocation of
-     * {@link java.util.function.Function#apply(Object)} on built resulted {@link java.util.function.Function}.
-     * This image is produced by {@link Captor#getData(java.lang.Object)}
-     *
-     * <p>NOTE 1</p>
-     * This value is produced if there is any subclass of {@link Captor} that
-     * may produce  a value of type defined by {@param typeOfCapture}.
-     *
-     * <p>NOTE 2</p>
-     * A subclass of {@link Captor} should be able to handle resulted values {@code R}
-     * on success or input values {@code T} on failure.
-     *
-     * @param typeOfCapture is a type of a value to produce after the invocation of {@link java.util.function.Function#apply(Object)}
-     *                      on the built function is finished.
-     * @return self-reference
-     */
-    @Override
-    public THIS onFinishMakeCaptureOfType(Class<?> typeOfCapture) {
-        captorFilters.add(new CaptorFilterByProducedType(typeOfCapture));
-        return (THIS) this;
+    protected void onFailure(M m, Throwable throwable) {
     }
 
     @Override
     public Function<T, R> get() {
         checkArgument(nonNull(from), "FROM-object is not defined");
         var composeWith = preparePreFunction();
-        var endFunction = getEndFunction();
+        var endFunction = new Function<M, R>() {
+            @Override
+            public R apply(M m) {
+                try {
+                    onStart(m);
+                    var result = getEndFunction().apply(m);
+                    onSuccess(result);
+                    return result;
+                } catch (Throwable t) {
+                    onFailure(m, t);
+                    throw t;
+                }
+            }
+        };
         checkNotNull(endFunction);
 
-        StepFunction<T, R> toBeReturned;
+        var params = getParameters();
+        var resultDescription = translate(getResultMetadata(this.getClass(), true));
+        var description = translate(translate(getImperativeMetadata(this.getClass(), true)) + " " + this.description).trim();
 
-        var description = translate(getImperative(this.getClass())) + " " + this.description;
-        if (StepFunction.class.isAssignableFrom(composeWith.getClass())) {
-            var endFunctionStep = toGet(description, endFunction);
-            endFunctionStep.addCaptorFilters(captorFilters);
-            toBeReturned = endFunctionStep.compose(composeWith);
-            endFunctionStep.setParameters(getParameters());
-        } else {
-            toBeReturned = toGet(description, endFunction.compose(composeWith));
+        var toBeReturned = new Get<>(description, endFunction)
+                .addSuccessCaptors(successCaptors)
+                .addFailureCaptors(failureCaptors)
+                .setResultDescription(resultDescription)
+                .setParameters(params)
+                .setMaxDepth(getMaxDepth(this.getClass()))
+                .compose(composeWith);
+
+        if (!toReport) {
+            toBeReturned.turnReportingOff();
         }
 
-        toBeReturned.addCaptorFilters(captorFilters);
-        return toBeReturned.setParameters(getParameters());
+        return toBeReturned;
     }
 
     protected Function<T, M> preparePreFunction() {
@@ -350,6 +374,16 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     @Override
     public String toString() {
+        return getDescription();
+    }
+
+    /**
+     * The method {@link #toString()} is possible to be overridden. This method is for such cases when it is necessary to
+     * have access to step description.
+     *
+     * @return step description.
+     */
+    protected String getDescription() {
         return description;
     }
 
@@ -364,122 +398,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     protected abstract Function<M, R> getEndFunction();
 
-    protected Criteria<P> getCriteria() {
+    Criteria<P> getCriteria() {
         return condition;
-    }
-
-    /**
-     * This annotation is designed to mark subclasses of {@link SequentialGetStepSupplier}. It is
-     * used for the reading of timeouts, polling intervals, {@code from}-values, criteria and for the
-     * forming of parameters of a resulted step-function.
-     *
-     * @see SequentialGetStepSupplier#timeOut(Duration)
-     * @see SequentialGetStepSupplier#pollingInterval(Duration)
-     * @see SequentialGetStepSupplier#criteria(Criteria)
-     * @see SequentialGetStepSupplier#criteria(String, Predicate)
-     * @see SequentialGetStepSupplier#from(Object)
-     * @see SequentialGetStepSupplier#from(SequentialGetStepSupplier)
-     * @see SequentialGetStepSupplier#from(Function)
-     */
-    @Retention(RUNTIME)
-    @Target({TYPE})
-    public @interface DefaultParameterNames {
-
-        /**
-         * Defines name of imperative of a step
-         *
-         * @return imperative of a step
-         */
-        String imperative() default "Get:";
-
-        /**
-         * Defines name of the timeout-parameter
-         *
-         * @return Defined name of the timeout-parameter
-         * @see SequentialGetStepSupplier#timeOut(Duration)
-         */
-        String timeOut() default "Timeout/time for retrying";
-
-        /**
-         * Defines name of the polling/sleeping time-parameter
-         *
-         * @return Defined name of the polling/sleeping time-parameter
-         * @see SequentialGetStepSupplier#pollingInterval(Duration)
-         */
-        String pollingTime() default "Polling time";
-
-        /**
-         * Defines name of the criteria-parameter
-         *
-         * @return Defined name of the criteria-parameter
-         * @see SequentialGetStepSupplier#criteria(Criteria)
-         * @see SequentialGetStepSupplier#criteria(String, Predicate)
-         */
-        String criteria() default "Criteria";
-
-        /**
-         * Defines name of the from-parameter
-         *
-         * @return Defined name of the from-parameter
-         * @see SequentialGetStepSupplier#from(Object)
-         * @see SequentialGetStepSupplier#from(SequentialGetStepSupplier)
-         * @see SequentialGetStepSupplier#from(Function)
-         */
-        String from() default "Get from";
-
-        final class DefaultGetParameterReader {
-            public DefaultGetParameterReader() {
-                super();
-            }
-
-            public static PseudoField getFromPseudoField(Class<?> toRead) {
-                if (!SequentialGetStepSupplier.class.isAssignableFrom(toRead)) {
-                    return null;
-                }
-                return new PseudoField(toRead, "from", getDefaultParameters(toRead).from());
-            }
-
-            public static PseudoField getPollingTimePseudoField(Class<?> toRead) {
-                if (!SequentialGetStepSupplier.class.isAssignableFrom(toRead)) {
-                    return null;
-                }
-                return new PseudoField(toRead, "pollingTime", getDefaultParameters(toRead).pollingTime());
-            }
-
-            public static PseudoField getTimeOutPseudoField(Class<?> toRead) {
-                if (!SequentialGetStepSupplier.class.isAssignableFrom(toRead)) {
-                    return null;
-                }
-                return new PseudoField(toRead, "timeOut", getDefaultParameters(toRead).timeOut());
-            }
-
-            public static PseudoField getCriteriaPseudoField(Class<?> toRead) {
-                if (!SequentialGetStepSupplier.class.isAssignableFrom(toRead)) {
-                    return null;
-                }
-                return new PseudoField(toRead, "criteria", getDefaultParameters(toRead).criteria());
-            }
-
-            public static PseudoField getImperative(Class<?> toRead) {
-                if (!SequentialGetStepSupplier.class.isAssignableFrom(toRead)) {
-                    return null;
-                }
-                return new PseudoField(toRead, "imperative", getDefaultParameters(toRead).imperative());
-            }
-
-            private static DefaultParameterNames getDefaultParameters(Class<?> toRead) {
-                return ofNullable(toRead.getAnnotation(DefaultParameterNames.class))
-                        .orElseGet(() -> {
-                            DefaultParameterNames parameterNames = null;
-                            var clazz = toRead;
-                            while (parameterNames == null) {
-                                clazz = clazz.getSuperclass();
-                                parameterNames = clazz.getAnnotation(DefaultParameterNames.class);
-                            }
-                            return parameterNames;
-                        });
-            }
-        }
     }
 
     private static abstract class PrivateGetObjectStepSupplier<T, R, M, THIS extends PrivateGetObjectStepSupplier<T, R, M, THIS>>
@@ -932,5 +852,158 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         protected THIS from(SequentialGetStepSupplier<T, ? extends M, ?, ?, ?> from) {
             return super.from(from);
         }
+    }
+
+    @Retention(RUNTIME)
+    @Target({TYPE})
+    public @interface DefineGetImperativeParameterName {
+        /**
+         * Defines name of imperative of a step
+         *
+         * @return imperative of a step
+         */
+        String value() default "Get:";
+    }
+
+    @Retention(RUNTIME)
+    @Target({TYPE})
+    public @interface DefineTimeOutParameterName {
+        /**
+         * Defines name of the timeout-parameter
+         *
+         * @return Defined name of the timeout-parameter
+         * @see SequentialGetStepSupplier#timeOut(Duration)
+         */
+        String value() default "Timeout/time for retrying";
+    }
+
+    @Retention(RUNTIME)
+    @Target({TYPE})
+    public @interface DefinePollingTimeParameterName {
+        /**
+         * Defines name of the polling/sleeping time-parameter
+         *
+         * @return Defined name of the polling/sleeping time-parameter
+         * @see SequentialGetStepSupplier#pollingInterval(Duration)
+         */
+        String value() default "Polling time";
+    }
+
+    @Retention(RUNTIME)
+    @Target({TYPE})
+    public @interface DefineCriteriaParameterName {
+        /**
+         * Defines name of the criteria-parameter
+         *
+         * @return Defined name of the criteria-parameter
+         * @see SequentialGetStepSupplier#criteria(Criteria)
+         * @see SequentialGetStepSupplier#criteria(String, Predicate)
+         */
+        String value() default "Criteria";
+    }
+
+    @Retention(RUNTIME)
+    @Target({TYPE})
+    public @interface DefineFromParameterName {
+        /**
+         * Defines name of the from-parameter
+         *
+         * @return Defined name of the from-parameter
+         * @see SequentialGetStepSupplier#from(Object)
+         * @see SequentialGetStepSupplier#from(SequentialGetStepSupplier)
+         * @see SequentialGetStepSupplier#from(Function)
+         */
+        String value() default "Get from";
+    }
+
+    @Retention(RUNTIME)
+    @Target({TYPE})
+    public @interface DefineResultDescriptionParameterName {
+        /**
+         * Defines name of the parameter that describes a returned value
+         */
+        String value() default "Result";
+    }
+
+    public static final class DefaultGetParameterReader {
+
+        private DefaultGetParameterReader() {
+            super();
+        }
+
+        public static AdditionalMetadata<StepParameter> getFromMetadata(Class<?> toRead, boolean useInheritance) {
+            return readAnnotation(toRead, DefineFromParameterName.class, "from", useInheritance);
+        }
+
+        public static AdditionalMetadata<StepParameter> getPollingTimeMetadata(Class<?> toRead, boolean useInheritance) {
+            return readAnnotation(toRead, DefinePollingTimeParameterName.class, "pollingTime", useInheritance);
+        }
+
+        public static AdditionalMetadata<StepParameter> getTimeOutMetadata(Class<?> toRead, boolean useInheritance) {
+            return readAnnotation(toRead, DefineTimeOutParameterName.class, "timeOut", useInheritance);
+        }
+
+        public static AdditionalMetadata<StepParameter> getCriteriaMetadata(Class<?> toRead, boolean useInheritance) {
+            return readAnnotation(toRead, DefineCriteriaParameterName.class, "criteria", useInheritance);
+        }
+
+        public static AdditionalMetadata<StepParameter> getImperativeMetadata(Class<?> toRead, boolean useInheritance) {
+            return readAnnotation(toRead, DefineGetImperativeParameterName.class, "imperative", useInheritance);
+        }
+
+        public static AdditionalMetadata<StepParameter> getResultMetadata(Class<?> toRead, boolean useInheritance) {
+            return readAnnotation(toRead, DefineResultDescriptionParameterName.class, "resultDescription", useInheritance);
+        }
+
+        public static AdditionalMetadata<StepParameter> getExceptionMessageStartMetadata(Class<?> toRead, boolean useInheritance) {
+            var declaredBy = getDeclaredBy(toRead, useInheritance);
+            if (declaredBy == null) {
+                return null;
+            }
+
+            return new AdditionalMetadata<>(declaredBy, "errorMessageStartingOnEmptyResult", StepParameter.class, () -> {
+                try {
+                    return createStepParameter(declaredBy.getAnnotation(ThrowWhenNoData.class).startDescription());
+                } catch (Exception t) {
+                    throw new RuntimeException(t);
+                }
+            });
+        }
+
+        private static AdditionalMetadata<StepParameter> readAnnotation(Class<?> toRead, Class<? extends Annotation> annotationClass,
+                                                                        String name, boolean useInheritance) {
+            if (!SequentialGetStepSupplier.class.isAssignableFrom(toRead)) {
+                return null;
+            }
+
+            var cls = toRead;
+            while (!cls.equals(Object.class)) {
+                var annotation = cls.getAnnotation(annotationClass);
+                if (annotation != null) {
+                    try {
+                        var valueMethod = annotation.annotationType().getMethod("value");
+                        valueMethod.setAccessible(true);
+                        return new AdditionalMetadata<>(cls, name, StepParameter.class, () -> {
+                            try {
+                                return createStepParameter((String) valueMethod.invoke(annotation));
+                            } catch (Exception t) {
+                                throw new RuntimeException(t);
+                            }
+                        });
+                    } catch (NoSuchMethodException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                if (useInheritance) {
+                    cls = cls.getSuperclass();
+                } else {
+                    return null;
+                }
+            }
+
+            return null;
+        }
+
     }
 }

@@ -7,8 +7,8 @@ configurations {
 }
 
 dependencies {
-    compile group: 'org.objenesis', name: 'objenesis', version: '3.1'
-    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.10.22'
+    compile group: 'org.objenesis', name: 'objenesis', version: '3.2'
+    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.0'
     compile group: 'org.aspectj', name: 'aspectjrt', version: '1.9.6'
     agent group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.6'
 }

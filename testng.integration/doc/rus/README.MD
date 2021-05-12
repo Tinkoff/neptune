@@ -24,7 +24,7 @@ public class MyTest extends BaseTestNgTest {
   <summary>Нажми, чтобы прочесть</summary>
 
 [Подробнее о механизме настроек](./../../../core.api/doc/rus/SETTINGS.MD).
-Подробнее [о контекстах](./../../../core.api/doc/rus/IDEA.MD#Контекст) и об их [обновлении](./../../../core.api/doc/rus/REFRESHING_STOPPING.MD#Обновление).
+Подробнее [о контекстах](./../../../core.api/doc/rus/STEPS.MD#Контекст) и об их [обновлении](./../../../core.api/doc/rus/REFRESHING_STOPPING.MD#Обновление).
 Описанный ниже набор настроек/свойств дополняет [базовый набор настроек/свойств](./../../../core.api/doc/rus/SETTINGS.MD#Основной-набор-настроек/свойств),
 которые могут быть включены в `neptune.global.properties` или в `neptune.properties`, или использованы в качестве
 свойств/переменных окружения в той среде, в которой запускаются тесты.

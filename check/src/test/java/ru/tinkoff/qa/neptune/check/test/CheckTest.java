@@ -7,7 +7,6 @@ import java.util.List;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
-import static java.lang.System.getProperties;
 import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -15,168 +14,59 @@ import static ru.tinkoff.qa.neptune.check.CheckActionSupplier.check;
 import static ru.tinkoff.qa.neptune.check.CheckActionSupplier.evaluateAndCheck;
 import static ru.tinkoff.qa.neptune.check.MatchAction.match;
 import static ru.tinkoff.qa.neptune.check.test.TestEventLogger.MESSAGES;
-import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.*;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.SUCCESS_AND_FAILURE;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
 
 public class CheckTest {
 
     @BeforeMethod
     public void beforeMethod() {
-        DefaultListLogger.messages.clear();
         MESSAGES.clear();
     }
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES1 =
-            of("Perform: Verify inspected value 4 has started",
-                    "Perform: Check Is integer. Assert: is <true> has started",
-                    "Get: Is integer has started",
-                    "true has been returned",
+            of("Check: 4 has started",
+                    "Assert: Is integer is <true> has started",
+                    "Event finished",
+                    "Assert: Sqrt value is <2.0> has started",
                     "Event finished",
                     "Event finished",
-                    "Perform: Check Sqrt value. Assert: is <2.0> has started",
-                    "Get: Sqrt value has started",
-                    "2.0 has been returned",
-                    "Event finished",
-                    "Event finished",
-                    "Event finished",
-                    "Perform: Verify inspected value 5 has started",
-                    "Perform: Check Sqr value. Assert: is <25.0> has started",
-                    "Get: Sqr value has started",
-                    "25.0 has been returned",
-                    "Event finished",
+                    "Check: 5 has started",
+                    "Assert: Sqr value is <25.0> has started",
                     "Event finished",
                     "Event finished");
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES2 =
-            of("Perform: Verify inspected value 9 has started",
-                    "Perform: Check Is integer. Assert: is <true> has started",
-                    "Get: Is integer has started",
-                    "true has been returned",
+            of("Check: 9 has started",
+                    "Assert: Is integer is <true> has started",
                     "Event finished",
-                    "Event finished",
-                    "Perform: Check Sqrt value. Assert: is <2.0> has started",
-                    "Get: Sqrt value has started",
-                    "3.0 has been returned",
-                    "Event finished",
+                    "Assert: Sqrt value is <2.0> has started",
                     "java.lang.AssertionError has been thrown",
                     "Event finished",
                     "java.lang.AssertionError has been thrown",
                     "Event finished");
 
     @Test
-    public void testOfLinearPositiveCaseWhenEventIsNotDefined() {
+    public void test1() {
         check(4, match("Is integer", number ->
                         Integer.class.isAssignableFrom(number.getClass()),
                 is(true)),
                 match("Sqrt value", number -> sqrt(number.doubleValue()), is(2D)));
 
-        check(5, match("Sqr value", number -> pow(number.doubleValue(), 2), is(25D)));
-
-        assertThat("Logged messages",
-                DefaultListLogger.messages,
-                emptyIterable());
+        check(5, match("Sqr value",
+                number -> pow(number.doubleValue(), 2),
+                is(25D)));
 
         assertThat(MESSAGES,
                 contains(EXPECTED_LOGGER_MESSAGES1.toArray()));
     }
 
 
-    @Test
-    public void testOfLinearPositiveCaseWhenEventIsSuccess() {
-        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
-        try {
-            check(4,
-                    match("Is integer", number ->
-                                    Integer.class.isAssignableFrom(number.getClass()),
-                            is(true)),
-                    match("Sqrt value", number -> sqrt(number.doubleValue()),
-                            is(2D)));
-
-            check(5, match("Sqr value",
-                    number -> pow(number.doubleValue(), 2),
-                    is(25D)));
-
-            assertThat("Logged messages",
-                    DefaultListLogger.messages,
-                    contains("Value true",
-                            "Value 4",
-                            "Value 2.0",
-                            "Value 4",
-                            "Value 25.0",
-                            "Value 5"));
-
-            assertThat(MESSAGES,
-                    contains(EXPECTED_LOGGER_MESSAGES1.toArray()));
-        } finally {
-            getProperties().remove(DO_CAPTURES_OF_INSTANCE.getName());
-        }
-    }
-
-    @Test
-    public void testOfLinearPositiveCaseWhenEventIsFailure() {
-        DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
-        try {
-            check(4,
-                    match("Is integer",
-                            number -> Integer.class.isAssignableFrom(number.getClass()),
-                            is(true)),
-                    match("Sqrt value",
-                            number -> sqrt(number.doubleValue()),
-                            is(2D)));
-
-            check(5, match("Sqr value",
-                    number -> pow(number.doubleValue(), 2),
-                    is(25D)));
-
-            assertThat("Logged messages",
-                    DefaultListLogger.messages,
-                    emptyIterable());
-
-            assertThat(MESSAGES,
-                    contains(EXPECTED_LOGGER_MESSAGES1.toArray()));
-        } finally {
-            getProperties().remove(DO_CAPTURES_OF_INSTANCE.getName());
-        }
-    }
-
-    @Test
-    public void testOfLinearPositiveCaseWhenEventIsAll() {
-        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
-        try {
-            check(4,
-                    match("Is integer",
-                            number -> Integer.class.isAssignableFrom(number.getClass()),
-                            is(true)),
-                    match("Sqrt value",
-                            number -> sqrt(number.doubleValue()),
-                            is(2D)));
-
-            check(5, match("Sqr value",
-                    number -> pow(number.doubleValue(), 2),
-                    is(25D)));
-
-            assertThat("Logged messages",
-                    DefaultListLogger.messages,
-                    contains("Value true",
-                            "Value 4",
-                            "Value 2.0",
-                            "Value 4",
-                            "Value 25.0",
-                            "Value 5"));
-
-            assertThat(MESSAGES,
-                    contains(EXPECTED_LOGGER_MESSAGES1.toArray()));
-        } finally {
-            getProperties().remove(DO_CAPTURES_OF_INSTANCE.getName());
-        }
-    }
-
-
     @Test(expectedExceptions = AssertionError.class, expectedExceptionsMessageRegExp = ".*['List of mismatches:']" +
+            "*['Sqrt value']" +
             "*['Expected: is <2.0>']" +
-            "*['but: Sqrt value:']" +
-            "*['was <3.0>']")
-    public void testOfLinearNegativeCaseWhenEventIsNotDefined() {
+            "*['but: was <3.0>']")
+    public void test2() {
         try {
             check(9,
                     match("Is integer",
@@ -186,117 +76,33 @@ public class CheckTest {
                             number -> sqrt(number.doubleValue()),
                             is(2D)));
         } finally {
-            assertThat(DefaultListLogger.messages,
-                    emptyIterable());
-
-            assertThat(MESSAGES,
-                    contains(EXPECTED_LOGGER_MESSAGES2.toArray()));
-        }
-    }
-
-    @Test(expectedExceptions = AssertionError.class, expectedExceptionsMessageRegExp = ".*['List of mismatches:']" +
-            "*['Expected: is <2.0>']" +
-            "*['but: Sqrt value:']" +
-            "*['was <3.0>']")
-    public void testOfLinearNegativeCaseWhenEventIsSuccess() {
-        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
-        try {
-            check(9,
-                    match("Is integer",
-                            number -> Integer.class.isAssignableFrom(number.getClass()),
-                            is(true)),
-                    match("Sqrt value",
-                            number -> sqrt(number.doubleValue()),
-                            is(2D)));
-        } finally {
-            getProperties().remove(DO_CAPTURES_OF_INSTANCE.getName());
-            assertThat(DefaultListLogger.messages,
-                    contains("Value true",
-                            "Value 9",
-                            "Value 3.0"));
-
-            assertThat(MESSAGES,
-                    contains(EXPECTED_LOGGER_MESSAGES2.toArray()));
-        }
-    }
-
-    @Test(expectedExceptions = AssertionError.class,
-            expectedExceptionsMessageRegExp = ".*[List of mismatches:]" +
-                    "*['Expected: is <2.0>']" +
-                    "*['but: Sqrt value:']" +
-                    "*['was <3.0>']")
-    public void testOfLinearNegativeCaseWhenEventIsFailure() {
-        DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
-        try {
-            check(9,
-                    match("Is integer",
-                            number -> Integer.class.isAssignableFrom(number.getClass()),
-                            is(true)),
-                    match("Sqrt value",
-                            number -> sqrt(number.doubleValue()),
-                            is(2D)));
-        } finally {
-            getProperties().remove(DO_CAPTURES_OF_INSTANCE.getName());
-            assertThat(DefaultListLogger.messages,
-                    contains("Value 9"));
-
-            assertThat(MESSAGES,
-                    contains(EXPECTED_LOGGER_MESSAGES2.toArray()));
-        }
-    }
-
-    @Test(expectedExceptions = AssertionError.class,
-            expectedExceptionsMessageRegExp = ".*['List of mismatches:']" +
-                    "*['Expected: is <2.0>']" +
-                    "*['but: Sqrt value:']" +
-                    "*['was <3.0>']")
-    public void testOfLinearNegativeCaseWhenEventIsAll() {
-        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
-        try {
-            check(9, match("Is integer",
-                    number -> Integer.class.isAssignableFrom(number.getClass()),
-                    is(true)),
-                    match("Sqrt value",
-                            number -> sqrt(number.doubleValue()),
-                            is(2D)));
-        } finally {
-            getProperties().remove(DO_CAPTURES_OF_INSTANCE.getName());
-            assertThat(DefaultListLogger.messages,
-                    contains("Value true",
-                            "Value 9",
-                            "Value 3.0",
-                            "Value 9"));
-
-            assertThat(MESSAGES,
-                    contains(EXPECTED_LOGGER_MESSAGES2.toArray()));
+            assertThat(MESSAGES, contains(EXPECTED_LOGGER_MESSAGES2.toArray()));
         }
     }
 
     @Test
-    public void testOfNullValue() {
+    public void test3() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
-        Object obj = null;
-        check("Given value", obj, match(nullValue()));
+        check("Given value", (Object) null, match(nullValue()));
 
         assertThat(MESSAGES,
-                contains("Perform: Verify Given value has started",
-                        "Perform: Check object. Assert: null has started",
+                contains("Check: Given value has started",
+                        "Assert: null has started",
                         "Event finished",
                         "Event finished"));
     }
 
     @Test
-    public void testOfPostponedValueEvaluation() {
+    public void test4() {
         evaluateAndCheck("Sqrt value of 9",
                 () -> sqrt(9),
                 match(is(3D)));
 
         assertThat(MESSAGES,
-                contains("Perform: Verify Sqrt value of 9 has started",
-                        "Sqrt value of 9 has started",
-                        "3.0 has been returned",
+                contains("Check: Sqrt value of 9 has started",
+                        "Check: Sqrt value of 9 has started",
+                        "Assert: is <3.0> has started",
                         "Event finished",
-                        "Perform: Check object. Assert: is <3.0> has started",
                         "Event finished",
                         "Event finished"));
     }

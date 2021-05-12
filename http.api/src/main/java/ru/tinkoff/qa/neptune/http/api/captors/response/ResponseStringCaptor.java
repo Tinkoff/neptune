@@ -1,33 +1,28 @@
 package ru.tinkoff.qa.neptune.http.api.captors.response;
 
-import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
-
-import java.net.http.HttpResponse;
+import ru.tinkoff.qa.neptune.core.api.event.firing.captors.CapturedStringInjector;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static ru.tinkoff.qa.neptune.core.api.utils.SPIUtil.loadSPI;
 
-public final class ResponseStringCaptor extends StringCaptor<HttpResponse<String>> implements BaseResponseObjectBodyCaptor<String> {
+@Description("Response Body. String")
+public final class ResponseStringCaptor extends AbstractResponseBodyObjectCaptor<String, StringBuilder> {
 
     public ResponseStringCaptor() {
-        super("Response Body. String");
+        super(loadSPI(CapturedStringInjector.class), String.class);
     }
 
     @Override
-    public StringBuilder getData(HttpResponse<String> caught) {
-        var body = caught.body();
+    public StringBuilder getData(String caught) {
         var stringBuilder = new StringBuilder();
 
-        if (isBlank(body)) {
+        if (isBlank(caught)) {
             stringBuilder.append("<EMPTY STRING>");
         } else {
-            stringBuilder.append(body);
+            stringBuilder.append(caught);
         }
 
         return stringBuilder;
-    }
-
-    @Override
-    public HttpResponse<String> getCaptured(Object toBeCaptured) {
-        return getCaptured(toBeCaptured, String.class);
     }
 }

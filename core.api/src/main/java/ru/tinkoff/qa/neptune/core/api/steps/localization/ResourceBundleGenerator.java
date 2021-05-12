@@ -1,11 +1,11 @@
 package ru.tinkoff.qa.neptune.core.api.steps.localization;
 
 import io.github.classgraph.ClassGraph;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.PseudoField;
+import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.AdditionalMetadata;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import java.io.*;
 import java.lang.reflect.AnnotatedElement;
@@ -13,22 +13,23 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.ClassLoader.getSystemClassLoader;
 import static java.lang.Thread.currentThread;
+import static java.lang.reflect.Modifier.isAbstract;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.Comparator.comparing;
 import static java.util.List.of;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultParameterNames.DefaultActionParameterReader.getPerformOnPseudoField;
-import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultParameterNames.DefaultGetParameterReader.*;
 
 public class ResourceBundleGenerator {
     public static final String RESOURCE_BUNDLE = "neptune_Localization";
@@ -52,7 +53,10 @@ public class ResourceBundleGenerator {
         File propFile = new File(directory, RESOURCE_BUNDLE + "_" + args[0] + ".properties");
 
         if (!propFile.exists()) {
-            propFile.createNewFile();
+            var created = propFile.createNewFile();
+            if (!created) {
+                throw new IOException("Bundle file was not created for some reason");
+            }
         }
 
         fillFile(propFile, currentProperties);
@@ -64,12 +68,12 @@ public class ResourceBundleGenerator {
         var writer = new FileWriter(file, true);
 
         try (var output = new BufferedWriter(writer)) {
-            output.write("#Values for translation of steps and parameters are defined here. Format key = value");
+            output.write("#Values for translation of steps, their parameters and attachments are defined here. Format key = value");
 
-            var children = new ArrayList<Class<?>>();
+            var steps = new LinkedList<Class<?>>();
             of(SequentialActionSupplier.class, SequentialGetStepSupplier.class).forEach(cls -> {
                 var nestMembers = asList(cls.getNestMembers());
-                children.addAll(new ClassGraph()
+                steps.addAll(new ClassGraph()
                         .enableAllInfo()
                         .scan()
                         .getSubclasses(cls.getName())
@@ -79,102 +83,63 @@ public class ResourceBundleGenerator {
                         .collect(toList()));
             });
 
-            children.sort(comparing(Class::getName));
+            steps.sort(comparing(Class::getName));
+            steps.addFirst(SequentialActionSupplier.class);
+            steps.addFirst(SequentialGetStepSupplier.class);
 
-            children.forEach(child -> {
-                try {
-                    output.newLine();
-                    output.write("#=============================================================================================");
-                    output.newLine();
-                    output.write("#====================== " + cutPartOfPath(child.getName()));
-                    output.newLine();
-                    output.write("#=============================================================================================");
+            var attachments = new ClassGraph()
+                    .enableAllInfo()
+                    .scan()
+                    .getSubclasses(Captor.class.getName())
+                    .loadClasses(Captor.class)
+                    .stream()
+                    .map(cls -> (Class<?>) cls)
+                    .sorted(comparing(Class::getName))
+                    .collect(toList());
 
-                    var description = child.getAnnotation(Description.class);
+            var criteriaList = new ClassGraph()
+                    .enableAllInfo()
+                    .scan()
+                    .getClassesWithMethodAnnotation(Description.class.getName())
+                    .loadClasses(true)
+                    .stream()
+                    .filter(classClass ->
+                            !SequentialActionSupplier.class.isAssignableFrom(classClass)
+                                    &&
+                                    !SequentialGetStepSupplier.class.isAssignableFrom(classClass))
+                    .sorted(comparing(Class::getName))
+                    .collect(toCollection(ArrayList::new));
 
-                    if (description != null) {
-                        var key = getKey(child);
-                        var value = ofNullable(properties)
-                                .map(p -> p.get(key))
-                                .orElse(description.value());
+            new DefaultBundleFiller(steps, "STEPS").fill(output, properties);
+            new DefaultBundleFiller(criteriaList, "CRITERIA").fill(output, properties);
+            new DefaultBundleFiller(attachments, "ATTACHMENTS").fill(output, properties);
 
-                        output.newLine();
-                        output.write("#_________________________________ Class Description _________________________________________");
-                        output.newLine();
-                        output.write("#Original text = " + description.value());
-                        output.newLine();
-                        output.write(key + " = " + value);
-                    }
+            new DefaultBundleFiller(new ClassGraph().enableAllInfo()
+                    .scan()
+                    .getClassesWithAnnotation(Description.class.getName())
+                    .loadClasses(true)
+                    .stream()
+                    .filter(aClass -> !SequentialGetStepSupplier.class.isAssignableFrom(aClass)
+                            && !SequentialActionSupplier.class.isAssignableFrom(aClass)
+                            && !Captor.class.isAssignableFrom(aClass))
+                    .sorted(comparing(Class::getName))
+                    .collect(toList()), "OTHER").fill(output, properties);
 
-                    output.newLine();
-                    output.write("#_________________________________ DefaultParameterNames _____________________________________");
-
-                    pseudoFieldWriter(output, getFromPseudoField(child), properties);
-                    pseudoFieldWriter(output, getPollingTimePseudoField(child), properties);
-                    pseudoFieldWriter(output, getTimeOutPseudoField(child), properties);
-                    pseudoFieldWriter(output, getCriteriaPseudoField(child), properties);
-                    pseudoFieldWriter(output, getPerformOnPseudoField(child), properties);
-
-                    var fields = stream(child.getDeclaredFields())
-                            .filter(field -> field.getAnnotation(StepParameter.class) != null)
-                            .collect(toList());
-
-                    if (!fields.isEmpty()) {
-                        output.newLine();
-                        output.write("#__________________________________ StepParameter ____________________________________________");
-                        fields.forEach(field -> {
-                            field.setAccessible(true);
-                            fill(output, field, properties);
-                        });
-                    }
-
-                    var methods = stream(child.getDeclaredMethods())
-                            .filter(method -> method.getAnnotation(Description.class) != null)
-                            .collect(toList());
-
-                    if (!methods.isEmpty()) {
-                        output.newLine();
-                        output.write("#__________________________________ Method Description _______________________________________");
-                        methods.forEach(method -> {
-                            method.setAccessible(true);
-                            fill(output, method, properties);
-                        });
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-        }
-    }
-
-    static void fill(BufferedWriter writer, AnnotatedElement annotatedElement, Properties properties) {
-        if (annotatedElement instanceof Method) {
-            Description annotation = annotatedElement.getAnnotation(Description.class);
-            var key = getKey(annotatedElement);
-            var value = ofNullable(properties)
-                    .map(p -> p.get(key))
-                    .orElse(annotation.value());
-            newLine(writer, annotation.value(), key, value);
-        }
-        if (annotatedElement instanceof Field) {
-            StepParameter annotation = annotatedElement.getAnnotation(StepParameter.class);
-            var key = getKey(annotatedElement);
-            var value = ofNullable(properties)
-                    .map(p -> p.get(key))
-                    .orElse(annotation.value());
-            newLine(writer, annotation.value(), key, value);
-        }
-    }
-
-    static void newLine(BufferedWriter writer, String originalText, String key, Object value) {
-        try {
-            writer.newLine();
-            writer.write("#Original text = " + originalText);
-            writer.newLine();
-            writer.write(key + " = " + value);
-        } catch (IOException e) {
-            e.printStackTrace();
+            new ClassGraph().enableAllInfo()
+                    .scan()
+                    .getSubclasses(BundleFillerExtension.class.getName())
+                    .loadClasses(BundleFillerExtension.class)
+                    .stream()
+                    .filter(cls -> !isAbstract(cls.getModifiers()) && !cls.equals(DefaultBundleFiller.class))
+                    .forEach(cls -> {
+                        try {
+                            var c = cls.getConstructor();
+                            c.setAccessible(true);
+                            c.newInstance().fill(output, properties);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
         }
     }
 
@@ -198,8 +163,8 @@ public class ResourceBundleGenerator {
                 Field field = ((Field) annotatedElement);
                 key = cutPartOfPath(field.getDeclaringClass().getName()) + "." + field.getName();
             } else {
-                PseudoField pseudoField = ((PseudoField) annotatedElement);
-                key = cutPartOfPath(pseudoField.getDeclaringClass().getName()) + "." + pseudoField.getName();
+                AdditionalMetadata<?> additionalMetadata = ((AdditionalMetadata<?>) annotatedElement);
+                key = cutPartOfPath(additionalMetadata.getDeclaringClass().getName()) + "." + additionalMetadata.getName();
             }
         }
         return key.replace(" ", "");
@@ -209,42 +174,20 @@ public class ResourceBundleGenerator {
         return s.replace("ru.tinkoff.qa.neptune.", "");
     }
 
-    static void pseudoFieldWriter(BufferedWriter writer, PseudoField field, Properties properties) {
-        ofNullable(field).ifPresent(pseudoField -> {
-            try {
-                var key = getKey(pseudoField);
-                var value = ofNullable(properties)
-                        .map(p -> p.get(key))
-                        .orElse(pseudoField.getAnnotation(StepParameter.class).value());
-
-                writer.newLine();
-                writer.write("#Original text = " + pseudoField.getAnnotation(StepParameter.class).value());
-                writer.newLine();
-                writer.write(key + " = " + value);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
     private static InputStream getResourceInputStream(String name) {
         return ofNullable(getSystemClassLoader()
                 .getResourceAsStream(name))
                 .orElseGet(() -> currentThread().getContextClassLoader().getResourceAsStream(name));
     }
 
-    private static Properties propertiesFromStream(InputStream is) {
-        return ofNullable(is)
-                .map(inputStream -> {
-                    var prop = new Properties();
-                    try {
-                        prop.load(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return prop;
-                })
-                .orElse(null);
+    private static Properties propertiesFromStream(InputStream is) throws IOException {
+        if (is == null) {
+            return null;
+        }
+
+        var prop = new Properties();
+        prop.load(new InputStreamReader(is, StandardCharsets.UTF_8));
+        return prop;
     }
 
     private static void clearFile(File file) throws FileNotFoundException {

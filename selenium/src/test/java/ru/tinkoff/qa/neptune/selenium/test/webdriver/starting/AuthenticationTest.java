@@ -33,7 +33,7 @@ public class AuthenticationTest {
 
     public void getDriver() {
         wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
-                new SeleniumParameterProvider().provide().getParameterValues()[0]);
+                new SeleniumParameterProvider().provide()[0]);
     }
 
     @BeforeMethod(alwaysRun = true)

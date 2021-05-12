@@ -24,9 +24,10 @@ public interface EventLogger {
     /**
      * Fires some value which has been returned.
      *
-     * @param returned value that should be fired.
+     * @param resultDescription is a description of returned value
+     * @param returned          value that should be fired.
      */
-    void fireReturnedValue(Object returned);
+    void fireReturnedValue(String resultDescription, Object returned);
 
     /**
      * Fires the finishing of some event.

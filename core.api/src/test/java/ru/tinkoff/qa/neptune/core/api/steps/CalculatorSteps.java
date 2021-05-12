@@ -27,7 +27,7 @@ public class CalculatorSteps extends Context<CalculatorSteps> implements Supplie
     }
 
     public Number evaluate(SequentialGetStepSupplier<CalculatorSteps, Number, ?, ?, ?> toEvaluate) {
-        return toEvaluate.get().apply(this);
+        return get(toEvaluate);
     }
 
     public Number evaluate(Function<CalculatorSteps, Number> toEvaluate) {

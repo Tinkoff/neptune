@@ -1,17 +1,18 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert;
 
 import org.openqa.selenium.Alert;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 /**
  * This class is designed to build an accept-action. This action is performed on a browser alert.
  */
-@SequentialActionSupplier.DefaultParameterNames(
-        performOn = "To accept"
-)
 @Description("Accept alert")
+@MaxDepthOfReporting(0)
+@IncludeParamsOfInnerGetterStep
 public final class AcceptAlertActionSupplier extends SequentialActionSupplier<SeleniumStepContext, Alert, AcceptAlertActionSupplier> {
 
     private AcceptAlertActionSupplier() {
@@ -39,7 +40,7 @@ public final class AcceptAlertActionSupplier extends SequentialActionSupplier<Se
     }
 
     @Override
-    protected void performActionOn(Alert value) {
+    protected void howToPerform(Alert value) {
         value.accept();
     }
 }

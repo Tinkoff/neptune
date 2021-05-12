@@ -1,11 +1,11 @@
 package ru.tinkoff.qa.neptune.selenium.captors;
 
-import com.google.common.annotations.Beta;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsDriver;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.ImageCaptor;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 
 import javax.imageio.ImageIO;
@@ -16,12 +16,11 @@ import java.io.IOException;
 import static java.util.Optional.ofNullable;
 import static org.openqa.selenium.OutputType.BYTES;
 
-@Beta
+/**
+ * Takes screenshot from a whole page
+ */
+@Description("Browser screenshot")
 public class WebDriverImageCaptor extends ImageCaptor<WebDriver> {
-
-    public WebDriverImageCaptor() {
-        super("Browser screenshot");
-    }
 
     @Override
     public BufferedImage getData(WebDriver caught) {

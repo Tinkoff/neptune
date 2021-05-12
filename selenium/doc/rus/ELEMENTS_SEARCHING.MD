@@ -2,9 +2,18 @@
 
 Полезные страницы:
 
+- О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст). 
+  Объект [контекста для браузера](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/SeleniumStepContext.html)
+  в примерах ниже вызывается статическим методом `ru.tinkoff.qa.neptune.selenium.SeleniumStepContext#inBrowser`
+
 - [Виджеты](./WIDGET.MD)
-- [О принципах работы шагов, которые возвращают результат](./../../../core.api/doc/rus/IDEA.MD#Шаги,-которые-возвращают-результат)
-  .
+  
+- [О принципах работы шагов, которые возвращают результат](./../../../core.api/doc/rus/STEPS.MD#Шаги,-которые-возвращают-результат).
+
+- О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
+
+- [Критерии для элементов страницы](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/functions/searching/CommonElementCriteria.html)
+
 
 ## Пример поиска
 
@@ -118,7 +127,7 @@ public class Tezzt {
 
 - проверка факта наличия/появления элемента/виджета:
 
-Полезная информация: [Про наличие или отсутствие чего либо](./../../../core.api/doc/rus/IDEA.MD#Присутствие-и-отсутствие)
+Полезная информация: [Про наличие или отсутствие чего либо](./../../../core.api/doc/rus/STEPS.MD#Присутствие-и-отсутствие)
 
 ```java
 import org.openqa.selenium.WebElement;
@@ -141,10 +150,9 @@ public class Tezzt {
         //соответствующий перечисленным критерием
         // вернется true если элемент есть, если нет - false
 
-        boolean isElementPresent = inBrowser().presenceOf(webElement(xpath("./some/path")),
-                "Элемент не появился"); //Текст ошибки, которая должна быть выброшена
+        boolean isElementPresent = inBrowser().presenceOfOrThrow(webElement(xpath("./some/path")));
         // вернется true если элемент есть, если нет - 
-        // будет выброшено исключение с текстом 'Элемент не появился'
+        // будет выброшено исключение
 
         boolean isButtonPresent = inBrowser().presenceOf(button()
                 .criteria(isEnabled()) //можно указать один критерий, 
@@ -154,17 +162,16 @@ public class Tezzt {
         //соответствующая перечисленным критерием
         // вернется true если кнопка есть, если нет - false
 
-        boolean isButtonPresent = inBrowser().presenceOf(button(),
-                "Кнопка не появилась"); //Текст ошибки, которая должна быть выброшена
+        boolean isButtonPresent = inBrowser().presenceOfOrThrow(button());
         // вернется true если кнопка есть, если нет - 
-        // будет выброшено исключение с текстом 'Кнопка не появилась'
+        // будет выброшено исключение
     }
 }
 ```
 
 - проверка факта наличия/появления элементов/виджетов (хотя бы одного):
 
-Полезная информация: [Про наличие или отсутствие чего либо](./../../../core.api/doc/rus/IDEA.MD#Присутствие-и-отсутствие)
+Полезная информация: [Про наличие или отсутствие чего либо](./../../../core.api/doc/rus/STEPS.MD#Присутствие-и-отсутствие)
 
 ```java
 import java.util.List;
@@ -192,10 +199,9 @@ public class Tezzt {
         //соответствующий перечисленным критерием
         // вернется true если хотя бы один элемент есть, если нет - false
 
-        boolean areElementsPresent = inBrowser().presenceOf(webElements(xpath("./some/path")), 
-                "Элементы не появились"); //Текст ошибки, которая должна быть выброшена
+        boolean areElementsPresent = inBrowser().presenceOfOrThrow(webElements(xpath("./some/path")));
         //  вернется true если хотя бы один элемент есть, если нет - 
-        // будет выброшено исключение с текстом 'Элемент не появился'
+        // будет выброшено исключение
 
         boolean areButtonsPresent = inBrowser().presenceOf(buttons()
                 .criteria(isEnabled()) //можно указать один критерий, 
@@ -208,17 +214,16 @@ public class Tezzt {
         //соответствующая перечисленным критерием
         // вернется true если хотя бы одна кнопка есть, если нет - false
 
-        boolean areButtonsPresent = inBrowser().presenceOf(buttons(),
-                "Кнопки не появились"); //Текст ошибки, которая должна быть выброшена
+        boolean areButtonsPresent = inBrowser().presenceOfOrThrow(buttons());
         // вернется true если хотя бы одна кнопка есть, если нет -  
-        // будет выброшено исключение с текстом 'Кнопки не появились'
+        // будет выброшено исключение
     }
 }
 ```
 
 - проверка факта отсутствия/исчезновения элемента/виджета:
 
-Полезная информация: [Про наличие или отсутствие чего либо](./../../../core.api/doc/rus/IDEA.MD#Присутствие-и-отсутствие)
+Полезная информация: [Про наличие или отсутствие чего либо](./../../../core.api/doc/rus/STEPS.MD#Присутствие-и-отсутствие)
 
 ```java
 import org.openqa.selenium.WebElement;
@@ -241,11 +246,9 @@ public class Tezzt {
         //соответствующий перечисленным критерием, должен исчезнуть, если он есть 
         // вернется true если элемента нет или за указанное время он исчез, иначе - false
 
-        boolean isElementPresent = inBrowser().absenceOf(webElement(xpath("./some/path")),
-                ofSeconds(40),
-                "Элемент все еще тут"); //Текст ошибки, которая должна быть выброшена
-        // вернется true если элемента нет или за указанное время он исчез, иначе - 
-        // будет выброшено исключение с текстом 'Элемент все еще тут'
+        boolean isElementPresent = inBrowser().absenceOrThrow(webElement(xpath("./some/path")),
+                ofSeconds(40)); // вернется true если элемента нет или за указанное время он исчез, иначе - 
+        // будет выброшено исключение
 
         boolean isButtonPresent = inBrowser().absenceOf(button()
                 .criteria(isEnabled()), //можно указать один критерий, 
@@ -255,18 +258,16 @@ public class Tezzt {
         //соответствующая перечисленным критерием, должна исчезнуть, если она есть 
         // вернется true если кнопки нет или за указанное время она исчезла, иначе - false
 
-        boolean isButtonPresent = inBrowser().absenceOf(button(),
-                ofSeconds(40),
-                "Кнопка все еще тут"); //Текст ошибки, которая должна быть выброшена
-        // вернется true если кнопки нет или за указанное время она исчезла, иначе -  
-        // будет выброшено исключение с текстом 'Кнопка все еще тут'
+        boolean isButtonPresent = inBrowser().absenceOrThrow(button(),
+                ofSeconds(40)); // вернется true если кнопки нет или за указанное время она исчезла, иначе -  
+        // будет выброшено исключение
     }
 }
 ```
 
 - проверка факта отсутствия/исчезновения элементов/виджетов (всех):
 
-Полезная информация: [Про наличие или отсутствие чего либо](./../../../core.api/doc/rus/IDEA.MD#Присутствие-и-отсутствие)
+Полезная информация: [Про наличие или отсутствие чего либо](./../../../core.api/doc/rus/STEPS.MD#Присутствие-и-отсутствие)
 
 ```java
 import org.openqa.selenium.WebElement;
@@ -289,11 +290,9 @@ public class Tezzt {
         //соответствующие перечисленным критерием, должны исчезнуть, если они есть 
         // вернется true если элементов нет или за указанное время они исчезли, иначе - false
 
-        boolean isElementPresent = inBrowser().absenceOf(webElements(xpath("./some/path")),
-                ofSeconds(40),
-                "Элементы все еще тут"); //Текст ошибки, которая должна быть выброшена
-        // вернется true если элементов нет или за указанное время они исчезли, иначе -  
-        // будет выброшено исключение с текстом 'Элементы все еще тут'
+        boolean isElementPresent = inBrowser().absenceOrThrow(webElements(xpath("./some/path")),
+                ofSeconds(40)); // вернется true если элементов нет или за указанное время они исчезли, иначе -  
+        // будет выброшено исключение
 
         boolean isButtonPresent = inBrowser().absenceOf(buttons()
                 .criteria(isEnabled()), //можно указать один критерий, 
@@ -303,11 +302,9 @@ public class Tezzt {
         //соответствующие перечисленным критерием, должны исчезнуть, если они есть 
         // вернется true если кнопок нет или за указанное время они исчезли, иначе - false
 
-        boolean isButtonPresent = inBrowser().absenceOf(buttons(),
-                ofSeconds(40),
-                "Кнопки все еще тут"); //Текст ошибки, которая должна быть выброшена
-        // вернется true если кнопок нет или за указанное время они исчезли, иначе - 
-        // будет выброшено исключение с текстом 'Кнопки все еще тут'
+        boolean isButtonPresent = inBrowser().absenceOrThrow(buttons(),
+                ofSeconds(40)); // вернется true если кнопок нет или за указанное время они исчезли, иначе - 
+        // будет выброшено исключение
     }
 }
 ```

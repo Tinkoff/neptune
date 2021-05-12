@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
 import net.sf.cglib.proxy.MethodProxy;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.DefaultElementLocatorFactory;
 import ru.tinkoff.qa.neptune.selenium.api.widget.NeedToScrollIntoView;
@@ -16,15 +17,18 @@ import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static org.openqa.selenium.support.PageFactory.initElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CGLibProxyBuilder.createProxy;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.ToStringFormer.widgetToString;
 
 class WidgetInterceptor extends AbstractElementInterceptor {
 
     private final Class<? extends Widget> widgetClass;
     private final Set<Class<?>> plainClassSet = new HashSet<>();
+    private final By by;
 
-    WidgetInterceptor(WebElement webElement, Class<? extends Widget> widgetClass) {
+    WidgetInterceptor(WebElement webElement, Class<? extends Widget> widgetClass, By by) {
         super(webElement);
         this.widgetClass = widgetClass;
+        this.by = by;
 
         Class<?> clazz = widgetClass;
         while (!clazz.equals(Object.class)) {
@@ -37,12 +41,18 @@ class WidgetInterceptor extends AbstractElementInterceptor {
     @Override
     public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
 
+        if ("toString".equals(method.getName()) &&
+                method.getParameterTypes().length == 0
+                && String.class.equals(method.getReturnType())) {
+            return widgetToString((Widget) createRealObject());
+        }
+
         if ("getWrappedElement".equals(method.getName())
                 && method.getParameterTypes().length == 0
                 && WebElement.class.equals(method.getReturnType())) {
             realObject = ofNullable(realObject)
                     .orElseGet(this::createRealObject);
-            return createProxy(element.getClass(), new WebElementInterceptor(element, realObject.toString()));
+            return createProxy(element.getClass(), new WebElementInterceptor(element, by));
         }
 
         return super.intercept(obj, method, args, proxy);

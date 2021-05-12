@@ -1,8 +1,9 @@
 package ru.tinkoff.qa.neptune.selenium.functions.intreraction;
 
 import org.openqa.selenium.interactions.Actions;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -11,7 +12,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 abstract class KeyDownActionSupplier extends InteractiveAction {
 
-    @StepParameter(value = "Modifier key", makeReadableBy = CharSequenceParameterValueGetter.class)
+    @DescriptionFragment(value = "key", makeReadableBy = CharSequenceParameterValueGetter.class)
     final CharSequence modifierKey;
 
     KeyDownActionSupplier(CharSequence modifierKey) {
@@ -20,7 +21,8 @@ abstract class KeyDownActionSupplier extends InteractiveAction {
         this.modifierKey = modifierKey;
     }
 
-    @Description("Press modifier key down")
+    @Description("Press modifier key '{key}' down")
+    @MaxDepthOfReporting(0)
     static final class KeyDownSimpleActionSupplier extends KeyDownActionSupplier {
 
         KeyDownSimpleActionSupplier(CharSequence modifierKey) {
@@ -33,9 +35,11 @@ abstract class KeyDownActionSupplier extends InteractiveAction {
         }
     }
 
+    @Description("Press modifier key '{key}' down with focus on {target}")
+    @MaxDepthOfReporting(0)
     static final class KeyDownOnElementActionSupplier extends KeyDownActionSupplier {
 
-        @StepParameter("Element")
+        @DescriptionFragment("target")
         private final Object e;
 
         KeyDownOnElementActionSupplier(CharSequence modifierKey, Object e) {

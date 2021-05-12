@@ -6,44 +6,66 @@
 
 [Настройка](./SETTINGS.MD#Локализация)
 
-Neptune поддерживает по дефолту механизм, основанный на использовании [AspectJ](https://www.eclipse.org/aspectj/doc/released/index.html) и [ResourceBundle](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/ResourceBundle.html).
+Neptune поддерживает по дефолту механизм, основанный на
+использовании [AspectJ](https://www.eclipse.org/aspectj/doc/released/index.html)
+и [ResourceBundle](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/ResourceBundle.html).
 
-###Как настроить использование базового механизма:
+### Как настроить использование базового механизма:
+
 - ##### указать в properties механизм перевода через resourceBundle
+
 ```properties
 DEFAULT_LOCALIZATION_ENGINE=ru.tinkoff.qa.neptune.core.api.steps.localization.LocalizationByResourceBundle
 ```
+
 - ##### сгенерировать и настроить resourceBundle
 - ##### указать в properties какую локаль использовать
+
 ```properties
 DEFAULT_LOCALE=ru_RU
 ```
 
 ### Механизм генерации resourceBundle
-Имеется возможность автогенерации resourceBundle для перевода.
-Для этого необходимо вызвать mainClass `ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGenerator` с двумя аргументами:
- - arg0 - строка в формате language_country
- - arg1 - путь к каталогу, в котором должен быть сохранен файл 
- 
-######Пример для pom.xml
+
+Имеется возможность автогенерации resourceBundle для перевода. Для этого необходимо вызвать
+mainClass `ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGenerator` с двумя аргументами:
+
+- arg0 - строка в формате language_country
+- arg1 - путь к каталогу, в котором должен быть сохранен файл
+
+###### Пример для pom.xml
 
 ```xml
-<execution>
-   <id>generate properties</id>
-   <phase>compile</phase>
-   <goals>
-      <goal>java</goal>
-   </goals>
-   <configuration>
-       <mainClass>ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGenerator</mainClass>
-       <arguments>
-          <argument>ru_RU</argument>
-          <argument>${basedir}/src/main/resources</argument>
-       </arguments>
-   </configuration>
-</execution>               
+
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.0.0</version>
+            <executions>
+                <execution>
+                    <id>generate properties</id>
+                    <phase>compile</phase>
+                    <goals>
+                        <goal>java</goal>
+                    </goals>
+                    <configuration>
+                        <mainClass>ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGenerator</mainClass>
+                        <arguments>
+                            <argument>ru_RU</argument>
+                            <argument>${basedir}/src/main/resources</argument>
+                        </arguments>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>            
 ```
-######Пример для build.gradle 
+
+###### Пример для build.gradle
+
 ```groovy
 task generateBundle(type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
@@ -55,37 +77,80 @@ task generateBundle(type: JavaExec) {
 #### В результате сгенерируется похожий файл, где необходимо изменить значение свойств
 
 ```properties
-#Values for translation of steps and parameters are defined here. Format key = value
-#=============================================================================================
-#====================== core.api.steps.Absence
-#=============================================================================================
-#_________________________________ DefaultParameterNames _____________________________________
-#Original text = Get from
-core.api.steps.Absence.from = Get from
-#Original text = Polling time
-core.api.steps.Absence.pollingTime = Polling time
+#Values for translation of steps, their parameters and attachments are defined here. Format key = value
+
+#============================================ STEPS ============================================ 
+
+######################## core.api.steps.SequentialGetStepSupplier #
+#_________________________________Parameters_____________________________________
+#Original text = Get:
+core.api.steps.SequentialGetStepSupplier.imperative = Get:
+#Original text = Result
+core.api.steps.SequentialGetStepSupplier.resultDescription = Result
+#Original text = Not present:
+core.api.steps.SequentialGetStepSupplier.errorMessageStartingOnEmptyResult = Not present:
+
+######################## core.api.steps.SequentialActionSupplier #
+#_________________________________Parameters_____________________________________
+#Original text = Perform:
+core.api.steps.SequentialActionSupplier.imperative = Perform:
+
+######################## core.api.steps.Absence #
+#_________________________________Parameters_____________________________________
 #Original text = Time of the waiting for absence
 core.api.steps.Absence.timeOut = Time of the waiting for absence
-#Original text = Criteria
-core.api.steps.Absence.criteria = Criteria
-#__________________________________ Method Description _______________________________________
-#Original text = Absence of {toBeAbsent}
-core.api.steps.Absence.absence(java.util.function.Function<T,?>) = Absence of {toBeAbsent}
+#Original text = Is absent
+core.api.steps.Absence.resultDescription = Is absent
+#Original text = Still present:
+core.api.steps.Absence.errorMessageStartingOnEmptyResult = Still present:
+#__________________________________ Methods _______________________________________
 #Original text = Absence of {toBeAbsent}
 core.api.steps.Absence.absence(core.api.steps.SequentialGetStepSupplier<T,?,?,?,?>) = Absence of {toBeAbsent}
-  ```
 
-###Использовать aspectj для собственных расширений
+######################## core.api.steps.Presence #
+#_________________________________Parameters_____________________________________
+#Original text = Is present
+core.api.steps.Presence.resultDescription = Is present
+#__________________________________ Methods _______________________________________
+#Original text = Presence of {toBePresent}
+core.api.steps.Presence.presence(core.api.steps.SequentialGetStepSupplier<T,?,?,?,?>) = Presence of {toBePresent}
 
-- настроить pom.xml
+#============================================ ATTACHMENTS ============================================ 
+
+######################## core.api.event.firing.collections.ArrayCaptor #
+#Original text = Resulted array
+core.api.event.firing.collections.ArrayCaptor = Resulted array
+
+######################## core.api.event.firing.collections.CollectionCaptor #
+#Original text = Resulted collection
+core.api.event.firing.collections.CollectionCaptor = Resulted collection
+
+######################## core.api.event.firing.collections.MapCaptor #
+#Original text = Resulted map
+core.api.event.firing.collections.MapCaptor = Resulted map
+```
+
+### Использовать aspectj для собственных расширений механизма шагов
+
+Про механизм шагов (полезные статьи):
+
+- [Шаги, которые возвращают результат](STEPS.MD#Шаги,-которые-возвращают-результат)
+
+- [Шаги, которые выполняют действие](STEPS.MD#Шаги,-которые-выполняют-действие)
+
+1. настроить `pom.xml`
+
  ```xml
 <!-- Добавить зависимость -->
 <dependency>
-   <groupId>org.aspectj</groupId>
-   <artifactId>aspectjweaver</artifactId>
-   <version>1.9.6</version>
+    <groupId>org.aspectj</groupId>
+    <artifactId>aspectjweaver</artifactId>
+    <version>${aspectj.version}</version>
+    <!-- Если новые шаги лежат в main, то scope необязателен  -->
+    <scope>test</scope>
 </dependency> 
  ```
+
  ```xml
 <!-- Добавить плагин -->
 <plugin>
@@ -93,42 +158,107 @@ core.api.steps.Absence.absence(core.api.steps.SequentialGetStepSupplier<T,?,?,?,
     <artifactId>maven-surefire-plugin</artifactId>
     <version>3.0.0-M5</version>
     <configuration>
-       <argLine>
-         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/1.9.6/aspectjweaver-1.9.6.jar"
-       </argLine>
+        <argLine>
+            -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/1.9.6/aspectjweaver-1.9.6.jar"
+        </argLine>
     </configuration>
 </plugin>
  ```
-- добавить для своих расширений @Description, @DescriptionFragment, @StepParameter, @DefaultParameterNames
+
+или `build.gradle`
+
+```groovy
+plugins {
+    id "io.freefair.aspectj.post-compile-weaving" version 'ACTUAL_PLUGIN_VERSION'
+}
+
+dependencies {
+    inpath(group: 'ru.tinkoff.qa.neptune', name: 'core.api', version: 'NEPTUNE_BETA_OR_RELEASE') {
+        transitive = false
+    }
+}
+
+```
+
+2. Использовать для своих шагов @Description, @DescriptionFragment, @StepParameter, @DefaultParameterNames
 
 ## Собственный механизм локализации
-Так же существует возможность реализовать собственный механизм локализации.
- 
-Для этого необходимо:
- * заимплементить интерфейс
- `ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization`
- ```java
-  public interface StepLocalization {
 
-      String classTranslation(Class<?> clz, Locale locale);
-  
-      String methodTranslation(Method method,Locale locale, Object... parameters);
-  
-      <T extends AnnotatedElement & Member> String memberTranslation(T member, Locale locale);
-  
-      String translation(String text,Locale locale);
-  }
+Так же существует возможность реализовать собственный механизм локализации.
+
+Для этого необходимо:
+
+* заимплементить интерфейс
+  `ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization`
+
+ ```java
+public interface StepLocalization {
+
+  /**
+   * Makes translation by usage of a class.
+   *
+   * @param clz                       is a class whose metadata may be used for auxiliary purposes
+   * @param description               is a description of a step. It is fully completed by value taken
+   *                                  from {@link Description} of a class and by values which are taken from
+   *                                  fields annotated by {@link DescriptionFragment}
+   * @param descriptionTemplateParams is a map of parameters and their values. These parameters are taken from
+   *                                  fields annotated by {@link DescriptionFragment}. This parameter is included
+   *                                  because the map is possible to be re-used for some reasons.
+   * @param locale                    is a used locale
+   * @param <T>                       is a type of a class
+   * @return translated text
+   */
+  <T> String classTranslation(Class<T> clz,
+                              String description,
+                              Map<String, String> descriptionTemplateParams,
+                              Locale locale);
+
+  /**
+   * Makes translation by usage of a method.
+   *
+   * @param method                    is a method whose metadata may be used for auxiliary purposes
+   * @param description               is a description of a step. It is fully completed by value taken
+   *                                  from {@link Description} of a method and by values which are taken from
+   *                                  method parameters annotated by {@link DescriptionFragment}
+   * @param descriptionTemplateParams is a map of parameters and their values. These parameters are taken from
+   *                                  method parameters annotated by {@link DescriptionFragment}.This parameter is included
+   *                                  because the map is possible to be re-used for some reasons.
+   * @param locale                    is a used locale
+   * @return translated text
+   */
+  String methodTranslation(Method method,
+                           String description,
+                           Map<String, String> descriptionTemplateParams,
+                           Locale locale);
+
+  /**
+   * Makes translation by usage of other annotated element that differs from {@link Class} and {@link Method}
+   *
+   * @param member      is an annotated element whose metadata may be used for auxiliary purposes
+   * @param description is a description taken from the member
+   * @param locale      is a used locale
+   * @param <T>         is a type of a member
+   * @return translated text
+   */
+  <T extends AnnotatedElement & Member> String memberTranslation(T member,
+                                                                 String description,
+                                                                 Locale locale);
+
+  /**
+   * Makes translation of a text.
+   *
+   * @param text   to be translated
+   * @param locale is a used locale
+   * @return translated text
+   */
+  String translation(String text, Locale locale);
+}
 ```
- * реализовать следующие методы:
-     * `String classTranslation(Class<?> clz, Locale locale)` - для перевода классов
-     * `String methodTranslation(Method method, Locale locale, Object... parameters)` - для перевода методов
-     * `<T extends AnnotatedElement & Member> String memberTranslation(T member, Locale locale)` - для перевода полей
-     * `String translation(String text, Locale locale)` - например, для перевода строки, используя переводчик или ИИ
-  
- * указать в propeties новый механизм
+
+* указать в propeties новый механизм
+
 ```properties
 DEFAULT_LOCALIZATION_ENGINE=org.my.project.MyLocalizationEngine
 ```
-При реализации интерфейса можно использовать метаинформацию, полученную из аннотаций @Description, @DescriptionFragment, @StepParameter, @DefaultParameterNames
  
  

@@ -1,25 +1,32 @@
 package ru.tinkoff.qa.neptune.http.api.response;
 
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.CaptorFilterByProducedType;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
+import ru.tinkoff.qa.neptune.http.api.captors.request.AbstractRequestBodyCaptor;
+import ru.tinkoff.qa.neptune.http.api.captors.response.AbstractResponseBodyObjectCaptor;
+import ru.tinkoff.qa.neptune.http.api.captors.response.AbstractResponseBodyObjectsCaptor;
+import ru.tinkoff.qa.neptune.http.api.captors.response.RequestResponseLogCaptor;
+import ru.tinkoff.qa.neptune.http.api.captors.response.ResponseCaptor;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Set.of;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.createCaptors;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchFailureEvent;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchSuccessEvent;
-import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplier.response;
 
 /**
@@ -28,11 +35,8 @@ import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSuppl
  * @param <T> is a type of a response body
  * @param <R> is a type of an item of resulted array
  */
-@SequentialGetStepSupplier.DefaultParameterNames(
-        criteria = "Criteria for an item of resulted array",
-        timeOut = "Time to receive expected http response and get not empty array"
-)
-@MakeCaptureOnFinishing(typeOfCapture = Object.class)
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted array")
+@ThrowWhenNoData(toThrow = DesiredDataHasNotBeenReceivedException.class, startDescription = "No data received:")
 public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObjectsFromArrayBodyStepSupplier<T, R, S>>
         extends SequentialGetStepSupplier.GetArrayStepSupplier<HttpStepContext, R, S> {
 
@@ -51,10 +55,16 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
      * @param <R>         is a type of an item of resulted array
      * @return an instance of {@link GetObjectsFromArrayWhenResponseReceived}
      */
-    public static <T, R> GetObjectsFromArrayWhenResponseReceived<T, R> asArray(String description,
-                                                                               HttpResponse<T> received,
-                                                                               Function<T, R[]> f) {
-        return new GetObjectsFromArrayWhenResponseReceived<>(received, f).setDescription(translate(description));
+    @Description("{description}")
+    public static <T, R> GetObjectsFromArrayWhenResponseReceived<T, R> asArray(
+            @DescriptionFragment(
+                    value = "description",
+                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class)
+                    String description,
+            HttpResponse<T> received,
+            Function<T, R[]> f) {
+        checkArgument(isNotBlank(description), "description of resulted value is not defined");
+        return new GetObjectsFromArrayWhenResponseReceived<>(received, f);
     }
 
     /**
@@ -69,11 +79,19 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
      * @param <R>            is a type of an item of resulted array
      * @return an instance of {@link GetObjectsFromArrayWhenResponseReceiving}
      */
-    public static <T, R> GetObjectsFromArrayWhenResponseReceiving<T, R> asArray(String description,
-                                                                                RequestBuilder requestBuilder,
-                                                                                HttpResponse.BodyHandler<T> handler,
-                                                                                Function<T, R[]> f) {
-        return new GetObjectsFromArrayWhenResponseReceiving<>(response(requestBuilder, handler), f).setDescription(translate(description));
+    @Description("{description}")
+    public static <T, R> GetObjectsFromArrayWhenResponseReceiving<T, R> asArray(
+            @DescriptionFragment(
+                    value = "description",
+                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class)
+                    String description,
+            RequestBuilder requestBuilder,
+            HttpResponse.BodyHandler<T> handler,
+            Function<T, R[]> f) {
+        checkArgument(isNotBlank(description), "description of resulted value is not defined");
+        return new GetObjectsFromArrayWhenResponseReceiving<>(response(requestBuilder, handler)
+                .addIgnored(Exception.class),
+                f);
     }
 
 
@@ -86,9 +104,15 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
      * @param <R>         is a type of an item of array of response body
      * @return an instance of {@link GetObjectsFromArrayWhenResponseReceived}
      */
-    public static <R> GetObjectsFromArrayWhenResponseReceived<R[], R> asArray(String description,
-                                                                              HttpResponse<R[]> received) {
-        return new GetObjectsFromArrayWhenResponseReceived<>(received, rs -> rs).setDescription(translate(description));
+    @Description("{description}")
+    public static <R> GetObjectsFromArrayWhenResponseReceived<R[], R> asArray(
+            @DescriptionFragment(
+                    value = "description",
+                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class)
+                    String description,
+            HttpResponse<R[]> received) {
+        checkArgument(isNotBlank(description), "description of resulted value is not defined");
+        return new GetObjectsFromArrayWhenResponseReceived<>(received, rs -> rs);
     }
 
     /**
@@ -101,10 +125,18 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
      * @param <R>            is a type of an item of array of response body
      * @return an instance of {@link GetObjectsFromArrayWhenResponseReceiving}
      */
-    public static <R> GetObjectsFromArrayWhenResponseReceiving<R[], R> asArray(String description,
-                                                                               RequestBuilder requestBuilder,
-                                                                               HttpResponse.BodyHandler<R[]> handler) {
-        return new GetObjectsFromArrayWhenResponseReceiving<>(response(requestBuilder, handler), rs -> rs).setDescription(translate(description));
+    @Description("{description}")
+    public static <R> GetObjectsFromArrayWhenResponseReceiving<R[], R> asArray(
+            @DescriptionFragment(
+                    value = "description",
+                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class)
+                    String description,
+            RequestBuilder requestBuilder,
+            HttpResponse.BodyHandler<R[]> handler) {
+        checkArgument(isNotBlank(description), "description of resulted value is not defined");
+        return new GetObjectsFromArrayWhenResponseReceiving<>(response(requestBuilder, handler)
+                .addIgnored(Exception.class),
+                rs -> rs);
     }
 
 
@@ -119,23 +151,13 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
     }
 
     /**
-     * Make throw an exception if no data received
-     *
-     * @param exceptionMessage is a message of {@link DesiredDataHasNotBeenReceivedException} exception to be thrown
-     * @return self-reference
-     * @see SequentialGetStepSupplier#throwOnEmptyResult(Supplier)
-     */
-    public S throwIfNoDesiredDataReceived(String exceptionMessage) {
-        return super.throwOnEmptyResult(() -> new DesiredDataHasNotBeenReceivedException(exceptionMessage));
-    }
-
-    /**
      * Returns an array from a body of http response which is received already.
      *
      * @param <T> is a type of a response body
      * @param <R> is a type of an item of resulted array
      */
     @SuppressWarnings("unused")
+    @DefineGetImperativeParameterName(value = "From http response get:")
     public static final class GetObjectsFromArrayWhenResponseReceived<T, R>
             extends GetObjectsFromArrayBodyStepSupplier<T, R, GetObjectsFromArrayWhenResponseReceived<T, R>> {
 
@@ -148,11 +170,6 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
             checkNotNull(response);
             this.response = response;
         }
-
-        @Override
-        protected GetObjectsFromArrayWhenResponseReceived<T, R> setDescription(String description) {
-            return super.setDescription(description);
-        }
     }
 
     /**
@@ -161,6 +178,8 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
      * @param <T> is a type of a response body
      * @param <R> is a type of an item of resulted array
      */
+    @SequentialGetStepSupplier.DefineTimeOutParameterName("Time to receive expected http response and get the result")
+    @DefineGetImperativeParameterName(value = "Send http request. Wait for the response and then get:")
     public static final class GetObjectsFromArrayWhenResponseReceiving<T, R>
             extends GetObjectsFromArrayBodyStepSupplier<T, R, GetObjectsFromArrayWhenResponseReceiving<T, R>> {
 
@@ -177,11 +196,6 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
         private GetObjectsFromArrayWhenResponseReceiving(ResponseSequentialGetSupplier<T> getResponse,
                                                          Function<T, R[]> f) {
             this(new ReceiveResponseAndGetResultFunction<>(f, getResponse));
-        }
-
-        @Override
-        protected GetObjectsFromArrayWhenResponseReceiving<T, R> setDescription(String description) {
-            return super.setDescription(description);
         }
 
         /**
@@ -226,21 +240,38 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
         }
 
         @Override
-        protected Function<HttpStepContext, R[]> getEndFunction() {
-            return httpStepContext -> {
-                boolean success = false;
-                try {
-                    catchValue(getResponse.getRequest().body(), of(new CaptorFilterByProducedType(Object.class)));
-                    var result = super.getEndFunction().apply(httpStepContext);
-                    success = true;
-                    return result;
-                } finally {
-                    if ((success && catchSuccessEvent()) || (!success && catchFailureEvent())) {
-                        catchValue(info, of(new CaptorFilterByProducedType(Object.class)));
-                        catchValue(info.getLastReceived(), of(new CaptorFilterByProducedType(Object.class)));
-                    }
-                }
-            };
+        public Map<String, String> getParameters() {
+            var params = super.getParameters();
+            params.putAll(getResponse.getParameters());
+            return params;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        protected void onStart(HttpStepContext httpStepContext) {
+            catchValue(getResponse.getRequest().body(), createCaptors(new Class[]{AbstractRequestBodyCaptor.class}));
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        protected void onSuccess(R[] rs) {
+            if (catchSuccessEvent()) {
+                catchValue(info, createCaptors(new Class[]{RequestResponseLogCaptor.class}));
+                catchValue(info.getLastReceived(), createCaptors(new Class[]{ResponseCaptor.class,
+                        AbstractResponseBodyObjectCaptor.class,
+                        AbstractResponseBodyObjectsCaptor.class}));
+            }
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        protected void onFailure(HttpStepContext httpStepContext, Throwable throwable) {
+            if (catchFailureEvent()) {
+                catchValue(info, createCaptors(new Class[]{RequestResponseLogCaptor.class}));
+                catchValue(info.getLastReceived(), createCaptors(new Class[]{ResponseCaptor.class,
+                        AbstractResponseBodyObjectCaptor.class,
+                        AbstractResponseBodyObjectsCaptor.class}));
+            }
         }
     }
 }

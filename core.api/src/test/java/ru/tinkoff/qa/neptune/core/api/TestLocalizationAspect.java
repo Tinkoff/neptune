@@ -14,6 +14,7 @@ import java.lang.reflect.Method;
 import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 
 @Aspect
+@SuppressWarnings("unused")
 public class TestLocalizationAspect {
     private static final String POINTCUT_CRITERIA_METHOD =
             "execution(static ru.tinkoff.qa.neptune.core.api.steps.Criteria *(..))";
@@ -44,10 +45,6 @@ public class TestLocalizationAspect {
 
     private static final String POINTCUT_GET_SUPPLIER =
             "execution(* ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier+.*(..))";
-
-    public TestLocalizationAspect() {
-        super();
-    }
 
     @Pointcut(POINTCUT_CRITERIA_METHOD)
     public void criteriaMethod() {
@@ -91,12 +88,12 @@ public class TestLocalizationAspect {
 
     @Around("returnActionSupplier() && allSequentialActionSupplierSubclass()")
     public Object translateActionSupplier(ProceedingJoinPoint joinPoint) throws Throwable {
-        Object result = joinPoint.proceed();
-
-        System.out.println("[ACTION]Аспект сработал на методе " + ((MethodSignature) joinPoint.getSignature()).getMethod());
+        var result = joinPoint.proceed();
 
         if (result != null) {
-            var description = translate(((MethodSignature) joinPoint.getSignature()).getMethod(), joinPoint.getArgs());
+            var description = translate(result,
+                    ((MethodSignature) joinPoint.getSignature()).getMethod(),
+                    joinPoint.getArgs());
 
             if (description != null) {
                 Method method = SequentialActionSupplier.class.getDeclaredMethod("setDescription", String.class);
@@ -110,12 +107,12 @@ public class TestLocalizationAspect {
 
     @Around("returnGetSupplier() && allSequentialGetStepSupplierSubclass()")
     public Object translateGetSupplier(ProceedingJoinPoint joinPoint) throws Throwable {
-        Object result = joinPoint.proceed();
-
-        System.out.println("[GET]Аспект сработал на методе " + ((MethodSignature) joinPoint.getSignature()).getMethod());
+        var result = joinPoint.proceed();
 
         if (result != null) {
-            var description = translate(((MethodSignature) joinPoint.getSignature()).getMethod(), joinPoint.getArgs());
+            var description = translate(result,
+                    ((MethodSignature) joinPoint.getSignature()).getMethod(),
+                    joinPoint.getArgs());
 
             if (description != null) {
                 Method method = SequentialGetStepSupplier.class.getDeclaredMethod("setDescription", String.class);
@@ -130,13 +127,13 @@ public class TestLocalizationAspect {
 
     @Around("criteriaMethod() && !conditions() && !AND() && !OR() && !XOR() && !NOT()")
     public Object translateCriteria(ProceedingJoinPoint joinPoint) throws Throwable {
-        Object result = joinPoint.proceed();
-
-        System.out.println("[CRITERIA]Аспект сработал на методе " + ((MethodSignature) joinPoint.getSignature()).getMethod());
+        var result = joinPoint.proceed();
 
         if (result != null) {
 
-            var description = translate(((MethodSignature) joinPoint.getSignature()).getMethod(), joinPoint.getArgs());
+            var description = translate(result,
+                    ((MethodSignature) joinPoint.getSignature()).getMethod(),
+                    joinPoint.getArgs());
 
             if (description != null) {
                 Method method = Criteria.class.getDeclaredMethod("setDescription", String.class);

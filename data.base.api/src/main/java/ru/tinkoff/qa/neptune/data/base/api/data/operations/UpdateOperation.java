@@ -1,33 +1,28 @@
 package ru.tinkoff.qa.neptune.data.base.api.data.operations;
 
-import org.apache.commons.lang3.StringUtils;
 import org.datanucleus.api.jdo.JDOPersistenceManager;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.IdSetter;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.api.queries.ResultPersistentManager;
 import ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle;
 import ru.tinkoff.qa.neptune.data.base.api.queries.SelectList;
-import ru.tinkoff.qa.neptune.data.base.api.result.ListOfPersistentObjects;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
-import static java.lang.String.join;
 import static java.util.Arrays.stream;
 import static java.util.List.copyOf;
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
 import static javax.jdo.JDOHelper.isPersistent;
 import static javax.jdo.JDOHelper.isTransactional;
 import static ru.tinkoff.qa.neptune.core.api.steps.Step.$;
-import static ru.tinkoff.qa.neptune.data.base.api.PersistableObject.getTable;
 
 /**
  * This class is designed to builds step-functions that perform the updating and return a result
@@ -35,34 +30,19 @@ import static ru.tinkoff.qa.neptune.data.base.api.PersistableObject.getTable;
  * @param <T> is a type of objects to be updated
  * @param <R> is a type of subclass of {@link UpdateOperation}
  */
-@MakeFileCapturesOnFinishing
-@MakeStringCapturesOnFinishing
-public abstract class UpdateOperation<T extends PersistableObject, R extends UpdateOperation<T, R>> extends DataOperation<T, R> {
+public abstract class UpdateOperation<T extends PersistableObject, M, R extends UpdateOperation<T, M, R>> extends DataOperation<T, M, R> {
 
     private final UpdateExpression<T>[] updates;
 
     @SafeVarargs
-    UpdateOperation(UpdateExpression<T>... set) {
-        super(jdoPersistenceManagerListMap -> {
+    UpdateOperation(PersistenceMapWrapper<T> mapWrapper, UpdateExpression<T>... set) {
+        super(m -> {
+            var jdoPersistenceManagerListMap = mapWrapper.get();
             var managerSet = jdoPersistenceManagerListMap.keySet();
             openTransaction(managerSet);
 
             try {
-                var result = new ListOfPersistentObjects<T>() {
-                    public String toString() {
-                        var resultStr = format("%s updated object/objects", size());
-                        var tableList = stream().map(p -> getTable(p.getClass()))
-                                .filter(StringUtils::isNotBlank)
-                                .distinct()
-                                .collect(toList());
-
-                        if (tableList.size() > 0) {
-                            resultStr = format("%s of table/tables %s", resultStr, join(",", tableList));
-                        }
-                        return resultStr;
-                    }
-                };
-
+                var result = new ArrayList<T>();
                 var idSetter = new IdSetter() {
                 };
 
@@ -86,7 +66,7 @@ public abstract class UpdateOperation<T extends PersistableObject, R extends Upd
                 rollbackTransaction(managerSet);
                 throw t;
             }
-        });
+        }, mapWrapper);
 
         checkNotNull(set);
         checkArgument(set.length > 0, "At least one update-action should be defined");
@@ -124,58 +104,37 @@ public abstract class UpdateOperation<T extends PersistableObject, R extends Upd
         return result;
     }
 
-    static final class UpdateSelected<T extends PersistableObject> extends UpdateOperation<T, UpdateSelected<T>> {
+    static final class UpdateSelected<T extends PersistableObject, M> extends UpdateOperation<T, M, UpdateSelected<T, M>> {
 
-        @StepParameter("Objects to be updated")
-        private final List<T> toUpdate;
+        @StepParameter("To be updated")
+        private final M toUpdate;
 
         @SafeVarargs
-        UpdateSelected(Collection<T> toBeUpdated, UpdateExpression<T>... set) {
-            super(set);
-            var toUpdate = toBeUpdated
-                    .stream()
-                    .filter(Objects::nonNull)
-                    .collect(toList());
-            checkArgument(toUpdate.size() > 0,
-                    "At least one object to be updated should be defined");
-
-            this.toUpdate = toUpdate;
-            from(context -> getMap(context, this.toUpdate));
+        UpdateSelected(PersistenceMapWrapper<T> mapWrapper, M toBeUpdated, UpdateExpression<T>... set) {
+            super(mapWrapper, set);
+            from(toBeUpdated);
+            this.toUpdate = toBeUpdated;
         }
     }
 
-    static final class UpdateBySelection<T extends PersistableObject> extends UpdateOperation<T, UpdateBySelection<T>> {
+    @IncludeParamsOfInnerGetterStep
+    static final class UpdateBySelection<T extends PersistableObject, M> extends UpdateOperation<T, M, UpdateBySelection<T, M>> {
 
         private static final ResultPersistentManager RESULT_PERSISTENT_MANAGER = new ResultPersistentManager() {
         };
 
-        final SequentialGetStepSupplier<DataBaseStepContext, ?, ?, ?, ?> howToSelect;
-
         @SafeVarargs
-        private UpdateBySelection(SequentialGetStepSupplier<DataBaseStepContext, ?, ?, ?, ?> howToSelect, UpdateExpression<T>... set) {
-            super(set);
-            checkNotNull(howToSelect);
-            this.howToSelect = howToSelect;
-        }
+        UpdateBySelection(PersistenceMapWrapper<T> mapWrapper, SequentialGetStepSupplier<DataBaseStepContext, M, ?, ?, ?> howToSelect, UpdateExpression<T>... set) {
+            super(mapWrapper, set);
+            from(howToSelect);
 
-        @SafeVarargs
-        UpdateBySelection(SelectList<?, List<T>> howToSelect, UpdateExpression<T>... set) {
-            this((SequentialGetStepSupplier<DataBaseStepContext, ?, ?, ?, ?>) howToSelect, set);
-            from(dataBaseStepContext -> {
-                RESULT_PERSISTENT_MANAGER.keepResultPersistent(howToSelect);
-                return getMap(dataBaseStepContext, dataBaseStepContext.select(howToSelect));
-            });
-        }
+            if (howToSelect instanceof SelectList) {
+                RESULT_PERSISTENT_MANAGER.keepResultPersistent((SelectList<?, ?>) howToSelect);
+            }
 
-        @SafeVarargs
-        UpdateBySelection(SelectASingle<T> howToSelect, UpdateExpression<T>... set) {
-            this((SequentialGetStepSupplier<DataBaseStepContext, ?, ?, ?, ?>) howToSelect, set);
-            from(dataBaseStepContext -> {
-                RESULT_PERSISTENT_MANAGER.keepResultPersistent(howToSelect);
-                var result = dataBaseStepContext.select(howToSelect);
-                var list = ofNullable(result).map(List::of).orElseGet(List::of);
-                return getMap(dataBaseStepContext, list);
-            });
+            if (howToSelect instanceof SelectASingle) {
+                RESULT_PERSISTENT_MANAGER.keepResultPersistent((SelectASingle<?>) howToSelect);
+            }
         }
     }
 }

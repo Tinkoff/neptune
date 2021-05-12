@@ -1,10 +1,18 @@
 # Работа с cookie браузера
 
-О принципах работы шагов, которые возвращают результат, можно
-прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Шаги,-которые-возвращают-результат).
+- О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст). 
+  Объект [контекста для браузера](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/SeleniumStepContext.html)
+  в примерах ниже вызывается статическим методом `ru.tinkoff.qa.neptune.selenium.SeleniumStepContext#inBrowser`
 
-О принципах работы шагов, которые выполняют действие, можно
-прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Шаги,-которые-выполняют-действие).
+- О принципах работы шагов, которые возвращают результат, можно
+прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги,-которые-возвращают-результат).
+
+- О принципах работы шагов, которые выполняют действие, можно
+прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги,-которые-выполняют-действие).
+
+- О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии). 
+
+- [Критерии для cookie браузера](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/functions/cookies/CommonBrowserCookieCriteria.html)
 
 ## Получение cookie браузера
 
@@ -33,7 +41,7 @@ public class Tezzt {
 ## Наличие или отсутствие cookie браузера
 
 Полезная
-информация: [Про наличие или отсутствие чего либо](./../../../core.api/doc/rus/IDEA.MD#Присутствие-и-отсутствие)
+информация: [Про наличие или отсутствие чего либо](./../../../core.api/doc/rus/STEPS.MD#Присутствие-и-отсутствие)
 
 ```java
 import static java.time.Duration.ofSeconds;
@@ -49,10 +57,9 @@ public class Tezzt {
         // Как и в примере выше, здесь можно указать критерии и время ожидания
         // вернется true если cookie есть, и false - если нет
 
-        boolean isAlertPresent = inBrowser().presenceOf(cookies(), //Ожидание наличия cookie. 
-                "Cookie не появились"); //Текст ошибки, если cookie не появились
+        boolean isAlertPresent = inBrowser().presenceOfOrThrow(cookies()); //Ожидание наличия cookie.
         // вернется true если cookie есть, если нет - 
-        // будет выброшено исключение с текстом 'Cookie не появились'
+        // будет выброшено исключение
 
 
         inBrowser().absenceOf(cookies(), ofSeconds(5)); //Ожидание отсутствия cookies. 
@@ -60,11 +67,11 @@ public class Tezzt {
         //Время ожидания, что cookies нет, или они исчезли - 5 сек
         //вернется true если cookies нет или за 5 сек они пропали, и false - если они все еще здесь
 
-        inBrowser().absenceOf(cookies(), ofSeconds(5), "Cookies все еще здесь"); //Ожидание отсутствия cookies. 
+        inBrowser().absenceOrThrow(cookies(), ofSeconds(5)); //Ожидание отсутствия cookies. 
         //Можно указать критерии. Значение времени ожидания, переданное через .timeOut, игнорируется.
         //Время ожидания, что cookies нет, или они исчезли - 5 сек
         //вернется true если cookies нет или за 5 сек они пропали.
-        //Будет выброшено исключение с текстом 'Cookies все еще здесь', если cookies никуда не пропали
+        //Будет выброшено исключение, если cookies никуда не пропали
     }
 }
 ```

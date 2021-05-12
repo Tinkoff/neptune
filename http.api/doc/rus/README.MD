@@ -4,12 +4,12 @@
 
 ## Оглавление. Описание работы
 
-[Настройки](./SETTINGS.MD)
+- [Настройки](./SETTINGS.MD)
 
-[Отправка http запросов/получение ответов](./REQUEST_RESPONSE.MD)
+- [Отправка http запросов/получение ответов](./REQUEST_RESPONSE.MD)
 
-[Работа с cookies](./COOKIES.MD)
+- [Работа с cookies](./COOKIES.MD)
 
-[Мэппинг http-сервисов](./MAPPING.MD)
+- [Мэппинг http-сервисов](./MAPPING.MD)
 
-[Дополнительные матчеры](./HAMCREST.MD)
+- [Дополнительные матчеры](./HAMCREST.MD)

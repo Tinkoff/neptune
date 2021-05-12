@@ -1,19 +1,24 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.format;
 
+@Description("Number")
 public class TestNumberCaptor extends Captor<Number, Number> {
 
     static final List<Number> numbers = new ArrayList<>();
+    public static final List<String> messages = new ArrayList<>();
 
     public TestNumberCaptor() {
-        super("Number", List.of((toBeInjected, message) -> {
-            System.out.println(format("%s %s", message, toBeInjected));
+        super(List.of((toBeInjected, message) -> {
+            var msg = format("%s %s", message, toBeInjected);
+            System.out.println(msg);
+            messages.add(msg);
             numbers.add(toBeInjected);
         }));
     }

@@ -1,7 +1,16 @@
 # Проксирование/запись трафика браузера
 
 Полезные страницы:
-- [О принципах работы шагов, которые возвращают результат](./../../../core.api/doc/rus/IDEA.MD#Шаги,-которые-возвращают-результат).
+
+- О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст). 
+  Объект [контекста для браузера](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/SeleniumStepContext.html)
+  в примерах ниже вызывается статическим методом `ru.tinkoff.qa.neptune.selenium.SeleniumStepContext#inBrowser`
+
+- [О принципах работы шагов, которые возвращают результат](./../../../core.api/doc/rus/STEPS.MD#Шаги,-которые-возвращают-результат).
+
+- О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).  
+
+- [Критерии для поиска нужных записей траффика](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/functions/browser/proxy/BrowserProxyCriteria.html)
 
 Бывает, что необходимо в ходе тестирования front-end проверить трафик, возникающий входе того или иного действия на странице 
 приложения. 
@@ -46,11 +55,9 @@ public class Tezzt {
         // вернется true если хотя бы один запрос, подходящий под описание выше, 
         // был пойман, если нет - false
 
-        boolean areRequestsPresent = inBrowser().presenceOf(proxiedRequests(), 
-                "Запрос не был отправлен/ответ не был получен"); //Текст выбрасываемой ошибки
+        boolean areRequestsPresent = inBrowser().presenceOfOrThrow(proxiedRequests());
         // вернется true если хотя бы один запрос, подходящий под описание выше, 
-        // был пойман, если нет - будет выброшено исключение с текстом 
-        // 'Запрос не был отправлен/ответ не был получен'
+        // был пойман, если нет - будет выброшено исключение
     }
 }
 ```
@@ -93,5 +100,40 @@ public class Tezzt {
 
 Локально работающий прокси-сервер и прокси, переданная через `Capabilities` выстраиваются в цепочку, в которой локальный
 прокси сервер стоит первым.
+
+## Как достать локальный прокси-сервер, который используется/будет использован текущей/вновь открываемой сессией Webdriver'а
+
+Вообще, этого в большинстве случаев делать не рекомендуется. Но иногда бывают ситуации, когда важно узнать
+статус/параметры локального прокси сервера. Например, нужно настроить Capabilities (до открытия браузера).
+
+Для таких случаев пример ниже
+
+```java
+import ru.tinkoff.qa.neptune.selenium.BrowserProxy;
+
+import static ru.tinkoff.qa.neptune.selenium.BrowserProxy.getCurrentProxy;
+
+public class SomeClass {
+    
+    public void someMethod() {
+        //Если USE_BROWSER_PROXY=true, вернется объект, который используется
+        //текущей сессией WebDriver, или будет использован новой сессией WebDriver,
+        //открываемой в текущем потоке.
+        //Если USE_BROWSER_PROXY!=true, вернется null
+        BrowserProxy proxy = getCurrentProxy();
+
+        //Если инстанс прокси сервера еще не создан,
+        //можно его заранее создать. Запуск тут не происходит.
+        //Если инстанс уже создан, то никакого эффекта это действие не имеет
+        proxy.createProxy();
+        
+        //данный объект через свои методы позволяет узнать данные локального прокси-сервера 
+        int port = proxy.getLocalPort(); //можно узнать порт где работает/будет работать сервер
+        String ip = proxy.getHostIP(); //можно узнать ip4 локальной машины, на localhost
+        boolean isStarted = proxy.isStarted(); //запущен прокси сервер или нет
+        Har har = proxy.getHar(); //Актуальный har-файл
+    }
+}
+```
 
 

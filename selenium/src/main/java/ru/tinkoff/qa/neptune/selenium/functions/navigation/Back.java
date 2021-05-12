@@ -1,21 +1,24 @@
 package ru.tinkoff.qa.neptune.selenium.functions.navigation;
 
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.currentWindow;
 
-@MakeImageCapturesOnFinishing
-@MakeFileCapturesOnFinishing
-@SequentialActionSupplier.DefaultParameterNames(
-        performOn = "Window/tab to perform navigation back"
-)
+@CaptureOnFailure(by = WebDriverImageCaptor.class)
+@CaptureOnSuccess(by = WebDriverImageCaptor.class)
 @Description("Navigate back")
+@SequentialActionSupplier.DefinePerformOnParameterName("Window/tab to perform navigation back")
+@MaxDepthOfReporting(1)
+@IncludeParamsOfInnerGetterStep
 public final class Back extends SequentialActionSupplier<SeleniumStepContext, Window, Back> {
 
     private Back() {
@@ -52,7 +55,7 @@ public final class Back extends SequentialActionSupplier<SeleniumStepContext, Wi
     }
 
     @Override
-    protected void performActionOn(Window value) {
+    protected void howToPerform(Window value) {
         value.back();
     }
 }

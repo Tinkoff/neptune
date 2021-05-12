@@ -1,32 +1,48 @@
 package ru.tinkoff.qa.neptune.selenium.functions.edit;
 
 import org.openqa.selenium.SearchContext;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
-import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Editable;
+import ru.tinkoff.qa.neptune.selenium.captors.ImageCaptorAfterActionOnElement;
+import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
+import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
-import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
-
-@MakeImageCapturesOnFinishing
-@MakeFileCapturesOnFinishing
-@SequentialActionSupplier.DefaultParameterNames(
-        performOn = "Element to edit"
-)
+@CaptureOnFailure(by = {WebElementImageCaptor.class, WebDriverImageCaptor.class})
+@CaptureOnSuccess(by = ImageCaptorAfterActionOnElement.class)
+@Description("Edit {toEdit}")
+@MaxDepthOfReporting(0)
+@IncludeParamsOfInnerGetterStep
 public final class EditActionSupplier<T> extends
-        SequentialActionSupplier<SeleniumStepContext, Editable<T>, EditActionSupplier<T>> {
+        SequentialActionSupplier<Object, Editable<T>, EditActionSupplier<T>> {
 
-    @StepParameter(value = "Change value with", makeReadableBy = EditParameterValueGetter.class)
+    @DescriptionFragment("toEdit")
+    final Object toEdit;
+
+    @StepParameter(value = "New value / Change value with", makeReadableBy = EditParameterValueGetter.class)
     private final T toSet;
 
-    private EditActionSupplier(T value) {
+    private EditActionSupplier(Object toEdit, T value) {
         super();
+        this.toEdit = toEdit;
         toSet = value;
+    }
+
+    private <S extends SearchContext & Editable<T>> EditActionSupplier(S toEdit, T value) {
+        this((Object) toEdit, value);
+        performOn(toEdit);
+    }
+
+    private <S extends SearchContext & Editable<T>> EditActionSupplier(SearchSupplier<S> toEdit, T value) {
+        this((Object) toEdit, value);
+        performOn(toEdit);
     }
 
     /**
@@ -38,11 +54,8 @@ public final class EditActionSupplier<T> extends
      * @param <S>   if the type of editable element
      * @return built edit action
      */
-    @Description("Edit element {of}")
-    public static <R, S extends SearchContext & Editable<R>> EditActionSupplier<R> valueOfThe(
-            @DescriptionFragment("of") SearchSupplier<S> of, R value) {
-        return new EditActionSupplier<>(value)
-                .performOn(of.get().compose(currentContent()));
+    public static <R, S extends SearchContext & Editable<R>> EditActionSupplier<R> valueOfThe(SearchSupplier<S> of, R value) {
+        return new EditActionSupplier<>(of, value);
     }
 
     /**
@@ -54,14 +67,12 @@ public final class EditActionSupplier<T> extends
      * @param <S>   if the type of editable element
      * @return built edit action
      */
-    @Description("Edit element {of}")
-    public static <R, S extends SearchContext & Editable<R>> EditActionSupplier<R> valueOfThe(@DescriptionFragment("of") S of, R value) {
-        return new EditActionSupplier<>(value)
-                .performOn(of);
+    public static <R, S extends SearchContext & Editable<R>> EditActionSupplier<R> valueOfThe(S of, R value) {
+        return new EditActionSupplier<>(of, value);
     }
 
     @Override
-    protected void performActionOn(Editable<T> value) {
+    protected void howToPerform(Editable<T> value) {
         value.edit(toSet);
     }
 }

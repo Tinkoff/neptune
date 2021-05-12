@@ -2,8 +2,8 @@ package ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert;
 
 import org.openqa.selenium.Alert;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import java.util.Objects;
 

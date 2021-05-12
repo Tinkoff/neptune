@@ -24,7 +24,6 @@ public class JavaScriptTest extends BaseWebDriverTest {
     private static final Criteria<Object> CONTAINS_ARGUMENT_5 =
             condition("Contains `Argument 5`", o -> String.valueOf(o).contains("Argument 5"));
     private static final String EXCEPTION_MESSAGE = "Could't evaluate script";
-    private static final String EXCEPTION_MESSAGE_PATTERN = "%s %s";
 
     @Test
     public void javaScriptEvaluationFullParametersWithPositiveResult() {
@@ -33,8 +32,8 @@ public class JavaScriptTest extends BaseWebDriverTest {
                 .criteria(CONTAINS_ARGUMENT_1)
                 .timeOut(FIVE_SECONDS)
                 .pollingInterval(HALF_SECOND)
-                .throwOnEmptyResult(() -> new WebDriverException(format(EXCEPTION_MESSAGE_PATTERN,
-                        EXCEPTION_MESSAGE, SCRIPT_1.getScript()))));
+                .throwOnNoResult());
+
         setEndBenchMark();
         assertThat(result, is("Argument 1,Argument 2,Argument 3,Argument 4"));
         assertThat(getTimeDifference(), lessThan(ONE_SECOND.toMillis()));
@@ -48,12 +47,10 @@ public class JavaScriptTest extends BaseWebDriverTest {
                     .criteria(CONTAINS_ARGUMENT_5)
                     .timeOut(FIVE_SECONDS)
                     .pollingInterval(HALF_SECOND)
-                    .throwOnEmptyResult(() -> new WebDriverException(format(EXCEPTION_MESSAGE_PATTERN,
-                            EXCEPTION_MESSAGE, SCRIPT_1.getScript()))));
+                    .throwOnNoResult());
+
         } catch (Exception e) {
             setEndBenchMark();
-            assertThat(e.getMessage(), containsString(format(EXCEPTION_MESSAGE_PATTERN, EXCEPTION_MESSAGE,
-                    SCRIPT_1.getScript())));
             throw e;
         } finally {
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
@@ -81,8 +78,8 @@ public class JavaScriptTest extends BaseWebDriverTest {
                     .criteria(CONTAINS_ARGUMENT_1)
                     .timeOut(FIVE_SECONDS)
                     .pollingInterval(HALF_SECOND)
-                    .throwOnEmptyResult(() -> new WebDriverException(format(EXCEPTION_MESSAGE_PATTERN,
-                            EXCEPTION_MESSAGE, SCRIPT_2.getScript()))));
+                    .throwOnNoResult());
+
         } catch (Exception e) {
             setEndBenchMark();
             assertThat(e.getMessage(), containsString(format("It is not possible to execute script %s with parameters %s",
@@ -99,8 +96,8 @@ public class JavaScriptTest extends BaseWebDriverTest {
         Object result =
                 seleniumSteps.evaluate(asynchronousJavaScript(SCRIPT_1.getScript(), ARGUMENTS)
                         .criteria(CONTAINS_ARGUMENT_1)
-                        .throwOnEmptyResult(() -> new WebDriverException(format(EXCEPTION_MESSAGE_PATTERN,
-                                EXCEPTION_MESSAGE, SCRIPT_1.getScript()))));
+                        .throwOnNoResult());
+
         assertThat(result, is("Argument 1,Argument 2,Argument 3,Argument 4"));
     }
 
@@ -109,11 +106,9 @@ public class JavaScriptTest extends BaseWebDriverTest {
         try {
             seleniumSteps.evaluate(asynchronousJavaScript(SCRIPT_1.getScript(), ARGUMENTS)
                     .criteria(CONTAINS_ARGUMENT_5)
-                    .throwOnEmptyResult(() -> new WebDriverException(format(EXCEPTION_MESSAGE_PATTERN,
-                            EXCEPTION_MESSAGE, SCRIPT_1.getScript()))));
+                    .throwOnNoResult());
+
         } catch (Exception e) {
-            assertThat(e.getMessage(), containsString(format(EXCEPTION_MESSAGE_PATTERN, EXCEPTION_MESSAGE,
-                    SCRIPT_1.getScript())));
             throw e;
         }
         fail("Exception was expected");
@@ -132,8 +127,8 @@ public class JavaScriptTest extends BaseWebDriverTest {
         try {
             seleniumSteps.evaluate(asynchronousJavaScript(SCRIPT_2.getScript(), ARGUMENTS)
                     .criteria(CONTAINS_ARGUMENT_1)
-                    .throwOnEmptyResult(() -> new WebDriverException(format(EXCEPTION_MESSAGE_PATTERN,
-                            EXCEPTION_MESSAGE, SCRIPT_2.getScript()))));
+                    .throwOnNoResult());
+
         } catch (Exception e) {
             assertThat(e.getMessage(), containsString(format("It is not possible to execute script %s with parameters %s",
                     SCRIPT_2.getScript(), ArrayUtils.toString(ARGUMENTS))));

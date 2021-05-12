@@ -1,19 +1,19 @@
 package ru.tinkoff.qa.neptune.selenium.functions.intreraction;
 
 import org.openqa.selenium.interactions.Actions;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * Builds an action that performs the sending keys.
- */
-@Description("Send keys")
 abstract class SendKeysActionSupplier extends InteractiveAction {
 
-    @StepParameter(value = "Keys to send", makeReadableBy = CharSequencesParameterValueGetter.class)
+    @DescriptionFragment(
+            value = "keysToSend",
+            makeReadableBy = CharSequencesParameterValueGetter.class)
     final CharSequence[] keys;
 
     SendKeysActionSupplier(CharSequence... keys) {
@@ -23,6 +23,8 @@ abstract class SendKeysActionSupplier extends InteractiveAction {
         this.keys = keys;
     }
 
+    @Description("Send keys '{keysToSend}'")
+    @MaxDepthOfReporting(0)
     static final class SendKeysSimpleActionSupplier extends SendKeysActionSupplier {
 
         SendKeysSimpleActionSupplier(CharSequence... keys) {
@@ -35,6 +37,8 @@ abstract class SendKeysActionSupplier extends InteractiveAction {
         }
     }
 
+    @Description("Send keys '{keysToSend}' to {target}")
+    @MaxDepthOfReporting(0)
     static final class SendKeysToElementActionSupplier extends SendKeysActionSupplier {
 
         @StepParameter("Element")

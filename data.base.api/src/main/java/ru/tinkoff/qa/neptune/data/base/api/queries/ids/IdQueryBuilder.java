@@ -5,6 +5,10 @@ import ru.tinkoff.qa.neptune.data.base.api.queries.KeepResultPersistent;
 import ru.tinkoff.qa.neptune.data.base.api.queries.Query;
 
 import java.util.List;
+import java.util.StringJoiner;
+
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.joining;
 
 /**
  * The utility class that helps to build a query by known ids
@@ -27,5 +31,12 @@ abstract class IdQueryBuilder {
     public <T extends PersistableObject> Query<T, List<T>> build(Class<T> toSelect,
                                                                  KeepResultPersistent keepResultPersistent) {
         return new IdQuery<>(toSelect, ids, keepResultPersistent);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", "[", "]")
+                .add(stream(ids).map(Object::toString).collect(joining(",")))
+                .toString();
     }
 }

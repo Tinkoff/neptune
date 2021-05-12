@@ -4,14 +4,15 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CGLibProxyBuilder.createProxy;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.ToStringFormer.getMultipleToString;
 
 final class FindWebElements implements Function<SearchContext, List<WebElement>> {
 
@@ -28,15 +29,16 @@ final class FindWebElements implements Function<SearchContext, List<WebElement>>
 
     @Override
     public List<WebElement> apply(SearchContext searchContext) {
-        return new LoggableElementList<>(searchContext.findElements(by)
-                .stream().map(webElement -> {
-                    var stringDescription = format("Web element found [%s]", by);
-                    return createProxy(webElement.getClass(), new WebElementInterceptor(webElement, stringDescription));
-                })
+        return new ArrayList<>(searchContext.findElements(by)
+                .stream().map(webElement -> createProxy(webElement.getClass(), new WebElementInterceptor(webElement, by)))
                 .collect(toList())) {
-            @Override
+
             public String toString() {
-                return format("%s web elements found %s", size(), by);
+                if (size() == 0) {
+                    return "<...>";
+                }
+
+                return getMultipleToString(this);
             }
         };
     }

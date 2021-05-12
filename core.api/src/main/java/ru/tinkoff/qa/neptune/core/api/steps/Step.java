@@ -1,8 +1,5 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.CaptorFilterByProducedType;
-
-import java.util.Set;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -10,7 +7,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Collections.emptyMap;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.*;
-import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchSuccessEvent;
+import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultGetParameterReader.getResultMetadata;
 import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
@@ -50,28 +47,11 @@ public abstract class Step<T> {
         return createStep(description, supplier).perform();
     }
 
-    /**
-     * Creates a step and returns the instance for further operation.
-     * The step does't return anything on the performing.
-     *
-     * @param description Is description of the step.
-     * @param runnable    is algorithm of the step.
-     * @return new {@link Step}
-     */
-    public static Step<Void> createStep(String description, Runnable runnable) {
+    private static Step<Void> createStep(String description, Runnable runnable) {
         return new ActionStep(description, runnable);
     }
 
-    /**
-     * Creates a step and returns the instance for further operation.
-     * The step returns some value on the performing.
-     *
-     * @param description Is description of the step.
-     * @param supplier    is algorithm of the step.
-     * @param <T>         is a type of resulted value
-     * @return new {@link Step}
-     */
-    public static <T> Step<T> createStep(String description, Supplier<T> supplier) {
+    private static <T> Step<T> createStep(String description, Supplier<T> supplier) {
         return new GetStep<>(description, supplier);
     }
 
@@ -127,12 +107,9 @@ public abstract class Step<T> {
 
                 T result = stepSupplier.get();
                 if (isLoggable(result)) {
-                    fireReturnedValue(result);
+                    fireReturnedValue(translate(getResultMetadata(SequentialGetStepSupplier.class, false)), result);
                 }
 
-                if (catchSuccessEvent()) {
-                    catchValue(result, Set.of(new CaptorFilterByProducedType(Object.class)));
-                }
                 return result;
             } catch (Throwable thrown) {
                 fireThrownException(thrown);
