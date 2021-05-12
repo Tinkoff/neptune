@@ -140,7 +140,6 @@ public class MyUseCase {
         PROPERTY.accept(null);
     }
 }
-
 ```
 
 Так же можно группировать похожие по смыслу или функциям описания свойств / переменных окружения в перечисления.
@@ -192,33 +191,617 @@ public enum MyPropertyEnum implements PropertySupplier<T, R> {
 Ниже примеры того, как можно быстро описать свойства / переменные окружения, значения которых могут быть преобразованы 
 в объекты различных типов. 
 
-### Свойства для возврата чисел
+### Свойства для возврата строки
+
 <details>
   <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.string.StringValuePropertySupplier;
+
+
+@PropertyName("MY_PROPERTY")
+public class MyStringProperty implements StringValuePropertySupplier {
+
+  public static final MyStringProperty PROPERTY = new MyStringProperty();
+
+}
+```
+
+Варианты использования:
+
+- переменная среды или свойство `neptune.properties` / `neptune.global.properties`
+
+```properties
+MY_PROPERTY=Some string
+```
+
+- java-код
+
+```java
+package org.my.pack;
+
+
+import static org.my.pack.MyStringProperty.PROPERTY;
+
+public class MyUseCase {
+
+  public void useCase() {
+    //чтение
+    String value = PROPERTY.get();
+  }
+}
+
+```
 
 </details>
 
 ### Свойства для возврата Boolean
+
 <details>
   <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.booleans.BooleanValuePropertySupplier;
+
+
+@PropertyName("MY_PROPERTY")
+public class MyBooleanProperty implements BooleanValuePropertySupplier {
+
+    public static final MyBooleanProperty PROPERTY = new MyBooleanProperty();
+
+}
+```
+
+Варианты использования:
+
+- переменная среды или свойство `neptune.properties` / `neptune.global.properties`
+
+```properties
+MY_PROPERTY=true
+```
+
+- java-код
+
+```java
+package org.my.pack;
+
+
+import static org.my.pack.MyBooleanProperty.PROPERTY;
+
+public class MyUseCase {
+
+    public void useCase() {
+        Boolean value = PROPERTY.get();
+    }
+}
+```
 
 </details>
 
-### Свойства для возврата величины продолжительности
+### Свойства для возврата чисел
+
+#### Byte
+
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.bytes.ByteValuePropertySupplier;
+
+
+@PropertyName("MY_PROPERTY")
+public class MyByteProperty implements ByteValuePropertySupplier {
+
+    public static final MyByteProperty PROPERTY = new MyByteProperty();
+
+}
+```
+
+Варианты использования:
+
+- переменная среды или свойство `neptune.properties` / `neptune.global.properties`
+
+```properties
+MY_PROPERTY=2
+```
+
+- java-код
+
+```java
+package org.my.pack;
+
+import static org.my.pack.MyByteProperty.PROPERTY;
+
+public class MyUseCase {
+
+  public void useCase() {
+    //чтение
+    Byte value = PROPERTY.get();
+  }
+}
+```
 </details>
 
-### Свойства для возврата объектов перечислений
+#### Double
+
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.doubles.DoubleValuePropertySupplier;
+
+
+@PropertyName("MY_PROPERTY")
+public class MyDoubleProperty implements DoubleValuePropertySupplier {
+
+  public static final MyDoubleProperty PROPERTY = new MyDoubleProperty();
+
+}
+```
+
+Варианты использования:
+
+- переменная среды или свойство `neptune.properties` / `neptune.global.properties`
+
+```properties
+MY_PROPERTY=2.5
+```
+
+- java-код
+
+```java
+package org.my.pack;
+
+import static org.my.pack.MyDoubleProperty.PROPERTY;
+
+public class MyUseCase {
+
+  public void useCase() {
+    //чтение
+    Double value = PROPERTY.get();
+  }
+}
+```
+</details>
+
+#### Float
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.floats.FloatValuePropertySupplier;
+
+
+@PropertyName("MY_PROPERTY")
+public class MyFloatProperty implements FloatValuePropertySupplier {
+
+  public static final MyFloatProperty PROPERTY = new MyFloatProperty();
+
+}
+```
+
+Варианты использования:
+
+- переменная среды или свойство `neptune.properties` / `neptune.global.properties`
+
+```properties
+MY_PROPERTY=2.5
+```
+
+- java-код
+
+```java
+package org.my.pack;
+
+
+import static org.my.pack.MyFloatProperty.PROPERTY;
+
+public class MyUseCase {
+
+  public void useCase() {
+    //чтение
+    Float value = PROPERTY.get();
+  }
+}
+```
+</details>
+
+#### Integer
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.integers.IntValuePropertySupplier;
+
+
+@PropertyName("MY_PROPERTY")
+public class MyIntegerProperty implements IntValuePropertySupplier {
+
+  public static final MyIntegerProperty PROPERTY = new MyIntegerProperty();
+
+}
+
+```
+
+Варианты использования:
+
+- переменная среды или свойство `neptune.properties` / `neptune.global.properties`
+
+```properties
+MY_PROPERTY=2
+```
+
+- java-код
+
+```java
+package org.my.pack;
+
+
+import static org.my.pack.MyIntegerProperty.PROPERTY;
+
+public class MyUseCase {
+
+  public void useCase() {
+    //чтение
+    Integer value = PROPERTY.get();
+  }
+}
+```
+</details>
+
+#### Long
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.longs.LongValuePropertySupplier;
+
+
+@PropertyName("MY_PROPERTY")
+public class MyLongProperty implements LongValuePropertySupplier {
+
+  public static final MyLongProperty PROPERTY = new MyLongProperty();
+
+}
+```
+
+Варианты использования:
+
+- переменная среды или свойство `neptune.properties` / `neptune.global.properties`
+
+```properties
+MY_PROPERTY=2
+```
+
+- java-код
+
+```java
+package org.my.pack;
+
+
+import static org.my.pack.MyLongProperty.PROPERTY;
+
+public class MyUseCase {
+
+  public void useCase() {
+    //чтение
+    Long value = PROPERTY.get();
+  }
+}
+```
+</details>
+
+#### Short
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.shorts.ShortValuePropertySupplier;
+
+@PropertyName("MY_PROPERTY")
+public class MyShortProperty implements ShortValuePropertySupplier {
+
+  public static final MyShortProperty PROPERTY = new MyShortProperty();
+
+}
+```
+
+Варианты использования:
+
+- переменная среды или свойство `neptune.properties` / `neptune.global.properties`
+
+```properties
+MY_PROPERTY=2
+```
+
+- java-код
+
+```java
+package org.my.pack;
+
+
+import static org.my.pack.MyShortProperty.PROPERTY;
+
+public class MyUseCase {
+
+  public void useCase() {
+    //чтение
+    Short value = PROPERTY.get();
+  }
+}
+```
 </details>
 
 ### Свойства для создания и возврата объектов URL
+
 <details>
   <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.url.URLValuePropertySupplier;
+
+@PropertyName("MY_PROPERTY")
+public class MyURLProperty implements URLValuePropertySupplier {
+
+  public static final MyURLProperty PROPERTY = new MyURLProperty();
+}
+```
+
+Варианты использования:
+
+- переменная среды или свойство `neptune.properties` / `neptune.global.properties`
+
+```properties
+MY_PROPERTY=https://www.google.com
+```
+
+- java-код
+
+```java
+package org.my.pack;
+
+import java.net.URL;
+
+import static org.my.pack.MyURLProperty.PROPERTY;
+
+public class MyUseCase {
+
+  public void useCase() {
+    //чтение
+    URL value = PROPERTY.get();
+  }
+}
+```
+</details>
+
+### Свойства для возврата объектов перечислений
+
+Предположим, у нас есть перечисление
+
+```java
+package org.my.pack;
+
+public enum MyEnum {
+    
+    ITEM1,
+    ITEM2,
+    ITEM3
+}
+
+```
+
+#### Возврат одиночного объекта перечисления
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.enums.EnumPropertySuppler;
+
+@PropertyName("MY_PROPERTY")
+public class MyEnumItemProperty implements
+        EnumPropertySuppler<MyEnum> { //<-Указывается тип перечисления  
+
+  public static final MyEnumItemProperty PROPERTY = new MyEnumItemProperty();
+}
+```
+
+Варианты использования:
+
+- переменная среды или свойство `neptune.properties` / `neptune.global.properties`
+
+```properties
+# Значение должно полностью соответствовать имени одного из элементов
+# перечисления
+MY_PROPERTY=ITEM1
+```
+
+- java-код
+
+```java
+package org.my.pack;
+
+import static org.my.pack.MyEnumItemProperty.PROPERTY;
+
+public class MyUseCase {
+
+  public void useCase() {
+    //чтение
+    MyEnum value = PROPERTY.get();
+  }
+}
+```
+</details>
+
+#### Возврат множества объектов перечисления
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.enums.MultipleEnumPropertySuppler;
+
+@PropertyName("MY_PROPERTY")
+public class MyEnumItemsProperty implements
+        MultipleEnumPropertySuppler<MyEnum> { //<-Указывается тип перечисления
+
+  public static final MyEnumItemsProperty PROPERTY = new MyEnumItemsProperty();
+}
+```
+
+Варианты использования:
+
+- переменная среды или свойство `neptune.properties` / `neptune.global.properties`
+
+```properties
+# Значение должно содержать одно или несколько имен элементов перечисления
+MY_PROPERTY=ITEM1,ITEM3
+```
+
+- java-код
+
+```java
+package org.my.pack;
+
+import java.util.List;
+
+import static org.my.pack.MyEnumItemsProperty.PROPERTY;
+
+public class MyUseCase {
+
+  public void useCase() {
+    //чтение
+    List<MyEnum> value = PROPERTY.get();
+  }
+}
+```
+</details>
+
+### Свойства для возврата величины продолжительности
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+- Нужно создать описание свойства / переменной окружения, которое конвертирует значение в элемент перечисления в
+  элемент `java.time.temporal.ChronoUnit`. См [Возврат одиночного объекта перечисления](#Возврат-одиночного-объекта-перечисления).
+  
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.enums.EnumPropertySuppler;
+
+import java.time.temporal.ChronoUnit;
+
+@PropertyName("MY_PROPERTY_CHRONO_UNIT")
+public class MyChronoUnitProperty implements EnumPropertySuppler<ChronoUnit> {
+
+  public static final MyChronoUnitProperty MY_CHRONO_UNIT_PROPERTY = new MyChronoUnitProperty();
+}
+```
+
+- Нужно создать описание свойства / переменной окружения, которое конвертирует значение в элемент перечисления в
+  `Long`. См [Свойства для возврата чисел. Long](#Long).
+  
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.longs.LongValuePropertySupplier;
+
+@PropertyName("MY_PROPERTY_CHRONO_VALUE")
+public class MyChronoValueProperty implements LongValuePropertySupplier {
+
+  public static final MyChronoValueProperty MY_CHRONO_VALUE_PROPERTY = new MyChronoValueProperty();
+}
+```
+
+- далее, нужно создать класс, который превращает оба значения в `java.time.Duration`
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.properties.duration.DurationSupplier;
+
+import static org.my.pack.MyChronoUnitProperty.MY_CHRONO_UNIT_PROPERTY;
+import static org.my.pack.MyChronoValueProperty.MY_CHRONO_VALUE_PROPERTY;
+
+public class MyDurationSupplier extends 
+        DurationSupplier { //<--наследоваться от этого класса
+    
+    //просто, для быстрого доступа
+    public static DurationSupplier MY_DURATION = new MyDurationSupplier();
+
+    protected MyDurationSupplier() {
+        super(MY_CHRONO_UNIT_PROPERTY, MY_CHRONO_VALUE_PROPERTY);
+    }
+}
+```
+
+Варианты использования:
+
+- переменная среды или свойство `neptune.properties` / `neptune.global.properties`
+
+```properties
+MY_PROPERTY_CHRONO_UNIT=SECONDS
+MY_PROPERTY_CHRONO_VALUE=5
+```
+
+- java-код
+
+```java
+package org.my.pack;
+
+import java.time.Duration;
+
+import static org.my.pack.MyDurationSupplier.MY_DURATION;
+
+public class MyUseCase {
+
+  public void useCase() {
+    //чтение
+    Duration value = MY_DURATION.get(); //вернет 5 сек
+  }
+}
+```
 
 </details>
 
@@ -230,7 +813,19 @@ public enum MyPropertyEnum implements PropertySupplier<T, R> {
 
 ## Автоматическая генерация `neptune.global.properties` и `neptune.properties`
 
+Свойств / переменных окружения может быть много и заполнять файлы `neptune.global.properties` и `neptune.properties` вручную
+может быть долго и трудоемко. На основе аннотаций (см. [Описание свойства / переменной среды](#Описание-свойства-/-переменной-среды)) 
+можно выполнить автоматическую генерацию файлов. 
+
 ## Основной набор настроек/свойств
+
+Данные свойства / переменные окружения могут быть настроены всегда, независимо от набора подключенных модулей Neptune.
+
+Данные свойства / переменные окружения других модулей Neptune:
+
+- [Neptune. Http](./../../../http.api/doc/rus/SETTINGS.MD)
+- [Neptune. Selenium WebDriver](./../../../selenium/doc/rus/SETTINGS.MD)
+- [Neptune. TestNG](./../../../testng.integration/doc/rus/README.MD#Настройки)
 
 ### Освобождение ресурсов
 
