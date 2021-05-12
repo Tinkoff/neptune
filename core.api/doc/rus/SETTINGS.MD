@@ -817,15 +817,84 @@ public class MyUseCase {
 может быть долго и трудоемко. На основе аннотаций (см. [Описание свойства / переменной среды](#описание-свойства--переменной-среды)) 
 можно выполнить автоматическую генерацию файлов. 
 
+### Maven
+
+```xml
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>exec-maven-plugin</artifactId>
+      <version>3.0.0</version>
+      <executions>
+        <execution>
+          <id>generate properties</id>
+          <phase>compile</phase>
+          <goals>
+            <goal>java</goal>
+          </goals>
+          <configuration>
+            <mainClass>ru.tinkoff.qa.neptune.core.api.properties.NeptunePropertyGenerator</mainClass>
+            <arguments>
+              <!--генерировать neptune.properties (false), или neptune.global.properties (true)-->
+              <!--neptune.global.properties рекомендуется, если создается общий модуль-кастомизация Neptune
+              для тестов других модулей системы/приложения-->
+              <argument>false</argument>
+              <!--наследовать свойства/переменные окружения из neptune.global.properties (true) или нет (false)-->
+              <!--Если выше указано `true` - значение параметра игнорируется. Иначе: 
+              - false - создастся файл , повторяющий neptune.global.properties
+              - true - создастся файл, в котором "унаследованные" свойства/переменные окружения будут закомментированы
+              Если никакого общего модуля-кастомизации, в котором дефолтные значения заданы через neptune.global.properties,
+              не используется, то создастся neptune.properties с дефолтными значениями (согласно наличию аннотации 
+              @PropertyDefaultValue)-->
+              <argument>false</argument>
+              <!--Где расположить сгенерированный файл-->
+              <argument>${basedir}/src/test/resources</argument>  
+              <!--или ${basedir}/src/main/resources-->
+              <!--или любая другая директория-->
+            </arguments>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>    
+  </plugins>
+</build>
+```
+
+### Gradle
+
+```groovy
+task generateBundle(type: JavaExec) {
+    classpath sourceSets.test.runtimeClasspath //или sourceSets.main.runtimeClasspath
+    main = "ru.tinkoff.qa.neptune.core.api.properties.NeptunePropertyGenerator"
+    //генерировать neptune.properties (false), или neptune.global.properties (true).
+    //neptune.global.properties рекомендуется, если создается общий модуль-кастомизация Neptune
+    //для тестов других модулей системы/приложения
+    args false,
+            //наследовать свойства/переменные окружения из neptune.global.properties (true) или нет (false).
+            //Если выше указано `true` - значение параметра игнорируется. Иначе:
+            //- false - создастся файл , повторяющий neptune.global.properties
+            //- true - создастся файл, в котором "унаследованные" свойства/переменные окружения будут закомментированы
+            //Если никакого общего модуля-кастомизации, в котором дефолтные значения заданы через neptune.global.properties,
+            //не используется, то создастся neptune.properties с дефолтными значениями (согласно наличию аннотации
+            //@PropertyDefaultValue)
+            false,  
+            //Где расположить сгенерированный файл.
+            "$projectDir/src/test/resources"
+            //или $projectDir/src/main/resources
+            //или любая другая директория
+}
+```
+
 ## Основной набор настроек/свойств
 
-Данные свойства / переменные окружения могут быть настроены всегда, независимо от набора подключенных модулей Neptune.
-
-Данные свойства / переменные окружения других модулей Neptune:
+Эти свойства / переменные окружения могут быть настроены всегда, независимо от набора подключенных модулей Neptune.
+Свойства / переменные окружения других модулей Neptune:
 
 - [Neptune. Http](./../../../http.api/doc/rus/SETTINGS.MD)
 - [Neptune. Selenium WebDriver](./../../../selenium/doc/rus/SETTINGS.MD)
 - [Neptune. TestNG](./../../../testng.integration/doc/rus/README.MD#Настройки)
+- JUnit5 (будут предоставлены после реализации*)
 
 ### Освобождение ресурсов
 
