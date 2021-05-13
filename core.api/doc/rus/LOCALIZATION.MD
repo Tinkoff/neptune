@@ -12,14 +12,15 @@ Neptune поддерживает по дефолту механизм, осно�
 
 ### Как настроить использование базового механизма:
 
-- ##### указать в properties механизм перевода через resourceBundle
+- ##### сгенерировать и настроить resourceBundle
+
+- ##### добавить в переменные среды или в `neptune.properties` или в `neptune.global.properties`
 
 ```properties
 DEFAULT_LOCALIZATION_ENGINE=ru.tinkoff.qa.neptune.core.api.steps.localization.LocalizationByResourceBundle
 ```
 
-- ##### сгенерировать и настроить resourceBundle
-- ##### указать в properties какую локаль использовать
+- ##### добавить в переменные среды или в `neptune.properties` или в `neptune.global.properties`
 
 ```properties
 DEFAULT_LOCALE=ru_RU
@@ -136,58 +137,6 @@ core.api.event.firing.collections.CollectionCaptor = Resulted collection
 core.api.event.firing.collections.MapCaptor = Resulted map
 ```
 
-### Использовать aspectj для собственных расширений механизма шагов
-
-Про механизм шагов (полезные статьи):
-
-- [Шаги, которые возвращают результат](STEPS.MD#Шаги,-которые-возвращают-результат)
-
-- [Шаги, которые выполняют действие](STEPS.MD#Шаги,-которые-выполняют-действие)
-
-1. настроить `pom.xml`
-
- ```xml
-<!-- Добавить зависимость -->
-<dependency>
-    <groupId>org.aspectj</groupId>
-    <artifactId>aspectjweaver</artifactId>
-    <version>${aspectj.version}</version>
-    <!-- Если новые шаги лежат в main, то scope необязателен  -->
-    <scope>test</scope>
-</dependency> 
- ```
-
- ```xml
-<!-- Добавить плагин -->
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-surefire-plugin</artifactId>
-    <version>3.0.0-M5</version>
-    <configuration>
-        <argLine>
-            -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/1.9.6/aspectjweaver-1.9.6.jar"
-        </argLine>
-    </configuration>
-</plugin>
- ```
-
-или `build.gradle`
-
-```groovy
-plugins {
-    id "io.freefair.aspectj.post-compile-weaving" version 'ACTUAL_PLUGIN_VERSION'
-}
-
-dependencies {
-    inpath(group: 'ru.tinkoff.qa.neptune', name: 'core.api', version: 'NEPTUNE_BETA_OR_RELEASE') {
-        transitive = false
-    }
-}
-
-```
-
-2. Использовать для своих шагов @Description, @DescriptionFragment, @StepParameter, @DefaultParameterNames
-
 ## Собственный механизм локализации
 
 Так же существует возможность реализовать собственный механизм локализации.
@@ -261,7 +210,8 @@ public interface StepLocalization {
 }
 ```
 
-* указать в propeties новый механизм
+* добавить в переменные среды или в `neptune.properties` или в `neptune.global.properties` (или поменять значение, 
+  если уже добавлено)
 
 ```properties
 DEFAULT_LOCALIZATION_ENGINE=org.my.project.MyLocalizationEngine
