@@ -806,8 +806,306 @@ public class MyUseCase {
 </details>
 
 ### Свойства для создания и возврата объектов
+
+Предположим, существует следующий класс объекта
+
+```java
+package org.my.pack;
+
+public class MyObject {
+    
+    private Object a;
+
+    private Object b;
+
+    private Object c;
+
+    public Object getA() {
+        return a;
+    }
+
+    public MyObject setA(Object a) {
+        this.a = a;
+        return this;
+    }
+
+    public Object getB() {
+        return b;
+    }
+
+    public MyObject setB(Object b) {
+        this.b = b;
+        return this;
+    }
+
+    public Object getC() {
+        return c;
+    }
+
+    public MyObject setC(Object c) {
+        this.c = c;
+        return this;
+    }
+}
+```
+
+Предположи, что у `MyObject` есть наследник
+
+```java
+package org.my.pack;
+
+public class MyExtendedObject extends MyObject{
+    
+    private Object d;
+
+    public Object getD() {
+        return d;
+    }
+
+    public MyExtendedObject setD(Object d) {
+        this.d = d;
+        return this;
+    }
+}
+```
+
+#### Создание и возврат одного объекта
+
 <details>
   <summary>Нажми, чтобы прочесть</summary>
+
+Описание свойства / переменной окружения должно возвращать созданный объект заданного класса или наследников этого 
+класса.
+
+Возможны 2 ситуации:
+
+- конечный пользователь имеет возможность указать класс объекта, базовый или расширяющий.
+- конечный пользователь имеет возможность указать, каким должен быть объект (как его заполнить, какие параметры 
+  указать)
+
+Примеры:
+
+_- Конечный пользователь имеет возможность указать класс объекта, базовый или расширяющий:_
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.object.ObjectByClassPropertySupplier;
+
+@PropertyName("MY_PROPERTY")
+public class MyObjectProperty implements
+        ObjectByClassPropertySupplier<MyObject> { // <- В алмазных скобках указывается базовый тип 
+    // Это может быть и интерфейс, и абстрактный класс
+
+    public static final MyObjectProperty PROPERTY = new MyObjectProperty();
+}
+```
+
+Переменная среды или свойство `neptune.properties` / `neptune.global.properties`
+
+```properties
+# Указывается полное пакетное имя нужного класса
+# ВАЖНО!!!!!: 
+# - указанное значение НЕ должно быть интерфейсом, и НЕ должно быть абстрактным классом
+# - У указанного класса не должно быть объявленных конструкторов, или среди объявленных конструкторов 
+# должен присутствовать доступный конструктор без параметров
+MY_PROPERTY=org.my.pack.MyExtendedObject
+```
+
+Java-код
+
+```java
+package org.my.pack;
+
+import static org.my.pack.MyObjectProperty.PROPERTY;
+
+public class MyUseCase {
+
+  public void useCase() {
+    //чтение
+    MyObject value = PROPERTY.get(); //вернется созданный
+    //объект. Но его поля не будут заполнены.
+    //Такой способ подойдет, если параметры объекта заполняются
+    // неявно в момент создания этого объекта, либо параметры
+    //вернувшегося объекта никакой роли не играют в дальнейшей
+    //логике работы
+  }
+}
+```
+
+_- Конечный пользователь имеет возможность указать, каким должен быть объект (как его заполнить, какие параметры
+  указать):_
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.object.ObjectPropertySupplier;
+
+import java.util.function.Supplier;
+
+@PropertyName("MY_PROPERTY")
+public class MyObjectProperty implements
+        ObjectPropertySupplier<MyObject, Supplier<MyObject>> { //в алмазных скобках 2 параметра:
+  // - базовый тип объекта, который должно возвращать отображение свойства / переменной окружения. 
+  // Это может быть и интерфейс, и абстрактный класс.
+  //
+  // - тип объекта, с помощью которого происходит создание и настройка результирующего объекта.
+  // Это тип должен быть или расширять Supplier<MyObject>.
+
+  public static final MyObjectProperty PROPERTY = new MyObjectProperty();
+}
+```
+
+```java
+package org.my.pack;
+
+import java.util.function.Supplier;
+
+public class MyObjectSupplier implements Supplier<MyObject> {
+
+    @Override
+    public MyObject get() {
+        return new MyObject() //Если бы тут был непустой конструктор,
+                // им можно быо бы воспользоваться.
+                .setA(1) //так выполняется настройка / заполнение результирующего
+                .setB("A") //объекта.
+                .setC(true);
+    }
+}
+```
+
+Переменная среды или свойство `neptune.properties` / `neptune.global.properties`
+
+```properties
+# Указывается полное пакетное имя нужного класса
+# ВАЖНО!!!!!: 
+# - указанное значение НЕ должно быть интерфейсом, и НЕ должно быть абстрактным классом
+# - У указанного класса не должно быть объявленных конструкторов, или среди объявленных конструкторов 
+# должен присутствовать доступный конструктор без параметров
+MY_PROPERTY=org.my.pack.MyObjectSupplier
+```
+
+Java-код
+
+```java
+package org.my.pack;
+
+import static org.my.pack.MyObjectProperty.PROPERTY;
+
+public class MyUseCase {
+
+  public void useCase() {
+    //чтение
+    MyObject value = PROPERTY.get(); //вернется созданный
+    //объект, чьи поля будут заполнены.
+    //Такой способ подойдет, если класс объекта не имеет доступного
+    // конструктора без параметров, и если параметры результирующего
+    // объекта имеют значение для дальнейшей работы
+  }
+}
+```
+</details>
+
+#### Создание и возврат коллекции объектов
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+Можно воспользоваться способом, описанным в [Создание и возврат одного объекта](#Создание-и-возврат-одного-объекта), если
+рассматривать результирующую коллекцию как объект.
+
+Ниже альтернативный пример.
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.object.MultipleObjectPropertySupplier;
+
+import java.util.function.Supplier;
+
+@PropertyName("MY_PROPERTY")
+public class MyObjectsProperty implements
+        MultipleObjectPropertySupplier<MyObject, Supplier<MyObject>> { //в алмазных скобках 2 параметра:
+  // - базовый тип объектов, из которых состоит List<>, который должно возвращать
+  // отображение свойства / переменной окружения. Это может быть и интерфейс, и абстрактный класс.
+  //
+  // - тип объекта, с помощью которого происходит создание и настройка каждого элемента результирующего List<>.
+  // Это тип должен быть или расширять Supplier<MyObject>.
+
+  public static final MyObjectsProperty PROPERTY = new MyObjectsProperty();
+}
+```
+
+```java
+package org.my.pack;
+
+import java.util.function.Supplier;
+
+public class MyObjectSupplier implements Supplier<MyObject> {
+
+  @Override
+  public MyObject get() {
+    return new MyObject() //Если бы тут был непустой конструктор,
+            // им можно быо бы воспользоваться.
+            .setA(1) //так выполняется настройка / заполнение результирующего
+            .setB("A") //объекта.
+            .setC(true);
+  }
+}
+```
+
+```java
+package org.my.pack;
+
+import java.util.Date;
+import java.util.function.Supplier;
+
+public class MyExtendedObjectSupplier implements Supplier<MyObject> {
+  @Override
+  public MyObject get() {
+    return new MyExtendedObject() //Если бы тут был непустой конструктор,
+            // им можно быо бы воспользоваться.
+            .setD(new Date())
+            .setA(2) //так выполняется настройка / заполнение результирующего
+            .setB("B") //объекта.
+            .setC(false);
+  }
+}
+
+```
+
+Переменная среды или свойство `neptune.properties` / `neptune.global.properties`
+
+```properties
+# Указываются полные пакетные имена нужных классов
+# ВАЖНО!!!!!: 
+# - указанные значения НЕ должны быть интерфейсами, и НЕ должны быть абстрактными классами
+# - У указанных классов не должно быть объявленных конструкторов, или среди объявленных конструкторов 
+# должны присутствовать доступные конструкторы без параметров
+MY_PROPERTY=org.my.pack.MyObjectSupplier,org.my.pack.MyExtendedObjectSupplier
+```
+
+Java-код
+
+```java
+package org.my.pack;
+
+import java.util.List;
+
+import static org.my.pack.MyObjectsProperty.PROPERTY;
+
+public class MyUseCase {
+
+  public void useCase() {
+    //чтение
+    List<MyObject> value = PROPERTY.get(); //вернется созданный
+    //List<> из 2-х элементов
+  }
+}
+```
 
 </details>
 
@@ -864,7 +1162,7 @@ public class MyUseCase {
 ### Gradle
 
 ```groovy
-task generateBundle(type: JavaExec) {
+task generateProperties(type: JavaExec) {
     classpath sourceSets.test.runtimeClasspath //или sourceSets.main.runtimeClasspath
     main = "ru.tinkoff.qa.neptune.core.api.properties.NeptunePropertyGenerator"
     //генерировать neptune.properties (false), или neptune.global.properties (true).
@@ -886,6 +1184,37 @@ task generateBundle(type: JavaExec) {
 }
 ```
 
+### Результат 
+
+Получится файл, как в примере ниже
+
+```properties
+#Neptune properties and some properties of JDK or 3rd party frameworks are defined there
+#===========================General properties. Report
+#To limit report/log output or not by depth of step performing
+#It is about steps which are built by `ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier`
+#and `ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier`
+TO_LIMIT_REPORT_DEPTH=true
+#===========================General properties. Report captures/Attachments
+#Defines events to make log attachments
+#Available values: SUCCESS, FAILURE, SUCCESS_AND_FAILURE
+DO_CAPTURES_OF=
+#===========================General properties. Resource management
+#Is it necessary to free unused resources, e.g. opened browser, connections to databases etc.
+TO_FREE_RESOURCES_ON_INACTIVITY=
+#Time unit (see java.time.temporal.ChronoUnit) of time to wait for activity
+#It have sense when value of the property 'TO_FREE_RESOURCES_ON_INACTIVITY' is 'true'
+TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT=SECONDS
+#Value of time to wait for activity
+#It have sense when value of the property 'TO_FREE_RESOURCES_ON_INACTIVITY' is 'true'
+TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE=30
+#===========================Report localization
+#Defines default locale
+DEFAULT_LOCALE=
+#Define localisation mechanism
+DEFAULT_LOCALIZATION_ENGINE=
+```
+
 ## Основной набор настроек/свойств
 
 Эти свойства / переменные окружения могут быть настроены всегда, независимо от набора подключенных модулей Neptune.
@@ -897,6 +1226,8 @@ task generateBundle(type: JavaExec) {
 - JUnit5 (будут предоставлены после реализации*)
 
 ### Освобождение ресурсов
+
+См. [Сброс/Остановка](./REFRESHING_STOPPING.MD#Сброс-Остановка)
 
 ### Локализация
 
