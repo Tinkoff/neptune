@@ -1227,7 +1227,7 @@ DEFAULT_LOCALIZATION_ENGINE=
 
 ### Освобождение ресурсов
 
-См. [Сброс/Остановка](./REFRESHING_STOPPING.MD#сбросостановка)
+См. [Сброс/Остановка](./REFRESHING_STOPPING.MD#сброс--остановка)
 
 ### Локализация
 
