@@ -54,7 +54,10 @@ mainClass `ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGener
                         <mainClass>ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGenerator</mainClass>
                         <arguments>
                             <argument>ru_RU</argument>
-                            <argument>${basedir}/src/main/resources</argument>
+                            <!--Нужная локаль-->
+                            <argument>${basedir}/src/test/resources</argument>
+                            <!--или ${basedir}/src/main/resources-->
+                            <!--или любая другая директория-->
                         </arguments>
                     </configuration>
                 </execution>
@@ -70,7 +73,10 @@ mainClass `ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGener
 task generateBundle(type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
     main = "ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGenerator"
-    args "ru_RU", "$projectDir/src/main/resources"
+    args "ru_RU", //нужная локаль
+            "$projectDir/src/test/resources"
+            //или $projectDir/src/main/resources
+            //или любая другая директория
 }
 ```
 
