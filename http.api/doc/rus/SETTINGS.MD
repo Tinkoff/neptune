@@ -192,7 +192,6 @@ public class SomeClass {
 
 Настройка указывает версию http-протокола. Доступные значения - `HTTP_1_1` и `HTTP_2` - объекты перечисления `java.net.http.HttpClient.Version`.
 
-
 Пример настройки:
 
 ```properties

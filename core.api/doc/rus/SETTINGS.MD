@@ -1229,6 +1229,71 @@ DEFAULT_LOCALIZATION_ENGINE=
 
 См. [Сброс/Остановка](./REFRESHING_STOPPING.MD#сброс--остановка)
 
+##### TO_FREE_RESOURCES_ON_INACTIVITY
+
+<details>
+    <summary>Нажми, чтобы прочесть</summary>
+
+Настройка указывает на необходимость освобождать ресурсы (подключения к базам данных, открытые браузеры и т.д) при простое. 
+Доступные значения - `true` (рекомендуемое для прогона тестов в несколько потоков) или `false`.
+
+Пример настройки:
+
+```properties
+#Значение свойства указывается так
+TO_FREE_RESOURCES_ON_INACTIVITY=true
+```
+
+```java
+import static ru.tinkoff.qa.neptune.core.api.properties
+        .general.resorces.FreeResourcesOnInactivity.TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY;
+
+public class SomeClass {
+    
+    public void someVoid() {
+        //пример доступа до значения свойства
+        boolean toFree = TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.get();
+    }
+}
+```
+
+</details>
+
+##### Время 
+
+<details>
+    <summary>Нажми, чтобы прочесть</summary>
+
+Свойства `TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT` и `TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE` определяют 
+допустимое время простоя ресурсов (подключения к базам данных, открытые браузеры и т.д). Для свойства 
+`TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT` следует указать значение, соответствующее одному из элементов
+перечисления `java.time.temporal.ChronoUnit`, для свойства `TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE` следует 
+указать значение, которое может быть прочитано как положительное число типа `java.lang.Long`.
+
+```properties
+#Укажем допустимое время простоя
+#5 секунд
+TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT=SECONDS
+TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE=5
+```
+
+```java
+import java.time.Duration;
+
+import static ru.tinkoff.qa.neptune.core.api.properties
+        .general.resorces.FreeResourcesOnInactivityAfter.FREE_RESOURCES_ON_INACTIVITY_AFTER;
+
+public class SomeClass {
+
+    public void someVoid() {
+        Duration downTimeDuration = FREE_RESOURCES_ON_INACTIVITY_AFTER.get();
+    }
+}
+```
+
+Время по умолчанию = 30 секунд. Указанное время применяется, когда `TO_FREE_RESOURCES_ON_INACTIVITY=true`.
+</details>
+
 ### Локализация
 
 [Основная статья](./LOCALIZATION.MD)
@@ -1294,9 +1359,50 @@ public class SomeClass {
 
 ### Логирование шагов
 
+##### DO_CAPTURES_OF
+
+[Основная статья](EVENTS.MD#Когда-следует-создавать-аттачи-в-отчете-о-прохождении)
+
+<details>
+    <summary>Нажми, чтобы прочесть</summary>
+
+Настройка указывает, в каких случаях следует делать аттачи к отчету о тестах. Объекты перечисления 
+`ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents`. Доступные значения:
+
+- `SUCCESS` - если шаг завершился успешно
+- `FAILURE` - если выполняющийся шаг выбросил исключение
+- `SUCCESS_AND_FAILURE` - во всех случаях
+
+Пример настройки:
+
+```properties
+#Значение свойства указывается так
+DO_CAPTURES_OF=SUCCESS_AND_FAILURE
+```
+
+```java
+import ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents;
+
+import static ru.tinkoff.qa.neptune.core.api.properties.general
+        .events.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
+
+public class SomeClass {
+    
+    public void someVoid() {
+        //пример доступа до значения свойства
+        CapturedEvents value = DO_CAPTURES_OF_INSTANCE.get();
+    }
+}
+```
+
+</details>
+
 ##### TO_LIMIT_REPORT_DEPTH
 
 [Основная статья](STEPS.MD#Вложенность--глубина-шагов)
+
+<details>
+    <summary>Нажми, чтобы прочесть</summary>
 
 Определяет, нужно ли ограничить логирование/вывод в отчет о тестировании шагов в зависимости от их глубины. Значение по
 умолчанию (рекомендуемое) `true`.
@@ -1318,3 +1424,4 @@ public class SomeClass {
     }
 }
 ```
+</details>
