@@ -12,9 +12,14 @@ public abstract class AbstractRequestBodyCaptor<T extends RequestBody<?>, R> ext
 
     private final List<Class<? extends RequestBody<?>>> needed;
 
-    public AbstractRequestBodyCaptor(List<? extends CapturedDataInjector<R>> capturedDataInjectors,
-                                     List<Class<? extends RequestBody<?>>> needed) {
+    protected AbstractRequestBodyCaptor(List<? extends CapturedDataInjector<R>> capturedDataInjectors,
+                                        List<Class<? extends RequestBody<?>>> needed) {
         super(capturedDataInjectors);
+        this.needed = needed;
+    }
+
+    protected AbstractRequestBodyCaptor(List<Class<? extends RequestBody<?>>> needed) {
+        super();
         this.needed = needed;
     }
 

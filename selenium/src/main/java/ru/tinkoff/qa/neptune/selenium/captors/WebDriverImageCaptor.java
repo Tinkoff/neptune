@@ -11,7 +11,6 @@ import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 import static java.util.Optional.ofNullable;
 import static org.openqa.selenium.OutputType.BYTES;
@@ -24,10 +23,10 @@ public class WebDriverImageCaptor extends ImageCaptor<WebDriver> {
 
     @Override
     public BufferedImage getData(WebDriver caught) {
-        var in = new ByteArrayInputStream(((TakesScreenshot) caught).getScreenshotAs(BYTES));
         try {
+            var in = new ByteArrayInputStream(((TakesScreenshot) caught).getScreenshotAs(BYTES));
             return ImageIO.read(in);
-        } catch (IOException e) {
+        } catch (Exception e) {
             return null;
         }
     }

@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.captors.response;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
-import ru.tinkoff.qa.neptune.core.api.event.firing.CapturedDataInjector;
 
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
@@ -18,8 +17,8 @@ public abstract class AbstractResponseBodyObjectsCaptor<T, R> extends Captor<Lis
     private final Class<T> needed;
     private final Predicate<T> filterPredicate;
 
-    public AbstractResponseBodyObjectsCaptor(List<? extends CapturedDataInjector<R>> capturedDataInjectors, Class<T> needed, Predicate<T> filterPredicate) {
-        super(capturedDataInjectors);
+    protected AbstractResponseBodyObjectsCaptor(Class<T> needed, Predicate<T> filterPredicate) {
+        super();
         this.needed = needed;
         this.filterPredicate = filterPredicate;
     }

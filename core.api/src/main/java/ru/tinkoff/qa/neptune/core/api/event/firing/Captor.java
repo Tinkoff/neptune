@@ -5,6 +5,8 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import java.util.List;
 
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.UseInjectors.UseInjectorReader.createInjectors;
 import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 
 /**
@@ -27,6 +29,25 @@ public abstract class Captor<T, S> {
     public Captor(List<? extends CapturedDataInjector<S>> injectors) {
         this.message = translate(this);
         this.injectors = injectors;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Captor(String message) {
+        this.message = message;
+        this.injectors = createInjectors(this.getClass())
+                .stream()
+                .map(i -> (CapturedDataInjector<S>) i)
+                .collect(toList());
+    }
+
+    @SuppressWarnings("unchecked")
+    public Captor() {
+        this.message = translate(this);
+        ;
+        this.injectors = createInjectors(this.getClass())
+                .stream()
+                .map(i -> (CapturedDataInjector<S>) i)
+                .collect(toList());
     }
 
     public void capture(T caught) {
