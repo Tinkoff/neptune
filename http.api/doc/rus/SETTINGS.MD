@@ -4,7 +4,28 @@
 
 Описанный ниже набор настроек/свойств дополняет [базовый набор настроек/свойств](./../../../core.api/doc/rus/SETTINGS.MD#Основной-набор-настроек/свойств),
 которые могут быть включены в `neptune.global.properties` или в `neptune.properties`, или использованы в качестве
-свойств/переменных окружения/среды в той среде, в которой запускаются тесты:
+свойств/переменных окружения/среды в той среде, в которой запускаются тесты.
+
+## Оглавление
+   - [DEFAULT_HTTP_AUTHENTICATOR](#DEFAULT_HTTP_AUTHENTICATOR)
+   - [DEFAULT_HTTP_COOKIE_HANDLER](#DEFAULT_HTTP_COOKIE_HANDLER)
+   - [DEFAULT_HTTP_EXECUTOR](#DEFAULT_HTTP_EXECUTOR)
+   - [DEFAULT_HTTP_PRIORITY](#DEFAULT_HTTP_PRIORITY)
+   - [DEFAULT_HTTP_PROTOCOL_VERSION](#DEFAULT_HTTP_PROTOCOL_VERSION)
+   - [DEFAULT_HTTP_PROXY_SELECTOR](#DEFAULT_HTTP_PROXY_SELECTOR)
+   - [DEFAULT_HTTP_REDIRECT_POLICY](#DEFAULT_HTTP_REDIRECT_POLICY)
+   - [DEFAULT_HTTP_SSL_CONTEXT](#DEFAULT_HTTP_SSL_CONTEXT)
+   - [DEFAULT_HTTP_SSL_PARAMETERS](#DEFAULT_HTTP_SSL_PARAMETERS)
+   - [Время подключения http клиента к сервису по умолчанию](#Время-подключения-http-клиента-к-сервису-по-умолчанию)
+   - [Сериализация и десериализация тел http запросов и ответов](#Сериализация-и-десериализация-тел-http-запросов-и-ответов)
+     - [JSON DEFAULT_JSON_MAPPER](#JSON-DEFAULT_JSON_MAPPER)
+     - [XML DEFAULT_JSON_MAPPER](#XML-DEFAULT_XML_MAPPER)
+   - [END_POINT_OF_TARGET_API](#END_POINT_OF_TARGET_API)
+   - [Формат даты по умолчанию](#Формат-даты-по-умолчанию)
+     - [API_DATE_FORMAT](#API_DATE_FORMAT)
+     - [API_DATE_FORMAT_SYMBOLS](#API_DATE_FORMAT_SYMBOLS)
+     - [API_DATE_FORMAT_TIME_ZONE](#API_DATE_FORMAT_TIME_ZONE)
+   - [Http лог](#Http-лог)    
 
 ## DEFAULT_HTTP_AUTHENTICATOR
 <details>
@@ -52,6 +73,8 @@ public class SomeClass {
 ```
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 </details>
 
@@ -105,6 +128,8 @@ public class SomeClass {
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 </details>
 
 ## DEFAULT_HTTP_EXECUTOR
@@ -153,6 +178,8 @@ public class SomeClass {
 ```
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 ## DEFAULT_HTTP_PRIORITY
@@ -184,6 +211,8 @@ public class SomeClass {
 ```
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-чисел)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 ## DEFAULT_HTTP_PROTOCOL_VERSION
@@ -215,6 +244,8 @@ public class SomeClass {
 ```
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-объектов-перечислений)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 ## DEFAULT_HTTP_PROXY_SELECTOR
@@ -263,6 +294,7 @@ public class SomeClass {
 ```
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 ## DEFAULT_HTTP_REDIRECT_POLICY
@@ -295,6 +327,8 @@ public class SomeClass {
 ```
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-объектов-перечислений)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 ## DEFAULT_HTTP_SSL_CONTEXT
@@ -346,6 +380,8 @@ public class SomeClass {
 Данный поставщик возвращает объекты `javax.net.ssl.SSLContext`, которые принимают любые сертификаты.
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 ## DEFAULT_HTTP_SSL_PARAMETERS
@@ -394,6 +430,8 @@ public class SomeClass {
 ```
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 ## Время подключения http клиента к сервису по умолчанию
@@ -427,6 +465,8 @@ public class SomeClass {
 ```
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-величины-продолжительности)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 ## Сериализация и десериализация тел http запросов и ответов
@@ -481,6 +521,8 @@ public class SomeClass {
 ```
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 ### XML DEFAULT_XML_MAPPER
@@ -533,7 +575,11 @@ public class SomeClass {
 ```
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## END_POINT_OF_TARGET_API
 <details>
@@ -569,6 +615,8 @@ public class SomeClass {
 корневой URL отличается от дефолтного. Об этих нюансах подробно
 в [Дефолтный корневой URL](./MAPPING.MD#Дефолтный-корневой-URL) и
 в [Недефолтные корневые URL](./MAPPING.MD#Недефолтные-корневые-URL)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 </details>
 
@@ -607,6 +655,7 @@ public class SomeClass {
 }
 ```
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 ### API_DATE_FORMAT_SYMBOLS
@@ -656,6 +705,8 @@ public class SomeClass {
 ```
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 ### API_DATE_FORMAT_TIME_ZONE
@@ -687,7 +738,10 @@ public class SomeClass {
 }
 ```
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## Http лог
 
@@ -706,4 +760,5 @@ jdk.httpclient.HttpClient.log=all
 Включенный лог будет выводиться на консоль, а так же попадет в виде приложенных файлов в отчет о прохождении тестов, если выполнена 
 [соответствующая настройка](./../../../core.api/doc/rus/EVENTS.MD#Когда-следует-создавать-аттачи-в-отчете-о-прохождении)
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>

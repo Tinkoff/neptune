@@ -14,6 +14,11 @@
 
 - [Критерии для http cookie](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/cookies/CommonHttpCookieCriteria.html)
 
+## Оглавление
+  * [Добавление http-cookie](#Добавление-http-cookie)
+  * [Получение http-cookie](#Получение-http-cookiee)
+  * [Удаление http-cookie](#Удаление-http-cookie)
+
 ## Добавление http-cookie
 
 ```java
@@ -55,6 +60,7 @@ public class CookieTest {
 }
 ```
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## Получение http-cookie
 
@@ -96,6 +102,7 @@ public class CookieTest {
 }
 ```
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## Удаление http-cookie
 
@@ -147,3 +154,5 @@ public class CookieTest {
     }
 }
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
