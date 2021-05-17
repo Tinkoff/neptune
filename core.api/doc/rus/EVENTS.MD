@@ -147,4 +147,167 @@ public class MyInjector<S> implements CapturedDataInjector< // <- нужно р�
 Подробнее о том как связать классы, формирующие аттачи и классы, описывающие и формирующие шаги,
 см. [здесь](STEPS.MD#Аттачи). Ничего более делать не нужно.
 
+Можно воспользоваться одним из следующих вариантов расширения `Captor` / реализации `CapturedDataInjector`:
+
+**- аттач файла**
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.event.firing.captors.FileCaptor;
+
+import java.io.File;
+
+public class MyFileCaptor<T> extends FileCaptor< //<- нужно унаследовать данный класс
+        T //тип объекта, который может быть превращен в файл
+        > {
+
+    @Override
+    public T getCaptured(Object toBeCaptured) {
+        return // Возвращает объект, с помощью которого формируется файл
+        // если такой объект нельзя получить, метод должен возвращать null
+    }
+
+    @Override
+    public File getData(T caught) {
+        return // возвращает файл,
+        // если такой объект нельзя получить, метод должен возвращать null
+    }
+}
+```
+
+Класс из примера ниже можно не реализовывать, если подключены:
+
+- [Интеграция с Allure](./../../../allure.integration/README.md)
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.event.firing.captors.CapturedFileInjector;
+
+import java.io.File;
+
+//Данная реализация интерфейса будет использована автоматически.
+public class MyFileInjector implements CapturedFileInjector {
+
+    @Override
+    public void inject(File toBeInjected, String message) {
+        //логика прикрепления файла к отчету / логу
+    }
+}
+
+```
+
+**- аттач картинки**
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.event.firing.captors.ImageCaptor;
+
+import java.awt.image.BufferedImage;
+
+public class MyImageCaptor<T> extends ImageCaptor< //<- нужно унаследовать данный класс
+        T //тип объекта, который может быть превращен в картинку
+        > {
+
+    @Override
+    public T getCaptured(Object toBeCaptured) {
+        return // Возвращает объект, с помощью которого формируется картинка
+        // если такой объект нельзя получить, метод должен возвращать null
+    }
+
+    @Override
+    public BufferedImage getData(T caught) {
+        return // возвращает картинку,
+        // если такой объект нельзя получить, метод должен возвращать null
+    }
+}
+```
+
+Класс из примера ниже можно не реализовывать, если подключены:
+
+- [Интеграция с Allure](./../../../allure.integration/README.md)
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.event.firing.captors.CapturedImageInjector;
+
+import java.awt.image.BufferedImage;
+
+//Данная реализация интерфейса будет использована автоматически
+public class MyImageInjector implements CapturedImageInjector {
+
+    @Override
+    public void inject(BufferedImage toBeInjected, String message) {
+        //логика прикрепления картинки к отчету / логу
+    }
+}
+```
+
+**- аттач текста**
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
+
+public class MyTextCaptor<T> extends StringCaptor< //<- нужно унаследовать данный класс
+        T //тип объекта, который может быть превращен в текст
+        > {
+
+    @Override
+    public T getCaptured(Object toBeCaptured) {
+        return // Возвращает объект, с помощью которого формируется текст
+        // если такой объект нельзя получить, метод должен возвращать null
+    }
+
+    @Override
+    public StringBuilder getData(T caught) {
+        return // возвращает текст,
+        // если такой объект нельзя получить, метод должен возвращать null
+    }
+}
+```
+
+Класс из примера ниже можно не реализовывать, если подключены:
+
+- [Интеграция с Allure](./../../../allure.integration/README.md)
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.event.firing.captors.CapturedImageInjector;
+import ru.tinkoff.qa.neptune.core.api.event.firing.captors.CapturedStringInjector;
+
+import java.awt.image.BufferedImage;
+
+//Данная реализация интерфейса будет использована автоматически
+public class MyTextInjector implements CapturedStringInjector {
+
+    @Override
+    public void inject(StringBuilder toBeInjected, String message) {
+        //логика прикрепления картинки к отчету / логу
+    }
+}
+```
+
+Либо можно воспользоваться следующими готовыми классами:
+
+- `ru.tinkoff.qa.neptune.core.api.event.firing.collections.ArrayCaptor` - добавляет текстовый аттач, сформированный из
+  массива
+- `ru.tinkoff.qa.neptune.core.api.event.firing.collections.CollectionCaptor` - добавляет текстовый аттач, сформированный
+  из коллекции
+- `ru.tinkoff.qa.neptune.core.api.event.firing.collections.MapCaptor` - добавляет текстовый аттач, сформированный
+  из `java.util.Map`
+
 ### Когда следует создавать аттачи в отчете о прохождении
+
+Аттач делается:
+
+- при успешном выполнении шагов теста
+- при неудачном завершении шагов теста
+- как при успешном завершении шагов, так и при неудачном.
+
+По умолчанию функция выключена. Включается с помощью [настроек](SETTINGS.MD#DO_CAPTURES_OF)
