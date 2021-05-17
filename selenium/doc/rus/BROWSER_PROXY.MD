@@ -6,7 +6,7 @@
   Объект [контекста для браузера](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/SeleniumStepContext.html)
   в примерах ниже вызывается статическим методом `ru.tinkoff.qa.neptune.selenium.SeleniumStepContext#inBrowser`
 
-- [О принципах работы шагов, которые возвращают результат](./../../../core.api/doc/rus/STEPS.MD#Шаги,-которые-возвращают-результат).
+- [О принципах работы шагов, которые возвращают результат](./../../../core.api/doc/rus/STEPS.MD#Шаги-которые-возвращают-результат).
 
 - О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).  
 
