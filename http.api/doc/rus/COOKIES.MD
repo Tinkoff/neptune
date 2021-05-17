@@ -16,7 +16,7 @@
 
 ## Оглавление
   * [Добавление http-cookie](#Добавление-http-cookie)
-  * [Получение http-cookie](#Получение-http-cookiee)
+  * [Получение http-cookie](#Получение-http-cookie)
   * [Удаление http-cookie](#Удаление-http-cookie)
 
 ## Добавление http-cookie
