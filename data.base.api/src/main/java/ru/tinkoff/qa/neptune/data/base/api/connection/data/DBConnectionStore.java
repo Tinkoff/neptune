@@ -2,11 +2,12 @@ package ru.tinkoff.qa.neptune.data.base.api.connection.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ServiceLoader;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
-import static ru.tinkoff.qa.neptune.core.api.utils.SPIUtil.loadSPI;
+import static java.util.stream.Collectors.toList;
 
 public final class DBConnectionStore {
 
@@ -24,7 +25,9 @@ public final class DBConnectionStore {
      */
     private static synchronized List<DBConnectionSupplier> getConnectionDataSuppliers() {
         if (CONNECTION_DATA_SUPPLIERS.size() == 0) {
-            CONNECTION_DATA_SUPPLIERS.addAll(loadSPI(DBConnectionSupplier.class));
+            CONNECTION_DATA_SUPPLIERS.addAll(ServiceLoader.load(DBConnectionSupplier.class)
+                    .stream()
+                    .map(ServiceLoader.Provider::get).collect(toList()));
         }
         return CONNECTION_DATA_SUPPLIERS;
     }

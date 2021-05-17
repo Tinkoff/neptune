@@ -1,10 +1,8 @@
 package ru.tinkoff.qa.neptune.http.api.captors.response;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
-import ru.tinkoff.qa.neptune.core.api.event.firing.CapturedDataInjector;
 
 import java.net.http.HttpResponse;
-import java.util.List;
 
 import static java.util.Optional.ofNullable;
 
@@ -12,8 +10,8 @@ public abstract class AbstractResponseBodyObjectCaptor<T, R> extends Captor<T, R
 
     private final Class<T> needed;
 
-    public AbstractResponseBodyObjectCaptor(List<? extends CapturedDataInjector<R>> capturedDataInjectors, Class<T> needed) {
-        super(capturedDataInjectors);
+    protected AbstractResponseBodyObjectCaptor(Class<T> needed) {
+        super();
         this.needed = needed;
     }
 
