@@ -10,6 +10,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
@@ -31,12 +32,12 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
 
     @StepParameter(doNotReportNullValues = true,
             value = "Pause before",
-            makeReadableBy = PauseDurationParameterValueGetter.class)
+            makeReadableBy = ParameterValueGetter.DurationParameterValueGetter.class)
     private Duration pauseBefore;
 
     @StepParameter(doNotReportNullValues = true,
             value = "Pause after",
-            makeReadableBy = PauseDurationParameterValueGetter.class)
+            makeReadableBy = ParameterValueGetter.DurationParameterValueGetter.class)
     private Duration pauseAfter;
 
     InteractiveAction() {

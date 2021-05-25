@@ -4,6 +4,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.List;
+import java.util.function.Function;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
@@ -13,6 +14,7 @@ import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.check.CheckActionSupplier.check;
 import static ru.tinkoff.qa.neptune.check.CheckActionSupplier.evaluateAndCheck;
 import static ru.tinkoff.qa.neptune.check.MatchAction.match;
+import static ru.tinkoff.qa.neptune.check.MatchAction.matchOr;
 import static ru.tinkoff.qa.neptune.check.test.TestEventLogger.MESSAGES;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.SUCCESS_AND_FAILURE;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
@@ -62,10 +64,7 @@ public class CheckTest {
     }
 
 
-    @Test(expectedExceptions = AssertionError.class, expectedExceptionsMessageRegExp = ".*['List of mismatches:']" +
-            "*['Sqrt value']" +
-            "*['Expected: is <2.0>']" +
-            "*['but: was <3.0>']")
+    @Test
     public void test2() {
         try {
             check(9,
@@ -75,8 +74,12 @@ public class CheckTest {
                     match("Sqrt value",
                             number -> sqrt(number.doubleValue()),
                             is(2D)));
-        } finally {
+        } catch (AssertionError e) {
             assertThat(MESSAGES, contains(EXPECTED_LOGGER_MESSAGES2.toArray()));
+            assertThat(e.getMessage(), is("Found mismatches:\r\n" +
+                    "Expected: 'Sqrt value' is <2.0>\r\n" +
+                    "Checked value: '3.0'\r\n" +
+                    "Result: was <3.0>"));
         }
     }
 
@@ -104,6 +107,63 @@ public class CheckTest {
                         "Assert: is <3.0> has started",
                         "Event finished",
                         "Event finished",
+                        "Event finished"));
+    }
+
+    @Test
+    public void test5() {
+        check("Tested number",
+                9,
+                matchOr(greaterThan(0),
+                        lessThan(10),
+                        greaterThan(5)),
+                matchOr("Sqrt", (Function<Integer, Double>) Math::sqrt,
+                        is(3D),
+                        greaterThan(0D),
+                        lessThan(2D)));
+
+        assertThat(MESSAGES,
+                contains("Check: Tested number has started",
+                        "Assert: a value greater than <0> or a value less than <10> or a value greater than <5> has started",
+                        "Event finished",
+                        "Assert: Sqrt is <3.0> or a value greater than <0.0> or a value less than <2.0> has started",
+                        "Event finished",
+                        "Event finished"));
+    }
+
+    @Test
+    public void test6() {
+        try {
+            check("Tested number",
+                    4,
+                    matchOr(greaterThan(5),
+                            lessThan(-10),
+                            instanceOf(Float.class)),
+                    matchOr("Sqrt", (Function<Integer, Double>) Math::sqrt,
+                            is(3D),
+                            lessThan(0D),
+                            lessThan(2D)));
+        } catch (AssertionError e) {
+            assertThat(e.getMessage(), is("Found mismatches:\r\n" +
+                    "Expected: a value greater than <5> or a value less than <-10> or an instance of java.lang.Float\r\n" +
+                    "Checked value: '4'\r\n" +
+                    "Result: Does not match any of the listed criteria" +
+                    "\r\n" +
+                    "\r\n" +
+                    "Expected: 'Sqrt' is <3.0> or a value less than <0.0> or a value less than <2.0>\r\n" +
+                    "Checked value: '2.0'\r\n" +
+                    "Result: Does not match any of the listed criteria"));
+        }
+
+        assertThat(MESSAGES,
+                contains("Check: Tested number has started",
+                        "Assert: a value greater than <5> or a value less than <-10> or an instance of java.lang.Float has started",
+                        "java.lang.AssertionError has been thrown",
+                        "Event finished",
+                        "Assert: Sqrt is <3.0> or a value less than <0.0> or a value less than <2.0> has started",
+                        "java.lang.AssertionError has been thrown",
+                        "Event finished",
+                        "java.lang.AssertionError has been thrown",
                         "Event finished"));
     }
 }

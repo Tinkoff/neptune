@@ -4,8 +4,10 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 
 import java.lang.reflect.Constructor;
+import java.time.Duration;
 
 import static java.lang.String.valueOf;
+import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 
 /**
  * Converts some value to a readable parameter of a step or to fragment of step description.
@@ -37,6 +39,14 @@ public interface ParameterValueGetter<T> {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+    final class DurationParameterValueGetter implements ParameterValueGetter<Duration> {
+
+        @Override
+        public String getParameterValue(Duration fieldValue) {
+            return formatDurationHMS(fieldValue.toMillis());
         }
     }
 }

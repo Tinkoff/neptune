@@ -29,7 +29,7 @@ public class TestLocalizationAspect {
             "execution(static ru.tinkoff.qa.neptune.core.api.steps.Criteria OR(..))";
 
     private static final String POINTCUT_XOR =
-            "execution(static ru.tinkoff.qa.neptune.core.api.steps.Criteria XOR(..))";
+            "execution(static ru.tinkoff.qa.neptune.core.api.steps.Criteria ONLY_ONE(..))";
 
     private static final String POINTCUT_NOT =
             "execution(static ru.tinkoff.qa.neptune.core.api.steps.Criteria NOT(..))";

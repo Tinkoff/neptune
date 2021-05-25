@@ -29,7 +29,7 @@ public class LocalizationAspect {
             "execution(static ru.tinkoff.qa.neptune.core.api.steps.Criteria OR(..))";
 
     private static final String POINTCUT_XOR =
-            "execution(static ru.tinkoff.qa.neptune.core.api.steps.Criteria XOR(..))";
+            "execution(static ru.tinkoff.qa.neptune.core.api.steps.Criteria ONLY_ONE(..))";
 
     private static final String POINTCUT_NOT =
             "execution(static ru.tinkoff.qa.neptune.core.api.steps.Criteria NOT(..))";
@@ -45,10 +45,6 @@ public class LocalizationAspect {
 
     private static final String POINTCUT_GET_SUPPLIER =
             "execution(* ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier+.*(..))";
-
-    public LocalizationAspect() {
-        super();
-    }
 
     @Pointcut(POINTCUT_CRITERIA_METHOD)
     public void criteriaMethod() {
