@@ -2,7 +2,16 @@
 
 Фреймворк поддерживает локализацию отчетов на разные языки.
 
-## Базовый механиз локализации
+## Оглавление
+  - [Базовый механизм локализации](#Базовый-механизм-локализации)
+    - [Как настроить использование базового механизма](#Как-настроить-использование-базового-механизма)
+    - [Механизм генерации resourceBundle](#Механизм-генерации-resourceBundle)
+      - [Пример для pom.xml](#Пример-для-pomxml)
+      - [Пример для build.gradle](#Пример-для-buildgradle)
+      - [Результат](#Результат)
+  - [Собственный механизм локализации](#Собственный-механизм-локализации)
+
+## Базовый механизм локализации
 
 [Настройка](./SETTINGS.MD#Локализация)
 
@@ -10,20 +19,23 @@ Neptune поддерживает по дефолту механизм, осно�
 использовании [AspectJ](https://www.eclipse.org/aspectj/doc/released/index.html)
 и [ResourceBundle](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/ResourceBundle.html).
 
-### Как настроить использование базового механизма:
+### Как настроить использование базового механизма
 
-- ##### указать в properties механизм перевода через resourceBundle
+- ##### сгенерировать и настроить resourceBundle
+
+- ##### добавить в переменные среды или в `neptune.properties` или в `neptune.global.properties`
 
 ```properties
 DEFAULT_LOCALIZATION_ENGINE=ru.tinkoff.qa.neptune.core.api.steps.localization.LocalizationByResourceBundle
 ```
 
-- ##### сгенерировать и настроить resourceBundle
-- ##### указать в properties какую локаль использовать
+- ##### добавить в переменные среды или в `neptune.properties` или в `neptune.global.properties`
 
 ```properties
 DEFAULT_LOCALE=ru_RU
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ### Механизм генерации resourceBundle
 
@@ -54,7 +66,10 @@ mainClass `ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGener
                         <mainClass>ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGenerator</mainClass>
                         <arguments>
                             <argument>ru_RU</argument>
-                            <argument>${basedir}/src/main/resources</argument>
+                            <!--Нужная локаль-->
+                            <argument>${basedir}/src/test/resources</argument>
+                            <!--или ${basedir}/src/main/resources-->
+                            <!--или любая другая директория-->
                         </arguments>
                     </configuration>
                 </execution>
@@ -63,6 +78,7 @@ mainClass `ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGener
     </plugins>
 </build>            
 ```
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ###### Пример для build.gradle
 
@@ -70,11 +86,16 @@ mainClass `ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGener
 task generateBundle(type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
     main = "ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGenerator"
-    args "ru_RU", "$projectDir/src/main/resources"
+    args "ru_RU", //нужная локаль
+            "$projectDir/src/test/resources"
+            //или $projectDir/src/main/resources
+            //или любая другая директория
 }
 ```
 
-#### В результате сгенерируется похожий файл, где необходимо изменить значение свойств
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+#### Результат
 
 ```properties
 #Values for translation of steps, their parameters and attachments are defined here. Format key = value
@@ -129,58 +150,7 @@ core.api.event.firing.collections.CollectionCaptor = Resulted collection
 #Original text = Resulted map
 core.api.event.firing.collections.MapCaptor = Resulted map
 ```
-
-### Использовать aspectj для собственных расширений механизма шагов
-
-Про механизм шагов (полезные статьи):
-
-- [Шаги, которые возвращают результат](STEPS.MD#Шаги,-которые-возвращают-результат)
-
-- [Шаги, которые выполняют действие](STEPS.MD#Шаги,-которые-выполняют-действие)
-
-1. настроить `pom.xml`
-
- ```xml
-<!-- Добавить зависимость -->
-<dependency>
-    <groupId>org.aspectj</groupId>
-    <artifactId>aspectjweaver</artifactId>
-    <version>${aspectj.version}</version>
-    <!-- Если новые шаги лежат в main, то scope необязателен  -->
-    <scope>test</scope>
-</dependency> 
- ```
-
- ```xml
-<!-- Добавить плагин -->
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-surefire-plugin</artifactId>
-    <version>3.0.0-M5</version>
-    <configuration>
-        <argLine>
-            -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/1.9.6/aspectjweaver-1.9.6.jar"
-        </argLine>
-    </configuration>
-</plugin>
- ```
-
-или `build.gradle`
-
-```groovy
-plugins {
-    id "io.freefair.aspectj.post-compile-weaving" version 'ACTUAL_PLUGIN_VERSION'
-}
-
-dependencies {
-    inpath(group: 'ru.tinkoff.qa.neptune', name: 'core.api', version: 'NEPTUNE_BETA_OR_RELEASE') {
-        transitive = false
-    }
-}
-
-```
-
-2. Использовать для своих шагов @Description, @DescriptionFragment, @StepParameter, @DefaultParameterNames
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## Собственный механизм локализации
 
@@ -255,10 +225,11 @@ public interface StepLocalization {
 }
 ```
 
-* указать в propeties новый механизм
+* добавить в переменные среды или в `neptune.properties` или в `neptune.global.properties` (или поменять значение, 
+  если уже добавлено)
 
 ```properties
 DEFAULT_LOCALIZATION_ENGINE=org.my.project.MyLocalizationEngine
 ```
- 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление) 
  

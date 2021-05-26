@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.captors.response;
 
 import org.jsoup.nodes.Document;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.UseInjectors;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.CapturedFileInjector;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
@@ -10,13 +11,13 @@ import static java.io.File.createTempFile;
 import static java.nio.charset.Charset.defaultCharset;
 import static java.util.UUID.randomUUID;
 import static org.apache.commons.io.FileUtils.writeStringToFile;
-import static ru.tinkoff.qa.neptune.core.api.utils.SPIUtil.loadSPI;
 
+@UseInjectors(CapturedFileInjector.class)
 @Description("Response Body. JSoup document")
 public final class ResponseJSoupDocumentCaptor extends AbstractResponseBodyObjectCaptor<Document, File> {
 
     public ResponseJSoupDocumentCaptor() {
-        super(loadSPI(CapturedFileInjector.class), Document.class);
+        super(Document.class);
     }
 
     @Override

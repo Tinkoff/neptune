@@ -38,3 +38,5 @@ public class MyHook implements ExecutionHook {
 Данный механизм используют:
 - [TestNG](./../../../testng.integration/doc/rus/README.MD)
 - _JUnit5 (будет описано после реализации)_ 
+
+[к списку документов](README.MD#Оглавление)

@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.captors.response;
 
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.UseInjectors;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.CapturedFileInjector;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
@@ -13,18 +14,18 @@ import static java.io.File.createTempFile;
 import static java.lang.String.format;
 import static java.util.UUID.randomUUID;
 import static org.apache.commons.io.FileUtils.copyFile;
-import static ru.tinkoff.qa.neptune.core.api.utils.SPIUtil.loadSPI;
 
 /**
  * This class is designed to convert some {@link String} and {@link Path} bodies of received responses
  * to files.
  */
+@UseInjectors(CapturedFileInjector.class)
 @Description("Response. File")
 public final class ResponseFileCaptor extends AbstractResponseBodyObjectCaptor<Path, File> {
 
 
     public ResponseFileCaptor() {
-        super(loadSPI(CapturedFileInjector.class), Path.class);
+        super(Path.class);
     }
 
     @Override

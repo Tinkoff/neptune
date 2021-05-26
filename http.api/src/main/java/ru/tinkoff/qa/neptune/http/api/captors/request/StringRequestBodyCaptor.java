@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.captors.request;
 
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.UseInjectors;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.CapturedStringInjector;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.http.api.request.body.RequestBody;
@@ -7,13 +8,13 @@ import ru.tinkoff.qa.neptune.http.api.request.body.StringBody;
 
 import static java.util.List.of;
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.core.api.utils.SPIUtil.loadSPI;
 
+@UseInjectors(CapturedStringInjector.class)
 @Description("Request string body")
 public final class StringRequestBodyCaptor extends AbstractRequestBodyCaptor<StringBody, StringBuilder> {
 
     public StringRequestBodyCaptor() {
-        super(loadSPI(CapturedStringInjector.class), of(StringBody.class));
+        super(of(StringBody.class));
     }
 
     @Override

@@ -2,9 +2,35 @@
 
 [Подробнее о механизме настроек](./../../../core.api/doc/rus/SETTINGS.MD).
 
-Описанный ниже набор настроек/свойств дополняет [базовый набор настроек/свойств](./../../../core.api/doc/rus/SETTINGS.MD#Основной-набор-настроек/свойств), 
+Описанный ниже набор настроек/свойств дополняет [базовый набор настроек/свойств](./../../../core.api/doc/rus/SETTINGS.MD#Основной-набор-настроексвойств), 
 которые могут быть включены в `neptune.global.properties` или в `neptune.properties`, или использованы в качестве 
 свойств/переменных окружения в той среде, в которой запускаются тесты:
+
+## Оглавление
+- [Запуск WebDriver'а](#Запуск-WebDriverа)
+  - [WEB_DRIVER_TO_LAUNCH](#web_driver_to_launch)
+  - [Настройки Capabilities](#Настройки-capabilities)
+    - [WEB_DRIVER_CAPABILITY_BROWSER_NAME](#web_driver_capability_browser_name)
+    - [WEB_DRIVER_CAPABILITY_PLATFORM_NAME](#web_driver_capability_platform_name)
+    - [WEB_DRIVER_CAPABILITY_SUPPORTS_JAVASCRIPT](#web_driver_capability_supports_javascript)
+    - [WEB_DRIVER_CAPABILITY_BROWSER_VERSION](#web_driver_capability_browser_version)
+- [Параметры сессии](#Параметры-сессии)
+  - [FIND_ONLY_VISIBLE_ELEMENTS](#find_only_visible_elements)
+  - [Проксирование трафика браузера](#Проксирование-трафика-браузера)
+    - [USE_BROWSER_PROXY](#use_browser_proxy)
+    - [PROXY_URL_PROPERTY](#proxy_url_property)    
+  - [KEEP_WEB_DRIVER_SESSION_OPENED](#keep_web_driver_session_opened)
+  - [FORCE_WINDOW_MAXIMIZING_ON_START](#force_window_maximizing_on_start)
+- [BASE_WEB_DRIVER_URL](#base_web_driver_url)
+- [REMOTE_WEB_DRIVER_URL](#remote_web_driver_url)
+- [Время ожидания по умолчанию](#Время-ожидания-по-умолчанию)
+  - [Ожидание элемента(ов)](#Ожидание-элементаов)
+  - [Ожидание фрейма](#Ожидание-фрейма)
+  - [Ожидание окна](#Ожидание-окна)
+  - [Ожидание алерта](#Ожидание-алерта)
+  - [Ожидание загрузки страницы](#Ожидание-загрузки-страницы)
+- [WEB_DRIVER_CREDENTIALS](#web_driver_credentials)
+- [WEB_DRIVER_DEFAULT_AUTO_SCROLLER](#web_driver_default_auto_scroller)
 
 ## Запуск WebDriver'а
 
@@ -50,6 +76,7 @@ public class SomeClass {
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-объектов-перечислений)
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 ### Настройки Capabilities
@@ -160,9 +187,15 @@ public class SomeClass {
 не противоречили друг другу.
 
 Так же можно указать некоторые параметры `Capabilities`, не прибегая к описанному выше механизму. Данные параметры могут 
-быть использованы независимо от используемого типа WebDriver'а. Список настроек ниже:
+быть использованы независимо от используемого типа WebDriver'а.
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+</details>
 
 #### WEB_DRIVER_CAPABILITY_BROWSER_NAME
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 Указывает значение `browserName` для тех случаев, когда `WEB_DRIVER_TO_LAUNCH=REMOTE_DRIVER`. Во всех остальных случаях
 настройка/свойство игнорируется.
@@ -185,8 +218,13 @@ public class SomeClass {
     }
 }
 ```
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+</details>
 
 #### WEB_DRIVER_CAPABILITY_PLATFORM_NAME
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 Указывает значение `platformName`. Значение должно соответствовать одному из элементов перечисления `org.openqa.selenium.Platform`, 
 либо строковому представлению одного из элементов перечисления `org.openqa.selenium.Platform`.
@@ -213,8 +251,13 @@ public class SomeClass {
     }
 }
 ```
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+</details>
 
 #### WEB_DRIVER_CAPABILITY_SUPPORTS_JAVASCRIPT
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 Указывает значение `javascriptEnabled`. Доступные значения - `true` или `false`.
 
@@ -238,7 +281,13 @@ public class SomeClass {
 
 Значение по умолчанию - `true`
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+</details>
+
 #### WEB_DRIVER_CAPABILITY_BROWSER_VERSION
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 Указывает значение `browserVersion`.
 
@@ -259,8 +308,10 @@ public class SomeClass {
     }
 }
 ```
-
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## Параметры сессии
 
@@ -298,6 +349,8 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-Boolean)
 
 [О поиске элементов страницы](./ELEMENTS_SEARCHING.MD)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 </details>
 
@@ -337,6 +390,7 @@ public class SomeClass {
 
 [О работе с записанным трафиком](./BROWSER_PROXY.MD)
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 #### PROXY_URL_PROPERTY
@@ -372,7 +426,10 @@ public class SomeClass {
 
 [О работе с записанным трафиком](./BROWSER_PROXY.MD)
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ### KEEP_WEB_DRIVER_SESSION_OPENED
 
@@ -417,6 +474,7 @@ public class SomeClass {
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-Boolean)
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 ### FORCE_WINDOW_MAXIMIZING_ON_START
@@ -450,7 +508,11 @@ public class SomeClass {
 Если свойство не заполнено, то значение по умолчанию `false`.
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-Boolean)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## BASE_WEB_DRIVER_URL
 
@@ -486,6 +548,8 @@ public class SomeClass {
 [О навигации](./NAVIGATION.MD)
 
 [Об управлении контентом](./CONTENT_MANAGEMENT.MD)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 ## REMOTE_WEB_DRIVER_URL
@@ -527,6 +591,8 @@ public class SomeClass {
 [Selenium Grid](https://www.selenium.dev/documentation/en/grid/)
 
 [Selenoid](https://aerokube.com/selenoid/)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 ## Время ожидания по умолчанию
@@ -567,6 +633,8 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-величины-продолжительности)
 
 [Поиск элементов страницы](./ELEMENTS_SEARCHING.MD)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 ### Ожидание фрейма
@@ -608,6 +676,8 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-величины-продолжительности)
 
 [Фреймы](./FRAMES.MD)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 ### Ожидание окна
@@ -648,6 +718,8 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-величины-продолжительности)
 
 [Окна/Вкладки](./WINDOWS.MD)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 ### Ожидание алерта
@@ -687,6 +759,8 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-величины-продолжительности)
 
 [Алерты](./ALERTS.MD)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 ### Ожидание загрузки страницы
@@ -724,7 +798,11 @@ public class SomeClass {
 Время ожидания полной загрузки страницы по умолчанию = 1 минуте.
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-величины-продолжительности)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## WEB_DRIVER_CREDENTIALS
 
@@ -780,6 +858,8 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
 
 [Про логин/аутентификацию в браузере](./LOGIN_IN_BROWSER.MD)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 ## WEB_DRIVER_DEFAULT_AUTO_SCROLLER
@@ -836,4 +916,5 @@ public class SomeClass {
 
 [Про авто-скроллирование](./AUTO_SCROLLING.MD)
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>

@@ -3,6 +3,41 @@
 Ниже описан способ настроек переменных среды / окружения / свойств, механизм их чтения, описания. Так же описаны базовые 
 свойства / переменные окружения, которые можно задать независимо от того, какие модули Neptune подключены к проекту.
 
+## Оглавление
+  - [`neptune.global.properties` и `neptune.properties`](#neptuneglobalproperties-и-neptuneproperties)
+  - [Описание свойства / переменной среды](#Описание-свойства--переменной-среды)
+    - [Свойства для возврата строки](#Свойства-для-возврата-строки)
+    - [Свойства для возврата Boolean](#Свойства-для-возврата-Boolean)
+    - [Свойства для возврата чисел](#Свойства-для-возврата-чисел)
+      - [Byte](#byte)
+      - [Double](#double)
+      - [Float](#float)
+      - [Integer](#integer)
+      - [Long](#long)
+      - [Short](#short)
+    - [Свойства для создания и возврата объектов URL](#Свойства-для-создания-и-возврата-объектов-url)
+    - [Свойства для возврата объектов перечислений](#Свойства-для-возврата-объектов-перечислений)
+      - [Возврат одиночного объекта перечисления](#Возврат-одиночного-объекта-перечисления)
+      - [Возврат множества объектов перечисления](#Возврат-множества-объектов-перечисления)
+    - [Свойства для возврата величины продолжительности](#Свойства-для-возврата-величины-продолжительности)
+    - [Свойства для создания и возврата объектов](#Свойства-для-создания-и-возврата-объектов)
+      - [Создание и возврат одного объекта](#Создание-и-возврат-одного-объекта)
+      - [Создание и возврат коллекции объектов](#Создание-и-возврат-коллекции-объектов)
+  - [Автоматическая генерация `neptune.global.properties` и `neptune.properties`](#Автоматическая-генерация-neptuneglobalproperties-и-neptuneproperties)
+    - [Maven](#maven)
+    - [Gradle](#gradle)
+    - [Результат](#Результат)
+  - [Основной набор настроек/свойств](#Основной-набор-настроексвойств)
+    - [Освобождение ресурсов](#Освобождение-ресурсов)
+      - [TO_FREE_RESOURCES_ON_INACTIVITY](#to_free_resources_on_inactivity)
+      - [Время](#Время)
+    - [Локализация](#Локализация)
+      - [DEFAULT_LOCALE](#default_locale)
+      - [DEFAULT_LOCALIZATION_ENGINE](#default_localization_engine)
+    - [Логирование шагов](#Логирование-шагов)
+      - [DO_CAPTURES_OF](#do_captures_of)
+      - [TO_LIMIT_REPORT_DEPTH](#to_limit_report_depth)
+
 ## `neptune.global.properties` и `neptune.properties`
 
 Настройка среды / параметров (какой браузер используется для проверки front-end приложения, параметры подключения к базам, 
@@ -46,6 +81,8 @@ Neptune использует файлы `neptune.properties`, расположе
 
 Значения переменных среды имеют приоритет над значениями тех же свойств, указанных в `neptune.global.properties` и
 `neptune.properties`.
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## Описание свойства / переменной среды
 
@@ -191,6 +228,8 @@ public enum MyPropertyEnum implements PropertySupplier<T, R> {
 Ниже примеры того, как можно быстро описать свойства / переменные окружения, значения которых могут быть преобразованы 
 в объекты различных типов. 
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 ### Свойства для возврата строки
 
 <details>
@@ -239,6 +278,8 @@ public class MyUseCase {
 
 </details>
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 ### Свойства для возврата Boolean
 
 <details>
@@ -282,8 +323,9 @@ public class MyUseCase {
     }
 }
 ```
-
 </details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ### Свойства для возврата чисел
 
@@ -330,6 +372,8 @@ public class MyUseCase {
   }
 }
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 #### Double
@@ -375,6 +419,8 @@ public class MyUseCase {
   }
 }
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 #### Float
@@ -421,6 +467,8 @@ public class MyUseCase {
   }
 }
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 #### Integer
@@ -468,6 +516,8 @@ public class MyUseCase {
   }
 }
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 #### Long
@@ -514,6 +564,8 @@ public class MyUseCase {
   }
 }
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 #### Short
@@ -559,7 +611,11 @@ public class MyUseCase {
   }
 }
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ### Свойства для создания и возврата объектов URL
 
@@ -605,6 +661,8 @@ public class MyUseCase {
 }
 ```
 </details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ### Свойства для возврата объектов перечислений
 
@@ -666,6 +724,8 @@ public class MyUseCase {
   }
 }
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 #### Возврат множества объектов перечисления
@@ -713,7 +773,10 @@ public class MyUseCase {
   }
 }
 ```
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ### Свойства для возврата величины продолжительности
 
@@ -805,29 +868,514 @@ public class MyUseCase {
 
 </details>
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 ### Свойства для создания и возврата объектов
+
+Предположим, существует следующий класс объекта
+
+```java
+package org.my.pack;
+
+public class MyObject {
+    
+    private Object a;
+
+    private Object b;
+
+    private Object c;
+
+    public Object getA() {
+        return a;
+    }
+
+    public MyObject setA(Object a) {
+        this.a = a;
+        return this;
+    }
+
+    public Object getB() {
+        return b;
+    }
+
+    public MyObject setB(Object b) {
+        this.b = b;
+        return this;
+    }
+
+    public Object getC() {
+        return c;
+    }
+
+    public MyObject setC(Object c) {
+        this.c = c;
+        return this;
+    }
+}
+```
+
+Предположи, что у `MyObject` есть наследник
+
+```java
+package org.my.pack;
+
+public class MyExtendedObject extends MyObject{
+    
+    private Object d;
+
+    public Object getD() {
+        return d;
+    }
+
+    public MyExtendedObject setD(Object d) {
+        this.d = d;
+        return this;
+    }
+}
+```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+#### Создание и возврат одного объекта
+
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
+Описание свойства / переменной окружения должно возвращать созданный объект заданного класса или наследников этого 
+класса.
+
+Возможны 2 ситуации:
+
+- конечный пользователь имеет возможность указать класс объекта, базовый или расширяющий.
+- конечный пользователь имеет возможность указать, каким должен быть объект (как его заполнить, какие параметры 
+  указать)
+
+Примеры:
+
+_- Конечный пользователь имеет возможность указать класс объекта, базовый или расширяющий:_
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.object.ObjectByClassPropertySupplier;
+
+@PropertyName("MY_PROPERTY")
+public class MyObjectProperty implements
+        ObjectByClassPropertySupplier<MyObject> { // <- В алмазных скобках указывается базовый тип 
+    // Это может быть и интерфейс, и абстрактный класс
+
+    public static final MyObjectProperty PROPERTY = new MyObjectProperty();
+}
+```
+
+Переменная среды или свойство `neptune.properties` / `neptune.global.properties`
+
+```properties
+# Указывается полное пакетное имя нужного класса
+# ВАЖНО!!!!!: 
+# - указанное значение НЕ должно быть интерфейсом, и НЕ должно быть абстрактным классом
+# - У указанного класса не должно быть объявленных конструкторов, или среди объявленных конструкторов 
+# должен присутствовать доступный конструктор без параметров
+MY_PROPERTY=org.my.pack.MyExtendedObject
+```
+
+Java-код
+
+```java
+package org.my.pack;
+
+import static org.my.pack.MyObjectProperty.PROPERTY;
+
+public class MyUseCase {
+
+  public void useCase() {
+    //чтение
+    MyObject value = PROPERTY.get(); //вернется созданный
+    //объект. Но его поля не будут заполнены.
+    //Такой способ подойдет, если параметры объекта заполняются
+    // неявно в момент создания этого объекта, либо параметры
+    //вернувшегося объекта никакой роли не играют в дальнейшей
+    //логике работы
+  }
+}
+```
+
+_- Конечный пользователь имеет возможность указать, каким должен быть объект (как его заполнить, какие параметры
+  указать):_
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.object.ObjectPropertySupplier;
+
+import java.util.function.Supplier;
+
+@PropertyName("MY_PROPERTY")
+public class MyObjectProperty implements
+        ObjectPropertySupplier<MyObject, Supplier<MyObject>> { //в алмазных скобках 2 параметра:
+  // - базовый тип объекта, который должно возвращать отображение свойства / переменной окружения. 
+  // Это может быть и интерфейс, и абстрактный класс.
+  //
+  // - тип объекта, с помощью которого происходит создание и настройка результирующего объекта.
+  // Это тип должен быть или расширять Supplier<MyObject>.
+
+  public static final MyObjectProperty PROPERTY = new MyObjectProperty();
+}
+```
+
+```java
+package org.my.pack;
+
+import java.util.function.Supplier;
+
+public class MyObjectSupplier implements Supplier<MyObject> {
+
+    @Override
+    public MyObject get() {
+        return new MyObject() //Если бы тут был непустой конструктор,
+                // им можно быо бы воспользоваться.
+                .setA(1) //так выполняется настройка / заполнение результирующего
+                .setB("A") //объекта.
+                .setC(true);
+    }
+}
+```
+
+Переменная среды или свойство `neptune.properties` / `neptune.global.properties`
+
+```properties
+# Указывается полное пакетное имя нужного класса
+# ВАЖНО!!!!!: 
+# - указанное значение НЕ должно быть интерфейсом, и НЕ должно быть абстрактным классом
+# - У указанного класса не должно быть объявленных конструкторов, или среди объявленных конструкторов 
+# должен присутствовать доступный конструктор без параметров
+MY_PROPERTY=org.my.pack.MyObjectSupplier
+```
+
+Java-код
+
+```java
+package org.my.pack;
+
+import static org.my.pack.MyObjectProperty.PROPERTY;
+
+public class MyUseCase {
+
+  public void useCase() {
+    //чтение
+    MyObject value = PROPERTY.get(); //вернется созданный
+    //объект, чьи поля будут заполнены.
+    //Такой способ подойдет, если класс объекта не имеет доступного
+    // конструктора без параметров, и если параметры результирующего
+    // объекта имеют значение для дальнейшей работы
+  }
+}
+```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
+
+#### Создание и возврат коллекции объектов
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+Можно воспользоваться способом, описанным в [Создание и возврат одного объекта](#Создание-и-возврат-одного-объекта), если
+рассматривать результирующую коллекцию как объект.
+
+Ниже альтернативный пример.
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.object.MultipleObjectPropertySupplier;
+
+import java.util.function.Supplier;
+
+@PropertyName("MY_PROPERTY")
+public class MyObjectsProperty implements
+        MultipleObjectPropertySupplier<MyObject, Supplier<MyObject>> { //в алмазных скобках 2 параметра:
+  // - базовый тип объектов, из которых состоит List<>, который должно возвращать
+  // отображение свойства / переменной окружения. Это может быть и интерфейс, и абстрактный класс.
+  //
+  // - тип объекта, с помощью которого происходит создание и настройка каждого элемента результирующего List<>.
+  // Это тип должен быть или расширять Supplier<MyObject>.
+
+  public static final MyObjectsProperty PROPERTY = new MyObjectsProperty();
+}
+```
+
+```java
+package org.my.pack;
+
+import java.util.function.Supplier;
+
+public class MyObjectSupplier implements Supplier<MyObject> {
+
+  @Override
+  public MyObject get() {
+    return new MyObject() //Если бы тут был непустой конструктор,
+            // им можно быо бы воспользоваться.
+            .setA(1) //так выполняется настройка / заполнение результирующего
+            .setB("A") //объекта.
+            .setC(true);
+  }
+}
+```
+
+```java
+package org.my.pack;
+
+import java.util.Date;
+import java.util.function.Supplier;
+
+public class MyExtendedObjectSupplier implements Supplier<MyObject> {
+  @Override
+  public MyObject get() {
+    return new MyExtendedObject() //Если бы тут был непустой конструктор,
+            // им можно быо бы воспользоваться.
+            .setD(new Date())
+            .setA(2) //так выполняется настройка / заполнение результирующего
+            .setB("B") //объекта.
+            .setC(false);
+  }
+}
+
+```
+
+Переменная среды или свойство `neptune.properties` / `neptune.global.properties`
+
+```properties
+# Указываются полные пакетные имена нужных классов
+# ВАЖНО!!!!!: 
+# - указанные значения НЕ должны быть интерфейсами, и НЕ должны быть абстрактными классами
+# - У указанных классов не должно быть объявленных конструкторов, или среди объявленных конструкторов 
+# должны присутствовать доступные конструкторы без параметров
+MY_PROPERTY=org.my.pack.MyObjectSupplier,org.my.pack.MyExtendedObjectSupplier
+```
+
+Java-код
+
+```java
+package org.my.pack;
+
+import java.util.List;
+
+import static org.my.pack.MyObjectsProperty.PROPERTY;
+
+public class MyUseCase {
+
+  public void useCase() {
+    //чтение
+    List<MyObject> value = PROPERTY.get(); //вернется созданный
+    //List<> из 2-х элементов
+  }
+}
+```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+</details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## Автоматическая генерация `neptune.global.properties` и `neptune.properties`
 
 Свойств / переменных окружения может быть много и заполнять файлы `neptune.global.properties` и `neptune.properties` вручную
-может быть долго и трудоемко. На основе аннотаций (см. [Описание свойства / переменной среды](#Описание-свойства-/-переменной-среды)) 
+может быть долго и трудоемко. На основе аннотаций (см. [Описание свойства / переменной среды](#описание-свойства--переменной-среды)) 
 можно выполнить автоматическую генерацию файлов. 
+
+### Maven
+
+```xml
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>exec-maven-plugin</artifactId>
+      <version>3.0.0</version>
+      <executions>
+        <execution>
+          <id>generate properties</id>
+          <phase>compile</phase>
+          <goals>
+            <goal>java</goal>
+          </goals>
+          <configuration>
+            <mainClass>ru.tinkoff.qa.neptune.core.api.properties.NeptunePropertyGenerator</mainClass>
+            <arguments>
+              <!--генерировать neptune.properties (false), или neptune.global.properties (true)-->
+              <!--neptune.global.properties рекомендуется, если создается общий модуль-кастомизация Neptune
+              для тестов других модулей системы/приложения-->
+              <argument>false</argument>
+              <!--наследовать свойства/переменные окружения из neptune.global.properties (true) или нет (false)-->
+              <!--Если выше указано `true` - значение параметра игнорируется. Иначе: 
+              - false - создастся файл , повторяющий neptune.global.properties
+              - true - создастся файл, в котором "унаследованные" свойства/переменные окружения будут закомментированы
+              Если никакого общего модуля-кастомизации, в котором дефолтные значения заданы через neptune.global.properties,
+              не используется, то создастся neptune.properties с дефолтными значениями (согласно наличию аннотации 
+              @PropertyDefaultValue)-->
+              <argument>false</argument>
+              <!--Где расположить сгенерированный файл-->
+              <argument>${basedir}/src/test/resources</argument>  
+              <!--или ${basedir}/src/main/resources-->
+              <!--или любая другая директория-->
+            </arguments>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>    
+  </plugins>
+</build>
+```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+### Gradle
+
+```groovy
+task generateProperties(type: JavaExec) {
+    classpath sourceSets.test.runtimeClasspath //или sourceSets.main.runtimeClasspath
+    main = "ru.tinkoff.qa.neptune.core.api.properties.NeptunePropertyGenerator"
+    //генерировать neptune.properties (false), или neptune.global.properties (true).
+    //neptune.global.properties рекомендуется, если создается общий модуль-кастомизация Neptune
+    //для тестов других модулей системы/приложения
+    args false,
+            //наследовать свойства/переменные окружения из neptune.global.properties (true) или нет (false).
+            //Если выше указано `true` - значение параметра игнорируется. Иначе:
+            //- false - создастся файл , повторяющий neptune.global.properties
+            //- true - создастся файл, в котором "унаследованные" свойства/переменные окружения будут закомментированы
+            //Если никакого общего модуля-кастомизации, в котором дефолтные значения заданы через neptune.global.properties,
+            //не используется, то создастся neptune.properties с дефолтными значениями (согласно наличию аннотации
+            //@PropertyDefaultValue)
+            false,  
+            //Где расположить сгенерированный файл.
+            "$projectDir/src/test/resources"
+            //или $projectDir/src/main/resources
+            //или любая другая директория
+}
+```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+### Результат 
+
+Получится файл, как в примере ниже
+
+```properties
+#Neptune properties and some properties of JDK or 3rd party frameworks are defined there
+#===========================General properties. Report
+#To limit report/log output or not by depth of step performing
+#It is about steps which are built by `ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier`
+#and `ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier`
+TO_LIMIT_REPORT_DEPTH=true
+#===========================General properties. Report captures/Attachments
+#Defines events to make log attachments
+#Available values: SUCCESS, FAILURE, SUCCESS_AND_FAILURE
+DO_CAPTURES_OF=
+#===========================General properties. Resource management
+#Is it necessary to free unused resources, e.g. opened browser, connections to databases etc.
+TO_FREE_RESOURCES_ON_INACTIVITY=
+#Time unit (see java.time.temporal.ChronoUnit) of time to wait for activity
+#It have sense when value of the property 'TO_FREE_RESOURCES_ON_INACTIVITY' is 'true'
+TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT=SECONDS
+#Value of time to wait for activity
+#It have sense when value of the property 'TO_FREE_RESOURCES_ON_INACTIVITY' is 'true'
+TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE=30
+#===========================Report localization
+#Defines default locale
+DEFAULT_LOCALE=
+#Define localisation mechanism
+DEFAULT_LOCALIZATION_ENGINE=
+```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## Основной набор настроек/свойств
 
-Данные свойства / переменные окружения могут быть настроены всегда, независимо от набора подключенных модулей Neptune.
-
-Данные свойства / переменные окружения других модулей Neptune:
+Эти свойства / переменные окружения могут быть настроены всегда, независимо от набора подключенных модулей Neptune.
+Свойства / переменные окружения других модулей Neptune:
 
 - [Neptune. Http](./../../../http.api/doc/rus/SETTINGS.MD)
 - [Neptune. Selenium WebDriver](./../../../selenium/doc/rus/SETTINGS.MD)
 - [Neptune. TestNG](./../../../testng.integration/doc/rus/README.MD#Настройки)
+- JUnit5 (будут предоставлены после реализации*)
 
 ### Освобождение ресурсов
+
+См. [Сброс/Остановка](./REFRESHING_STOPPING.MD#сброс--остановка)
+
+##### TO_FREE_RESOURCES_ON_INACTIVITY
+
+<details>
+    <summary>Нажми, чтобы прочесть</summary>
+
+Настройка указывает на необходимость освобождать ресурсы (подключения к базам данных, открытые браузеры и т.д) при простое. 
+Доступные значения - `true` (рекомендуемое для прогона тестов в несколько потоков) или `false`.
+
+Пример настройки:
+
+```properties
+#Значение свойства указывается так
+TO_FREE_RESOURCES_ON_INACTIVITY=true
+```
+
+```java
+import static ru.tinkoff.qa.neptune.core.api.properties
+        .general.resorces.FreeResourcesOnInactivity.TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY;
+
+public class SomeClass {
+    
+    public void someVoid() {
+        //пример доступа до значения свойства
+        boolean toFree = TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.get();
+    }
+}
+```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+</details>
+
+##### Время 
+
+<details>
+    <summary>Нажми, чтобы прочесть</summary>
+
+Свойства `TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT` и `TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE` определяют 
+допустимое время простоя ресурсов (подключения к базам данных, открытые браузеры и т.д). Для свойства 
+`TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT` следует указать значение, соответствующее одному из элементов
+перечисления `java.time.temporal.ChronoUnit`, для свойства `TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE` следует 
+указать значение, которое может быть прочитано как положительное число типа `java.lang.Long`.
+
+```properties
+#Укажем допустимое время простоя
+#5 секунд
+TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT=SECONDS
+TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE=5
+```
+
+```java
+import java.time.Duration;
+
+import static ru.tinkoff.qa.neptune.core.api.properties
+        .general.resorces.FreeResourcesOnInactivityAfter.FREE_RESOURCES_ON_INACTIVITY_AFTER;
+
+public class SomeClass {
+
+    public void someVoid() {
+        Duration downTimeDuration = FREE_RESOURCES_ON_INACTIVITY_AFTER.get();
+    }
+}
+```
+
+Время по умолчанию = 30 секунд. Указанное время применяется, когда `TO_FREE_RESOURCES_ON_INACTIVITY=true`.
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+</details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ### Локализация
 
@@ -860,6 +1408,7 @@ public class SomeClass {
 }
 ```
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
 
 ##### DEFAULT_LOCALIZATION_ENGINE
@@ -890,13 +1439,58 @@ public class SomeClass {
 }
 ```
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 </details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ### Логирование шагов
 
+##### DO_CAPTURES_OF
+
+[Основная статья](EVENTS.MD#Когда-следует-создавать-аттачи-в-отчете-о-прохождении)
+
+<details>
+    <summary>Нажми, чтобы прочесть</summary>
+
+Настройка указывает, в каких случаях следует делать аттачи к отчету о тестах. Объекты перечисления 
+`ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents`. Доступные значения:
+
+- `SUCCESS` - если шаг завершился успешно
+- `FAILURE` - если выполняющийся шаг выбросил исключение
+- `SUCCESS_AND_FAILURE` - во всех случаях
+
+Пример настройки:
+
+```properties
+#Значение свойства указывается так
+DO_CAPTURES_OF=SUCCESS_AND_FAILURE
+```
+
+```java
+import ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents;
+
+import static ru.tinkoff.qa.neptune.core.api.properties.general
+        .events.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
+
+public class SomeClass {
+    
+    public void someVoid() {
+        //пример доступа до значения свойства
+        CapturedEvents value = DO_CAPTURES_OF_INSTANCE.get();
+    }
+}
+```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+</details>
+
 ##### TO_LIMIT_REPORT_DEPTH
 
-[Основная статья](STEPS.MD#Вложенность/глубина-шагов)
+[Основная статья](STEPS.MD#Вложенность--глубина-шагов)
+
+<details>
+    <summary>Нажми, чтобы прочесть</summary>
 
 Определяет, нужно ли ограничить логирование/вывод в отчет о тестировании шагов в зависимости от их глубины. Значение по
 умолчанию (рекомендуемое) `true`.
@@ -918,3 +1512,8 @@ public class SomeClass {
     }
 }
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+</details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)

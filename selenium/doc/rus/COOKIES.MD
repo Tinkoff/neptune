@@ -5,14 +5,20 @@
   в примерах ниже вызывается статическим методом `ru.tinkoff.qa.neptune.selenium.SeleniumStepContext#inBrowser`
 
 - О принципах работы шагов, которые возвращают результат, можно
-прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги,-которые-возвращают-результат).
+прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги-которые-возвращают-результат).
 
 - О принципах работы шагов, которые выполняют действие, можно
-прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги,-которые-выполняют-действие).
+прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги-которые-выполняют-действие).
 
 - О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии). 
 
 - [Критерии для cookie браузера](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/functions/cookies/CommonBrowserCookieCriteria.html)
+
+## Оглавление
+- [Получение cookie браузера](#Получение-cookie-браузера)
+- [Наличие или отсутствие cookie браузера](#Наличие-или-отсутствие-cookie-браузера)
+- [Добавление cookie браузера](#Добавление-cookie-браузера)
+- [Удаление cookie браузера](#Удаление-cookie-браузера)
 
 ## Получение cookie браузера
 
@@ -37,6 +43,7 @@ public class Tezzt {
     }
 }
 ```
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## Наличие или отсутствие cookie браузера
 
@@ -57,7 +64,7 @@ public class Tezzt {
         // Как и в примере выше, здесь можно указать критерии и время ожидания
         // вернется true если cookie есть, и false - если нет
 
-        boolean isAlertPresent = inBrowser().presenceOfOrThrow(cookies()); //Ожидание наличия cookie.
+        boolean areCookiesPresent = inBrowser().presenceOfOrThrow(cookies()); //Ожидание наличия cookie.
         // вернется true если cookie есть, если нет - 
         // будет выброшено исключение
 
@@ -75,6 +82,7 @@ public class Tezzt {
     }
 }
 ```
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## Добавление cookie браузера
 
@@ -103,6 +111,7 @@ public class Tezzt {
     }
 }
 ```
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## Удаление cookie браузера
 
@@ -139,3 +148,4 @@ public class Tezzt {
     }
 }
 ```
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
