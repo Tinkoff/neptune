@@ -1,5 +1,7 @@
 package ru.tinkoff.qa.neptune.check;
 
+import org.hamcrest.Description;
+import org.hamcrest.StringDescription;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.MismatchDescriber;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 
@@ -24,12 +26,14 @@ abstract class MatcherWithTime<T> extends NeptuneFeatureMatcher<T> {
                 .orElse(0L);
 
         var startTime = currentTimeMillis();
-        do {
+        var time = startTime;
+        while (time <= startTime + millis) {
             if (super.checkFeature(actual)) {
                 return true;
             }
 
-        } while (currentTimeMillis() < startTime + millis);
+            time = currentTimeMillis();
+        }
 
         return false;
     }
@@ -44,7 +48,14 @@ abstract class MatcherWithTime<T> extends NeptuneFeatureMatcher<T> {
     @Override
     protected final void appendMismatchDescription(MismatchDescriber describer) {
         super.appendMismatchDescription(ofNullable(waitForMatch)
-                .map(d -> (MismatchDescriber) new MismatchDescriberWithTime(d, describer))
+                .map(d -> (MismatchDescriber) new MismatchDescriberWithTime(d, describer.toString()))
                 .orElse(describer));
+    }
+
+
+    protected final void appendMismatchDescription(Description description) {
+        super.appendMismatchDescription(ofNullable(waitForMatch)
+                .map(d -> new StringDescription().appendText(new MismatchDescriberWithTime(d, description.toString()).toString()))
+                .orElse(description));
     }
 }

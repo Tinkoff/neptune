@@ -2,7 +2,6 @@ package ru.tinkoff.qa.neptune.check;
 
 import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.check.parameter.value.getters.OnlyOneParameterValueGetter;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
@@ -15,7 +14,7 @@ import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
 @Description("{onlyOneExpression}")
-final class OnlyOneMatcher<T> extends NeptuneFeatureMatcher<T> {
+final class OnlyOneMatcher<T> extends MatcherWithTime<T> {
 
     @DescriptionFragment(value = "onlyOneExpression", makeReadableBy = OnlyOneParameterValueGetter.class)
     private final Matcher<? super T>[] matchers;
@@ -46,6 +45,7 @@ final class OnlyOneMatcher<T> extends NeptuneFeatureMatcher<T> {
 
         if (matchCount == 0) {
             appendMismatchDescription(new DoesNotMatchAnyCriteria());
+            return false;
         }
 
         appendMismatchDescription(new MatchesMoreThanOneCriteria(resultMap.entrySet()

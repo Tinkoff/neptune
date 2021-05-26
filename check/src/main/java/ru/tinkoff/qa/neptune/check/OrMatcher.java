@@ -2,7 +2,6 @@ package ru.tinkoff.qa.neptune.check;
 
 import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.check.parameter.value.getters.OrParameterValueGetter;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
@@ -11,7 +10,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.stream;
 
 @Description("{orExpression}")
-final class OrMatcher<T> extends NeptuneFeatureMatcher<T> {
+final class OrMatcher<T> extends MatcherWithTime<T> {
 
     @DescriptionFragment(value = "orExpression", makeReadableBy = OrParameterValueGetter.class)
     private final Matcher<? super T>[] matchers;

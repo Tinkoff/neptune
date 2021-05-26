@@ -89,10 +89,10 @@ public abstract class NeptuneFeatureMatcher<T> extends BaseMatcher<T> {
     protected abstract boolean featureMatches(T toMatch);
 
     protected void appendMismatchDescription(MismatchDescriber describer) {
-        appendMismatchDescription(new StringDescription().appendText(describer.toString()));
+        mismatchDescriptions.add(new StringDescription().appendText(describer.toString()));
     }
 
-    protected final void appendMismatchDescription(Description description) {
+    protected void appendMismatchDescription(Description description) {
         mismatchDescriptions.add(description);
     }
 

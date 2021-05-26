@@ -8,6 +8,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 
+import java.time.Duration;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -70,6 +71,19 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
     }
 
     /**
+     * Creates an instance that performs the matching of an object.
+     *
+     * @param duration is time to wait for positive result of the matching. It is recommended to use it when some
+     *                 mutable property or value is checked.
+     * @param matcher  is a criteria matcher
+     * @param <T>      is a type of a value to be checked
+     * @return a new {@link MatchAction}
+     */
+    public static <T> MatchAction<T, T> match(Duration duration, Matcher<? super T> matcher) {
+        return matchPrivate(new SimpleMatcher<>(matcher).waitForMatch(duration));
+    }
+
+    /**
      * Creates an instance that performs the matching of a value which is evaluated from checked object
      *
      * @param description of evaluated value
@@ -83,6 +97,25 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
         return matchPrivate(description, eval, new SimpleMatcher<>(matcher));
     }
 
+    /**
+     * Creates an instance that performs the matching of a value which is evaluated from checked object
+     *
+     * @param description of evaluated value
+     * @param eval        a function that performs evaluation
+     * @param duration    is time to wait for positive result of the matching. It is recommended to use it when some
+     *                    mutable property or value is checked.
+     * @param matcher     is a criteria matcher
+     * @param <T>         is a type of a value to be checked
+     * @param <R>         is a type of a value to be evaluated
+     * @return a new {@link MatchAction}
+     */
+    public static <T, R> MatchAction<T, R> match(String description,
+                                                 Function<T, R> eval,
+                                                 Duration duration,
+                                                 Matcher<? super R> matcher) {
+        return matchPrivate(description, eval, new SimpleMatcher<>(matcher).waitForMatch(duration));
+    }
+
 
     /**
      * Creates an instance that performs the matching of an object with inverted criteria.
@@ -93,6 +126,19 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
      */
     public static <T> MatchAction<T, T> matchNot(Matcher<? super T> matcher) {
         return matchPrivate(new NotMatcher<>(matcher));
+    }
+
+    /**
+     * Creates an instance that performs the matching of an object with inverted criteria.
+     *
+     * @param duration is time to wait for positive result of the matching. It is recommended to use it when some
+     *                 mutable property or value is checked.
+     * @param matcher  is a criteria to be inverted
+     * @param <T>      is a type of a value to be checked
+     * @return a new {@link MatchAction}
+     */
+    public static <T> MatchAction<T, T> matchNot(Duration duration, Matcher<? super T> matcher) {
+        return matchPrivate(new NotMatcher<>(matcher).waitForMatch(duration));
     }
 
     /**
@@ -110,6 +156,26 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
         return matchPrivate(description, eval, new NotMatcher<>(matcher));
     }
 
+    /**
+     * Creates an instance that performs the matching of a value which is evaluated from checked object.
+     * The checking uses inverted criteria.
+     *
+     * @param description of evaluated value
+     * @param eval        a function that performs evaluation
+     * @param duration    is time to wait for positive result of the matching. It is recommended to use it when some
+     *                    mutable property or value is checked.
+     * @param matcher     is a criteria to be inverted
+     * @param <T>         is a type of a value to be checked
+     * @param <R>         is a type of a value to be evaluated
+     * @return a new {@link MatchAction}
+     */
+    public static <T, R> MatchAction<T, R> matchNot(String description,
+                                                    Function<T, R> eval,
+                                                    Duration duration,
+                                                    Matcher<? super R> matcher) {
+        return matchPrivate(description, eval, new NotMatcher<>(matcher).waitForMatch(duration));
+    }
+
 
     /**
      * Creates an instance that performs the matching of an object with OR-criteria.
@@ -121,6 +187,20 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
     @SafeVarargs
     public static <T> MatchAction<T, T> matchOr(Matcher<? super T>... matchers) {
         return matchPrivate(new OrMatcher<>(matchers));
+    }
+
+    /**
+     * Creates an instance that performs the matching of an object with OR-criteria.
+     *
+     * @param duration is time to wait for positive result of the matching. It is recommended to use it when some
+     *                 mutable property or value is checked.
+     * @param matchers are criteria of the OR-checking
+     * @param <T>      is a type of a value to be checked
+     * @return a new {@link MatchAction}
+     */
+    @SafeVarargs
+    public static <T> MatchAction<T, T> matchOr(Duration duration, Matcher<? super T>... matchers) {
+        return matchPrivate(new OrMatcher<>(matchers).waitForMatch(duration));
     }
 
     /**
@@ -139,6 +219,26 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
         return matchPrivate(description, eval, new OrMatcher<>(matchers));
     }
 
+    /**
+     * Creates an instance that performs the matching of a value which is evaluated from checked object.
+     * The checking uses OR-criteria.
+     *
+     * @param description of evaluated value
+     * @param eval        a function that performs evaluation
+     * @param duration    is time to wait for positive result of the matching. It is recommended to use it when some
+     *                    mutable property or value is checked.
+     * @param matchers    are criteria of the OR-checking
+     * @param <T>         is a type of a value to be checked
+     * @param <R>         is a type of a value to be evaluated
+     * @return a new {@link MatchAction}
+     */
+    @SafeVarargs
+    public static <T, R> MatchAction<T, R> matchOr(String description,
+                                                   Function<T, R> eval,
+                                                   Duration duration,
+                                                   Matcher<? super R>... matchers) {
+        return matchPrivate(description, eval, new OrMatcher<>(matchers).waitForMatch(duration));
+    }
 
     /**
      * Creates an instance that performs the matching of an object with XOR-criteria (only one should match).
@@ -150,6 +250,20 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
     @SafeVarargs
     public static <T> MatchAction<T, T> matchOnlyOne(Matcher<? super T>... matchers) {
         return matchPrivate(new OnlyOneMatcher<>(matchers));
+    }
+
+    /**
+     * Creates an instance that performs the matching of an object with XOR-criteria (only one should match).
+     *
+     * @param duration is time to wait for positive result of the matching. It is recommended to use it when some
+     *                 mutable property or value is checked.
+     * @param matchers are criteria of the XOR-checking
+     * @param <T>      is a type of a value to be checked
+     * @return a new {@link MatchAction}
+     */
+    @SafeVarargs
+    public static <T> MatchAction<T, T> matchOnlyOne(Duration duration, Matcher<? super T>... matchers) {
+        return matchPrivate(new OnlyOneMatcher<>(matchers).waitForMatch(duration));
     }
 
     /**
@@ -166,6 +280,27 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
     @SafeVarargs
     public static <T, R> MatchAction<T, R> matchOnlyOne(String description, Function<T, R> eval, Matcher<? super R>... matchers) {
         return matchPrivate(description, eval, new OnlyOneMatcher<>(matchers));
+    }
+
+    /**
+     * Creates an instance that performs the matching of a value which is evaluated from checked object.
+     * The checking uses XOR-criteria (only one should match).
+     *
+     * @param description of evaluated value
+     * @param eval        a function that performs evaluation
+     * @param duration    is time to wait for positive result of the matching. It is recommended to use it when some
+     *                    mutable property or value is checked.
+     * @param matchers    are criteria of the XOR-checking
+     * @param <T>         is a type of a value to be checked
+     * @param <R>         is a type of a value to be evaluated
+     * @return a new {@link MatchAction}
+     */
+    @SafeVarargs
+    public static <T, R> MatchAction<T, R> matchOnlyOne(String description,
+                                                        Function<T, R> eval,
+                                                        Duration duration,
+                                                        Matcher<? super R>... matchers) {
+        return matchPrivate(description, eval, new OnlyOneMatcher<>(matchers).waitForMatch(duration));
     }
 
     @Override

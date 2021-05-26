@@ -15,10 +15,10 @@ final class MismatchDescriberWithTime extends MismatchDescriber {
     final Duration duration;
 
     @DescriptionFragment("otherDescriber")
-    final MismatchDescriber otherDescriber;
+    final String otherDescription;
 
-    MismatchDescriberWithTime(Duration duration, MismatchDescriber otherDescriber) {
+    MismatchDescriberWithTime(Duration duration, String otherDescription) {
         this.duration = duration;
-        this.otherDescriber = otherDescriber;
+        this.otherDescription = otherDescription;
     }
 }
