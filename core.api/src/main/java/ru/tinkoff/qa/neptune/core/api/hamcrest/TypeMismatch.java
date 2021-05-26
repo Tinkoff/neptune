@@ -5,7 +5,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 @Description("Type mismatch. " +
         "Object of class that equals or extends `{expected}` was expected. " +
         "Class of passed value is `{actual}`. All checks were stopped")
-final class TypeMismatch extends MismatchDescriber {
+public final class TypeMismatch extends MismatchDescriber {
 
     final Class<?> expected;
     final Class<?> actual;

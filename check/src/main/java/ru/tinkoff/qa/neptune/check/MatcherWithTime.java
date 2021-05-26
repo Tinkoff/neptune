@@ -4,6 +4,7 @@ import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.MismatchDescriber;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.TypeMismatch;
 
 import java.time.Duration;
 
@@ -17,10 +18,24 @@ abstract class MatcherWithTime<T> extends NeptuneFeatureMatcher<T> {
     private Duration waitForMatch;
 
     protected boolean prerequisiteChecking(Object actual) {
+        if (actual == null) {
+            return true;
+        }
+
+        if (!expectedType.isInstance(actual)) {
+            appendMismatchDescription(new TypeMismatch(expectedType, actual.getClass()));
+            return false;
+        }
+
         return true;
     }
 
     protected boolean checkFeature(Object actual) {
+
+        if (actual == null) {
+            return super.checkFeature(null);
+        }
+
         long millis = ofNullable(waitForMatch)
                 .map(Duration::toMillis)
                 .orElse(0L);

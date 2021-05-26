@@ -22,7 +22,7 @@ public abstract class NeptuneFeatureMatcher<T> extends BaseMatcher<T> {
     private static final ReflectiveTypeFinder TYPE_FINDER = new ReflectiveTypeFinder("featureMatches", 1, 0);
 
     private final List<Description> mismatchDescriptions = new LinkedList<>();
-    private final Class<?> expectedType;
+    protected final Class<?> expectedType;
 
     protected NeptuneFeatureMatcher() {
         this.expectedType = TYPE_FINDER.findExpectedType(getClass());
