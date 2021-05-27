@@ -1,33 +1,33 @@
 package ru.tinkoff.qa.neptune.check;
 
 import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.MismatchDescriber;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.TypeMismatch;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 
 import java.time.Duration;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.gson.internal.$Gson$Preconditions.checkNotNull;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Optional.ofNullable;
 
-abstract class MatcherWithTime<T> extends NeptuneFeatureMatcher<T> {
+@ru.tinkoff.qa.neptune.core.api.steps.annotations.Description("{delegateDescription}")
+final class MatcherWithTime<T> extends NeptuneFeatureMatcher<T> {
 
-    private Duration waitForMatch;
+    private final Duration waitForMatch;
+    @DescriptionFragment(value = "delegateDescription", makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class)
+    private final Matcher<T> delegateTo;
 
-    protected boolean prerequisiteChecking(Object actual) {
-        if (actual == null) {
-            return true;
+    MatcherWithTime(Duration waitForMatch, Matcher<T> delegateTo) {
+        super(false);
+        if (waitForMatch != null) {
+            checkArgument(!waitForMatch.isNegative(), "Time value should not be negative");
         }
-
-        if (!expectedType.isInstance(actual)) {
-            appendMismatchDescription(new TypeMismatch(expectedType, actual.getClass()));
-            return false;
-        }
-
-        return true;
+        this.waitForMatch = waitForMatch;
+        this.delegateTo = delegateTo;
     }
 
     protected boolean checkFeature(Object actual) {
@@ -36,10 +36,7 @@ abstract class MatcherWithTime<T> extends NeptuneFeatureMatcher<T> {
             return super.checkFeature(null);
         }
 
-        long millis = ofNullable(waitForMatch)
-                .map(Duration::toMillis)
-                .orElse(0L);
-
+        long millis = waitForMatch.toMillis();
         var startTime = currentTimeMillis();
         var time = startTime;
         while (time <= startTime + millis) {
@@ -53,11 +50,15 @@ abstract class MatcherWithTime<T> extends NeptuneFeatureMatcher<T> {
         return false;
     }
 
-    MatcherWithTime<T> waitForMatch(Duration waitForMatch) {
-        checkNotNull(waitForMatch);
-        checkArgument(!waitForMatch.isNegative(), "Time value should not be negative");
-        this.waitForMatch = waitForMatch;
-        return this;
+    @Override
+    protected boolean featureMatches(T toMatch) {
+        var result = delegateTo.matches(toMatch);
+        if (!result) {
+            var d = new StringDescription();
+            delegateTo.describeMismatch(toMatch, d);
+            appendMismatchDescription(d);
+        }
+        return result;
     }
 
     @Override

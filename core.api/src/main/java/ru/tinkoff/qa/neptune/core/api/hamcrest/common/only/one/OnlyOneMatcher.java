@@ -1,7 +1,8 @@
-package ru.tinkoff.qa.neptune.check;
+package ru.tinkoff.qa.neptune.core.api.hamcrest.common.only.one;
 
 import org.hamcrest.Matcher;
-import ru.tinkoff.qa.neptune.check.parameter.value.getters.OnlyOneParameterValueGetter;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.common.DoesNotMatchAnyCriteria;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
@@ -13,17 +14,35 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
+/**
+ * This matcher checks an object by only one of defined criteria
+ *
+ * @param <T> is a type of a checked value
+ */
 @Description("{onlyOneExpression}")
-final class OnlyOneMatcher<T> extends MatcherWithTime<T> {
+public final class OnlyOneMatcher<T> extends NeptuneFeatureMatcher<T> {
 
     @DescriptionFragment(value = "onlyOneExpression", makeReadableBy = OnlyOneParameterValueGetter.class)
     private final Matcher<? super T>[] matchers;
 
     @SafeVarargs
-    OnlyOneMatcher(Matcher<? super T>... matchers) {
+    private OnlyOneMatcher(Matcher<? super T>... matchers) {
+        super(false);
         checkNotNull(matchers);
         checkArgument(matchers.length > 1, "At least two matchers should be defined");
         this.matchers = matchers;
+    }
+
+    /**
+     * Creates a matcher that checks an object by only one of defined criteria
+     *
+     * @param matchers are criteria which are used by the checking
+     * @param <T> is a type of a checked value
+     * @return an aggregated matcher
+     */
+    @SafeVarargs
+    public static <T> Matcher<? super T> onlyOne(Matcher<? super T>... matchers) {
+        return new OnlyOneMatcher<>(matchers);
     }
 
     @Override

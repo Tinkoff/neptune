@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.check.parameter.value.getters;
+package ru.tinkoff.qa.neptune.check;
 
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 

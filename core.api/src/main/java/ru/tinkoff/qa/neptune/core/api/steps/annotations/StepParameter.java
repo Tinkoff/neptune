@@ -70,11 +70,11 @@ public @interface StepParameter {
         }
     }
 
-    final class TranslatedDescriptionParameterValueGetter implements ParameterValueGetter<String> {
+    final class TranslatedDescriptionParameterValueGetter implements ParameterValueGetter<Object> {
 
         @Override
-        public String getParameterValue(String fieldValue) {
-            return translate(fieldValue);
+        public String getParameterValue(Object fieldValue) {
+            return translate(fieldValue.toString());
         }
     }
 }

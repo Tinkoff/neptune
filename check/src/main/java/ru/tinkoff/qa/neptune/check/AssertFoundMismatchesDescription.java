@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.check;
 
-import ru.tinkoff.qa.neptune.check.parameter.value.getters.AssertionErrorsValueGetter;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.MismatchDescriber;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;

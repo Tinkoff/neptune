@@ -16,6 +16,10 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.all.AllCriteriaMatcher.all;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.any.AnyMatcher.anyOne;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.not.NotMatcher.notOf;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.only.one.OnlyOneMatcher.onlyOne;
 import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 
 /**
@@ -42,7 +46,7 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
 
     @Description("{matcher}")
     private static <T> MatchAction<T, T> matchPrivate(@DescriptionFragment("matcher") Matcher<? super T> matcher) {
-        return new MatchAction<T, T>(null, new SimpleMatcher<>(matcher))
+        return new MatchAction<T, T>(null, matcher)
                 .performOn(t -> t);
     }
 
@@ -67,7 +71,7 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
      * @return a new {@link MatchAction}
      */
     public static <T> MatchAction<T, T> match(Matcher<? super T> matcher) {
-        return matchPrivate(new SimpleMatcher<>(matcher));
+        return matchPrivate(all(matcher));
     }
 
     /**
@@ -80,7 +84,7 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
      * @return a new {@link MatchAction}
      */
     public static <T> MatchAction<T, T> match(Duration duration, Matcher<? super T> matcher) {
-        return matchPrivate(new SimpleMatcher<>(matcher).waitForMatch(duration));
+        return matchPrivate(new MatcherWithTime<>(duration, all(matcher)));
     }
 
     /**
@@ -94,7 +98,7 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
      * @return a new {@link MatchAction}
      */
     public static <T, R> MatchAction<T, R> match(String description, Function<T, R> eval, Matcher<? super R> matcher) {
-        return matchPrivate(description, eval, new SimpleMatcher<>(matcher));
+        return matchPrivate(description, eval, all(matcher));
     }
 
     /**
@@ -113,7 +117,7 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
                                                  Function<T, R> eval,
                                                  Duration duration,
                                                  Matcher<? super R> matcher) {
-        return matchPrivate(description, eval, new SimpleMatcher<>(matcher).waitForMatch(duration));
+        return matchPrivate(description, eval, new MatcherWithTime<>(duration, all(matcher)));
     }
 
 
@@ -125,7 +129,7 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
      * @return a new {@link MatchAction}
      */
     public static <T> MatchAction<T, T> matchNot(Matcher<? super T> matcher) {
-        return matchPrivate(new NotMatcher<>(matcher));
+        return matchPrivate(notOf(matcher));
     }
 
     /**
@@ -138,7 +142,7 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
      * @return a new {@link MatchAction}
      */
     public static <T> MatchAction<T, T> matchNot(Duration duration, Matcher<? super T> matcher) {
-        return matchPrivate(new NotMatcher<>(matcher).waitForMatch(duration));
+        return matchPrivate(new MatcherWithTime<>(duration, notOf(matcher)));
     }
 
     /**
@@ -153,7 +157,7 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
      * @return a new {@link MatchAction}
      */
     public static <T, R> MatchAction<T, R> matchNot(String description, Function<T, R> eval, Matcher<? super R> matcher) {
-        return matchPrivate(description, eval, new NotMatcher<>(matcher));
+        return matchPrivate(description, eval, notOf(matcher));
     }
 
     /**
@@ -173,7 +177,7 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
                                                     Function<T, R> eval,
                                                     Duration duration,
                                                     Matcher<? super R> matcher) {
-        return matchPrivate(description, eval, new NotMatcher<>(matcher).waitForMatch(duration));
+        return matchPrivate(description, eval, new MatcherWithTime<>(duration, notOf(matcher)));
     }
 
 
@@ -185,8 +189,8 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
      * @return a new {@link MatchAction}
      */
     @SafeVarargs
-    public static <T> MatchAction<T, T> matchOr(Matcher<? super T>... matchers) {
-        return matchPrivate(new OrMatcher<>(matchers));
+    public static <T> MatchAction<T, T> matchAny(Matcher<? super T>... matchers) {
+        return matchPrivate(anyOne(matchers));
     }
 
     /**
@@ -199,8 +203,8 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
      * @return a new {@link MatchAction}
      */
     @SafeVarargs
-    public static <T> MatchAction<T, T> matchOr(Duration duration, Matcher<? super T>... matchers) {
-        return matchPrivate(new OrMatcher<>(matchers).waitForMatch(duration));
+    public static <T> MatchAction<T, T> matchAny(Duration duration, Matcher<? super T>... matchers) {
+        return matchPrivate(new MatcherWithTime<>(duration, anyOne(matchers)));
     }
 
     /**
@@ -215,8 +219,8 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
      * @return a new {@link MatchAction}
      */
     @SafeVarargs
-    public static <T, R> MatchAction<T, R> matchOr(String description, Function<T, R> eval, Matcher<? super R>... matchers) {
-        return matchPrivate(description, eval, new OrMatcher<>(matchers));
+    public static <T, R> MatchAction<T, R> matchAny(String description, Function<T, R> eval, Matcher<? super R>... matchers) {
+        return matchPrivate(description, eval, anyOne(matchers));
     }
 
     /**
@@ -233,11 +237,11 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
      * @return a new {@link MatchAction}
      */
     @SafeVarargs
-    public static <T, R> MatchAction<T, R> matchOr(String description,
-                                                   Function<T, R> eval,
-                                                   Duration duration,
-                                                   Matcher<? super R>... matchers) {
-        return matchPrivate(description, eval, new OrMatcher<>(matchers).waitForMatch(duration));
+    public static <T, R> MatchAction<T, R> matchAny(String description,
+                                                    Function<T, R> eval,
+                                                    Duration duration,
+                                                    Matcher<? super R>... matchers) {
+        return matchPrivate(description, eval, new MatcherWithTime<>(duration, anyOne(matchers)));
     }
 
     /**
@@ -249,7 +253,7 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
      */
     @SafeVarargs
     public static <T> MatchAction<T, T> matchOnlyOne(Matcher<? super T>... matchers) {
-        return matchPrivate(new OnlyOneMatcher<>(matchers));
+        return matchPrivate(onlyOne(matchers));
     }
 
     /**
@@ -263,7 +267,7 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
      */
     @SafeVarargs
     public static <T> MatchAction<T, T> matchOnlyOne(Duration duration, Matcher<? super T>... matchers) {
-        return matchPrivate(new OnlyOneMatcher<>(matchers).waitForMatch(duration));
+        return matchPrivate(new MatcherWithTime<>(duration, onlyOne(matchers)));
     }
 
     /**
@@ -279,7 +283,7 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
      */
     @SafeVarargs
     public static <T, R> MatchAction<T, R> matchOnlyOne(String description, Function<T, R> eval, Matcher<? super R>... matchers) {
-        return matchPrivate(description, eval, new OnlyOneMatcher<>(matchers));
+        return matchPrivate(description, eval, onlyOne(matchers));
     }
 
     /**
@@ -300,7 +304,7 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
                                                         Function<T, R> eval,
                                                         Duration duration,
                                                         Matcher<? super R>... matchers) {
-        return matchPrivate(description, eval, new OnlyOneMatcher<>(matchers).waitForMatch(duration));
+        return matchPrivate(description, eval, new MatcherWithTime<>(duration, onlyOne(matchers)));
     }
 
     @Override

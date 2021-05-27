@@ -149,10 +149,10 @@ public class CheckTest {
     public void test7() {
         check("Tested number",
                 9,
-                matchOr(greaterThan(0),
+                matchAny(greaterThan(0),
                         lessThan(10),
                         greaterThan(5)),
-                matchOr("Sqrt", (Function<Integer, Double>) Math::sqrt,
+                matchAny("Sqrt", (Function<Integer, Double>) Math::sqrt,
                         is(3D),
                         greaterThan(0D),
                         lessThan(2D)));
@@ -171,10 +171,10 @@ public class CheckTest {
         try {
             check("Tested number",
                     4,
-                    matchOr(greaterThan(5),
+                    matchAny(greaterThan(5),
                             lessThan(-10),
                             instanceOf(Float.class)),
-                    matchOr("Sqrt", (Function<Integer, Double>) Math::sqrt,
+                    matchAny("Sqrt", (Function<Integer, Double>) Math::sqrt,
                             is(3D),
                             lessThan(0D),
                             lessThan(2D)));
@@ -207,7 +207,7 @@ public class CheckTest {
         var benchMarkStart = currentTimeMillis();
         check("Tested number",
                 9,
-                matchOr(ofSeconds(3),
+                matchAny(ofSeconds(3),
                         greaterThan(0),
                         lessThan(10),
                         greaterThan(5)));
@@ -221,7 +221,7 @@ public class CheckTest {
         try {
             check("Tested number",
                     4,
-                    matchOr(ofSeconds(3),
+                    matchAny(ofSeconds(3),
                             greaterThan(5),
                             lessThan(-10),
                             instanceOf(Float.class)));

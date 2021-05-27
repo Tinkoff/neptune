@@ -21,10 +21,12 @@ public abstract class NeptuneFeatureMatcher<T> extends BaseMatcher<T> {
 
     private static final ReflectiveTypeFinder TYPE_FINDER = new ReflectiveTypeFinder("featureMatches", 1, 0);
 
-    private final List<Description> mismatchDescriptions = new LinkedList<>();
+    protected final List<Description> mismatchDescriptions = new LinkedList<>();
     protected final Class<?> expectedType;
+    protected final boolean isNullSafe;
 
-    protected NeptuneFeatureMatcher() {
+    protected NeptuneFeatureMatcher(boolean isNullSafe) {
+        this.isNullSafe = isNullSafe;
         this.expectedType = TYPE_FINDER.findExpectedType(getClass());
     }
 
@@ -56,9 +58,13 @@ public abstract class NeptuneFeatureMatcher<T> extends BaseMatcher<T> {
     }
 
     protected boolean prerequisiteChecking(Object actual) {
-        if (actual == null) {
+        if (actual == null && isNullSafe) {
             appendMismatchDescription(new NullValueMismatch());
             return false;
+        }
+
+        if (actual == null) {
+            return true;
         }
 
         if (!expectedType.isInstance(actual)) {
@@ -107,6 +113,11 @@ public abstract class NeptuneFeatureMatcher<T> extends BaseMatcher<T> {
 
     @Override
     public final void describeMismatch(Object item, Description mismatchDescription) {
-        mismatchDescription.appendText(mismatchDescriptions.stream().map(Object::toString).collect(joining("\r\n")));
+        mismatchDescription
+                .appendText(mismatchDescriptions
+                        .stream()
+                        .map(Object::toString)
+                        .distinct()
+                        .collect(joining("\r\n")));
     }
 }
