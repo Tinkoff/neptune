@@ -8,6 +8,7 @@ import java.time.Duration;
 
 import static java.lang.String.valueOf;
 import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
+import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 
 /**
  * Converts some value to a readable parameter of a step or to fragment of step description.
@@ -47,6 +48,18 @@ public interface ParameterValueGetter<T> {
         @Override
         public String getParameterValue(Duration fieldValue) {
             return formatDurationHMS(fieldValue.toMillis());
+        }
+    }
+
+    final class TranslatedDescriptionParameterValueGetter implements ParameterValueGetter<Object> {
+
+        @Override
+        public String getParameterValue(Object fieldValue) {
+            if (fieldValue instanceof String) {
+                return translate((String) fieldValue);
+            }
+
+            return translate(fieldValue);
         }
     }
 }

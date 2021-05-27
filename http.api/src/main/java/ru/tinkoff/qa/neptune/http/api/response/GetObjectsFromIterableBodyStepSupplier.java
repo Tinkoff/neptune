@@ -6,6 +6,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.captors.request.AbstractRequestBodyCaptor;
 import ru.tinkoff.qa.neptune.http.api.captors.response.AbstractResponseBodyObjectCaptor;
@@ -61,7 +62,7 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
     public static <T, R, S extends Iterable<R>> GetObjectsFromIterableWhenResponseReceived<T, R, S> asIterable(
             @DescriptionFragment(
                     value = "description",
-                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class)
+                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
                     String description,
             HttpResponse<T> received,
             Function<T, S> f) {
@@ -86,7 +87,7 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
     public static <T, R, S extends Iterable<R>> GetObjectsFromIterableWhenResponseReceiving<T, R, S> asIterable(
             @DescriptionFragment(
                     value = "description",
-                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class)
+                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
                     String description,
             RequestBuilder requestBuilder,
             HttpResponse.BodyHandler<T> handler,
@@ -112,7 +113,7 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
     public static <R, S extends Iterable<R>> GetObjectsFromIterableWhenResponseReceived<S, R, S> asIterable(
             @DescriptionFragment(
                     value = "description",
-                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class)
+                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
                     String description,
             HttpResponse<S> received) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
@@ -134,7 +135,7 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
     public static <R, S extends Iterable<R>> GetObjectsFromIterableWhenResponseReceiving<S, R, S> asIterable(
             @DescriptionFragment(
                     value = "description",
-                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class)
+                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
                     String description,
             RequestBuilder requestBuilder,
             HttpResponse.BodyHandler<S> handler) {

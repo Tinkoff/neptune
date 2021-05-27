@@ -5,7 +5,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.Action;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,7 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
     static <T, R> CheckActionSupplier<R, T> checkActionSupplier(
             @DescriptionFragment(
                     value = "description",
-                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class)
+                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
                     String description,
             Function<R, T> f,
             MatchAction<T, ?>... matchActions) {

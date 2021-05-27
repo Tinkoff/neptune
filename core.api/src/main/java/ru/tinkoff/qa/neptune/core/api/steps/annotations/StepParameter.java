@@ -10,7 +10,6 @@ import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 
 /**
  * Marks fields of {@link SequentialActionSupplier} and {@link SequentialGetStepSupplier} those
@@ -67,14 +66,6 @@ public @interface StepParameter {
                     return null;
                 }
             };
-        }
-    }
-
-    final class TranslatedDescriptionParameterValueGetter implements ParameterValueGetter<Object> {
-
-        @Override
-        public String getParameterValue(Object fieldValue) {
-            return translate(fieldValue.toString());
         }
     }
 }
