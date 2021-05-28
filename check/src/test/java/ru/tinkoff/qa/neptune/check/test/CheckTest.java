@@ -13,6 +13,7 @@ import static java.time.Duration.ofSeconds;
 import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.testng.AssertJUnit.fail;
 import static ru.tinkoff.qa.neptune.check.CheckActionSupplier.check;
 import static ru.tinkoff.qa.neptune.check.CheckActionSupplier.evaluateAndCheck;
 import static ru.tinkoff.qa.neptune.check.MatchAction.*;
@@ -81,7 +82,10 @@ public class CheckTest {
                     "Expected: 'Sqrt value' is <2.0>\r\n" +
                     "Checked value: '3.0'\r\n" +
                     "Result: was <3.0>"));
+            return;
         }
+
+        fail("Exception was expected");
     }
 
     @Test
@@ -115,7 +119,10 @@ public class CheckTest {
                     "Expected: 'Sqrt value' is <2.0>\r\n" +
                     "Checked value: '3.0'\r\n" +
                     "Result: was <3.0>. Time of the waiting for the matching: 00:00:03.000"));
+            return;
         }
+
+        fail("Exception was expected");
     }
 
     @Test
@@ -188,18 +195,22 @@ public class CheckTest {
                     "Expected: 'Sqrt' is <3.0> or a value less than <0.0> or a value less than <2.0>\r\n" +
                     "Checked value: '2.0'\r\n" +
                     "Result: Does not match any of the listed criteria"));
+
+            assertThat(MESSAGES,
+                    contains("Check: Tested number has started",
+                            "Assert: a value greater than <5> or a value less than <-10> or an instance of java.lang.Float has started",
+                            "java.lang.AssertionError has been thrown",
+                            "Event finished",
+                            "Assert: Sqrt is <3.0> or a value less than <0.0> or a value less than <2.0> has started",
+                            "java.lang.AssertionError has been thrown",
+                            "Event finished",
+                            "java.lang.AssertionError has been thrown",
+                            "Event finished"));
+
+            return;
         }
 
-        assertThat(MESSAGES,
-                contains("Check: Tested number has started",
-                        "Assert: a value greater than <5> or a value less than <-10> or an instance of java.lang.Float has started",
-                        "java.lang.AssertionError has been thrown",
-                        "Event finished",
-                        "Assert: Sqrt is <3.0> or a value less than <0.0> or a value less than <2.0> has started",
-                        "java.lang.AssertionError has been thrown",
-                        "Event finished",
-                        "java.lang.AssertionError has been thrown",
-                        "Event finished"));
+        fail("Exception was expected");
     }
 
     @Test
@@ -234,7 +245,10 @@ public class CheckTest {
                     "Expected: a value greater than <5> or a value less than <-10> or an instance of java.lang.Float\r\n" +
                     "Checked value: '4'\r\n" +
                     "Result: Does not match any of the listed criteria. Time of the waiting for the matching: 00:00:03.000"));
+            return;
         }
+
+        fail("Exception was expected");
     }
 
 
@@ -270,18 +284,22 @@ public class CheckTest {
                     "Expected: 'Sqrt' not is <2.0>\r\n" +
                     "Checked value: '2.0'\r\n" +
                     "Result: is <2.0>"));
+
+            assertThat(MESSAGES,
+                    contains("Check: Tested number has started",
+                            "Assert: not a value greater than <-10> has started",
+                            "java.lang.AssertionError has been thrown",
+                            "Event finished",
+                            "Assert: Sqrt not is <2.0> has started",
+                            "java.lang.AssertionError has been thrown",
+                            "Event finished",
+                            "java.lang.AssertionError has been thrown",
+                            "Event finished"));
+
+            return;
         }
 
-        assertThat(MESSAGES,
-                contains("Check: Tested number has started",
-                        "Assert: not a value greater than <-10> has started",
-                        "java.lang.AssertionError has been thrown",
-                        "Event finished",
-                        "Assert: Sqrt not is <2.0> has started",
-                        "java.lang.AssertionError has been thrown",
-                        "Event finished",
-                        "java.lang.AssertionError has been thrown",
-                        "Event finished"));
+        fail("Exception was expected");
     }
 
     @Test
@@ -310,7 +328,10 @@ public class CheckTest {
                     "Expected: not a value greater than <-10>\r\n" +
                     "Checked value: '4'\r\n" +
                     "Result: a value greater than <-10>. Time of the waiting for the matching: 00:00:03.000"));
+            return;
         }
+
+        fail("Exception was expected");
     }
 
 
@@ -355,18 +376,21 @@ public class CheckTest {
                     containsString("Expected: 'Sqrt' is <3.0> xor a value less than <0.0> xor a value less than <2.0>"),
                     containsString("Checked value: '2.0'"),
                     containsString("Result: Does not match any of the listed criteria")));
+
+            assertThat(MESSAGES,
+                    contains("Check: Tested number has started",
+                            "Assert: a value greater than <5> xor a value less than <-10> xor an instance of java.lang.Float has started",
+                            "java.lang.AssertionError has been thrown",
+                            "Event finished",
+                            "Assert: Sqrt is <3.0> xor a value less than <0.0> xor a value less than <2.0> has started",
+                            "java.lang.AssertionError has been thrown",
+                            "Event finished",
+                            "java.lang.AssertionError has been thrown",
+                            "Event finished"));
+            return;
         }
 
-        assertThat(MESSAGES,
-                contains("Check: Tested number has started",
-                        "Assert: a value greater than <5> xor a value less than <-10> xor an instance of java.lang.Float has started",
-                        "java.lang.AssertionError has been thrown",
-                        "Event finished",
-                        "Assert: Sqrt is <3.0> xor a value less than <0.0> xor a value less than <2.0> has started",
-                        "java.lang.AssertionError has been thrown",
-                        "Event finished",
-                        "java.lang.AssertionError has been thrown",
-                        "Event finished"));
+        fail("Exception was expected");
     }
 
     @Test
@@ -393,18 +417,22 @@ public class CheckTest {
                     containsString("Result: Only one of the listed criteria was expected to be matched. Checks of following criteria were positive:"),
                     containsString("is <2.0>"),
                     containsString("a value greater than <0.0>")));
+
+            assertThat(MESSAGES,
+                    contains("Check: Tested number has started",
+                            "Assert: a value greater than <0> xor a value less than <-10> xor an instance of java.lang.Integer has started",
+                            "java.lang.AssertionError has been thrown",
+                            "Event finished",
+                            "Assert: Sqrt is <2.0> xor a value greater than <0.0> xor a value less than <2.0> has started",
+                            "java.lang.AssertionError has been thrown",
+                            "Event finished",
+                            "java.lang.AssertionError has been thrown",
+                            "Event finished"));
+
+            return;
         }
 
-        assertThat(MESSAGES,
-                contains("Check: Tested number has started",
-                        "Assert: a value greater than <0> xor a value less than <-10> xor an instance of java.lang.Integer has started",
-                        "java.lang.AssertionError has been thrown",
-                        "Event finished",
-                        "Assert: Sqrt is <2.0> xor a value greater than <0.0> xor a value less than <2.0> has started",
-                        "java.lang.AssertionError has been thrown",
-                        "Event finished",
-                        "java.lang.AssertionError has been thrown",
-                        "Event finished"));
+        fail("Exception was expected");
     }
 
     @Test
@@ -439,7 +467,10 @@ public class CheckTest {
                     containsString("Expected: a value greater than <5> xor a value less than <-10> xor an instance of java.lang.Float"),
                     containsString("Checked value: '4'"),
                     containsString("Result: Does not match any of the listed criteria. Time of the waiting for the matching: 00:00:03.000")));
+            return;
         }
+
+        fail("Exception was expected");
     }
 
     @Test
@@ -466,6 +497,9 @@ public class CheckTest {
                     containsString("is <2.0>"),
                     containsString("an instance of java.lang.Double"),
                     containsString("Time of the waiting for the matching: 00:00:03.000")));
+            return;
         }
+
+        fail("Exception was expected");
     }
 }

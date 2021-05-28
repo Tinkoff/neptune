@@ -1,16 +1,19 @@
 package ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator;
 
 import org.hamcrest.Matcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import java.net.URI;
 import java.util.function.Function;
 
 import static org.hamcrest.Matchers.equalTo;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.ResourceLocatorMatcher.MATCHER_FRAGMENT;
 
-public final class HasSchemeMatcher<T> extends ResourceLocatorMatcher<T, String> {
+@Description("Scheme is {" + MATCHER_FRAGMENT + "}")
+public final class HasSchemeMatcher extends ResourceLocatorMatcher<URI, String> {
 
-    private HasSchemeMatcher(Matcher<? super String> matcher, Function<T, String> conversion) {
-        super("Scheme", matcher, conversion);
+    private HasSchemeMatcher(Matcher<? super String> matcher, Function<URI, String> conversion) {
+        super(URI.class, matcher, conversion);
     }
 
     /**
@@ -19,8 +22,8 @@ public final class HasSchemeMatcher<T> extends ResourceLocatorMatcher<T, String>
      * @param schemeMather that checks the scheme value
      * @return new {@link HasSchemeMatcher}
      */
-    public static HasSchemeMatcher<URI> uriHasScheme(Matcher<? super String> schemeMather) {
-        return new HasSchemeMatcher<>(schemeMather, URI::getScheme);
+    public static HasSchemeMatcher uriHasScheme(Matcher<? super String> schemeMather) {
+        return new HasSchemeMatcher(schemeMather, URI::getScheme);
     }
 
     /**
@@ -29,7 +32,7 @@ public final class HasSchemeMatcher<T> extends ResourceLocatorMatcher<T, String>
      * @param scheme is the expected value of the scheme
      * @return new {@link HasSchemeMatcher}
      */
-    public static HasSchemeMatcher<URI> uriHasScheme(String scheme) {
-        return new HasSchemeMatcher<>(equalTo(scheme), URI::getScheme);
+    public static HasSchemeMatcher uriHasScheme(String scheme) {
+        return new HasSchemeMatcher(equalTo(scheme), URI::getScheme);
     }
 }

@@ -1,17 +1,20 @@
 package ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator;
 
 import org.hamcrest.Matcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import java.net.URI;
 import java.net.URL;
 import java.util.function.Function;
 
 import static org.hamcrest.Matchers.equalTo;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.ResourceLocatorMatcher.MATCHER_FRAGMENT;
 
+@Description("Port is {" + MATCHER_FRAGMENT + "}")
 public final class HasPortMatcher<T> extends ResourceLocatorMatcher<T, Integer> {
 
-    private HasPortMatcher(Matcher<? super Integer> matcher, Function<T, Integer> conversion) {
-        super("Port", matcher, conversion);
+    private HasPortMatcher(Class<T> cls, Matcher<? super Integer> matcher, Function<T, Integer> conversion) {
+        super(cls, matcher, conversion);
     }
 
     /**
@@ -21,7 +24,7 @@ public final class HasPortMatcher<T> extends ResourceLocatorMatcher<T, Integer> 
      * @return new {@link HasPortMatcher}
      */
     public static HasPortMatcher<URL> urlHasPort(Matcher<? super Integer> portMather) {
-        return new HasPortMatcher<>(portMather, URL::getPort);
+        return new HasPortMatcher<>(URL.class, portMather, URL::getPort);
     }
 
     /**
@@ -31,7 +34,7 @@ public final class HasPortMatcher<T> extends ResourceLocatorMatcher<T, Integer> 
      * @return new {@link HasPortMatcher}
      */
     public static HasPortMatcher<URL> urlHasPort(int port) {
-        return new HasPortMatcher<>(equalTo(port), URL::getPort);
+        return new HasPortMatcher<>(URL.class, equalTo(port), URL::getPort);
     }
 
     /**
@@ -41,7 +44,7 @@ public final class HasPortMatcher<T> extends ResourceLocatorMatcher<T, Integer> 
      * @return new {@link HasPortMatcher}
      */
     public static HasPortMatcher<URI> uriHasPort(Matcher<? super Integer> portMather) {
-        return new HasPortMatcher<>(portMather, URI::getPort);
+        return new HasPortMatcher<>(URI.class, portMather, URI::getPort);
     }
 
     /**
@@ -51,6 +54,6 @@ public final class HasPortMatcher<T> extends ResourceLocatorMatcher<T, Integer> 
      * @return new {@link HasPortMatcher}
      */
     public static HasPortMatcher<URI> uriHasPort(int port) {
-        return new HasPortMatcher<>(equalTo(port), URI::getPort);
+        return new HasPortMatcher<>(URI.class, equalTo(port), URI::getPort);
     }
 }

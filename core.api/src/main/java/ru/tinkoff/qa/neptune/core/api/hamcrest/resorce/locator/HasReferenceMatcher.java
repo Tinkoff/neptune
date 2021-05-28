@@ -1,15 +1,18 @@
 package ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator;
 
 import org.hamcrest.Matcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import java.net.URL;
 
 import static org.hamcrest.Matchers.equalTo;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.ResourceLocatorMatcher.MATCHER_FRAGMENT;
 
+@Description("Url reference is {" + MATCHER_FRAGMENT + "}")
 public final class HasReferenceMatcher extends ResourceLocatorMatcher<URL, String> {
 
     private HasReferenceMatcher(Matcher<? super String> matcher) {
-        super("Url reference", matcher, URL::getRef);
+        super(URL.class, matcher, URL::getRef);
     }
 
     /**
@@ -18,7 +21,7 @@ public final class HasReferenceMatcher extends ResourceLocatorMatcher<URL, Strin
      * @param refMather that checks the reference value
      * @return new {@link HasReferenceMatcher}
      */
-    public static HasReferenceMatcher urReference(Matcher<? super String> refMather) {
+    public static HasReferenceMatcher urlHasReference(Matcher<? super String> refMather) {
         return new HasReferenceMatcher(refMather);
     }
 
@@ -28,7 +31,7 @@ public final class HasReferenceMatcher extends ResourceLocatorMatcher<URL, Strin
      * @param ref is the expected value of the reference
      * @return new {@link HasReferenceMatcher}
      */
-    public static HasReferenceMatcher urlReference(String ref) {
+    public static HasReferenceMatcher urlHasReference(String ref) {
         return new HasReferenceMatcher(equalTo(ref));
     }
 }

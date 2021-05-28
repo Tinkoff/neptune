@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.core.api.hamcrest.common.all;
 
 import org.hamcrest.Matcher;
-import org.hamcrest.StringDescription;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.common.DoesNotMatchAnyCriteria;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
@@ -10,7 +9,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.stream;
-import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 
 /**
  * This matcher checks an object by every defined criteria
@@ -49,9 +47,7 @@ public final class AllCriteriaMatcher<T> extends NeptuneFeatureMatcher<T> {
             var result = m.matches(toMatch);
 
             if (!result) {
-                var description = new StringDescription();
-                m.describeMismatch(toMatch, description);
-                appendMismatchDescription(new StringDescription().appendText(translate(description.toString())));
+                appendMismatchDescription(m, toMatch);
             }
             return result;
         }).filter(b -> !b).count();

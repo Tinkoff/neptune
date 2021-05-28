@@ -1,17 +1,20 @@
 package ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator;
 
 import org.hamcrest.Matcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import java.net.URI;
 import java.net.URL;
 import java.util.function.Function;
 
 import static org.hamcrest.Matchers.equalTo;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.ResourceLocatorMatcher.MATCHER_FRAGMENT;
 
+@Description("Host is {" + MATCHER_FRAGMENT + "}")
 public final class HasHostMatcher<T> extends ResourceLocatorMatcher<T, String> {
 
-    private HasHostMatcher(Matcher<? super String> matcher, Function<T, String> conversion) {
-        super("Host", matcher, conversion);
+    private HasHostMatcher(Class<T> cls, Matcher<? super String> matcher, Function<T, String> conversion) {
+        super(cls, matcher, conversion);
     }
 
     /**
@@ -21,7 +24,7 @@ public final class HasHostMatcher<T> extends ResourceLocatorMatcher<T, String> {
      * @return new {@link HasHostMatcher}
      */
     public static HasHostMatcher<URL> urlHasHost(Matcher<? super String> hostMather) {
-        return new HasHostMatcher<>(hostMather, URL::getHost);
+        return new HasHostMatcher<>(URL.class, hostMather, URL::getHost);
     }
 
     /**
@@ -31,7 +34,7 @@ public final class HasHostMatcher<T> extends ResourceLocatorMatcher<T, String> {
      * @return new {@link HasHostMatcher}
      */
     public static HasHostMatcher<URL> urlHasHost(String host) {
-        return new HasHostMatcher<>(equalTo(host), URL::getHost);
+        return new HasHostMatcher<>(URL.class, equalTo(host), URL::getHost);
     }
 
     /**
@@ -41,7 +44,7 @@ public final class HasHostMatcher<T> extends ResourceLocatorMatcher<T, String> {
      * @return new {@link HasHostMatcher}
      */
     public static HasHostMatcher<URI> uriHasHost(Matcher<? super String> hostMather) {
-        return new HasHostMatcher<>(hostMather, URI::getHost);
+        return new HasHostMatcher<>(URI.class, hostMather, URI::getHost);
     }
 
     /**
@@ -51,6 +54,6 @@ public final class HasHostMatcher<T> extends ResourceLocatorMatcher<T, String> {
      * @return new {@link HasHostMatcher}
      */
     public static HasHostMatcher<URI> uriHasHost(String host) {
-        return new HasHostMatcher<>(equalTo(host), URI::getHost);
+        return new HasHostMatcher<>(URI.class, equalTo(host), URI::getHost);
     }
 }

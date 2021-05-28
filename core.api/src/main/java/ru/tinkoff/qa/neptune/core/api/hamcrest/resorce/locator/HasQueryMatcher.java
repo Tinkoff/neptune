@@ -1,17 +1,20 @@
 package ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator;
 
 import org.hamcrest.Matcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import java.net.URI;
 import java.net.URL;
 import java.util.function.Function;
 
 import static org.hamcrest.Matchers.equalTo;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.ResourceLocatorMatcher.MATCHER_FRAGMENT;
 
+@Description("Query is {" + MATCHER_FRAGMENT + "}")
 public final class HasQueryMatcher<T> extends ResourceLocatorMatcher<T, String> {
 
-    private HasQueryMatcher(Matcher<? super String> matcher, Function<T, String> conversion) {
-        super("Query", matcher, conversion);
+    private HasQueryMatcher(Class<T> cls, Matcher<? super String> matcher, Function<T, String> conversion) {
+        super(cls, matcher, conversion);
     }
 
     /**
@@ -21,7 +24,7 @@ public final class HasQueryMatcher<T> extends ResourceLocatorMatcher<T, String> 
      * @return new {@link HasQueryMatcher}
      */
     public static HasQueryMatcher<URL> urlHasQuery(Matcher<? super String> queryMather) {
-        return new HasQueryMatcher<>(queryMather, URL::getQuery);
+        return new HasQueryMatcher<>(URL.class, queryMather, URL::getQuery);
     }
 
     /**
@@ -31,7 +34,7 @@ public final class HasQueryMatcher<T> extends ResourceLocatorMatcher<T, String> 
      * @return new {@link HasQueryMatcher}
      */
     public static HasQueryMatcher<URL> urlHasQuery(String query) {
-        return new HasQueryMatcher<>(equalTo(query), URL::getQuery);
+        return new HasQueryMatcher<>(URL.class, equalTo(query), URL::getQuery);
     }
 
     /**
@@ -41,7 +44,7 @@ public final class HasQueryMatcher<T> extends ResourceLocatorMatcher<T, String> 
      * @return new {@link HasQueryMatcher}
      */
     public static HasQueryMatcher<URI> uriHasQuery(Matcher<? super String> queryMather) {
-        return new HasQueryMatcher<>(queryMather, URI::getQuery);
+        return new HasQueryMatcher<>(URI.class, queryMather, URI::getQuery);
     }
 
     /**
@@ -51,6 +54,6 @@ public final class HasQueryMatcher<T> extends ResourceLocatorMatcher<T, String> 
      * @return new {@link HasQueryMatcher}
      */
     public static HasQueryMatcher<URI> uriHasQuery(String query) {
-        return new HasQueryMatcher<>(equalTo(query), URI::getQuery);
+        return new HasQueryMatcher<>(URI.class, equalTo(query), URI::getQuery);
     }
 }

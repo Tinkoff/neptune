@@ -55,11 +55,7 @@ public interface ParameterValueGetter<T> {
 
         @Override
         public String getParameterValue(Object fieldValue) {
-            if (fieldValue instanceof String) {
-                return translate((String) fieldValue);
-            }
-
-            return translate(fieldValue);
+            return translate(fieldValue.toString());
         }
     }
 }

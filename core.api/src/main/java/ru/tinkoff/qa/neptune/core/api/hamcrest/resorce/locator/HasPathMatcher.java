@@ -1,17 +1,20 @@
 package ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator;
 
 import org.hamcrest.Matcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import java.net.URI;
 import java.net.URL;
 import java.util.function.Function;
 
 import static org.hamcrest.Matchers.equalTo;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.ResourceLocatorMatcher.MATCHER_FRAGMENT;
 
+@Description("Path is {" + MATCHER_FRAGMENT + "}")
 public final class HasPathMatcher<T> extends ResourceLocatorMatcher<T, String> {
 
-    private HasPathMatcher(Matcher<? super String> matcher, Function<T, String> conversion) {
-        super("Path", matcher, conversion);
+    private HasPathMatcher(Class<T> cls, Matcher<? super String> matcher, Function<T, String> conversion) {
+        super(cls, matcher, conversion);
     }
 
     /**
@@ -21,7 +24,7 @@ public final class HasPathMatcher<T> extends ResourceLocatorMatcher<T, String> {
      * @return new {@link HasPathMatcher}
      */
     public static HasPathMatcher<URL> urlHasPath(Matcher<? super String> pathMather) {
-        return new HasPathMatcher<>(pathMather, URL::getPath);
+        return new HasPathMatcher<>(URL.class, pathMather, URL::getPath);
     }
 
     /**
@@ -31,7 +34,7 @@ public final class HasPathMatcher<T> extends ResourceLocatorMatcher<T, String> {
      * @return new {@link HasPathMatcher}
      */
     public static HasPathMatcher<URL> urlHasPath(String path) {
-        return new HasPathMatcher<>(equalTo(path), URL::getPath);
+        return new HasPathMatcher<>(URL.class, equalTo(path), URL::getPath);
     }
 
     /**
@@ -41,7 +44,7 @@ public final class HasPathMatcher<T> extends ResourceLocatorMatcher<T, String> {
      * @return new {@link HasPathMatcher}
      */
     public static HasPathMatcher<URI> uriHasPath(Matcher<? super String> pathMather) {
-        return new HasPathMatcher<>(pathMather, URI::getPath);
+        return new HasPathMatcher<>(URI.class, pathMather, URI::getPath);
     }
 
     /**
@@ -51,6 +54,6 @@ public final class HasPathMatcher<T> extends ResourceLocatorMatcher<T, String> {
      * @return new {@link HasPathMatcher}
      */
     public static HasPathMatcher<URI> uriHasPath(String path) {
-        return new HasPathMatcher<>(equalTo(path), URI::getPath);
+        return new HasPathMatcher<>(URI.class, equalTo(path), URI::getPath);
     }
 }

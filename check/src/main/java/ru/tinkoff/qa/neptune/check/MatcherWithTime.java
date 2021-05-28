@@ -54,9 +54,7 @@ final class MatcherWithTime<T> extends NeptuneFeatureMatcher<T> {
     protected boolean featureMatches(T toMatch) {
         var result = delegateTo.matches(toMatch);
         if (!result) {
-            var d = new StringDescription();
-            delegateTo.describeMismatch(toMatch, d);
-            appendMismatchDescription(d);
+            appendMismatchDescription(delegateTo, toMatch);
         }
         return result;
     }

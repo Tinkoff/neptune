@@ -6,6 +6,8 @@ import org.hamcrest.internal.ReflectiveTypeFinder;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 import static org.apache.commons.lang3.StringUtils.SPACE;
@@ -22,12 +24,21 @@ public abstract class NeptuneFeatureMatcher<T> extends BaseMatcher<T> {
     private static final ReflectiveTypeFinder TYPE_FINDER = new ReflectiveTypeFinder("featureMatches", 1, 0);
 
     protected final List<Description> mismatchDescriptions = new LinkedList<>();
-    protected final Class<?> expectedType;
+    protected final Class<? extends T>[] expectedTypes;
     protected final boolean isNullSafe;
 
+    @SafeVarargs
+    protected NeptuneFeatureMatcher(boolean isNullSafe, Class<? extends T>... expectedTypes) {
+        checkNotNull(expectedTypes);
+        checkArgument(expectedTypes.length > 0, "At least one expected type should be defined");
+        this.isNullSafe = isNullSafe;
+        this.expectedTypes = expectedTypes;
+    }
+
+    @SuppressWarnings("unchecked")
     protected NeptuneFeatureMatcher(boolean isNullSafe) {
         this.isNullSafe = isNullSafe;
-        this.expectedType = TYPE_FINDER.findExpectedType(getClass());
+        this.expectedTypes = new Class[]{TYPE_FINDER.findExpectedType(getClass())};
     }
 
     /**
@@ -57,7 +68,7 @@ public abstract class NeptuneFeatureMatcher<T> extends BaseMatcher<T> {
         return concatMatcherDescriptions(SPACE, matchers);
     }
 
-    protected boolean prerequisiteChecking(Object actual) {
+    protected final boolean prerequisiteChecking(Object actual) {
         if (actual == null && isNullSafe) {
             appendMismatchDescription(new NullValueMismatch());
             return false;
@@ -67,8 +78,8 @@ public abstract class NeptuneFeatureMatcher<T> extends BaseMatcher<T> {
             return true;
         }
 
-        if (!expectedType.isInstance(actual)) {
-            appendMismatchDescription(new TypeMismatch(expectedType, actual.getClass()));
+        if (stream(expectedTypes).noneMatch(c -> c.isInstance(actual))) {
+            appendMismatchDescription(new TypeMismatch(actual.getClass(), expectedTypes));
             return false;
         }
 
@@ -99,7 +110,13 @@ public abstract class NeptuneFeatureMatcher<T> extends BaseMatcher<T> {
     }
 
     protected void appendMismatchDescription(Description description) {
-        mismatchDescriptions.add(description);
+        mismatchDescriptions.add(new StringDescription().appendText(translate(description.toString())));
+    }
+
+    protected final void appendMismatchDescription(Matcher<?> matcher, Object o) {
+        var d = new StringDescription();
+        matcher.describeMismatch(o, d);
+        appendMismatchDescription(d);
     }
 
     @Override
