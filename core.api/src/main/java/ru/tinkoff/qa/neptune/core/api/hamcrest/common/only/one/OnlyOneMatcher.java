@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.core.api.hamcrest.common.only.one;
 
 import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.UnitesCriteria;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.common.DoesNotMatchAnyCriteria;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -19,6 +20,7 @@ import static java.util.stream.Collectors.toList;
  *
  * @param <T> is a type of a checked value
  */
+@UnitesCriteria
 @Description("{onlyOneExpression}")
 public final class OnlyOneMatcher<T> extends NeptuneFeatureMatcher<T> {
 

@@ -51,7 +51,10 @@ public abstract class NeptuneFeatureMatcher<T> extends BaseMatcher<T> {
     public static String concatMatcherDescriptions(String delimiter, Matcher<?>... matchers) {
         return stream(matchers).map(matcher -> {
             if (matcher instanceof NeptuneFeatureMatcher) {
-                return matcher.toString();
+                if (matcher.getClass().getAnnotation(UnitesCriteria.class) == null) {
+                    return matcher.toString();
+                }
+                return "(" + matcher + ")";
             }
 
             return translate(matcher.toString());

@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api.hamcrest.common.all;
+package ru.tinkoff.qa.neptune.core.api.hamcrest;
 
 import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;

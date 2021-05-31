@@ -1,7 +1,9 @@
 package ru.tinkoff.qa.neptune.core.api.hamcrest.common.all;
 
 import org.hamcrest.Matcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.AllParameterValueGetter;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.UnitesCriteria;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.common.DoesNotMatchAnyCriteria;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -15,6 +17,7 @@ import static java.util.Arrays.stream;
  *
  * @param <T> is a type of a checked value
  */
+@UnitesCriteria
 @Description("{allMatchers}")
 public final class AllCriteriaMatcher<T> extends NeptuneFeatureMatcher<T> {
 
