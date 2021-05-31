@@ -208,8 +208,20 @@ public abstract class SetOfObjectsIncludesMatcher<S, R, T extends Iterable<R>> e
                 continue;
             }
 
-            if (alreadyChecked.stream().anyMatch(m::matches)) {
-                appendMismatchDescription(new OutOfItemsOrderMismatch(m, alreadyUsed.getLast()));
+            int indexOut = -1;
+            boolean foundBefore = false;
+
+            for (var r : alreadyChecked) {
+                indexOut++;
+                if (m.matches(r)) {
+                    foundBefore = true;
+                    break;
+                }
+            }
+
+            if (foundBefore) {
+                appendMismatchDescription(new OutOfItemsOrderMismatch(alreadyChecked.get(indexOut), indexOut, m,
+                        alreadyChecked.getLast(), alreadyChecked.size() - 1, alreadyUsed.getLast()));
             } else {
                 appendMismatchDescription(new ItemNotFoundMismatch(m));
             }
