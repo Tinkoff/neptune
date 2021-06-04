@@ -4,7 +4,7 @@ import ru.tinkoff.qa.neptune.core.api.hamcrest.MismatchDescriber;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
-@Description("It was expected that object consists of {expected} item(s). But actually it had {actual} item(s)")
+@Description("{actual} items instead of {expected}")
 public final class DifferentSizeMismatch extends MismatchDescriber {
 
     @DescriptionFragment("expected")

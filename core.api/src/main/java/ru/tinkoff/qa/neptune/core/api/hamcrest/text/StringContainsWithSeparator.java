@@ -4,28 +4,26 @@ import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.hamcrest.Matchers.hasItem;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.arrayInOrder;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsItemsMatcher.arrayHasItem;
 
 /**
  * Checks whenever string has substring(s) that meet defined criteria or not.
  * These substrings should be separated from each other by defined separator
  */
-@Description("string has substring(s) <{toContain}> separated by <{separator}>")
+@Description("string has substring(s) separated by <'{separator}'>: {toContain}")
 public final class StringContainsWithSeparator extends NeptuneFeatureMatcher<String> {
 
-    @DescriptionFragment(value = "toContain", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
-    private final Matcher<? super Iterable<String>> toContain;
+    @DescriptionFragment(value = "toContain")
+    private final Matcher<String[]> toContain;
     @DescriptionFragment("separator")
     private final String separator;
 
-    private StringContainsWithSeparator(Matcher<? super Iterable<String>> toContain, String separator) {
+    private StringContainsWithSeparator(Matcher<String[]> toContain, String separator) {
         super(true);
         checkArgument(isNotBlank(separator), "Separator is blank");
         checkNotNull(toContain, "Matcher is not defined");
@@ -37,12 +35,23 @@ public final class StringContainsWithSeparator extends NeptuneFeatureMatcher<Str
      * Creates matcher that checks whenever string has substrings that meet defined criteria or not.
      * These substrings should be separated from each other by defined separator.
      *
-     * @param matcher   that verifies separated substrings
      * @param separator is string separator
+     * @param matcher   that verifies separated substrings
      * @return new {@link StringContainsWithSeparator}
      */
-    public static StringContainsWithSeparator containsStringsSeparatedBy(Matcher<? super Iterable<String>> matcher, String separator) {
+    public static StringContainsWithSeparator subStringsSeparatedBy(String separator, Matcher<String[]> matcher) {
         return new StringContainsWithSeparator(matcher, separator);
+    }
+
+    /**
+     * Creates matcher that checks whenever string has only defined substrings in the listed order.
+     *
+     * @param subStrings expected substrings
+     * @param separator  is string separator
+     * @return new {@link StringContainsWithSeparator}
+     */
+    public static StringContainsWithSeparator subStringsSeparatedBy(String separator, String... subStrings) {
+        return subStringsSeparatedBy(separator, arrayInOrder(subStrings));
     }
 
     /**
@@ -53,13 +62,13 @@ public final class StringContainsWithSeparator extends NeptuneFeatureMatcher<Str
      * @param separator is string separator
      * @return new {@link StringContainsWithSeparator}
      */
-    public static StringContainsWithSeparator containsStringSeparatedBy(String toContain, String separator) {
-        return new StringContainsWithSeparator(hasItem(toContain), separator);
+    public static StringContainsWithSeparator subStringSeparatedBy(String separator, String toContain) {
+        return subStringsSeparatedBy(separator, arrayHasItem(toContain));
     }
 
     @Override
     protected boolean featureMatches(String toMatch) {
-        var value = stream(toMatch.split(separator)).collect(toList());
+        var value = toMatch.split(separator);
         var result = toContain.matches(value);
 
         if (!result) {

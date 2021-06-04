@@ -7,7 +7,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import java.util.Collection;
 
-@Description("Only one of the listed criteria was expected to be matched. Checks of following criteria were positive:\r\n {matchers}")
+@Description("only one of listed criteria was expected to be matched. Checks of following criteria were positive:\r\n {matchers}")
 final class MatchesMoreThanOneCriteria extends MismatchDescriber {
 
     @DescriptionFragment(value = "matchers", makeReadableBy = CriteriaCollectionValueGetter.class)

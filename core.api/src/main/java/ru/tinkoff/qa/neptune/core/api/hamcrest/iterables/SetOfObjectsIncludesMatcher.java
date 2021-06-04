@@ -1,17 +1,30 @@
 package ru.tinkoff.qa.neptune.core.api.hamcrest.iterables;
 
+import com.google.common.collect.Lists;
 import org.hamcrest.Matcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.DifferentSizeMismatch;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.ItemNotFoundMismatch;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.LesserSizeMismatch;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.OutOfItemsOrderMismatch;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static com.google.common.collect.Iterables.size;
-import static java.lang.String.valueOf;
 import static java.util.Arrays.asList;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.AbstractSetOfObjectsMatcher.MATCHERS;
 
+/**
+ * This matcher checks that any set of objects (iterable, collection, array, map entries) includes objects
+ * that meet defined criteria.
+ *
+ * @param <S> is a type of a checked value
+ * @param <R> is a type of an item of iterable object
+ * @param <T> is a type of iterable
+ */
+@Description("includes in any order: {" + MATCHERS + "}")
 public abstract class SetOfObjectsIncludesMatcher<S, R, T extends Iterable<R>> extends AbstractSetOfObjectsMatcher<S, R> {
 
     private final boolean relatively;
@@ -23,7 +36,7 @@ public abstract class SetOfObjectsIncludesMatcher<S, R, T extends Iterable<R>> e
     }
 
     /**
-     * Creates a matcher that checks an object of {@link Iterable}. The checked iterable is expected to contain
+     * Creates a matcher that checks an {@link Iterable}. The checked iterable is expected to contain
      * defined elements in the listed order relatively to each other. Each one matcher of {@code matchers}
      * describes a single distinct item of the iterable.
      *
@@ -39,7 +52,7 @@ public abstract class SetOfObjectsIncludesMatcher<S, R, T extends Iterable<R>> e
     }
 
     /**
-     * Creates a matcher that checks an object of {@link Iterable}. The checked iterable is expected to contain
+     * Creates a matcher that checks an {@link Iterable}. The checked iterable is expected to contain
      * defined elements in the listed order relatively to each other. Each one item of {@code ts} is a single distinct
      * item of the iterable.
      *
@@ -54,7 +67,7 @@ public abstract class SetOfObjectsIncludesMatcher<S, R, T extends Iterable<R>> e
     }
 
     /**
-     * Creates a matcher that checks an object of {@link Iterable}. The checked iterable is expected to contain
+     * Creates a matcher that checks an {@link Iterable}. The checked iterable is expected to contain
      * defined elements. An order of items has no matter. Each one matcher of {@code matchers} describes a single
      * distinct item of the iterable.
      *
@@ -70,7 +83,7 @@ public abstract class SetOfObjectsIncludesMatcher<S, R, T extends Iterable<R>> e
     }
 
     /**
-     * Creates a matcher that checks an object of {@link Iterable}. The checked iterable is expected to contain defined
+     * Creates a matcher that checks an {@link Iterable}. The checked iterable is expected to contain defined
      * elements. An order of items has no matter. Each one item of {@code ts} is a single distinct item of the iterable.
      *
      * @param ts  describe every one distinct item of the iterable.
@@ -151,7 +164,7 @@ public abstract class SetOfObjectsIncludesMatcher<S, R, T extends Iterable<R>> e
      */
     @SafeVarargs
     @SuppressWarnings("unchecked")
-    public static <K, V, T extends Map<K, V>> Matcher<T> mapIncludesInOrder(MapEntryMatcher<K, V>... matchers) {
+    public static <K, V, T extends Map<K, V>> Matcher<T> mapIncludesInOrder(Matcher<Map.Entry<K, V>>... matchers) {
         return (Matcher<T>) new MapIncludesMatcherInOrder<>(matchers);
     }
 
@@ -168,21 +181,21 @@ public abstract class SetOfObjectsIncludesMatcher<S, R, T extends Iterable<R>> e
      */
     @SafeVarargs
     @SuppressWarnings("unchecked")
-    public static <K, V, T extends Map<K, V>> Matcher<T> mapIncludes(MapEntryMatcher<K, V>... matchers) {
+    public static <K, V, T extends Map<K, V>> Matcher<T> mapIncludes(Matcher<Map.Entry<K, V>>... matchers) {
         return (Matcher<T>) new MapIncludesMatcherInAnyOrder<>(matchers);
     }
 
     boolean checkIterable(T toCheck) {
         var actualSize = size(toCheck);
         if (actualSize < matchers.length) {
-            appendMismatchDescription(new LesserSizeMismatch(matchers.length, valueOf(actualSize)));
+            appendMismatchDescription(new DifferentSizeMismatch(matchers.length, actualSize));
             return false;
         }
 
-        var toBeChecked = new ArrayList<R>();
+        var toBeChecked = Lists.newArrayList(toCheck);
 
         return relatively ? checkRelatively(toBeChecked) :
-                checkInAnyOrder(toBeChecked, true, true) == matchers.length;
+                checkInAnyOrder(toBeChecked, true, true, matchers) == matchers.length;
     }
 
     private boolean checkRelatively(List<R> toCheck) {
@@ -208,20 +221,11 @@ public abstract class SetOfObjectsIncludesMatcher<S, R, T extends Iterable<R>> e
                 continue;
             }
 
-            int indexOut = -1;
-            boolean foundBefore = false;
-
-            for (var r : alreadyChecked) {
-                indexOut++;
-                if (m.matches(r)) {
-                    foundBefore = true;
-                    break;
-                }
-            }
-
-            if (foundBefore) {
-                appendMismatchDescription(new OutOfItemsOrderMismatch(alreadyChecked.get(indexOut), indexOut, m,
-                        alreadyChecked.getLast(), alreadyChecked.size() - 1, alreadyUsed.getLast()));
+            if (alreadyChecked.size() > 0) {
+                appendMismatchDescription(new OutOfItemsOrderMismatch(m,
+                        alreadyChecked.getLast(),
+                        alreadyChecked.size() - 1,
+                        alreadyUsed.getLast()));
             } else {
                 appendMismatchDescription(new ItemNotFoundMismatch(m));
             }
@@ -244,7 +248,7 @@ public abstract class SetOfObjectsIncludesMatcher<S, R, T extends Iterable<R>> e
         }
     }
 
-    @Description("Iterable includes listed elements in following order: {" + MATCHERS + "}")
+    @Description("includes in following order: {" + MATCHERS + "}")
     private static class IterableIncludesMatcherInOrder<R> extends IterableIncludesMatcher<R> {
 
         @SafeVarargs
@@ -253,7 +257,6 @@ public abstract class SetOfObjectsIncludesMatcher<S, R, T extends Iterable<R>> e
         }
     }
 
-    @Description("Iterable includes listed elements: {" + MATCHERS + "}")
     private static class IterableIncludesMatcherInAnyOrder<R> extends IterableIncludesMatcher<R> {
 
         @SafeVarargs
@@ -275,7 +278,7 @@ public abstract class SetOfObjectsIncludesMatcher<S, R, T extends Iterable<R>> e
         }
     }
 
-    @Description("Array includes listed elements in following order: {" + MATCHERS + "}")
+    @Description("includes in following order: {" + MATCHERS + "}")
     private static class ArrayIncludesMatcherInOrder<R> extends ArrayIncludesMatcher<R> {
 
         @SafeVarargs
@@ -284,7 +287,6 @@ public abstract class SetOfObjectsIncludesMatcher<S, R, T extends Iterable<R>> e
         }
     }
 
-    @Description("Array includes listed elements: {" + MATCHERS + "}")
     private static class ArrayIncludesMatcherInAnyOrder<R> extends ArrayIncludesMatcher<R> {
 
         @SafeVarargs
@@ -297,7 +299,7 @@ public abstract class SetOfObjectsIncludesMatcher<S, R, T extends Iterable<R>> e
     private abstract static class MapIncludesMatcher<K, V> extends SetOfObjectsIncludesMatcher<Map<K, V>, Map.Entry<K, V>, Set<Map.Entry<K, V>>> {
 
         @SafeVarargs
-        private MapIncludesMatcher(boolean relatively, MapEntryMatcher<K, V>... matchers) {
+        private MapIncludesMatcher(boolean relatively, Matcher<Map.Entry<K, V>>... matchers) {
             super(relatively, matchers);
         }
 
@@ -307,20 +309,19 @@ public abstract class SetOfObjectsIncludesMatcher<S, R, T extends Iterable<R>> e
         }
     }
 
-    @Description("Map includes listed key-value pairs in following order: {" + MATCHERS + "}")
+    @Description("includes in following order: {" + MATCHERS + "}")
     private static class MapIncludesMatcherInOrder<K, V> extends MapIncludesMatcher<K, V> {
 
         @SafeVarargs
-        private MapIncludesMatcherInOrder(MapEntryMatcher<K, V>... matchers) {
+        private MapIncludesMatcherInOrder(Matcher<Map.Entry<K, V>>... matchers) {
             super(true, matchers);
         }
     }
 
-    @Description("Map includes listed key-value pairs: {" + MATCHERS + "}")
     private static class MapIncludesMatcherInAnyOrder<K, V> extends MapIncludesMatcher<K, V> {
 
         @SafeVarargs
-        private MapIncludesMatcherInAnyOrder(MapEntryMatcher<K, V>... matchers) {
+        private MapIncludesMatcherInAnyOrder(Matcher<Map.Entry<K, V>>... matchers) {
             super(false, matchers);
         }
     }

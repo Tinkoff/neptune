@@ -71,7 +71,7 @@ public abstract class NeptuneFeatureMatcher<T> extends BaseMatcher<T> {
         return concatMatcherDescriptions(SPACE, matchers);
     }
 
-    protected final boolean prerequisiteChecking(Object actual) {
+    protected boolean prerequisiteChecking(Object actual) {
         if (actual == null && isNullSafe) {
             appendMismatchDescription(new NullValueMismatch());
             return false;

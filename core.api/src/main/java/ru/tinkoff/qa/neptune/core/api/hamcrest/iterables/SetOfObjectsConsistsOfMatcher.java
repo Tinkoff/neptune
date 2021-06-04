@@ -1,27 +1,29 @@
 package ru.tinkoff.qa.neptune.core.api.hamcrest.iterables;
 
+import com.google.common.collect.Lists;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.DifferentSizeMismatch;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.ItemMismatch;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import static com.google.common.collect.Iterables.size;
 import static java.util.Arrays.asList;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.AbstractSetOfObjectsMatcher.MATCHERS;
 
 /**
- * This matcher checks that any set of object (iterable, collection, array, map entries) consists only of objects
+ * This matcher checks that any set of objects (iterable, collection, array, map entries) consists only of objects
  * that meet defined criteria.
  *
  * @param <S> is a type of a checked value
  * @param <R> is a type of an item of iterable object
  * @param <T> is a type of iterable
  */
+@Description("in any order: {" + MATCHERS + "}")
 public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>> extends AbstractSetOfObjectsMatcher<S, R> {
 
     private final boolean strictlyInOrder;
@@ -33,7 +35,7 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
     }
 
     /**
-     * Creates a matcher that checks an object of {@link Iterable}. The checked iterable is expected to have
+     * Creates a matcher that checks an {@link Iterable}. The checked iterable is expected to have
      * only defined elements in the listed order. Each one matcher of {@code matchers} describes a single distinct
      * item of the iterable.
      *
@@ -49,7 +51,7 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
     }
 
     /**
-     * Creates a matcher that checks an object of {@link Iterable}. The checked iterable is expected to have
+     * Creates a matcher that checks an {@link Iterable}. The checked iterable is expected to have
      * only defined elements in the listed order. Each one item of {@code ts} is a single distinct
      * item of the iterable.
      *
@@ -64,7 +66,7 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
     }
 
     /**
-     * Creates a matcher that checks an object of {@link Iterable}. The checked iterable is expected to have
+     * Creates a matcher that checks an {@link Iterable}. The checked iterable is expected to have
      * only defined elements. An order of items has no matter. Each one matcher of {@code matchers} describes
      * a single distinct item of the iterable.
      *
@@ -80,7 +82,7 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
     }
 
     /**
-     * Creates a matcher that checks an object of {@link Iterable}. The checked iterable is expected to have
+     * Creates a matcher that checks an {@link Iterable}. The checked iterable is expected to have
      * only defined elements. An order of items has no matter. Each one item of {@code ts} is a single distinct
      * item of the iterable.
      *
@@ -90,7 +92,7 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
      * @return a mather
      */
     @SafeVarargs
-    public static <T, R extends Iterable<T>> Matcher<R> iterableInAnyOrder(T... ts) {
+    public static <T, R extends Iterable<T>> Matcher<R> iterableOf(T... ts) {
         return iterableOf(convertToMatcherArray(ts));
     }
 
@@ -160,7 +162,7 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
      */
     @SafeVarargs
     @SuppressWarnings("unchecked")
-    public static <K, V, T extends Map<K, V>> Matcher<T> mapInOrder(MapEntryMatcher<K, V>... matchers) {
+    public static <K, V, T extends Map<K, V>> Matcher<T> mapInOrder(Matcher<Map.Entry<K, V>>... matchers) {
         return (Matcher<T>) new MapConsistsOfMatcherInOrder<>(matchers);
     }
 
@@ -176,7 +178,7 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
      */
     @SafeVarargs
     @SuppressWarnings("unchecked")
-    public static <K, V, T extends Map<K, V>> Matcher<T> mapOf(MapEntryMatcher<K, V>... matchers) {
+    public static <K, V, T extends Map<K, V>> Matcher<T> mapOf(Matcher<Map.Entry<K, V>>... matchers) {
         return (Matcher<T>) new MapConsistsOfMatcherInAnyOrder<>(matchers);
     }
 
@@ -188,10 +190,10 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
             return false;
         }
 
-        var toBeChecked = new ArrayList<R>();
+        var toBeChecked = Lists.newArrayList(toCheck);
 
         return strictlyInOrder ? checkInStrictOrder(toBeChecked) :
-                checkInAnyOrder(toBeChecked, true, true) == matchers.length;
+                checkInAnyOrder(toBeChecked, true, true, matchers) == matchers.length;
     }
 
     private boolean checkInStrictOrder(List<R> toCheck) {
@@ -202,7 +204,7 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
             if (!m.matches(o)) {
                 var d = new StringDescription();
                 m.describeMismatch(o, d);
-                appendMismatchDescription(new ItemMismatch(i, o, m, d));
+                appendMismatchDescription(new ItemMismatch(i, o, d));
                 matches = false;
             }
             i++;
@@ -224,7 +226,7 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
         }
     }
 
-    @Description("Iterable consists of listed elements in following order: {" + MATCHERS + "}")
+    @Description("in following order: {" + MATCHERS + "}")
     private static class IterableConsistsOfMatcherInOrder<R> extends IterableConsistsOfMatcher<R> {
 
         @SafeVarargs
@@ -233,7 +235,6 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
         }
     }
 
-    @Description("Iterable consists of listed elements: {" + MATCHERS + "}")
     private static class IterableConsistsOfMatcherInAnyOrder<R> extends IterableConsistsOfMatcher<R> {
 
         @SafeVarargs
@@ -255,7 +256,7 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
         }
     }
 
-    @Description("Array consists of listed elements in following order: {" + MATCHERS + "}")
+    @Description("in following order: {" + MATCHERS + "}")
     private static class ArrayConsistsOfMatcherInOrder<R> extends ArrayConsistsOfMatcher<R> {
 
         @SafeVarargs
@@ -264,7 +265,6 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
         }
     }
 
-    @Description("Array consists of listed elements: {" + MATCHERS + "}")
     private static class ArrayConsistsOfMatcherInAnyOrder<R> extends ArrayConsistsOfMatcher<R> {
 
         @SafeVarargs
@@ -277,7 +277,7 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
     private abstract static class MapConsistsOfMatcher<K, V> extends SetOfObjectsConsistsOfMatcher<Map<K, V>, Map.Entry<K, V>, Set<Map.Entry<K, V>>> {
 
         @SafeVarargs
-        private MapConsistsOfMatcher(boolean strictlyInOrder, MapEntryMatcher<K, V>... matchers) {
+        private MapConsistsOfMatcher(boolean strictlyInOrder, Matcher<Map.Entry<K, V>>... matchers) {
             super(strictlyInOrder, matchers);
         }
 
@@ -287,20 +287,19 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
         }
     }
 
-    @Description("Map consists of listed key-value pairs in following order: {" + MATCHERS + "}")
+    @Description("in following order: {" + MATCHERS + "}")
     private static class MapConsistsOfMatcherInOrder<K, V> extends MapConsistsOfMatcher<K, V> {
 
         @SafeVarargs
-        private MapConsistsOfMatcherInOrder(MapEntryMatcher<K, V>... matchers) {
+        private MapConsistsOfMatcherInOrder(Matcher<Map.Entry<K, V>>... matchers) {
             super(true, matchers);
         }
     }
 
-    @Description("Map consists of listed key-value pairs: {" + MATCHERS + "}")
     private static class MapConsistsOfMatcherInAnyOrder<K, V> extends MapConsistsOfMatcher<K, V> {
 
         @SafeVarargs
-        private MapConsistsOfMatcherInAnyOrder(MapEntryMatcher<K, V>... matchers) {
+        private MapConsistsOfMatcherInAnyOrder(Matcher<Map.Entry<K, V>>... matchers) {
             super(false, matchers);
         }
     }

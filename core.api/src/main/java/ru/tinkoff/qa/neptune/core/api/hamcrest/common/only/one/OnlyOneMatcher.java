@@ -39,11 +39,11 @@ public final class OnlyOneMatcher<T> extends NeptuneFeatureMatcher<T> {
      * Creates a matcher that checks an object by only one of defined criteria
      *
      * @param matchers are criteria which are used by the checking
-     * @param <T> is a type of a checked value
+     * @param <T>      is a type of a checked value
      * @return an aggregated matcher
      */
     @SafeVarargs
-    public static <T> Matcher<? super T> onlyOne(Matcher<? super T>... matchers) {
+    public static <T> Matcher<T> onlyOne(Matcher<? super T>... matchers) {
         return new OnlyOneMatcher<>(matchers);
     }
 
