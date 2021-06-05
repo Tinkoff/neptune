@@ -36,7 +36,7 @@ public abstract class SetOfObjectsEachItemMatcher<S, R, T extends Iterable<R>> e
      * @param matchers criteria for each item
      * @param <T>      is a type of an item of iterable
      * @param <R>      is a type of the checked iterable
-     * @return a mather
+     * @return a matcher
      */
     @SafeVarargs
     @SuppressWarnings("unchecked")
@@ -50,7 +50,7 @@ public abstract class SetOfObjectsEachItemMatcher<S, R, T extends Iterable<R>> e
      *
      * @param matchers criteria for each item
      * @param <T>      is a type of an item of array
-     * @return a mather
+     * @return a matcher
      */
     @SafeVarargs
     public static <T> Matcher<T[]> eachOfArray(Matcher<? super T>... matchers) {
@@ -66,7 +66,7 @@ public abstract class SetOfObjectsEachItemMatcher<S, R, T extends Iterable<R>> e
      * @param <K>          is a type of map keys
      * @param <V>          is a type of map values
      * @param <T>          is a type of map
-     * @return return a mather
+     * @return return a matcher
      */
     @SuppressWarnings("unchecked")
     public static <K, V, T extends Map<K, V>> Matcher<T> eachEntry(Matcher<? super K> keyMatcher, Matcher<? super V> valueMatcher) {
@@ -81,7 +81,7 @@ public abstract class SetOfObjectsEachItemMatcher<S, R, T extends Iterable<R>> e
      * @param <K>         is a type of map keys
      * @param <V>         is a type of map values
      * @param <T>         is a type of map
-     * @return return a mather
+     * @return return a matcher
      */
     @SuppressWarnings("unchecked")
     @SafeVarargs
@@ -97,7 +97,7 @@ public abstract class SetOfObjectsEachItemMatcher<S, R, T extends Iterable<R>> e
      * @param <K>           is a type of map keys
      * @param <V>           is a type of map values
      * @param <T>           is a type of map
-     * @return return a mather
+     * @return return a matcher
      */
     @SuppressWarnings("unchecked")
     @SafeVarargs

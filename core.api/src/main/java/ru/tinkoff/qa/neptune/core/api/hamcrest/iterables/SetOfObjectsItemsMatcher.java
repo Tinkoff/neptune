@@ -41,7 +41,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param matchers criteria for an item
      * @param <T>      is a type of an item of iterable
      * @param <R>      is a type of the checked iterable
-     * @return a mather
+     * @return a matcher
      */
     @SafeVarargs
     public static <T, R extends Iterable<T>> Matcher<R> iterableHasItem(Matcher<? super T>... matchers) {
@@ -55,7 +55,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param matcher criteria for an item
      * @param <T>     is a type of an item of iterable
      * @param <R>     is a type of the checked iterable
-     * @return a mather
+     * @return a matcher
      */
     @SuppressWarnings("unchecked")
     public static <T, R extends Iterable<T>> Matcher<R> iterableHasItem(Matcher<? super T> matcher) {
@@ -69,7 +69,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param expected is an item that is expected to be contained
      * @param <T>      is a type of an item of iterable
      * @param <R>      is a type of the checked iterable
-     * @return a mather
+     * @return a matcher
      */
 
     public static <T, R extends Iterable<T>> Matcher<R> iterableHasItem(T expected) {
@@ -84,7 +84,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param matchers     criteria for an item
      * @param <T>          is a type of an item of iterable
      * @param <R>          is a type of the checked iterable
-     * @return a mather
+     * @return a matcher
      */
     @SafeVarargs
     @SuppressWarnings("unchecked")
@@ -101,7 +101,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param matcher      criteria for an item
      * @param <T>          is a type of an item of iterable
      * @param <R>          is a type of the checked iterable
-     * @return a mather
+     * @return a matcher
      */
     @SuppressWarnings("unchecked")
     public static <T, R extends Iterable<T>> Matcher<R> iterableHasItems(Matcher<Integer> countMatcher,
@@ -117,7 +117,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param expected     is an item that is expected to be contained
      * @param <T>          is a type of an item of iterable
      * @param <R>          is a type of the checked iterable
-     * @return a mather
+     * @return a matcher
      */
     public static <T, R extends Iterable<T>> Matcher<R> iterableHasItems(Matcher<Integer> countMatcher,
                                                                          T expected) {
@@ -132,7 +132,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param matchers      criteria for an item
      * @param <T>           is a type of an item of iterable
      * @param <R>           is a type of the checked iterable
-     * @return a mather
+     * @return a matcher
      */
     @SafeVarargs
     public static <T, R extends Iterable<T>> Matcher<R> iterableHasItems(int expectedCount,
@@ -148,7 +148,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param matcher       criteria for an item
      * @param <T>           is a type of an item of iterable
      * @param <R>           is a type of the checked iterable
-     * @return a mather
+     * @return a matcher
      */
     @SuppressWarnings("unchecked")
     public static <T, R extends Iterable<T>> Matcher<R> iterableHasItems(int expectedCount,
@@ -164,7 +164,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param expected      is an item that is expected to be contained
      * @param <T>           is a type of an item of iterable
      * @param <R>           is a type of the checked iterable
-     * @return a mather
+     * @return a matcher
      */
     public static <T, R extends Iterable<T>> Matcher<R> iterableHasItems(int expectedCount,
                                                                          T expected) {
@@ -178,7 +178,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      *
      * @param matchers criteria for an item
      * @param <T>      is a type of an item of array
-     * @return a mather
+     * @return a matcher
      */
     @SafeVarargs
     public static <T> Matcher<T[]> arrayHasItem(Matcher<? super T>... matchers) {
@@ -191,7 +191,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      *
      * @param matcher criteria for an item
      * @param <T>     is a type of an item of array
-     * @return a mather
+     * @return a matcher
      */
     @SuppressWarnings("unchecked")
     public static <T> Matcher<T[]> arrayHasItem(Matcher<? super T> matcher) {
@@ -204,7 +204,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      *
      * @param expected is an item that is expected to be contained
      * @param <T>      is a type of an item of array
-     * @return a mather
+     * @return a matcher
      */
     public static <T> Matcher<T[]> arrayHasItem(T expected) {
         return arrayHasItem(equalTo(expected));
@@ -217,7 +217,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param countMatcher criteria for count of items
      * @param matchers     criteria for an item
      * @param <T>          is a type of an item of array
-     * @return a mather
+     * @return a matcher
      */
     @SafeVarargs
     public static <T> Matcher<T[]> arrayHasItems(Matcher<Integer> countMatcher,
@@ -232,7 +232,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param countMatcher criteria for count of items
      * @param matcher      criteria for an item
      * @param <T>          is a type of an item of array
-     * @return a mather
+     * @return a matcher
      */
     @SuppressWarnings("unchecked")
     public static <T> Matcher<T[]> arrayHasItems(Matcher<Integer> countMatcher,
@@ -247,7 +247,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param countMatcher criteria for count of items
      * @param expected     is an item that is expected to be contained
      * @param <T>          is a type of an item of array
-     * @return a mather
+     * @return a matcher
      */
     public static <T> Matcher<T[]> arrayHasItems(Matcher<Integer> countMatcher,
                                                  T expected) {
@@ -261,7 +261,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param expectedCount expected count of items
      * @param matchers      criteria for an item
      * @param <T>           is a type of an item of array
-     * @return a mather
+     * @return a matcher
      */
     @SafeVarargs
     public static <T> Matcher<T[]> arrayHasItems(int expectedCount,
@@ -276,7 +276,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param expectedCount expected count of items
      * @param matcher       criteria for an item
      * @param <T>           is a type of an item of array
-     * @return a mather
+     * @return a matcher
      */
     @SuppressWarnings("unchecked")
     public static <T> Matcher<T[]> arrayHasItems(int expectedCount,
@@ -291,7 +291,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param expectedCount expected count of items
      * @param expected      is an item that is expected to be contained
      * @param <T>           is a type of an item of array
-     * @return a mather
+     * @return a matcher
      */
     public static <T> Matcher<T[]> arrayHasItems(int expectedCount,
                                                  T expected) {
@@ -303,16 +303,68 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * Creates a matcher that checks a map. It is expected that checked map has at least
      * one entry that meets defined criteria.
      *
+     * @param keyMatcher    criteria for keys
+     * @param valueMatchers criteria for values
+     * @param <K>           is a type of keys
+     * @param <V>           is a type of values
+     * @param <T>           is a type of map
+     * @return a matcher
+     */
+    @SafeVarargs
+    public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntry(Matcher<? super K> keyMatcher,
+                                                                     Matcher<? super V>... valueMatchers) {
+        return mapHasEntries(greaterThanOrEqualTo(1), keyMatcher, valueMatchers);
+    }
+
+    /**
+     * Creates a matcher that checks a map. It is expected that checked map has at least
+     * one entry that meets defined criteria.
+     *
      * @param keyMatcher   criteria for keys
      * @param valueMatcher criteria for values
      * @param <K>          is a type of keys
      * @param <V>          is a type of values
      * @param <T>          is a type of map
-     * @return a mather
+     * @return a matcher
      */
+    @SuppressWarnings("unchecked")
     public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntry(Matcher<? super K> keyMatcher,
                                                                      Matcher<? super V> valueMatcher) {
-        return mapHasEntries(greaterThanOrEqualTo(1), keyMatcher, valueMatcher);
+        return mapHasEntry(keyMatcher, new Matcher[]{valueMatcher});
+    }
+
+    /**
+     * Creates a matcher that checks a map. It is expected that checked map has an entry with defined key
+     * and value that meets every defined criteria.
+     *
+     * @param key           is the expected key
+     * @param valueMatchers criteria for values
+     * @param <K>           is a type of keys
+     * @param <V>           is a type of values
+     * @param <T>           is a type of map
+     * @return a matcher
+     */
+    @SafeVarargs
+    public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntry(K key,
+                                                                     Matcher<? super V>... valueMatchers) {
+        return mapHasEntries(1, equalTo(key), valueMatchers);
+    }
+
+    /**
+     * Creates a matcher that checks a map. It is expected that checked map has an entry with defined key
+     * and value that meets defined criteria.
+     *
+     * @param key          is the expected key
+     * @param valueMatcher criteria for values
+     * @param <K>          is a type of keys
+     * @param <V>          is a type of values
+     * @param <T>          is a type of map
+     * @return a matcher
+     */
+    @SuppressWarnings("unchecked")
+    public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntry(K key,
+                                                                     Matcher<? super V> valueMatcher) {
+        return mapHasEntry(key, new Matcher[]{valueMatcher});
     }
 
     /**
@@ -324,11 +376,31 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param <K>   is a type of keys
      * @param <V>   is a type of values
      * @param <T>   is a type of map
-     * @return a mather
+     * @return a matcher
      */
     public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntry(K key,
                                                                      V value) {
         return mapHasEntries(1, equalTo(key), equalTo(value));
+    }
+
+    /**
+     * Creates a matcher that checks a map. It is expected that checked map has some entries
+     * that meet defined criteria. Expected count of such entries also described by criteria.
+     *
+     * @param countMatcher  criteria for count of entries
+     * @param keyMatcher    criteria for keys
+     * @param valueMatchers criteria for values
+     * @param <K>           is a type of keys
+     * @param <V>           is a type of values
+     * @param <T>           is a type of map
+     * @return a matcher
+     */
+    @SafeVarargs
+    @SuppressWarnings("unchecked")
+    public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntries(Matcher<Integer> countMatcher,
+                                                                       Matcher<? super K> keyMatcher,
+                                                                       Matcher<? super V>... valueMatchers) {
+        return (Matcher<T>) new MapHasItemsMatcher<>(countMatcher, mapEntry(keyMatcher, valueMatchers));
     }
 
     /**
@@ -341,13 +413,32 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param <K>          is a type of keys
      * @param <V>          is a type of values
      * @param <T>          is a type of map
-     * @return a mather
+     * @return a matcher
      */
     @SuppressWarnings("unchecked")
     public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntries(Matcher<Integer> countMatcher,
                                                                        Matcher<? super K> keyMatcher,
                                                                        Matcher<? super V> valueMatcher) {
-        return (Matcher<T>) new MapHasItemsMatcher<>(countMatcher, mapEntry(keyMatcher, valueMatcher));
+        return mapHasEntries(countMatcher, keyMatcher, new Matcher[]{valueMatcher});
+    }
+
+    /**
+     * Creates a matcher that checks a map. It is expected that checked map has some entries
+     * that meet defined criteria. Expected count of such entries is strictly defined.
+     *
+     * @param expectedCount expected count of entries
+     * @param keyMatcher    criteria for keys
+     * @param valueMatchers criteria for values
+     * @param <K>           is a type of keys
+     * @param <V>           is a type of values
+     * @param <T>           is a type of map
+     * @return a matcher
+     */
+    @SafeVarargs
+    public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntries(int expectedCount,
+                                                                       Matcher<? super K> keyMatcher,
+                                                                       Matcher<? super V>... valueMatchers) {
+        return mapHasEntries(equalTo(expectedCount), keyMatcher, valueMatchers);
     }
 
     /**
@@ -360,12 +451,13 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param <K>           is a type of keys
      * @param <V>           is a type of values
      * @param <T>           is a type of map
-     * @return a mather
+     * @return a matcher
      */
+    @SuppressWarnings("unchecked")
     public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntries(int expectedCount,
                                                                        Matcher<? super K> keyMatcher,
                                                                        Matcher<? super V> valueMatcher) {
-        return mapHasEntries(equalTo(expectedCount), keyMatcher, valueMatcher);
+        return mapHasEntries(expectedCount, keyMatcher, new Matcher[]{valueMatcher});
     }
 
     /**
@@ -377,13 +469,30 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param <K>          is a type of keys
      * @param <V>          is a type of values
      * @param <T>          is a type of map
-     * @return a mather
+     * @return a matcher
      */
     @SafeVarargs
     @SuppressWarnings("unchecked")
     public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntryKeys(Matcher<Integer> countMatcher,
                                                                          Matcher<? super K>... keyMatchers) {
         return (Matcher<T>) new MapHasItemsMatcher<>(countMatcher, entryKey(keyMatchers));
+    }
+
+    /**
+     * Creates a matcher that checks a map. It is expected that checked map has some entries whose
+     * keys meet defined criteria. Expected count of such keys also described by criteria.
+     *
+     * @param countMatcher criteria for count of entries
+     * @param keyMatcher   criteria for keys
+     * @param <K>          is a type of keys
+     * @param <V>          is a type of values
+     * @param <T>          is a type of map
+     * @return a matcher
+     */
+    @SuppressWarnings("unchecked")
+    public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntryKeys(Matcher<Integer> countMatcher,
+                                                                         Matcher<? super K> keyMatcher) {
+        return mapHasEntryKeys(countMatcher, new Matcher[]{keyMatcher});
     }
 
     /**
@@ -395,12 +504,29 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param <K>           is a type of keys
      * @param <V>           is a type of values
      * @param <T>           is a type of map
-     * @return a mather
+     * @return a matcher
      */
     @SafeVarargs
     public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntryKeys(int expectedCount,
                                                                          Matcher<? super K>... keyMatchers) {
         return mapHasEntryKeys(equalTo(expectedCount), keyMatchers);
+    }
+
+    /**
+     * Creates a matcher that checks a map. It is expected that checked map has some entries whose
+     * keys meet defined criteria. Expected count of such keys is strictly defined.
+     *
+     * @param expectedCount criteria for count of entries
+     * @param keyMatcher    criteria for keys
+     * @param <K>           is a type of keys
+     * @param <V>           is a type of values
+     * @param <T>           is a type of map
+     * @return a matcher
+     */
+    @SuppressWarnings("unchecked")
+    public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntryKeys(int expectedCount,
+                                                                         Matcher<? super K> keyMatcher) {
+        return mapHasEntryKeys(expectedCount, new Matcher[]{keyMatcher});
     }
 
     /**
@@ -411,7 +537,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param <K>         is a type of keys
      * @param <V>         is a type of values
      * @param <T>         is a type of map
-     * @return a mather
+     * @return a matcher
      */
     @SafeVarargs
     public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntryKey(Matcher<? super K>... keyMatchers) {
@@ -426,7 +552,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param <K>        is a type of keys
      * @param <V>        is a type of values
      * @param <T>        is a type of map
-     * @return a mather
+     * @return a matcher
      */
     @SuppressWarnings("unchecked")
     public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntryKey(Matcher<? super K> keyMatcher) {
@@ -441,7 +567,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param <K> is a type of keys
      * @param <V> is a type of values
      * @param <T> is a type of map
-     * @return a mather
+     * @return a matcher
      */
     public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntryKey(K key) {
         return mapHasEntryKeys(1, equalTo(key));
@@ -456,13 +582,30 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param <K>           is a type of keys
      * @param <V>           is a type of values
      * @param <T>           is a type of map
-     * @return a mather
+     * @return a matcher
      */
     @SafeVarargs
     @SuppressWarnings("unchecked")
     public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntryValues(Matcher<Integer> countMatcher,
                                                                            Matcher<? super V>... valueMatchers) {
         return (Matcher<T>) new MapHasItemsMatcher<>(countMatcher, entryValue(valueMatchers));
+    }
+
+    /**
+     * Creates a matcher that checks a map. It is expected that checked map has some entries whose
+     * values meet defined criteria. Expected count of such values also described by criteria.
+     *
+     * @param countMatcher criteria for count of entries
+     * @param valueMatcher criteria for values
+     * @param <K>          is a type of keys
+     * @param <V>          is a type of values
+     * @param <T>          is a type of map
+     * @return a matcher
+     */
+    @SuppressWarnings("unchecked")
+    public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntryValues(Matcher<Integer> countMatcher,
+                                                                           Matcher<? super V> valueMatcher) {
+        return mapHasEntryValues(countMatcher, new Matcher[]{valueMatcher});
     }
 
     /**
@@ -474,7 +617,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param <K>           is a type of keys
      * @param <V>           is a type of values
      * @param <T>           is a type of map
-     * @return a mather
+     * @return a matcher
      */
     @SafeVarargs
     public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntryValues(int expectedCount,
@@ -491,7 +634,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param <K>           is a type of keys
      * @param <V>           is a type of values
      * @param <T>           is a type of map
-     * @return a mather
+     * @return a matcher
      */
     @SuppressWarnings("unchecked")
     public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntryValues(int expectedCount,
@@ -508,7 +651,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param <K>           is a type of keys
      * @param <V>           is a type of values
      * @param <T>           is a type of map
-     * @return a mather
+     * @return a matcher
      */
     public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntryValues(int expectedCount,
                                                                            V value) {
@@ -523,7 +666,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param <K>           is a type of keys
      * @param <V>           is a type of values
      * @param <T>           is a type of map
-     * @return a mather
+     * @return a matcher
      */
     @SafeVarargs
     public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntryValue(Matcher<? super V>... valueMatchers) {
@@ -538,7 +681,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param <K>          is a type of keys
      * @param <V>          is a type of values
      * @param <T>          is a type of map
-     * @return a mather
+     * @return a matcher
      */
     @SuppressWarnings("unchecked")
     public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntryValue(Matcher<? super V> valueMatcher) {
@@ -553,10 +696,10 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
      * @param <K>   is a type of keys
      * @param <V>   is a type of values
      * @param <T>   is a type of map
-     * @return a mather
+     * @return a matcher
      */
     public static <K, V, T extends Map<K, V>> Matcher<T> mapHasEntryValue(V value) {
-        return mapHasEntryValues(1, value);
+        return mapHasEntryValue(equalTo(value));
     }
 
 

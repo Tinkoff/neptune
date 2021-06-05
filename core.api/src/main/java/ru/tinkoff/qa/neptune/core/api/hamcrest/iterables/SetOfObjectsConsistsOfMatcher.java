@@ -42,7 +42,7 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
      * @param matchers describe every one distinct item of the iterable.
      * @param <T>      is a type of an item of iterable
      * @param <R>      is a type of the checked iterable
-     * @return a mather
+     * @return a matcher
      */
     @SafeVarargs
     @SuppressWarnings("unchecked")
@@ -58,7 +58,7 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
      * @param ts  describe every one distinct item of the iterable.
      * @param <T> is a type of an item of iterable
      * @param <R> is a type of the checked iterable
-     * @return a mather
+     * @return a matcher
      */
     @SafeVarargs
     public static <T, R extends Iterable<T>> Matcher<R> iterableInOrder(T... ts) {
@@ -73,7 +73,7 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
      * @param matchers describe every one distinct item of the iterable.
      * @param <T>      is a type of an item of iterable
      * @param <R>      is a type of the checked iterable
-     * @return a mather
+     * @return a matcher
      */
     @SafeVarargs
     @SuppressWarnings("unchecked")
@@ -89,7 +89,7 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
      * @param ts  describe every one distinct item of the iterable.
      * @param <T> is a type of an item of iterable
      * @param <R> is a type of the checked iterable
-     * @return a mather
+     * @return a matcher
      */
     @SafeVarargs
     public static <T, R extends Iterable<T>> Matcher<R> iterableOf(T... ts) {
@@ -102,7 +102,7 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
      *
      * @param matchers describe every one distinct item of the array.
      * @param <T>      is a type of an item of array
-     * @return a mather
+     * @return a matcher
      */
     @SafeVarargs
     public static <T> Matcher<T[]> arrayInOrder(Matcher<? super T>... matchers) {
@@ -115,7 +115,7 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
      *
      * @param ts  describe every one distinct item of the array.
      * @param <T> is a type of an item of array
-     * @return a mather
+     * @return a matcher
      */
     @SafeVarargs
     public static <T> Matcher<T[]> arrayInOrder(T... ts) {
@@ -129,7 +129,7 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
      *
      * @param matchers describe every one distinct item of the array.
      * @param <T>      is a type of an item of array
-     * @return a mather
+     * @return a matcher
      */
     @SafeVarargs
     public static <T> Matcher<T[]> arrayOf(Matcher<? super T>... matchers) {
@@ -142,7 +142,7 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
      *
      * @param ts  describe every one distinct item of the array.
      * @param <T> is a type of an item of array
-     * @return a mather
+     * @return a matcher
      */
     @SafeVarargs
     public static <T> Matcher<T[]> arrayOf(T... ts) {
@@ -158,7 +158,7 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
      * @param <K>      is a type of map keys
      * @param <V>      is a type of map values
      * @param <T>      is a type of map
-     * @return return a mather
+     * @return return a matcher
      */
     @SafeVarargs
     @SuppressWarnings("unchecked")
@@ -174,7 +174,7 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
      * @param <K>      is a type of map keys
      * @param <V>      is a type of map values
      * @param <T>      is a type of map
-     * @return return a mather
+     * @return return a matcher
      */
     @SafeVarargs
     @SuppressWarnings("unchecked")

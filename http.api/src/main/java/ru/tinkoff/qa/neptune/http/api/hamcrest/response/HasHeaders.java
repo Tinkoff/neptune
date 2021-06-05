@@ -1,31 +1,42 @@
 package ru.tinkoff.qa.neptune.http.api.hamcrest.response;
 
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeDiagnosingMatcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import java.net.http.HttpResponse;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static org.hamcrest.Matchers.*;
+import static java.util.stream.Collectors.toMap;
+import static org.hamcrest.Matchers.equalTo;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.AnyThingMatcher.anything;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.MapEntryMatcher.entryKey;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsItemsMatcher.mapHasEntryValue;
 
 /**
  * This matcher is for the checking of headers of a response.
  */
-public final class HasHeaders extends TypeSafeDiagnosingMatcher<HttpResponse<?>> {
+@Description("response header name: <{nameMatcher}> and value <{valueMatcher}>")
+public final class HasHeaders extends NeptuneFeatureMatcher<HttpResponse<?>> {
 
-    private final Matcher<?> headerMatcher;
+    @DescriptionFragment(value = "nameMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    private final Matcher<? super String> nameMatcher;
 
-    private HasHeaders(Matcher<?> headerMatcher) {
-        checkNotNull(headerMatcher, "Matcher of headers is not defined");
-        this.headerMatcher = headerMatcher;
+    @DescriptionFragment(value = "valueMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    private final Matcher<Iterable<String>> valueMatcher;
+
+    private HasHeaders(Matcher<? super String> nameMatcher, Matcher<Iterable<String>> valueMatcher) {
+        super(true);
+        this.nameMatcher = nameMatcher;
+        this.valueMatcher = valueMatcher;
     }
 
 
-    private static HasHeaders hasHeaders(Matcher<?> headerMatcher) {
-        return new HasHeaders(headerMatcher);
+    private static HasHeaders hasHeaders(Matcher<? super String> nameMatcher, Matcher<Iterable<String>> valueMatcher) {
+        return new HasHeaders(nameMatcher, valueMatcher);
     }
 
     /**
@@ -37,7 +48,7 @@ public final class HasHeaders extends TypeSafeDiagnosingMatcher<HttpResponse<?>>
      * @return a new instance of {@link HasHeaders}
      */
     public static HasHeaders hasHeader(String key, List<String> value) {
-        return hasHeaders(hasEntry(key, value));
+        return hasHeaders(equalTo(key), equalTo(value));
     }
 
     /**
@@ -49,7 +60,7 @@ public final class HasHeaders extends TypeSafeDiagnosingMatcher<HttpResponse<?>>
      * @return a new instance of {@link HasHeaders}
      */
     public static HasHeaders hasHeader(Matcher<? super String> keyMatcher, List<String> value) {
-        return hasHeaders(hasEntry(keyMatcher, equalTo(value)));
+        return hasHeaders(keyMatcher, equalTo(value));
     }
 
     /**
@@ -60,8 +71,8 @@ public final class HasHeaders extends TypeSafeDiagnosingMatcher<HttpResponse<?>>
      * @param valueMatcher is criteria that describes expected value
      * @return a new instance of {@link HasHeaders}
      */
-    public static HasHeaders hasHeader(String key, Matcher<? super Collection<? super String>> valueMatcher) {
-        return hasHeaders(hasEntry(equalTo(key), valueMatcher));
+    public static HasHeaders hasHeader(String key, Matcher<Iterable<String>> valueMatcher) {
+        return hasHeaders(equalTo(key), valueMatcher);
     }
 
     /**
@@ -72,8 +83,8 @@ public final class HasHeaders extends TypeSafeDiagnosingMatcher<HttpResponse<?>>
      * @param valueMatcher is criteria that describes expected value
      * @return a new instance of {@link HasHeaders}
      */
-    public static HasHeaders hasHeader(Matcher<? super String> keyMatcher, Matcher<? super Collection<? super String>> valueMatcher) {
-        return hasHeaders(hasEntry(keyMatcher, valueMatcher));
+    public static HasHeaders hasHeader(Matcher<? super String> keyMatcher, Matcher<Iterable<String>> valueMatcher) {
+        return hasHeaders(keyMatcher, valueMatcher);
     }
 
     /**
@@ -83,7 +94,7 @@ public final class HasHeaders extends TypeSafeDiagnosingMatcher<HttpResponse<?>>
      * @return a new instance of {@link HasHeaders}
      */
     public static HasHeaders hasHeaderName(Matcher<? super String> headerMatcher) {
-        return hasHeaders(hasKey(headerMatcher));
+        return hasHeaders(headerMatcher, anything());
     }
 
     /**
@@ -93,7 +104,7 @@ public final class HasHeaders extends TypeSafeDiagnosingMatcher<HttpResponse<?>>
      * @return a new instance of {@link HasHeaders}
      */
     public static HasHeaders hasHeaderName(String name) {
-        return hasHeaders(hasKey(equalTo(name)));
+        return hasHeaderName(equalTo(name));
     }
 
     /**
@@ -102,8 +113,8 @@ public final class HasHeaders extends TypeSafeDiagnosingMatcher<HttpResponse<?>>
      * @param valueMatcher criteria that describes expected header value
      * @return a new instance of {@link HasHeaders}
      */
-    public static HasHeaders hasHeaderValue(Matcher<? super Collection<? super String>> valueMatcher) {
-        return hasHeaders(hasValue(valueMatcher));
+    public static HasHeaders hasHeaderValue(Matcher<Iterable<String>> valueMatcher) {
+        return hasHeaders(anything(), valueMatcher);
     }
 
     /**
@@ -113,30 +124,30 @@ public final class HasHeaders extends TypeSafeDiagnosingMatcher<HttpResponse<?>>
      * @return a new instance of {@link HasHeaders}
      */
     public static HasHeaders hasHeaderValue(List<String> value) {
-        return hasHeaders(hasValue(value));
+        return hasHeaderValue(equalTo(value));
     }
 
-
     @Override
-    protected boolean matchesSafely(HttpResponse<?> item, Description mismatchDescription) {
-        if (item == null) {
-            mismatchDescription.appendText("null-response");
+    protected boolean featureMatches(HttpResponse<?> toMatch) {
+        var headers = toMatch.headers().map();
+
+        var entryMatcher = entryKey(nameMatcher);
+        var foundHeaders = headers
+                .entrySet()
+                .stream()
+                .filter(entryMatcher::matches)
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        if (foundHeaders.size() == 0) {
+            appendMismatchDescription(new NoSuchHeaderNameMismatch(nameMatcher));
             return false;
         }
 
-        var headers = item.headers().map();
-        var result = headerMatcher.matches(headers);
-
-        if (!result) {
-            headerMatcher.describeMismatch(headers, mismatchDescription);
+        if (!mapHasEntryValue(valueMatcher).matches(foundHeaders)) {
+            appendMismatchDescription(new NoSuchHeaderValueMismatch(foundHeaders.keySet(), nameMatcher));
+            return false;
         }
 
-        return result;
-    }
-
-    @Override
-    public void describeTo(Description description) {
-        description.appendText("Response has header(s) ")
-                .appendDescriptionOf(headerMatcher);
+        return true;
     }
 }

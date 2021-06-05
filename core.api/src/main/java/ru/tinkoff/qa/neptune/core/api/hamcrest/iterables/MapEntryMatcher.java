@@ -11,8 +11,8 @@ import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import java.util.Map;
 
-import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.equalTo;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.AnyThingMatcher.anything;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.all.AllCriteriaMatcher.all;
 
 /**
@@ -84,8 +84,23 @@ public final class MapEntryMatcher<K, V> extends NeptuneFeatureMatcher<Map.Entry
      * @param <V>          is a type of the value
      * @return a matcher
      */
+    @SuppressWarnings("unchecked")
     public static <K, V> Matcher<Map.Entry<K, V>> mapEntry(Matcher<? super K> keyMatcher, Matcher<? super V> valueMatcher) {
-        return new MapEntryMatcher<>(keyMatcher, valueMatcher);
+        return mapEntry(keyMatcher, new Matcher[]{valueMatcher});
+    }
+
+    /**
+     * Creates a matcher that check an entry of a map.
+     *
+     * @param keyMatcher   is a criteria to match the key
+     * @param valueMatcher is a criteria to match the value
+     * @param <K>          is a type of the key
+     * @param <V>          is a type of the value
+     * @return a matcher
+     */
+    @SafeVarargs
+    public static <K, V> Matcher<Map.Entry<K, V>> mapEntry(Matcher<? super K> keyMatcher, Matcher<? super V>... valueMatcher) {
+        return new MapEntryMatcher<>(keyMatcher, all(valueMatcher));
     }
 
     /**
@@ -143,7 +158,7 @@ public final class MapEntryMatcher<K, V> extends NeptuneFeatureMatcher<Map.Entry
      */
     @SafeVarargs
     public static <K, V> Matcher<Map.Entry<K, V>> entryValue(Matcher<? super V>... valueMatchers) {
-        return mapEntry(anything(), all(valueMatchers));
+        return mapEntry(anything(), valueMatchers);
     }
 
     /**

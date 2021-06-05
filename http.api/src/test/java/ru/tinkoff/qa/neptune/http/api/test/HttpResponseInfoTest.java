@@ -8,6 +8,10 @@ import static java.net.http.HttpClient.Version.HTTP_1_1;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.all.AllCriteriaMatcher.all;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.not.NotMatcher.notOf;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableInOrder;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableOf;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasHostMatcher.uriHasHost;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPathMatcher.uriHasPath;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPortMatcher.uriHasPort;
@@ -41,10 +45,10 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                 .willReturn(aResponse().withBody("SUCCESS")));
 
         assertThat(http().responseOf(POST(REQUEST_URI + "/header2.html", "Request body")),
-                allOf(
-                        hasHeader("matched-stub-id", not(emptyIterable())),
-                        hasHeader("transfer-encoding", contains("chunked")),
-                        hasHeader("vary", contains("Accept-Encoding, User-Agent"))
+                all(
+                        hasHeader("matched-stub-id", notOf(emptyIterable())),
+                        hasHeader("transfer-encoding", iterableOf("chunked")),
+                        hasHeader("vary", iterableInOrder("Accept-Encoding, User-Agent"))
                 ));
     }
 
