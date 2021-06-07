@@ -20,7 +20,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization
 @Description("{notExpression}")
 public final class NotMatcher<T> extends NeptuneFeatureMatcher<T> {
 
-    @DescriptionFragment(value = "notExpression", makeReadableBy = NotParameterValueGetter.class)
+    @DescriptionFragment(value = "notExpression", makeReadableBy = NotMatcherParameterValueGetter.class)
     private final Matcher<? super T>[] toInvert;
 
     @SafeVarargs

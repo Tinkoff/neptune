@@ -1,24 +1,29 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.url;
 
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.ResourceLocatorMatcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
-import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static org.hamcrest.Matchers.equalTo;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.window.IsWindowPresentMatcher.windowIsPresent;
 
-public final class AtThePageMatcher extends TypeSafeDiagnosingMatcher<Window> {
+@Description("URL of loaded page {urlMatcher}")
+public final class AtThePageMatcher extends NeptuneFeatureMatcher<Window> {
 
+    @DescriptionFragment(value = "urlMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
     private final Matcher<?> urlMatcher;
 
     private AtThePageMatcher(Matcher<?> urlMatcher) {
+        super(true);
         checkArgument(nonNull(urlMatcher), "Criteria for the matching of an URL should be defined");
         this.urlMatcher = urlMatcher;
     }
@@ -39,8 +44,8 @@ public final class AtThePageMatcher extends TypeSafeDiagnosingMatcher<Window> {
      * @param urlMatcher criteria for an URL under the matching.
      * @return instance of {@link AtThePageMatcher}
      */
-    public static AtThePageMatcher url(Matcher<URL> urlMatcher) {
-        return new AtThePageMatcher(new PageUrlMatcher(urlMatcher));
+    public static AtThePageMatcher url(ResourceLocatorMatcher<URL, ?> urlMatcher) {
+        return new AtThePageMatcher(urlMatcher);
     }
 
     /**
@@ -54,30 +59,33 @@ public final class AtThePageMatcher extends TypeSafeDiagnosingMatcher<Window> {
     }
 
     @Override
-    protected boolean matchesSafely(Window item, Description mismatchDescription) {
-        boolean result;
-        var currentUrlString = item.getCurrentUrl();
+    protected boolean featureMatches(Window toMatch) {
+        var windowPresent = windowIsPresent();
+        if (windowPresent.matches(toMatch)) {
+            appendMismatchDescription(windowPresent, toMatch);
+            return false;
+        }
+
+        var currentUrlString = toMatch.getCurrentUrl();
         URL url;
         try {
             url = new URL(currentUrlString);
         } catch (MalformedURLException e) {
-            mismatchDescription.appendText("URl " + currentUrlString + " is malformed");
-            return false;
+            throw new RuntimeException(e);
         }
 
-        if (ResourceLocatorMatcher.class.isAssignableFrom(urlMatcher.getClass())) {
-            result = urlMatcher.matches(url);
-            urlMatcher.describeMismatch(url, mismatchDescription);
-        } else {
-            result = urlMatcher.matches(currentUrlString);
-            urlMatcher.describeMismatch(currentUrlString, mismatchDescription);
+        var result = (urlMatcher instanceof ResourceLocatorMatcher) ?
+                urlMatcher.matches(url) :
+                urlMatcher.matches(currentUrlString);
+
+        if (!result) {
+            if ((urlMatcher instanceof ResourceLocatorMatcher)) {
+                appendMismatchDescription(urlMatcher, url);
+            } else {
+                appendMismatchDescription(urlMatcher, currentUrlString);
+            }
         }
 
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return format("URL of a loaded page %s", urlMatcher.toString());
     }
 }

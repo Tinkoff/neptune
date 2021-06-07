@@ -20,7 +20,7 @@ import static java.util.Arrays.stream;
 @Description("{orExpression}")
 public final class AnyMatcher<T> extends NeptuneFeatureMatcher<T> {
 
-    @DescriptionFragment(value = "orExpression", makeReadableBy = AnyParameterValueGetter.class)
+    @DescriptionFragment(value = "orExpression", makeReadableBy = AnyMatcherParameterValueGetter.class)
     private final Matcher<? super T>[] matchers;
 
     @SafeVarargs

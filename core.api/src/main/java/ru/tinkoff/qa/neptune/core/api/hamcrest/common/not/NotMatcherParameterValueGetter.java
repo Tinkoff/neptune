@@ -9,7 +9,7 @@ import static java.util.stream.Collectors.joining;
 import static ru.tinkoff.qa.neptune.core.api.logical.lexemes.Not.NOT_LEXEME;
 import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 
-public final class NotParameterValueGetter implements ParameterValueGetter<Matcher<?>[]> {
+public final class NotMatcherParameterValueGetter implements ParameterValueGetter<Matcher<?>[]> {
 
     @Override
     public String getParameterValue(Matcher<?>[] fieldValue) {

@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.core.api.hamcrest.pojo;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.AllParameterValueGetter;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.AllMatchersParameterValueGetter;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -32,7 +32,7 @@ public final class PojoGetterReturnsMatcher<T, R> extends NeptuneFeatureMatcher<
     @DescriptionFragment("getter")
     private final String getterName;
 
-    @DescriptionFragment(value = "criteria", makeReadableBy = AllParameterValueGetter.class)
+    @DescriptionFragment(value = "criteria", makeReadableBy = AllMatchersParameterValueGetter.class)
     private final Matcher<? super R>[] valueMatchers;
 
     @SafeVarargs

@@ -1,10 +1,10 @@
 package ru.tinkoff.qa.neptune.core.api.hamcrest.iterables;
 
 import org.hamcrest.Matcher;
-import org.hamcrest.StringDescription;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.KeyMismatch;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.ValueMismatch;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.PropertyValueMismatch;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.Key;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.Value;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
@@ -180,16 +180,12 @@ public final class MapEntryMatcher<K, V> extends NeptuneFeatureMatcher<Map.Entry
         var key = toMatch.getKey();
         var value = toMatch.getValue();
         if (!keyMatcher.matches(key)) {
-            var d = new StringDescription();
-            keyMatcher.describeMismatch(key, d);
-            appendMismatchDescription(new KeyMismatch(key, d));
+            appendMismatchDescription(new PropertyValueMismatch(new Key(), key, keyMatcher));
             matches = false;
         }
 
         if (!valueMatcher.matches(value)) {
-            var d = new StringDescription();
-            valueMatcher.describeMismatch(value, d);
-            appendMismatchDescription(new ValueMismatch(value, d));
+            appendMismatchDescription(new PropertyValueMismatch(new Value(), value, valueMatcher));
             matches = false;
         }
 

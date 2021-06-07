@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.hamcrest.common.all;
 
 import org.hamcrest.Matcher;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.AllParameterValueGetter;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.AllMatchersParameterValueGetter;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.UnitesCriteria;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.common.DoesNotMatchAnyCriteria;
@@ -21,7 +21,7 @@ import static java.util.Arrays.stream;
 @Description("{allMatchers}")
 public final class AllCriteriaMatcher<T> extends NeptuneFeatureMatcher<T> {
 
-    @DescriptionFragment(value = "allMatchers", makeReadableBy = AllParameterValueGetter.class)
+    @DescriptionFragment(value = "allMatchers", makeReadableBy = AllMatchersParameterValueGetter.class)
     private final Matcher<? super T>[] delegateTo;
 
     @SafeVarargs

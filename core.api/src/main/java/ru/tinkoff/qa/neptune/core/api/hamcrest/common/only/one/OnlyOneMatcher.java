@@ -24,7 +24,7 @@ import static java.util.stream.Collectors.toList;
 @Description("{onlyOneExpression}")
 public final class OnlyOneMatcher<T> extends NeptuneFeatureMatcher<T> {
 
-    @DescriptionFragment(value = "onlyOneExpression", makeReadableBy = OnlyOneParameterValueGetter.class)
+    @DescriptionFragment(value = "onlyOneExpression", makeReadableBy = OnlyOneMatcherParameterValueGetter.class)
     private final Matcher<? super T>[] matchers;
 
     @SafeVarargs

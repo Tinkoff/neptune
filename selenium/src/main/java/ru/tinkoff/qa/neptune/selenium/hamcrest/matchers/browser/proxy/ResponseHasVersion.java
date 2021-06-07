@@ -1,22 +1,26 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy;
 
 import com.browserup.harreader.model.HarEntry;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import java.net.http.HttpClient;
 
-import static java.lang.String.format;
 import static java.net.http.HttpClient.Version.HTTP_1_1;
 import static java.net.http.HttpClient.Version.HTTP_2;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.equalTo;
 
-public final class ResponseHasVersion extends TypeSafeDiagnosingMatcher<HarEntry> {
+@Description("Response HTTP version {httpVersion}")
+public final class ResponseHasVersion extends NeptuneFeatureMatcher<HarEntry> {
 
+    @DescriptionFragment(value = "httpVersion", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
     private final Matcher<? super HttpClient.Version> versionMatcher;
 
     private ResponseHasVersion(Matcher<? super HttpClient.Version> versionMatcher) {
+        super(true);
         this.versionMatcher = versionMatcher;
     }
 
@@ -26,7 +30,7 @@ public final class ResponseHasVersion extends TypeSafeDiagnosingMatcher<HarEntry
      * @param versionMatcher criteria that describes expected HTTP version
      * @return a new instance of {@link ResponseHasVersion}
      */
-    public static ResponseHasVersion responseHasVersion(Matcher<? super HttpClient.Version> versionMatcher) {
+    public static Matcher<HarEntry> responseHasVersion(Matcher<? super HttpClient.Version> versionMatcher) {
         return new ResponseHasVersion(versionMatcher);
     }
 
@@ -36,29 +40,19 @@ public final class ResponseHasVersion extends TypeSafeDiagnosingMatcher<HarEntry
      * @param version is the expected HTTP version
      * @return a new instance of {@link ResponseHasVersion}
      */
-    public static ResponseHasVersion responseHasVersion(HttpClient.Version version) {
-        return new ResponseHasVersion(is(version));
+    public static Matcher<HarEntry> responseHasVersion(HttpClient.Version version) {
+        return responseHasVersion(equalTo(version));
     }
 
     @Override
-    protected boolean matchesSafely(HarEntry item, Description mismatchDescription) {
-        if (item == null) {
-            mismatchDescription.appendText("Proxied entry is null");
-            return false;
-        }
-
-        var responseVersion = item.getResponse().getHttpVersion().equals("HTTP/1.1") ? HTTP_1_1 : HTTP_2;
+    protected boolean featureMatches(HarEntry toMatch) {
+        var responseVersion = toMatch.getResponse().getHttpVersion().equalsIgnoreCase("HTTP/1.1") ? HTTP_1_1 : HTTP_2;
         var result = versionMatcher.matches(responseVersion);
 
         if (!result) {
-            versionMatcher.describeMismatch(responseVersion, mismatchDescription);
+            appendMismatchDescription(versionMatcher, responseVersion);
         }
 
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return format("response has HTTP version %s", versionMatcher);
     }
 }

@@ -1,24 +1,28 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.window;
 
-import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
-import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.StringDescription;
-import org.openqa.selenium.Point;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.PropertyValueMismatch;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
+import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.hamcrest.Matchers.equalTo;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.window.IsWindowPresentMatcher.windowIsPresent;
 
-public final class WindowHasPositionMatcher extends TypeSafeDiagnosingMatcher<Window> {
+@Description("position x {xMatcher} and y {yMatcher}")
+public final class WindowHasPositionMatcher extends NeptuneFeatureMatcher<Window> {
 
+    @DescriptionFragment(value = "xMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
     private final Matcher<Integer> xMatcher;
+    @DescriptionFragment(value = "yMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
     private final Matcher<Integer> yMatcher;
 
     private WindowHasPositionMatcher(Matcher<Integer> xMatcher, Matcher<Integer> yMatcher) {
+        super(true);
         checkArgument(nonNull(xMatcher), "Criteria to check x-value should be defined");
         checkArgument(nonNull(yMatcher), "Criteria to check y-value should be defined");
         this.xMatcher = xMatcher;
@@ -39,7 +43,7 @@ public final class WindowHasPositionMatcher extends TypeSafeDiagnosingMatcher<Wi
     /**
      * Creates an instance of {@link WindowHasPositionMatcher} that checks position of a window.
      *
-     * @param x expected x value
+     * @param x        expected x value
      * @param yMatcher y-value criteria
      * @return instance of {@link WindowHasPositionMatcher}
      */
@@ -51,7 +55,7 @@ public final class WindowHasPositionMatcher extends TypeSafeDiagnosingMatcher<Wi
      * Creates an instance of {@link WindowHasPositionMatcher} that checks size of a window.
      *
      * @param xMatcher x-value criteria
-     * @param y expected y value
+     * @param y        expected y value
      * @return instance of {@link WindowHasPositionMatcher}
      */
     public static WindowHasPositionMatcher windowHasPosition(Matcher<Integer> xMatcher, int y) {
@@ -71,29 +75,29 @@ public final class WindowHasPositionMatcher extends TypeSafeDiagnosingMatcher<Wi
     }
 
     @Override
-    protected boolean matchesSafely(Window item, Description mismatchDescription) {
-        Point position = item.getPosition();
-        boolean result = (xMatcher.matches(position.getX()) && yMatcher.matches(position.getY()));
-
-        if (!result) {
-            Description description = new StringDescription();
-            if (!xMatcher.matches(position.getX())) {
-                xMatcher.describeMismatch(position.getX(), description.appendText("x: "));
-            }
-
-            if (!yMatcher.matches(position.getY())) {
-                if (!isBlank(description.toString())) {
-                    description.appendText(" ");
-                }
-                yMatcher.describeMismatch(position.getY(), description.appendText("y: "));
-            }
-            mismatchDescription.appendText(description.toString());
+    protected boolean featureMatches(Window toMatch) {
+        var windowPresent = windowIsPresent();
+        if (windowPresent.matches(toMatch)) {
+            appendMismatchDescription(windowPresent, toMatch);
+            return false;
         }
-        return result;
-    }
 
-    public String toString() {
-        return format("window has position x %s and y %s", xMatcher.toString(),
-                yMatcher.toString());
+        var position = toMatch.getPosition();
+        var result = true;
+
+        var x = position.getX();
+        var y = position.getY();
+
+        if (!xMatcher.matches(x)) {
+            appendMismatchDescription(new PropertyValueMismatch("x", x, xMatcher));
+            result = false;
+        }
+
+        if (!yMatcher.matches(y)) {
+            appendMismatchDescription(new PropertyValueMismatch("y", y, yMatcher));
+            result = false;
+        }
+
+        return result;
     }
 }

@@ -72,7 +72,7 @@ public class BrowserProxyStepTest {
 
         assertThat("Proxy with filter captured only one request", requests, hasSize(greaterThanOrEqualTo(1)));
         assertThat("Captured entries have GET HTTP, status code 200 and same url", requests,
-                allOf(
+                hjhjallOf(
                         everyItem(requestHasMethod(GET)),
                         everyItem(responseHasStatusCode(200)),
                         everyItem(requestHasUrl(containsString("https://www.google.com")))

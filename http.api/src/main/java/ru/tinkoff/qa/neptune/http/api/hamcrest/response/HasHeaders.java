@@ -2,18 +2,19 @@ package ru.tinkoff.qa.neptune.http.api.hamcrest.response;
 
 import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.PropertyValueMismatch;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import java.net.http.HttpResponse;
-import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.toMap;
 import static org.hamcrest.Matchers.equalTo;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.AnyThingMatcher.anything;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.MapEntryMatcher.entryKey;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableInOrder;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsItemsMatcher.mapHasEntryValue;
 
 /**
@@ -47,8 +48,8 @@ public final class HasHeaders extends NeptuneFeatureMatcher<HttpResponse<?>> {
      * @param value is expected value of the key
      * @return a new instance of {@link HasHeaders}
      */
-    public static HasHeaders hasHeader(String key, List<String> value) {
-        return hasHeaders(equalTo(key), equalTo(value));
+    public static HasHeaders hasHeader(String key, String... value) {
+        return hasHeaders(equalTo(key), iterableInOrder(value));
     }
 
     /**
@@ -59,8 +60,8 @@ public final class HasHeaders extends NeptuneFeatureMatcher<HttpResponse<?>> {
      * @param value      is expected value of the key
      * @return a new instance of {@link HasHeaders}
      */
-    public static HasHeaders hasHeader(Matcher<? super String> keyMatcher, List<String> value) {
-        return hasHeaders(keyMatcher, equalTo(value));
+    public static HasHeaders hasHeader(Matcher<? super String> keyMatcher, String... value) {
+        return hasHeaders(keyMatcher, iterableInOrder(value));
     }
 
     /**
@@ -123,8 +124,8 @@ public final class HasHeaders extends NeptuneFeatureMatcher<HttpResponse<?>> {
      * @param value expected header value
      * @return a new instance of {@link HasHeaders}
      */
-    public static HasHeaders hasHeaderValue(List<String> value) {
-        return hasHeaderValue(equalTo(value));
+    public static HasHeaders hasHeaderValue(String... value) {
+        return hasHeaderValue(iterableInOrder(value));
     }
 
     @Override
@@ -144,7 +145,15 @@ public final class HasHeaders extends NeptuneFeatureMatcher<HttpResponse<?>> {
         }
 
         if (!mapHasEntryValue(valueMatcher).matches(foundHeaders)) {
-            appendMismatchDescription(new NoSuchHeaderValueMismatch(foundHeaders.keySet(), nameMatcher));
+
+            foundHeaders.entrySet().forEach(e -> {
+                if (!valueMatcher.matches(e)) {
+                    appendMismatchDescription(new PropertyValueMismatch(new Header()
+                            + "[" + e.getKey() + "]",
+                            e.getValue(),
+                            valueMatcher));
+                }
+            });
             return false;
         }
 

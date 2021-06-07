@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.hamcrest.iterables;
 
 import org.hamcrest.Matcher;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.AllParameterValueGetter;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.AllMatchersParameterValueGetter;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.EmptyMismatch;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.ItemNotFoundMismatch;
@@ -22,7 +22,7 @@ public abstract class AbstractSetOfObjectsMatcher<S, R> extends NeptuneFeatureMa
 
     static final String MATCHERS = "matchers";
 
-    @DescriptionFragment(value = MATCHERS, makeReadableBy = AllParameterValueGetter.class)
+    @DescriptionFragment(value = MATCHERS, makeReadableBy = AllMatchersParameterValueGetter.class)
     final Matcher<? super R>[] matchers;
 
     @SafeVarargs
