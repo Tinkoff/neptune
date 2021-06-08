@@ -34,13 +34,13 @@ public class PojoMatcherTest {
                 {getterReturns("getA", startsWith("B"), endsWith("A")),
                         "Tested object\n" +
                                 "Expected: Public getter 'getA' is expected to return a value: a string starting with \"B\", a string ending with \"A\"\n" +
-                                "     but: returned value doesn't match any of listed criteria"},
+                                "     but: value returned from 'getA': AB. doesn't match any of listed criteria"},
                 {getterReturns("getA", startsWith("B")), "Tested object\n" +
                         "Expected: Public getter 'getA' is expected to return a value: a string starting with \"B\"\n" +
-                        "     but: returned value was \"AB\""},
+                        "     but: value returned from 'getA': AB. was \"AB\""},
                 {getterReturns("getA", "BA"), "Tested object\n" +
                         "Expected: Public getter 'getA' is expected to return a value: \"BA\"\n" +
-                        "     but: returned value was \"AB\""},
+                        "     but: value returned from 'getA': AB. was \"AB\""},
         };
     }
 

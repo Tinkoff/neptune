@@ -2,8 +2,10 @@ package ru.tinkoff.qa.neptune.core.api.hamcrest.iterables;
 
 import com.google.common.collect.Lists;
 import org.hamcrest.Matcher;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.DifferentCountMismatch;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.ItemNotFoundMismatch;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.ObjectIsNotPresentMismatch;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.PropertyValueMismatch;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.Count;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.Item;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
@@ -707,12 +709,12 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
         var all = all(matchers);
         var count = checkInAnyOrder(Lists.newArrayList(toCheck), false, false, all);
         if (count == 0) {
-            appendMismatchDescription(new ItemNotFoundMismatch(all));
+            appendMismatchDescription(new ObjectIsNotPresentMismatch(new Item(), all));
             return false;
         }
 
         if (!countMatcher.matches(count)) {
-            appendMismatchDescription(new DifferentCountMismatch(count));
+            appendMismatchDescription(new PropertyValueMismatch(new Count(), count, countMatcher));
             return false;
         }
 

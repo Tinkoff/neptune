@@ -2,8 +2,9 @@ package ru.tinkoff.qa.neptune.core.api.hamcrest.iterables;
 
 import com.google.common.collect.Lists;
 import org.hamcrest.Matcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.ObjectIsNotPresentMismatch;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.DifferentSizeMismatch;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.ItemNotFoundMismatch;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.Item;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.OutOfItemsOrderMismatch;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
@@ -227,7 +228,7 @@ public abstract class SetOfObjectsIncludesMatcher<S, R, T extends Iterable<R>> e
                         alreadyChecked.size() - 1,
                         alreadyUsed.getLast()));
             } else {
-                appendMismatchDescription(new ItemNotFoundMismatch(m));
+                appendMismatchDescription(new ObjectIsNotPresentMismatch(new Item(), m));
             }
             return false;
         }

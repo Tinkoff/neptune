@@ -8,7 +8,7 @@ import java.net.URL;
 import static org.hamcrest.Matchers.equalTo;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.ResourceLocatorMatcher.MATCHER_FRAGMENT;
 
-@Description("Url reference is {" + MATCHER_FRAGMENT + "}")
+@Description("Url reference {" + MATCHER_FRAGMENT + "}")
 public final class HasReferenceMatcher extends ResourceLocatorMatcher<URL, String> {
 
     private HasReferenceMatcher(Matcher<? super String> matcher) {

@@ -1,19 +1,20 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy;
 
 import com.browserup.harreader.model.HarEntry;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
 import static org.hamcrest.Matchers.is;
 
-public final class RequestHasUrl extends TypeSafeDiagnosingMatcher<HarEntry> {
+@Description("Request URL {urlMatcher}")
+public final class RequestHasUrl extends NeptuneFeatureMatcher<HarEntry> {
 
-    private final Matcher<? super String> urlMatcher;
+    private final Matcher<?> urlMatcher;
 
     private RequestHasUrl(Matcher<? super String> urlMatcher) {
+        super(true);
         checkNotNull(urlMatcher, "URL matcher is not defined");
         this.urlMatcher = urlMatcher;
     }
@@ -56,7 +57,7 @@ public final class RequestHasUrl extends TypeSafeDiagnosingMatcher<HarEntry> {
     }
 
     @Override
-    public String toString() {
-        return format("request has URL %s", urlMatcher);
+    protected boolean featureMatches(HarEntry toMatch) {
+        return false;
     }
 }

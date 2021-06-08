@@ -17,7 +17,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <T> is a type of an object to be checked. Only {@link URL} and {@link URI} are allowed for this.
  * @param <S> is a type of a part of {@link URL} and {@link URI} to be verified.
  */
-public abstract class ResourceLocatorMatcher<T, S> extends NeptuneFeatureMatcher<T> {
+abstract class ResourceLocatorMatcher<T, S> extends NeptuneFeatureMatcher<T> {
 
     protected final static String MATCHER_FRAGMENT = "matcher";
 

@@ -3,8 +3,9 @@ package ru.tinkoff.qa.neptune.core.api.hamcrest.iterables;
 import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.AllMatchersParameterValueGetter;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.ObjectIsNotPresentMismatch;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.EmptyMismatch;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.ItemNotFoundMismatch;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.Item;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import java.util.ArrayList;
@@ -94,7 +95,7 @@ public abstract class AbstractSetOfObjectsMatcher<S, R> extends NeptuneFeatureMa
             if (found) {
                 toCheck.removeAll(foundElements);
             } else if (toLogMismatches) {
-                appendMismatchDescription(new ItemNotFoundMismatch(m));
+                appendMismatchDescription(new ObjectIsNotPresentMismatch(new Item(), m));
             }
         }
         return matches;

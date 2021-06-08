@@ -3,8 +3,9 @@ package ru.tinkoff.qa.neptune.core.api.hamcrest.iterables;
 import com.google.common.collect.Lists;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.PropertyValueMismatch;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.DifferentSizeMismatch;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.ItemMismatch;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.Item;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import java.util.List;
@@ -204,7 +205,7 @@ public abstract class SetOfObjectsConsistsOfMatcher<S, R, T extends Iterable<R>>
             if (!m.matches(o)) {
                 var d = new StringDescription();
                 m.describeMismatch(o, d);
-                appendMismatchDescription(new ItemMismatch(i, o, d));
+                appendMismatchDescription(new PropertyValueMismatch(new Item(i), o, m));
                 matches = false;
             }
             i++;

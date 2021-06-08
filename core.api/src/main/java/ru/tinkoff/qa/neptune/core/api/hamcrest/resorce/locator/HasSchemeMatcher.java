@@ -9,7 +9,7 @@ import java.util.function.Function;
 import static org.hamcrest.Matchers.equalTo;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.ResourceLocatorMatcher.MATCHER_FRAGMENT;
 
-@Description("Scheme is {" + MATCHER_FRAGMENT + "}")
+@Description("Scheme {" + MATCHER_FRAGMENT + "}")
 public final class HasSchemeMatcher extends ResourceLocatorMatcher<URI, String> {
 
     private HasSchemeMatcher(Matcher<? super String> matcher, Function<URI, String> conversion) {

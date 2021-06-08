@@ -10,7 +10,7 @@ import java.util.function.Function;
 import static org.hamcrest.Matchers.equalTo;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.ResourceLocatorMatcher.MATCHER_FRAGMENT;
 
-@Description("Host is {" + MATCHER_FRAGMENT + "}")
+@Description("Host {" + MATCHER_FRAGMENT + "}")
 public final class HasHostMatcher<T> extends ResourceLocatorMatcher<T, String> {
 
     private HasHostMatcher(Class<T> cls, Matcher<? super String> matcher, Function<T, String> conversion) {

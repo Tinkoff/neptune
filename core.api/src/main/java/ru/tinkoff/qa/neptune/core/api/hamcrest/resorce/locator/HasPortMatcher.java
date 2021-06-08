@@ -10,7 +10,7 @@ import java.util.function.Function;
 import static org.hamcrest.Matchers.equalTo;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.ResourceLocatorMatcher.MATCHER_FRAGMENT;
 
-@Description("Port is {" + MATCHER_FRAGMENT + "}")
+@Description("Port {" + MATCHER_FRAGMENT + "}")
 public final class HasPortMatcher<T> extends ResourceLocatorMatcher<T, Integer> {
 
     private HasPortMatcher(Class<T> cls, Matcher<? super Integer> matcher, Function<T, Integer> conversion) {

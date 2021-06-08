@@ -10,7 +10,7 @@ import java.util.function.Function;
 import static org.hamcrest.Matchers.equalTo;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.ResourceLocatorMatcher.MATCHER_FRAGMENT;
 
-@Description("Path is {" + MATCHER_FRAGMENT + "}")
+@Description("Path {" + MATCHER_FRAGMENT + "}")
 public final class HasPathMatcher<T> extends ResourceLocatorMatcher<T, String> {
 
     private HasPathMatcher(Class<T> cls, Matcher<? super String> matcher, Function<T, String> conversion) {

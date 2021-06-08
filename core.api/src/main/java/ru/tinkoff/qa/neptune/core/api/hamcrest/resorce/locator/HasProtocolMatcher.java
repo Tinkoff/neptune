@@ -9,7 +9,7 @@ import java.util.function.Function;
 import static org.hamcrest.Matchers.equalTo;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.ResourceLocatorMatcher.MATCHER_FRAGMENT;
 
-@Description("Protocol is {" + MATCHER_FRAGMENT + "}")
+@Description("Protocol {" + MATCHER_FRAGMENT + "}")
 public final class HasProtocolMatcher extends ResourceLocatorMatcher<URL, String> {
 
     private HasProtocolMatcher(Matcher<? super String> matcher, Function<URL, String> conversion) {

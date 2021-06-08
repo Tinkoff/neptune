@@ -39,7 +39,7 @@ public final class StringContainsWithSeparator extends NeptuneFeatureMatcher<Str
      * @param matcher   that verifies separated substrings
      * @return new {@link StringContainsWithSeparator}
      */
-    public static StringContainsWithSeparator subStringsSeparatedBy(String separator, Matcher<String[]> matcher) {
+    public static Matcher<String> withSeparator(String separator, Matcher<String[]> matcher) {
         return new StringContainsWithSeparator(matcher, separator);
     }
 
@@ -50,8 +50,8 @@ public final class StringContainsWithSeparator extends NeptuneFeatureMatcher<Str
      * @param separator  is string separator
      * @return new {@link StringContainsWithSeparator}
      */
-    public static StringContainsWithSeparator subStringsSeparatedBy(String separator, String... subStrings) {
-        return subStringsSeparatedBy(separator, arrayInOrder(subStrings));
+    public static Matcher<String> withSeparator(String separator, String... subStrings) {
+        return withSeparator(separator, arrayInOrder(subStrings));
     }
 
     /**
@@ -62,8 +62,8 @@ public final class StringContainsWithSeparator extends NeptuneFeatureMatcher<Str
      * @param separator is string separator
      * @return new {@link StringContainsWithSeparator}
      */
-    public static StringContainsWithSeparator subStringSeparatedBy(String separator, String toContain) {
-        return subStringsSeparatedBy(separator, arrayHasItem(toContain));
+    public static Matcher<String> withSeparator(String separator, String toContain) {
+        return withSeparator(separator, arrayHasItem(toContain));
     }
 
     @Override

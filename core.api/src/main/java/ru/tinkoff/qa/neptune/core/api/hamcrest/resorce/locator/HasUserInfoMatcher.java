@@ -10,7 +10,7 @@ import java.util.function.Function;
 import static org.hamcrest.Matchers.equalTo;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.ResourceLocatorMatcher.MATCHER_FRAGMENT;
 
-@Description("User info is {" + MATCHER_FRAGMENT + "}")
+@Description("User info {" + MATCHER_FRAGMENT + "}")
 public final class HasUserInfoMatcher<T> extends ResourceLocatorMatcher<T, String> {
 
     private HasUserInfoMatcher(Class<T> cls, Matcher<? super String> matcher, Function<T, String> conversion) {

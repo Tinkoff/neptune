@@ -1,40 +1,28 @@
 package ru.tinkoff.qa.neptune.http.api.hamcrest.response;
 
 import org.hamcrest.Matcher;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.PropertyValueMismatch;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import java.net.http.HttpResponse;
+import java.util.List;
 import java.util.Map;
 
-import static java.util.stream.Collectors.toMap;
 import static org.hamcrest.Matchers.equalTo;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.AnyThingMatcher.anything;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.MapEntryMatcher.entryKey;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableInOrder;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsItemsMatcher.mapHasEntryValue;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFeatureMatcher.KEY_MATCHER_MASK;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFeatureMatcher.VALUE_MATCHER_MASK;
 
 /**
  * This matcher is for the checking of headers of a response.
  */
-@Description("response header name: <{nameMatcher}> and value <{valueMatcher}>")
-public final class HasHeaders extends NeptuneFeatureMatcher<HttpResponse<?>> {
-
-    @DescriptionFragment(value = "nameMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
-    private final Matcher<? super String> nameMatcher;
-
-    @DescriptionFragment(value = "valueMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
-    private final Matcher<Iterable<String>> valueMatcher;
+@Description("response header name <{" + KEY_MATCHER_MASK + "}> <{" + VALUE_MATCHER_MASK + "}>")
+public final class HasHeaders extends MappedDiagnosticFeatureMatcher<HttpResponse<?>, String, List<String>> {
 
     private HasHeaders(Matcher<? super String> nameMatcher, Matcher<Iterable<String>> valueMatcher) {
-        super(true);
-        this.nameMatcher = nameMatcher;
-        this.valueMatcher = valueMatcher;
+        super(true, nameMatcher, valueMatcher);
     }
-
 
     private static HasHeaders hasHeaders(Matcher<? super String> nameMatcher, Matcher<Iterable<String>> valueMatcher) {
         return new HasHeaders(nameMatcher, valueMatcher);
@@ -129,34 +117,17 @@ public final class HasHeaders extends NeptuneFeatureMatcher<HttpResponse<?>> {
     }
 
     @Override
-    protected boolean featureMatches(HttpResponse<?> toMatch) {
-        var headers = toMatch.headers().map();
+    protected Map<String, List<String>> getMap(HttpResponse<?> httpResponse) {
+        return httpResponse.headers().map();
+    }
 
-        var entryMatcher = entryKey(nameMatcher);
-        var foundHeaders = headers
-                .entrySet()
-                .stream()
-                .filter(entryMatcher::matches)
-                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+    @Override
+    protected String getDescriptionOnKeyAbsence() {
+        return new Header().toString();
+    }
 
-        if (foundHeaders.size() == 0) {
-            appendMismatchDescription(new NoSuchHeaderNameMismatch(nameMatcher));
-            return false;
-        }
-
-        if (!mapHasEntryValue(valueMatcher).matches(foundHeaders)) {
-
-            foundHeaders.entrySet().forEach(e -> {
-                if (!valueMatcher.matches(e)) {
-                    appendMismatchDescription(new PropertyValueMismatch(new Header()
-                            + "[" + e.getKey() + "]",
-                            e.getValue(),
-                            valueMatcher));
-                }
-            });
-            return false;
-        }
-
-        return true;
+    @Override
+    protected String getDescriptionOnValueMismatch(String s) {
+        return new Header() + "[" + s + "]";
     }
 }

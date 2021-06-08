@@ -4,6 +4,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.AllMatchersParameterValueGetter;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.PropertyValueMismatch;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
@@ -118,10 +119,12 @@ public final class PojoGetterReturnsMatcher<T, R> extends NeptuneFeatureMatcher<
 
         var all = all(valueMatchers);
         try {
-            if (!all.matches(m.invoke(toMatch))) {
+            m.setAccessible(true);
+            var result = m.invoke(toMatch);
+            if (!all.matches(result)) {
                 var d = new StringDescription();
                 all.describeMismatch(toMatch, d);
-                appendMismatchDescription(new ReturnedValueMismatch(d));
+                appendMismatchDescription(new PropertyValueMismatch(new ReturnedObject(getterName), result, all));
                 return false;
             }
         } catch (IllegalAccessException | InvocationTargetException e) {
