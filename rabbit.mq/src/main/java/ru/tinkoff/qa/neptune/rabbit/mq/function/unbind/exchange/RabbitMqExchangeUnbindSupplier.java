@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.rabbit.mq.function.unbind.exchange;
 
 import com.google.common.base.Supplier;
 import com.rabbitmq.client.AMQP;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -10,7 +11,8 @@ import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 
 import java.io.IOException;
 
-
+@SequentialGetStepSupplier.DefineGetImperativeParameterName("Unbind:")
+@MaxDepthOfReporting(0)
 public class RabbitMqExchangeUnbindSupplier extends SequentialGetStepSupplier.GetObjectStepSupplier<RabbitMqStepContext, AMQP.Exchange.UnbindOk, RabbitMqExchangeUnbindSupplier> {
     private AdditionalArguments arguments;
     private final ArgSupplier supplier;
@@ -32,10 +34,11 @@ public class RabbitMqExchangeUnbindSupplier extends SequentialGetStepSupplier.Ge
 
     public RabbitMqExchangeUnbindSupplier setArguments(AdditionalArguments arguments) {
         this.arguments = arguments;
+        supplier.setArgs(arguments);
         return this;
     }
 
-    @Description("Unbind an exchange from an exchange, with no extra arguments.\r\n" +
+    @Description("an exchange from an exchange, with no extra arguments.\r\n" +
             "Params:\n" +
             "{destination} – the name of the exchange to which messages flow across the binding\r\n" +
             "{source} – the name of the exchange from which messages flow across the binding\r\n" +

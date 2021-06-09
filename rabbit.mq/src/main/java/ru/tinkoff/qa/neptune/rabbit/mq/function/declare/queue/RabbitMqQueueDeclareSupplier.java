@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.rabbit.mq.function.declare.queue;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -9,6 +10,7 @@ import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 
 import java.io.IOException;
 
+@MaxDepthOfReporting(0)
 public class RabbitMqQueueDeclareSupplier extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<RabbitMqStepContext, AMQP.Queue.DeclareOk, Channel, RabbitMqQueueDeclareSupplier> {
     private final String queue;
     private final ParametersForDeclareQueue params;
@@ -34,7 +36,7 @@ public class RabbitMqQueueDeclareSupplier extends SequentialGetStepSupplier.GetO
                             params.isDurable(),
                             params.isExclusive(),
                             params.isAutoDelete(),
-                            params.getAdditionalArguments().getHashMap());
+                            params.getAdditionalArguments());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

@@ -59,35 +59,43 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
         return perform(RabbitMqQueueDeleteSupplier.deleteQueue(queue));
     }
 
-    public RabbitMqStepContext deleteQueue(String queue, ParametersForDelete parametersForDelete){
+    public RabbitMqStepContext deleteQueue(String queue, ParametersForDelete parametersForDelete) {
         return perform(RabbitMqQueueDeleteSupplier.deleteQueue(queue).setParametersForDelete(parametersForDelete));
     }
 
-    public RabbitMqStepContext purgeQueue(String queue){
+    public RabbitMqStepContext purgeQueue(String queue) {
         return perform(RabbitMqPurgeQueueSupplier.purgeQueue(queue));
     }
 
-    public AMQP.Queue.UnbindOk queueUnbind(RabbitMqQueueUnbindSupplier rabbitQueueUnbindSupplier){
-        return rabbitQueueUnbindSupplier.get().apply(this);
+    public AMQP.Queue.UnbindOk queueUnbind(String queue, String exchange, String routingKey) {
+        return get(RabbitMqQueueUnbindSupplier.queueUnbind(queue, exchange, routingKey));
     }
 
-    public AMQP.Exchange.UnbindOk ExchangeUnbind(String destination, String source, String routingKey,AdditionalArguments arguments){
+    public AMQP.Queue.UnbindOk queueUnbind(String queue, String exchange, String routingKey, AdditionalArguments arguments) {
+        return get(RabbitMqQueueUnbindSupplier.queueUnbind(queue, exchange, routingKey).setArguments(arguments));
+    }
+
+    public AMQP.Exchange.UnbindOk ExchangeUnbind(String destination, String source, String routingKey, AdditionalArguments arguments) {
         return get(RabbitMqExchangeUnbindSupplier.exchangeUnbind(destination, source, routingKey).setArguments(arguments));
     }
 
-    public AMQP.Queue.DeclareOk queueDeclare(){
+    public AMQP.Exchange.UnbindOk ExchangeUnbind(String destination, String source, String routingKey) {
+        return get(RabbitMqExchangeUnbindSupplier.exchangeUnbind(destination, source, routingKey));
+    }
+
+    public AMQP.Queue.DeclareOk queueDeclare() {
         return get(RabbitMqQueueDeclareSupplier.queueDeclare());
     }
 
-    public AMQP.Queue.DeclareOk queueDeclarePassive(String queue){
+    public AMQP.Queue.DeclareOk queueDeclarePassive(String queue) {
         return get(RabbitMqQueueDeclareSupplier.queueDeclarePassive(queue));
     }
 
-    public AMQP.Queue.DeclareOk queueDeclare(String queue, ParametersForDeclareQueue params){
+    public AMQP.Queue.DeclareOk queueDeclare(String queue, ParametersForDeclareQueue params) {
         return get(RabbitMqQueueDeclareSupplier.queueDeclare(queue, params));
     }
 
-    public AMQP.Exchange.DeclareOk exchangeDeclarePassive(String exchange){
+    public AMQP.Exchange.DeclareOk exchangeDeclare(String exchange) {
         return get(RabbitMqExchangeDeclareSupplier.exchangeDeclarePassive(exchange));
     }
 

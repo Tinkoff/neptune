@@ -5,6 +5,8 @@ import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 import ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArguments;
 import ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArgumentsGetParameterValue;
 
+import java.util.HashMap;
+
 public class ParametersForDeclareQueue implements StepParameterPojo {
     @StepParameter("durable")
     private boolean durable;
@@ -27,11 +29,11 @@ public class ParametersForDeclareQueue implements StepParameterPojo {
         return autoDelete;
     }
 
-    public AdditionalArguments getAdditionalArguments() {
-        return additionalArguments;
+    public HashMap<String, Object> getAdditionalArguments() {
+        return additionalArguments == null ? null : additionalArguments.getHashMap();
     }
 
-    public static ParametersForDeclareQueue queueParams(){
+    public static ParametersForDeclareQueue queueParams() {
         return new ParametersForDeclareQueue();
     }
 

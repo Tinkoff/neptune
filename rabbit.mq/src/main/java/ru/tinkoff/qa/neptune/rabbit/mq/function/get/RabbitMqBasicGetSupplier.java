@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Supplier;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.GetResponse;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
@@ -17,6 +18,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.Duration.ofSeconds;
 
+@SequentialGetStepSupplier.DefineGetImperativeParameterName("Retrieve:")
+@MaxDepthOfReporting(0)
 public class RabbitMqBasicGetSupplier<T> extends SequentialGetStepSupplier.GetObjectStepSupplier<RabbitMqStepContext,T, RabbitMqBasicGetSupplier<T>> {
     private ObjectMapper objectMapper;
     private final MapperSupplier supplier;
@@ -43,7 +46,7 @@ public class RabbitMqBasicGetSupplier<T> extends SequentialGetStepSupplier.GetOb
         return this;
     }
 
-    @Description("Retrieve a message from a queue using AMQP.Basic.Get\r\n" +
+    @Description("a message from a queue using AMQP.Basic.Get\r\n" +
             "Params:\r\n" +
             "queue – {queue}\r\n" +
             "autoAck - {autoAck}")

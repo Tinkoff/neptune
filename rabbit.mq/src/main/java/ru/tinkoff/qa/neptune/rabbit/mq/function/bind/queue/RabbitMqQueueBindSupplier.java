@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.rabbit.mq.function.bind.queue;
 
 import com.google.common.base.Supplier;
 import com.rabbitmq.client.AMQP;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -13,6 +14,8 @@ import java.io.IOException;
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+@SequentialGetStepSupplier.DefineGetImperativeParameterName("Bind:")
+@MaxDepthOfReporting(0)
 public class RabbitMqQueueBindSupplier extends SequentialGetStepSupplier.GetObjectStepSupplier<RabbitMqStepContext, AMQP.Queue.BindOk, RabbitMqQueueBindSupplier> {
     private AdditionalArguments arguments;
     private final ArgSupplier supplier;
@@ -34,10 +37,11 @@ public class RabbitMqQueueBindSupplier extends SequentialGetStepSupplier.GetObje
 
     public RabbitMqQueueBindSupplier setArguments(AdditionalArguments arguments) {
         this.arguments = arguments;
+        supplier.setArgs(arguments);
         return this;
     }
 
-    @Description("Bind a queue to an exchange, with no extra arguments.\r\n" +
+    @Description("a queue to an exchange, with no extra arguments.\r\n" +
             "Params:\r\n" +
             "queue – {queue}\r\n" +
             "exchange – {exchange}\r\n" +

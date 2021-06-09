@@ -5,22 +5,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.rabbitmq.client.AMQP;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
-import ru.tinkoff.qa.neptune.rabbit.mq.function.declare.exchange.ParametersForDeclareExchange;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitAMQPProperty.RABBIT_AMQP_PROPERTY;
 
+@SequentialActionSupplier.DefinePerformImperativeParameterName("Publish:")
+@MaxDepthOfReporting(0)
 public class RabbitMqPublishSupplier extends SequentialActionSupplier<RabbitMqStepContext, RabbitMqStepContext,RabbitMqPublishSupplier> {
     private final String exchange;
     private final String routingKey;
@@ -44,10 +44,10 @@ public class RabbitMqPublishSupplier extends SequentialActionSupplier<RabbitMqSt
         return this;
     }
 
-    @Description("Publish a message.\r\n" +
-                    "Params:\r\n" +
-                            "exchange – {exchange}\r\n" +
-                            "routingKey – {routingKey}")
+    @Description("a message.\r\n" +
+            "Params:\r\n" +
+            "exchange – {exchange}\r\n" +
+            "routingKey – {routingKey}")
     public static RabbitMqPublishSupplier publish(@DescriptionFragment("exchange") String exchange, @DescriptionFragment("routingKey") String routingKey, ObjectMapper mapper, Object toSerialize){
         try {
             return new RabbitMqPublishSupplier(exchange, routingKey, mapper.writeValueAsString(toSerialize));
@@ -69,14 +69,14 @@ public class RabbitMqPublishSupplier extends SequentialActionSupplier<RabbitMqSt
     protected void howToPerform(RabbitMqStepContext value) {
         var channel = value.getChannel();
         var props = propertyBuilder.build();
-         try{
+        try{
             if(params == null){
                 channel.basicPublish(exchange,routingKey,false,false,props, body);
             }
             channel.basicPublish(exchange,routingKey,params.isMandatory(),params.isImmediate(),props, body);
-         } catch (Exception e){
-             throw new RuntimeException(e);
-         }
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     public RabbitMqPublishSupplier contentType(String contentType) {

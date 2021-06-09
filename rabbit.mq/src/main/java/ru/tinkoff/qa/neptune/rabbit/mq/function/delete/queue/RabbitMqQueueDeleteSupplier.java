@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.function.delete.queue;
 
 import com.rabbitmq.client.Channel;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -11,6 +12,8 @@ import java.io.IOException;
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+@SequentialActionSupplier.DefinePerformImperativeParameterName("Delete:")
+@MaxDepthOfReporting(0)
 public class RabbitMqQueueDeleteSupplier extends SequentialActionSupplier<RabbitMqStepContext, Channel, RabbitMqQueueDeleteSupplier> {
     private final String queue;
     private ParametersForDelete parametersForDelete;
@@ -21,7 +24,8 @@ public class RabbitMqQueueDeleteSupplier extends SequentialActionSupplier<Rabbit
         this.queue = queue;
         performOn(RabbitMqStepContext::getChannel);
     }
-    @Description("Delete a queue - {queue}")
+
+    @Description("a queue - {queue}")
     public static RabbitMqQueueDeleteSupplier deleteQueue(@DescriptionFragment("queue") String queue) {
         return new RabbitMqQueueDeleteSupplier(queue);
     }

@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.rabbit.mq.function.bind.exchange;
 
 import com.google.common.base.Supplier;
 import com.rabbitmq.client.AMQP;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -13,6 +14,8 @@ import java.io.IOException;
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+@SequentialGetStepSupplier.DefineGetImperativeParameterName("Bind:")
+@MaxDepthOfReporting(0)
 public class RabbitMqExchangeBindSupplier extends SequentialGetStepSupplier.GetObjectStepSupplier<RabbitMqStepContext, AMQP.Exchange.BindOk, RabbitMqExchangeBindSupplier> {
 
     private AdditionalArguments arguments;
@@ -39,14 +42,14 @@ public class RabbitMqExchangeBindSupplier extends SequentialGetStepSupplier.GetO
         return this;
     }
 
-    @Description("Bind an exchange to an exchange, with no extra arguments.\r\n" +
+    @Description("an exchange to an exchange, with no extra arguments.\r\n" +
             "Params:\r\n" +
             "{destination} – the name of the exchange to which messages flow across the binding\r\n" +
             "{source} – the name of the exchange from which messages flow across the binding\r\n" +
             "{routingKey} – the routing key to use for the binding")
     public static RabbitMqExchangeBindSupplier exchangeBind(@DescriptionFragment("destination") String destination,
-                                                                            @DescriptionFragment("source") String source,
-                                                                            @DescriptionFragment("routingKey") String routingKey) {
+                                                            @DescriptionFragment("source") String source,
+                                                            @DescriptionFragment("routingKey") String routingKey) {
 
         checkArgument(isNotBlank(destination));
         checkArgument(isNotBlank(source));

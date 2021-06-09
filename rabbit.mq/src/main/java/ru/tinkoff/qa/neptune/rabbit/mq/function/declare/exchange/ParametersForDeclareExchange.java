@@ -5,6 +5,8 @@ import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 import ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArguments;
 import ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArgumentsGetParameterValue;
 
+import java.util.HashMap;
+
 public class ParametersForDeclareExchange implements StepParameterPojo {
     @StepParameter("durable")
     private boolean durable;
@@ -42,8 +44,8 @@ public class ParametersForDeclareExchange implements StepParameterPojo {
         return this;
     }
 
-    public AdditionalArguments getAdditionalArguments() {
-        return additionalArguments;
+    public HashMap<String, Object> getAdditionalArguments() {
+        return additionalArguments == null ? null : additionalArguments.getHashMap();
     }
 
     public ParametersForDeclareExchange additionalArguments(AdditionalArguments additionalArguments) {
