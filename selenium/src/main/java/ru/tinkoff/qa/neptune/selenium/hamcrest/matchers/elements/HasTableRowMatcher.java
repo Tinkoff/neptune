@@ -3,15 +3,17 @@ package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements;
 import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.AllMatchersParameterValueGetter;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.PropertyValueMismatch;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Table;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.TableRow;
-import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.LesserTableSizeMismatch;
+import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.TableSize;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.time.Duration.ofMillis;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.all.AllCriteriaMatcher.all;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsItemsMatcher.iterableHasItem;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.tableRows;
@@ -102,7 +104,7 @@ public abstract class HasTableRowMatcher extends NeptuneFeatureMatcher<Table> {
             var size = tableRows.size();
 
             if (size < rowNumber + 1) {
-                appendMismatchDescription(new LesserTableSizeMismatch(rowNumber, size));
+                appendMismatchDescription(new PropertyValueMismatch(new TableSize(), size, greaterThanOrEqualTo(rowNumber + 1)));
                 return false;
             }
 

@@ -49,7 +49,7 @@ public final class AnyMatcher<T> extends NeptuneFeatureMatcher<T> {
                 .anyMatch(m -> m.matches(toMatch));
 
         if (!match) {
-            appendMismatchDescription(new DoesNotMatchAnyCriteria());
+            appendMismatchDescription(new DoesNotMatchAnyCriteria(toMatch));
         }
 
         return match;

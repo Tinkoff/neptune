@@ -1,43 +1,28 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements;
 
 import org.hamcrest.Matcher;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.AllMatchersParameterValueGetter;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.PropertyValueMismatch;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Table;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.Column;
-import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.NoSuchColumnMismatch;
 
+import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Objects.nonNull;
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.hamcrest.Matchers.equalTo;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.MapEntryMatcher.entryKey;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.AnyThingMatcher.anything;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableInOrder;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsItemsMatcher.mapHasEntryValue;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFeatureMatcher.KEY_MATCHER_MASK;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFeatureMatcher.VALUE_MATCHER_MASK;
 
-@Description("has a column with header <{headerMatcher}> {columnMatcher}")
-public class HasColumnMatcher extends NeptuneFeatureMatcher<Table> {
+@Description("has a column with header <{" + KEY_MATCHER_MASK + "}> {" + VALUE_MATCHER_MASK + "}")
+public class HasColumnMatcher extends MappedDiagnosticFeatureMatcher<Table, String, List<String>> {
 
-    @DescriptionFragment(value = "columnMatcher", makeReadableBy = AllMatchersParameterValueGetter.class)
-    final Matcher<?>[] columnMatchers;
-    @DescriptionFragment("headerMatcher")
-    private final Matcher<? super String> headerMatcher;
-    private final Matcher<Iterable<String>> columnMatcher;
-
-    private HasColumnMatcher(Matcher<? super String> headerMatcher, Matcher<Iterable<String>> columnMatcher) {
-        super(true);
-        checkArgument(nonNull(headerMatcher), "Criteria to match table header should be defined");
-        this.columnMatchers = ofNullable(columnMatcher).map(i -> new Matcher[]{i}).orElseGet(() -> new Matcher[]{});
-        this.headerMatcher = headerMatcher;
-        this.columnMatcher = columnMatcher;
+    private HasColumnMatcher(Matcher<? super String> headerMatcher, Matcher<List<String>> columnMatcher) {
+        super(true, headerMatcher, columnMatcher);
     }
 
     /**
@@ -80,7 +65,7 @@ public class HasColumnMatcher extends NeptuneFeatureMatcher<Table> {
      * @param valuesMatcher is the criteria to check values of the expected column
      * @return created object of {@link HasColumnMatcher}
      */
-    public static Matcher<Table> hasAColumn(String column, Matcher<Iterable<String>> valuesMatcher) {
+    public static Matcher<Table> hasAColumn(String column, Matcher<List<String>> valuesMatcher) {
         checkArgument(!isBlank(column), "Name of the expected column should not be blank");
         return hasAColumn(equalTo(column), valuesMatcher);
     }
@@ -94,7 +79,7 @@ public class HasColumnMatcher extends NeptuneFeatureMatcher<Table> {
      * @param valuesMatcher is the criteria to check values of the expected column
      * @return created object of {@link HasColumnMatcher}
      */
-    public static Matcher<Table> hasAColumn(Matcher<? super String> columnMatcher, Matcher<Iterable<String>> valuesMatcher) {
+    public static Matcher<Table> hasAColumn(Matcher<? super String> columnMatcher, Matcher<List<String>> valuesMatcher) {
         return new HasColumnMatcher(columnMatcher, valuesMatcher);
     }
 
@@ -106,7 +91,7 @@ public class HasColumnMatcher extends NeptuneFeatureMatcher<Table> {
      * @return created object of {@link HasColumnMatcher}
      */
     public static Matcher<Table> hasAColumn(Matcher<? super String> columnMatcher) {
-        return hasAColumn(columnMatcher, (Matcher<Iterable<String>>) null);
+        return hasAColumn(columnMatcher, anything());
     }
 
     /**
@@ -122,34 +107,17 @@ public class HasColumnMatcher extends NeptuneFeatureMatcher<Table> {
 
 
     @Override
-    protected boolean featureMatches(Table toMatch) {
-        var tableValue = toMatch.getValue();
+    protected Map<String, List<String>> getMap(Table table) {
+        return table.getValue();
+    }
 
-        var entryMatcher = entryKey(headerMatcher);
-        var foundColumns = tableValue
-                .entrySet()
-                .stream()
-                .filter(entryMatcher::matches)
-                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+    @Override
+    protected String getDescriptionOnKeyAbsence() {
+        return new Column().toString();
+    }
 
-        if (foundColumns.size() == 0) {
-            appendMismatchDescription(new NoSuchColumnMismatch(headerMatcher));
-            return false;
-        }
-
-        if (!mapHasEntryValue(columnMatcher).matches(foundColumns)) {
-
-            foundColumns.entrySet().forEach(e -> {
-                if (!columnMatcher.matches(e)) {
-                    appendMismatchDescription(new PropertyValueMismatch(new Column()
-                            + "[" + e.getKey() + "]",
-                            e.getValue(),
-                            columnMatcher));
-                }
-            });
-            return false;
-        }
-
-        return true;
+    @Override
+    protected String getDescriptionOnValueMismatch(String s) {
+        return new Column() + "[" + s + "]";
     }
 }

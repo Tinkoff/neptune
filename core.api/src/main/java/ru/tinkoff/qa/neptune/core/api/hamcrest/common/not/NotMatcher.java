@@ -64,7 +64,7 @@ public final class NotMatcher<T> extends NeptuneFeatureMatcher<T> {
 
         if (count == toInvert.length) {
             mismatchDescriptions.clear();
-            appendMismatchDescription(new DoesNotMatchAnyCriteria());
+            appendMismatchDescription(new DoesNotMatchAnyCriteria(toMatch));
             return false;
         }
 

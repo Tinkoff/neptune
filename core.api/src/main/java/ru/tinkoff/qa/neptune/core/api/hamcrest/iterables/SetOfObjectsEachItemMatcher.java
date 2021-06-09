@@ -1,14 +1,14 @@
 package ru.tinkoff.qa.neptune.core.api.hamcrest.iterables;
 
 import org.hamcrest.Matcher;
-import org.hamcrest.StringDescription;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.PropertyValueMismatch;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.Item;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static java.lang.String.valueOf;
 import static java.util.Arrays.asList;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.all.AllCriteriaMatcher.all;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.AbstractSetOfObjectsMatcher.MATCHERS;
@@ -111,10 +111,7 @@ public abstract class SetOfObjectsEachItemMatcher<S, R, T extends Iterable<R>> e
         for (var r : toCheck) {
             var m = all(matchers);
             if (!m.matches(r)) {
-                var d = new StringDescription();
-                d.appendText(valueOf(index)).appendText(": ").appendText(valueOf(r)).appendText(". ");
-                m.describeMismatch(r, d);
-                appendMismatchDescription(d);
+                appendMismatchDescription(new PropertyValueMismatch(new Item(index), r, m));
                 matches = false;
             }
             index++;

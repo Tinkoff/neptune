@@ -189,12 +189,12 @@ public class CheckTest {
             assertThat(e.getMessage(), is("Found mismatches:\r\n" +
                     "Expected: a value greater than <5> or a value less than <-10> or an instance of java.lang.Float\r\n" +
                     "Checked value: '4'\r\n" +
-                    "Result: doesn't match any of listed criteria" +
+                    "Result: <4> doesn't match any of listed criteria" +
                     "\r\n" +
                     "\r\n" +
                     "Expected: 'Sqrt' is <3.0> or a value less than <0.0> or a value less than <2.0>\r\n" +
                     "Checked value: '2.0'\r\n" +
-                    "Result: doesn't match any of listed criteria"));
+                    "Result: <2.0> doesn't match any of listed criteria"));
 
             assertThat(MESSAGES,
                     contains("Check: Tested number has started",
@@ -244,7 +244,7 @@ public class CheckTest {
             assertThat(e.getMessage(), is("Found mismatches:\r\n" +
                     "Expected: a value greater than <5> or a value less than <-10> or an instance of java.lang.Float\r\n" +
                     "Checked value: '4'\r\n" +
-                    "Result: doesn't match any of listed criteria. Time of the waiting for the matching: 00:00:03.000"));
+                    "Result: <4> doesn't match any of listed criteria. Time of the waiting for the matching: 00:00:03.000"));
             return;
         }
 
@@ -372,10 +372,10 @@ public class CheckTest {
             assertThat(e.getMessage(), allOf(containsString("Found mismatches:"),
                     containsString("Expected: a value greater than <5> xor a value less than <-10> xor an instance of java.lang.Float"),
                     containsString("Checked value: '4'"),
-                    containsString("Result: doesn't match any of listed criteria"),
+                    containsString("Result: <4> doesn't match any of listed criteria"),
                     containsString("Expected: 'Sqrt' is <3.0> xor a value less than <0.0> xor a value less than <2.0>"),
                     containsString("Checked value: '2.0'"),
-                    containsString("Result: doesn't match any of listed criteria")));
+                    containsString("Result: <2.0> doesn't match any of listed criteria")));
 
             assertThat(MESSAGES,
                     contains("Check: Tested number has started",
@@ -409,12 +409,12 @@ public class CheckTest {
             assertThat(e.getMessage(), allOf(containsString("Found mismatches:"),
                     containsString("Expected: a value greater than <0> xor a value less than <-10> xor an instance of java.lang.Integer"),
                     containsString("Checked value: '4'"),
-                    containsString("Result: only one of listed criteria was expected to be matched. Checks of following criteria were positive:"),
+                    containsString("Result: Value: 4. Only one of listed criteria was expected to be matched. Checks of following criteria were positive:"),
                     containsString(" a value greater than <0>"),
                     containsString("an instance of java.lang.Integer"),
                     containsString("Expected: 'Sqrt' is <2.0> xor a value greater than <0.0> xor a value less than <2.0>"),
                     containsString("Checked value: '2.0'"),
-                    containsString("Result: only one of listed criteria was expected to be matched. Checks of following criteria were positive:"),
+                    containsString("Result: Value: 2.0. Only one of listed criteria was expected to be matched. Checks of following criteria were positive:"),
                     containsString("is <2.0>"),
                     containsString("a value greater than <0.0>")));
 
@@ -466,7 +466,7 @@ public class CheckTest {
             assertThat(e.getMessage(), allOf(containsString("Found mismatches:"),
                     containsString("Expected: a value greater than <5> xor a value less than <-10> xor an instance of java.lang.Float"),
                     containsString("Checked value: '4'"),
-                    containsString("Result: doesn't match any of listed criteria. Time of the waiting for the matching: 00:00:03.000")));
+                    containsString("Result: <4> doesn't match any of listed criteria. Time of the waiting for the matching: 00:00:03.000")));
             return;
         }
 
@@ -493,7 +493,7 @@ public class CheckTest {
             assertThat(e.getMessage(), allOf(containsString("Found mismatches:"),
                     containsString("Expected: 'Sqrt' is <2.0> xor a value less than <-10.0> xor an instance of java.lang.Double"),
                     containsString("Checked value: '2.0'"),
-                    containsString("Result: only one of listed criteria was expected to be matched. Checks of following criteria were positive:"),
+                    containsString("Result: Value: 2.0. Only one of listed criteria was expected to be matched. Checks of following criteria were positive:"),
                     containsString("is <2.0>"),
                     containsString("an instance of java.lang.Double"),
                     containsString("Time of the waiting for the matching: 00:00:03.000")));

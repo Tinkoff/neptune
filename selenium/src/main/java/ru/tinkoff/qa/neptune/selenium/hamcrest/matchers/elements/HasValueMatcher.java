@@ -32,7 +32,7 @@ public final class HasValueMatcher<Q, T extends SearchContext & HasValue<Q>> ext
      * @param <T>   type of an element
      * @return instance of {@link HasValueMatcher}
      */
-    public static <Q, T extends SearchContext & HasValue<Q>> Matcher<T> hasValue(Q value) {
+    public static <Q, T extends SearchContext & HasValue<Q>> Matcher<T> elementHasValue(Q value) {
         return new HasValueMatcher<>(equalTo(value));
     }
 
@@ -44,7 +44,7 @@ public final class HasValueMatcher<Q, T extends SearchContext & HasValue<Q>> ext
      * @param <T>   type of an element
      * @return instance of {@link HasValueMatcher}
      */
-    public static <Q, T extends SearchContext & HasValue<Q>> Matcher<T> hasValue(Matcher<? super Q> value) {
+    public static <Q, T extends SearchContext & HasValue<Q>> Matcher<T> elementHasValue(Matcher<? super Q> value) {
         return new HasValueMatcher<>(value);
     }
 

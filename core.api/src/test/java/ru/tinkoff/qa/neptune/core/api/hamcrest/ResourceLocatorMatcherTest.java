@@ -285,11 +285,11 @@ public class ResourceLocatorMatcherTest {
                 {testURI, uriHasQueryParameter("q", iterableInOrder("how+to+create+unit+test")),
                         "Tested resource locator\n" +
                                 "Expected: has query parameter \"q\" in following order: \"how+to+create+unit+test\"\n" +
-                                "     but: URI/URL query parameter[q]: [how+to+create+e2e+test]. item [0]: how+to+create+e2e+test. was \"how+to+create+e2e+test\""},
+                                "     but: URI/URL query parameter[q] item [0] was \"how+to+create+e2e+test\""},
                 {testURI.toURL(), urlHasQueryParameter("q", iterableInOrder("how+to+create+unit+test")),
                         "Tested resource locator\n" +
                                 "Expected: has query parameter \"q\" in following order: \"how+to+create+unit+test\"\n" +
-                                "     but: URI/URL query parameter[q]: [how+to+create+e2e+test]. item [0]: how+to+create+e2e+test. was \"how+to+create+e2e+test\""},
+                                "     but: URI/URL query parameter[q] item [0] was \"how+to+create+e2e+test\""},
         };
     }
 

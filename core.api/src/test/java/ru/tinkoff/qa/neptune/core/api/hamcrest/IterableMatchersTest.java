@@ -157,8 +157,8 @@ public class IterableMatchersTest {
                 {TEST_LIST, iterableInOrder("A2", "A1", "A3", "A4", "A5"),
                         "Tested object\n" +
                                 "Expected: in following order: \"A2\", \"A1\", \"A3\", \"A4\", \"A5\"\n" +
-                                "     but: item [0]: A1. was \"A1\"\r\n" +
-                                "item [1]: A2. was \"A2\""},
+                                "     but: item [0] was \"A1\"\r\n" +
+                                "item [1] was \"A2\""},
                 {TEST_LIST, iterableInOrder("A1", "A2", "A3", "A4", "A5", "A6"),
                         "Tested object\n" +
                                 "Expected: in following order: \"A1\", \"A2\", \"A3\", \"A4\", \"A5\", \"A6\"\n" +
@@ -166,7 +166,7 @@ public class IterableMatchersTest {
                 {TEST_LIST, iterableInOrder("A1", "A2", "A3", "A4", "A6"),
                         "Tested object\n" +
                                 "Expected: in following order: \"A1\", \"A2\", \"A3\", \"A4\", \"A6\"\n" +
-                                "     but: item [4]: A5. was \"A5\""},
+                                "     but: item [4] was \"A5\""},
                 {TEST_LIST, iterableOf("A2", "A1", "A3", "A4", "A6"),
                         "Tested object\n" +
                                 "Expected: in any order: \"A2\", \"A1\", \"A3\", \"A4\", \"A6\"\n" +
@@ -188,17 +188,17 @@ public class IterableMatchersTest {
                                 "     but: 5 items instead of 8"},
                 {TEST_LIST, eachOfIterable(containsString("B")), "Tested object\n" +
                         "Expected: each item: a string containing \"B\"\n" +
-                        "     but: 0: A1. was \"A1\"\r\n" +
-                        "1: A2. was \"A2\"\r\n" +
-                        "2: A3. was \"A3\"\r\n" +
-                        "3: A4. was \"A4\"\r\n" +
-                        "4: A5. was \"A5\""},
+                        "     but: item [0] was \"A1\"\r\n" +
+                        "item [1] was \"A2\"\r\n" +
+                        "item [2] was \"A3\"\r\n" +
+                        "item [3] was \"A4\"\r\n" +
+                        "item [4] was \"A5\""},
                 {TEST_LIST, iterableHasItems(greaterThan(5), containsString("A")), "Tested object\n" +
                         "Expected: has item(s): a string containing \"A\". Expected count: a value greater than <5>\n" +
-                        "     but: Count: 5. <5> was equal to <5>"},
+                        "     but: Count <5> was equal to <5>"},
                 {TEST_LIST, iterableHasItems(4, containsString("A")), "Tested object\n" +
                         "Expected: has item(s): a string containing \"A\". Expected count: <4>\n" +
-                        "     but: Count: 5. was <5>"},
+                        "     but: Count was <5>"},
                 {TEST_LIST, iterableHasItem(notOf(containsString("A")), containsString("1")),
                         "Tested object\n" +
                                 "Expected: has item(s): not a string containing \"A\", a string containing \"1\". Expected count: a value equal to or greater than <1>\n" +
@@ -211,11 +211,11 @@ public class IterableMatchersTest {
                         "     but: Not present item: \"A6\""},
                 {TEST_LIST, iterableHasItems(2, "A1"), "Tested object\n" +
                         "Expected: has item(s): \"A1\". Expected count: <2>\n" +
-                        "     but: Count: 1. was <1>"},
+                        "     but: Count was <1>"},
                 {TEST_LIST, iterableHasItems(greaterThanOrEqualTo(2), "A1"),
                         "Tested object\n" +
                                 "Expected: has item(s): \"A1\". Expected count: a value equal to or greater than <2>\n" +
-                                "     but: Count: 1. <1> was less than <2>"},
+                                "     but: Count <1> was less than <2>"},
 
 
                 {TEST_MAP, mapInOrder(mapEntry("A2", "B2"),
@@ -224,10 +224,10 @@ public class IterableMatchersTest {
                         mapEntry("A4", "B4"),
                         mapEntry("A5", "B5")), "Tested object\n" +
                         "Expected: in following order: Key: \"A2\" Value: \"B2\", Key: \"A1\" Value: \"B1\", Key: \"A3\" Value: \"B3\", Key: \"A4\" Value: \"B4\", Key: \"A5\" Value: \"B5\"\n" +
-                        "     but: item [0]: A1=B1. Key: A1. was \"A1\"\r\n" +
-                        "Value: B1. was \"B1\"\r\n" +
-                        "item [1]: A2=B2. Key: A2. was \"A2\"\r\n" +
-                        "Value: B2. was \"B2\""},
+                        "     but: item [0] Key was \"A1\"\r\n" +
+                        "Value was \"B1\"\r\n" +
+                        "item [1] Key was \"A2\"\r\n" +
+                        "Value was \"B2\""},
 
                 {TEST_MAP, mapInOrder(mapEntry("A1", "B2"),
                         mapEntry("A1", "B2"),
@@ -235,8 +235,8 @@ public class IterableMatchersTest {
                         mapEntry("A4", "B4"),
                         mapEntry("A5", "B5")), "Tested object\n" +
                         "Expected: in following order: Key: \"A1\" Value: \"B2\", Key: \"A1\" Value: \"B2\", Key: \"A3\" Value: \"B3\", Key: \"A4\" Value: \"B4\", Key: \"A5\" Value: \"B5\"\n" +
-                        "     but: item [0]: A1=B1. Value: B1. was \"B1\"\r\n" +
-                        "item [1]: A2=B2. Key: A2. was \"A2\""},
+                        "     but: item [0] Value was \"B1\"\r\n" +
+                        "item [1] Key was \"A2\""},
 
                 {TEST_MAP, mapInOrder(mapEntry("A1", "B1"),
                         mapEntry("A2", "B2"),
@@ -251,8 +251,8 @@ public class IterableMatchersTest {
                         entryKey("A4"),
                         entryKey("A5")), "Tested object\n" +
                         "Expected: in following order: Key: \"A2\" Value: ANYTHING, Key: \"A1\" Value: ANYTHING, Key: \"A3\" Value: ANYTHING, Key: \"A4\" Value: ANYTHING, Key: \"A5\" Value: ANYTHING\n" +
-                        "     but: item [0]: A1=B1. Key: A1. was \"A1\"\r\n" +
-                        "item [1]: A2=B2. Key: A2. was \"A2\""},
+                        "     but: item [0] Key was \"A1\"\r\n" +
+                        "item [1] Key was \"A2\""},
 
                 {TEST_MAP, mapInOrder(entryValue("B2"),
                         entryValue("B1"),
@@ -260,8 +260,8 @@ public class IterableMatchersTest {
                         entryValue("B4"),
                         entryValue("B5")), "Tested object\n" +
                         "Expected: in following order: Key: ANYTHING Value: \"B2\", Key: ANYTHING Value: \"B1\", Key: ANYTHING Value: \"B3\", Key: ANYTHING Value: \"B4\", Key: ANYTHING Value: \"B5\"\n" +
-                        "     but: item [0]: A1=B1. Value: B1. was \"B1\"\r\n" +
-                        "item [1]: A2=B2. Value: B2. was \"B2\""},
+                        "     but: item [0] Value was \"B1\"\r\n" +
+                        "item [1] Value was \"B2\""},
 
                 {TEST_MAP, mapInOrder(entryValue("B1"),
                         entryValue("B2"),
@@ -270,7 +270,7 @@ public class IterableMatchersTest {
                         entryValue("B6")),
                         "Tested object\n" +
                                 "Expected: in following order: Key: ANYTHING Value: \"B1\", Key: ANYTHING Value: \"B2\", Key: ANYTHING Value: \"B3\", Key: ANYTHING Value: \"B4\", Key: ANYTHING Value: \"B6\"\n" +
-                                "     but: item [4]: A5=B5. Value: B5. was \"B5\""},
+                                "     but: item [4] Value was \"B5\""},
 
                 {TEST_MAP, mapOf(mapEntry("A2", "B2"),
                         mapEntry("A1", "B1"),
@@ -312,43 +312,43 @@ public class IterableMatchersTest {
                 {TEST_MAP, eachEntry(startsWith("B"), startsWith("A")),
                         "Tested object\n" +
                                 "Expected: each entry: Key: a string starting with \"B\" Value: a string starting with \"A\"\n" +
-                                "     but: 0: A1=B1. Key: A1. was \"A1\"\r\n" +
-                                "Value: B1. was \"B1\"\r\n" +
-                                "1: A2=B2. Key: A2. was \"A2\"\r\n" +
-                                "Value: B2. was \"B2\"\r\n" +
-                                "2: A3=B3. Key: A3. was \"A3\"\r\n" +
-                                "Value: B3. was \"B3\"\r\n" +
-                                "3: A4=B4. Key: A4. was \"A4\"\r\n" +
-                                "Value: B4. was \"B4\"\r\n" +
-                                "4: A5=B5. Key: A5. was \"A5\"\r\n" +
-                                "Value: B5. was \"B5\""},
+                                "     but: item [0] Key was \"A1\"\r\n" +
+                                "Value was \"B1\"\r\n" +
+                                "item [1] Key was \"A2\"\r\n" +
+                                "Value was \"B2\"\r\n" +
+                                "item [2] Key was \"A3\"\r\n" +
+                                "Value was \"B3\"\r\n" +
+                                "item [3] Key was \"A4\"\r\n" +
+                                "Value was \"B4\"\r\n" +
+                                "item [4] Key was \"A5\"\r\n" +
+                                "Value was \"B5\""},
 
                 {TEST_MAP, eachEntryKey(startsWith("B")), "Tested object\n" +
                         "Expected: each entry: Key: a string starting with \"B\" Value: ANYTHING\n" +
-                        "     but: 0: A1=B1. Key: A1. was \"A1\"\r\n" +
-                        "1: A2=B2. Key: A2. was \"A2\"\r\n" +
-                        "2: A3=B3. Key: A3. was \"A3\"\r\n" +
-                        "3: A4=B4. Key: A4. was \"A4\"\r\n" +
-                        "4: A5=B5. Key: A5. was \"A5\""},
+                        "     but: item [0] Key was \"A1\"\r\n" +
+                        "item [1] Key was \"A2\"\r\n" +
+                        "item [2] Key was \"A3\"\r\n" +
+                        "item [3] Key was \"A4\"\r\n" +
+                        "item [4] Key was \"A5\""},
 
                 {TEST_MAP, eachEntryValue(startsWith("A")),
                         "Tested object\n" +
                                 "Expected: each entry: Key: ANYTHING Value: a string starting with \"A\"\n" +
-                                "     but: 0: A1=B1. Value: B1. was \"B1\"\r\n" +
-                                "1: A2=B2. Value: B2. was \"B2\"\r\n" +
-                                "2: A3=B3. Value: B3. was \"B3\"\r\n" +
-                                "3: A4=B4. Value: B4. was \"B4\"\r\n" +
-                                "4: A5=B5. Value: B5. was \"B5\""},
+                                "     but: item [0] Value was \"B1\"\r\n" +
+                                "item [1] Value was \"B2\"\r\n" +
+                                "item [2] Value was \"B3\"\r\n" +
+                                "item [3] Value was \"B4\"\r\n" +
+                                "item [4] Value was \"B5\""},
 
                 {TEST_MAP, mapHasEntries(greaterThan(5), startsWith("A"), startsWith("B")),
                         "Tested object\n" +
                                 "Expected: has entry(es): Key: a string starting with \"A\" Value: a string starting with \"B\". Expected count: a value greater than <5>\n" +
-                                "     but: Count: 5. <5> was equal to <5>"},
+                                "     but: Count <5> was equal to <5>"},
 
                 {TEST_MAP, mapHasEntries(6, startsWith("A"), startsWith("B")),
                         "Tested object\n" +
                                 "Expected: has entry(es): Key: a string starting with \"A\" Value: a string starting with \"B\". Expected count: <6>\n" +
-                                "     but: Count: 5. was <5>"},
+                                "     but: Count was <5>"},
 
 
                 {TEST_MAP, mapHasEntry(startsWith("B"), startsWith("A")), "Tested object\n" +

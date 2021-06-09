@@ -49,7 +49,7 @@ public class SeparatedStringMatcherTest {
                 {withSeparator(",", "A1", "A2", "A3", "A4", "A6"),
                         "Checked string\n" +
                                 "Expected: string has substring(s) separated by <','>: in following order: \"A1\", \"A2\", \"A3\", \"A4\", \"A6\"\n" +
-                                "     but: item [4]: A5. was \"A5\""},
+                                "     but: item [4] was \"A5\""},
 
                 {StringContainsWithSeparator.withSeparator(",", "A6"),
                         "Checked string\n" +
@@ -73,7 +73,7 @@ public class SeparatedStringMatcherTest {
                         containsString("6"))),
                         "Checked string\n" +
                                 "Expected: string has substring(s) separated by <','>: in following order: a string containing \"1\", a string containing \"2\", a string containing \"3\", a string containing \"4\", a string containing \"6\"\n" +
-                                "     but: item [4]: A5. was \"A5\""},
+                                "     but: item [4] was \"A5\""},
 
                 {StringContainsWithSeparator.withSeparator(",", arrayIncludes("A1", "A6")),
                         "Checked string\n" +
@@ -98,21 +98,21 @@ public class SeparatedStringMatcherTest {
                 {StringContainsWithSeparator.withSeparator(",", eachOfArray(containsString("B"))),
                         "Checked string\n" +
                                 "Expected: string has substring(s) separated by <','>: each item: a string containing \"B\"\n" +
-                                "     but: 0: A1. was \"A1\"\r\n" +
-                                "1: A2. was \"A2\"\r\n" +
-                                "2: A3. was \"A3\"\r\n" +
-                                "3: A4. was \"A4\"\r\n" +
-                                "4: A5. was \"A5\""},
+                                "     but: item [0] was \"A1\"\r\n" +
+                                "item [1] was \"A2\"\r\n" +
+                                "item [2] was \"A3\"\r\n" +
+                                "item [3] was \"A4\"\r\n" +
+                                "item [4] was \"A5\""},
 
                 {StringContainsWithSeparator.withSeparator(",", arrayHasItems(greaterThan(6), containsString("A"))),
                         "Checked string\n" +
                                 "Expected: string has substring(s) separated by <','>: has item(s): a string containing \"A\". Expected count: a value greater than <6>\n" +
-                                "     but: Count: 5. <5> was less than <6>"},
+                                "     but: Count <5> was less than <6>"},
 
                 {StringContainsWithSeparator.withSeparator(",", arrayHasItems(6, containsString("A"))),
                         "Checked string\n" +
                                 "Expected: string has substring(s) separated by <','>: has item(s): a string containing \"A\". Expected count: <6>\n" +
-                                "     but: Count: 5. was <5>"},
+                                "     but: Count was <5>"},
 
                 {StringContainsWithSeparator.withSeparator(",", arrayHasItem(containsString("A"), containsString("6"))),
                         "Checked string\n" +

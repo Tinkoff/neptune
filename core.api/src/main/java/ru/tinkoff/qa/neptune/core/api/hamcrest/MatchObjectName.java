@@ -10,7 +10,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization
 public abstract class MatchObjectName {
 
     @Override
-    public String toString() {
+    public final String toString() {
         return translate(this);
     }
 }

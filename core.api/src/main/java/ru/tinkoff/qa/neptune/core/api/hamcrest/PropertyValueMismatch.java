@@ -9,14 +9,11 @@ import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 /**
  * Common mismatch description.
  */
-@Description("{property}: {value}. {mismatch}")
+@Description("{property} {mismatch}")
 public final class PropertyValueMismatch extends MismatchDescriber {
 
     @DescriptionFragment(value = "property")
     final Object propertyName;
-
-    @DescriptionFragment("value")
-    final Object checked;
 
     @DescriptionFragment(value = "mismatch", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
     final org.hamcrest.Description description;
@@ -26,7 +23,6 @@ public final class PropertyValueMismatch extends MismatchDescriber {
         var d = new StringDescription();
         matcher.describeMismatch(checked, d);
         description = d;
-        this.checked = checked;
     }
 
     public PropertyValueMismatch(String propertyName, Object checked, Matcher<?> matcher) {

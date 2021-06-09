@@ -77,7 +77,7 @@ public final class WindowHasPositionMatcher extends NeptuneFeatureMatcher<Window
     @Override
     protected boolean featureMatches(Window toMatch) {
         var windowPresent = windowIsPresent();
-        if (windowPresent.matches(toMatch)) {
+        if (!windowPresent.matches(toMatch)) {
             appendMismatchDescription(windowPresent, toMatch);
             return false;
         }

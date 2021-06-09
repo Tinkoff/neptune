@@ -65,7 +65,7 @@ public final class AllCriteriaMatcher<T> extends NeptuneFeatureMatcher<T> {
 
         if (count == delegateTo.length) {
             mismatchDescriptions.clear();
-            appendMismatchDescription(new DoesNotMatchAnyCriteria());
+            appendMismatchDescription(new DoesNotMatchAnyCriteria(toMatch));
             return false;
         }
 

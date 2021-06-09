@@ -25,7 +25,7 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.all.AllCriteriaMatc
 @Description("{getFrom} body {responseBody}")
 public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
 
-    @DescriptionFragment(value = "getFrom", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "getFrom")
     private final Object getFrom;
 
     @DescriptionFragment(value = "responseBody", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)

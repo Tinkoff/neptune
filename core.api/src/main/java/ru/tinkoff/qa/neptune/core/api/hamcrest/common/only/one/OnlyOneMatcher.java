@@ -65,7 +65,7 @@ public final class OnlyOneMatcher<T> extends NeptuneFeatureMatcher<T> {
         }
 
         if (matchCount == 0) {
-            appendMismatchDescription(new DoesNotMatchAnyCriteria());
+            appendMismatchDescription(new DoesNotMatchAnyCriteria(toMatch));
             return false;
         }
 

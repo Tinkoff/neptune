@@ -3,46 +3,34 @@ package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy;
 import com.browserup.harreader.model.HarEntry;
 import com.browserup.harreader.model.HarHeader;
 import org.hamcrest.Matcher;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.PropertyValueMismatch;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.HarRecordHeader;
-import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.NoSuchHarHeaderNameMismatch;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.RecordedRequest;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.RecordedResponse;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.stream.Collectors.toMap;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.equalTo;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.all.AllCriteriaMatcher.all;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.MapEntryMatcher.entryKey;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsItemsMatcher.mapHasEntryValue;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFeatureMatcher.KEY_MATCHER_MASK;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFeatureMatcher.VALUE_MATCHER_MASK;
 
-@Description("{getFrom} has header [{nameMatcher}] {valueMatcher}")
-public class HarEntryHasHeaders extends NeptuneFeatureMatcher<HarEntry> {
+@Description("{getFrom} has header [{" + KEY_MATCHER_MASK + "}] {" + VALUE_MATCHER_MASK + "}")
+public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry, String, String> {
 
-    @DescriptionFragment(value = "getFrom", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "getFrom")
     private final Object getFrom;
 
-    @DescriptionFragment(value = "nameMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
-    private final Matcher<? super String> nameMatcher;
-
-    @DescriptionFragment(value = "valueMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
-    private final Matcher<? super String> valueMatcher;
-
-    protected HarEntryHasHeaders(Object getFrom, Matcher<? super String> nameMatcher, Matcher<? super String> valueMatcher) {
-        super(true);
+    private HarEntryHasHeaders(Object getFrom, Matcher<? super String> nameMatcher, Matcher<? super String> valueMatcher) {
+        super(true, nameMatcher, valueMatcher);
         checkNotNull(getFrom);
         this.getFrom = getFrom;
-        this.nameMatcher = nameMatcher;
-        this.valueMatcher = valueMatcher;
     }
 
     /**
@@ -292,42 +280,26 @@ public class HarEntryHasHeaders extends NeptuneFeatureMatcher<HarEntry> {
     }
 
     @Override
-    protected boolean featureMatches(HarEntry toMatch) {
+    protected Map<String, String> getMap(HarEntry harEntry) {
         List<HarHeader> headers;
 
         if (getFrom instanceof RecordedResponse) {
-            headers = toMatch.getResponse().getHeaders();
+            headers = harEntry.getResponse().getHeaders();
         } else {
-            headers = toMatch.getRequest().getHeaders();
+            headers = harEntry.getRequest().getHeaders();
         }
 
-        var headerMap = headers.stream().collect(Collectors.toMap(HarHeader::getName, HarHeader::getValue));
+        return headers.stream().collect(toMap(HarHeader::getName, HarHeader::getValue));
+    }
 
-        var entryMatcher = entryKey(nameMatcher);
-        var foundHeaders = headerMap
-                .entrySet()
-                .stream()
-                .filter(entryMatcher::matches)
-                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+    @Override
+    protected String getDescriptionOnKeyAbsence() {
+        return new HarRecordHeader().toString();
+    }
 
-        if (foundHeaders.size() == 0) {
-            appendMismatchDescription(new NoSuchHarHeaderNameMismatch(nameMatcher));
-            return false;
-        }
-
-        if (!mapHasEntryValue(valueMatcher).matches(foundHeaders)) {
-
-            foundHeaders.entrySet().forEach(e -> {
-                if (!valueMatcher.matches(e)) {
-                    appendMismatchDescription(new PropertyValueMismatch(new HarRecordHeader()
-                            + "[" + e.getKey() + "]",
-                            e.getValue(),
-                            valueMatcher));
-                }
-            });
-            return false;
-        }
-
-        return true;
+    @Override
+    protected String getDescriptionOnValueMismatch(String s) {
+        return new HarRecordHeader()
+                + "[" + s + "]";
     }
 }
