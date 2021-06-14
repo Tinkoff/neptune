@@ -2,12 +2,6 @@
 
 Данный модуль используется для связывания функциональности **Neptune** и **[Hamcrest matchers](http://hamcrest.org/JavaHamcrest/tutorial)**.
 
-Так же матчеры, которые предоставляет Neptune:
-
-- [Общего назначения](./../../../core.api/doc/rus/HAMCREST.MD)
-- [Для интеграции с Selenium WebDriver](./../../../selenium/doc/rus/HAMCREST.MD)
-- [Для Http](./../../../http.api/doc/rus/HAMCREST.MD)
-
 ## Оглавление
 - [Примеры](#Примеры)
   - [Проверка значения](#Проверка-значения)
