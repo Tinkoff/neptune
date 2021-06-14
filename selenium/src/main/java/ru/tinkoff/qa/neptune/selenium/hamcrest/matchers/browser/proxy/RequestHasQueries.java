@@ -156,12 +156,11 @@ public final class RequestHasQueries extends MappedDiagnosticFeatureMatcher<HarE
 
     @Override
     protected String getDescriptionOnKeyAbsence() {
-        return new HarRecordQueryParam().toString();
+        return new HarRecordQueryParam(null).toString();
     }
 
     @Override
     protected String getDescriptionOnValueMismatch(String s) {
-        return new HarRecordQueryParam()
-                + "[" + s + "]";
+        return new HarRecordQueryParam(s).toString();
     }
 }

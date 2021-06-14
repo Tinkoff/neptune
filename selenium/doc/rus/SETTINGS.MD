@@ -36,8 +36,8 @@
 
 ### WEB_DRIVER_TO_LAUNCH
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Настройка указывает класс того WebDriver'а, который должен быть использован в тестах.
 Доступные значения (объекты перечисления `ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers`):
@@ -77,12 +77,12 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-объектов-перечислений)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### Настройки Capabilities
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 [Важная информация](#web_driver_to_launch)
 
@@ -190,12 +190,12 @@ public class SomeClass {
 быть использованы независимо от используемого типа WebDriver'а.
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 #### WEB_DRIVER_CAPABILITY_BROWSER_NAME
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Указывает значение `browserName` для тех случаев, когда `WEB_DRIVER_TO_LAUNCH=REMOTE_DRIVER`. Во всех остальных случаях
 настройка/свойство игнорируется.
@@ -219,12 +219,12 @@ public class SomeClass {
 }
 ```
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 #### WEB_DRIVER_CAPABILITY_PLATFORM_NAME
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Указывает значение `platformName`. Значение должно соответствовать одному из элементов перечисления `org.openqa.selenium.Platform`, 
 либо строковому представлению одного из элементов перечисления `org.openqa.selenium.Platform`.
@@ -252,12 +252,12 @@ public class SomeClass {
 }
 ```
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 #### WEB_DRIVER_CAPABILITY_SUPPORTS_JAVASCRIPT
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Указывает значение `javascriptEnabled`. Доступные значения - `true` или `false`.
 
@@ -282,12 +282,12 @@ public class SomeClass {
 Значение по умолчанию - `true`
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 #### WEB_DRIVER_CAPABILITY_BROWSER_VERSION
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Указывает значение `browserVersion`.
 
@@ -309,7 +309,7 @@ public class SomeClass {
 }
 ```
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -317,8 +317,8 @@ public class SomeClass {
 
 ### FIND_ONLY_VISIBLE_ELEMENTS
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Настройка указывает на необходимость работать только с видимыми элементами страницы. Доступные значения - `true` (рекомендуемое 
 для большинства случаев) или `false`. Если значение `true`, то работа будет выполняться только с видимыми на странице элементами,
@@ -352,14 +352,14 @@ public class SomeClass {
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-</details>
+
 
 ### Проксирование трафика браузера
 
 #### USE_BROWSER_PROXY
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Настройка указывает на необходимость использовать локальный автоматически запущенный прокси-сервер для отслеживания 
 трафика браузера. Доступные значения - `true` или `false`. Если значение `true`, то будет происходить запись трафика, 
@@ -391,12 +391,12 @@ public class SomeClass {
 [О работе с записанным трафиком](./BROWSER_PROXY.MD)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 #### PROXY_URL_PROPERTY
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Http-адрес удаленного прокси-сервера, через который должен идти трафик браузера. Данная настройка опциональна и имеет смысл, 
 если [USE_BROWSER_PROXY](#use_browser_proxy)=`true` и через [настройки Capabilities](#Настройки-Capabilities) не передается
@@ -427,14 +427,14 @@ public class SomeClass {
 [О работе с записанным трафиком](./BROWSER_PROXY.MD)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ### KEEP_WEB_DRIVER_SESSION_OPENED
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Настройка указывает на необходимость сохранять открытой сессию WebDriver'а настолько долго, насколько это возможно. Доступные 
 значения - `true` или `false`. Если значение `true`, то ранее созданная сессия WebDriver'а будет держаться открытой и 
@@ -475,12 +475,12 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-Boolean)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### FORCE_WINDOW_MAXIMIZING_ON_START
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Настройка указывает на необходимость развората окна браузера на весь монитор при старте новой сессии WebDriver'а. Доступные 
 значения - `true` или `false`. Если значение `true`, то при старте новой сессии WebDriver'а окно браузера будет развернуто 
@@ -510,14 +510,14 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-Boolean)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## BASE_WEB_DRIVER_URL
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Настройка указывает URL стартовой страницы приложения/корневой URL, по которому приложение доступно для открытия в браузере, 
 обычно в формате `схема или протокол`://`хост:порт если есть/фрагмент/пути/если/надо`.
@@ -550,12 +550,12 @@ public class SomeClass {
 [Об управлении контентом](./CONTENT_MANAGEMENT.MD)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ## REMOTE_WEB_DRIVER_URL
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 [Важная информация](#web_driver_to_launch)
 
@@ -593,14 +593,14 @@ public class SomeClass {
 [Selenoid](https://aerokube.com/selenoid/)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ## Время ожидания по умолчанию
 
 ### Ожидание элемента(ов)
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Свойства `WAITING_FOR_ELEMENTS_TIME_UNIT` и `WAITING_FOR_ELEMENTS_TIME` определяют время ожидания появления элементов страницы 
 по умолчанию. Для свойства `WAITING_FOR_ELEMENTS_TIME_UNIT` следует указать значение, соответствующее одному из элементов 
@@ -635,12 +635,12 @@ public class SomeClass {
 [Поиск элементов страницы](./ELEMENTS_SEARCHING.MD)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### Ожидание фрейма
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Свойства `WAITING_FOR_FRAME_SWITCHING_TIME_UNIT` и `WAITING_FOR_FRAME_SWITCHING_TIME` определяют время ожидания появления 
 фрейма/возможности переключиться во фрейм. Для свойства `WAITING_FOR_FRAME_SWITCHING_TIME_UNIT` следует указать значение, 
@@ -678,12 +678,12 @@ public class SomeClass {
 [Фреймы](./FRAMES.MD)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### Ожидание окна
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Свойства `WAITING_FOR_WINDOWS_TIME_UNIT` и `WAITING_FOR_WINDOWS_TIME` определяют время ожидания появления окна/вкладки браузера. 
 Для свойства `WAITING_FOR_WINDOWS_TIME_UNIT` следует указать значение, соответствующее одному из элементов перечисления 
@@ -720,12 +720,12 @@ public class SomeClass {
 [Окна/Вкладки](./WINDOWS.MD)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### Ожидание алерта
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Свойства `WAITING_FOR_ALERTS_TIME_UNIT` и `WAITING_FOR_ALERTS_TIME` определяют время ожидания появления алерта.
 Для свойства `WAITING_FOR_ALERTS_TIME_UNIT` следует указать значение, соответствующее одному из элементов перечисления
@@ -761,12 +761,12 @@ public class SomeClass {
 [Алерты](./ALERTS.MD)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### Ожидание загрузки страницы
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Свойства `WAITING_FOR_PAGE_LOADED_TIME_UNIT` и `WAITING_FOR_PAGE_LOADED_TIME` определяют время ожидания полной загрузки 
 страницы. Для свойства `WAITING_FOR_PAGE_LOADED_TIME_UNIT` следует указать значение, соответствующее одному из элементов 
@@ -800,14 +800,14 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-величины-продолжительности)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## WEB_DRIVER_CREDENTIALS
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Настройка предоставляет объект `ru.tinkoff.qa.neptune.selenium.authentication.BrowserCredentials`, который выполняет логин/аутентификацию 
 в приложении через браузер.
@@ -860,12 +860,12 @@ public class SomeClass {
 [Про логин/аутентификацию в браузере](./LOGIN_IN_BROWSER.MD)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ## WEB_DRIVER_DEFAULT_AUTO_SCROLLER
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Настройка предоставляет объект `ru.tinkoff.qa.neptune.selenium.auto.scrolling.AutoScroller`, который выполняет автоскроллирование/
 автоматический фокус на нужном элементе.
@@ -917,4 +917,3 @@ public class SomeClass {
 [Про авто-скроллирование](./AUTO_SCROLLING.MD)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>

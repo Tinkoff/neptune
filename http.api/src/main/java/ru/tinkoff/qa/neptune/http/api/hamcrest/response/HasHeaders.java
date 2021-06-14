@@ -123,11 +123,11 @@ public final class HasHeaders extends MappedDiagnosticFeatureMatcher<HttpRespons
 
     @Override
     protected String getDescriptionOnKeyAbsence() {
-        return new Header().toString();
+        return new Header(null).toString();
     }
 
     @Override
     protected String getDescriptionOnValueMismatch(String s) {
-        return new Header() + "[" + s + "]";
+        return new Header(s).toString();
     }
 }

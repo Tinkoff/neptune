@@ -6,8 +6,8 @@
 ## Maven
 
 ### Если сгенерированный код должен лежать в test
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -71,11 +71,11 @@
 </project>
 ```
 
-</details>
+
 
 ### Если сгенерированный код должен лежать в main
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -137,7 +137,7 @@
 
 </project>
 ```
-</details>
+
 
 ## Gradle
 
@@ -150,8 +150,8 @@
 Но все же
 
 ### Если сгенерированный код должен лежать в test
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```groovy
 buildscript {
@@ -227,11 +227,11 @@ compileTestJava {
 
 
 ```
-</details>
+
 
 ### Если сгенерированный код должен лежать в main
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```groovy
 buildscript {
@@ -307,7 +307,7 @@ compileJava {
 }
 
 ```
-</details>
+
 
 ## Стоит иметь в виду
 

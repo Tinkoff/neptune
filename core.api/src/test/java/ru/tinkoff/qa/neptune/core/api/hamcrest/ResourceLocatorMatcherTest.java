@@ -20,7 +20,7 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPortMat
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasProtocolMatcher.urlHasProtocol;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryParameters.uriHasQueryParameter;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryParameters.urlHasQueryParameter;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryStringMatcher.uriHasQuery;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryStringMatcher.uriHasQueryString;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryStringMatcher.urlHasQueryString;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasReferenceMatcher.urlHasReference;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasSchemeMatcher.uriHasScheme;
@@ -52,7 +52,7 @@ public class ResourceLocatorMatcherTest {
                 {testURI, uriHasScheme("https")},
                 {testURI.toURL(), urlHasProtocol("https")},
 
-                {testURI, uriHasQuery("q=how+to+create+e2e+test")},
+                {testURI, uriHasQueryString("q=how+to+create+e2e+test")},
                 {testURI.toURL(), urlHasQueryString("q=how+to+create+e2e+test")},
 
                 {testURI.toURL(), urlHasReference("test")},
@@ -213,13 +213,13 @@ public class ResourceLocatorMatcherTest {
                         "     but: Null value. All checks were stopped"},
 
 
-                {testURI, uriHasQuery("e2e"), "Tested resource locator\n" +
+                {testURI, uriHasQueryString("e2e"), "Tested resource locator\n" +
                         "Expected: Query \"e2e\"\n" +
                         "     but: was \"q=how+to+create+e2e+test\""},
                 {testURI.toURL(), urlHasQueryString("e2e"), "Tested resource locator\n" +
                         "Expected: Query \"e2e\"\n" +
                         "     but: was \"q=how+to+create+e2e+test\""},
-                {1, uriHasQuery("e2e"), "Tested resource locator\n" +
+                {1, uriHasQueryString("e2e"), "Tested resource locator\n" +
                         "Expected: Query \"e2e\"\n" +
                         "     but: Type mismatch. Object of class that equals or extends following types was expected: \r\n" +
                         "class java.net.URI\r\n" +
@@ -229,7 +229,7 @@ public class ResourceLocatorMatcherTest {
                         "     but: Type mismatch. Object of class that equals or extends following types was expected: \r\n" +
                         "class java.net.URL\r\n" +
                         "Class of passed value is `class java.lang.Integer`. All checks were stopped"},
-                {null, uriHasQuery("e2e"), "Tested resource locator\n" +
+                {null, uriHasQueryString("e2e"), "Tested resource locator\n" +
                         "Expected: Query \"e2e\"\n" +
                         "     but: Null value. All checks were stopped"},
                 {null, urlHasQueryString("e2e"), "Tested resource locator\n" +

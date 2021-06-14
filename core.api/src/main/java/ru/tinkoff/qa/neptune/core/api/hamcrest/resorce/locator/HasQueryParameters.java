@@ -95,13 +95,12 @@ public final class HasQueryParameters<T> extends MappedDiagnosticFeatureMatcher<
 
     @Override
     protected String getDescriptionOnKeyAbsence() {
-        return new QueryParameter().toString();
+        return new QueryParameter(null).toString();
     }
 
     @Override
     protected String getDescriptionOnValueMismatch(String key) {
-        return new QueryParameter()
-                + "[" + key + "]";
+        return new QueryParameter(key).toString();
     }
 
     private static final class GetQueryMapFunc implements Function<String, Map<String, Iterable<String>>> {

@@ -43,7 +43,7 @@ public final class HasQueryStringMatcher<T> extends ResourceLocatorMatcher<T, St
      * @param queryMather that checks the query value
      * @return new {@link HasQueryStringMatcher}
      */
-    public static HasQueryStringMatcher<URI> uriHasQuery(Matcher<? super String> queryMather) {
+    public static HasQueryStringMatcher<URI> uriHasQueryString(Matcher<? super String> queryMather) {
         return new HasQueryStringMatcher<>(URI.class, queryMather, URI::getQuery);
     }
 
@@ -53,7 +53,7 @@ public final class HasQueryStringMatcher<T> extends ResourceLocatorMatcher<T, St
      * @param query is the expected value of the query
      * @return new {@link HasQueryStringMatcher}
      */
-    public static HasQueryStringMatcher<URI> uriHasQuery(String query) {
+    public static HasQueryStringMatcher<URI> uriHasQueryString(String query) {
         return new HasQueryStringMatcher<>(URI.class, equalTo(query), URI::getQuery);
     }
 }

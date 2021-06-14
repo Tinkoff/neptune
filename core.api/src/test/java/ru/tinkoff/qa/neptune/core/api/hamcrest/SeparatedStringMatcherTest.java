@@ -26,20 +26,20 @@ public class SeparatedStringMatcherTest {
     public static Object[][] data1() {
         return new Object[][]{
                 {withSeparator(",", "A1", "A2", "A3", "A4", "A5")},
-                {StringContainsWithSeparator.withSeparator(",", "A1")},
-                {StringContainsWithSeparator.withSeparator(",", arrayOf("A1", "A3", "A2", "A4", "A5"))},
-                {StringContainsWithSeparator.withSeparator(",", arrayInOrder(containsString("1"),
+                {withSeparator(",", "A1")},
+                {withSeparator(",", arrayOf("A1", "A3", "A2", "A4", "A5"))},
+                {withSeparator(",", arrayInOrder(containsString("1"),
                         containsString("2"),
                         containsString("3"),
                         containsString("4"),
                         containsString("5")))},
-                {StringContainsWithSeparator.withSeparator(",", arrayIncludes("A1", "A5"))},
-                {StringContainsWithSeparator.withSeparator(",", arrayIncludesInOrder("A1", "A3", "A5"))},
-                {StringContainsWithSeparator.withSeparator(",", eachOfArray(containsString("A")))},
-                {StringContainsWithSeparator.withSeparator(",", arrayHasItems(greaterThan(4), containsString("A")))},
-                {StringContainsWithSeparator.withSeparator(",", arrayHasItems(5, containsString("A")))},
-                {StringContainsWithSeparator.withSeparator(",", arrayHasItem(containsString("A"), containsString("1")))},
-                {StringContainsWithSeparator.withSeparator(",", arrayHasItem(notOf(containsString("B"))))}
+                {withSeparator(",", arrayIncludes("A1", "A5"))},
+                {withSeparator(",", arrayIncludesInOrder("A1", "A3", "A5"))},
+                {withSeparator(",", eachOfArray(containsString("A")))},
+                {withSeparator(",", arrayHasItems(greaterThan(4), containsString("A")))},
+                {withSeparator(",", arrayHasItems(5, containsString("A")))},
+                {withSeparator(",", arrayHasItem(containsString("A"), containsString("1")))},
+                {withSeparator(",", arrayHasItem(notOf(containsString("B"))))}
         };
     }
 
@@ -51,22 +51,22 @@ public class SeparatedStringMatcherTest {
                                 "Expected: string has substring(s) separated by <','>: in following order: \"A1\", \"A2\", \"A3\", \"A4\", \"A6\"\n" +
                                 "     but: item [4] was \"A5\""},
 
-                {StringContainsWithSeparator.withSeparator(",", "A6"),
+                {withSeparator(",", "A6"),
                         "Checked string\n" +
                                 "Expected: string has substring(s) separated by <','>: has item(s): \"A6\". Expected count: a value equal to or greater than <1>\n" +
                                 "     but: Not present item: \"A6\""},
 
-                {StringContainsWithSeparator.withSeparator(",", arrayOf("A1", "A3", "A2", "A4")),
+                {withSeparator(",", arrayOf("A1", "A3", "A2", "A4")),
                         "Checked string\n" +
                                 "Expected: string has substring(s) separated by <','>: in any order: \"A1\", \"A3\", \"A2\", \"A4\"\n" +
                                 "     but: 5 items instead of 4"},
 
-                {StringContainsWithSeparator.withSeparator(",", arrayOf("A1", "A3", "A2", "A4", "A6")),
+                {withSeparator(",", arrayOf("A1", "A3", "A2", "A4", "A6")),
                         "Checked string\n" +
                                 "Expected: string has substring(s) separated by <','>: in any order: \"A1\", \"A3\", \"A2\", \"A4\", \"A6\"\n" +
                                 "     but: Not present item: \"A6\""},
 
-                {StringContainsWithSeparator.withSeparator(",", arrayInOrder(containsString("1"),
+                {withSeparator(",", arrayInOrder(containsString("1"),
                         containsString("2"),
                         containsString("3"),
                         containsString("4"),
@@ -75,27 +75,27 @@ public class SeparatedStringMatcherTest {
                                 "Expected: string has substring(s) separated by <','>: in following order: a string containing \"1\", a string containing \"2\", a string containing \"3\", a string containing \"4\", a string containing \"6\"\n" +
                                 "     but: item [4] was \"A5\""},
 
-                {StringContainsWithSeparator.withSeparator(",", arrayIncludes("A1", "A6")),
+                {withSeparator(",", arrayIncludes("A1", "A6")),
                         "Checked string\n" +
                                 "Expected: string has substring(s) separated by <','>: includes in any order: \"A1\", \"A6\"\n" +
                                 "     but: Not present item: \"A6\""},
 
-                {StringContainsWithSeparator.withSeparator(",", arrayIncludesInOrder("A6", "A2", "A3")),
+                {withSeparator(",", arrayIncludesInOrder("A6", "A2", "A3")),
                         "Checked string\n" +
                                 "Expected: string has substring(s) separated by <','>: includes in following order: \"A6\", \"A2\", \"A3\"\n" +
                                 "     but: Not present item: \"A6\""},
 
-                {StringContainsWithSeparator.withSeparator(",", arrayIncludesInOrder("A1", "A5", "A3")),
+                {withSeparator(",", arrayIncludesInOrder("A1", "A5", "A3")),
                         "Checked string\n" +
                                 "Expected: string has substring(s) separated by <','>: includes in following order: \"A1\", \"A5\", \"A3\"\n" +
                                 "     but: The item ['\"A3\"'] doesn't go after : [A5; index: 4; criteria: '\"A5\"']"},
 
-                {StringContainsWithSeparator.withSeparator(",", arrayIncludesInOrder("A1", "A3", "A3")),
+                {withSeparator(",", arrayIncludesInOrder("A1", "A3", "A3")),
                         "Checked string\n" +
                                 "Expected: string has substring(s) separated by <','>: includes in following order: \"A1\", \"A3\", \"A3\"\n" +
                                 "     but: The item ['\"A3\"'] doesn't go after : [A3; index: 2; criteria: '\"A3\"']"},
 
-                {StringContainsWithSeparator.withSeparator(",", eachOfArray(containsString("B"))),
+                {withSeparator(",", eachOfArray(containsString("B"))),
                         "Checked string\n" +
                                 "Expected: string has substring(s) separated by <','>: each item: a string containing \"B\"\n" +
                                 "     but: item [0] was \"A1\"\r\n" +
@@ -104,17 +104,17 @@ public class SeparatedStringMatcherTest {
                                 "item [3] was \"A4\"\r\n" +
                                 "item [4] was \"A5\""},
 
-                {StringContainsWithSeparator.withSeparator(",", arrayHasItems(greaterThan(6), containsString("A"))),
+                {withSeparator(",", arrayHasItems(greaterThan(6), containsString("A"))),
                         "Checked string\n" +
                                 "Expected: string has substring(s) separated by <','>: has item(s): a string containing \"A\". Expected count: a value greater than <6>\n" +
                                 "     but: Count <5> was less than <6>"},
 
-                {StringContainsWithSeparator.withSeparator(",", arrayHasItems(6, containsString("A"))),
+                {withSeparator(",", arrayHasItems(6, containsString("A"))),
                         "Checked string\n" +
                                 "Expected: string has substring(s) separated by <','>: has item(s): a string containing \"A\". Expected count: <6>\n" +
                                 "     but: Count was <5>"},
 
-                {StringContainsWithSeparator.withSeparator(",", arrayHasItem(containsString("A"), containsString("6"))),
+                {withSeparator(",", arrayHasItem(containsString("A"), containsString("6"))),
                         "Checked string\n" +
                                 "Expected: string has substring(s) separated by <','>: has item(s): a string containing \"A\", " +
                                 "a string containing \"6\". Expected count: a value equal to or greater than <1>\n" +

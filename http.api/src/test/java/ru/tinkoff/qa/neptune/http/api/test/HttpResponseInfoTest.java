@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.test;
 
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryStringMatcher;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.lang.String.format;
@@ -15,7 +16,7 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsCons
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasHostMatcher.uriHasHost;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPathMatcher.uriHasPath;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPortMatcher.uriHasPort;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryStringMatcher.uriHasQuery;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryStringMatcher.uriHasQueryString;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasSchemeMatcher.uriHasScheme;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasBody.hasBody;
@@ -71,7 +72,7 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                         uriHasHost("127.0.0.1"),
                         uriHasPort(8089),
                         uriHasPath("/uri.html"),
-                        uriHasQuery(nullValue())
+                        HasQueryStringMatcher.uriHasQueryString(nullValue())
                 )));
     }
 

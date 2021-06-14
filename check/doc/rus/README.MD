@@ -2,6 +2,12 @@
 
 Данный модуль используется для связывания функциональности **Neptune** и **[Hamcrest matchers](http://hamcrest.org/JavaHamcrest/tutorial)**.
 
+Так же матчеры, которые предоставляет Neptune:
+
+- [Общего назначения](./../../../core.api/doc/rus/HAMCREST.MD)
+- [Для интеграции с Selenium WebDriver](./../../../selenium/doc/rus/HAMCREST.MD)
+- [Для Http](./../../../http.api/doc/rus/HAMCREST.MD)
+
 ## Оглавление
 - [Примеры](#Примеры)
   - [Простой пример. Единичная проверка значения](#Простой-пример-Единичная-проверка-значения)
@@ -192,7 +198,7 @@ public class MyTest {
 
 ## Дополнительные матчеры, которые предоставляет Neptune
 
-[Матчеры общего назначения. URL\URI](./../../../core.api/doc/rus/HAMCREST.MD)
+[Матчеры общего назначения](./../../../core.api/doc/rus/HAMCREST.MD)
 
 [Матчеры для валидации ответов http](./../../../http.api/doc/rus/HAMCREST.MD)
 

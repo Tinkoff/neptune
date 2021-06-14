@@ -294,12 +294,11 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
 
     @Override
     protected String getDescriptionOnKeyAbsence() {
-        return new HarRecordHeader().toString();
+        return new HarRecordHeader(null).toString();
     }
 
     @Override
     protected String getDescriptionOnValueMismatch(String s) {
-        return new HarRecordHeader()
-                + "[" + s + "]";
+        return new HarRecordHeader(s).toString();
     }
 }

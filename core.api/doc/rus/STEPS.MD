@@ -172,8 +172,8 @@ public class SomeTest {
 наследники `ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier`. Ниже пример, демонстрирующий
 работу и принцип данного класса.
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 package org.my.pack;
@@ -319,7 +319,7 @@ public class MyGetStepSupplier<T, M, P>
     }
 }
 ```
-</details>
+
 
 Пример связи контекста и шага в тесте
 
@@ -372,8 +372,8 @@ public class SomeTest {
 
 - 1
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 package org.my.pack;
@@ -469,12 +469,12 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetObjectSte
     }
 }
 ```
-</details>
+
 
 - 2
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 package org.my.pack;
@@ -628,7 +628,7 @@ public class SomeTest {
     }
 }
 ```
-</details>
+
 
 Дальнейшие примеры работают по тем же принципам, что и примеры выше. Поэтому в примерах ниже больше 
 фокус на принципиальных отличиях.
@@ -642,8 +642,8 @@ public class SomeTest {
 
 - 1
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 package org.my.pack;
@@ -702,12 +702,12 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetObjectFro
     }
 }
 ```
-</details>
+
 
 - 2
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 package org.my.pack;
@@ -764,7 +764,7 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObject
     }
 }
 ```
-</details>
+
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -775,8 +775,8 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObject
 
 - 1
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 package org.my.pack;
@@ -832,12 +832,12 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetObjectFro
     }
 }
 ```
-</details>
+
 
 - 2
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 package org.my.pack;
@@ -893,7 +893,7 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObject
     }
 }
 ```
-</details>
+
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -904,8 +904,8 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObject
 
 - 1
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 package org.my.pack;
@@ -968,12 +968,12 @@ public class MyGetStepSupplier<T, S extends Iterable<T>> extends SequentialGetSt
     }
 }
 ```
-</details>
+
 
 - 2
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 package org.my.pack;
@@ -1036,7 +1036,7 @@ public class MyGetStepSupplier<T, M, S extends Iterable<T>> extends SequentialGe
     }
 }
 ```
-</details>
+
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -1047,8 +1047,8 @@ public class MyGetStepSupplier<T, M, S extends Iterable<T>> extends SequentialGe
 
 - 1
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 package org.my.pack;
@@ -1109,12 +1109,12 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetArrayStep
     }
 }
 ```
-</details>
+
 
 - 2
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 package org.my.pack;
@@ -1176,7 +1176,7 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetArrayC
     }
 }
 ```
-</details>
+
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -1186,8 +1186,8 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetArrayC
 наследники `ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier`. Ниже пример, демонстрирующий
 работу и принцип данного класса.
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 
 ```java
@@ -1294,7 +1294,7 @@ public class MyActionStepSupplier<T> extends SequentialActionSupplier<
 }
 ```
 
-</details>
+
 
 Пример связи контекста и шага в тесте
 
@@ -1561,8 +1561,8 @@ public class SomeTest {
 
 #### Присутствие/появление
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Доработаем контекст
 
@@ -1663,14 +1663,14 @@ public class SomeTest {
     }
 }
 ```
-</details>
+
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 #### Отсутствие/исчезновение
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Доработаем контекст
 
@@ -1775,7 +1775,7 @@ public class SomeTest {
     }
 }
 ```
-</details>
+
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -1797,8 +1797,8 @@ public class SomeTest {
 
 Пример ниже актуален для классов — наследников `SequentialGetStepSupplier` и `SequentialActionSupplier`.
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 package org.my.pack;
@@ -1916,14 +1916,14 @@ public class ExampleGetParameterValue
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 #### Для критериев
 
 В данном примере описания критериев, которые подготовлены для многократного повторного использования.
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 package org.my.pack;
@@ -1990,15 +1990,15 @@ public class ExampleGetParameterValue
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 #### Для произвольного объекта
 
 Данный механизм можно использовать, если требуется перевод/локализация объектов класса, который находится на поддержке
 и не входит в описанные выше примеры.
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 package org.my.pack;
@@ -2018,7 +2018,7 @@ public class MyCustomObject {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -2034,8 +2034,8 @@ public class MyCustomObject {
 
 #### Предопределенные параметры шагов, возвращающих результат
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 package org.my.pack;
@@ -2142,12 +2142,12 @@ public class MyGetStepSupplier<T, M, P>
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 #### Предопределенные параметры шагов, выполняющих действия
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 package org.my.pack;
@@ -2195,15 +2195,15 @@ public class MyActionStepSupplier<T> extends SequentialActionSupplier<MyTestCont
 }
 ```
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 #### Другие параметры
 
 Выше описано, как обозначить стандартный набор параметров для шагов определенных классов. 
 Ниже описано, как обозначить набор кастомных параметров.
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 package org.my.pack;
@@ -2316,7 +2316,7 @@ public class ExampleGetParameterValue
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -2325,8 +2325,8 @@ public class ExampleGetParameterValue
 Пример ниже актуален для классов — наследников `SequentialGetStepSupplier`. Параметр `startDescription` 
 аннотации `ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData` используются [локализацией](./LOCALIZATION.MD).
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 package org.my.pack;
@@ -2367,7 +2367,7 @@ public class MyGetStepSupplier<T, M, P>
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### Аттачи
 
@@ -2442,8 +2442,8 @@ public class ExampleCaptor3 extends Captor<M, String> {
 
 #### Аттачи для шагов, которые возвращают результат
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 package org.my.pack;
@@ -2485,12 +2485,12 @@ public class MyGetStepSupplier<T, M, P>
 }
 ```
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 #### Аттачи для шагов, которые выполняют действие
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 package org.my.pack;
@@ -2518,7 +2518,7 @@ public class MyActionStepSupplier<T> extends SequentialActionSupplier<MyTestCont
 }
 ```
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -2532,8 +2532,8 @@ public class MyActionStepSupplier<T> extends SequentialActionSupplier<MyTestCont
 Регулирование глубины отображения информации о выполнении шагов происходит с помощью [настроек](./SETTINGS.MD#TO_LIMIT_REPORT_DEPTH) 
 и с помощью механизма, описанного ниже.
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 package org.my.pack;
@@ -2677,6 +2677,6 @@ public class SomeTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
