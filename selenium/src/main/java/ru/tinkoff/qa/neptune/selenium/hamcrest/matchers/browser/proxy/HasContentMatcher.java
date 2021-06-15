@@ -237,7 +237,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a new instance of {@link HasContentMatcher}
      */
     @SafeVarargs
-    public static Matcher<HarEntry> responseHasStringBody(Matcher<? super String>... bodyMatchers) {
+    public static Matcher<HarEntry> responseHasRawBody(Matcher<? super String>... bodyMatchers) {
         return new HasContentMatcher(new RecordedResponse(), all(bodyMatchers), null, null, null);
     }
 
@@ -248,8 +248,8 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a new instance of {@link HasContentMatcher}
      */
     @SuppressWarnings("unchecked")
-    public static Matcher<HarEntry> responseHasStringBody(Matcher<? super String> bodyMatcher) {
-        return responseHasStringBody(new Matcher[]{bodyMatcher});
+    public static Matcher<HarEntry> responseHasRawBody(Matcher<? super String> bodyMatcher) {
+        return responseHasRawBody(new Matcher[]{bodyMatcher});
     }
 
     /**
@@ -258,8 +258,8 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @param body is the expected body of the response
      * @return a new instance of {@link HasContentMatcher}
      */
-    public static Matcher<HarEntry> responseHasStringBody(String body) {
-        return responseHasStringBody(equalTo(body));
+    public static Matcher<HarEntry> responseHasRawBody(String body) {
+        return responseHasRawBody(equalTo(body));
     }
 
     /**
@@ -454,7 +454,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a new instance of {@link HasContentMatcher}
      */
     @SafeVarargs
-    public static Matcher<HarEntry> requestHasStringBody(Matcher<? super String>... bodyMatchers) {
+    public static Matcher<HarEntry> requestHasRawBody(Matcher<? super String>... bodyMatchers) {
         return new HasContentMatcher(new RecordedRequest(), all(bodyMatchers), null, null, null);
     }
 
@@ -465,8 +465,8 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a new instance of {@link HasContentMatcher}
      */
     @SuppressWarnings("unchecked")
-    public static Matcher<HarEntry> requestHasStringBody(Matcher<? super String> bodyMatcher) {
-        return requestHasStringBody(new Matcher[]{bodyMatcher});
+    public static Matcher<HarEntry> requestHasRawBody(Matcher<? super String> bodyMatcher) {
+        return requestHasRawBody(new Matcher[]{bodyMatcher});
     }
 
     /**
@@ -475,8 +475,8 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @param body is the expected body of the request
      * @return a new instance of {@link HasContentMatcher}
      */
-    public static Matcher<HarEntry> requestHasStringBody(String body) {
-        return requestHasStringBody(equalTo(body));
+    public static Matcher<HarEntry> requestHasRawBody(String body) {
+        return requestHasRawBody(equalTo(body));
     }
 
     @Override

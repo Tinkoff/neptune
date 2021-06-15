@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     compile project(':core.api')
+    compile project(':check')
     inpath(project(":core.api")) {
         transitive = false
     }

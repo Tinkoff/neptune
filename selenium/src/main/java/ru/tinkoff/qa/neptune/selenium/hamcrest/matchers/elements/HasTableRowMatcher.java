@@ -16,6 +16,7 @@ import static java.time.Duration.ofMillis;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.all.AllCriteriaMatcher.all;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsItemsMatcher.iterableHasItem;
+import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.turnReportingOff;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.tableRows;
 
 public abstract class HasTableRowMatcher extends NeptuneFeatureMatcher<Table> {
@@ -100,7 +101,7 @@ public abstract class HasTableRowMatcher extends NeptuneFeatureMatcher<Table> {
 
         @Override
         protected boolean featureMatches(Table toMatch) {
-            var tableRows = tableRows().timeOut(ofMillis(0)).get().apply(toMatch);
+            var tableRows = turnReportingOff(tableRows().timeOut(ofMillis(0))).get().apply(toMatch);
             var size = tableRows.size();
 
             if (size < rowNumber + 1) {
