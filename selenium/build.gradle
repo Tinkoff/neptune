@@ -43,13 +43,16 @@ task sourcesJar(type: Jar) {
 }
 
 task generateBundle(type: JavaExec) {
-    dependsOn(compileJava)
     classpath sourceSets.main.runtimeClasspath
     main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
     args "ru_RU",
             "$projectDir/src/main/resources",
             "false",
             "selenium"
+}
+
+compileTestJava {
+    dependsOn(generateBundle)
 }
 
 artifacts {

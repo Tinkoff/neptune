@@ -36,12 +36,15 @@ compileTestJava {
 
 task generateBundle(type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
-    dependsOn(compileJava)
     main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
     args "ru_RU",
             "$projectDir/src/main/resources",
             "false",
             "data.base"
+}
+
+compileTestJava {
+    dependsOn(generateBundle)
 }
 
 uploadArchives {

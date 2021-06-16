@@ -28,11 +28,14 @@ artifacts {
 }
 
 task generateBundle(type: JavaExec) {
-    dependsOn(compileJava)
     classpath sourceSets.main.runtimeClasspath
     main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
     args "ru_RU",
             "$projectDir/src/main/resources"
+}
+
+compileTestJava {
+    dependsOn(generateBundle)
 }
 
 test {

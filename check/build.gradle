@@ -16,13 +16,16 @@ task javadocJar(type: Jar) {
 }
 
 task generateBundle(type: JavaExec) {
-    dependsOn(compileJava)
     classpath sourceSets.main.runtimeClasspath
     main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
     args "ru_RU",
             "$projectDir/src/main/resources",
             "false",
             "check"
+}
+
+compileTestJava {
+    dependsOn(generateBundle)
 }
 
 task sourcesJar(type: Jar) {
