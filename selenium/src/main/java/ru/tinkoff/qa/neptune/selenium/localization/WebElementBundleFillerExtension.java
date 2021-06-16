@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.localization;
 
 import io.github.classgraph.ClassGraph;
 import org.openqa.selenium.WebElement;
+import ru.tinkoff.qa.neptune.core.api.localization.BindToPartition;
 import ru.tinkoff.qa.neptune.core.api.localization.BundleFillerExtension;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
 import ru.tinkoff.qa.neptune.selenium.api.widget.NameMultiple;
@@ -22,6 +23,7 @@ import static ru.tinkoff.qa.neptune.selenium.api.widget.WidgetDescriptionMetadat
 import static ru.tinkoff.qa.neptune.selenium.api.widget.WidgetDescriptionMetadataFactory.getNameMetadata;
 
 @SuppressWarnings("unused")
+@BindToPartition("selenium")
 public final class WebElementBundleFillerExtension extends BundleFillerExtension {
 
     public WebElementBundleFillerExtension() {

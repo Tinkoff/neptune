@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
+import static java.lang.String.valueOf;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -82,10 +84,7 @@ public abstract class BundleFillerExtension {
                         .map(p -> p.get(key))
                         .orElse(description.value());
 
-                output.newLine();
-                output.write("#Original text = " + description.value());
-                output.newLine();
-                output.write(key + " = " + value);
+                newLine(description.value(), key, value);
             }
         }
 
@@ -151,9 +150,34 @@ public abstract class BundleFillerExtension {
 
         private void newLine(String originalText, String key, Object value) throws IOException {
             output.newLine();
-            output.write("#Original text = " + originalText);
+
+            var textLines = originalText.lines().collect(Collectors.toList());
+            if (textLines.size() == 1) {
+                output.write("#Original text = " + originalText);
+            } else {
+                output.write("#Original text = " + textLines.get(0));
+                for (int i = 1; i < textLines.size(); i++) {
+                    output.newLine();
+                    output.write("#" + textLines.get(i));
+                }
+            }
+
+            var valueLines = valueOf(value).lines().collect(Collectors.toList());
             output.newLine();
-            output.write(key + " = " + value);
+
+            if (valueLines.size() == 1) {
+                output.write(key + " = " + value);
+            } else {
+                output.write(key + " = " + valueLines.get(0) + "\\r\\n\\");
+                for (int i = 1; i < valueLines.size(); i++) {
+                    output.newLine();
+                    if (i < valueLines.size() - 1) {
+                        output.write(valueLines.get(i) + "\\r\\n\\");
+                    } else {
+                        output.write(valueLines.get(i));
+                    }
+                }
+            }
         }
 
         private LocalizationItem addFields(Collection<AnnotatedElement> annotatedElements) {

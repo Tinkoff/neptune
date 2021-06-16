@@ -16,10 +16,10 @@ import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultActionParameterReader.getPerformOnMetadata;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultGetParameterReader.*;
 
-final class DefaultBundleFiller extends BundleFillerExtension {
+abstract class DefaultAbstractBundleFiller extends BundleFillerExtension {
 
-    protected DefaultBundleFiller(List<? extends Class<?>> toAdd, String sectionName) {
-        super(toAdd, sectionName);
+    protected DefaultAbstractBundleFiller(LocalizationBundlePartition p, List<? extends Class<?>> toAdd, String sectionName) {
+        super(toAdd.stream().filter(c -> c.getPackageName().contains(p.getPackageName())).collect(toList()), sectionName);
     }
 
     @Override

@@ -15,6 +15,16 @@ task javadocJar(type: Jar) {
     from javadoc
 }
 
+task generateBundle(type: JavaExec) {
+    dependsOn(compileJava)
+    classpath sourceSets.main.runtimeClasspath
+    main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
+    args "ru_RU",
+            "$projectDir/src/main/resources",
+            "false",
+            "check"
+}
+
 task sourcesJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.allSource

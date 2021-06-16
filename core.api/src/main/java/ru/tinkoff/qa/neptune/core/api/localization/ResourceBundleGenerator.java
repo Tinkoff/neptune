@@ -1,11 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.localization;
 
 import io.github.classgraph.ClassGraph;
-import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
-import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.AdditionalMetadata;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import java.io.*;
 import java.lang.reflect.AnnotatedElement;
@@ -13,26 +9,22 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.Boolean.parseBoolean;
 import static java.lang.ClassLoader.getSystemClassLoader;
 import static java.lang.Thread.currentThread;
 import static java.lang.reflect.Modifier.isAbstract;
-import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
-import static java.util.Comparator.comparing;
-import static java.util.List.of;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toCollection;
-import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static ru.tinkoff.qa.neptune.core.api.localization.LocalizationBundlePartition.getKnownPartitions;
 
 public class ResourceBundleGenerator {
-    public static final String RESOURCE_BUNDLE = "neptune_Localization";
 
     public static void main(String[] args) throws IOException {
         checkArgument(args.length >= 2, "There should be 2 arguments. " +
@@ -48,89 +40,84 @@ public class ResourceBundleGenerator {
         checkArgument(directory.exists(), "File " + directory.getAbsolutePath() + " doesn't exist");
         checkArgument(directory.isDirectory(), "File " + directory.getAbsolutePath() + " is not a directory");
 
-        var currentProperties = propertiesFromStream(getResourceInputStream(RESOURCE_BUNDLE + "_" + args[0] + ".properties"));
-
-        File propFile = new File(directory, RESOURCE_BUNDLE + "_" + args[0] + ".properties");
-
-        if (!propFile.exists()) {
-            var created = propFile.createNewFile();
-            if (!created) {
-                throw new IOException("Bundle file was not created for some reason");
+        var custom = args.length > 2 && parseBoolean(args[2]);
+        List<LocalizationBundlePartition> partitions;
+        if (args.length <= 3) {
+            partitions = getKnownPartitions();
+        } else {
+            partitions = new ArrayList<>();
+            var known = getKnownPartitions();
+            for (int i = 3; i < args.length; i++) {
+                var currentIndex = i;
+                partitions.add(known.stream()
+                        .filter(p -> p.getName().equalsIgnoreCase(args[currentIndex]))
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalArgumentException("No such bundle partition '" + args[currentIndex] + "'")));
             }
         }
 
-        fillFile(propFile, currentProperties);
+        for (var p : partitions) {
+            Properties currentProperties;
+
+            if (custom) {
+                currentProperties = propertiesFromStream(getResourceInputStream(p.getCustomBundleName()
+                        + "_" + args[0] + ".properties"));
+                if (currentProperties == null) {
+                    currentProperties = propertiesFromStream(getResourceInputStream(p.getDefaultBundleName()
+                            + "_" + args[0] + ".properties"));
+                }
+            } else {
+                currentProperties = propertiesFromStream(getResourceInputStream(p.getDefaultBundleName()
+                        + "_" + args[0] + ".properties"));
+            }
+
+            File propFile = new File(directory, (custom ? p.getCustomBundleName() : p.getDefaultBundleName())
+                    + "_" + args[0] + ".properties");
+
+            if (!propFile.exists()) {
+                var created = propFile.createNewFile();
+                if (!created) {
+                    throw new IOException("Bundle file was not created for some reason");
+                }
+            }
+
+            fillFile(p, propFile, currentProperties);
+        }
     }
 
-    private static void fillFile(File file, Properties properties) throws IOException {
+    private static void fillFile(LocalizationBundlePartition partition, File file, Properties properties) throws IOException {
         clearFile(file);
 
         var writer = new FileWriter(file, true);
 
         try (var output = new BufferedWriter(writer)) {
-            output.write("#Values for translation of steps, their parameters and attachments are defined here. Format key = value");
+            output.write("#Values for translation of steps, their parameters, matchers and their descriptions," +
+                    " and attachments are defined here. Format key = value");
 
-            var steps = new LinkedList<Class<?>>();
-            of(SequentialActionSupplier.class, SequentialGetStepSupplier.class).forEach(cls -> {
-                var nestMembers = asList(cls.getNestMembers());
-                steps.addAll(new ClassGraph()
-                        .enableAllInfo()
-                        .scan()
-                        .getSubclasses(cls.getName())
-                        .loadClasses(cls)
-                        .stream()
-                        .filter(c -> !nestMembers.contains(c))
-                        .collect(toList()));
-            });
-
-            steps.sort(comparing(Class::getName));
-            steps.addFirst(SequentialActionSupplier.class);
-            steps.addFirst(SequentialGetStepSupplier.class);
-
-            var attachments = new ClassGraph()
-                    .enableAllInfo()
-                    .scan()
-                    .getSubclasses(Captor.class.getName())
-                    .loadClasses(Captor.class)
-                    .stream()
-                    .map(cls -> (Class<?>) cls)
-                    .sorted(comparing(Class::getName))
-                    .collect(toList());
-
-            var criteriaList = new ClassGraph()
-                    .enableAllInfo()
-                    .scan()
-                    .getClassesWithMethodAnnotation(Description.class.getName())
-                    .loadClasses(true)
-                    .stream()
-                    .filter(classClass ->
-                            !SequentialActionSupplier.class.isAssignableFrom(classClass)
-                                    &&
-                                    !SequentialGetStepSupplier.class.isAssignableFrom(classClass))
-                    .sorted(comparing(Class::getName))
-                    .collect(toCollection(ArrayList::new));
-
-            new DefaultBundleFiller(steps, "STEPS").fill(output, properties);
-            new DefaultBundleFiller(criteriaList, "CRITERIA").fill(output, properties);
-            new DefaultBundleFiller(attachments, "ATTACHMENTS").fill(output, properties);
-
-            new DefaultBundleFiller(new ClassGraph().enableAllInfo()
-                    .scan()
-                    .getClassesWithAnnotation(Description.class.getName())
-                    .loadClasses(true)
-                    .stream()
-                    .filter(aClass -> !SequentialGetStepSupplier.class.isAssignableFrom(aClass)
-                            && !SequentialActionSupplier.class.isAssignableFrom(aClass)
-                            && !Captor.class.isAssignableFrom(aClass))
-                    .sorted(comparing(Class::getName))
-                    .collect(toList()), "OTHER").fill(output, properties);
+            new StepBundleFilter(partition).fill(output, properties);
+            new CriteriaBundleFilter(partition).fill(output, properties);
+            new AttachmentsBundleFilter(partition).fill(output, properties);
+            new MatchersBundleFilter(partition).fill(output, properties);
+            new MismatchDescriptionBundleFilter(partition).fill(output, properties);
+            new MatchedObjectsBundleFilter(partition).fill(output, properties);
+            new OtherObjectsBundleFilter(partition).fill(output, properties);
 
             new ClassGraph().enableAllInfo()
                     .scan()
                     .getSubclasses(BundleFillerExtension.class.getName())
                     .loadClasses(BundleFillerExtension.class)
                     .stream()
-                    .filter(cls -> !isAbstract(cls.getModifiers()) && !cls.equals(DefaultBundleFiller.class))
+                    .filter(cls -> !isAbstract(cls.getModifiers()) &&
+                            !cls.equals(StepBundleFilter.class) &&
+                            !cls.equals(CriteriaBundleFilter.class) &&
+                            !cls.equals(AttachmentsBundleFilter.class) &&
+                            !cls.equals(MatchersBundleFilter.class) &&
+                            !cls.equals(MismatchDescriptionBundleFilter.class) &&
+                            !cls.equals(MatchedObjectsBundleFilter.class) &&
+                            !cls.equals(OtherObjectsBundleFilter.class) &&
+                            ofNullable(cls.getAnnotation(BindToPartition.class))
+                                    .map(b -> b.value().equalsIgnoreCase(partition.getName()))
+                                    .orElse(false))
                     .forEach(cls -> {
                         try {
                             var c = cls.getConstructor();
