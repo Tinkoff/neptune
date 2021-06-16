@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api.steps.localization;
+package ru.tinkoff.qa.neptune.core.api.localization;
 
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Metadata;
@@ -16,8 +16,8 @@ import java.util.Properties;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGenerator.cutPartOfPath;
-import static ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGenerator.getKey;
+import static ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator.cutPartOfPath;
+import static ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator.getKey;
 
 public abstract class BundleFillerExtension {
 

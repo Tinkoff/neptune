@@ -1420,12 +1420,12 @@ public class SomeClass {
 
 ```properties
 #В значение свойства указывается полное пакетное имя класса реализующее интерфейс
-# ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization
+# ru.tinkoff.qa.neptune.core.api.localization.StepLocalization
 DEFAULT_LOCALIZATION_ENGINE=org.my.project.MyLocalizationEngine
 ```
 
 ```java
-import ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization;
+import ru.tinkoff.qa.neptune.core.api.localization.StepLocalization;
 
 import static ru.tinkoff.qa.neptune.core.api.properties.general.localization
         .DefaultLocalizationEngine.DEFAULT_LOCALIZATION_ENGINE;

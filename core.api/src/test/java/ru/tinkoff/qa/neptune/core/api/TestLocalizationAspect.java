@@ -11,7 +11,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 
 import java.lang.reflect.Method;
 
-import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
+import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @Aspect
 @SuppressWarnings("unused")

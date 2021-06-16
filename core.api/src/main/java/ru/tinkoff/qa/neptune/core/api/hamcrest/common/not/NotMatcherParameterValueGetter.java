@@ -7,7 +7,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 import static ru.tinkoff.qa.neptune.core.api.logical.lexemes.Not.NOT_LEXEME;
-import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
+import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 public final class NotMatcherParameterValueGetter implements ParameterValueGetter<Matcher<?>[]> {
 

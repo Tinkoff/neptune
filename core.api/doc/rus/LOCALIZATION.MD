@@ -26,7 +26,7 @@ Neptune поддерживает по дефолту механизм, осно�
 - ##### добавить в переменные среды или в `neptune.properties` или в `neptune.global.properties`
 
 ```properties
-DEFAULT_LOCALIZATION_ENGINE=ru.tinkoff.qa.neptune.core.api.steps.localization.LocalizationByResourceBundle
+DEFAULT_LOCALIZATION_ENGINE=ru.tinkoff.qa.neptune.core.api.localization.LocalizationByResourceBundle
 ```
 
 - ##### добавить в переменные среды или в `neptune.properties` или в `neptune.global.properties`
@@ -40,7 +40,7 @@ DEFAULT_LOCALE=ru_RU
 ### Механизм генерации resourceBundle
 
 Имеется возможность автогенерации resourceBundle для перевода. Для этого необходимо вызвать
-mainClass `ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGenerator` с двумя аргументами:
+mainClass `ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator` с двумя аргументами:
 
 - arg0 - строка в формате language_country
 - arg1 - путь к каталогу, в котором должен быть сохранен файл
@@ -63,7 +63,7 @@ mainClass `ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGener
                         <goal>java</goal>
                     </goals>
                     <configuration>
-                        <mainClass>ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGenerator</mainClass>
+                        <mainClass>ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator</mainClass>
                         <arguments>
                             <argument>ru_RU</argument>
                             <!--Нужная локаль-->
@@ -85,7 +85,7 @@ mainClass `ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGener
 ```groovy
 task generateBundle(type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
-    main = "ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGenerator"
+    main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
     args "ru_RU", //нужная локаль
             "$projectDir/src/test/resources"
             //или $projectDir/src/main/resources
@@ -159,7 +159,7 @@ core.api.event.firing.collections.MapCaptor = Resulted map
 Для этого необходимо:
 
 * заимплементить интерфейс
-  `ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization`
+  `ru.tinkoff.qa.neptune.core.api.localization.StepLocalization`
 
  ```java
 public interface StepLocalization {

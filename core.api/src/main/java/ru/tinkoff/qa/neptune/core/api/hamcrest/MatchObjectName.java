@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.core.api.hamcrest;
 
-import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
+import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 /**
  * Implementors of this class are used to append name of an object to {@link ObjectIsNotPresentMismatch} and

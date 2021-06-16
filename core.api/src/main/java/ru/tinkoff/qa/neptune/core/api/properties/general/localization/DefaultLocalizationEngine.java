@@ -4,8 +4,8 @@ import ru.tinkoff.qa.neptune.core.api.properties.PropertyDescription;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
 import ru.tinkoff.qa.neptune.core.api.properties.object.ObjectByClassPropertySupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.localization.LocalizationByResourceBundle;
-import ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization;
+import ru.tinkoff.qa.neptune.core.api.localization.LocalizationByResourceBundle;
+import ru.tinkoff.qa.neptune.core.api.localization.StepLocalization;
 
 import java.util.Objects;
 

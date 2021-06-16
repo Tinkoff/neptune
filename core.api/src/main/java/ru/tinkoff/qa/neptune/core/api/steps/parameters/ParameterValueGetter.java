@@ -12,7 +12,7 @@ import java.time.Duration;
 import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
-import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
+import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 /**
  * Converts some value to a readable parameter of a step or to fragment of step description.

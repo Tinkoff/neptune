@@ -1997,15 +1997,12 @@ public class ExampleGetParameterValue
 Данный механизм можно использовать, если требуется перевод/локализация объектов класса, который находится на поддержке
 и не входит в описанные выше примеры.
 
-
-  
-
 ```java
 package org.my.pack;
 
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
-import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
+import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @Description("Статическое или динамическое строковое представление объекта")
 public class MyCustomObject {

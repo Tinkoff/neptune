@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.core.api.hamcrest;
 
-import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
+import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 /**
  * Helper class that builds description of mismatch using parameters. Also

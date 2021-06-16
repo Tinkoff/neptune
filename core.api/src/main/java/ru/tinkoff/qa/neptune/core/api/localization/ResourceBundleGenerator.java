@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api.steps.localization;
+package ru.tinkoff.qa.neptune.core.api.localization;
 
 import io.github.classgraph.ClassGraph;
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;

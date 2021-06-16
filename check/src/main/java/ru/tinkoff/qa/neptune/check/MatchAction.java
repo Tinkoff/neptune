@@ -20,7 +20,7 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.all.AllCriteriaMatc
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.any.AnyMatcher.anyOne;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.not.NotMatcher.notOf;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.only.one.OnlyOneMatcher.onlyOne;
-import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
+import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 /**
  * This class is designed to perform the matching of values.

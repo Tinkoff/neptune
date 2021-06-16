@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api.steps.localization;
+package ru.tinkoff.qa.neptune.core.api.localization;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
@@ -10,8 +10,8 @@ import java.util.ResourceBundle;
 
 import static java.util.Optional.ofNullable;
 import static java.util.ResourceBundle.getBundle;
-import static ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGenerator.RESOURCE_BUNDLE;
-import static ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGenerator.getKey;
+import static ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator.RESOURCE_BUNDLE;
+import static ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator.getKey;
 
 public class LocalizationByResourceBundle implements StepLocalization {
 

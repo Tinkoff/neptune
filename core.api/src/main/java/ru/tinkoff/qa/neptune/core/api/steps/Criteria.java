@@ -16,7 +16,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.logical.lexemes.Not.NOT_LEXEME;
 import static ru.tinkoff.qa.neptune.core.api.logical.lexemes.OnlyOne.ONLY_ONE_LEXEME;
 import static ru.tinkoff.qa.neptune.core.api.logical.lexemes.Or.OR_LEXEME;
-import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
+import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 /**
  * This class is designed to create a {@link Predicate} used by {@link SequentialGetStepSupplier}

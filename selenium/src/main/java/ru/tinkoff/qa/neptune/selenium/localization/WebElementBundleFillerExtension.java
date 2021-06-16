@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.localization;
 
 import io.github.classgraph.ClassGraph;
 import org.openqa.selenium.WebElement;
-import ru.tinkoff.qa.neptune.core.api.steps.localization.BundleFillerExtension;
+import ru.tinkoff.qa.neptune.core.api.localization.BundleFillerExtension;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
 import ru.tinkoff.qa.neptune.selenium.api.widget.NameMultiple;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;

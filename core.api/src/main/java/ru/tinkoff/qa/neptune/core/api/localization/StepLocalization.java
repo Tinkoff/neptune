@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api.steps.localization;
+package ru.tinkoff.qa.neptune.core.api.localization;
 
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.AdditionalMetadata;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;

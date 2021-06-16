@@ -10,7 +10,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.stream;
-import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
+import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 /**
  * This matcher checks an object by every defined and inverted criteria

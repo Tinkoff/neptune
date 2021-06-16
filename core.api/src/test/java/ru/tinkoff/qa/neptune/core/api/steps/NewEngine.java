@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
-import ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization;
+import ru.tinkoff.qa.neptune.core.api.localization.StepLocalization;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
