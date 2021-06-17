@@ -43,8 +43,10 @@ task generateBundle(type: JavaExec) {
             "data.base"
 }
 
-compileTestJava {
-    dependsOn(generateBundle)
+compileJava {
+    doLast {
+        generateBundle.exec()
+    }
 }
 
 uploadArchives {

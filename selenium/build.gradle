@@ -51,8 +51,10 @@ task generateBundle(type: JavaExec) {
             "selenium"
 }
 
-compileTestJava {
-    dependsOn(generateBundle)
+compileJava {
+    doLast {
+        generateBundle.exec()
+    }
 }
 
 artifacts {

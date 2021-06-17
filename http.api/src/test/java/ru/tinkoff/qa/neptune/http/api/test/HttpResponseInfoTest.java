@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.test;
 
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryStringMatcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasQueryStringMatcher;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.lang.String.format;
@@ -13,11 +13,10 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.all.AllCriteriaMatc
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.not.NotMatcher.notOf;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableInOrder;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableOf;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasHostMatcher.uriHasHost;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPathMatcher.uriHasPath;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPortMatcher.uriHasPort;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryStringMatcher.uriHasQueryString;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasSchemeMatcher.uriHasScheme;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasHostMatcher.uriHasHost;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasPathMatcher.uriHasPath;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasPortMatcher.uriHasPort;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasSchemeMatcher.uriHasScheme;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasBody.hasBody;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasHeaders.hasHeader;

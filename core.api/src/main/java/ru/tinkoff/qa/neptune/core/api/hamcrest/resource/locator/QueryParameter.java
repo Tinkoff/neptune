@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator;
+package ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator;
 
 import ru.tinkoff.qa.neptune.core.api.hamcrest.MatchObjectName;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;

@@ -36,8 +36,10 @@ task generateBundle(type: JavaExec) {
             "http"
 }
 
-compileTestJava {
-    dependsOn(generateBundle)
+compileJava {
+    doLast {
+        generateBundle.exec()
+    }
 }
 
 uploadArchives {

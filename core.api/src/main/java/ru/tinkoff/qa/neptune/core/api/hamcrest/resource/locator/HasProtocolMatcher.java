@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator;
+package ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator;
 
 import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
@@ -7,7 +7,7 @@ import java.net.URL;
 import java.util.function.Function;
 
 import static org.hamcrest.Matchers.equalTo;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.ResourceLocatorMatcher.MATCHER_FRAGMENT;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.ResourceLocatorMatcher.MATCHER_FRAGMENT;
 
 @Description("Protocol {" + MATCHER_FRAGMENT + "}")
 public final class HasProtocolMatcher extends ResourceLocatorMatcher<URL, String> {

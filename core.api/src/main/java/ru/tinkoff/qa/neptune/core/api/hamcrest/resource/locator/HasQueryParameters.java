@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator;
+package ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator;
 
 import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFeatureMatcher;

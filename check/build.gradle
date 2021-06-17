@@ -24,8 +24,10 @@ task generateBundle(type: JavaExec) {
             "check"
 }
 
-compileTestJava {
-    dependsOn(generateBundle)
+compileJava {
+    doLast {
+        generateBundle.exec()
+    }
 }
 
 task sourcesJar(type: Jar) {

@@ -385,7 +385,7 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsItem
 
 public class MyTest {
 
-    private Iterable<Integer> i = List.of(1, 2, 3);
+    private final Iterable<Integer> i = List.of(1, 2, 3);
 
 
     @Test(description = "проверка на то, что что Iterable<> состоит только из " +
@@ -501,7 +501,7 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsItem
 
 public class MyTest {
 
-    private Integer[] i = new Integer[] {1, 2, 3};
+    private final Integer[] i = new Integer[] {1, 2, 3};
 
 
     @Test(description = "проверка на то, что что массив состоит только из " +
@@ -627,155 +627,155 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsItem
 
 public class MyTest {
 
-    private Map<Integer, Integer> m = new LinkedHashMap<>() {
-        {
-            put(1, 2);
-            put(2, 3);
-            put(3, 4);
-        }
-    };
-
-    @Test(description = "проверка на то, что что Map<> состоит только из " +
-            "перечисленных записей в указанном порядке")
-    public void test() {
-        assertThat(m, mapInOrder(
-                mapEntry(1, 2),
-                mapEntry(2, 3),
-                mapEntry(3, 4)));
+  private final Map<Integer, Integer> m = new LinkedHashMap<>() {
+    {
+      put(1, 2);
+      put(2, 3);
+      put(3, 4);
     }
+  };
 
-    @Test(description = "проверка на то, что что Map<> состоит только из " +
-            "перечисленных записей в указанном порядке" +
-            "Записи указаны в виде матчеров-критериев, которым они должны соответствовать")
-    public void test2() {
-        assertThat(m, mapInOrder(
-                mapEntry(lessThan(2), greaterThan(1)),
-                mapEntry(lessThan(3), greaterThan(2)),
-                mapEntry(lessThan(4), greaterThan(3))));
-    }
+  @Test(description = "проверка на то, что что Map<> состоит только из " +
+          "перечисленных записей в указанном порядке")
+  public void test() {
+    assertThat(m, mapInOrder(
+            mapEntry(1, 2),
+            mapEntry(2, 3),
+            mapEntry(3, 4)));
+  }
 
-    @Test(description = "проверка на то, что что Map<> состоит только из " +
-            "перечисленных записей. Порядок их следования значения не имеет.")
-    public void test3() {
-        assertThat(m, mapOf(
-                mapEntry(1, 2),
-                mapEntry(3, 4),
-                mapEntry(2, 3)));
-    }
+  @Test(description = "проверка на то, что что Map<> состоит только из " +
+          "перечисленных записей в указанном порядке" +
+          "Записи указаны в виде матчеров-критериев, которым они должны соответствовать")
+  public void test2() {
+    assertThat(m, mapInOrder(
+            mapEntry(lessThan(2), greaterThan(1)),
+            mapEntry(lessThan(3), greaterThan(2)),
+            mapEntry(lessThan(4), greaterThan(3))));
+  }
 
-    @Test(description = "проверка на то, что что Map<> состоит только из " +
-            "перечисленных записей. Порядок их следования значения не имеет." +
-            "Записи указаны в виде матчеров-критериев, которым они должны соответствовать")
-    public void test4() {
-        assertThat(m, mapOf(
-                mapEntry(lessThan(2), greaterThan(1)),
-                mapEntry(lessThan(4), greaterThan(3)),
-                mapEntry(lessThan(3), greaterThan(2))));
-    }
+  @Test(description = "проверка на то, что что Map<> состоит только из " +
+          "перечисленных записей. Порядок их следования значения не имеет.")
+  public void test3() {
+    assertThat(m, mapOf(
+            mapEntry(1, 2),
+            mapEntry(3, 4),
+            mapEntry(2, 3)));
+  }
 
-
-    @Test(description = "проверка на то, что что Map<> включает " +
-            "перечисленные записи в указанном порядке")
-    public void test5() {
-        assertThat(m, mapIncludesInOrder(
-                mapEntry(2, 3),
-                mapEntry(3, 4)));
-    }
-
-    @Test(description = "проверка на то, что что Map<> включает " +
-            "перечисленные записи в указанном порядке." +
-            "Записи указаны в виде матчеров-критериев, которым они должны соответствовать")
-    public void test6() {
-        assertThat(m, mapIncludesInOrder(
-                mapEntry(lessThan(2), greaterThan(1)),
-                mapEntry(lessThan(3), greaterThan(2))));
-    }
+  @Test(description = "проверка на то, что что Map<> состоит только из " +
+          "перечисленных записей. Порядок их следования значения не имеет." +
+          "Записи указаны в виде матчеров-критериев, которым они должны соответствовать")
+  public void test4() {
+    assertThat(m, mapOf(
+            mapEntry(lessThan(2), greaterThan(1)),
+            mapEntry(lessThan(4), greaterThan(3)),
+            mapEntry(lessThan(3), greaterThan(2))));
+  }
 
 
-    @Test(description = "проверка на то, что что Map<> включает " +
-            "перечисленные записи. Порядок их следования значения не имеет")
-    public void test7() {
-        assertThat(m, mapIncludes(
-                mapEntry(3, 4),
-                mapEntry(1, 2)));
-    }
+  @Test(description = "проверка на то, что что Map<> включает " +
+          "перечисленные записи в указанном порядке")
+  public void test5() {
+    assertThat(m, mapIncludesInOrder(
+            mapEntry(2, 3),
+            mapEntry(3, 4)));
+  }
 
-    @Test(description = "проверка на то, что что Map<> включает " +
-            "перечисленные записи. Порядок их следования значения не имеет." +
-            "Записи указаны в виде матчеров-критериев, которым они должны соответствовать")
-    public void test8() {
-        assertThat(m, mapIncludes(
-                mapEntry(lessThan(2), greaterThan(1)),
-                mapEntry(lessThan(4), greaterThan(3))));
-    }
-
-    @Test(description = "проверка на то, что что Map<> состоит записей, " +
-            "каждая из которых соответствует перечисленным матчерам-критериям")
-    public void test9() {
-        //проверка каждой записи
-        assertThat(m, eachEntry(instanceOf(Integer.class), instanceOf(Integer.class)));
-        //проверка каждого ключа
-        assertThat(m, eachEntryKey(instanceOf(Integer.class)));
-        //проверка каждого значения
-        assertThat(m, eachEntryValue(instanceOf(Integer.class)));
-    }
-
-    @Test(description = "проверка на то, что что Map<> включает запись")
-    public void test10() {
-        assertThat(m, mapHasEntry(1, 2)); //есть запись
-        assertThat(m, mapHasEntryKey(1)); //есть ключ
-        assertThat(m, mapHasEntryValue(2)); //есть значение
-    }
-
-    @Test(description = "проверка на то, что что Map<> включает запись." +
-            "Запись описана в виде матчеров-критериев")
-    public void test11() {
-        //есть запись
-        assertThat(m, mapHasEntry(greaterThan(0), //матчер для ключа
-                lessThan(3), greaterThan(0))); //матчеры для значения
-
-        assertThat(m, mapHasEntryKey(greaterThan(0), lessThan(2))); //есть ключ,
-        // матчеры для ключа
-        assertThat(m, mapHasEntryValue(greaterThan(0), lessThan(3))); //есть значение,
-        // матчеры для значения
+  @Test(description = "проверка на то, что что Map<> включает " +
+          "перечисленные записи в указанном порядке." +
+          "Записи указаны в виде матчеров-критериев, которым они должны соответствовать")
+  public void test6() {
+    assertThat(m, mapIncludesInOrder(
+            mapEntry(lessThan(2), greaterThan(1)),
+            mapEntry(lessThan(3), greaterThan(2))));
+  }
 
 
-    }
+  @Test(description = "проверка на то, что что Map<> включает " +
+          "перечисленные записи. Порядок их следования значения не имеет")
+  public void test7() {
+    assertThat(m, mapIncludes(
+            mapEntry(3, 4),
+            mapEntry(1, 2)));
+  }
 
-    @Test(description = "Проверка на то, что что Map<> включает записи." +
-            "Записи описаны в виде матчеров-критериев.")
-    public void test12() {
-        assertThat(m, mapHasEntries(2, //сколько раз должна встретиться запись,
-                greaterThan(0), //матчер для ключа
-                instanceOf(Integer.class), lessThan(4))); //матчеры для значения
+  @Test(description = "проверка на то, что что Map<> включает " +
+          "перечисленные записи. Порядок их следования значения не имеет." +
+          "Записи указаны в виде матчеров-критериев, которым они должны соответствовать")
+  public void test8() {
+    assertThat(m, mapIncludes(
+            mapEntry(lessThan(2), greaterThan(1)),
+            mapEntry(lessThan(4), greaterThan(3))));
+  }
 
-        assertThat(m, mapHasEntries(greaterThan(1), //сколько раз должна встретиться запись (описано
-                // критерием-матчером),
-                greaterThan(0), //матчер для ключа
-                instanceOf(Integer.class), lessThan(4))); //матчеры для значения
+  @Test(description = "проверка на то, что что Map<> состоит записей, " +
+          "каждая из которых соответствует перечисленным матчерам-критериям")
+  public void test9() {
+    //проверка каждой записи
+    assertThat(m, eachEntry(instanceOf(Integer.class), instanceOf(Integer.class)));
+    //проверка каждого ключа
+    assertThat(m, eachEntryKey(instanceOf(Integer.class)));
+    //проверка каждого значения
+    assertThat(m, eachEntryValue(instanceOf(Integer.class)));
+  }
 
-        //есть ключи,
-        assertThat(m, mapHasEntryKeys(2, //сколько раз должен встретиться ключ,
-                greaterThan(0), lessThan(3))); // матчеры для ключа
+  @Test(description = "проверка на то, что что Map<> включает запись")
+  public void test10() {
+    assertThat(m, mapHasEntry(1, 2)); //есть запись
+    assertThat(m, mapHasEntryKey(1)); //есть ключ
+    assertThat(m, mapHasEntryValue(2)); //есть значение
+  }
 
-        //есть ключи,
-        assertThat(m, mapHasEntryKeys(greaterThan(1), //сколько раз должен встретиться ключ (описано
-                // критерием-матчером),
-                greaterThan(0), lessThan(3))); // матчеры для ключа
+  @Test(description = "проверка на то, что что Map<> включает запись." +
+          "Запись описана в виде матчеров-критериев")
+  public void test11() {
+    //есть запись
+    assertThat(m, mapHasEntry(greaterThan(0), //матчер для ключа
+            lessThan(3), greaterThan(0))); //матчеры для значения
 
-        //есть значения,
-        assertThat(m, mapHasEntryValues(2, //сколько раз должно встретиться значение,
-                greaterThan(0), lessThan(4))); // матчеры для значения
+    assertThat(m, mapHasEntryKey(greaterThan(0), lessThan(2))); //есть ключ,
+    // матчеры для ключа
+    assertThat(m, mapHasEntryValue(greaterThan(0), lessThan(3))); //есть значение,
+    // матчеры для значения
 
-        //есть значения,
-        assertThat(m, mapHasEntryValues(greaterThan(1), //сколько раз должно встретиться значение (описано
-                // критерием-матчером),
-                greaterThan(0), lessThan(4))); // матчеры для значения
 
-        //есть значения,
-        assertThat(m, mapHasEntryValues(1, //сколько раз должно встретиться значение,
-                2));
-    }
+  }
+
+  @Test(description = "Проверка на то, что что Map<> включает записи." +
+          "Записи описаны в виде матчеров-критериев.")
+  public void test12() {
+    assertThat(m, mapHasEntries(2, //сколько раз должна встретиться запись,
+            greaterThan(0), //матчер для ключа
+            instanceOf(Integer.class), lessThan(4))); //матчеры для значения
+
+    assertThat(m, mapHasEntries(greaterThan(1), //сколько раз должна встретиться запись (описано
+            // критерием-матчером),
+            greaterThan(0), //матчер для ключа
+            instanceOf(Integer.class), lessThan(4))); //матчеры для значения
+
+    //есть ключи,
+    assertThat(m, mapHasEntryKeys(2, //сколько раз должен встретиться ключ,
+            greaterThan(0), lessThan(3))); // матчеры для ключа
+
+    //есть ключи,
+    assertThat(m, mapHasEntryKeys(greaterThan(1), //сколько раз должен встретиться ключ (описано
+            // критерием-матчером),
+            greaterThan(0), lessThan(3))); // матчеры для ключа
+
+    //есть значения,
+    assertThat(m, mapHasEntryValues(2, //сколько раз должно встретиться значение,
+            greaterThan(0), lessThan(4))); // матчеры для значения
+
+    //есть значения,
+    assertThat(m, mapHasEntryValues(greaterThan(1), //сколько раз должно встретиться значение (описано
+            // критерием-матчером),
+            greaterThan(0), lessThan(4))); // матчеры для значения
+
+    //есть значения,
+    assertThat(m, mapHasEntryValues(1, //сколько раз должно встретиться значение,
+            2));
+  }
 }
 ```
 
@@ -793,31 +793,31 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThan;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableInOrder;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasHostMatcher.uriHasHost;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasHostMatcher.urlHasHost;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPathMatcher.uriHasPath;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPathMatcher.urlHasPath;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPortMatcher.uriHasPort;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPortMatcher.urlHasPort;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasProtocolMatcher.urlHasProtocol;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryParameters.uriHasQueryParameter;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryParameters.urlHasQueryParameter;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryStringMatcher.uriHasQueryString;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryStringMatcher.urlHasQueryString;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasReferenceMatcher.urlHasReference;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasSchemeMatcher.uriHasScheme;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasUserInfoMatcher.uriHasUserInfo;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasUserInfoMatcher.urlHasUserInfo;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasHostMatcher.uriHasHost;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasHostMatcher.urlHasHost;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasPathMatcher.uriHasPath;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasPathMatcher.urlHasPath;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasPortMatcher.uriHasPort;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasPortMatcher.urlHasPort;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasProtocolMatcher.urlHasProtocol;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasQueryParameters.uriHasQueryParameter;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasQueryParameters.urlHasQueryParameter;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasQueryStringMatcher.uriHasQueryString;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasQueryStringMatcher.urlHasQueryString;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasReferenceMatcher.urlHasReference;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasSchemeMatcher.uriHasScheme;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasUserInfoMatcher.uriHasUserInfo;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasUserInfoMatcher.urlHasUserInfo;
 
 public class MyTest {
 
-    private static final URI testURI = create("https://user:password@www.google.com:666/search?q=how+to+create+e2e+test#test");
+  private static final URI testURI = create("https://user:password@www.google.com:666/search?q=how+to+create+e2e+test#test");
 
-    @Test(description = "Хост")
-    public void test1() throws Exception {
-        assertThat(testURI, uriHasHost("www.google.com"));
-        assertThat(testURI, uriHasHost(containsString("google")));
-        assertThat(testURI.toURL(), urlHasHost("www.google.com"));
+  @Test(description = "Хост")
+  public void test1() throws Exception {
+    assertThat(testURI, uriHasHost("www.google.com"));
+    assertThat(testURI, uriHasHost(containsString("google")));
+    assertThat(testURI.toURL(), urlHasHost("www.google.com"));
         assertThat(testURI.toURL(), urlHasHost(containsString("google")));
     }
 
