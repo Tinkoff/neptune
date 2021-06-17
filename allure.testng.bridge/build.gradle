@@ -3,6 +3,7 @@ dependencies {
     compile project(":allure.integration")
     compile (group: 'io.qameta.allure', name: 'allure-testng', version: allureVersion) {
         exclude group: 'org.aspectj', module: 'aspectjrt'
+        exclude group: 'org.aspectj', module: 'aspectjweaver'
     }
 }
 

@@ -16,10 +16,13 @@ import static java.time.Duration.ofMillis;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsItemsMatcher.iterableHasItem;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements.HasChildElementMatcher.hasChildElement;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements.HasChildElementsMatcher.hasChildElements;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUnitProperties.ELEMENT_WAITING_TIME_UNIT;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeValueProperties.ELEMENT_WAITING_TIME_VALUE;
@@ -106,7 +109,20 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
         try {
             List<WebElement> webElements = seleniumSteps.find(webElements(className(CUSTOM_BUTTON_CLASS))
                     .foundFrom(webElement(className(SPREAD_SHEET_CLASS))));
+
             assertThat(webElements, contains(equalTo(CUSTOM_LABELED_BUTTON1)));
+
+            assertThat(seleniumSteps.find(webElement(className(SPREAD_SHEET_CLASS))),
+                    hasChildElements(webElements(className(CUSTOM_BUTTON_CLASS)), iterableHasItem(CUSTOM_LABELED_BUTTON1)));
+
+            assertThat(seleniumSteps.find(webElement(className(SPREAD_SHEET_CLASS))),
+                    hasChildElements(webElements(className(CUSTOM_BUTTON_CLASS))));
+
+            assertThat(seleniumSteps.find(webElement(className(SPREAD_SHEET_CLASS))),
+                    hasChildElement(webElement(className(CUSTOM_BUTTON_CLASS)), equalTo(CUSTOM_LABELED_BUTTON1)));
+
+            assertThat(seleniumSteps.find(webElement(className(SPREAD_SHEET_CLASS))),
+                    hasChildElement(webElement(className(CUSTOM_BUTTON_CLASS))));
         } finally {
             removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getName());
         }

@@ -6,6 +6,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.captors.request.AbstractRequestBodyCaptor;
 import ru.tinkoff.qa.neptune.http.api.captors.response.AbstractResponseBodyObjectCaptor;
@@ -59,7 +60,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
     public static <T, R> GetObjectWhenResponseReceived<T, R> asObject(
             @DescriptionFragment(
                     value = "description",
-                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class) String description,
+                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class) String description,
             HttpResponse<T> received,
             Function<T, R> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
@@ -95,7 +96,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
     public static <T, R> GetObjectWhenResponseReceiving<T, R> asObject(
             @DescriptionFragment(
                     value = "description",
-                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class)
+                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
                     String description,
             RequestBuilder requestBuilder,
             HttpResponse.BodyHandler<T> handler,

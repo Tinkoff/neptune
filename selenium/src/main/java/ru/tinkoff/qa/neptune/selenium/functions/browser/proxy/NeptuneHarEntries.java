@@ -5,7 +5,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import java.util.ArrayList;
 
-import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
+import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @Description("Caught traffic from browser")
 class NeptuneHarEntries extends ArrayList<HarEntry> {

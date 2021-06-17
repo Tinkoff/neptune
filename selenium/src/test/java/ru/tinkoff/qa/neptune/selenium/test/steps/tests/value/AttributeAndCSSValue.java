@@ -14,6 +14,10 @@ import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCr
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.nested;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements.HasAttributeMatcher.hasAttribute;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements.HasCssValueMatcher.hasCss;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements.HasReference.hasReference;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements.HasTextMatcher.hasText;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 
 public class AttributeAndCSSValue extends BaseWebDriverTest {
@@ -22,6 +26,12 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
     public void getAttributeValueByWidgetSearchCriteria() {
         assertThat(seleniumSteps.attrValueOf(link(LINK_LABEL_TEXT5), HREF),
                 is(LINK_REFERENCE9));
+
+        assertThat(seleniumSteps.find(link(LINK_LABEL_TEXT5)),
+                hasAttribute(HREF, LINK_REFERENCE9));
+
+        assertThat(seleniumSteps.find(link(LINK_LABEL_TEXT5)),
+                hasReference(LINK_REFERENCE9));
     }
 
     @Test
@@ -77,6 +87,9 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
     public void getCSSValueByWidgetSearchCriteria() {
         assertThat(seleniumSteps.cssValueOf(link(LINK_LABEL_TEXT7), CSS20),
                 is(CSS_VALUE10));
+
+        assertThat(seleniumSteps.find(link(LINK_LABEL_TEXT7)),
+                hasCss(CSS20, CSS_VALUE10));
     }
 
     @Test
@@ -125,5 +138,11 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
     public void getCSSNullValueFromWebElement() {
         assertThat(seleniumSteps.cssValueOf(COMMON_LABELED_TAB4, CSS16),
                 nullValue());
+    }
+
+    @Test
+    public void getTextFromWebElement() {
+        assertThat(seleniumSteps.find(button()),
+                hasText("Button Text1"));
     }
 }

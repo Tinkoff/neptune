@@ -1,23 +1,29 @@
 package ru.tinkoff.qa.neptune.http.api.hamcrest.response;
 
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeDiagnosingMatcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import java.net.http.HttpResponse;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.not.NotMatcher.notOf;
 
 /**
  * This matcher is for the checking of a previous response.
  */
-public final class HasPreviousResponse<T> extends TypeSafeDiagnosingMatcher<HttpResponse<T>> {
+@Description("response from redirect: {previousResponse}")
+public final class HasPreviousResponse<T> extends NeptuneFeatureMatcher<HttpResponse<T>> {
 
+    @DescriptionFragment(value = "previousResponse",
+            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
     public final Matcher<? super HttpResponse<T>> responseMatcher;
 
     private HasPreviousResponse(Matcher<? super HttpResponse<T>> responseMatcher) {
+        super(true);
         checkNotNull(responseMatcher, "Matcher of a previous response is not defined");
         this.responseMatcher = responseMatcher;
     }
@@ -38,30 +44,18 @@ public final class HasPreviousResponse<T> extends TypeSafeDiagnosingMatcher<Http
      * @return a new instance of {@link HasPreviousResponse}
      */
     public static <T> HasPreviousResponse<T> hasPreviousResponse()  {
-        return hasPreviousResponse(not(nullValue()));
+        return hasPreviousResponse(notOf(nullValue()));
     }
 
     @Override
-    protected boolean matchesSafely(HttpResponse<T> item, Description mismatchDescription) {
-        if (item == null) {
-            mismatchDescription.appendText("null-response");
-            return false;
-        }
-
-        var response = item.previousResponse().orElse(null);
+    protected boolean featureMatches(HttpResponse<T> toMatch) {
+        var response = toMatch.previousResponse().orElse(null);
         var result = responseMatcher.matches(response);
 
         if (!result) {
-            responseMatcher.describeMismatch(response, mismatchDescription);
+            appendMismatchDescription(responseMatcher, toMatch);
         }
 
         return result;
-    }
-
-    @Override
-    public void describeTo(Description description) {
-        description.appendText("Response previous <")
-                .appendDescriptionOf(responseMatcher)
-                .appendText(">");
     }
 }

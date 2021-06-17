@@ -5,7 +5,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.Action;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +15,6 @@ import java.util.function.Supplier;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.steps.Step.$;
@@ -24,8 +22,6 @@ import static ru.tinkoff.qa.neptune.core.api.steps.Step.$;
 @SequentialActionSupplier.DefinePerformImperativeParameterName("Check:")
 @MaxDepthOfReporting(0)
 public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R, T, CheckActionSupplier<R, T>> {
-
-    private static final String LINE_SEPARATOR = "\r\n";
 
     private final List<AssertionError> caughtMismatches = new ArrayList<>();
     private final List<Action<T>> checkList = new ArrayList<>();
@@ -56,7 +52,7 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
     static <T, R> CheckActionSupplier<R, T> checkActionSupplier(
             @DescriptionFragment(
                     value = "description",
-                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class)
+                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
                     String description,
             Function<R, T> f,
             MatchAction<T, ?>... matchActions) {
@@ -135,15 +131,8 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
             }
         });
 
-        AssertionError assertionError = null;
         if (caughtMismatches.size() > 0) {
-            var sb = "List of mismatches:" + LINE_SEPARATOR + caughtMismatches.stream().map(Throwable::getMessage)
-                    .collect(joining(";" + LINE_SEPARATOR + LINE_SEPARATOR));
-            assertionError = new AssertionError(sb);
+            throw new AssertionError(new AssertFoundMismatchesDescription(caughtMismatches));
         }
-
-        ofNullable(assertionError).ifPresent(assertionError1 -> {
-            throw assertionError1;
-        });
     }
 }

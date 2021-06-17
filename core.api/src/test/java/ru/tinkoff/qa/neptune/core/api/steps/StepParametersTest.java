@@ -18,7 +18,7 @@ import static java.time.Duration.ofSeconds;
 import static java.util.Arrays.stream;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.XOR;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.ONLY_ONE;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.core.api.steps.StepParametersTest.TestActionStepSupplier.getTestActionStepSupplier;
 import static ru.tinkoff.qa.neptune.core.api.steps.StepParametersTest.TestActionStepSupplier2.getTestActionStepSupplier2;
@@ -114,7 +114,7 @@ public class StepParametersTest {
                         .timeOut(ofSeconds(5))
                         .pollingInterval(ofMillis(500))
                         .criteria("Some criteria 1", o -> true)
-                        .criteria(XOR(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)))),
+                        .criteria(ONLY_ONE(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)))),
                         hasKey("Custom criteria"),
                         hasKey("Custom criteria 2"),
                         hasKey("Custom Time out"),
@@ -128,7 +128,7 @@ public class StepParametersTest {
                         .timeOut(ofSeconds(5))
                         .pollingInterval(ofMillis(500))
                         .criteria("Some criteria 1", o -> true)
-                        .criteria(XOR(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)))),
+                        .criteria(ONLY_ONE(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)))),
                         anything(),
                         not(hasKey("Criteria")),
                         not(hasKey("Criteria 2")),
@@ -148,7 +148,7 @@ public class StepParametersTest {
                         .timeOut(ofSeconds(5))
                         .pollingInterval(ofMillis(500))
                         .criteria("Some criteria 1", o -> true)
-                        .criteria(XOR(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)))),
+                        .criteria(ONLY_ONE(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)))),
                         hasKey("Custom criteria"),
                         hasKey("Custom criteria 2"),
                         hasKey("Custom Time out"),
@@ -162,7 +162,7 @@ public class StepParametersTest {
                         .timeOut(ofSeconds(5))
                         .pollingInterval(ofMillis(500))
                         .criteria("Some criteria 1", o -> true)
-                        .criteria(XOR(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)))),
+                        .criteria(ONLY_ONE(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)))),
                         anything(),
                         not(hasKey("Criteria")),
                         not(hasKey("Criteria 2")),
@@ -191,7 +191,7 @@ public class StepParametersTest {
         var p = s.timeOut(ofSeconds(5))
                 .pollingInterval(ofMillis(500))
                 .criteria("Some criteria 1", o -> true)
-                .criteria(XOR(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)))
+                .criteria(ONLY_ONE(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)))
                 .getParameters();
         assertThat(p, hasEntry(equalTo(criteriaName), equalTo("Some criteria 1")));
         assertThat(p, hasEntry(equalTo(criteriaName + " 2"), equalTo("(Some criteria 2) xor (Some criteria 3)")));
@@ -231,7 +231,7 @@ public class StepParametersTest {
         s.timeOut(ofSeconds(5))
                 .pollingInterval(ofMillis(500))
                 .criteria("Some criteria 1", o -> true)
-                .criteria(XOR(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)));
+                .criteria(ONLY_ONE(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)));
 
         if (s instanceof TestGetStepSupplier) {
             ((TestGetStepSupplier) s).setParam1(true)

@@ -1,26 +1,30 @@
 package ru.tinkoff.qa.neptune.core.api.hamcrest.text;
 
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeDiagnosingMatcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.hamcrest.Matchers.hasItem;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.arrayInOrder;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsItemsMatcher.arrayHasItem;
 
 /**
  * Checks whenever string has substring(s) that meet defined criteria or not.
  * These substrings should be separated from each other by defined separator
  */
-public final class StringContainsWithSeparator extends TypeSafeDiagnosingMatcher<String> {
+@Description("string has substring(s) separated by <'{separator}'>: {toContain}")
+public final class StringContainsWithSeparator extends NeptuneFeatureMatcher<String> {
 
-    private final Matcher<? super Iterable<String>> toContain;
+    @DescriptionFragment(value = "toContain")
+    private final Matcher<String[]> toContain;
+    @DescriptionFragment("separator")
     private final String separator;
 
-    private StringContainsWithSeparator(Matcher<? super Iterable<String>> toContain, String separator) {
+    private StringContainsWithSeparator(Matcher<String[]> toContain, String separator) {
+        super(true);
         checkArgument(isNotBlank(separator), "Separator is blank");
         checkNotNull(toContain, "Matcher is not defined");
         this.toContain = toContain;
@@ -31,12 +35,23 @@ public final class StringContainsWithSeparator extends TypeSafeDiagnosingMatcher
      * Creates matcher that checks whenever string has substrings that meet defined criteria or not.
      * These substrings should be separated from each other by defined separator.
      *
-     * @param matcher   that verifies separated substrings
      * @param separator is string separator
+     * @param matcher   that verifies separated substrings
      * @return new {@link StringContainsWithSeparator}
      */
-    public static StringContainsWithSeparator containsStringsSeparatedBy(Matcher<? super Iterable<String>> matcher, String separator) {
+    public static Matcher<String> withSeparator(String separator, Matcher<String[]> matcher) {
         return new StringContainsWithSeparator(matcher, separator);
+    }
+
+    /**
+     * Creates matcher that checks whenever string has only defined substrings in the listed order.
+     *
+     * @param subStrings expected substrings
+     * @param separator  is string separator
+     * @return new {@link StringContainsWithSeparator}
+     */
+    public static Matcher<String> withSeparator(String separator, String... subStrings) {
+        return withSeparator(separator, arrayInOrder(subStrings));
     }
 
     /**
@@ -47,33 +62,19 @@ public final class StringContainsWithSeparator extends TypeSafeDiagnosingMatcher
      * @param separator is string separator
      * @return new {@link StringContainsWithSeparator}
      */
-    public static StringContainsWithSeparator containsStringSeparatedBy(String toContain, String separator) {
-        return new StringContainsWithSeparator(hasItem(toContain), separator);
+    public static Matcher<String> withSeparator(String separator, String toContain) {
+        return withSeparator(separator, arrayHasItem(toContain));
     }
 
     @Override
-    protected boolean matchesSafely(String item, Description mismatchDescription) {
-        if (item == null) {
-            mismatchDescription.appendText(" was null");
-            return false;
-        }
-
-        var value = stream(item.split(separator)).collect(toList());
+    protected boolean featureMatches(String toMatch) {
+        var value = toMatch.split(separator);
         var result = toContain.matches(value);
 
         if (!result) {
-            toContain.describeMismatch(value, mismatchDescription);
+            appendMismatchDescription(toContain, toMatch);
         }
 
         return result;
-    }
-
-    @Override
-    public void describeTo(Description description) {
-        description.appendText("string has substring(s) <")
-                .appendDescriptionOf(toContain)
-                .appendText("> separated by <")
-                .appendText(separator)
-                .appendText(">");
     }
 }

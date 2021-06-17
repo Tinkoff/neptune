@@ -1,178 +1,179 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements;
 
-import ru.tinkoff.qa.neptune.selenium.api.widget.HasLocation;
-import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.StringDescription;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.WrapsElement;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.PropertyValueMismatch;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
+import ru.tinkoff.qa.neptune.selenium.api.widget.HasLocation;
+import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.hamcrest.Matchers.equalTo;
 
-public final class HasLocationMatcher<T extends SearchContext> extends TypeSafeDiagnosingMatcher<T> {
+@Description("location x {xMatcher} and y {yMatcher} relatively [{point}]")
+public final class HasLocationMatcher extends NeptuneFeatureMatcher<SearchContext> {
 
+    @DescriptionFragment(value = "xMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
     private final Matcher<Integer> xMatcher;
+    @DescriptionFragment(value = "yMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
     private final Matcher<Integer> yMatcher;
-    private Point relativeTo;
+    @DescriptionFragment(value = "point", makeReadableBy = PointValueGetter.class)
+    private final Point relativeTo;
 
-    private HasLocationMatcher(Matcher<Integer> xMatcher, Matcher<Integer> yMatcher) {
+    private HasLocationMatcher(Matcher<Integer> xMatcher, Matcher<Integer> yMatcher, Point relativeTo) {
+        super(true, WebElement.class, Widget.class);
         checkArgument(nonNull(xMatcher), "Criteria to check x-value should be defined");
         checkArgument(nonNull(yMatcher), "Criteria to check y-value should be defined");
+        checkArgument(nonNull(relativeTo), "Point should be defined");
         this.xMatcher = xMatcher;
         this.yMatcher = yMatcher;
+        this.relativeTo = relativeTo;
     }
 
     /**
      * Creates an instance of {@link HasLocationMatcher} that checks location of an instance of {@link SearchContext}.
-     * It should be {@link WebElement} or some implementor of {@link HasLocation} or {@link WrapsElement}.
+     * It should be {@link WebElement} or some implementor of {@link HasLocation}.
+     * Otherwise the matching returns {@code false}.
+     *
+     * @param x     expected x value
+     * @param y     expected y value
+     * @param point is considered to be the starting point
+     * @return instance of {@link HasLocationMatcher}
+     */
+    public static Matcher<SearchContext> hasLocation(int x, int y, Point point) {
+        return hasLocation(equalTo(x), equalTo(y), point);
+    }
+
+    /**
+     * Creates an instance of {@link HasLocationMatcher} that checks location of an instance of {@link SearchContext}.
+     * It should be {@link WebElement} or some implementor of {@link HasLocation}.
+     * Otherwise the matching returns {@code false}.
+     *
+     * @param x        expected x value
+     * @param yMatcher y-value criteria
+     * @param point    is considered to be the starting point
+     * @return instance of {@link HasLocationMatcher}
+     */
+    public static Matcher<SearchContext> hasLocation(int x, Matcher<Integer> yMatcher, Point point) {
+        return hasLocation(equalTo(x), yMatcher, point);
+    }
+
+    /**
+     * Creates an instance of {@link HasLocationMatcher} that checks location of an instance of {@link SearchContext}.
+     * It should be {@link WebElement} or some implementor of {@link HasLocation}.
+     * Otherwise the matching returns {@code false}.
+     *
+     * @param xMatcher x-value criteria
+     * @param y        expected y value
+     * @param point    is considered to be the starting point
+     * @return instance of {@link HasLocationMatcher}
+     */
+    public static Matcher<SearchContext> hasLocation(Matcher<Integer> xMatcher, int y, Point point) {
+        return hasLocation(xMatcher, equalTo(y), point);
+    }
+
+
+    /**
+     * Creates an instance of {@link HasLocationMatcher} that checks location of an instance of {@link SearchContext}.
+     * It should be {@link WebElement} or some implementor of {@link HasLocation}.
      * Otherwise the matching returns {@code false}.
      *
      * @param x expected x value
      * @param y expected y value
-     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
-     *           {@link SearchContext} and {@link HasLocation}.
      * @return instance of {@link HasLocationMatcher}
      */
-    public static <T extends SearchContext> HasLocationMatcher<T> hasLocation(int x, int y) {
+    public static Matcher<SearchContext> hasLocation(int x, int y) {
         return hasLocation(equalTo(x), equalTo(y));
     }
 
     /**
      * Creates an instance of {@link HasLocationMatcher} that checks location of an instance of {@link SearchContext}.
-     * It should be {@link WebElement} or some implementor of {@link HasLocation} or {@link WrapsElement}.
+     * It should be {@link WebElement} or some implementor of {@link HasLocation}.
      * Otherwise the matching returns {@code false}.
      *
-     * @param x expected x value
+     * @param x        expected x value
      * @param yMatcher y-value criteria
-     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
-     *           {@link SearchContext} and {@link HasLocation}.
      * @return instance of {@link HasLocationMatcher}
      */
-    public static <T extends SearchContext> HasLocationMatcher<T> hasLocation(int x, Matcher<Integer> yMatcher) {
+    public static Matcher<SearchContext> hasLocation(int x, Matcher<Integer> yMatcher) {
         return hasLocation(equalTo(x), yMatcher);
     }
 
     /**
      * Creates an instance of {@link HasLocationMatcher} that checks location of an instance of {@link SearchContext}.
-     * It should be {@link WebElement} or some implementor of {@link HasLocation} or {@link WrapsElement}.
+     * It should be {@link WebElement} or some implementor of {@link HasLocation}.
      * Otherwise the matching returns {@code false}.
      *
      * @param xMatcher x-value criteria
-     * @param y expected y value
-     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
-     *           {@link SearchContext} and {@link HasLocation}.
+     * @param y        expected y value
      * @return instance of {@link HasLocationMatcher}
      */
-    public static <T extends SearchContext> HasLocationMatcher<T> hasLocation(Matcher<Integer> xMatcher, int y) {
+    public static Matcher<SearchContext> hasLocation(Matcher<Integer> xMatcher, int y) {
         return hasLocation(xMatcher, equalTo(y));
     }
 
     /**
      * Creates an instance of {@link HasLocationMatcher} that checks location of an instance of {@link SearchContext}.
-     * It should be {@link WebElement} or some implementor of {@link HasLocation} or {@link WrapsElement}.
+     * It should be {@link WebElement} or some implementor of {@link HasLocation}.
      * Otherwise the matching returns {@code false}.
      *
      * @param xMatcher x-value criteria
      * @param yMatcher y-value criteria
-     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
-     *           {@link SearchContext} and {@link HasLocation}.
+     * @param point    is considered to be the starting point
      * @return instance of {@link HasLocationMatcher}
      */
-    public static <T extends SearchContext> HasLocationMatcher<T> hasLocation(Matcher<Integer> xMatcher,
-                                                                              Matcher<Integer> yMatcher) {
-        return new HasLocationMatcher<>(xMatcher, yMatcher);
+    public static Matcher<SearchContext> hasLocation(Matcher<Integer> xMatcher,
+                                                     Matcher<Integer> yMatcher,
+                                                     Point point) {
+        return new HasLocationMatcher(xMatcher, yMatcher, point);
     }
 
     /**
-     * Sets the element. Location under the matching is considered relative to upper left corner of the element at this
-     * case.
+     * Creates an instance of {@link HasLocationMatcher} that checks location of an instance of {@link SearchContext}.
+     * It should be {@link WebElement} or some implementor of {@link HasLocation}.
+     * Otherwise the matching returns {@code false}.
      *
-     * @param relativeTo is an element with coordinates. Location under the matching is considered
-     *                   relative to upper left corner of the element.
-     * @return self-reference
+     * @param xMatcher x-value criteria
+     * @param yMatcher y-value criteria
+     * @return instance of {@link HasLocationMatcher}
      */
-    public HasLocationMatcher<T> relativeTo(WebElement relativeTo) {
-        this.relativeTo = relativeTo.getLocation();
-        return this;
-    }
-
-    /**
-     * Sets the item that has coordinates. Location under the matching is considered relative to coordinates of this item at this
-     * case.
-     *
-     * @param relativeTo is some with has coordinates. Location under the matching is considered
-     *                   relative to coordinates of this item.
-     * @param <Q> type of customized element that provide getting of location
-     * @return self-reference
-     */
-    public <Q extends SearchContext & HasLocation> HasLocationMatcher<T> relativeTo(Q relativeTo) {
-        this.relativeTo = relativeTo.getLocation();
-        return this;
+    public static Matcher<SearchContext> hasLocation(Matcher<Integer> xMatcher,
+                                                     Matcher<Integer> yMatcher) {
+        return new HasLocationMatcher(xMatcher, yMatcher, new Point(0, 0));
     }
 
     @Override
-    protected boolean matchesSafely(T item, Description mismatchDescription) {
-        var clazz = item.getClass();
-        if (!WebElement.class.isAssignableFrom(clazz) && HasLocation.class.isAssignableFrom(clazz)
-                && WrapsElement.class.isAssignableFrom(clazz)) {
-            mismatchDescription.appendText(format("It is not possible to get position from the instance of %s because " +
-                            "it does not implement %s, %s or %s", clazz.getName(), WebElement.class,
-                    HasLocation.class.getName(),
-                    WrapsElement.class.getName()));
-            return false;
-        }
+    protected boolean featureMatches(SearchContext toMatch) {
+        var clazz = toMatch.getClass();
 
         Point point;
         if (WebElement.class.isAssignableFrom(clazz)) {
-            point = ((WebElement) item).getLocation();
-        }
-        else if (HasLocation.class.isAssignableFrom(clazz)) {
-            point = ((HasLocation) item).getLocation();
-        }
-        else {
-            var e = ((WrapsElement) item).getWrappedElement();
-            if (e == null) {
-                mismatchDescription.appendText(format("Wrapped element is null. It is not possible to get position from an instance of %s.",
-                        clazz.getName()));
-                return false;
-            }
-            point = e.getLocation();
+            point = ((WebElement) toMatch).getLocation();
+        } else {
+            point = ((HasLocation) toMatch).getLocation();
         }
 
         var x = ofNullable(relativeTo).map(p -> point.getX() - p.getX()).orElseGet(point::getX);
         var y = ofNullable(relativeTo).map(p -> point.getY() - p.getY()).orElseGet(point::getY);
-        var result = (xMatcher.matches(x) && yMatcher.matches(y));
 
-        if (!result) {
-            var description = new StringDescription();
-            if (!xMatcher.matches(x)) {
-                xMatcher.describeMismatch(x, description.appendText("x: "));
-            }
-
-            if (!yMatcher.matches(y)) {
-                if (!isBlank(description.toString())) {
-                    description.appendText(" ");
-                }
-                yMatcher.describeMismatch(y, description.appendText("y: "));
-            }
-            mismatchDescription.appendText(description.toString());
+        var result = true;
+        if (!xMatcher.matches(x)) {
+            appendMismatchDescription(new PropertyValueMismatch("x", x, xMatcher));
+            result = false;
         }
 
-        return false;
-    }
+        if (!yMatcher.matches(y)) {
+            appendMismatchDescription(new PropertyValueMismatch("y", y, yMatcher));
+            result = false;
+        }
 
-    @Override
-    public String toString() {
-        return ofNullable(relativeTo)
-                .map(p -> format("has position x %s and y %s relative to %s", xMatcher, yMatcher, p))
-                .orElseGet(() -> format("has position x %s and y %s", xMatcher, yMatcher));
+        return result;
     }
 }

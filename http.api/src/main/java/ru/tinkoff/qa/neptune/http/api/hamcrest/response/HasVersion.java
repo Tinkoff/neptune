@@ -1,8 +1,10 @@
 package ru.tinkoff.qa.neptune.http.api.hamcrest.response;
 
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeDiagnosingMatcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
@@ -13,10 +15,15 @@ import static org.hamcrest.Matchers.equalTo;
 /**
  * This matcher is for the checking of a response version.
  */
-public final class HasVersion extends TypeSafeDiagnosingMatcher<HttpResponse<?>> {
+@Description("protocol version {version}")
+public final class HasVersion extends NeptuneFeatureMatcher<HttpResponse<?>> {
+
+    @DescriptionFragment(value = "version",
+            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
     private final Matcher<? super HttpClient.Version> versionMatcher;
 
     private HasVersion(Matcher<? super HttpClient.Version> versionMatcher) {
+        super(true);
         checkNotNull(versionMatcher, "Matcher of a version is not defined");
         this.versionMatcher = versionMatcher;
     }
@@ -42,26 +49,14 @@ public final class HasVersion extends TypeSafeDiagnosingMatcher<HttpResponse<?>>
     }
 
     @Override
-    protected boolean matchesSafely(HttpResponse<?> item, Description mismatchDescription) {
-        if (item == null) {
-            mismatchDescription.appendText("null-response");
-            return false;
-        }
-
-        var version = item.version();
+    protected boolean featureMatches(HttpResponse<?> toMatch) {
+        var version = toMatch.version();
         var result = versionMatcher.matches(version);
 
         if (!result) {
-            versionMatcher.describeMismatch(version, mismatchDescription);
+            appendMismatchDescription(versionMatcher, toMatch);
         }
 
         return result;
     }
-
-    @Override
-    public void describeTo(Description description) {
-        description.appendText("Response has version ")
-                .appendDescriptionOf(versionMatcher);
-    }
-
 }

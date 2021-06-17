@@ -1,8 +1,10 @@
 package ru.tinkoff.qa.neptune.http.api.hamcrest.response;
 
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeDiagnosingMatcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import java.net.URI;
 import java.net.http.HttpResponse;
@@ -13,11 +15,15 @@ import static org.hamcrest.Matchers.equalTo;
 /**
  * This matcher is for the checking of an URI of a response.
  */
-public final class HasURI extends TypeSafeDiagnosingMatcher<HttpResponse<?>> {
+@Description("URI {uri}")
+public final class HasURI extends NeptuneFeatureMatcher<HttpResponse<?>> {
 
+    @DescriptionFragment(value = "uri",
+            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
     private final Matcher<? super URI> uriMatcher;
 
     private HasURI(Matcher<? super URI> uriMatcher) {
+        super(true);
         checkNotNull(uriMatcher, "Matcher of an URI is not defined");
         this.uriMatcher = uriMatcher;
     }
@@ -43,25 +49,14 @@ public final class HasURI extends TypeSafeDiagnosingMatcher<HttpResponse<?>> {
     }
 
     @Override
-    protected boolean matchesSafely(HttpResponse<?> item, Description mismatchDescription) {
-        if (item == null) {
-            mismatchDescription.appendText("null-response");
-            return false;
-        }
-
-        var uri = item.uri();
+    protected boolean featureMatches(HttpResponse<?> toMatch) {
+        var uri = toMatch.uri();
         var result = uriMatcher.matches(uri);
 
         if (!result) {
-            uriMatcher.describeMismatch(uri, mismatchDescription);
+            appendMismatchDescription(uriMatcher, toMatch);
         }
 
         return result;
-    }
-
-    @Override
-    public void describeTo(Description description) {
-        description.appendText("Response has URI ")
-                .appendDescriptionOf(uriMatcher);
     }
 }

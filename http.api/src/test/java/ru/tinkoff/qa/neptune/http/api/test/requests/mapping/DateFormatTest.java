@@ -22,7 +22,7 @@ import java.util.Date;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPathMatcher.uriHasPath;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryMatcher.uriHasQuery;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryStringMatcher.uriHasQueryString;
 import static ru.tinkoff.qa.neptune.http.api.properties.date.format.ApiDateFormatProperty.API_DATE_FORMAT_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI.createAPI;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.DefaultHttpMethods.GET;
@@ -51,7 +51,7 @@ public class DateFormatTest extends BaseHttpTest {
         var uri = request.uri();
 
         assertThat(uri, uriHasPath("/" + formattedDate));
-        assertThat(uri, uriHasQuery("dateQueryParam=" + formattedDate));
+        assertThat(uri, uriHasQueryString("dateQueryParam=" + formattedDate));
 
         assertThat(((NeptuneHttpRequestImpl) request).body().toString(), equalTo(formattedDate));
         assertThat(request.headers().map(), hasEntry(equalTo("dateHeader"), contains(formattedDate)));

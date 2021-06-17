@@ -1,19 +1,23 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy;
 
 import com.browserup.harreader.model.HarEntry;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.equalTo;
 
-public final class ResponseHasStatusCode extends TypeSafeDiagnosingMatcher<HarEntry> {
+@Description("Response status code {statusCodeMatcher}")
+public final class ResponseHasStatusCode extends NeptuneFeatureMatcher<HarEntry> {
 
+    @DescriptionFragment(value = "statusCodeMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
     private final Matcher<? super Integer> statusCodeMatcher;
 
     private ResponseHasStatusCode(Matcher<? super Integer> statusCodeMatcher) {
+        super(true);
         checkNotNull(statusCodeMatcher, "Status code matcher is not defined");
         this.statusCodeMatcher = statusCodeMatcher;
     }
@@ -24,7 +28,7 @@ public final class ResponseHasStatusCode extends TypeSafeDiagnosingMatcher<HarEn
      * @param statusCodeMatcher criteria that describes expected status code
      * @return a new instance of {@link ResponseHasStatusCode}
      */
-    public static ResponseHasStatusCode responseHasStatusCode(Matcher<? super Integer> statusCodeMatcher) {
+    public static Matcher<HarEntry> responseHasStatusCode(Matcher<? super Integer> statusCodeMatcher) {
         return new ResponseHasStatusCode(statusCodeMatcher);
     }
 
@@ -34,29 +38,19 @@ public final class ResponseHasStatusCode extends TypeSafeDiagnosingMatcher<HarEn
      * @param statusCode is the expected status of the response
      * @return a new instance of {@link ResponseHasStatusCode}
      */
-    public static ResponseHasStatusCode responseHasStatusCode(int statusCode) {
-        return new ResponseHasStatusCode(is(statusCode));
+    public static Matcher<HarEntry> responseHasStatusCode(int statusCode) {
+        return responseHasStatusCode(equalTo(statusCode));
     }
 
     @Override
-    protected boolean matchesSafely(HarEntry item, Description mismatchDescription) {
-        if (item == null) {
-            mismatchDescription.appendText("Proxied entry is null");
-            return false;
-        }
-
-        var responseStatus = item.getResponse().getStatus();
+    protected boolean featureMatches(HarEntry toMatch) {
+        var responseStatus = toMatch.getResponse().getStatus();
         var result = statusCodeMatcher.matches(responseStatus);
 
         if (!result) {
-            statusCodeMatcher.describeMismatch(responseStatus, mismatchDescription);
+            appendMismatchDescription(statusCodeMatcher, responseStatus);
         }
 
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return format("response has status %s", statusCodeMatcher);
     }
 }

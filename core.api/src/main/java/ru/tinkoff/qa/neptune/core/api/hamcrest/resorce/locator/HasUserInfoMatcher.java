@@ -1,17 +1,20 @@
 package ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator;
 
 import org.hamcrest.Matcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import java.net.URI;
 import java.net.URL;
 import java.util.function.Function;
 
 import static org.hamcrest.Matchers.equalTo;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.ResourceLocatorMatcher.MATCHER_FRAGMENT;
 
+@Description("User info {" + MATCHER_FRAGMENT + "}")
 public final class HasUserInfoMatcher<T> extends ResourceLocatorMatcher<T, String> {
 
-    private HasUserInfoMatcher(Matcher<? super String> matcher, Function<T, String> conversion) {
-        super("User info", matcher, conversion);
+    private HasUserInfoMatcher(Class<T> cls, Matcher<? super String> matcher, Function<T, String> conversion) {
+        super(cls, matcher, conversion);
     }
 
     /**
@@ -21,7 +24,7 @@ public final class HasUserInfoMatcher<T> extends ResourceLocatorMatcher<T, Strin
      * @return new {@link HasUserInfoMatcher}
      */
     public static HasUserInfoMatcher<URL> urlHasUserInfo(Matcher<? super String> userInfoMather) {
-        return new HasUserInfoMatcher<>(userInfoMather, URL::getUserInfo);
+        return new HasUserInfoMatcher<>(URL.class, userInfoMather, URL::getUserInfo);
     }
 
     /**
@@ -31,7 +34,7 @@ public final class HasUserInfoMatcher<T> extends ResourceLocatorMatcher<T, Strin
      * @return new {@link HasUserInfoMatcher}
      */
     public static HasUserInfoMatcher<URL> urlHasUserInfo(String userInfo) {
-        return new HasUserInfoMatcher<>(equalTo(userInfo), URL::getUserInfo);
+        return new HasUserInfoMatcher<>(URL.class, equalTo(userInfo), URL::getUserInfo);
     }
 
     /**
@@ -41,7 +44,7 @@ public final class HasUserInfoMatcher<T> extends ResourceLocatorMatcher<T, Strin
      * @return new {@link HasUserInfoMatcher}
      */
     public static HasUserInfoMatcher<URI> uriHasUserInfo(Matcher<? super String> userInfoMather) {
-        return new HasUserInfoMatcher<>(userInfoMather, URI::getUserInfo);
+        return new HasUserInfoMatcher<>(URI.class, userInfoMather, URI::getUserInfo);
     }
 
     /**
@@ -51,6 +54,6 @@ public final class HasUserInfoMatcher<T> extends ResourceLocatorMatcher<T, Strin
      * @return new {@link HasUserInfoMatcher}
      */
     public static HasUserInfoMatcher<URI> uriHasUserInfo(String userInfo) {
-        return new HasUserInfoMatcher<>(equalTo(userInfo), URI::getUserInfo);
+        return new HasUserInfoMatcher<>(URI.class, equalTo(userInfo), URI::getUserInfo);
     }
 }

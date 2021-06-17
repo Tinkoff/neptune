@@ -1,20 +1,24 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.window;
 
-import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
-import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static org.hamcrest.Matchers.equalTo;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.window.IsWindowPresentMatcher.windowIsPresent;
 
-public final class WindowHasTitleMatcher extends TypeSafeDiagnosingMatcher<Window> {
+@Description("title {titleMatcher}")
+public final class WindowHasTitleMatcher extends NeptuneFeatureMatcher<Window> {
 
+    @DescriptionFragment("titleMatcher")
     private final Matcher<String> titleMatcher;
 
     private WindowHasTitleMatcher(Matcher<String> titleMatcher) {
+        super(true);
         checkArgument(nonNull(titleMatcher), "Criteria to match title of a window should be defined");
         this.titleMatcher = titleMatcher;
     }
@@ -40,17 +44,19 @@ public final class WindowHasTitleMatcher extends TypeSafeDiagnosingMatcher<Windo
     }
 
     @Override
-    protected boolean matchesSafely(Window item, Description mismatchDescription) {
-        String title;
-        boolean result = titleMatcher.matches(title = item.getTitle());
-        if (!result) {
-            titleMatcher.describeMismatch(title, mismatchDescription);
+    protected boolean featureMatches(Window toMatch) {
+        var windowPresent = windowIsPresent();
+        if (!windowPresent.matches(toMatch)) {
+            appendMismatchDescription(windowPresent, toMatch);
+            return false;
         }
-        return result;
-    }
 
-    @Override
-    public String toString() {
-        return format("has title %s", titleMatcher);
+        var title = toMatch.getTitle();
+        if (!titleMatcher.matches(title)) {
+            appendMismatchDescription(titleMatcher, title);
+            return false;
+        }
+
+        return true;
     }
 }
