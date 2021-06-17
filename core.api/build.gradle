@@ -1,5 +1,5 @@
 plugins {
-    id "io.freefair.aspectj.post-compile-weaving" version "5.3.0"
+    id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
 }
 
 configurations {
@@ -8,9 +8,9 @@ configurations {
 
 dependencies {
     compile group: 'org.objenesis', name: 'objenesis', version: '3.2'
-    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.0'
-    compile group: 'org.aspectj', name: 'aspectjrt', version: '1.9.6'
-    agent group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.6'
+    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.2'
+    compile group: 'org.aspectj', name: 'aspectjrt', version: '1.9.7.M3'
+    agent group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.7.M3'
 }
 
 task javadocJar(type: Jar) {
