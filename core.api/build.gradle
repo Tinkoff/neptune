@@ -27,14 +27,14 @@ artifacts {
     archives jar, javadocJar, sourcesJar
 }
 
-task generateBundle(type: JavaExec) {
+task generateBundle(type: JavaExec)  {
     classpath sourceSets.main.runtimeClasspath
     main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
     args "ru_RU",
             "$projectDir/src/main/resources"
 }
 
-compileJava {
+processResources {
     doLast {
         generateBundle.exec()
     }

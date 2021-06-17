@@ -15,7 +15,7 @@ task javadocJar(type: Jar) {
     from javadoc
 }
 
-task generateBundle(type: JavaExec) {
+task generateBundle(type: JavaExec)  {
     classpath sourceSets.main.runtimeClasspath
     main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
     args "ru_RU",
@@ -24,7 +24,7 @@ task generateBundle(type: JavaExec) {
             "check"
 }
 
-compileJava {
+processResources {
     doLast {
         generateBundle.exec()
     }
