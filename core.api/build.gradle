@@ -34,8 +34,10 @@ task generateBundle(type: JavaExec) {
             "$projectDir/src/main/resources"
 }
 
-compileTestJava {
-    dependsOn(generateBundle)
+compileJava {
+    doLast {
+        generateBundle.exec()
+    }
 }
 
 test {

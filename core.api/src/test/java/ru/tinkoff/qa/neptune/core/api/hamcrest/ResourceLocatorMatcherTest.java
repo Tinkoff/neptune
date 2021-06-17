@@ -11,21 +11,21 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.AssertJUnit.fail;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableInOrder;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasHostMatcher.uriHasHost;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasHostMatcher.urlHasHost;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPathMatcher.uriHasPath;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPathMatcher.urlHasPath;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPortMatcher.uriHasPort;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPortMatcher.urlHasPort;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasProtocolMatcher.urlHasProtocol;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryParameters.uriHasQueryParameter;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryParameters.urlHasQueryParameter;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryStringMatcher.uriHasQueryString;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryStringMatcher.urlHasQueryString;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasReferenceMatcher.urlHasReference;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasSchemeMatcher.uriHasScheme;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasUserInfoMatcher.uriHasUserInfo;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasUserInfoMatcher.urlHasUserInfo;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasHostMatcher.uriHasHost;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasHostMatcher.urlHasHost;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasPathMatcher.uriHasPath;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasPathMatcher.urlHasPath;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasPortMatcher.uriHasPort;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasPortMatcher.urlHasPort;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasProtocolMatcher.urlHasProtocol;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasQueryParameters.uriHasQueryParameter;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasQueryParameters.urlHasQueryParameter;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasQueryStringMatcher.uriHasQueryString;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasQueryStringMatcher.urlHasQueryString;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasReferenceMatcher.urlHasReference;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasSchemeMatcher.uriHasScheme;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasUserInfoMatcher.uriHasUserInfo;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasUserInfoMatcher.urlHasUserInfo;
 
 public class ResourceLocatorMatcherTest {
 
