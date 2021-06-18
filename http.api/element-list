@@ -3,6 +3,7 @@ ru.tinkoff.qa.neptune.http.api.captors.request
 ru.tinkoff.qa.neptune.http.api.captors.response
 ru.tinkoff.qa.neptune.http.api.cookies
 ru.tinkoff.qa.neptune.http.api.hamcrest.response
+ru.tinkoff.qa.neptune.http.api.localization
 ru.tinkoff.qa.neptune.http.api.mapping
 ru.tinkoff.qa.neptune.http.api.properties.authentification
 ru.tinkoff.qa.neptune.http.api.properties.cookies

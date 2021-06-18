@@ -1,6 +1,7 @@
 io.swagger.codegen.v3
 ru.tinkoff.qa.neptune.allure
 ru.tinkoff.qa.neptune.check
+ru.tinkoff.qa.neptune.check.localization
 ru.tinkoff.qa.neptune.core.api.cleaning
 ru.tinkoff.qa.neptune.core.api.concurrency
 ru.tinkoff.qa.neptune.core.api.dependency.injection
@@ -9,9 +10,22 @@ ru.tinkoff.qa.neptune.core.api.event.firing.annotations
 ru.tinkoff.qa.neptune.core.api.event.firing.captors
 ru.tinkoff.qa.neptune.core.api.event.firing.collections
 ru.tinkoff.qa.neptune.core.api.event.firing.console
-ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator
+ru.tinkoff.qa.neptune.core.api.hamcrest
+ru.tinkoff.qa.neptune.core.api.hamcrest.common
+ru.tinkoff.qa.neptune.core.api.hamcrest.common.all
+ru.tinkoff.qa.neptune.core.api.hamcrest.common.any
+ru.tinkoff.qa.neptune.core.api.hamcrest.common.not
+ru.tinkoff.qa.neptune.core.api.hamcrest.common.only.one
+ru.tinkoff.qa.neptune.core.api.hamcrest.iterables
+ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions
+ru.tinkoff.qa.neptune.core.api.hamcrest.mapped
+ru.tinkoff.qa.neptune.core.api.hamcrest.pojo
+ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator
 ru.tinkoff.qa.neptune.core.api.hamcrest.text
 ru.tinkoff.qa.neptune.core.api.hooks
+ru.tinkoff.qa.neptune.core.api.localization
+ru.tinkoff.qa.neptune.core.api.localization.aspect
+ru.tinkoff.qa.neptune.core.api.logical.lexemes
 ru.tinkoff.qa.neptune.core.api.properties
 ru.tinkoff.qa.neptune.core.api.properties.booleans
 ru.tinkoff.qa.neptune.core.api.properties.bytes
@@ -32,8 +46,6 @@ ru.tinkoff.qa.neptune.core.api.steps
 ru.tinkoff.qa.neptune.core.api.steps.annotations
 ru.tinkoff.qa.neptune.core.api.steps.conditions
 ru.tinkoff.qa.neptune.core.api.steps.context
-ru.tinkoff.qa.neptune.core.api.steps.localization
-ru.tinkoff.qa.neptune.core.api.steps.localization.aspect
 ru.tinkoff.qa.neptune.core.api.steps.parameters
 ru.tinkoff.qa.neptune.core.api.steps.proxy
 ru.tinkoff.qa.neptune.core.api.utils
@@ -41,6 +53,7 @@ ru.tinkoff.qa.neptune.data.base.api
 ru.tinkoff.qa.neptune.data.base.api.captors
 ru.tinkoff.qa.neptune.data.base.api.connection.data
 ru.tinkoff.qa.neptune.data.base.api.data.operations
+ru.tinkoff.qa.neptune.data.base.api.localization
 ru.tinkoff.qa.neptune.data.base.api.properties
 ru.tinkoff.qa.neptune.data.base.api.queries
 ru.tinkoff.qa.neptune.data.base.api.queries.ids
@@ -52,6 +65,7 @@ ru.tinkoff.qa.neptune.http.api.captors.request
 ru.tinkoff.qa.neptune.http.api.captors.response
 ru.tinkoff.qa.neptune.http.api.cookies
 ru.tinkoff.qa.neptune.http.api.hamcrest.response
+ru.tinkoff.qa.neptune.http.api.localization
 ru.tinkoff.qa.neptune.http.api.mapping
 ru.tinkoff.qa.neptune.http.api.properties.authentification
 ru.tinkoff.qa.neptune.http.api.properties.cookies
@@ -109,9 +123,9 @@ ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.parent
 ru.tinkoff.qa.neptune.selenium.functions.target.locator.window
 ru.tinkoff.qa.neptune.selenium.functions.value
 ru.tinkoff.qa.neptune.selenium.functions.windows
-ru.tinkoff.qa.neptune.selenium.hamcrest.matchers
 ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.alert
 ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy
+ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions
 ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements
 ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.url
 ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.window

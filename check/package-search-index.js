@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"ru.tinkoff.qa.neptune.check"}]
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"ru.tinkoff.qa.neptune.check"},{"l":"ru.tinkoff.qa.neptune.check.localization"}]
