@@ -1,5 +1,5 @@
 plugins {
-    id "io.freefair.aspectj.post-compile-weaving" version "5.3.0"
+    id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
 }
 
 dependencies {
@@ -28,13 +28,13 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-compileTestJava {
+processResources {
     doLast {
-        enhanceJdoEntities.exec()
+        generateBundle.exec()
     }
 }
 
-task generateBundle(type: JavaExec) {
+task generateBundle(type: JavaExec)  {
     classpath sourceSets.main.runtimeClasspath
     main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
     args "ru_RU",
@@ -43,9 +43,9 @@ task generateBundle(type: JavaExec) {
             "data.base"
 }
 
-compileJava {
+compileTestJava {
     doLast {
-        generateBundle.exec()
+        enhanceJdoEntities.exec()
     }
 }
 
