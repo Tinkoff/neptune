@@ -161,13 +161,13 @@ public class ResourceBundleGenerator {
         return s.replace("ru.tinkoff.qa.neptune.", "");
     }
 
-    private static InputStream getResourceInputStream(String name) {
+    static InputStream getResourceInputStream(String name) {
         return ofNullable(getSystemClassLoader()
                 .getResourceAsStream(name))
                 .orElseGet(() -> currentThread().getContextClassLoader().getResourceAsStream(name));
     }
 
-    private static Properties propertiesFromStream(InputStream is) throws IOException {
+    static Properties propertiesFromStream(InputStream is) throws IOException {
         if (is == null) {
             return null;
         }
