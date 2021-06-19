@@ -54,7 +54,7 @@ public final class HasURI extends NeptuneFeatureMatcher<HttpResponse<?>> {
         var result = uriMatcher.matches(uri);
 
         if (!result) {
-            appendMismatchDescription(uriMatcher, toMatch);
+            appendMismatchDescription(uriMatcher, uri);
         }
 
         return result;

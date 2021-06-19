@@ -53,7 +53,7 @@ public final class HasPreviousResponse<T> extends NeptuneFeatureMatcher<HttpResp
         var result = responseMatcher.matches(response);
 
         if (!result) {
-            appendMismatchDescription(responseMatcher, toMatch);
+            appendMismatchDescription(responseMatcher, response);
         }
 
         return result;

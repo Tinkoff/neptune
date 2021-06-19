@@ -49,7 +49,7 @@ public final class AlertHasTextMatcher extends NeptuneFeatureMatcher<Alert> {
         var result = textMatcher.matches(text);
 
         if (!result) {
-            appendMismatchDescription(textMatcher, toMatch);
+            appendMismatchDescription(textMatcher, text);
         }
         return result;
     }
