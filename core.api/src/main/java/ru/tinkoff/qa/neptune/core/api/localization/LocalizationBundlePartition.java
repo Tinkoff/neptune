@@ -2,15 +2,16 @@ package ru.tinkoff.qa.neptune.core.api.localization;
 
 import io.github.classgraph.ClassGraph;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.util.Properties;
 
 import static java.lang.reflect.Modifier.isAbstract;
 import static java.util.Optional.ofNullable;
-import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
+import static ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator.getResourceInputStream;
+import static ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator.propertiesFromStream;
 
 /**
  * This class is needful for partitions of localization bundles
@@ -23,8 +24,8 @@ public abstract class LocalizationBundlePartition {
     private final String defaultBundleName;
     private final String customBundleName;
     private final String packageName;
-    private ResourceBundle defaultBundle;
-    private ResourceBundle customBundle;
+    private Properties defaultBundle;
+    private Properties customBundle;
     private boolean isRead;
 
     protected LocalizationBundlePartition(String name, String packageName) {
@@ -57,17 +58,19 @@ public abstract class LocalizationBundlePartition {
         return knownPartitions;
     }
 
-    public final ResourceBundle getResourceBundle(Locale l) {
+    final Properties getResourceBundle(Locale l) {
         if (!isRead) {
             try {
-                defaultBundle = getBundle(defaultBundleName, l);
-            } catch (MissingResourceException e) {
+                defaultBundle = propertiesFromStream(
+                        getResourceInputStream(getDefaultBundleName() + "_" + l + ".properties"));
+            } catch (IOException e) {
                 defaultBundle = null;
             }
 
             try {
-                customBundle = getBundle(customBundleName, l);
-            } catch (MissingResourceException e) {
+                customBundle = propertiesFromStream(
+                        getResourceInputStream(getCustomBundleName() + "_" + l + ".properties"));
+            } catch (IOException e) {
                 customBundle = null;
             }
 

@@ -11,7 +11,7 @@ import static ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerato
 
 public class LocalizationByResourceBundle implements StepLocalization {
 
-    private static final Map<Locale, List<ResourceBundle>> resourceBundles = new HashMap<>();
+    private static final Map<Locale, List<Properties>> resourceBundles = new HashMap<>();
 
     private String getFromResourceBundles(Locale locale, String key) {
         var bundles = resourceBundles.computeIfAbsent(locale,
@@ -19,7 +19,7 @@ public class LocalizationByResourceBundle implements StepLocalization {
 
         for (var rb : bundles) {
             if (rb.containsKey(key)) {
-                return rb.getString(key);
+                return rb.getProperty(key);
             }
         }
 
