@@ -72,7 +72,7 @@ public final class StringContainsWithSeparator extends NeptuneFeatureMatcher<Str
         var result = toContain.matches(value);
 
         if (!result) {
-            appendMismatchDescription(toContain, toMatch);
+            appendMismatchDescription(toContain, value);
         }
 
         return result;

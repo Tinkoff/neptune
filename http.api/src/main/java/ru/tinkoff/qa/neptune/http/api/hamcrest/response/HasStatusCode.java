@@ -53,7 +53,7 @@ public final class HasStatusCode extends NeptuneFeatureMatcher<HttpResponse<?>> 
         var result = statusMatcher.matches(status);
 
         if (!result) {
-            appendMismatchDescription(statusMatcher, toMatch);
+            appendMismatchDescription(statusMatcher, status);
         }
 
         return result;

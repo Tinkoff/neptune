@@ -52,7 +52,7 @@ public final class HasBody<T> extends NeptuneFeatureMatcher<HttpResponse<T>> {
         var result = bodyMatcher.matches(body);
 
         if (!result) {
-            appendMismatchDescription(bodyMatcher, toMatch);
+            appendMismatchDescription(bodyMatcher, body);
         }
 
         return result;

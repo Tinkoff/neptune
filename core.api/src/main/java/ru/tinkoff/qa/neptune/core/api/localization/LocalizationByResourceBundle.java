@@ -14,8 +14,12 @@ public class LocalizationByResourceBundle implements StepLocalization {
     private static final Map<Locale, List<Properties>> resourceBundles = new HashMap<>();
 
     private String getFromResourceBundles(Locale locale, String key) {
-        var bundles = resourceBundles.computeIfAbsent(locale,
-                l -> getKnownPartitions().stream().map(p -> p.getResourceBundle(locale)).collect(toList()));
+
+        List<Properties> bundles;
+        synchronized (resourceBundles) {
+            bundles = resourceBundles.computeIfAbsent(locale,
+                    l -> getKnownPartitions().stream().map(p -> p.getResourceBundle(locale)).collect(toList()));
+        }
 
         for (var rb : bundles) {
             if (rb.containsKey(key)) {

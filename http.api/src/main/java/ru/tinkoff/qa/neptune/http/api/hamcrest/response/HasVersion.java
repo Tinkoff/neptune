@@ -54,7 +54,7 @@ public final class HasVersion extends NeptuneFeatureMatcher<HttpResponse<?>> {
         var result = versionMatcher.matches(version);
 
         if (!result) {
-            appendMismatchDescription(versionMatcher, toMatch);
+            appendMismatchDescription(versionMatcher, version);
         }
 
         return result;
