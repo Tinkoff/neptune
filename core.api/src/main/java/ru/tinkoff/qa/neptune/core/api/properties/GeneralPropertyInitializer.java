@@ -6,8 +6,7 @@ import java.util.Properties;
 
 import static java.lang.ClassLoader.getSystemClassLoader;
 import static java.lang.String.valueOf;
-import static java.lang.System.getProperties;
-import static java.lang.System.setProperty;
+import static java.lang.System.*;
 import static java.lang.Thread.currentThread;
 import static java.util.Arrays.copyOfRange;
 import static java.util.Objects.isNull;
@@ -15,7 +14,6 @@ import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.ArrayUtils.add;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public final class GeneralPropertyInitializer {
 
@@ -117,10 +115,7 @@ public final class GeneralPropertyInitializer {
     }
 
     private static void checkSystemPropertyAndFillIfNecessary(String propertyName, String valueToSet) {
-        if (isBlank(valueToSet)) {
-            return;
-        }
-        if (getProperties().containsKey(propertyName)) {
+        if (getProperties().containsKey(propertyName) || getenv().containsKey(propertyName)) {
             return;
         }
         setProperty(propertyName, valueToSet);
