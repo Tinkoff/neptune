@@ -28,6 +28,7 @@
             <class name="ru.tinkoff.qa.neptune.core.api.properties.FilePropertyReadingTest"/>
             <class name="ru.tinkoff.qa.neptune.core.api.properties.MixedFileEnvPropertyReadingTest"/>
             <class name="ru.tinkoff.qa.neptune.core.api.properties.MixedGlobalLocalPropertyReadingTest"/>
+            <class name="ru.tinkoff.qa.neptune.core.api.properties.PropertyWithDefaultValueTest"/>
         </classes>
     </test>
     <test name="Step tests">
