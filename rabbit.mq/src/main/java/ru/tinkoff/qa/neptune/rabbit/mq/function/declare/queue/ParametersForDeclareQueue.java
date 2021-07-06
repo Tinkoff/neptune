@@ -3,9 +3,10 @@ package ru.tinkoff.qa.neptune.rabbit.mq.function.declare.queue;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 import ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArguments;
-import ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArgumentsGetParameterValue;
 
 import java.util.HashMap;
+
+import static java.util.Optional.ofNullable;
 
 public class ParametersForDeclareQueue implements StepParameterPojo {
     @StepParameter("durable")
@@ -14,7 +15,6 @@ public class ParametersForDeclareQueue implements StepParameterPojo {
     private boolean exclusive;
     @StepParameter("autoDelete")
     private boolean autoDelete;
-    @StepParameter(value = "additionalArguments", doNotReportNullValues = true, makeReadableBy = AdditionalArgumentsGetParameterValue.class)
     private AdditionalArguments additionalArguments;
 
     public boolean isDurable() {
@@ -52,8 +52,9 @@ public class ParametersForDeclareQueue implements StepParameterPojo {
         return this;
     }
 
-    public ParametersForDeclareQueue additionalArguments(AdditionalArguments additionalArguments) {
-        this.additionalArguments = additionalArguments;
+    public ParametersForDeclareQueue argument(String name, Object value) {
+        additionalArguments = ofNullable(additionalArguments).orElseGet(AdditionalArguments::arguments);
+        additionalArguments.setArgument(name, value);
         return this;
     }
 }

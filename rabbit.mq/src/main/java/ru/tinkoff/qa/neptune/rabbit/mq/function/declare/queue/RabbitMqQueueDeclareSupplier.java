@@ -10,6 +10,7 @@ import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 
 import java.io.IOException;
 
+@SequentialGetStepSupplier.DefineGetImperativeParameterName("Declare:")
 @MaxDepthOfReporting(0)
 public class RabbitMqQueueDeclareSupplier extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<RabbitMqStepContext, AMQP.Queue.DeclareOk, Channel, RabbitMqQueueDeclareSupplier> {
     private final String queue;
@@ -46,17 +47,17 @@ public class RabbitMqQueueDeclareSupplier extends SequentialGetStepSupplier.GetO
         this.queue = queue;
     }
 
-    @Description("Actively declare a server-named exclusive, autodelete, non-durable queue.")
+    @Description("server-named exclusive, autodelete, non-durable queue.")
     public static RabbitMqQueueDeclareSupplier queueDeclare() {
         return new RabbitMqQueueDeclareSupplier(null, null);
     }
 
-    @Description("Declare a queue {queue} passively.")
+    @Description("queue {queue} passively.")
     public static RabbitMqQueueDeclareSupplier queueDeclarePassive(@DescriptionFragment("queue") String queue) {
         return new RabbitMqQueueDeclareSupplier(queue, null);
     }
 
-    @Description("Declare a queue - {queue}")
+    @Description("queue - {queue}")
     public static RabbitMqQueueDeclareSupplier queueDeclare(@DescriptionFragment("queue") String queue, ParametersForDeclareQueue params) {
         return new RabbitMqQueueDeclareSupplier(queue, params);
     }

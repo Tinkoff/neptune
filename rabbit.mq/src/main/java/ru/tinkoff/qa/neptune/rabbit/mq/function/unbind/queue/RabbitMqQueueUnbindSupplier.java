@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.function.unbind.queue;
 
-import com.google.common.base.Supplier;
 import com.rabbitmq.client.AMQP;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
@@ -8,6 +7,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArguments;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
+import ru.tinkoff.qa.neptune.rabbit.mq.function.ArgSupplier;
 
 import java.io.IOException;
 
@@ -54,21 +54,5 @@ public class RabbitMqQueueUnbindSupplier extends SequentialGetStepSupplier.GetOb
         checkArgument(isNotBlank(exchange));
 
         return new RabbitMqQueueUnbindSupplier(queue, exchange, routingKey, new ArgSupplier());
-    }
-
-
-    private static final class ArgSupplier implements Supplier<AdditionalArguments> {
-
-        private AdditionalArguments args;
-
-        @Override
-        public AdditionalArguments get() {
-            return args;
-        }
-
-        ArgSupplier setArgs(AdditionalArguments args) {
-            this.args = args;
-            return this;
-        }
     }
 }

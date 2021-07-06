@@ -1,15 +1,24 @@
 package ru.tinkoff.qa.neptune.rabbit.mq;
 
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import static java.lang.String.valueOf;
 
 public final class AdditionalArguments implements StepParameterPojo {
-    @StepParameter(value = "hashMap", doNotReportNullValues = true, makeReadableBy = AdditionalArgumentsGetParameterValue.class)
-    private HashMap<String, Object> hashMap;
+    private HashMap<String, Object> hashMap = new LinkedHashMap<>();
 
-    public static AdditionalArguments arguments(){
+    @Override
+    public Map<String, String> getParameters() {
+        var map = StepParameterPojo.super.getParameters();
+        hashMap.forEach((k, v) -> map.put(k, valueOf(v)));
+        return map;
+    }
+
+    public static AdditionalArguments arguments() {
         return new AdditionalArguments();
     }
 

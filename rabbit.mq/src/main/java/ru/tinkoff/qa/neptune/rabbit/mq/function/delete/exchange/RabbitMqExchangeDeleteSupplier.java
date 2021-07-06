@@ -26,7 +26,7 @@ public class RabbitMqExchangeDeleteSupplier extends SequentialActionSupplier<Rab
         performOn(RabbitMqStepContext::getChannel);
     }
 
-    @Description("an exchange '{exchange}', ifUnused - '{ifUnused}'")
+    @Description("exchange '{exchange}' with ifUnused = '{ifUnused}'")
     public static RabbitMqExchangeDeleteSupplier exchangeDelete(@DescriptionFragment("exchange") String exchange,
                                                                 @DescriptionFragment("ifUnused") boolean ifUnused) {
         return new RabbitMqExchangeDeleteSupplier(exchange, ifUnused);

@@ -2,8 +2,6 @@ package ru.tinkoff.qa.neptune.rabbit.mq.function.publish;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.rabbitmq.client.AMQP;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
@@ -17,7 +15,7 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitAMQPProperty.RABBIT_AMQP_PROPERTY;
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqAMQPProperty.RABBIT_AMQP_PROPERTY;
 
 @SequentialActionSupplier.DefinePerformImperativeParameterName("Publish:")
 @MaxDepthOfReporting(0)
@@ -39,31 +37,42 @@ public class RabbitMqPublishSupplier extends SequentialActionSupplier<RabbitMqSt
                 .orElseGet(AMQP.BasicProperties.Builder::new);
     }
 
+    @Override
+    public Map<String, String> getParameters() {
+        var map = super.getParameters();
+        var props = propertyBuilder.build();
+        ofNullable(props.getAppId()).ifPresent(s -> map.put("appId", s));
+        ofNullable(props.getContentType()).ifPresent(s -> map.put("contentType", s));
+        ofNullable(props.getContentEncoding()).ifPresent(s -> map.put("contentEncoding", s));
+        ofNullable(props.getDeliveryMode()).ifPresent(s -> map.put("deliveryMode", String.valueOf(s)));
+        ofNullable(props.getPriority()).ifPresent(s -> map.put("priority", String.valueOf(s)));
+        ofNullable(props.getCorrelationId()).ifPresent(s -> map.put("correlationId", s));
+        ofNullable(props.getReplyTo()).ifPresent(s -> map.put("replyTo", s));
+        ofNullable(props.getExpiration()).ifPresent(s -> map.put("expiration", s));
+        ofNullable(props.getMessageId()).ifPresent(s -> map.put("messageId", s));
+        ofNullable(props.getType()).ifPresent(s -> map.put("type", s));
+        ofNullable(props.getUserId()).ifPresent(s -> map.put("userId", s));
+        ofNullable(props.getClusterId()).ifPresent(s -> map.put("clusterId", s));
+        ofNullable(props.getHeaders()).ifPresent(s -> map.put("headers", s.toString()));
+        return map;
+    }
+
     public RabbitMqPublishSupplier setParams(ParametersForPublish params) {
         this.params = params;
         return this;
     }
 
-    @Description("a message.\r\n" +
+    @Description("message.\r\n" +
             "Params:\r\n" +
             "exchange – {exchange}\r\n" +
             "routingKey – {routingKey}")
-    public static RabbitMqPublishSupplier publish(@DescriptionFragment("exchange") String exchange, @DescriptionFragment("routingKey") String routingKey, ObjectMapper mapper, Object toSerialize){
+    public static RabbitMqPublishSupplier publish(@DescriptionFragment("exchange") String exchange, @DescriptionFragment("routingKey") String routingKey, Object toSerialize, ObjectMapper mapper) {
         try {
             return new RabbitMqPublishSupplier(exchange, routingKey, mapper.writeValueAsString(toSerialize));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
-
-    public static RabbitMqPublishSupplier publishJson(String exchange, String routingKey, Object toSerialize){
-        return publish(exchange, routingKey,new JsonMapper(), toSerialize);
-    }
-
-    public static RabbitMqPublishSupplier publishXml(String exchange, String routingKey, Object toSerialize){
-        return publish(exchange, routingKey,new XmlMapper(), toSerialize);
-    }
-
 
     @Override
     protected void howToPerform(RabbitMqStepContext value) {

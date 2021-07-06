@@ -46,13 +46,13 @@ public class RabbitMqBasicGetSupplier<T> extends SequentialGetStepSupplier.GetOb
         return this;
     }
 
-    @Description("a message from a queue using AMQP.Basic.Get\r\n" +
+    @Description("message from a queue using AMQP.Basic.Get\r\n" +
             "Params:\r\n" +
             "queue – {queue}\r\n" +
             "autoAck - {autoAck}")
-    public static <T> RabbitMqBasicGetSupplier<T> read(@DescriptionFragment("queue") String queue,
-                                                       @DescriptionFragment("autoAck") boolean autoAck, Class<T> classT){
-        return new RabbitMqBasicGetSupplier<>(queue,autoAck,classT, new MapperSupplier())
+    public static <T> RabbitMqBasicGetSupplier<T> valueOf(@DescriptionFragment("queue") String queue,
+                                                          @DescriptionFragment("autoAck") boolean autoAck, Class<T> classT) {
+        return new RabbitMqBasicGetSupplier<>(queue, autoAck, classT, new MapperSupplier())
                 .timeOut(ofSeconds(10));
     }
 

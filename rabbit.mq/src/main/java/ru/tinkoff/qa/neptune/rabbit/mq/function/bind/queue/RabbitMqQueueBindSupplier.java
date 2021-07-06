@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.function.bind.queue;
 
-import com.google.common.base.Supplier;
 import com.rabbitmq.client.AMQP;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
@@ -8,6 +7,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArguments;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
+import ru.tinkoff.qa.neptune.rabbit.mq.function.ArgSupplier;
 
 import java.io.IOException;
 
@@ -41,7 +41,7 @@ public class RabbitMqQueueBindSupplier extends SequentialGetStepSupplier.GetObje
         return this;
     }
 
-    @Description("a queue to an exchange, with no extra arguments.\r\n" +
+    @Description("queue to exchange.\r\n" +
             "Params:\r\n" +
             "queue – {queue}\r\n" +
             "exchange – {exchange}\r\n" +
@@ -53,21 +53,5 @@ public class RabbitMqQueueBindSupplier extends SequentialGetStepSupplier.GetObje
         checkArgument(isNotBlank(exchange));
 
         return new RabbitMqQueueBindSupplier(queue, exchange, routingKey, new ArgSupplier());
-    }
-
-
-    private static final class ArgSupplier implements Supplier<AdditionalArguments> {
-
-        private AdditionalArguments args;
-
-        @Override
-        public AdditionalArguments get() {
-            return args;
-        }
-
-        ArgSupplier setArgs(AdditionalArguments args) {
-            this.args = args;
-            return this;
-        }
     }
 }

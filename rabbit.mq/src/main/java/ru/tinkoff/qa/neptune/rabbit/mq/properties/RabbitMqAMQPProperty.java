@@ -10,8 +10,10 @@ import java.util.function.Supplier;
 @PropertyDescription(description = "Defines AMQP.BasicProperties.Builder",
         section = "RabbitMQ")
 @PropertyName("RABBIT_AMQP_PROPERTY")
-public class RabbitAMQPProperty implements ObjectPropertySupplier<AMQP.BasicProperties.Builder,Supplier<AMQP.BasicProperties.Builder>> {
-    public static final RabbitAMQPProperty RABBIT_AMQP_PROPERTY= new RabbitAMQPProperty();
+public class RabbitMqAMQPProperty implements ObjectPropertySupplier<AMQP.BasicProperties.Builder, Supplier<AMQP.BasicProperties.Builder>> {
+    public static final RabbitMqAMQPProperty RABBIT_AMQP_PROPERTY = new RabbitMqAMQPProperty();
 
-    public RabbitAMQPProperty() { super(); }
+    public RabbitMqAMQPProperty() {
+        super();
+    }
 }

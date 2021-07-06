@@ -25,7 +25,7 @@ public class RabbitMqQueueDeleteSupplier extends SequentialActionSupplier<Rabbit
         performOn(RabbitMqStepContext::getChannel);
     }
 
-    @Description("a queue - {queue}")
+    @Description("queue - '{queue}'")
     public static RabbitMqQueueDeleteSupplier deleteQueue(@DescriptionFragment("queue") String queue) {
         return new RabbitMqQueueDeleteSupplier(queue);
     }

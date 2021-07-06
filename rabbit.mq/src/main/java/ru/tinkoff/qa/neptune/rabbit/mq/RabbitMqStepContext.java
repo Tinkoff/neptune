@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.rabbit.mq;
 
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.*;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
@@ -23,8 +22,8 @@ import ru.tinkoff.qa.neptune.rabbit.mq.function.unbind.queue.RabbitMqQueueUnbind
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-import static ru.tinkoff.qa.neptune.rabbit.mq.function.publish.RabbitMqPublishSupplier.publishJson;
-import static ru.tinkoff.qa.neptune.rabbit.mq.function.publish.RabbitMqPublishSupplier.publishXml;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.publish.RabbitMqPublishSupplier.publish;
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaultMapper.RABBIT_MQ_DEFAULT_MAPPER;
 
 
 @CreateWith(provider = RabbitMqParameterProvider.class)
@@ -123,35 +122,35 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
         return get(RabbitMqQueueBindSupplier.queueBind(destination, source, routingKey).setArguments(arguments));
     }
 
-    public RabbitMqStepContext exchangeDelete(String exchange){
+    public RabbitMqStepContext exchangeDelete(String exchange) {
         return perform(RabbitMqExchangeDeleteSupplier.exchangeDelete(exchange, false));
     }
 
-    public RabbitMqStepContext exchangeDelete(String exchange, boolean ifUnused){
+    public RabbitMqStepContext exchangeDelete(String exchange, boolean ifUnused) {
         return perform(RabbitMqExchangeDeleteSupplier.exchangeDelete(exchange, ifUnused));
     }
 
-    public <T> T readJson(String queue, boolean autoAck, Class<T> classT){
-        return get(RabbitMqBasicGetSupplier.read(queue, autoAck, classT).setObjectMapper(new JsonMapper()));
+    public <T> T read(RabbitMqBasicGetSupplier<T> basicGet, ObjectMapper mapper) {
+        return get(basicGet.setObjectMapper(mapper));
     }
 
-    public <T> T readXml(String queue, boolean autoAck, Class<T> classT){
-        return get(RabbitMqBasicGetSupplier.read(queue, autoAck, classT).setObjectMapper(new XmlMapper()));
+    public <T> T read(RabbitMqBasicGetSupplier<T> basicGet) {
+        return read(basicGet, RABBIT_MQ_DEFAULT_MAPPER.get());
     }
 
-    public RabbitMqStepContext publishJsonMessage(String exchange, String routingKey , Object toSerialize){
-        return perform(publishJson(exchange, routingKey , toSerialize));
-    }
-    public RabbitMqStepContext publishJsonMessage(String exchange, String routingKey, ParametersForPublish params , Object toSerialize){
-        return perform(publishJson(exchange, routingKey , toSerialize).setParams(params));
+    public RabbitMqStepContext publishMessage(String exchange, String routingKey, Object toSerialize) {
+        return perform(publish(exchange, routingKey, toSerialize, RABBIT_MQ_DEFAULT_MAPPER.get()));
     }
 
-    public RabbitMqStepContext publishXmlMessage(String exchange, String routingKey , Object toSerialize){
-        return perform(publishXml(exchange, routingKey , toSerialize));
+    public RabbitMqStepContext publishMessage(String exchange, String routingKey, Object toSerialize, ObjectMapper mapper) {
+        return perform(publish(exchange, routingKey, toSerialize, mapper));
     }
 
-    public RabbitMqStepContext publishXmlMessage(String exchange, String routingKey, ParametersForPublish params , Object toSerialize){
-        return perform(publishXml(exchange, routingKey , toSerialize).setParams(params));
+    public RabbitMqStepContext publishMessage(String exchange, String routingKey, ParametersForPublish params, Object toSerialize) {
+        return perform(publish(exchange, routingKey, toSerialize, RABBIT_MQ_DEFAULT_MAPPER.get()).setParams(params));
     }
 
+    public RabbitMqStepContext publishMessage(String exchange, String routingKey, ParametersForPublish params, Object toSerialize, ObjectMapper mapper) {
+        return perform(publish(exchange, routingKey, toSerialize, mapper).setParams(params));
+    }
 }

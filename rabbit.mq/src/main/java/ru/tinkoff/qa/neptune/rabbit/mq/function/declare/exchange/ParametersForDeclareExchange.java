@@ -3,9 +3,10 @@ package ru.tinkoff.qa.neptune.rabbit.mq.function.declare.exchange;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 import ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArguments;
-import ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArgumentsGetParameterValue;
 
 import java.util.HashMap;
+
+import static java.util.Optional.ofNullable;
 
 public class ParametersForDeclareExchange implements StepParameterPojo {
     @StepParameter("durable")
@@ -14,7 +15,6 @@ public class ParametersForDeclareExchange implements StepParameterPojo {
     private boolean autoDelete;
     @StepParameter("internal")
     private boolean internal;
-    @StepParameter(value = "additionalArguments", doNotReportNullValues = true, makeReadableBy = AdditionalArgumentsGetParameterValue.class)
     private AdditionalArguments additionalArguments;
 
     public boolean isDurable() {
@@ -48,8 +48,9 @@ public class ParametersForDeclareExchange implements StepParameterPojo {
         return additionalArguments == null ? null : additionalArguments.getHashMap();
     }
 
-    public ParametersForDeclareExchange additionalArguments(AdditionalArguments additionalArguments) {
-        this.additionalArguments = additionalArguments;
+    public ParametersForDeclareExchange argument(String name, Object value) {
+        additionalArguments = ofNullable(additionalArguments).orElseGet(AdditionalArguments::arguments);
+        additionalArguments.setArgument(name, value);
         return this;
     }
 }

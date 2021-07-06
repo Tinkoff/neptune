@@ -9,6 +9,7 @@ import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 
 import java.io.IOException;
 
+@SequentialGetStepSupplier.DefineGetImperativeParameterName("Declare:")
 @MaxDepthOfReporting(0)
 public class RabbitMqExchangeDeclareSupplier extends SequentialGetStepSupplier.GetObjectStepSupplier<RabbitMqStepContext, AMQP.Exchange.DeclareOk, RabbitMqExchangeDeclareSupplier> {
     private final String exchange;
@@ -46,17 +47,17 @@ public class RabbitMqExchangeDeclareSupplier extends SequentialGetStepSupplier.G
         this.type = type;
     }
 
-    @Description("Declare an exchange '{exchange}' passively.")
+    @Description("exchange '{exchange}' passively.")
     public static RabbitMqExchangeDeclareSupplier exchangeDeclarePassive(@DescriptionFragment("exchange") String exchange) {
         return new RabbitMqExchangeDeclareSupplier(exchange, null, null);
     }
 
-    @Description("Actively declare a non-autodelete, non-durable exchange '{exchange}' with type '{type}' and no extra arguments.")
+    @Description("exchange '{exchange}' with type '{type}'. Non-autodelete, non-durable and no extra arguments.")
     public static RabbitMqExchangeDeclareSupplier exchangeDeclare(@DescriptionFragment("exchange") String exchange, @DescriptionFragment("type") String type) {
         return new RabbitMqExchangeDeclareSupplier(exchange, type, null);
     }
 
-    @Description("Actively declare a non-autodelete, non-durable exchange '{exchange}' with type '{type}' and  arguments.")
+    @Description("exchange '{exchange}' with type '{type}' and  arguments.")
     public static RabbitMqExchangeDeclareSupplier exchangeDeclare(@DescriptionFragment("exchange") String exchange, @DescriptionFragment("type") String type, ParametersForDeclareExchange params) {
         return new RabbitMqExchangeDeclareSupplier(exchange, type, params);
     }
