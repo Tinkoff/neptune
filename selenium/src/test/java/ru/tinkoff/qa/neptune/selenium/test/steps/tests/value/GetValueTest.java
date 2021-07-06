@@ -8,26 +8,32 @@ import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.openqa.selenium.By.tagName;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.all.AllCriteriaMatcher.all;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableInOrder;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsIncludesMatcher.iterableIncludes;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.NOT;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements.HasColumnMatcher.hasAColumn;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements.HasTableRowMatcher.hasARow;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements.HasValueMatcher.elementHasValue;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 
 public class GetValueTest extends BaseWebDriverTest {
 
     @Test
     public void valueOfTextFieldTest() {
-        assertThat(seleniumSteps.valueOf(textField(INPUT_LABEL_TEXT1)),
-                is(INPUT_TEXT5));
+        assertThat(seleniumSteps.find(textField(INPUT_LABEL_TEXT1)),
+                elementHasValue(INPUT_TEXT5));
 
         assertThat(seleniumSteps.edit(textField(INPUT_LABEL_TEXT1), INPUT_TEXT4)
                         .valueOf(textField(INPUT_LABEL_TEXT1)),
                 is(INPUT_TEXT4));
 
-        assertThat(seleniumSteps.valueOf(textField().criteria(attr(ATTR8, VALUE4))),
-                emptyOrNullString());
+        assertThat(seleniumSteps.find(textField().criteria(attr(ATTR8, VALUE4))),
+                elementHasValue(emptyOrNullString()));
 
         assertThat(seleniumSteps
                         .edit(textField().criteria(attr(ATTR8, VALUE4)), INPUT_TEXT1)
@@ -166,10 +172,10 @@ public class GetValueTest extends BaseWebDriverTest {
 
     @Test
     public void valueOfTableTest() {
-        assertThat(seleniumSteps.valueOf(table()),
-                allOf(hasEntry(is(HEADER_TEXT14), contains(CELL_TEXT38, CELL_TEXT41, CELL_TEXT44)),
-                        hasEntry(is(HEADER_TEXT13), contains(CELL_TEXT37, CELL_TEXT40, CELL_TEXT43)),
-                        hasEntry(is(HEADER_TEXT15), contains(CELL_TEXT39, CELL_TEXT42, CELL_TEXT45))));
+        assertThat(seleniumSteps.find(table()),
+                all(hasAColumn(HEADER_TEXT14, CELL_TEXT38, CELL_TEXT41, CELL_TEXT44),
+                        hasAColumn(HEADER_TEXT13, CELL_TEXT37, CELL_TEXT40, CELL_TEXT43),
+                        hasAColumn(HEADER_TEXT15, CELL_TEXT39, CELL_TEXT42, CELL_TEXT45)));
 
         assertThat(seleniumSteps.valueOf(table()
                         .criteria(css(CSS1, CSS_VALUE4))),
@@ -179,21 +185,19 @@ public class GetValueTest extends BaseWebDriverTest {
 
         Table table = seleniumSteps.find(table(TABLE_LABEL_TEXT3));
 
-        assertThat(seleniumSteps.valueOf(table),
-                allOf(hasEntry(is(HEADER_TEXT19), contains(CELL_TEXT55, CELL_TEXT58, CELL_TEXT61)),
-                        hasEntry(is(HEADER_TEXT20), contains(CELL_TEXT56, CELL_TEXT59, CELL_TEXT62)),
-                        hasEntry(is(HEADER_TEXT21), contains(CELL_TEXT57, CELL_TEXT60, CELL_TEXT63))));
+        assertThat(table,
+                all(hasAColumn(HEADER_TEXT19, iterableIncludes(CELL_TEXT55, CELL_TEXT58, CELL_TEXT61)),
+                        hasAColumn(is(HEADER_TEXT20), iterableInOrder(CELL_TEXT56, CELL_TEXT59, CELL_TEXT62)),
+                        hasAColumn(is(HEADER_TEXT21), iterableInOrder(CELL_TEXT57, CELL_TEXT60, CELL_TEXT63))));
     }
 
     @Test
     public void valueOfRowTest() {
-        assertThat(seleniumSteps.valueOf(tableRow()),
-                contains(CELL_TEXT37, CELL_TEXT38, CELL_TEXT39));
+        assertThat(seleniumSteps.find(table()),
+                hasARow(0, elementHasValue(iterableInOrder(CELL_TEXT37, CELL_TEXT38, CELL_TEXT39))));
 
-        assertThat(seleniumSteps.valueOf(tableRow()
-                        .criteria(nested(buttons()))
-                        .foundFrom(table(TABLE_LABEL_TEXT9))),
-                contains(CELL_TEXT73, CELL_TEXT74, CELL_TEXT75));
+        assertThat(seleniumSteps.find(table(TABLE_LABEL_TEXT9)),
+                hasARow(elementHasValue(iterableInOrder(CELL_TEXT73, CELL_TEXT74, CELL_TEXT75))));
 
         TableRow row = seleniumSteps.find(tableRow()
                 .criteria(nested(textFields()))

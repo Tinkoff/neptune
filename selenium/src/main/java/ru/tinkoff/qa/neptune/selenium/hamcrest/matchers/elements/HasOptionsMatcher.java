@@ -1,24 +1,28 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements;
 
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasOptions;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Select;
-import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
-
-import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
 import static java.util.Objects.nonNull;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.emptyIterable;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.not.NotMatcher.notOf;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableInOrder;
 
-public final class HasOptionsMatcher extends TypeSafeDiagnosingMatcher<HasOptions> {
+@Description("options: {matcher}")
+public final class HasOptionsMatcher extends NeptuneFeatureMatcher<HasOptions> {
 
-    private final Matcher<Iterable<? extends String>> matcher;
+    @DescriptionFragment(value = "matcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    private final Matcher<Iterable<String>> matcher;
 
-    private HasOptionsMatcher(Matcher<Iterable<? extends String>> matcher) {
+    private HasOptionsMatcher(Matcher<Iterable<String>> matcher) {
+        super(true);
         checkArgument(nonNull(matcher), "Criteria to match options of the select should be defined");
         this.matcher = matcher;
     }
@@ -30,22 +34,10 @@ public final class HasOptionsMatcher extends TypeSafeDiagnosingMatcher<HasOption
      * @param options are expected
      * @return created object of {@link HasOptionsMatcher}
      */
-    public static HasOptionsMatcher hasOptions(String... options) {
+    public static Matcher<HasOptions> hasOptions(String... options) {
         checkNotNull(options);
         checkArgument(options.length > 0, "There should be defined at least one expected option");
-        return new HasOptionsMatcher(contains(options));
-    }
-
-    /**
-     * Creates an instance of {@link HasOptionsMatcher} that checks options of the {@link Select}. It is expected
-     * that the select has same options and these options has same order as defined by {@code options}
-     *
-     * @param options are expected
-     * @return created object of {@link HasOptionsMatcher}
-     */
-    public static HasOptionsMatcher hasOptions(Collection<String> options) {
-        checkNotNull(options);
-        return hasOptions(options.toArray(new String[]{}));
+        return new HasOptionsMatcher(iterableInOrder(options));
     }
 
     /**
@@ -54,7 +46,7 @@ public final class HasOptionsMatcher extends TypeSafeDiagnosingMatcher<HasOption
      * @param matcher to check options of the {@link Select}
      * @return created object of {@link HasOptionsMatcher}
      */
-    public static HasOptionsMatcher hasOptions(Matcher<Iterable<? extends String>> matcher) {
+    public static Matcher<HasOptions> hasOptions(Matcher<Iterable<String>> matcher) {
         return new HasOptionsMatcher(matcher);
     }
 
@@ -64,24 +56,19 @@ public final class HasOptionsMatcher extends TypeSafeDiagnosingMatcher<HasOption
      *
      * @return created object of {@link HasOptionsMatcher}
      */
-    public static HasOptionsMatcher hasOptions() {
-        return new HasOptionsMatcher(not(emptyIterable()));
+    public static Matcher<HasOptions> hasOptions() {
+        return new HasOptionsMatcher(notOf(emptyIterable()));
     }
 
     @Override
-    protected boolean matchesSafely(HasOptions item, Description mismatchDescription) {
-        var options = item.getOptions();
+    protected boolean featureMatches(HasOptions toMatch) {
+        var options = toMatch.getOptions();
         boolean result = matcher.matches(options);
 
         if (!result) {
-            mismatchDescription.appendText(format("Options of %s. Mismatch:", item));
-            matcher.describeMismatch(options, mismatchDescription);
+            appendMismatchDescription(matcher, options);
         }
-        return result;
-    }
 
-    @Override
-    public String toString() {
-        return format("has options %s", matcher.toString());
+        return result;
     }
 }

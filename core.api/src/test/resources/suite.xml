@@ -28,11 +28,17 @@
             <class name="ru.tinkoff.qa.neptune.core.api.properties.FilePropertyReadingTest"/>
             <class name="ru.tinkoff.qa.neptune.core.api.properties.MixedFileEnvPropertyReadingTest"/>
             <class name="ru.tinkoff.qa.neptune.core.api.properties.MixedGlobalLocalPropertyReadingTest"/>
+            <class name="ru.tinkoff.qa.neptune.core.api.properties.PropertyWithDefaultValueTest"/>
         </classes>
     </test>
     <test name="Step tests">
         <packages>
             <package name="ru.tinkoff.qa.neptune.core.api.steps.*"/>
+        </packages>
+    </test>
+    <test name="Matcher tests">
+        <packages>
+            <package name="ru.tinkoff.qa.neptune.core.api.hamcrest.*"/>
         </packages>
     </test>
 </suite>

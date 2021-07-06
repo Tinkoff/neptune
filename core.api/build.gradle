@@ -1,5 +1,5 @@
 plugins {
-    id "io.freefair.aspectj.post-compile-weaving" version "5.3.0"
+    id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
 }
 
 configurations {
@@ -8,7 +8,7 @@ configurations {
 
 dependencies {
     compile group: 'org.objenesis', name: 'objenesis', version: '3.2'
-    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.0'
+    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.2'
     compile group: 'org.aspectj', name: 'aspectjrt', version: '1.9.6'
     agent group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.6'
 }
@@ -25,6 +25,19 @@ task sourcesJar(type: Jar) {
 
 artifacts {
     archives jar, javadocJar, sourcesJar
+}
+
+task generateBundle(type: JavaExec)  {
+    classpath sourceSets.main.runtimeClasspath
+    main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
+    args "ru_RU",
+            "$projectDir/src/main/resources"
+}
+
+processResources {
+    doLast {
+        generateBundle.exec()
+    }
 }
 
 test {

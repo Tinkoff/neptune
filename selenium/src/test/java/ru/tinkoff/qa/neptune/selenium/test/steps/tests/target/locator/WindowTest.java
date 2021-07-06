@@ -17,6 +17,9 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.WindowCriteria.titleMatches;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.WindowCriteria.urlMatches;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.window.WindowHasPositionMatcher.windowHasPosition;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.window.WindowHasSizeMatcher.windowHasSize;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.window.WindowHasTitleMatcher.windowHasTitle;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUnitProperties.WAITING_WINDOW_TIME_UNIT;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeValueProperties.WAITING_WINDOW_TIME_VALUE;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.InitialPositions.*;
@@ -227,12 +230,17 @@ public class WindowTest extends BaseWebDriverTest {
 
         assertThat(seleniumSteps.get(currentWindow()).getCurrentUrl(), is(GOOGLE.getUrl()));
         assertThat(seleniumSteps.get(currentWindow()).getTitle(), is(GOOGLE.getTitle()));
+
+        assertThat(window2, windowHasTitle(GOOGLE.getTitle()));
     }
 
     @Test
     public void sizeOfWindowBySearchingTest() {
         seleniumSteps.changeWindowSize(window(1), 1001, 1002);
         assertThat(seleniumSteps.sizeOf(window(1)), equalTo(new Dimension(1001, 1002)));
+
+        assertThat(seleniumSteps.get(window(1)),
+                windowHasSize(1001, 1002));
     }
 
     @Test
@@ -263,6 +271,8 @@ public class WindowTest extends BaseWebDriverTest {
         seleniumSteps.changeWindowPosition(window, 1001, 1002);
         assertThat(window.getPosition(), equalTo(new Point(1001, 1002)));
         assertThat(seleniumSteps.positionOf(window(2)), equalTo(new Point(1001, 1002)));
+
+        assertThat(seleniumSteps.get(window(2)), windowHasPosition(1001, 1002));
     }
 
     @Test

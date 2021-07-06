@@ -6,7 +6,7 @@ import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.localization.DefaultLocalizationEngine.isBundleLocalization;
-import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
+import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.WidgetDescriptionMetadataFactory.getNameMetadata;
 
 public class WidgetDescriptionValueGetter implements ParameterValueGetter<Class<? extends Widget>> {

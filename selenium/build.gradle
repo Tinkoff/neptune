@@ -1,5 +1,5 @@
 plugins {
-    id "io.freefair.aspectj.post-compile-weaving" version "5.3.0"
+    id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
 }
 
 dependencies {
@@ -7,8 +7,13 @@ dependencies {
     inpath(project(":core.api")) {
         transitive = false
     }
-    compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: seleniumVersion
-    compile (group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '4.4.1') {
+    compile (group: 'org.seleniumhq.selenium', name: 'selenium-java', version: seleniumVersion) {
+        exclude group: 'org.seleniumhq.selenium', module: 'htmlunit-driver'
+        exclude group: 'com.google.guava', module: 'guava'
+        exclude group: 'com.google.code.gson', module: 'gson'
+        exclude group: 'net.bytebuddy', module:'byte-buddy'
+    }
+    compile (group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '4.4.3') {
         exclude group: 'org.seleniumhq.selenium'
         exclude group: 'org.apache.commons', module: 'commons-lang3'
         exclude group: 'org.jsoup', module: 'jsoup'
@@ -40,6 +45,21 @@ task javadocJar(type: Jar) {
 task sourcesJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.allSource
+}
+
+task generateBundle(type: JavaExec)  {
+    classpath sourceSets.main.runtimeClasspath
+    main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
+    args "ru_RU",
+            "$projectDir/src/main/resources",
+            "false",
+            "selenium"
+}
+
+processResources {
+    doLast {
+        generateBundle.exec()
+    }
 }
 
 artifacts {

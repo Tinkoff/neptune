@@ -13,7 +13,10 @@ import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.joining;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
+import static ru.tinkoff.qa.neptune.core.api.logical.lexemes.Not.NOT_LEXEME;
+import static ru.tinkoff.qa.neptune.core.api.logical.lexemes.OnlyOne.ONLY_ONE_LEXEME;
+import static ru.tinkoff.qa.neptune.core.api.logical.lexemes.Or.OR_LEXEME;
+import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 /**
  * This class is designed to create a {@link Predicate} used by {@link SequentialGetStepSupplier}
@@ -59,11 +62,11 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
     }
 
     /**
-     * The joining of defined criteria with OR-condition.
+     * The joining of defined criteria with inclusive OR-condition.
      *
      * @param criteria to be joined
-     * @param <T> is a type of a value to be checked/filtered by each criteria
-     *           and resulted criteria as well
+     * @param <T>      is a type of a value to be checked/filtered by each criteria
+     *                 and resulted criteria as well
      * @return a new joined criteria
      */
     @SafeVarargs
@@ -73,7 +76,7 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
 
         var description = stream(criteria)
                 .map(c -> "(" + c.toString() + ")")
-                .collect(joining(" or "));
+                .collect(joining(" " + OR_LEXEME + " "));
 
 
         Predicate<T> newPredicate = null;
@@ -99,7 +102,7 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
     }
 
     /**
-     * The joining of defined criteria with XOR-condition.
+     * The joining of defined criteria with exclusive OR-condition.
      *
      * @param criteria to be joined
      * @param <T>      is a type of a value to be checked/filtered by each criteria
@@ -107,20 +110,18 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
      * @return a new joined criteria
      */
     @SafeVarargs
-    public static <T> Criteria<T> XOR(Criteria<T>... criteria) {
+    public static <T> Criteria<T> ONLY_ONE(Criteria<T>... criteria) {
         checkArgument(nonNull(criteria), "List of criteria should not be null");
         checkArgument(criteria.length > 1, "At least two criteria should be defined");
 
         var description = stream(criteria)
                 .map(c -> "(" + c.toString() + ")")
-                .collect(joining(" xor "));
+                .collect(joining(" " + ONLY_ONE_LEXEME + " "));
 
-        Predicate<T> newPredicate = null;
-        for (var tCriteria: criteria) {
-            newPredicate = ofNullable(newPredicate)
-                    .map(predicate -> predicate.or(tCriteria.get()))
-                    .orElseGet(tCriteria);
-        }
+        Predicate<T> newPredicate = t -> stream(criteria)
+                .map(tCriteria -> tCriteria.get().test(t))
+                .filter(b -> b)
+                .count() == 1;
 
         return new Criteria<>(newPredicate).setDescription(description);
     }
@@ -138,7 +139,7 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
         checkArgument(criteria.length > 0, "At least one criteria should be defined");
 
         var description = stream(criteria)
-                .map(c -> "not (" + c.toString() + ")")
+                .map(c -> NOT_LEXEME + " (" + c.toString() + ")")
                 .collect(joining(", "));
 
         Predicate<T> newPredicate = null;

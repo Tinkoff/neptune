@@ -1,21 +1,25 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements;
 
-import ru.tinkoff.qa.neptune.selenium.api.widget.HasValue;
-import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.openqa.selenium.SearchContext;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
+import ru.tinkoff.qa.neptune.selenium.api.widget.HasValue;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static org.hamcrest.Matchers.equalTo;
 
-public final class HasValueMatcher<Q, T extends SearchContext & HasValue<Q>> extends TypeSafeDiagnosingMatcher<T> {
+@Description("element value: {criteria}")
+public final class HasValueMatcher<Q, T extends SearchContext & HasValue<Q>> extends NeptuneFeatureMatcher<T> {
 
+    @DescriptionFragment(value = "criteria", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
     private final Matcher<? super Q> criteria;
 
     private HasValueMatcher(Matcher<? super Q> criteria) {
+        super(true);
         checkArgument(nonNull(criteria), "Matcher to check value should be defined.");
         this.criteria = criteria;
     }
@@ -24,11 +28,11 @@ public final class HasValueMatcher<Q, T extends SearchContext & HasValue<Q>> ext
      * Creates an instance of {@link HasValueMatcher} that checks value of the element.
      *
      * @param value is expected to be equal to value of the element.
-     * @param <Q> type of a value
-     * @param <T> type of an element
+     * @param <Q>   type of a value
+     * @param <T>   type of an element
      * @return instance of {@link HasValueMatcher}
      */
-    public static <Q, T extends SearchContext & HasValue<Q>> HasValueMatcher<Q, T> hasValue(Q value) {
+    public static <Q, T extends SearchContext & HasValue<Q>> Matcher<T> elementHasValue(Q value) {
         return new HasValueMatcher<>(equalTo(value));
     }
 
@@ -36,26 +40,21 @@ public final class HasValueMatcher<Q, T extends SearchContext & HasValue<Q>> ext
      * Creates an instance of {@link HasValueMatcher} that checks value of the element.
      *
      * @param value matcher that is supposed to be used for the value verification
-     * @param <Q> type of a value
-     * @param <T> type of an element
+     * @param <Q>   type of a value
+     * @param <T>   type of an element
      * @return instance of {@link HasValueMatcher}
      */
-    public static <Q, T extends SearchContext & HasValue<Q>> HasValueMatcher<Q, T> hasValue(Matcher<? super Q> value) {
+    public static <Q, T extends SearchContext & HasValue<Q>> Matcher<T> elementHasValue(Matcher<? super Q> value) {
         return new HasValueMatcher<>(value);
     }
 
     @Override
-    protected boolean matchesSafely(T item, Description mismatchDescription) {
-        Q value = item.getValue();
+    protected boolean featureMatches(T toMatch) {
+        Q value = toMatch.getValue();
         var result = criteria.matches(value);
         if (!result) {
-            criteria.describeMismatch(value, mismatchDescription);
+            appendMismatchDescription(criteria, value);
         }
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return format("has value %s", criteria.toString());
     }
 }

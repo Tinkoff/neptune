@@ -49,8 +49,8 @@
 
 ### POST
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
@@ -287,12 +287,12 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### GET
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
@@ -406,12 +406,12 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### PUT
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.PUT;
@@ -648,12 +648,12 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### DELETE
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.DELETE;
@@ -767,12 +767,12 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### Любой метод
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Выше перечислены варианты использования типовых http-методов (POST, GET, PUT, DELETE). Но есть еще такие методы, как
 TRACE, HEAD и т.п. Они реже используются. Чисто теоретически, можно реализовать свой собственный метод протокола http.
@@ -1014,7 +1014,7 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -1025,8 +1025,8 @@ public class MyTest {
 
 ### Массив байтов
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import java.net.URI;
@@ -1067,12 +1067,12 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### Файл
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import java.io.File;
@@ -1113,12 +1113,12 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### Строка/Текст
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import java.net.URI;
@@ -1157,12 +1157,12 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### Поток данных. InputStream.
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import java.io.InputStream;
@@ -1209,12 +1209,12 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### Форма. application/x-www-form-urlencoded.
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import java.net.URI;
@@ -1263,12 +1263,12 @@ public class MyTest {
 и [XML DEFAULT_XML_MAPPER](./SETTINGS.MD#XML-DEFAULT_XML_MAPPER)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### org.w3c.dom.Document.
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import org.w3c.dom.Document;
@@ -1313,12 +1313,12 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### org.jsoup.nodes.Document.
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import org.jsoup.nodes.Document;
@@ -1341,12 +1341,12 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### Сериализованные объекты
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Объекты, как правило, сериализуются в JSON или XML строки, чтобы быть переданными в качестве тела запроса
 
@@ -1429,12 +1429,12 @@ public class MyTest {
 и [XML DEFAULT_XML_MAPPER](./SETTINGS.MD#XML-DEFAULT_XML_MAPPER)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### Multipart
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import java.net.URI;
@@ -1477,13 +1477,13 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 #### Форматы
 
 - **Массив байтов**
-    <details>
-       <summary>Нажми, чтобы прочесть</summary>
+    
+       
 
     ```java        
         import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
@@ -1506,11 +1506,11 @@ public class MyTest {
     ```
     
     [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-    </details>
+    
 
 - **Поток данных. InputStream**
-    <details>
-       <summary>Нажми, чтобы прочесть</summary>
+    
+       
 
     ```java
     import java.io.InputStream;
@@ -1535,11 +1535,11 @@ public class MyTest {
     }
     ```
   [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-  </details>
+  
 
 - **Файл**
-    <details>
-       <summary>Нажми, чтобы прочесть</summary>
+    
+       
 
     ```java
     import java.io.File;
@@ -1588,11 +1588,11 @@ public class MyTest {
     ```
 
     [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-    </details>
+    
 
 - **Строка/текст**
-    <details>
-       <summary>Нажми, чтобы прочесть</summary>
+    
+       
 
     ```java        
         import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
@@ -1612,12 +1612,12 @@ public class MyTest {
     ```
 
     [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-    </details>
+    
 
 - **Сериализованный объект**
 
-    <details>
-        <summary>Нажми, чтобы прочесть</summary>
+    
+        
 
     ```java
         import com.fasterxml.jackson.databind.ObjectMapper;
@@ -1666,11 +1666,11 @@ public class MyTest {
   и [XML DEFAULT_XML_MAPPER](./SETTINGS.MD#XML-DEFAULT_XML_MAPPER)
 
   [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-    </details>
+    
   
 - **Строковое представление объекта Java**
-    <details>
-       <summary>Нажми, чтобы прочесть</summary>
+    
+       
 
     ```java        
         import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
@@ -1690,14 +1690,13 @@ public class MyTest {
     ```
   
     [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-    </details>
+    
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 #### Дополнительные настройки
 
-<details>
-    <summary>Нажми, чтобы прочесть</summary>
+
 
 ```java
 
@@ -1723,12 +1722,12 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### Описываем свой собственный формат тела запроса
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Предположим, у нас есть POST запрос, который принимает в качестве тела строку определенного формата, сформированную из
 даты. В принципе, задача решается просто
@@ -1857,7 +1856,7 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -1865,8 +1864,8 @@ public class MyTest {
 
 Как настроить запрос: указать заголовки, настроить query, версия протокола и т.п.
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import java.net.URI;
@@ -2099,7 +2098,7 @@ public class MyTest {
 Второй вариант подробно описан в [Мэппинг http-сервисов](./MAPPING.MD)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ## Получение данных тела ответа на http запрос
 
@@ -2108,8 +2107,8 @@ public class MyTest {
 Интеграция Neptune с нативным Java http клиентом предоставляет возможность свободно интерпретировать информацию, которая
 возвращается в теле ответа на http-запрос. Для этого используются объекты `java.net.http.HttpResponse.BodyHandler`.
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import java.net.URI;
@@ -2162,12 +2161,12 @@ public class MyTest {
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-</details>
+
 
 #### Объекты, десериализованные из JSON-строки
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import java.net.URI;
@@ -2285,12 +2284,12 @@ public class MyTest {
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-</details>
+
 
 #### Объекты, десериализованные из XML-строки
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import java.net.URI;
@@ -2407,12 +2406,12 @@ public class MyTest {
 прочитать [XML DEFAULT_XML_MAPPER](./SETTINGS.MD#XML-DEFAULT_XML_MAPPER)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 #### Тело ответа как org.w3c.dom.Document
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import java.net.URI;
@@ -2472,12 +2471,12 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 #### Тело ответа как org.jsoup.nodes.Document
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import java.net.URI;
@@ -2505,12 +2504,12 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 #### Описание своего формата
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Предположим, что при выполнении http-запроса возвращается ответ с телом, которое можно десериализовать в объект
 следующего класса
@@ -2635,7 +2634,7 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -2695,8 +2694,8 @@ public class BodyObject {
 
 #### Получение данных тела ответа как Java-объект
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
@@ -2844,12 +2843,12 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 #### Получение данных тела ответа как Java-объект из Iterable
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
@@ -3021,12 +3020,12 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 #### Получение данных тела ответа как Java-объект из массива
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
@@ -3197,11 +3196,11 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 #### Получение данных тела ответа как Iterable
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
@@ -3373,11 +3372,11 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 #### Получение данных тела ответа как массив
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
@@ -3548,6 +3547,6 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)

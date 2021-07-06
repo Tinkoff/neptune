@@ -2,19 +2,23 @@ package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy;
 
 import com.browserup.harreader.model.HarEntry;
 import com.browserup.harreader.model.HttpMethod;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
 import static org.hamcrest.Matchers.is;
 
-public final class RequestHasMethod extends TypeSafeDiagnosingMatcher<HarEntry> {
+@Description("Request method {methodMatcher}")
+public final class RequestHasMethod extends NeptuneFeatureMatcher<HarEntry> {
 
+    @DescriptionFragment(value = "methodMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
     private final Matcher<? super HttpMethod> methodMatcher;
 
     private RequestHasMethod(Matcher<? super HttpMethod> methodMatcher) {
+        super(true);
         checkNotNull(methodMatcher, "HTTP method matcher is not defined");
         this.methodMatcher = methodMatcher;
     }
@@ -25,7 +29,7 @@ public final class RequestHasMethod extends TypeSafeDiagnosingMatcher<HarEntry> 
      * @param methodMatcher criteria that describes expected method
      * @return a new instance of {@link RequestHasMethod}
      */
-    public static RequestHasMethod requestHasMethod(Matcher<? super HttpMethod> methodMatcher) {
+    public static Matcher<HarEntry> requestHasMethod(Matcher<? super HttpMethod> methodMatcher) {
         return new RequestHasMethod(methodMatcher);
     }
 
@@ -35,29 +39,20 @@ public final class RequestHasMethod extends TypeSafeDiagnosingMatcher<HarEntry> 
      * @param method is the expected method of the request
      * @return a new instance of {@link RequestHasMethod}
      */
-    public static RequestHasMethod requestHasMethod(HttpMethod method) {
+    public static Matcher<HarEntry> requestHasMethod(HttpMethod method) {
         return new RequestHasMethod(is(method));
     }
 
-    @Override
-    protected boolean matchesSafely(HarEntry item, Description mismatchDescription) {
-        if (item == null) {
-            mismatchDescription.appendText("Proxied entry is null");
-            return false;
-        }
 
-        var requestMethod = item.getRequest().getMethod();
+    @Override
+    protected boolean featureMatches(HarEntry toMatch) {
+        var requestMethod = toMatch.getRequest().getMethod();
         var result = methodMatcher.matches(requestMethod);
 
         if (!result) {
-            methodMatcher.describeMismatch(requestMethod, mismatchDescription);
+            appendMismatchDescription(methodMatcher, requestMethod);
         }
 
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return format("request has method %s", methodMatcher);
     }
 }

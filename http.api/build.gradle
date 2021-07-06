@@ -1,5 +1,5 @@
 plugins {
-    id "io.freefair.aspectj.post-compile-weaving" version "5.3.0"
+    id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
 }
 
 dependencies {
@@ -25,6 +25,21 @@ task sourcesJar(type: Jar) {
 }
 artifacts {
     archives jar, javadocJar, sourcesJar
+}
+
+task generateBundle(type: JavaExec)  {
+    classpath sourceSets.main.runtimeClasspath
+    main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
+    args "ru_RU",
+            "$projectDir/src/main/resources",
+            "false",
+            "http"
+}
+
+processResources {
+    doLast {
+        generateBundle.exec()
+    }
 }
 
 uploadArchives {

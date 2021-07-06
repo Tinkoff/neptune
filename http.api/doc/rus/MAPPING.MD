@@ -82,8 +82,8 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
 ### Методы
 
-<details>
-    <summary>Нажми, чтобы прочесть</summary>
+
+    
 
 Каждый объявленный метод, не имеющий модификатор `default`, должен моделировать метод http-протокола и его вызов.
 Методы, имеющие модификаторы `default`, выполняют вызов соответствующих методов с расширенной сигнатурой, используя
@@ -145,12 +145,12 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### Заголовки
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Если метод имеет постоянные заголовки (например Content-Type), то
 
@@ -231,12 +231,12 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### Путь
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
@@ -400,12 +400,12 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### Запрос
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
@@ -554,7 +554,7 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 рода back-end'ов. В данный момент использовать этот стиль не рекомендуется, _это тема для доработки/разработки фичи._
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### Тело
 
@@ -562,8 +562,8 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 Мэппинг поддерживает все описанные форматы, кроме пользовательских.
 Задача: [#211](https://github.com/TinkoffCreditSystems/neptune/issues/211)
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Любое тело запроса, кроме `multipart/form-data` можно представить в модели следующим образом
 
@@ -820,7 +820,7 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### Мэппинг Dto
 
@@ -836,8 +836,8 @@ DTO - Data Transferring Object, т.е. объекты, которые модел
 
 Пример ниже
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import com.fasterxml.jackson.annotation.*;
@@ -891,7 +891,7 @@ public class SomeDto extends MappedObject {
 }
 ```
 
-</details>
+
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -948,8 +948,8 @@ public interface ServiceAPI2 extends HttpAPI<ServiceAPI2> {
 Ниже примеры того, как создавать объекты классов, моделирующих API тестируемых back-end'ов, и использовать их в
 клиентском коде / коде тестов.
 
-<details>
-    <summary>Нажми, чтобы прочесть</summary>
+
+    
 
 ```java
 import java.net.URI;
@@ -1165,14 +1165,14 @@ public class MyTest {
 }
 ```
 
-</details>
+
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ### Дефолтный корневой URL
 
-<details>
-    <summary>Нажми, чтобы прочесть</summary>
+
+    
 
 То что надо прочитать о [END_POINT_OF_TARGET_API](SETTINGS.MD#end_point_of_target_api). Предположим, что все сервисы
 работают на одном и том же хосте+порте, и это отражено в свойстве `END_POINT_OF_TARGET_API`
@@ -1211,12 +1211,12 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 ### Недефолтные корневые URL
 
-<details>
-    <summary>Нажми, чтобы прочесть</summary>
+
+    
 
 А что если `ServiceAPI1` и `ServiceAPI2` всегда на разных хостах/портах?
 
@@ -1331,7 +1331,7 @@ public class MyTest {
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-</details>
+
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -1349,8 +1349,8 @@ public class MyTest {
 Интеграция Neptune и нативного http-клиента Java имеет свой механизм внедрения зависимостей, позволяющий
 инициализировать объекты классов, моделирующих http API тестируемых приложений.
 
-<details>
-    <summary>Нажми, чтобы прочесть</summary>
+
+    
 
 ```java
 import java.net.http.HttpResponse;
@@ -1386,7 +1386,7 @@ public class MyTest {
 
 Все необходимое описано в данном документе.
 
-</details>
+
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
