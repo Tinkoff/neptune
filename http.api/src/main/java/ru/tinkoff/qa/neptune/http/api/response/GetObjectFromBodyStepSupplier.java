@@ -187,6 +187,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
          * @see SequentialGetStepSupplier#timeOut(Duration)
          */
         public GetObjectWhenResponseReceiving<T, R> retryTimeOut(Duration timeOut) {
+            addIgnored(Exception.class);
             return super.timeOut(timeOut);
         }
 

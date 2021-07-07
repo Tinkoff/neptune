@@ -165,7 +165,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         assertThat(getLog(), matcher);
     }
 
-    @Test(dataProvider = "data3", expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    @Test(dataProvider = "data3", expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
     public void test5(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
@@ -181,7 +181,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         fail("Exception was expected");
     }
 
-    @Test(dataProvider = "data3", expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    @Test(dataProvider = "data3", expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
     public void test6(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
@@ -202,8 +202,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
         http().bodyData(asIs(GET(INCORRECT_URI).timeout(ofSeconds(1)),
-                ofString())
-                .addIgnored(Throwable.class));
+                ofString()));
 
         assertThat(getLog(), matcher);
     }
@@ -216,8 +215,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
                 GET(CORRECT_URI),
                 ofString(),
                 Integer::parseInt)
-                .retryTimeOut(ofSeconds(5))
-                .addIgnored(Throwable.class));
+                .retryTimeOut(ofSeconds(5)));
 
         assertThat(getLog(), matcher);
     }
@@ -229,7 +227,6 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         try {
             http().bodyData(asObject("Number value", GET(CORRECT_URI), ofString(), Integer::parseInt)
                     .retryTimeOut(ofSeconds(5))
-                    .addIgnored(Throwable.class)
                     .throwOnNoResult());
         } catch (Throwable t) {
             assertThat(getLog(), matcher);
@@ -244,7 +241,6 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
         try {
             http().bodyData(asIs(GET(INCORRECT_URI).timeout(ofSeconds(1)), ofString())
-                    .addIgnored(Throwable.class)
                     .retryTimeOut(ofSeconds(5))
                     .throwOnNoResult());
         } catch (Throwable t) {

@@ -176,4 +176,9 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
     NeptuneHttpRequestImpl getRequest() {
         return (NeptuneHttpRequestImpl) request;
     }
+
+    @Override
+    protected ResponseSequentialGetSupplier<T> addIgnored(Class<? extends Throwable> toBeIgnored) {
+        return super.addIgnored(toBeIgnored);
+    }
 }

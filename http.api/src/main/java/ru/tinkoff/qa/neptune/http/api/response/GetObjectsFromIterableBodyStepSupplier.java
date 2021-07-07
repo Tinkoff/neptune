@@ -212,6 +212,7 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
          * @see SequentialGetStepSupplier#timeOut(Duration)
          */
         public GetObjectsFromIterableWhenResponseReceiving<T, R, S> retryTimeOut(Duration timeOut) {
+            addIgnored(Exception.class);
             return super.timeOut(timeOut);
         }
 

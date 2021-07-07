@@ -264,12 +264,12 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         return (THIS) this;
     }
 
-    public THIS addIgnored(Collection<Class<? extends Throwable>> toBeIgnored) {
+    protected THIS addIgnored(Collection<Class<? extends Throwable>> toBeIgnored) {
         ignored.addAll(toBeIgnored);
         return (THIS) this;
     }
 
-    public THIS addIgnored(Class<? extends Throwable> toBeIgnored) {
+    protected THIS addIgnored(Class<? extends Throwable> toBeIgnored) {
         ignored.add(toBeIgnored);
         return (THIS) this;
     }
