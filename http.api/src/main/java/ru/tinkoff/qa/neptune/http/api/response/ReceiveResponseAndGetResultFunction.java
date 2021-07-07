@@ -17,7 +17,9 @@ final class ReceiveResponseAndGetResultFunction<T, R> implements Function<HttpSt
     ReceiveResponseAndGetResultFunction(Function<T, R> endFunction, ResponseSequentialGetSupplier<T> getResponse) {
         checkNotNull(getResponse);
         checkNotNull(endFunction);
-        this.getResponse = turnReportingOff(getResponse.clone());
+        this.getResponse = turnReportingOff(getResponse.clone()
+                .addIgnored(Exception.class)
+                .throwOnNoResult());
         this.endFunction = endFunction;
     }
 

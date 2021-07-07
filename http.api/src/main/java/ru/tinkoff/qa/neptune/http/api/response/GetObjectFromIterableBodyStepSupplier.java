@@ -92,8 +92,7 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
             HttpResponse.BodyHandler<T> handler,
             Function<T, S> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectFromIterableWhenResponseReceiving<>(response(requestBuilder, handler)
-                .addIgnored(Exception.class),
+        return new GetObjectFromIterableWhenResponseReceiving<>(response(requestBuilder, handler),
                 f);
     }
 
@@ -137,8 +136,7 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
             RequestBuilder requestBuilder,
             HttpResponse.BodyHandler<S> handler) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectFromIterableWhenResponseReceiving<>(response(requestBuilder, handler)
-                .addIgnored(Exception.class),
+        return new GetObjectFromIterableWhenResponseReceiving<>(response(requestBuilder, handler),
                 rs -> rs);
     }
 

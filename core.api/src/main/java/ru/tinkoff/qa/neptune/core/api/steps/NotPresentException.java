@@ -8,4 +8,8 @@ public final class NotPresentException extends RuntimeException {
     public NotPresentException(String message) {
         super(message);
     }
+
+    public NotPresentException(String message, Throwable rootCause) {
+        super(message, rootCause);
+    }
 }

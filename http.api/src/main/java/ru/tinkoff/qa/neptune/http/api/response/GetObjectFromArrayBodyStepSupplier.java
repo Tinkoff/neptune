@@ -91,8 +91,7 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, S extends GetObje
             HttpResponse.BodyHandler<T> handler,
             Function<T, R[]> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectFromArrayWhenResponseReceiving<>(response(requestBuilder, handler)
-                .addIgnored(Exception.class),
+        return new GetObjectFromArrayWhenResponseReceiving<>(response(requestBuilder, handler),
                 f);
     }
 
@@ -136,8 +135,7 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, S extends GetObje
             RequestBuilder requestBuilder,
             HttpResponse.BodyHandler<R[]> handler) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectFromArrayWhenResponseReceiving<>(response(requestBuilder, handler)
-                .addIgnored(Exception.class),
+        return new GetObjectFromArrayWhenResponseReceiving<>(response(requestBuilder, handler),
                 rs -> rs);
     }
 
