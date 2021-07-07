@@ -279,6 +279,12 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
                         AbstractResponseBodyObjectsCaptor.class}));
             }
         }
+
+        @Override
+        public GetObjectsFromIterableWhenResponseReceiving<T, R, S> throwOnNoResult() {
+            getResponse.throwOnNoResult();
+            return super.throwOnNoResult();
+        }
     }
 }
 

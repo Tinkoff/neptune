@@ -5,6 +5,7 @@ import org.hamcrest.Matchers;
 import org.testng.annotations.*;
 import ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents;
 import ru.tinkoff.qa.neptune.http.api.response.DesiredDataHasNotBeenReceivedException;
+import ru.tinkoff.qa.neptune.http.api.response.ExpectedHttpResponseHasNotBeenReceivedException;
 import ru.tinkoff.qa.neptune.http.api.test.BaseHttpTest;
 
 import java.lang.reflect.Method;
@@ -164,7 +165,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         assertThat(getLog(), matcher);
     }
 
-    @Test(dataProvider = "data3", expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
+    @Test(dataProvider = "data3", expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
     public void test5(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
@@ -180,7 +181,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         fail("Exception was expected");
     }
 
-    @Test(dataProvider = "data3", expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
+    @Test(dataProvider = "data3", expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
     public void test6(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 

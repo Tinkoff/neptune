@@ -273,5 +273,11 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, S extends GetObje
                         AbstractResponseBodyObjectsCaptor.class}));
             }
         }
+
+        @Override
+        public GetObjectFromArrayWhenResponseReceiving<T, R> throwOnNoResult() {
+            getResponse.throwOnNoResult();
+            return super.throwOnNoResult();
+        }
     }
 }

@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.http.api.test;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.http.api.response.DesiredDataHasNotBeenReceivedException;
+import ru.tinkoff.qa.neptune.http.api.response.ExpectedHttpResponseHasNotBeenReceivedException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.lang.System.currentTimeMillis;
@@ -127,7 +128,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
         assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
     }
 
-    @Test(expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
     public void objectFromBodyTest8() {
         http().bodyData(asObject("List of tags <a>",
                 GET(REQUEST_URI + "/data.html"),
@@ -280,7 +281,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
         assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
     }
 
-    @Test(expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
     public void getIterableTest9() {
         http().bodyData(asIterable("List of tags <a>",
                 GET(REQUEST_URI + "/data.html"),
@@ -438,7 +439,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
         assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
     }
 
-    @Test(expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
     public void getArrayTest9() {
         http().bodyData(asArray("Array of tags <a>",
                 GET(REQUEST_URI + "/data.html"),
@@ -592,7 +593,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
         assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
     }
 
-    @Test(expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
     public void getOneFromIterableTest9() {
         http().bodyData(asOneOfIterable("Tag <a>",
                 GET(REQUEST_URI + "/data.html"),
@@ -747,7 +748,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
         assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
     }
 
-    @Test(expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
     public void getOneFromArrayTest9() {
         http().bodyData(asOneOfArray("Array of tags <a>",
                 GET(REQUEST_URI + "/data.html"),
