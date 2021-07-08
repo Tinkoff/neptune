@@ -6,6 +6,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 
+import static java.time.Duration.ofMillis;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
@@ -32,7 +33,7 @@ public class AlertTest extends BaseWebDriverTest {
         setEndBenchMark();
 
         assertThat(alert, not(nullValue()));
-        assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
+        assertThat(getTimeDifference(), lessThan(ofMillis(100).toMillis()));
     }
 
     @Test
@@ -41,7 +42,7 @@ public class AlertTest extends BaseWebDriverTest {
         Alert alert = seleniumSteps.get(alert()
                 .criteria(alertText(TEXT_OF_ALERT))
                 .timeOut(FIVE_SECONDS)
-                .pollingInterval(HALF_SECOND));
+                .pollingInterval(ofMillis(100)));
         setEndBenchMark();
         assertThat(alert, not(nullValue()));
         assertThat(getTimeDifference(), lessThan(ONE_SECOND.toMillis()));
@@ -54,7 +55,7 @@ public class AlertTest extends BaseWebDriverTest {
             seleniumSteps.get(alert()
                     .criteria(alertText("some not existing text"))
                     .timeOut(FIVE_SECONDS)
-                    .pollingInterval(HALF_SECOND));
+                    .pollingInterval(ofMillis(100)));
         }
         catch (Exception e) {
             throw e;
@@ -80,7 +81,7 @@ public class AlertTest extends BaseWebDriverTest {
             removeProperty(WAITING_ALERT_TIME_VALUE.getName());
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
-            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThan(HALF_SECOND.toMillis()));
+            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThan(ofMillis(100).toMillis()));
         }
     }
 

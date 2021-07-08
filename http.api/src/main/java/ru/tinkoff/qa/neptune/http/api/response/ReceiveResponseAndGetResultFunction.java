@@ -17,14 +17,17 @@ final class ReceiveResponseAndGetResultFunction<T, R> implements Function<HttpSt
     ReceiveResponseAndGetResultFunction(Function<T, R> endFunction, ResponseSequentialGetSupplier<T> getResponse) {
         checkNotNull(getResponse);
         checkNotNull(endFunction);
-        this.getResponse = turnReportingOff(getResponse.clone());
+        this.getResponse = getResponse;
         this.endFunction = endFunction;
     }
 
     @Override
     public R apply(HttpStepContext httpStepContext) {
         HttpResponse<T> response;
-        response = getResponse.get().apply(httpStepContext);
+        response = turnReportingOff(getResponse.clone())
+                .addIgnored(Exception.class)
+                .get()
+                .apply(httpStepContext);
 
         if (response == null) {
             return null;
@@ -32,14 +35,7 @@ final class ReceiveResponseAndGetResultFunction<T, R> implements Function<HttpSt
 
         var body = response.body();
         return ofNullable(body)
-                .map(t -> {
-                    try {
-                        return endFunction.apply(t);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-                })
+                .map(endFunction::apply)
                 .orElse(null);
     }
 

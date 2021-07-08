@@ -48,8 +48,7 @@ final class Deserialized<T> implements Function<String, T> {
                 return null;
             }
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 }

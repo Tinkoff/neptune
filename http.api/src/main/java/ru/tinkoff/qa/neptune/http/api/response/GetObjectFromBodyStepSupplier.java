@@ -43,6 +43,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
 
     private GetObjectFromBodyStepSupplier(Function<HttpStepContext, R> f) {
         super(f);
+        addIgnored(Exception.class);
     }
 
     /**
@@ -102,8 +103,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
             HttpResponse.BodyHandler<T> handler,
             Function<T, R> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectWhenResponseReceiving<>(response(requestBuilder, handler)
-                .addIgnored(Exception.class),
+        return new GetObjectWhenResponseReceiving<>(response(requestBuilder, handler),
                 f);
     }
 
@@ -119,8 +119,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
     @Description("Body of http response")
     public static <T> GetObjectWhenResponseReceiving<T, T> asIs(RequestBuilder requestBuilder,
                                                                 HttpResponse.BodyHandler<T> handler) {
-        return new GetObjectWhenResponseReceiving<>(response(requestBuilder, handler)
-                .addIgnored(Exception.class),
+        return new GetObjectWhenResponseReceiving<>(response(requestBuilder, handler),
                 t -> t);
     }
 
@@ -255,6 +254,12 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
                         AbstractResponseBodyObjectCaptor.class,
                         AbstractResponseBodyObjectsCaptor.class}));
             }
+        }
+
+        @Override
+        public GetObjectWhenResponseReceiving<T, R> throwOnNoResult() {
+            getResponse.throwOnNoResult();
+            return super.throwOnNoResult();
         }
     }
 }

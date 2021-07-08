@@ -22,7 +22,11 @@ public @interface ThrowWhenNoData {
     /**
      * @return defines class of a {@link Throwable} may be thrown when get-step returns no valuable data.
      * <P>ATTENTION!!!!!</P>
-     * Defined class should have declared public constructor that takes message string with no other parameters.
+     * <ul>
+     *     <li>Defined class SHOULD have declared public constructor that takes only message string</li>
+     *     <li>Defined class can have declared public constructor that takes message string and {@link Throwable}
+     *     root-cause</li>
+     * </ul>
      */
     Class<? extends RuntimeException> toThrow() default NotPresentException.class;
 

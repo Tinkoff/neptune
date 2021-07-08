@@ -10,7 +10,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.util.*;
 import java.util.function.Function;
@@ -24,11 +23,11 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.SPACE;
 import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure.CaptureOnFailureReader.readCaptorsOnFailure;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess.CaptureOnSuccessReader.readCaptorsOnSuccess;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting.MaxDepthOfReportingReader.getMaxDepth;
+import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.AND;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultGetParameterReader.*;
@@ -39,7 +38,6 @@ import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIte
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSubArray.getArray;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSubIterable.getIterable;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 /**
@@ -76,7 +74,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     Duration sleepingTime;
 
-    Supplier<? extends RuntimeException> exceptionSupplier;
+    ExceptionSupplier exceptionSupplier;
 
     protected SequentialGetStepSupplier() {
         readCaptorsOnFailure(this.getClass(), failureCaptors);
@@ -224,27 +222,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @return self-reference
      */
     public THIS throwOnNoResult() {
-        var toThrow = getExceptionMessageStartMetadata(this.getClass(), true);
-        this.exceptionSupplier = () -> {
-            try {
-                var c = toThrow.getDeclaringClass().getAnnotation(ThrowWhenNoData.class).toThrow().getConstructor(String.class);
-                c.setAccessible(true);
-                return c.newInstance(getExceptionMessage(translate(toThrow)));
-            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeException(e);
-            }
-        };
+        this.exceptionSupplier = new ExceptionSupplier(this);
         return (THIS) this;
-    }
-
-    String getExceptionMessage(String messageStarting) {
-        var stringBuilder = new StringBuilder(messageStarting).append(SPACE).append(description);
-        getParameters().forEach((key, value) -> stringBuilder.append("\r\n")
-                .append("- ")
-                .append(key)
-                .append(":")
-                .append(value));
-        return stringBuilder.toString();
     }
 
     /**
@@ -285,12 +264,12 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         return (THIS) this;
     }
 
-    public THIS addIgnored(Collection<Class<? extends Throwable>> toBeIgnored) {
+    protected THIS addIgnored(Collection<Class<? extends Throwable>> toBeIgnored) {
         ignored.addAll(toBeIgnored);
         return (THIS) this;
     }
 
-    public THIS addIgnored(Class<? extends Throwable> toBeIgnored) {
+    protected THIS addIgnored(Class<? extends Throwable> toBeIgnored) {
         ignored.add(toBeIgnored);
         return (THIS) this;
     }

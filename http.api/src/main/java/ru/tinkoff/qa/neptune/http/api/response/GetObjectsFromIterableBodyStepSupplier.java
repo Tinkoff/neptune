@@ -44,6 +44,7 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
 
     private GetObjectsFromIterableBodyStepSupplier(Function<HttpStepContext, S> f) {
         super(f);
+        addIgnored(Exception.class);
     }
 
     /**
@@ -93,8 +94,7 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
             HttpResponse.BodyHandler<T> handler,
             Function<T, S> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectsFromIterableWhenResponseReceiving<>(response(requestBuilder, handler)
-                .addIgnored(Exception.class),
+        return new GetObjectsFromIterableWhenResponseReceiving<>(response(requestBuilder, handler),
                 f);
     }
 
@@ -140,8 +140,7 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
             RequestBuilder requestBuilder,
             HttpResponse.BodyHandler<S> handler) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectsFromIterableWhenResponseReceiving<>(response(requestBuilder, handler)
-                .addIgnored(Exception.class),
+        return new GetObjectsFromIterableWhenResponseReceiving<>(response(requestBuilder, handler),
                 rs -> rs);
     }
 
@@ -280,6 +279,12 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
                         AbstractResponseBodyObjectCaptor.class,
                         AbstractResponseBodyObjectsCaptor.class}));
             }
+        }
+
+        @Override
+        public GetObjectsFromIterableWhenResponseReceiving<T, R, S> throwOnNoResult() {
+            getResponse.throwOnNoResult();
+            return super.throwOnNoResult();
         }
     }
 }

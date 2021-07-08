@@ -5,6 +5,7 @@ import org.hamcrest.Matchers;
 import org.testng.annotations.*;
 import ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents;
 import ru.tinkoff.qa.neptune.http.api.response.DesiredDataHasNotBeenReceivedException;
+import ru.tinkoff.qa.neptune.http.api.response.ExpectedHttpResponseHasNotBeenReceivedException;
 import ru.tinkoff.qa.neptune.http.api.test.BaseHttpTest;
 
 import java.lang.reflect.Method;
@@ -201,8 +202,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
         http().bodyData(asIs(GET(INCORRECT_URI).timeout(ofSeconds(1)),
-                ofString())
-                .addIgnored(Throwable.class));
+                ofString()));
 
         assertThat(getLog(), matcher);
     }
@@ -215,8 +215,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
                 GET(CORRECT_URI),
                 ofString(),
                 Integer::parseInt)
-                .retryTimeOut(ofSeconds(5))
-                .addIgnored(Throwable.class));
+                .retryTimeOut(ofSeconds(5)));
 
         assertThat(getLog(), matcher);
     }
@@ -228,7 +227,6 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         try {
             http().bodyData(asObject("Number value", GET(CORRECT_URI), ofString(), Integer::parseInt)
                     .retryTimeOut(ofSeconds(5))
-                    .addIgnored(Throwable.class)
                     .throwOnNoResult());
         } catch (Throwable t) {
             assertThat(getLog(), matcher);
@@ -243,7 +241,6 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
         try {
             http().bodyData(asIs(GET(INCORRECT_URI).timeout(ofSeconds(1)), ofString())
-                    .addIgnored(Throwable.class)
                     .retryTimeOut(ofSeconds(5))
                     .throwOnNoResult());
         } catch (Throwable t) {

@@ -19,7 +19,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.time.Duration.ofMillis;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.SPACE;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
 
@@ -70,17 +69,9 @@ public final class Absence<T> extends SequentialGetStepSupplier.GetObjectChained
         return new Absence<>(toBeAbsent);
     }
 
-    @Override
-    String getExceptionMessage(String messageStarting) {
-        var stringBuilder = new StringBuilder(messageStarting)
-                .append(SPACE)
-                .append(((SequentialGetStepSupplier<?, ?, ?, ?, ?>) from).getDescription());
-        getParameters().forEach((key, value) -> stringBuilder.append("\r\n")
-                .append("- ")
-                .append(key)
-                .append(":")
-                .append(value));
-        return stringBuilder.toString();
+    public Absence<T> throwOnNoResult() {
+        this.exceptionSupplier = new ExceptionSupplierForAbsenceAndPresence(this);
+        return this;
     }
 
     protected Function<T, Object> preparePreFunction() {
