@@ -101,7 +101,7 @@ public class WindowTest extends BaseWebDriverTest {
         } finally {
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
-            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThan(HALF_SECOND.toMillis()));
+            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThan(100L));
             assertThat(wrappedWebDriver.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
         }
         fail("Exception was expected");
@@ -121,7 +121,7 @@ public class WindowTest extends BaseWebDriverTest {
             removeProperty(WAITING_WINDOW_TIME_UNIT.getName());
             removeProperty(WAITING_WINDOW_TIME_VALUE.getName());
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
-            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThan(HALF_SECOND.toMillis()));
+            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThan(100L));
             assertThat(wrappedWebDriver.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
         }
         fail("Exception was expected");

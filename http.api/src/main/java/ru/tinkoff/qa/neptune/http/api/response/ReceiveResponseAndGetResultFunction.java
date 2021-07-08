@@ -35,14 +35,7 @@ final class ReceiveResponseAndGetResultFunction<T, R> implements Function<HttpSt
 
         var body = response.body();
         return ofNullable(body)
-                .map(t -> {
-                    try {
-                        return endFunction.apply(t);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-                })
+                .map(endFunction::apply)
                 .orElse(null);
     }
 

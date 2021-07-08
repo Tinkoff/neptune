@@ -44,6 +44,7 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, S extends GetObje
 
     private GetObjectFromArrayBodyStepSupplier(Function<HttpStepContext, R[]> f) {
         super(f);
+        addIgnored(Exception.class);
     }
 
     /**
@@ -206,7 +207,6 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, S extends GetObje
          * @see SequentialGetStepSupplier#timeOut(Duration)
          */
         public GetObjectFromArrayWhenResponseReceiving<T, R> retryTimeOut(Duration timeOut) {
-            addIgnored(Exception.class);
             return super.timeOut(timeOut);
         }
 
