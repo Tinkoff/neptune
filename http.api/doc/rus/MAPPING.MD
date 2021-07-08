@@ -891,8 +891,6 @@ public class SomeDto extends MappedObject {
 }
 ```
 
-
-
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## Инициализация объектов моделей сервисов в клиентском коде и их использование
@@ -901,6 +899,7 @@ public class SomeDto extends MappedObject {
 
 - [Отправка настроенного http-запроса на примере GET](./REQUEST_RESPONSE.MD#Отправка-настроенного-http-запроса-на-примере-GET)
 - [Получение данных тела ответа на http запрос](./REQUEST_RESPONSE.MD#Получение-данных-тела-ответа-на-http-запрос)
+- [Связывание классов](./../../../core.api/doc/rus/CLASS_BINDING.MD)
 
 Предположим, мы описали API нескольких сервисов. Пусть они выглядят так (для наглядности).
 
@@ -948,8 +947,6 @@ public interface ServiceAPI2 extends HttpAPI<ServiceAPI2> {
 Ниже примеры того, как создавать объекты классов, моделирующих API тестируемых back-end'ов, и использовать их в
 клиентском коде / коде тестов.
 
-
-    
 
 ```java
 import java.net.URI;
@@ -1104,11 +1101,11 @@ import org.my.pack.*;
 
 import ru.tinkoff.qa.neptune.http.api.request.RequestSettings;
 import ru.tinkoff.qa.neptune.http.api.request.RequestTuner;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.APIUses;
+import ru.tinkoff.qa.neptune.core.api.binding.Bind;
 
-@APIUses(usedBy = ServiceAPI1.class) //жесткая привязка к определенному классу
+@Bind(to = ServiceAPI1.class) //жесткая привязка к определенному классу
 //если что-то похожее нужно для еще одного сервиса то
-//@APIUses(usedBy = SomeAPI.class)
+//@Bind(to = SomeAPI.class)
 public class RequestTuner1 implements RequestTuner {
     //на реализации фокусироваться не будем
 }
@@ -1119,14 +1116,14 @@ import org.my.pack.*;
 
 import ru.tinkoff.qa.neptune.http.api.request.RequestSettings;
 import ru.tinkoff.qa.neptune.http.api.request.RequestTuner;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.APIUses;
+import ru.tinkoff.qa.neptune.core.api.binding.Bind;
 
 import static java.net.http.HttpClient.Version.HTTP_2;
 
 //Еще один вариант привязки, чем-то напоминает wildcard
-@APIUses(usedBy = HttpAPI.class, //указывается обобщенный интерфейс, моделирующий API сервисов
-        isUsedBySubclasses = true, //указываем, что применимо для интерфейсов-наследников
-        exclude = ServiceAPI1.class) //кроме перечисленных, имеет смысл если isUsedBySubclasses = true
+@Bind(to = HttpAPI.class, //указывается обобщенный интерфейс, моделирующий API сервисов
+        withSubclasses = true, //указываем, что применимо для интерфейсов-наследников
+        exclude = ServiceAPI1.class) //кроме перечисленных, имеет смысл если withSubclasses = true
 public class RequestTuner2 implements RequestTuner {
     //на реализации фокусироваться не будем
 }
@@ -1165,14 +1162,9 @@ public class MyTest {
 }
 ```
 
-
-
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ### Дефолтный корневой URL
-
-
-    
 
 То что надо прочитать о [END_POINT_OF_TARGET_API](SETTINGS.MD#end_point_of_target_api). Предположим, что все сервисы
 работают на одном и том же хосте+порте, и это отражено в свойстве `END_POINT_OF_TARGET_API`
@@ -1216,15 +1208,13 @@ public class MyTest {
 ### Недефолтные корневые URL
 
 
-    
-
 А что если `ServiceAPI1` и `ServiceAPI2` всегда на разных хостах/портах?
 
 Необходимо прочитать:
 
 - [Механизм работы со свойствами/переменными окружения / среды](./../../../core.api/doc/rus/SETTINGS.MD) - полезно в целом
 - [Свойства для создания и возврата объектов URL](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов-URL)
-    - полезно прочитать в частности
+- [Связывание классов](./../../../core.api/doc/rus/CLASS_BINDING.MD)
 
 Добавим возможность указывать/читать свойства / переменные окружения / среды, и при чтении представлять их значения в виде
 URL/URI.
@@ -1281,22 +1271,22 @@ public class MyTest {
 import ru.tinkoff.qa.neptune.core.api.properties.PropertyDefaultValue;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
 import ru.tinkoff.qa.neptune.core.api.properties.url.URLValuePropertySupplier;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.APIUses;
+import ru.tinkoff.qa.neptune.core.api.binding.Bind;
 
 public enum ServiceRoot implements URLValuePropertySupplier {
     @PropertyDefaultValue("http://host1:1111") //Корневой URI/URL, используемый на дефлтном окружении/при отладке
     @PropertyName("ROOT_OF_SERVICE1") //Название свойства/переменной окружения
-    @APIUses(usedBy = ServiceAPI1.class) //жесткая привязка к определенному классу
+    @Bind(to = ServiceAPI1.class) //жесткая привязка к определенному классу
     //если что-то похожее нужно для еще одного сервиса то
-    //@APIUses(usedBy = SomeAPI.class)
+    //@Bind(to = SomeAPI.class)
     SERVICE1,
 
     @PropertyDefaultValue("http://host2:2222") //Корневой URI/URL, используемый на дефлтном окружении/при отладке
     @PropertyName("ROOT_OF_SERVICE2") //Название свойства/переменной окружения
     //Еще один вариант привязки, чем-то напоминает wildcard
-    @APIUses(usedBy = HttpAPI.class, //указывается обобщенный интерфейс, моделирующий API сервисов
-            isUsedBySubclasses = true, //указываем, что применимо для интерфейсов-наследников
-            exclude = ServiceAPI1.class) //кроме перечисленных, имеет смысл если isUsedBySubclasses = true
+    @Bind(to = HttpAPI.class, //указывается обобщенный интерфейс, моделирующий API сервисов
+            withSubclasses = true, //указываем, что применимо для интерфейсов-наследников
+            exclude = ServiceAPI1.class) //кроме перечисленных, имеет смысл если withSubclasses = true
     SERVICE2
 }
 ```
