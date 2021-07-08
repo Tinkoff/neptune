@@ -1,10 +1,10 @@
 package ru.tinkoff.qa.neptune.http.api.test.requests.mapping.property.binding;
 
+import ru.tinkoff.qa.neptune.core.api.binding.Bind;
 import ru.tinkoff.qa.neptune.http.api.request.RequestSettings;
 import ru.tinkoff.qa.neptune.http.api.request.RequestTuner;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.APIUses;
 
-@APIUses(usedBy = ServiceAPI2.class, isUsedBySubclasses = true, exclude = ServiceAPI5.class)
+@Bind(to = ServiceAPI2.class, withSubclasses = true, exclude = ServiceAPI5.class)
 public class RequestTuner4 implements RequestTuner {
 
     @Override
