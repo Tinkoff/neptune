@@ -25,10 +25,10 @@ import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure.CaptureOnFailureReader.readCaptorsOnFailure;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess.CaptureOnSuccessReader.readCaptorsOnSuccess;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting.MaxDepthOfReportingReader.getMaxDepth;
+import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultActionParameterReader.getImperativeMetadata;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultActionParameterReader.getPerformOnMetadata;
 import static ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter.StepParameterCreator.createStepParameter;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 /**
@@ -151,6 +151,15 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
      */
     protected abstract void howToPerform(R value);
 
+    /**
+     * Returns additional parameters calculated during step execution
+     *
+     * @return additional parameters calculated during step execution
+     */
+    protected Map<String, String> additionalParameters() {
+        return null;
+    }
+
     @Override
     public Action<T> get() {
         checkArgument(nonNull(toBePerformedOn), "An object should be defined to perform the action on");
@@ -169,7 +178,8 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
                 .addSuccessCaptors(successCaptors)
                 .addFailureCaptors(failureCaptors)
                 .setParameters(getParameters())
-                .setMaxDepth(getMaxDepth(this.getClass()));
+                .setMaxDepth(getMaxDepth(this.getClass()))
+                .setAdditionalParams(this::additionalParameters);
     }
 
     @Override

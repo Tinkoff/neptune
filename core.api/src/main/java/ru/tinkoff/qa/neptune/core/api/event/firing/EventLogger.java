@@ -33,4 +33,11 @@ public interface EventLogger {
      * Fires the finishing of some event.
      */
     void fireEventFinishing();
+
+    /**
+     * Adds parameters calculated during the step performing.
+     *
+     * @param parameters additional parameters
+     */
+    void addParameters(Map<String, String> parameters);
 }

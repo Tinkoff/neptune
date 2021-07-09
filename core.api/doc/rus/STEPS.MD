@@ -312,6 +312,16 @@ public class MyGetStepSupplier<T, M, P>
         //Какая-то логика
     }
 
+    // Здесь описывается Map<String, String>, в котором ключ - название параметра, значение - значение параметра.
+    // Не всегда параметры можно передать до начала выполнения шага. Некоторые значения могут получиться в процессе 
+    // выполнения шага. Если эти значения доступны и есть необходимость отобразить их в отчете / в логе выполнения 
+    // теста, то можно перекрыть данный метод.
+    @Override
+    protected Map<String, String> additionalParameters() {
+        //Возврат дополнительных динамических параметров, которые 
+        // были рассчитаны уже в процессе выполнения шага
+    }
+
     @Override //Результирующая функция-шаг возвращается данным методом.
     //Добавлено для наглядности
     public Function<MyTestContext, T> get() {
@@ -364,9 +374,6 @@ public class SomeTest {
 объектов. 
 
 - 1
-
-
-  
 
 ```java
 package org.my.pack;
@@ -465,9 +472,6 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetObjectSte
 
 
 - 2
-
-
-  
 
 ```java
 package org.my.pack;
@@ -593,6 +597,13 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObject
     protected void onFailure(M m, Throwable throwable) {
         //Какая-то логика
     }
+    
+    // перекрывать необязательно, уже писали ранее. Для наглядности
+    @Override
+    protected Map<String, String> additionalParameters() {
+        //Возврат дополнительных динамических параметров, которые 
+        // были рассчитаны уже в процессе выполнения шага
+    }
 }
 ```
 
@@ -623,8 +634,7 @@ public class SomeTest {
 ```
 
 
-Дальнейшие примеры работают по тем же принципам, что и примеры выше. Поэтому в примерах ниже больше 
-фокус на принципиальных отличиях.
+Примеры ниже работают по тем же принципам, что и примеры выше. Поэтому фокус на принципиальных отличиях.
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -634,9 +644,6 @@ public class SomeTest {
 которого необходимо вернуть только один объект (первый попавшийся или подходящий под некоторые критерии)
 
 - 1
-
-
-  
 
 ```java
 package org.my.pack;
@@ -768,9 +775,6 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObject
 
 - 1
 
-
-  
-
 ```java
 package org.my.pack;
 
@@ -828,9 +832,6 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetObjectFro
 
 
 - 2
-
-
-  
 
 ```java
 package org.my.pack;
@@ -897,9 +898,6 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObject
 
 - 1
 
-
-  
-
 ```java
 package org.my.pack;
 
@@ -962,11 +960,7 @@ public class MyGetStepSupplier<T, S extends Iterable<T>> extends SequentialGetSt
 }
 ```
 
-
 - 2
-
-
-  
 
 ```java
 package org.my.pack;
@@ -1040,9 +1034,6 @@ public class MyGetStepSupplier<T, M, S extends Iterable<T>> extends SequentialGe
 
 - 1
 
-
-  
-
 ```java
 package org.my.pack;
 
@@ -1105,9 +1096,6 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetArrayStep
 
 
 - 2
-
-
-  
 
 ```java
 package org.my.pack;
@@ -1177,11 +1165,7 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetArrayC
 
 Для описания набора действий без возврата результата, в рамках некоторого контекста, используется
 наследники `ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier`. Ниже пример, демонстрирующий
-работу и принцип данного класса.
-
-
-  
-
+работу и принцип данного класса
 
 ```java
 package org.my.pack;
@@ -1273,6 +1257,16 @@ public class MyActionStepSupplier<T> extends SequentialActionSupplier<
         //Какая-то логика
     }
 
+    // Здесь описывается Map<String, String>, в котором ключ - название параметра, значение - значение параметра.
+    // Не всегда параметры можно передать до начала выполнения шага. Некоторые значения могут получиться в процессе 
+    // выполнения шага. Если эти значения доступны и есть необходимость отобразить их в отчете / в логе выполнения 
+    // теста, то можно перекрыть данный метод.
+    @Override
+    protected Map<String, String> additionalParameters() {
+        //Возврат дополнительных динамических параметров, которые 
+        // были рассчитаны уже в процессе выполнения шага
+    }
+
     @Override //в данном методе необходимо реализовать
     //действие, выполняемое шагом
     protected void howToPerform(T value) {
@@ -1286,8 +1280,6 @@ public class MyActionStepSupplier<T> extends SequentialActionSupplier<
     }
 }
 ```
-
-
 
 Пример связи контекста и шага в тесте
 

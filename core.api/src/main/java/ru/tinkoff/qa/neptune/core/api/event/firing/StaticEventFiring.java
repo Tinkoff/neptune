@@ -80,4 +80,15 @@ public class StaticEventFiring {
     public static void fireEventFinishing() {
         initEventLoggersIfNecessary().forEach(EventLogger::fireEventFinishing);
     }
+
+    public static void fireAdditionalParameters(Map<String, String> addParameters) {
+        if (addParameters == null) {
+            return;
+        }
+
+        if (addParameters.size() == 0) {
+            return;
+        }
+        initEventLoggersIfNecessary().forEach(eventLogger -> eventLogger.addParameters(addParameters));
+    }
 }

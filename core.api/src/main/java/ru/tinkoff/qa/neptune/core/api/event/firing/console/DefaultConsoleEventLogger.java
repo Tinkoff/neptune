@@ -51,4 +51,9 @@ public class DefaultConsoleEventLogger implements EventLogger {
         successful = true;
         steps.removeLast();
     }
+
+    @Override
+    public void addParameters(Map<String, String> parameters) {
+        parameters.forEach((s, s2) -> System.out.println("  - " + s + ": " + s2));
+    }
 }

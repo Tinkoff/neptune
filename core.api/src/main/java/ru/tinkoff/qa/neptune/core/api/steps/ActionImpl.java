@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
@@ -32,6 +33,7 @@ final class ActionImpl<T, R> implements Action<T> {
     private final SequentialActionSupplier<T, R, ?> supplier;
     private final Function<T, R> getFrom;
     private int maxDepth;
+    private Supplier<Map<String, String>> additionalParams;
 
     ActionImpl(String description, SequentialActionSupplier<T, R, ?> supplier, Function<T, R> getFrom) {
         this.supplier = supplier;
@@ -53,10 +55,20 @@ final class ActionImpl<T, R> implements Action<T> {
             supplier.onStart(t);
             performOn = getFrom.apply(t);
             supplier.howToPerform(performOn);
+
+            if (toReport) {
+                ofNullable(additionalParams).ifPresent(ap -> fireAdditionalParameters(ap.get()));
+            }
+
             if (catchSuccessEvent() && toReport) {
                 catchValue(performOn, successCaptors);
             }
         } catch (Throwable thrown) {
+
+            if (toReport) {
+                ofNullable(additionalParams).ifPresent(ap -> fireAdditionalParameters(ap.get()));
+            }
+
             supplier.onFailure(t, thrown);
             fireThrownException(thrown);
             if (catchFailureEvent() && toReport) {
@@ -93,6 +105,11 @@ final class ActionImpl<T, R> implements Action<T> {
 
     ActionImpl<T, R> setMaxDepth(int maxDepth) {
         this.maxDepth = maxDepth;
+        return this;
+    }
+
+    ActionImpl<T, R> setAdditionalParams(Supplier<Map<String, String>> additionalParams) {
+        this.additionalParams = additionalParams;
         return this;
     }
 }

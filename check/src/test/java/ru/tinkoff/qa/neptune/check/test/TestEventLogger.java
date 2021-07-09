@@ -34,4 +34,9 @@ public class TestEventLogger implements EventLogger {
     public void fireEventFinishing() {
         MESSAGES.add("Event finished");
     }
+
+    @Override
+    public void addParameters(Map<String, String> parameters) {
+
+    }
 }
