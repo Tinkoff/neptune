@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -34,6 +35,7 @@ final class Get<T, R> implements Function<T, R> {
     private String resultDescription;
     private int maxDepth;
     private Get<?, ?> previous;
+    private Supplier<Map<String, String>> additionalParams;
 
     Get(String description, Function<T, R> function) {
         checkArgument(nonNull(function), "Function should be defined");
@@ -73,6 +75,7 @@ final class Get<T, R> implements Function<T, R> {
             }
             R result = function.apply(t);
             if (toReport) {
+                ofNullable(additionalParams).ifPresent(ap -> fireAdditionalParameters(ap.get()));
                 fireReturnedValueIfNecessary(resultDescription, result);
             }
             if (catchSuccessEvent() && toReport) {
@@ -82,6 +85,7 @@ final class Get<T, R> implements Function<T, R> {
         } catch (Throwable thrown) {
             if (!shouldBeThrowableIgnored(thrown)) {
                 if (toReport) {
+                    ofNullable(additionalParams).ifPresent(ap -> fireAdditionalParameters(ap.get()));
                     fireThrownException(thrown);
                 }
                 if (catchFailureEvent() && toReport) {
@@ -90,6 +94,7 @@ final class Get<T, R> implements Function<T, R> {
                 throw thrown;
             } else {
                 if (toReport) {
+                    ofNullable(additionalParams).ifPresent(ap -> fireAdditionalParameters(ap.get()));
                     fireReturnedValueIfNecessary(resultDescription, null);
                 }
                 return null;
@@ -202,6 +207,11 @@ final class Get<T, R> implements Function<T, R> {
 
     Get<T, R> setPrevious(Get<?, ?> previous) {
         this.previous = previous;
+        return this;
+    }
+
+    Get<T, R> setAdditionalParams(Supplier<Map<String, String>> additionalParams) {
+        this.additionalParams = additionalParams;
         return this;
     }
 }

@@ -99,4 +99,23 @@ public class AllureEventLogger implements EventLogger {
         allureLifecycle.stopStep(uuid);
         stepUIIDs.removeLast();
     }
+
+    @Override
+    public void addParameters(Map<String, String> parameters) {
+        if (stepUIIDs.size() == 0) {
+            return;
+        }
+
+        var uuid = stepUIIDs.getLast();
+        allureLifecycle.updateStep(uuid, stepResult -> {
+            var params = stepResult.getParameters();
+            params.addAll(parameters
+                    .entrySet()
+                    .stream()
+                    .map(e -> new Parameter().setName(e.getKey()).setValue(e.getValue()))
+                    .collect(toList()));
+            stepResult.setParameters(params);
+        });
+
+    }
 }

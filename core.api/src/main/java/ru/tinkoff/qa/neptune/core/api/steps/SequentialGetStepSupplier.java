@@ -299,6 +299,15 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     protected void onFailure(M m, Throwable throwable) {
     }
 
+    /**
+     * Returns additional parameters calculated during step execution
+     *
+     * @return additional parameters calculated during step execution
+     */
+    protected Map<String, String> additionalParameters() {
+        return Map.of();
+    }
+
     @Override
     public Function<T, R> get() {
         checkArgument(nonNull(from), "FROM-object is not defined");
@@ -332,7 +341,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
                 .compose(composeWith);
 
         if (!toReport) {
-            toBeReturned.turnReportingOff();
+            toBeReturned.turnReportingOff().setAdditionalParams(this::additionalParameters);
         }
 
         return toBeReturned;
