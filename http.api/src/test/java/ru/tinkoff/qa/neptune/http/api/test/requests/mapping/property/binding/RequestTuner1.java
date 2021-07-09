@@ -1,13 +1,13 @@
 package ru.tinkoff.qa.neptune.http.api.test.requests.mapping.property.binding;
 
+import ru.tinkoff.qa.neptune.core.api.binding.Bind;
 import ru.tinkoff.qa.neptune.http.api.request.RequestSettings;
 import ru.tinkoff.qa.neptune.http.api.request.RequestTuner;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.APIUses;
 
 import static java.net.http.HttpClient.Version.HTTP_2;
 import static java.time.Duration.ofSeconds;
 
-@APIUses(usedBy = ServiceAPI.class)
+@Bind(to = ServiceAPI.class)
 public class RequestTuner1 implements RequestTuner {
 
     @Override

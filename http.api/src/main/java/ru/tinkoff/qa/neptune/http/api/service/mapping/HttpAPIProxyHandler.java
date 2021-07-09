@@ -14,7 +14,7 @@ import static java.lang.String.format;
 import static java.lang.invoke.MethodHandles.lookup;
 import static java.lang.invoke.MethodHandles.privateLookupIn;
 import static java.util.Arrays.asList;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.APIUses.UsedByAPIReader.getRequestTuners;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpServiceBindReader.getRequestTuners;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod.HttpMethodFactory.createRequestBuilder;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.BodyParameterAnnotationReader.readBodies;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.path.PathParameter.PathParameterReader.readPathParameters;
