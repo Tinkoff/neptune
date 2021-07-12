@@ -10,7 +10,7 @@ import static com.rabbitmq.client.Address.parseAddresses;
 @PropertyDescription(description = "Defines RabbitMQ cluster",
         section = "RabbitMQ")
 @PropertyName("RABBIT_MQ_CLUSTER")
-public class RabbitMqClusterProperty implements PropertySupplier<Address[],Address[]> {
+public final class RabbitMqClusterProperty implements PropertySupplier<Address[],Address[]> {
     public static final RabbitMqClusterProperty RABBIT_MQ_CLUSTER_PROPERTY = new RabbitMqClusterProperty();
 
     private RabbitMqClusterProperty() {

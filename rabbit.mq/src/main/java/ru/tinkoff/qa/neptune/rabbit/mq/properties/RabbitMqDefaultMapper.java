@@ -11,7 +11,7 @@ import java.util.function.Supplier;
         "supply mappers for serialization/deserialization of objects."},
         section = "RabbitMQ. Mappers")
 @PropertyName("RABBIT_MQ_DEFAULT_READ_MAPPER")
-public class RabbitMqDefaultMapper implements ObjectPropertySupplier<ObjectMapper, Supplier<ObjectMapper>> {
+public final class RabbitMqDefaultMapper implements ObjectPropertySupplier<ObjectMapper, Supplier<ObjectMapper>> {
 
     public static final RabbitMqDefaultMapper RABBIT_MQ_DEFAULT_MAPPER = new RabbitMqDefaultMapper();
 
