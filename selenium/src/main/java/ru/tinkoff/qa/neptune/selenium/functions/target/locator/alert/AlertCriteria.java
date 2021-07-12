@@ -9,8 +9,8 @@ import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Optional.ofNullable;
-import static java.util.regex.Pattern.compile;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.checkByStringContainingOrRegExp;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 
 /**
@@ -47,20 +47,7 @@ public final class AlertCriteria {
 
         return condition(a ->
                 ofNullable(a.getText())
-                        .map(s -> {
-                            if (s.contains(expression)) {
-                                return true;
-                            }
-
-                            try {
-                                var p = compile(expression);
-                                var matcher = p.matcher(s);
-                                return matcher.matches();
-                            } catch (Throwable thrown) {
-                                thrown.printStackTrace();
-                                return false;
-                            }
-                        })
+                        .map(s -> checkByStringContainingOrRegExp(expression).test(s))
                         .orElse(false));
     }
 }

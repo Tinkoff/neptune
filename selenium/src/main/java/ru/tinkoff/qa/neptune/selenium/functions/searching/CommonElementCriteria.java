@@ -25,12 +25,10 @@ import static java.time.Duration.ofMillis;
 import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.NOT;
-import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.turnReportingOff;
 
 public final class CommonElementCriteria {
@@ -201,20 +199,7 @@ public final class CommonElementCriteria {
             }
 
             return ofNullable(elementText)
-                    .map(s -> {
-                        if (s.contains(expression)) {
-                            return true;
-                        }
-
-                        try {
-                            var p = compile(expression);
-                            var matcher = p.matcher(s);
-                            return matcher.matches();
-                        } catch (Throwable thrown) {
-                            thrown.printStackTrace();
-                            return false;
-                        }
-                    })
+                    .map(s -> checkByStringContainingOrRegExp(expression).test(s))
                     .orElse(false);
         });
     }
@@ -289,20 +274,7 @@ public final class CommonElementCriteria {
             }
 
             return ofNullable(attrVal)
-                    .map(s -> {
-                        if (s.contains(expression)) {
-                            return true;
-                        }
-
-                        try {
-                            var p = compile(expression);
-                            var matcher = p.matcher(s);
-                            return matcher.matches();
-                        } catch (Throwable thrown) {
-                            thrown.printStackTrace();
-                            return false;
-                        }
-                    })
+                    .map(s -> checkByStringContainingOrRegExp(expression).test(s))
                     .orElse(false);
         });
     }
@@ -377,20 +349,7 @@ public final class CommonElementCriteria {
             }
 
             return ofNullable(val)
-                    .map(s -> {
-                        if (s.contains(expression)) {
-                            return true;
-                        }
-
-                        try {
-                            var p = compile(expression);
-                            var matcher = p.matcher(s);
-                            return matcher.matches();
-                        } catch (Throwable thrown) {
-                            thrown.printStackTrace();
-                            return false;
-                        }
-                    })
+                    .map(s -> checkByStringContainingOrRegExp(expression).test(s))
                     .orElse(false);
         });
     }

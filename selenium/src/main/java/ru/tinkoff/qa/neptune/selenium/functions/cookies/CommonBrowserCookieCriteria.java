@@ -11,8 +11,8 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Optional.ofNullable;
-import static java.util.regex.Pattern.compile;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.checkByStringContainingOrRegExp;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 
 /**
@@ -53,20 +53,7 @@ public final class CommonBrowserCookieCriteria {
 
         return condition(c ->
                 ofNullable(c.getName())
-                        .map(s -> {
-                            if (s.contains(expression)) {
-                                return true;
-                            }
-
-                            try {
-                                var p = compile(expression);
-                                var matcher = p.matcher(s);
-                                return matcher.matches();
-                            } catch (Throwable thrown) {
-                                thrown.printStackTrace();
-                                return false;
-                            }
-                        })
+                        .map(s -> checkByStringContainingOrRegExp(expression).test(s))
                         .orElse(false));
     }
 
@@ -98,20 +85,7 @@ public final class CommonBrowserCookieCriteria {
 
         return condition(c ->
                 ofNullable(c.getValue())
-                        .map(s -> {
-                            if (s.contains(expression)) {
-                                return true;
-                            }
-
-                            try {
-                                var p = compile(expression);
-                                var matcher = p.matcher(s);
-                                return matcher.matches();
-                            } catch (Throwable thrown) {
-                                thrown.printStackTrace();
-                                return false;
-                            }
-                        })
+                        .map(s -> checkByStringContainingOrRegExp(expression).test(s))
                         .orElse(false));
     }
 
@@ -143,20 +117,7 @@ public final class CommonBrowserCookieCriteria {
 
         return condition(c ->
                 ofNullable(c.getDomain())
-                        .map(s -> {
-                            if (s.contains(expression)) {
-                                return true;
-                            }
-
-                            try {
-                                var p = compile(expression);
-                                var matcher = p.matcher(s);
-                                return matcher.matches();
-                            } catch (Throwable thrown) {
-                                thrown.printStackTrace();
-                                return false;
-                            }
-                        })
+                        .map(s -> checkByStringContainingOrRegExp(expression).test(s))
                         .orElse(false));
     }
 
@@ -188,20 +149,7 @@ public final class CommonBrowserCookieCriteria {
 
         return condition(c ->
                 ofNullable(c.getPath())
-                        .map(s -> {
-                            if (s.contains(expression)) {
-                                return true;
-                            }
-
-                            try {
-                                var p = compile(expression);
-                                var matcher = p.matcher(s);
-                                return matcher.matches();
-                            } catch (Throwable thrown) {
-                                thrown.printStackTrace();
-                                return false;
-                            }
-                        })
+                        .map(s -> checkByStringContainingOrRegExp(expression).test(s))
                         .orElse(false));
     }
 
