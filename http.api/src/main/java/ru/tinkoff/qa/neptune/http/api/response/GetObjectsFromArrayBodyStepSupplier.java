@@ -8,11 +8,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
-import ru.tinkoff.qa.neptune.http.api.captors.request.AbstractRequestBodyCaptor;
-import ru.tinkoff.qa.neptune.http.api.captors.response.AbstractResponseBodyObjectCaptor;
-import ru.tinkoff.qa.neptune.http.api.captors.response.AbstractResponseBodyObjectsCaptor;
-import ru.tinkoff.qa.neptune.http.api.captors.response.RequestResponseLogCaptor;
-import ru.tinkoff.qa.neptune.http.api.captors.response.ResponseCaptor;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 
 import java.net.http.HttpResponse;
@@ -24,10 +19,6 @@ import java.util.function.Predicate;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
-import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.createCaptors;
-import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchFailureEvent;
-import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchSuccessEvent;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplier.response;
 
 /**
@@ -183,14 +174,14 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
     public static final class GetObjectsFromArrayWhenResponseReceiving<T, R>
             extends GetObjectsFromArrayBodyStepSupplier<T, R, GetObjectsFromArrayWhenResponseReceiving<T, R>> {
 
-        private final ResponseExecutionInfo info;
         private final ResponseSequentialGetSupplier<T> getResponse;
+        private final StepExecutionHook stepExecutionHook;
 
         private GetObjectsFromArrayWhenResponseReceiving(ReceiveResponseAndGetResultFunction<T, R[]> f) {
             super(f);
             var s = f.getGetResponseSupplier();
-            info = s.getInfo();
             getResponse = s;
+            stepExecutionHook = new StepExecutionHook(s.getInfo(), s);
         }
 
         private GetObjectsFromArrayWhenResponseReceiving(ResponseSequentialGetSupplier<T> getResponse,
@@ -242,36 +233,23 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
         @Override
         public Map<String, String> getParameters() {
             var params = super.getParameters();
-            params.putAll(getResponse.getParameters());
+            params.putAll(stepExecutionHook.getParameters());
             return params;
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         protected void onStart(HttpStepContext httpStepContext) {
-            catchValue(getResponse.getRequest().body(), createCaptors(new Class[]{AbstractRequestBodyCaptor.class}));
+            stepExecutionHook.onStart();
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         protected void onSuccess(R[] rs) {
-            if (catchSuccessEvent()) {
-                catchValue(info, createCaptors(new Class[]{RequestResponseLogCaptor.class}));
-                catchValue(info.getLastReceived(), createCaptors(new Class[]{ResponseCaptor.class,
-                        AbstractResponseBodyObjectCaptor.class,
-                        AbstractResponseBodyObjectsCaptor.class}));
-            }
+            stepExecutionHook.onSuccess();
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         protected void onFailure(HttpStepContext httpStepContext, Throwable throwable) {
-            if (catchFailureEvent()) {
-                catchValue(info, createCaptors(new Class[]{RequestResponseLogCaptor.class}));
-                catchValue(info.getLastReceived(), createCaptors(new Class[]{ResponseCaptor.class,
-                        AbstractResponseBodyObjectCaptor.class,
-                        AbstractResponseBodyObjectsCaptor.class}));
-            }
+            stepExecutionHook.onFailure();
         }
 
         @Override

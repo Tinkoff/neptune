@@ -86,4 +86,10 @@ public class GetObjectFromIterableSupplier<T, R> extends SequentialGetStepSuppli
     public GetObjectFromIterableSupplier<T, R> criteria(String description, Predicate<? super R> predicate) {
         return criteria(condition(description, predicate));
     }
+
+    @Override
+    public GetObjectFromIterableSupplier<T, R> throwOnNoResult() {
+        delegateTo.throwOnNoResult();
+        return super.throwOnNoResult();
+    }
 }

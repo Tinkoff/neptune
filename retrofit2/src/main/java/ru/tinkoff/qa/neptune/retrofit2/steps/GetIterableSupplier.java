@@ -85,4 +85,10 @@ public class GetIterableSupplier<T, R, S extends Iterable<R>> extends Sequential
     public GetIterableSupplier<T, R, S> criteria(String description, Predicate<? super R> predicate) {
         return criteria(condition(description, predicate));
     }
+
+    @Override
+    public GetIterableSupplier<T, R, S> throwOnNoResult() {
+        delegateTo.throwOnNoResult();
+        return super.throwOnNoResult();
+    }
 }

@@ -85,4 +85,10 @@ public class GetObjectFromArraySupplier<T, R> extends SequentialGetStepSupplier
     public GetObjectFromArraySupplier<T, R> criteria(String description, Predicate<? super R> predicate) {
         return criteria(condition(description, predicate));
     }
+
+    @Override
+    public GetObjectFromArraySupplier<T, R> throwOnNoResult() {
+        delegateTo.throwOnNoResult();
+        return super.throwOnNoResult();
+    }
 }

@@ -94,4 +94,10 @@ public class GetObjectSupplier<T, R> extends SequentialGetStepSupplier
         delegateTo.criteria(bodyMatches(criteria.toString(), r -> criteria.get().test(r)));
         return super.criteria(criteria);
     }
+
+    @Override
+    public GetObjectSupplier<T, R> throwOnNoResult() {
+        delegateTo.throwOnNoResult();
+        return super.throwOnNoResult();
+    }
 }
