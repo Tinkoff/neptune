@@ -173,7 +173,8 @@ public final class BrowserProxyCriteria {
      * @return criteria that checks HAR entry
      */
     @Description("request has header '{name}' with value '{value}'")
-    public static Criteria<HarEntry> recordedRequestHeader(@DescriptionFragment("name") String name, @DescriptionFragment("value") String value) {
+    public static Criteria<HarEntry> recordedRequestHeader(@DescriptionFragment("name") String name,
+                                                           @DescriptionFragment("value") String value) {
         checkArgument(isNotBlank(name), "Request header name should be defined");
         checkArgument(isNotBlank(value), "Request header value should be defined");
 
@@ -226,7 +227,8 @@ public final class BrowserProxyCriteria {
      * @return criteria that checks HAR entry
      */
     @Description("response has header '{name}' with value '{value}'")
-    public static Criteria<HarEntry> recordedResponseHeader(String name, String value) {
+    public static Criteria<HarEntry> recordedResponseHeader(@DescriptionFragment("name") String name,
+                                                            @DescriptionFragment("value") String value) {
         checkArgument(isNotBlank(name), "Response header name should be defined");
         checkArgument(isNotBlank(value), "Response header value should be defined");
 

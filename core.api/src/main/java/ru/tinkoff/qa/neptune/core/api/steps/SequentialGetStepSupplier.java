@@ -752,7 +752,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
     }
 
-    private static class PrivateGetArrayStepSupplier<T, M, R, THIS extends PrivateGetArrayStepSupplier<T, M, R, THIS>>
+    private static class PrivateGetArrayStepSupplier<T, R, M, THIS extends PrivateGetArrayStepSupplier<T, R, M, THIS>>
             extends SequentialGetStepSupplier<T, R[], M, R, THIS> {
 
         private final Function<M, R[]> originalFunction;
@@ -803,7 +803,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
     public static abstract class GetArrayStepSupplier<T, R, THIS extends GetArrayStepSupplier<T, R, THIS>>
-            extends PrivateGetArrayStepSupplier<T, T, R, THIS> {
+            extends PrivateGetArrayStepSupplier<T, R, T, THIS> {
 
         protected GetArrayStepSupplier(Function<T, R[]> originalFunction) {
             super(originalFunction);
@@ -819,8 +819,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <R>    is a type of an an item from resulted array
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetArrayChainedStepSupplier<T, M, R, THIS extends GetArrayChainedStepSupplier<T, M, R, THIS>>
-            extends PrivateGetArrayStepSupplier<T, M, R, THIS> {
+    public static abstract class GetArrayChainedStepSupplier<T, R, M, THIS extends GetArrayChainedStepSupplier<T, R, M, THIS>>
+            extends PrivateGetArrayStepSupplier<T, R, M, THIS> {
 
         protected GetArrayChainedStepSupplier(Function<M, R[]> originalFunction) {
             super(originalFunction);
