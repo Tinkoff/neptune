@@ -8,12 +8,12 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
  */
 public final class RetrofitContext<T> extends Context<RetrofitContext<T>> {
 
-    private final StepInterceptor interceptor = StepInterceptor.getCurrentInterceptor();
+    private static final RetrofitContext<?> context = getInstance(RetrofitContext.class);
     private T service;
 
     @SuppressWarnings("unchecked")
-    public static <T> RetrofitContext<T> from(T service) {
-        return getInstance(RetrofitContext.class).setService(service);
+    public static <T> RetrofitContext<T> retrofit(T service) {
+        return ((RetrofitContext<T>) context).setService(service);
     }
 
     public <R> R receive(SequentialGetStepSupplier<? super RetrofitContext<T>, R, ?, ?, ?> what) {
