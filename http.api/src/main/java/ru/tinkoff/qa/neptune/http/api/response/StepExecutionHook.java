@@ -33,19 +33,17 @@ final class StepExecutionHook {
         catchValue(getResponse.getRequest().body(), createCaptors(new Class[]{AbstractRequestBodyCaptor.class}));
     }
 
-    @SuppressWarnings("unchecked")
     protected void onSuccess() {
-        if (catchSuccessEvent()) {
-            catchValue(info, createCaptors(new Class[]{RequestResponseLogCaptor.class}));
-            catchValue(info.getLastReceived(), createCaptors(new Class[]{ResponseCaptor.class,
-                    AbstractResponseBodyObjectCaptor.class,
-                    AbstractResponseBodyObjectsCaptor.class}));
-        }
+        catchRequestsAndResponses(catchSuccessEvent());
+    }
+
+    protected void onFailure() {
+        catchRequestsAndResponses(catchFailureEvent());
     }
 
     @SuppressWarnings("unchecked")
-    protected void onFailure() {
-        if (catchFailureEvent()) {
+    private void catchRequestsAndResponses(boolean condition) {
+        if (condition) {
             catchValue(info, createCaptors(new Class[]{RequestResponseLogCaptor.class}));
             catchValue(info.getLastReceived(), createCaptors(new Class[]{ResponseCaptor.class,
                     AbstractResponseBodyObjectCaptor.class,

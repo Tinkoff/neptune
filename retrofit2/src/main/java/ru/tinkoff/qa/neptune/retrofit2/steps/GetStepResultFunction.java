@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.retrofit2.steps;
 
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import ru.tinkoff.qa.neptune.retrofit2.RetrofitContext;
 import ru.tinkoff.qa.neptune.retrofit2.StepInterceptor;
 
@@ -40,5 +41,9 @@ class GetStepResultFunction<T, R> implements Function<RetrofitContext<T>, Reques
 
     Response response() {
         return interceptor.getLastResponse();
+    }
+
+    ResponseBody body() {
+        return interceptor.getBody();
     }
 }

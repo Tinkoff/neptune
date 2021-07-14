@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.retrofit2;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 import java.io.IOException;
 
@@ -14,6 +15,7 @@ public final class StepInterceptor implements Interceptor {
 
     private Request request;
     private Response lastResponse;
+    private ResponseBody body;
 
     private StepInterceptor() {
         super();
@@ -30,8 +32,10 @@ public final class StepInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         lastResponse = null;
+        body = null;
         request = ofNullable(request).orElseGet(chain::request);
         lastResponse = chain.proceed(chain.request());
+        body = lastResponse.peekBody(Long.MAX_VALUE);
         return lastResponse;
     }
 
@@ -45,5 +49,9 @@ public final class StepInterceptor implements Interceptor {
 
     public Response getLastResponse() {
         return lastResponse;
+    }
+
+    public ResponseBody getBody() {
+        return body;
     }
 }

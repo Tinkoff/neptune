@@ -1,6 +1,8 @@
 package ru.tinkoff.qa.neptune.retrofit2.steps;
 
-import ru.tinkoff.qa.neptune.retrofit2.captors.AbstractResponseBodyCaptor;
+import ru.tinkoff.qa.neptune.retrofit2.captors.AbstractRequestBodyCaptor;
+import ru.tinkoff.qa.neptune.retrofit2.captors.MultipartRequestBodyCaptor;
+import ru.tinkoff.qa.neptune.retrofit2.captors.ResponseBodyCaptor;
 import ru.tinkoff.qa.neptune.retrofit2.captors.ResponseCaptor;
 
 import java.util.LinkedHashMap;
@@ -27,36 +29,31 @@ final class StepExecutionHook {
             var h = r.headers();
             var headerMap = h.toMultimap();
 
-            headerMap.forEach((k, v) -> result.put("Header " + k, String.join(",", v)));
+            headerMap.forEach((k, v) -> result.put(k, String.join(",", v)));
             return result;
         }
 
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     protected void onSuccess() {
-        var r = f.request();
-        if (r != null) {
-            catchValue(r.body(), createCaptors(new Class[]{AbstractResponseBodyCaptor.class}));
-        }
+        catchRequestsAndResponses(catchSuccessEvent());
+    }
 
-        if (catchSuccessEvent()) {
-            catchValue(f.response(), createCaptors(new Class[]{ResponseCaptor.class}));
-            catchValue(f.response().body(), createCaptors(new Class[]{AbstractResponseBodyCaptor.class}));
-        }
+    protected void onFailure() {
+        catchRequestsAndResponses(catchFailureEvent());
     }
 
     @SuppressWarnings("unchecked")
-    protected void onFailure() {
+    private void catchRequestsAndResponses(boolean condition) {
         var r = f.request();
         if (r != null) {
-            catchValue(r.body(), createCaptors(new Class[]{AbstractResponseBodyCaptor.class}));
+            catchValue(r.body(), createCaptors(new Class[]{AbstractRequestBodyCaptor.class, MultipartRequestBodyCaptor.class}));
         }
 
-        if (catchFailureEvent()) {
+        if (condition) {
             catchValue(f.response(), createCaptors(new Class[]{ResponseCaptor.class}));
-            catchValue(f.response().body(), createCaptors(new Class[]{AbstractResponseBodyCaptor.class}));
+            catchValue(f.body(), createCaptors(new Class[]{ResponseBodyCaptor.class}));
         }
     }
 }

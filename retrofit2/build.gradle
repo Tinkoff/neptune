@@ -12,6 +12,7 @@ dependencies {
         transitive = false
     }
     compile group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.9.0'
+    compile group: 'org.apache.tika', name: 'tika-core', version: '1.27'
     testCompile group: 'com.squareup.retrofit2', name: 'converter-gson', version: '2.9.0'
 }
 
