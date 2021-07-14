@@ -64,6 +64,7 @@ public final class ResponseCriteria {
      * @param stringURL expected url of a response defined as string.
      * @return criteria.
      */
+    @Description("response URL is '{stringURL}'")
     public static Criteria<Response> responseUrl(String stringURL) {
         return condition(r -> stringURL.equals(r.request().url().toString()));
     }
@@ -271,7 +272,7 @@ public final class ResponseCriteria {
         return condition(response -> Objects.equals(response.message(), expected));
     }
 
-    @Description("Response URL {description} contains '{expression}' or meets regExp pattern '{expression}'")
+    @Description("Response message contains '{expression}' or meets regExp pattern '{expression}'")
     private static Criteria<Response> messageMatches(@DescriptionFragment("expression") String expression) {
         checkArgument(isNotBlank(expression), "Expression for the checking of " +
                 "response message should not be defined as blank or null string");
@@ -320,5 +321,27 @@ public final class ResponseCriteria {
                 .filter(e -> Objects.equals(e.getKey(), name))
                 .map(Map.Entry::getValue)
                 .anyMatch(strings -> strings.stream().anyMatch(checkByStringContainingOrRegExp(valueExpression))));
+    }
+
+    /**
+     * Builds criteria to match http response by status code. A response is expected to have the code is in [200..300),
+     * which means the request was successfully received, understood, and accepted.
+     *
+     * @return criteria.
+     */
+    @Description("is successful")
+    public static Criteria<Response> isSuccessful() {
+        return condition(Response::isSuccessful);
+    }
+
+    /**
+     * Builds criteria to match http response. It is expected that a response redirects
+     * to another resource
+     *
+     * @return criteria.
+     */
+    @Description("is redirect")
+    public static Criteria<Response> isRedirect() {
+        return condition(Response::isRedirect);
     }
 }

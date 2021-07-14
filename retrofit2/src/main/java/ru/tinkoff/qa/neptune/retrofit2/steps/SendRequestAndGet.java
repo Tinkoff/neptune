@@ -2,12 +2,19 @@ package ru.tinkoff.qa.neptune.retrofit2.steps;
 
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.retrofit2.RetrofitContext;
 
 import java.time.Duration;
 import java.util.Map;
 import java.util.function.Predicate;
 
+
+@Description("Http response")
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Response criteria")
+@SequentialGetStepSupplier.DefineTimeOutParameterName("Time to receive expected http response and get the result")
+@ThrowWhenNoData(toThrow = ExpectedHttpResponseHasNotBeenReceivedException.class, startDescription = "Not received")
 class SendRequestAndGet<T, R> extends SequentialGetStepSupplier
         .GetObjectStepSupplier<RetrofitContext<T>, RequestExecutionResult<R>, SendRequestAndGet<T, R>> {
 

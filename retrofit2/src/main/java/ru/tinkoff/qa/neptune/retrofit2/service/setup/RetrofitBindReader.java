@@ -18,10 +18,10 @@ import static ru.tinkoff.qa.neptune.retrofit2.properties.DefaultRetrofitURLPrope
  * and/or {@link RetrofitSupplier} which are bound to interface that describes a service
  */
 @SuppressWarnings("unchecked")
-public final class RetrofitBindReader {
+final class RetrofitBindReader {
 
     @SuppressWarnings("unchecked")
-    public static URL getDefaultURL(Class<?> toBindWith) {
+    static URL getURL(Class<?> toBindWith) {
         var annotatedElements = getBoundTo(toBindWith);
 
         return annotatedElements
@@ -73,7 +73,7 @@ public final class RetrofitBindReader {
                 .orElseGet(DEFAULT_RETROFIT_URL_PROPERTY);
     }
 
-    public static Retrofit getDefaultRetrofit(Class<?> toBindWith) {
+    static Retrofit getRetrofit(Class<?> toBindWith) {
         var annotatedElements = getBoundTo(toBindWith);
 
         return annotatedElements

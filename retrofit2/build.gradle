@@ -12,7 +12,7 @@ dependencies {
         transitive = false
     }
     compile group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.9.0'
-    compile group: 'com.squareup.retrofit2', name: 'converter-gson', version: '2.9.0'
+    testCompile group: 'com.squareup.retrofit2', name: 'converter-gson', version: '2.9.0'
 }
 
 test {
@@ -35,7 +35,7 @@ task generateBundle(type: JavaExec)  {
     args "ru_RU",
             "$projectDir/src/main/resources",
             "false",
-            "selenium"
+            "retrofit2"
 }
 
 processResources {

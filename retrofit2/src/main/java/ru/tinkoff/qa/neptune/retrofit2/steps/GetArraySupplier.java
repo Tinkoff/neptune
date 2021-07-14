@@ -21,7 +21,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.retrofit2.criteria.ResponseCriteria.bodyMatches;
 
-@Description("{description}")
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted array")
 @ThrowWhenNoData(startDescription = "Not received", toThrow = DataHasNotBeenReceivedException.class)
 public class GetArraySupplier<T, R> extends SequentialGetStepSupplier
         .GetArrayChainedStepSupplier<RetrofitContext<T>, R, RequestExecutionResult<R[]>, GetArraySupplier<T, R>> {

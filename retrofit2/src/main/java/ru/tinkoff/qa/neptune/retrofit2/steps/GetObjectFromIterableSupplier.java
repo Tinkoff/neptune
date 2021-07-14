@@ -21,7 +21,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.retrofit2.criteria.ResponseCriteria.bodyMatches;
 
-@Description("{description}")
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Result criteria")
 @ThrowWhenNoData(startDescription = "Not received", toThrow = DataHasNotBeenReceivedException.class)
 public class GetObjectFromIterableSupplier<T, R> extends SequentialGetStepSupplier
         .GetObjectFromIterableChainedStepSupplier<RetrofitContext<T>, R, RequestExecutionResult<Iterable<R>>, GetObjectFromIterableSupplier<T, R>> {
