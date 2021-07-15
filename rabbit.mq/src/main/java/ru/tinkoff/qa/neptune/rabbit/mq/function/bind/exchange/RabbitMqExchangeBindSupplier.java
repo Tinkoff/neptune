@@ -24,11 +24,12 @@ public class RabbitMqExchangeBindSupplier extends SequentialGetStepSupplier.GetO
     protected RabbitMqExchangeBindSupplier(String destination, String source, String routingKey, ArgSupplier supplier) {
         super(input -> {
             var args = supplier.get();
+            var channel = input.getChannel();
             try {
                 if (args == null) {
-                    return input.getChannel().exchangeBind(destination, source, routingKey);
+                    return channel.exchangeBind(destination, source, routingKey);
                 }
-                return input.getChannel().exchangeBind(destination, source, routingKey, args.getHashMap());
+                return channel.exchangeBind(destination, source, routingKey, args.getHashMap());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

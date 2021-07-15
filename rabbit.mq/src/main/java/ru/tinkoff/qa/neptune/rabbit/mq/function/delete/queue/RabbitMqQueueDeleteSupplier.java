@@ -38,10 +38,11 @@ public class RabbitMqQueueDeleteSupplier extends SequentialActionSupplier<Rabbit
     @Override
     protected void howToPerform(Channel value) {
         try {
-            if (parametersForDelete == null){
+            if (parametersForDelete == null) {
                 value.queueDelete(queue);
+            } else {
+                value.queueDelete(queue, parametersForDelete.isIfUnused(), parametersForDelete.isIfEmpty());
             }
-            value.queueDelete(queue,parametersForDelete.isIfUnused(), parametersForDelete.isIfEmpty());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

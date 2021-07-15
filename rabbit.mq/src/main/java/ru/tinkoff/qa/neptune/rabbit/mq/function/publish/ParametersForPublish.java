@@ -9,6 +9,10 @@ public class ParametersForPublish implements StepParameterPojo {
     @StepParameter("immediate")
     private boolean immediate;
 
+    public static ParametersForPublish parameters() {
+        return new ParametersForPublish();
+    }
+
     public boolean isMandatory() {
         return mandatory;
     }

@@ -79,10 +79,11 @@ public class RabbitMqPublishSupplier extends SequentialActionSupplier<RabbitMqSt
         var channel = value.getChannel();
         var props = propertyBuilder.build();
         try{
-            if(params == null){
-                channel.basicPublish(exchange,routingKey,false,false,props, body);
+            if (params == null) {
+                channel.basicPublish(exchange, routingKey, false, false, props, body);
+            } else {
+                channel.basicPublish(exchange, routingKey, params.isMandatory(), params.isImmediate(), props, body);
             }
-            channel.basicPublish(exchange,routingKey,params.isMandatory(),params.isImmediate(),props, body);
         } catch (Exception e){
             throw new RuntimeException(e);
         }

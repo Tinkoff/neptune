@@ -17,6 +17,10 @@ public class ParametersForDeclareExchange implements StepParameterPojo {
     private boolean internal;
     private AdditionalArguments additionalArguments;
 
+    public static ParametersForDeclareExchange exchangeParams() {
+        return new ParametersForDeclareExchange();
+    }
+
     public boolean isDurable() {
         return durable;
     }

@@ -23,11 +23,12 @@ public class RabbitMqQueueBindSupplier extends SequentialGetStepSupplier.GetObje
     protected RabbitMqQueueBindSupplier(String queue, String exchange, String routingKey, ArgSupplier supplier) {
         super(input->{
             var args = supplier.get();
+            var channel = input.getChannel();
             try {
                 if (args == null) {
-                    return input.getChannel().queueBind(queue, exchange, routingKey);
+                    return channel.queueBind(queue, exchange, routingKey);
                 }
-                return input.getChannel().queueBind(queue, exchange, routingKey, args.getHashMap());
+                return channel.queueBind(queue, exchange, routingKey, args.getHashMap());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

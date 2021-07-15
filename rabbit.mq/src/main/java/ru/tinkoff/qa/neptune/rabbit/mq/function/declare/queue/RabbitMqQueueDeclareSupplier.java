@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.function.declare.queue;
 
 import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.Channel;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
@@ -12,12 +11,13 @@ import java.io.IOException;
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Declare:")
 @MaxDepthOfReporting(0)
-public class RabbitMqQueueDeclareSupplier extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<RabbitMqStepContext, AMQP.Queue.DeclareOk, Channel, RabbitMqQueueDeclareSupplier> {
+public class RabbitMqQueueDeclareSupplier extends SequentialGetStepSupplier.GetObjectStepSupplier<RabbitMqStepContext, AMQP.Queue.DeclareOk, RabbitMqQueueDeclareSupplier> {
     private final String queue;
     private final ParametersForDeclareQueue params;
 
     protected RabbitMqQueueDeclareSupplier(String queue, ParametersForDeclareQueue params) {
-        super(channel -> {
+        super(input -> {
+            var channel = input.getChannel();
             if (queue == null) {
                 try {
                     return channel.queueDeclare();
