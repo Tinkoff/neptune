@@ -13,15 +13,15 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqAuthorizationPr
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqClusterProperty.RABBIT_MQ_CLUSTER_PROPERTY;
 
 public class RabbitMqParameterProvider implements ParameterProvider {
+    Channel channel;
+    Connection connection;
+
     @Override
     public Object[] provide() {
-        Connection connection = null;
-        Channel channel = null;
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setUsername(RABBIT_MQ_USERNAME.get());
-        factory.setPassword(RABBIT_MQ_PASSWORD.get());
-
         try {
+            ConnectionFactory factory = new ConnectionFactory();
+            factory.setUsername(RABBIT_MQ_USERNAME.get());
+            factory.setPassword(RABBIT_MQ_PASSWORD.get());
             connection = factory.newConnection(RABBIT_MQ_CLUSTER_PROPERTY.get());
             channel = connection.createChannel();
         } catch (IOException | TimeoutException e) {
