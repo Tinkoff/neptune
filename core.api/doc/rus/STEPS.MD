@@ -312,6 +312,16 @@ public class MyGetStepSupplier<T, M, P>
         //Какая-то логика
     }
 
+    // Здесь описывается Map<String, String>, в котором ключ - название параметра, значение - значение параметра.
+    // Не всегда параметры можно передать до начала выполнения шага. Некоторые значения могут получиться в процессе 
+    // выполнения шага. Если эти значения доступны и есть необходимость отобразить их в отчете / в логе выполнения 
+    // теста, то можно перекрыть данный метод.
+    @Override
+    protected Map<String, String> additionalParameters() {
+        //Возврат дополнительных динамических параметров, которые 
+        // были рассчитаны уже в процессе выполнения шага
+    }
+
     @Override //Результирующая функция-шаг возвращается данным методом.
     //Добавлено для наглядности
     public Function<MyTestContext, T> get() {
@@ -343,13 +353,6 @@ public class SomeTest {
                 //паузу между попытками получить требуемые данные, в рамках указанного 
                 //времени ожидания
                 .pollingInterval(ofMillis(500))
-                //Может быть так, что в процессе выполнения шага (при какой-то из попыток получить результат),
-                //возникает исключение, потому что в данный момент нужное значение не вычислимо, т.к. 
-                //тестируемая система работает не синхронно с нашим тестом, и в данный (какой-то) момент времени
-                //нет условий для получения нужного результата. Чтобы избежать ложных срабатываний теста, можно
-                //указать исключения, которые следует игнорировать. Можно указать конкретные классы, или 
-                //классы-родители выбрасываемых исключений
-                .addIgnored(RuntimeException.class)
                 .throwOnNoResult()); //Если ничего походящего/значимого построенный шаг не вернет, 
         // и в этом случая нужно выбросить исключение и уронить тест. 
         // Будет выброшено исключения, указанное аннотацией
@@ -371,9 +374,6 @@ public class SomeTest {
 объектов. 
 
 - 1
-
-
-  
 
 ```java
 package org.my.pack;
@@ -472,9 +472,6 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetObjectSte
 
 
 - 2
-
-
-  
 
 ```java
 package org.my.pack;
@@ -600,6 +597,13 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObject
     protected void onFailure(M m, Throwable throwable) {
         //Какая-то логика
     }
+    
+    // перекрывать необязательно, уже писали ранее. Для наглядности
+    @Override
+    protected Map<String, String> additionalParameters() {
+        //Возврат дополнительных динамических параметров, которые 
+        // были рассчитаны уже в процессе выполнения шага
+    }
 }
 ```
 
@@ -630,8 +634,7 @@ public class SomeTest {
 ```
 
 
-Дальнейшие примеры работают по тем же принципам, что и примеры выше. Поэтому в примерах ниже больше 
-фокус на принципиальных отличиях.
+Примеры ниже работают по тем же принципам, что и примеры выше. Поэтому фокус на принципиальных отличиях.
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -641,9 +644,6 @@ public class SomeTest {
 которого необходимо вернуть только один объект (первый попавшийся или подходящий под некоторые критерии)
 
 - 1
-
-
-  
 
 ```java
 package org.my.pack;
@@ -775,9 +775,6 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObject
 
 - 1
 
-
-  
-
 ```java
 package org.my.pack;
 
@@ -835,9 +832,6 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetObjectFro
 
 
 - 2
-
-
-  
 
 ```java
 package org.my.pack;
@@ -904,9 +898,6 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObject
 
 - 1
 
-
-  
-
 ```java
 package org.my.pack;
 
@@ -969,11 +960,7 @@ public class MyGetStepSupplier<T, S extends Iterable<T>> extends SequentialGetSt
 }
 ```
 
-
 - 2
-
-
-  
 
 ```java
 package org.my.pack;
@@ -1047,9 +1034,6 @@ public class MyGetStepSupplier<T, M, S extends Iterable<T>> extends SequentialGe
 
 - 1
 
-
-  
-
 ```java
 package org.my.pack;
 
@@ -1112,9 +1096,6 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetArrayStep
 
 
 - 2
-
-
-  
 
 ```java
 package org.my.pack;
@@ -1184,11 +1165,7 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetArrayC
 
 Для описания набора действий без возврата результата, в рамках некоторого контекста, используется
 наследники `ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier`. Ниже пример, демонстрирующий
-работу и принцип данного класса.
-
-
-  
-
+работу и принцип данного класса
 
 ```java
 package org.my.pack;
@@ -1280,6 +1257,16 @@ public class MyActionStepSupplier<T> extends SequentialActionSupplier<
         //Какая-то логика
     }
 
+    // Здесь описывается Map<String, String>, в котором ключ - название параметра, значение - значение параметра.
+    // Не всегда параметры можно передать до начала выполнения шага. Некоторые значения могут получиться в процессе 
+    // выполнения шага. Если эти значения доступны и есть необходимость отобразить их в отчете / в логе выполнения 
+    // теста, то можно перекрыть данный метод.
+    @Override
+    protected Map<String, String> additionalParameters() {
+        //Возврат дополнительных динамических параметров, которые 
+        // были рассчитаны уже в процессе выполнения шага
+    }
+
     @Override //в данном методе необходимо реализовать
     //действие, выполняемое шагом
     protected void howToPerform(T value) {
@@ -1293,8 +1280,6 @@ public class MyActionStepSupplier<T> extends SequentialActionSupplier<
     }
 }
 ```
-
-
 
 Пример связи контекста и шага в тесте
 
@@ -2333,8 +2318,10 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 
 //Здесь описывается исключение, которое может быть выброшено, если в результате выполнения 
 //построенного шага не было получено значение, соответствующее указанным критериям, и за указанное время.
-//Указывается класс исключения, у которого есть публичный конструктор с параметром типа
-//String (текст сообщения). В данном примере может быть выброшено IllegalStateException,
+//Указывается класс исключения, у которого есть публичный конструктор с параметрами типа
+//String (текст сообщения), или String (текст сообщения) и Throwable (причина). 
+// 
+// В данном примере может быть выброшено IllegalStateException,
 //с текстом Can't get: <описание получаемого значения и параметров шага>
 //
 //Аннотацию можно не указывать, т.к. по умолчанию может быть выброшено

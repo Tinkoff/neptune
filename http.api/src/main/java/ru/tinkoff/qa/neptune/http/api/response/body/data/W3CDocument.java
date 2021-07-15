@@ -35,8 +35,7 @@ final class W3CDocument implements Function<String, Document> {
         try {
             return documentBuilder.parse(inputSource);
         } catch (Throwable t) {
-            t.printStackTrace();
-            return null;
+            throw new RuntimeException(t);
         }
     }
 }

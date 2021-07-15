@@ -6,6 +6,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.captors.request.AbstractRequestBodyCaptor;
 import ru.tinkoff.qa.neptune.http.api.captors.response.AbstractResponseBodyObjectCaptor;
@@ -39,6 +40,7 @@ import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapture
 @CaptureOnSuccess(by = {ResponseCaptor.class, AbstractResponseBodyObjectCaptor.class, AbstractResponseBodyObjectsCaptor.class})
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Response criteria")
 @MaxDepthOfReporting(0)
+@ThrowWhenNoData(toThrow = ExpectedHttpResponseHasNotBeenReceivedException.class, startDescription = "Not received")
 public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSupplier.GetObjectStepSupplier<HttpStepContext, HttpResponse<T>,
         ResponseSequentialGetSupplier<T>> {
 
@@ -173,5 +175,10 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
 
     NeptuneHttpRequestImpl getRequest() {
         return (NeptuneHttpRequestImpl) request;
+    }
+
+    @Override
+    protected ResponseSequentialGetSupplier<T> addIgnored(Class<? extends Throwable> toBeIgnored) {
+        return super.addIgnored(toBeIgnored);
     }
 }

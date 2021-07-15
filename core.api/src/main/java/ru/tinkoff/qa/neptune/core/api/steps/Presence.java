@@ -17,7 +17,6 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.SPACE;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 
 @SequentialGetStepSupplier.DefineResultDescriptionParameterName("Is present")
@@ -74,17 +73,9 @@ public final class Presence<T> extends SequentialGetStepSupplier.GetObjectChaine
         return new Presence<>(toBePresent);
     }
 
-    @Override
-    String getExceptionMessage(String messageStarting) {
-        var stringBuilder = new StringBuilder(messageStarting)
-                .append(SPACE)
-                .append(((SequentialGetStepSupplier<?, ?, ?, ?, ?>) from).getDescription());
-        getParameters().forEach((key, value) -> stringBuilder.append("\r\n")
-                .append("- ")
-                .append(key)
-                .append(":")
-                .append(value));
-        return stringBuilder.toString();
+    public Presence<T> throwOnNoResult() {
+        this.exceptionSupplier = new ExceptionSupplierForAbsenceAndPresence(this);
+        return this;
     }
 
     protected Function<T, Object> preparePreFunction() {

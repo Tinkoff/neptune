@@ -7,6 +7,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 
 import static java.lang.String.format;
+import static java.time.Duration.ofMillis;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
@@ -31,7 +32,7 @@ public class JavaScriptTest extends BaseWebDriverTest {
         Object result = seleniumSteps.evaluate(javaScript(SCRIPT_1.getScript(), ARGUMENTS)
                 .criteria(CONTAINS_ARGUMENT_1)
                 .timeOut(FIVE_SECONDS)
-                .pollingInterval(HALF_SECOND)
+                .pollingInterval(ofMillis(100))
                 .throwOnNoResult());
 
         setEndBenchMark();
@@ -46,7 +47,7 @@ public class JavaScriptTest extends BaseWebDriverTest {
             seleniumSteps.evaluate(javaScript(SCRIPT_1.getScript(), ARGUMENTS)
                     .criteria(CONTAINS_ARGUMENT_5)
                     .timeOut(FIVE_SECONDS)
-                    .pollingInterval(HALF_SECOND)
+                    .pollingInterval(ofMillis(100))
                     .throwOnNoResult());
 
         } catch (Exception e) {
@@ -64,7 +65,7 @@ public class JavaScriptTest extends BaseWebDriverTest {
         Object result = seleniumSteps.evaluate(javaScript(SCRIPT_1.getScript(), ARGUMENTS)
                 .criteria(CONTAINS_ARGUMENT_5)
                 .timeOut(FIVE_SECONDS)
-                .pollingInterval(HALF_SECOND));
+                .pollingInterval(ofMillis(100)));
         setEndBenchMark();
         assertThat(result, nullValue());
         assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
@@ -77,7 +78,7 @@ public class JavaScriptTest extends BaseWebDriverTest {
             seleniumSteps.evaluate(javaScript(SCRIPT_2.getScript(), ARGUMENTS)
                     .criteria(CONTAINS_ARGUMENT_1)
                     .timeOut(FIVE_SECONDS)
-                    .pollingInterval(HALF_SECOND)
+                    .pollingInterval(ofMillis(100))
                     .throwOnNoResult());
 
         } catch (Exception e) {

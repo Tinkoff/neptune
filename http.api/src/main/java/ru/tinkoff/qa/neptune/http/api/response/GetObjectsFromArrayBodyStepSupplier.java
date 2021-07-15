@@ -43,6 +43,7 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
 
     private GetObjectsFromArrayBodyStepSupplier(Function<HttpStepContext, R[]> f) {
         super(f);
+        addIgnored(Exception.class);
     }
 
     /**
@@ -90,8 +91,7 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
             HttpResponse.BodyHandler<T> handler,
             Function<T, R[]> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectsFromArrayWhenResponseReceiving<>(response(requestBuilder, handler)
-                .addIgnored(Exception.class),
+        return new GetObjectsFromArrayWhenResponseReceiving<>(response(requestBuilder, handler),
                 f);
     }
 
@@ -135,8 +135,7 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
             RequestBuilder requestBuilder,
             HttpResponse.BodyHandler<R[]> handler) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectsFromArrayWhenResponseReceiving<>(response(requestBuilder, handler)
-                .addIgnored(Exception.class),
+        return new GetObjectsFromArrayWhenResponseReceiving<>(response(requestBuilder, handler),
                 rs -> rs);
     }
 
@@ -273,6 +272,12 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
                         AbstractResponseBodyObjectCaptor.class,
                         AbstractResponseBodyObjectsCaptor.class}));
             }
+        }
+
+        @Override
+        public GetObjectsFromArrayWhenResponseReceiving<T, R> throwOnNoResult() {
+            getResponse.throwOnNoResult();
+            return super.throwOnNoResult();
         }
     }
 }

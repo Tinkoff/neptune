@@ -77,7 +77,7 @@ public class SwitchToWindowHookTest extends BaseWebDriverTest {
         } catch (Exception e) {
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
-            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThan(HALF_SECOND.toMillis()));
+            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThan(100L));
             throw e;
         }
         fail("Exception was expected");
