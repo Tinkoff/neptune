@@ -20,10 +20,14 @@ class SendRequestAndGet<T, R> extends SequentialGetStepSupplier
 
     private final StepExecutionHook hook;
 
-    SendRequestAndGet(GetStepResultFunction<T, R> f) {
+    private SendRequestAndGet(GetStepResultFunction<T, R> f) {
         super(f);
         hook = new StepExecutionHook(f);
         addIgnored(Exception.class);
+    }
+
+    static <T, R> SendRequestAndGet<T, R> getResponse(GetStepResultFunction<T, R> f) {
+        return new SendRequestAndGet<>(f);
     }
 
     @Override
@@ -44,6 +48,11 @@ class SendRequestAndGet<T, R> extends SequentialGetStepSupplier
     @Override
     protected SendRequestAndGet<T, R> timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
+    }
+
+    @Override
+    protected SendRequestAndGet<T, R> pollingInterval(Duration pollingTime) {
+        return super.pollingInterval(pollingTime);
     }
 
     @Override

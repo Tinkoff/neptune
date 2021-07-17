@@ -267,13 +267,13 @@ public final class ResponseCriteria {
     }
 
     @Description("Response message is '{expected}'")
-    private static Criteria<Response> message(@DescriptionFragment("expected") String expected) {
+    public static Criteria<Response> message(@DescriptionFragment("expected") String expected) {
         checkArgument(isNotBlank(expected), "Message should not be defined as blank or null string");
         return condition(response -> Objects.equals(response.message(), expected));
     }
 
     @Description("Response message contains '{expression}' or meets regExp pattern '{expression}'")
-    private static Criteria<Response> messageMatches(@DescriptionFragment("expression") String expression) {
+    public static Criteria<Response> messageMatches(@DescriptionFragment("expression") String expression) {
         checkArgument(isNotBlank(expression), "Expression for the checking of " +
                 "response message should not be defined as blank or null string");
         return condition(r -> checkByStringContainingOrRegExp(expression).test(r.message()));
@@ -288,7 +288,8 @@ public final class ResponseCriteria {
      * @return criteria
      */
     @Description("response has header '{name}' with value '{value}'")
-    public static Criteria<Response> headerValue(String name, String value) {
+    public static Criteria<Response> headerValue(@DescriptionFragment("name") String name,
+                                                 @DescriptionFragment("value") String value) {
         checkArgument(isNotBlank(name), "Response header name should be defined");
         checkArgument(isNotBlank(value), "Response header value should be defined");
 
@@ -310,8 +311,8 @@ public final class ResponseCriteria {
      * @return criteria
      */
     @Description("response has header '{name}' with value contains/matches RegExp pattern '{valueExpression}'")
-    public static Criteria<Response> recordedResponseHeaderMatches(@DescriptionFragment("name") String name,
-                                                                   @DescriptionFragment("valueExpression") String valueExpression) {
+    public static Criteria<Response> headerValueMatches(@DescriptionFragment("name") String name,
+                                                        @DescriptionFragment("valueExpression") String valueExpression) {
         checkArgument(isNotBlank(name), "Response header name should be defined");
         checkArgument(isNotBlank(valueExpression), "Response header value substring/RegExp should be defined");
 

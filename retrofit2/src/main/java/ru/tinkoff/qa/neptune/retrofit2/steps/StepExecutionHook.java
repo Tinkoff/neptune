@@ -26,10 +26,11 @@ final class StepExecutionHook {
         if (r != null) {
             var result = new LinkedHashMap<String, String>();
             result.put("URL", r.url().toString());
+            result.put("METHOD", r.method());
             var h = r.headers();
             var headerMap = h.toMultimap();
 
-            headerMap.forEach((k, v) -> result.put(k, String.join(",", v)));
+            headerMap.forEach((k, v) -> result.put("Header " + k, String.join(",", v)));
             return result;
         }
 

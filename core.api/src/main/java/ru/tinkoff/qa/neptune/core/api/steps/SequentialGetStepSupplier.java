@@ -341,10 +341,10 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
                 .compose(composeWith);
 
         if (!toReport) {
-            toBeReturned.turnReportingOff().setAdditionalParams(this::additionalParameters);
+            toBeReturned.turnReportingOff();
         }
 
-        return toBeReturned;
+        return toBeReturned.setAdditionalParams(this::additionalParameters);
     }
 
     protected Function<T, M> preparePreFunction() {

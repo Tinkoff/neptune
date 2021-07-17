@@ -16,9 +16,9 @@ final class ServiceProxyHandler implements InvocationHandler {
 
     private final Class<?> toInstantiate;
     private final URL baseURL;
-    private final Retrofit retrofit;
+    private final Retrofit.Builder retrofit;
 
-    public ServiceProxyHandler(Class<?> toInstantiate, URL baseURL, Retrofit retrofit) {
+    public ServiceProxyHandler(Class<?> toInstantiate, URL baseURL, Retrofit.Builder retrofit) {
         this.toInstantiate = toInstantiate;
         this.baseURL = baseURL;
         this.retrofit = retrofit;
@@ -34,7 +34,7 @@ final class ServiceProxyHandler implements InvocationHandler {
                 });
 
         var service = map.computeIfAbsent(this,
-                ih -> retrofit.newBuilder().baseUrl(baseURL).build().create(toInstantiate));
+                ih -> retrofit.baseUrl(baseURL).build().create(toInstantiate));
 
         return method.invoke(service, args);
     }

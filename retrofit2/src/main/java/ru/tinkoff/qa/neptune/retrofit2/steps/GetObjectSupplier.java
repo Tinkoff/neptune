@@ -6,7 +6,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.retrofit2.RetrofitContext;
 
@@ -17,11 +16,12 @@ import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.retrofit2.criteria.ResponseCriteria.bodyMatches;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getResponse;
 
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Result criteria")
-@ThrowWhenNoData(startDescription = "Not received", toThrow = DataHasNotBeenReceivedException.class)
 public class GetObjectSupplier<T, R> extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<RetrofitContext<T>, R, RequestExecutionResult<R>, GetObjectSupplier<T, R>> {
 
@@ -29,7 +29,7 @@ public class GetObjectSupplier<T, R> extends SequentialGetStepSupplier
 
     protected GetObjectSupplier(Function<T, R> f) {
         super(RequestExecutionResult::getResult);
-        this.delegateTo = new SendRequestAndGet<>(new GetStepResultFunction<>(f));
+        this.delegateTo = getResponse(new GetStepResultFunction<>(f));
         from(this.delegateTo);
     }
 
@@ -80,6 +80,12 @@ public class GetObjectSupplier<T, R> extends SequentialGetStepSupplier
         return this;
     }
 
+    @Override
+    public GetObjectSupplier<T, R> pollingInterval(Duration timeOut) {
+        delegateTo.pollingInterval(timeOut);
+        return this;
+    }
+
     public GetObjectSupplier<T, R> responseCriteria(Criteria<Response> criteria) {
         delegateTo.criteria(condition(criteria.toString(), r -> criteria.get().test(r.getLastResponse())));
         return this;
@@ -90,14 +96,19 @@ public class GetObjectSupplier<T, R> extends SequentialGetStepSupplier
     }
 
     @Override
-    protected GetObjectSupplier<T, R> criteria(Criteria<? super R> criteria) {
+    public GetObjectSupplier<T, R> criteria(Criteria<? super R> criteria) {
         delegateTo.criteria(bodyMatches(criteria.toString(), r -> criteria.get().test(r)));
         return super.criteria(criteria);
     }
 
     @Override
+    public GetObjectSupplier<T, R> criteria(String description, Predicate<? super R> criteria) {
+        return criteria(condition(translate(description), criteria));
+    }
+
+    @Override
     public GetObjectSupplier<T, R> throwOnNoResult() {
         delegateTo.throwOnNoResult();
-        return super.throwOnNoResult();
+        return this;
     }
 }

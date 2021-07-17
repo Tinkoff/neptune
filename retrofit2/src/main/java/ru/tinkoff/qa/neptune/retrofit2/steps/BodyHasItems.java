@@ -7,7 +7,7 @@ import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.trans
 
 @Description("Response body has items: {description}")
 final class BodyHasItems {
-    @DescriptionFragment("description")
+    @DescriptionFragment(value = "description")
     final String description;
 
     BodyHasItems(String description) {

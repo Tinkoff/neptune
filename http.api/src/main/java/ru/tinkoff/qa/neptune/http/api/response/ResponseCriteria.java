@@ -274,7 +274,8 @@ public final class ResponseCriteria {
      * @return criteria
      */
     @Description("response has header '{name}' with value '{value}'")
-    public static <T> Criteria<HttpResponse<T>> headerValue(String name, String value) {
+    public static <T> Criteria<HttpResponse<T>> headerValue(@DescriptionFragment("name") String name,
+                                                            @DescriptionFragment("value") String value) {
         checkArgument(isNotBlank(name), "Response header name should be defined");
         checkArgument(isNotBlank(value), "Response header value should be defined");
 
@@ -297,8 +298,8 @@ public final class ResponseCriteria {
      * @return criteria
      */
     @Description("response has header '{name}' with value contains/matches RegExp pattern '{valueExpression}'")
-    public static <T> Criteria<HttpResponse<T>> recordedResponseHeaderMatches(@DescriptionFragment("name") String name,
-                                                                              @DescriptionFragment("valueExpression") String valueExpression) {
+    public static <T> Criteria<HttpResponse<T>> headerValueMatches(@DescriptionFragment("name") String name,
+                                                                   @DescriptionFragment("valueExpression") String valueExpression) {
         checkArgument(isNotBlank(name), "Response header name should be defined");
         checkArgument(isNotBlank(valueExpression), "Response header value substring/RegExp should be defined");
 

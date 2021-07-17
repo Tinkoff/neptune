@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.retrofit2.service.setup;
 
-import retrofit2.Retrofit;
 import ru.tinkoff.qa.neptune.core.api.properties.url.URLValuePropertySupplier;
 
 import java.lang.reflect.Field;
@@ -15,7 +14,7 @@ import static ru.tinkoff.qa.neptune.retrofit2.properties.DefaultRetrofitURLPrope
 
 /**
  * Finds classes that implement {@link URLValuePropertySupplier}
- * and/or {@link RetrofitSupplier} which are bound to interface that describes a service
+ * and/or {@link RetrofitBuilderSupplier} which are bound to interface that describes a service
  */
 @SuppressWarnings("unchecked")
 final class RetrofitBindReader {
@@ -73,23 +72,23 @@ final class RetrofitBindReader {
                 .orElseGet(DEFAULT_RETROFIT_URL_PROPERTY);
     }
 
-    static Retrofit getRetrofit(Class<?> toBindWith) {
+    static RetrofitBuilderSupplier getRetrofit(Class<?> toBindWith) {
         var annotatedElements = getBoundTo(toBindWith);
 
         return annotatedElements
                 .stream()
-                .filter(ae -> (ae instanceof Class && RetrofitSupplier.class.isAssignableFrom((Class<?>) ae)))
-                .map(ae -> (Class<RetrofitSupplier>) ae)
+                .filter(ae -> (ae instanceof Class && RetrofitBuilderSupplier.class.isAssignableFrom((Class<?>) ae)))
+                .map(ae -> (Class<RetrofitBuilderSupplier>) ae)
                 .findFirst()
                 .map(cls -> {
                     try {
                         var constructor = cls.getConstructor();
                         constructor.setAccessible(true);
-                        return constructor.newInstance().get();
+                        return constructor.newInstance();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 })
-                .orElseGet(DEFAULT_RETROFIT_PROPERTY);
+                .orElse(DEFAULT_RETROFIT_PROPERTY.get());
     }
 }

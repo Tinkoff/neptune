@@ -6,7 +6,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 /**
  * This is just entry point to invoke some action on retrofit
  */
-public final class RetrofitContext<T> extends Context<RetrofitContext<T>> {
+public class RetrofitContext<T> extends Context<RetrofitContext<T>> {
 
     private static final RetrofitContext<?> context = getInstance(RetrofitContext.class);
     private T service;
@@ -16,7 +16,7 @@ public final class RetrofitContext<T> extends Context<RetrofitContext<T>> {
         return ((RetrofitContext<T>) context).setService(service);
     }
 
-    public <R> R receive(SequentialGetStepSupplier<? super RetrofitContext<T>, R, ?, ?, ?> what) {
+    public <R> R receive(SequentialGetStepSupplier<RetrofitContext<T>, R, ?, ?, ?> what) {
         return super.get(what);
     }
 
@@ -24,7 +24,7 @@ public final class RetrofitContext<T> extends Context<RetrofitContext<T>> {
         return service;
     }
 
-    private RetrofitContext<T> setService(T service) {
+    protected RetrofitContext<T> setService(T service) {
         this.service = service;
         return this;
     }

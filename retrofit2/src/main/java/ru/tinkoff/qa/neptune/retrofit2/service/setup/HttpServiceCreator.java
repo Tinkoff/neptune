@@ -1,7 +1,5 @@
 package ru.tinkoff.qa.neptune.retrofit2.service.setup;
 
-import retrofit2.Retrofit;
-
 import java.net.URL;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -19,17 +17,17 @@ public final class HttpServiceCreator {
         super();
     }
 
-    private static Object createAPI(Class<?> toInstantiate, URL baseURL, Retrofit retrofit) {
+    private static Object createAPI(Class<?> toInstantiate, URL baseURL, RetrofitBuilderSupplier retrofit) {
         checkNotNull(toInstantiate);
         checkNotNull(baseURL);
         checkNotNull(retrofit);
 
         return newProxyInstance(getSystemClassLoader(),
                 new Class[]{toInstantiate},
-                new ServiceProxyHandler(toInstantiate, baseURL, retrofit));
+                new ServiceProxyHandler(toInstantiate, baseURL, retrofit.get()));
     }
 
-    public static Object create(Class<?> toInstantiate, Retrofit retrofit) {
+    public static Object create(Class<?> toInstantiate, RetrofitBuilderSupplier retrofit) {
         return createAPI(toInstantiate, getURL(toInstantiate), retrofit);
     }
 
