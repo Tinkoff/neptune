@@ -9,10 +9,10 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.retrofit2.RetrofitContext;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Arrays.stream;
@@ -23,77 +23,73 @@ import static ru.tinkoff.qa.neptune.retrofit2.criteria.ResponseCriteria.bodyMatc
 import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getResponse;
 
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted array")
-public class GetArraySupplier<T, R> extends SequentialGetStepSupplier
-        .GetArrayChainedStepSupplier<RetrofitContext<T>, R, RequestExecutionResult<R[]>, GetArraySupplier<T, R>> {
+public class GetArraySupplier<M, R> extends SequentialGetStepSupplier
+        .GetArrayChainedStepSupplier<RetrofitContext, R, RequestExecutionResult<R[]>, GetArraySupplier<M, R>> {
 
-    private final SendRequestAndGet<T, R[]> delegateTo;
+    private final SendRequestAndGet<M, R[]> delegateTo;
 
-    protected GetArraySupplier(Function<T, R[]> f) {
+    protected GetArraySupplier(Supplier<M> call, Function<M, R[]> f) {
         super(RequestExecutionResult::getResult);
-        this.delegateTo = getResponse(new GetStepResultFunction<>(f));
+        this.delegateTo = getResponse(new GetStepResultFunction<>(f)).from(call);
         from(this.delegateTo);
     }
 
     @Description("{description}")
-    public static <T, R> GetArraySupplier<T, R> arrayFromCall(
+    public static <M, R> GetArraySupplier<M, R> array(
             @DescriptionFragment(
                     value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class) String description,
-            Function<T, Call<R[]>> f) {
+            Supplier<M> call, Function<M, R[]> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetArraySupplier<>(f.andThen(call -> {
-            try {
-                return call.execute().body();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }));
+        return new GetArraySupplier<>(call, f);
     }
 
-    @Description("{description}")
-    public static <T, R> GetArraySupplier<T, R> array(
-            @DescriptionFragment(
-                    value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class) String description,
-            Function<T, R[]> f) {
-        checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetArraySupplier<>(f);
+    public static <M> GetArraySupplier<M[], M> array(String description, Supplier<M[]> call) {
+        return array(description, call, ms -> ms);
     }
 
-    public GetArraySupplier<T, R> retryTimeOut(Duration timeOut) {
+    public static <M, R> GetArraySupplier<M, R> callArray(String description, Supplier<Call<M>> call, Function<M, R[]> f) {
+        return array(description, new CallBodySupplier<>(call), f);
+    }
+
+    public static <M> GetArraySupplier<M[], M> callArray(String description, Supplier<Call<M[]>> call) {
+        return callArray(description, call, ms -> ms);
+    }
+
+    public GetArraySupplier<M, R> retryTimeOut(Duration timeOut) {
         delegateTo.timeOut(timeOut);
         return this;
     }
 
     @Override
-    public GetArraySupplier<T, R> pollingInterval(Duration timeOut) {
+    public GetArraySupplier<M, R> pollingInterval(Duration timeOut) {
         delegateTo.pollingInterval(timeOut);
         return this;
     }
 
-    public GetArraySupplier<T, R> responseCriteria(Criteria<Response> criteria) {
+    public GetArraySupplier<M, R> responseCriteria(Criteria<Response> criteria) {
         delegateTo.criteria(condition(criteria.toString(), r -> criteria.get().test(r.getLastResponse())));
         return this;
     }
 
-    public GetArraySupplier<T, R> responseCriteria(String description, Predicate<Response> predicate) {
+    public GetArraySupplier<M, R> responseCriteria(String description, Predicate<Response> predicate) {
         return responseCriteria(condition(description, predicate));
     }
 
     @Override
-    public GetArraySupplier<T, R> criteria(Criteria<? super R> criteria) {
+    public GetArraySupplier<M, R> criteria(Criteria<? super R> criteria) {
         delegateTo.criteria(bodyMatches(new BodyHasItems(criteria.toString()).toString(),
                 r -> stream(r).anyMatch(criteria.get())));
         return super.criteria(criteria);
     }
 
     @Override
-    public GetArraySupplier<T, R> criteria(String description, Predicate<? super R> criteria) {
+    public GetArraySupplier<M, R> criteria(String description, Predicate<? super R> criteria) {
         return criteria(condition(translate(description), criteria));
     }
 
     @Override
-    public GetArraySupplier<T, R> throwOnNoResult() {
+    public GetArraySupplier<M, R> throwOnNoResult() {
         delegateTo.throwOnNoResult();
         return this;
     }

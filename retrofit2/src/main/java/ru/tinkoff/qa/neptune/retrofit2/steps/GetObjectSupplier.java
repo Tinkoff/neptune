@@ -9,10 +9,10 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.retrofit2.RetrofitContext;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -22,92 +22,76 @@ import static ru.tinkoff.qa.neptune.retrofit2.criteria.ResponseCriteria.bodyMatc
 import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getResponse;
 
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Result criteria")
-public class GetObjectSupplier<T, R> extends SequentialGetStepSupplier
-        .GetObjectChainedStepSupplier<RetrofitContext<T>, R, RequestExecutionResult<R>, GetObjectSupplier<T, R>> {
+public class GetObjectSupplier<M, R> extends SequentialGetStepSupplier
+        .GetObjectChainedStepSupplier<RetrofitContext, R, RequestExecutionResult<R>, GetObjectSupplier<M, R>> {
 
-    private final SendRequestAndGet<T, R> delegateTo;
+    private final SendRequestAndGet<M, R> delegateTo;
 
-    protected GetObjectSupplier(Function<T, R> f) {
+    protected GetObjectSupplier(Supplier<M> call, Function<M, R> f) {
         super(RequestExecutionResult::getResult);
-        this.delegateTo = getResponse(new GetStepResultFunction<>(f));
+        this.delegateTo = getResponse(new GetStepResultFunction<>(f)).from(call);
         from(this.delegateTo);
     }
 
     @Description("{description}")
-    public static <T, R> GetObjectSupplier<T, R> bodyFromCall(
+    public static <M, R> GetObjectSupplier<M, R> object(
             @DescriptionFragment(
                     value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class) String description,
-            Function<T, Call<R>> f) {
+            Supplier<M> call, Function<M, R> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectSupplier<>(f.andThen(call -> {
-            try {
-                return call.execute().body();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }));
+        return new GetObjectSupplier<>(call, f);
     }
 
     @Description("Response body")
-    public static <T, R> GetObjectSupplier<T, R> bodyFromCall(Function<T, Call<R>> f) {
-        return new GetObjectSupplier<>(f.andThen(call -> {
-            try {
-                return call.execute().body();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }));
+    public static <M> GetObjectSupplier<M, M> body(Supplier<M> call) {
+        return new GetObjectSupplier<>(call, m -> m);
     }
 
-    @Description("{description}")
-    public static <T, R> GetObjectSupplier<T, R> body(
-            @DescriptionFragment(
-                    value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class) String description,
-            Function<T, R> f) {
-        checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectSupplier<>(f);
+    public static <M, R> GetObjectSupplier<M, R> callObject(String description,
+                                                            Supplier<Call<M>> call,
+                                                            Function<M, R> f) {
+        return object(description, new CallBodySupplier<>(call), f);
     }
 
     @Description("Response body")
-    public static <T, R> GetObjectSupplier<T, R> body(Function<T, R> f) {
-        return new GetObjectSupplier<>(f);
+    public static <M> GetObjectSupplier<M, M> callBody(Supplier<Call<M>> call) {
+        return new GetObjectSupplier<>(new CallBodySupplier<>(call), m -> m);
     }
 
-    public GetObjectSupplier<T, R> retryTimeOut(Duration timeOut) {
+    public GetObjectSupplier<M, R> retryTimeOut(Duration timeOut) {
         delegateTo.timeOut(timeOut);
         return this;
     }
 
     @Override
-    public GetObjectSupplier<T, R> pollingInterval(Duration timeOut) {
+    public GetObjectSupplier<M, R> pollingInterval(Duration timeOut) {
         delegateTo.pollingInterval(timeOut);
         return this;
     }
 
-    public GetObjectSupplier<T, R> responseCriteria(Criteria<Response> criteria) {
+    public GetObjectSupplier<M, R> responseCriteria(Criteria<Response> criteria) {
         delegateTo.criteria(condition(criteria.toString(), r -> criteria.get().test(r.getLastResponse())));
         return this;
     }
 
-    public GetObjectSupplier<T, R> responseCriteria(String description, Predicate<Response> predicate) {
+    public GetObjectSupplier<M, R> responseCriteria(String description, Predicate<Response> predicate) {
         return responseCriteria(condition(description, predicate));
     }
 
     @Override
-    public GetObjectSupplier<T, R> criteria(Criteria<? super R> criteria) {
+    public GetObjectSupplier<M, R> criteria(Criteria<? super R> criteria) {
         delegateTo.criteria(bodyMatches(criteria.toString(), r -> criteria.get().test(r)));
         return super.criteria(criteria);
     }
 
     @Override
-    public GetObjectSupplier<T, R> criteria(String description, Predicate<? super R> criteria) {
+    public GetObjectSupplier<M, R> criteria(String description, Predicate<? super R> criteria) {
         return criteria(condition(translate(description), criteria));
     }
 
     @Override
-    public GetObjectSupplier<T, R> throwOnNoResult() {
+    public GetObjectSupplier<M, R> throwOnNoResult() {
         delegateTo.throwOnNoResult();
         return this;
     }

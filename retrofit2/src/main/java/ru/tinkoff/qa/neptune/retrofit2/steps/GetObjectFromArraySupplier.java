@@ -9,10 +9,10 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.retrofit2.RetrofitContext;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Arrays.stream;
@@ -23,77 +23,76 @@ import static ru.tinkoff.qa.neptune.retrofit2.criteria.ResponseCriteria.bodyMatc
 import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getResponse;
 
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Result criteria")
-public class GetObjectFromArraySupplier<T, R> extends SequentialGetStepSupplier
-        .GetObjectFromArrayChainedStepSupplier<RetrofitContext<T>, R, RequestExecutionResult<R[]>, GetObjectFromArraySupplier<T, R>> {
+public class GetObjectFromArraySupplier<M, R> extends SequentialGetStepSupplier
+        .GetObjectFromArrayChainedStepSupplier<RetrofitContext, R, RequestExecutionResult<R[]>, GetObjectFromArraySupplier<M, R>> {
 
-    private final SendRequestAndGet<T, R[]> delegateTo;
+    private final SendRequestAndGet<M, R[]> delegateTo;
 
-    protected GetObjectFromArraySupplier(Function<T, R[]> f) {
+    protected GetObjectFromArraySupplier(Supplier<M> call, Function<M, R[]> f) {
         super(RequestExecutionResult::getResult);
-        this.delegateTo = getResponse(new GetStepResultFunction<>(f));
+        this.delegateTo = getResponse(new GetStepResultFunction<>(f)).from(call);
         from(this.delegateTo);
     }
 
     @Description("{description}")
-    public static <T, R> GetObjectFromArraySupplier<T, R> arrayItemFromCall(
+    public static <M, R> GetObjectFromArraySupplier<M, R> arrayItem(
             @DescriptionFragment(
                     value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class) String description,
-            Function<T, Call<R[]>> f) {
+            Supplier<M> call, Function<M, R[]> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectFromArraySupplier<>(f.andThen(call -> {
-            try {
-                return call.execute().body();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }));
+        return new GetObjectFromArraySupplier<>(call, f);
     }
 
-    @Description("{description}")
-    public static <T, R> GetObjectFromArraySupplier<T, R> arrayItem(
-            @DescriptionFragment(
-                    value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class) String description,
-            Function<T, R[]> f) {
-        checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectFromArraySupplier<>(f);
+    public static <M> GetObjectFromArraySupplier<M[], M> arrayItem(String description,
+                                                                   Supplier<M[]> call) {
+        return arrayItem(description, call, ms -> ms);
     }
 
-    public GetObjectFromArraySupplier<T, R> retryTimeOut(Duration timeOut) {
+    public static <M, R> GetObjectFromArraySupplier<M, R> callArrayItem(String description,
+                                                                        Supplier<Call<M>> call, Function<M, R[]> f) {
+        return arrayItem(description, new CallBodySupplier<>(call), f);
+    }
+
+    public static <M> GetObjectFromArraySupplier<M[], M> callArrayItem(String description,
+                                                                       Supplier<Call<M[]>> call) {
+        return callArrayItem(description, call, ms -> ms);
+    }
+
+    public GetObjectFromArraySupplier<M, R> retryTimeOut(Duration timeOut) {
         delegateTo.timeOut(timeOut);
         return this;
     }
 
     @Override
-    public GetObjectFromArraySupplier<T, R> pollingInterval(Duration timeOut) {
+    public GetObjectFromArraySupplier<M, R> pollingInterval(Duration timeOut) {
         delegateTo.pollingInterval(timeOut);
         return this;
     }
 
-    public GetObjectFromArraySupplier<T, R> responseCriteria(Criteria<Response> criteria) {
+    public GetObjectFromArraySupplier<M, R> responseCriteria(Criteria<Response> criteria) {
         delegateTo.criteria(condition(criteria.toString(), r -> criteria.get().test(r.getLastResponse())));
         return this;
     }
 
-    public GetObjectFromArraySupplier<T, R> responseCriteria(String description, Predicate<Response> predicate) {
+    public GetObjectFromArraySupplier<M, R> responseCriteria(String description, Predicate<Response> predicate) {
         return responseCriteria(condition(description, predicate));
     }
 
     @Override
-    public GetObjectFromArraySupplier<T, R> criteria(Criteria<? super R> criteria) {
+    public GetObjectFromArraySupplier<M, R> criteria(Criteria<? super R> criteria) {
         delegateTo.criteria(bodyMatches(new BodyHasItems(criteria.toString()).toString(),
                 r -> stream(r).anyMatch(criteria.get())));
         return super.criteria(criteria);
     }
 
     @Override
-    public GetObjectFromArraySupplier<T, R> criteria(String description, Predicate<? super R> criteria) {
+    public GetObjectFromArraySupplier<M, R> criteria(String description, Predicate<? super R> criteria) {
         return criteria(condition(translate(description), criteria));
     }
 
     @Override
-    public GetObjectFromArraySupplier<T, R> throwOnNoResult() {
+    public GetObjectFromArraySupplier<M, R> throwOnNoResult() {
         delegateTo.throwOnNoResult();
         return this;
     }

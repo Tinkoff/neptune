@@ -29,7 +29,7 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsIncl
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
 import static ru.tinkoff.qa.neptune.retrofit2.RetrofitContext.retrofit;
 import static ru.tinkoff.qa.neptune.retrofit2.properties.DefaultRetrofitURLProperty.DEFAULT_RETROFIT_URL_PROPERTY;
-import static ru.tinkoff.qa.neptune.retrofit2.steps.GetObjectSupplier.bodyFromCall;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.GetObjectSupplier.callBody;
 import static ru.tinkoff.qa.neptune.retrofit2.tests.capturing.TestEventLogger.ADDITIONAL_ARGUMENTS;
 import static ru.tinkoff.qa.neptune.retrofit2.tests.capturing.TestFileInjector.MESSAGES;
 
@@ -87,8 +87,8 @@ public class CaptureTest {
 
     @Test
     public void requestCaptureTest1() {
-        retrofit(service).receive(bodyFromCall(
-                s -> s.getSuccessful("Test body")
+        retrofit().get(callBody(
+                () -> service.getSuccessful("Test body")
         ));
 
         assertThat(ADDITIONAL_ARGUMENTS.get(), mapIncludes(
@@ -103,8 +103,8 @@ public class CaptureTest {
 
     @Test
     public void requestCaptureTest2() {
-        retrofit(service).receive(bodyFromCall(
-                s -> s.getFailed("Test body")));
+        retrofit().get(callBody(
+                () -> service.getFailed("Test body")));
 
         assertThat(ADDITIONAL_ARGUMENTS.get(), mapIncludes(
                 entryKey("URL"),

@@ -27,7 +27,7 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
 
     @Test
     public void objectFromBodyTest1() {
-        var result = retrofit(getService()).receive(body(CustomService::getJson)
+        var result = retrofit().get(body(() -> getService().getJson())
                 .responseCriteria(statusCode(200))
                 .responseCriteria(headerValue("custom header", "true"))
                 .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -40,7 +40,7 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
 
     @Test
     public void objectFromBodyTest2() {
-        var result = retrofit(getService()).receive(body(CustomService::getJson)
+        var result = retrofit().get(body(() -> getService().getJson())
                 .responseCriteria(statusCode(200))
                 .responseCriteria(headerValue("custom header", "true"))
                 .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -54,7 +54,7 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
     public void objectFromBodyTest3() {
         try {
-            retrofit(getService()).receive(body(CustomService::getJson)
+            retrofit().get(body(() -> getService().getJson())
                     .responseCriteria(statusCode(200))
                     .responseCriteria(headerValue("custom header", "true"))
                     .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -74,7 +74,7 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
     public void objectFromBodyTest4() {
         try {
-            retrofit(getService()).receive(body(CustomService::getXml)
+            retrofit().get(body(() -> getService().getXml())
                     .responseCriteria(statusCode(200))
                     .responseCriteria(headerValue("custom header", "true"))
                     .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -93,7 +93,7 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     @Test
     public void objectFromBodyTest5() {
         var start = currentTimeMillis();
-        retrofit(getService()).receive(body(CustomService::getJson)
+        retrofit().get(body(() -> getService().getJson())
                 .responseCriteria(statusCode(200))
                 .responseCriteria(headerValue("custom header", "true"))
                 .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -113,7 +113,7 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     public void objectFromBodyTest6() {
         var start = currentTimeMillis();
         try {
-            retrofit(getService()).receive(body(CustomService::getJson)
+            retrofit().get(body(() -> getService().getJson())
                     .responseCriteria(statusCode(200))
                     .responseCriteria(headerValue("custom header", "true"))
                     .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -138,7 +138,7 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     public void objectFromBodyTest7() {
         var start = currentTimeMillis();
         try {
-            retrofit(getService()).receive(body(CustomService::getXml)
+            retrofit().get(body(() -> getService().getXml())
                     .responseCriteria(statusCode(200))
                     .responseCriteria(headerValue("custom header", "true"))
                     .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -162,8 +162,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
 
     @Test
     public void getIterableTest1() {
-        var result = retrofit(getService()).receive(iterable(
-                "Result list", CustomService::getJson)
+        var result = retrofit().get(iterable("Result list",
+                () -> getService().getJson())
                 .responseCriteria(statusCode(200))
                 .responseCriteria(headerValue("custom header", "true"))
                 .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -176,8 +176,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
 
     @Test
     public void getIterableTest2() {
-        var result = retrofit(getService()).receive(iterable(
-                "Result list", CustomService::getJson)
+        var result = retrofit().get(iterable("Result list",
+                () -> getService().getJson())
                 .responseCriteria(statusCode(200))
                 .responseCriteria(headerValue("custom header", "true"))
                 .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -191,8 +191,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
     public void getIterableTest3() {
         try {
-            retrofit(getService()).receive(iterable(
-                    "Result list", CustomService::getJson)
+            retrofit().get(iterable("Result list",
+                    () -> getService().getJson())
                     .responseCriteria(statusCode(200))
                     .responseCriteria(headerValue("custom header", "true"))
                     .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -212,8 +212,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
     public void getIterableTest4() {
         try {
-            retrofit(getService()).receive(iterable(
-                    "Result list", CustomService::getXml)
+            retrofit().get(iterable("Result list",
+                    () -> getService().getXml())
                     .responseCriteria(statusCode(200))
                     .responseCriteria(headerValue("custom header", "true"))
                     .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -232,8 +232,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     @Test
     public void getIterableTest5() {
         var start = currentTimeMillis();
-        retrofit(getService()).receive(iterable(
-                "Result list", CustomService::getJson)
+        retrofit().get(iterable("Result list",
+                () -> getService().getJson())
                 .responseCriteria(statusCode(200))
                 .responseCriteria(headerValue("custom header", "true"))
                 .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -253,8 +253,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     public void getIterableTest6() {
         var start = currentTimeMillis();
         try {
-            retrofit(getService()).receive(iterable(
-                    "Result list", CustomService::getJson)
+            retrofit().get(iterable("Result list",
+                    () -> getService().getJson())
                     .responseCriteria(statusCode(200))
                     .responseCriteria(headerValue("custom header", "true"))
                     .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -279,8 +279,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     public void getIterableTest7() {
         var start = currentTimeMillis();
         try {
-            retrofit(getService()).receive(iterable(
-                    "Result list", CustomService::getXml)
+            retrofit().get(iterable("Result list",
+                    () -> getService().getXml())
                     .responseCriteria(statusCode(200))
                     .responseCriteria(headerValue("custom header", "true"))
                     .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -304,8 +304,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
 
     @Test
     public void getArrayTest1() {
-        var result = retrofit(getService()).receive(array(
-                "Result array", CustomService::getJsonArray)
+        var result = retrofit().get(array("Result array",
+                () -> getService().getJsonArray())
                 .responseCriteria(statusCode(200))
                 .responseCriteria(headerValue("custom header", "true"))
                 .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -318,8 +318,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
 
     @Test
     public void getArrayTest2() {
-        var result = retrofit(getService()).receive(array(
-                "Result array", CustomService::getJsonArray)
+        var result = retrofit().get(array("Result array",
+                () -> getService().getJsonArray())
                 .responseCriteria(statusCode(200))
                 .responseCriteria(headerValue("custom header", "true"))
                 .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -333,8 +333,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
     public void getArrayTest3() {
         try {
-            retrofit(getService()).receive(array(
-                    "Result array", CustomService::getJsonArray)
+            retrofit().get(array("Result list",
+                    () -> getService().getJsonArray())
                     .responseCriteria(statusCode(200))
                     .responseCriteria(headerValue("custom header", "true"))
                     .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -354,8 +354,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
     public void getArrayTest4() {
         try {
-            retrofit(getService()).receive(array(
-                    "Result array", CustomService::getXmlArray)
+            retrofit().get(array("Result list",
+                    () -> getService().getXmlArray())
                     .responseCriteria(statusCode(200))
                     .responseCriteria(headerValue("custom header", "true"))
                     .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -374,8 +374,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     @Test
     public void getArrayTest5() {
         var start = currentTimeMillis();
-        retrofit(getService()).receive(array(
-                "Result array", CustomService::getJsonArray)
+        retrofit().get(array("Result list",
+                () -> getService().getJsonArray())
                 .responseCriteria(statusCode(200))
                 .responseCriteria(headerValue("custom header", "true"))
                 .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -395,8 +395,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     public void getArrayTest6() {
         var start = currentTimeMillis();
         try {
-            retrofit(getService()).receive(array(
-                    "Result array", CustomService::getJsonArray)
+            retrofit().get(array("Result list",
+                    () -> getService().getJsonArray())
                     .responseCriteria(statusCode(200))
                     .responseCriteria(headerValue("custom header", "true"))
                     .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -421,8 +421,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     public void getArrayTest7() {
         var start = currentTimeMillis();
         try {
-            retrofit(getService()).receive(array(
-                    "Result array", CustomService::getXmlArray)
+            retrofit().get(array("Result list",
+                    () -> getService().getXmlArray())
                     .responseCriteria(statusCode(200))
                     .responseCriteria(headerValue("custom header", "true"))
                     .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -446,8 +446,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
 
     @Test
     public void getFromIterableTest1() {
-        var result = retrofit(getService()).receive(iterableItem(
-                "Result", CustomService::getJson)
+        var result = retrofit().get(iterableItem("Result",
+                () -> getService().getJson())
                 .responseCriteria(statusCode(200))
                 .responseCriteria(headerValue("custom header", "true"))
                 .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -460,8 +460,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
 
     @Test
     public void getFromIterableTest2() {
-        var result = retrofit(getService()).receive(iterableItem(
-                "Result", CustomService::getJson)
+        var result = retrofit().get(iterableItem("Result",
+                () -> getService().getJson())
                 .responseCriteria(statusCode(200))
                 .responseCriteria(headerValue("custom header", "true"))
                 .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -475,8 +475,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
     public void getFromIterableTest3() {
         try {
-            retrofit(getService()).receive(iterableItem(
-                    "Result", CustomService::getJson)
+            retrofit().get(iterableItem("Result",
+                    () -> getService().getJson())
                     .responseCriteria(statusCode(200))
                     .responseCriteria(headerValue("custom header", "true"))
                     .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -496,8 +496,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
     public void getFromIterableTest4() {
         try {
-            retrofit(getService()).receive(iterableItem(
-                    "Result", CustomService::getXml)
+            retrofit().get(iterableItem("Result",
+                    () -> getService().getXml())
                     .responseCriteria(statusCode(200))
                     .responseCriteria(headerValue("custom header", "true"))
                     .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -516,8 +516,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     @Test
     public void getFromIterableTest5() {
         var start = currentTimeMillis();
-        retrofit(getService()).receive(iterableItem(
-                "Result", CustomService::getJson)
+        retrofit().get(iterableItem("Result",
+                () -> getService().getJson())
                 .responseCriteria(statusCode(200))
                 .responseCriteria(headerValue("custom header", "true"))
                 .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -537,8 +537,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     public void getFromIterableTest6() {
         var start = currentTimeMillis();
         try {
-            retrofit(getService()).receive(iterableItem(
-                    "Result", CustomService::getJson)
+            retrofit().get(iterableItem("Result",
+                    () -> getService().getJson())
                     .responseCriteria(statusCode(200))
                     .responseCriteria(headerValue("custom header", "true"))
                     .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -563,8 +563,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     public void getFromIterableTest7() {
         var start = currentTimeMillis();
         try {
-            retrofit(getService()).receive(iterableItem(
-                    "Result", CustomService::getXml)
+            retrofit().get(iterableItem("Result",
+                    () -> getService().getXml())
                     .responseCriteria(statusCode(200))
                     .responseCriteria(headerValue("custom header", "true"))
                     .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -588,8 +588,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
 
     @Test
     public void getArrayItemTest1() {
-        var result = retrofit(getService()).receive(arrayItem(
-                "Result", CustomService::getJsonArray)
+        var result = retrofit().get(arrayItem("Result",
+                () -> getService().getJsonArray())
                 .responseCriteria(statusCode(200))
                 .responseCriteria(headerValue("custom header", "true"))
                 .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -602,8 +602,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
 
     @Test
     public void getArrayItemTest2() {
-        var result = retrofit(getService()).receive(arrayItem(
-                "Result", CustomService::getJsonArray)
+        var result = retrofit().get(arrayItem("Result",
+                () -> getService().getJsonArray())
                 .responseCriteria(statusCode(200))
                 .responseCriteria(headerValue("custom header", "true"))
                 .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -617,8 +617,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
     public void getArrayItemTest3() {
         try {
-            retrofit(getService()).receive(arrayItem(
-                    "Result", CustomService::getJsonArray)
+            retrofit().get(arrayItem("Result",
+                    () -> getService().getJsonArray())
                     .responseCriteria(statusCode(200))
                     .responseCriteria(headerValue("custom header", "true"))
                     .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -638,8 +638,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
     public void getArrayItemTest4() {
         try {
-            retrofit(getService()).receive(arrayItem(
-                    "Result", CustomService::getXmlArray)
+            retrofit().get(arrayItem("Result",
+                    () -> getService().getXmlArray())
                     .responseCriteria(statusCode(200))
                     .responseCriteria(headerValue("custom header", "true"))
                     .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -658,8 +658,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     @Test
     public void getArrayItemTest5() {
         var start = currentTimeMillis();
-        retrofit(getService()).receive(arrayItem(
-                "Result", CustomService::getJsonArray)
+        retrofit().get(arrayItem("Result",
+                () -> getService().getJsonArray())
                 .responseCriteria(statusCode(200))
                 .responseCriteria(headerValue("custom header", "true"))
                 .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -679,8 +679,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     public void getArrayItemTest6() {
         var start = currentTimeMillis();
         try {
-            retrofit(getService()).receive(arrayItem(
-                    "Result", CustomService::getJsonArray)
+            retrofit().get(arrayItem("Result",
+                    () -> getService().getJsonArray())
                     .responseCriteria(statusCode(200))
                     .responseCriteria(headerValue("custom header", "true"))
                     .responseCriteria(headerValueMatches("custom header", "Some"))
@@ -705,8 +705,8 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     public void getArrayItemTest7() {
         var start = currentTimeMillis();
         try {
-            retrofit(getService()).receive(arrayItem(
-                    "Result", CustomService::getXmlArray)
+            retrofit().get(arrayItem("Result",
+                    () -> getService().getXmlArray())
                     .responseCriteria(statusCode(200))
                     .responseCriteria(headerValue("custom header", "true"))
                     .responseCriteria(headerValueMatches("custom header", "Some"))

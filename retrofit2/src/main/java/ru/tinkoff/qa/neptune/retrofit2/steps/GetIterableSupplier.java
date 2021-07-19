@@ -9,10 +9,10 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.retrofit2.RetrofitContext;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.stream.StreamSupport.stream;
@@ -23,77 +23,76 @@ import static ru.tinkoff.qa.neptune.retrofit2.criteria.ResponseCriteria.bodyMatc
 import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getResponse;
 
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted iterable")
-public class GetIterableSupplier<T, R, S extends Iterable<R>> extends SequentialGetStepSupplier
-        .GetIterableChainedStepSupplier<RetrofitContext<T>, S, RequestExecutionResult<S>, R, GetIterableSupplier<T, R, S>> {
+public class GetIterableSupplier<M, R, S extends Iterable<R>> extends SequentialGetStepSupplier
+        .GetIterableChainedStepSupplier<RetrofitContext, S, RequestExecutionResult<S>, R, GetIterableSupplier<M, R, S>> {
 
-    private final SendRequestAndGet<T, S> delegateTo;
+    private final SendRequestAndGet<M, S> delegateTo;
 
-    protected GetIterableSupplier(Function<T, S> f) {
+    protected GetIterableSupplier(Supplier<M> call, Function<M, S> f) {
         super(RequestExecutionResult::getResult);
-        delegateTo = getResponse(new GetStepResultFunction<>(f));
+        delegateTo = getResponse(new GetStepResultFunction<>(f)).from(call);
         from(this.delegateTo);
     }
 
     @Description("{description}")
-    public static <T, R, S extends Iterable<R>> GetIterableSupplier<T, R, S> iterableFromCall(
+    public static <M, R, S extends Iterable<R>> GetIterableSupplier<M, R, S> iterable(
             @DescriptionFragment(
                     value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class) String description,
-            Function<T, Call<S>> f) {
+            Supplier<M> call, Function<M, S> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetIterableSupplier<>(f.andThen(call -> {
-            try {
-                return call.execute().body();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }));
+        return new GetIterableSupplier<>(call, f);
     }
 
-    @Description("{description}")
-    public static <T, R, S extends Iterable<R>> GetIterableSupplier<T, R, S> iterable(
-            @DescriptionFragment(
-                    value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class) String description,
-            Function<T, S> f) {
-        checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetIterableSupplier<>(f);
+    public static <R, S extends Iterable<R>> GetIterableSupplier<S, R, S> iterable(String description,
+                                                                                   Supplier<S> call) {
+        return iterable(description, call, rs -> rs);
     }
 
-    public GetIterableSupplier<T, R, S> retryTimeOut(Duration timeOut) {
+    public static <M, R, S extends Iterable<R>> GetIterableSupplier<M, R, S> callIterable(String description,
+                                                                                          Supplier<Call<M>> call, Function<M, S> f) {
+        return iterable(description, new CallBodySupplier<>(call), f);
+    }
+
+    public static <R, S extends Iterable<R>> GetIterableSupplier<S, R, S> callIterable(String description,
+                                                                                       Supplier<Call<S>> call) {
+        return callIterable(description, call, rs -> rs);
+    }
+
+    public GetIterableSupplier<M, R, S> retryTimeOut(Duration timeOut) {
         delegateTo.timeOut(timeOut);
         return this;
     }
 
     @Override
-    public GetIterableSupplier<T, R, S> pollingInterval(Duration timeOut) {
+    public GetIterableSupplier<M, R, S> pollingInterval(Duration timeOut) {
         delegateTo.pollingInterval(timeOut);
         return this;
     }
 
-    public GetIterableSupplier<T, R, S> responseCriteria(Criteria<Response> criteria) {
+    public GetIterableSupplier<M, R, S> responseCriteria(Criteria<Response> criteria) {
         delegateTo.criteria(condition(criteria.toString(), r -> criteria.get().test(r.getLastResponse())));
         return this;
     }
 
-    public GetIterableSupplier<T, R, S> responseCriteria(String description, Predicate<Response> predicate) {
+    public GetIterableSupplier<M, R, S> responseCriteria(String description, Predicate<Response> predicate) {
         return responseCriteria(condition(description, predicate));
     }
 
     @Override
-    public GetIterableSupplier<T, R, S> criteria(Criteria<? super R> criteria) {
+    public GetIterableSupplier<M, R, S> criteria(Criteria<? super R> criteria) {
         delegateTo.criteria(bodyMatches(new BodyHasItems(criteria.toString()).toString(),
                 r -> stream(r.spliterator(), false).anyMatch(criteria.get())));
         return super.criteria(criteria);
     }
 
     @Override
-    public GetIterableSupplier<T, R, S> criteria(String description, Predicate<? super R> criteria) {
+    public GetIterableSupplier<M, R, S> criteria(String description, Predicate<? super R> criteria) {
         return criteria(condition(translate(description), criteria));
     }
 
     @Override
-    public GetIterableSupplier<T, R, S> throwOnNoResult() {
+    public GetIterableSupplier<M, R, S> throwOnNoResult() {
         delegateTo.throwOnNoResult();
         return this;
     }

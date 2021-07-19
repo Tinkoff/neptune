@@ -8,9 +8,9 @@ import ru.tinkoff.qa.neptune.core.api.properties.object.ObjectByClassPropertySup
 import ru.tinkoff.qa.neptune.retrofit2.service.setup.RetrofitBuilderSupplier;
 
 @PropertyDescription(description = {
-        "Defines a class whose objects return prepared",
-        "instances of retrofit2.Retrofit"}, section = "Retrofit")
-@PropertyDefaultValue("ru.tinkoff.qa.neptune.retrofit2.service.setup.RetrofitSupplier.DefaultRetrofitSupplier")
+        "Defines a class whose objects return ",
+        "instances of ru.tinkoff.qa.neptune.retrofit2.service.setup.DefaultRetrofitBuilderSupplier"}, section = "Retrofit")
+@PropertyDefaultValue("ru.tinkoff.qa.neptune.retrofit2.service.setup.DefaultRetrofitBuilderSupplier")
 @PropertyName("DEFAULT_RETROFIT")
 public final class DefaultRetrofitProperty implements ObjectByClassPropertySupplier<RetrofitBuilderSupplier> {
 

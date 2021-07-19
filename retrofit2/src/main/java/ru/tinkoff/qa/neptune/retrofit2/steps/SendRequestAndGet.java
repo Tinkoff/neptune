@@ -9,18 +9,19 @@ import ru.tinkoff.qa.neptune.retrofit2.RetrofitContext;
 import java.time.Duration;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 
 @Description("Http response")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Response criteria")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time to receive expected http response and get the result")
 @ThrowWhenNoData(toThrow = ExpectedHttpResponseHasNotBeenReceivedException.class, startDescription = "Not received")
-class SendRequestAndGet<T, R> extends SequentialGetStepSupplier
-        .GetObjectStepSupplier<RetrofitContext<T>, RequestExecutionResult<R>, SendRequestAndGet<T, R>> {
+class SendRequestAndGet<M, R> extends SequentialGetStepSupplier
+        .GetObjectChainedStepSupplier<RetrofitContext, RequestExecutionResult<R>, Supplier<M>, SendRequestAndGet<M, R>> {
 
     private final StepExecutionHook hook;
 
-    private SendRequestAndGet(GetStepResultFunction<T, R> f) {
+    private SendRequestAndGet(GetStepResultFunction<M, R> f) {
         super(f);
         hook = new StepExecutionHook(f);
         addIgnored(Exception.class);
@@ -41,27 +42,32 @@ class SendRequestAndGet<T, R> extends SequentialGetStepSupplier
     }
 
     @Override
-    protected void onFailure(RetrofitContext<T> tRetrofitContext, Throwable throwable) {
+    protected void onFailure(Supplier<M> supplier, Throwable throwable) {
         hook.onFailure();
     }
 
     @Override
-    protected SendRequestAndGet<T, R> timeOut(Duration timeOut) {
+    protected SendRequestAndGet<M, R> from(Supplier<M> from) {
+        return super.from(from);
+    }
+
+    @Override
+    protected SendRequestAndGet<M, R> timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
     }
 
     @Override
-    protected SendRequestAndGet<T, R> pollingInterval(Duration pollingTime) {
+    protected SendRequestAndGet<M, R> pollingInterval(Duration pollingTime) {
         return super.pollingInterval(pollingTime);
     }
 
     @Override
-    protected SendRequestAndGet<T, R> criteria(String description, Predicate<? super RequestExecutionResult<R>> predicate) {
+    protected SendRequestAndGet<M, R> criteria(String description, Predicate<? super RequestExecutionResult<R>> predicate) {
         return super.criteria(description, predicate);
     }
 
     @Override
-    protected SendRequestAndGet<T, R> criteria(Criteria<? super RequestExecutionResult<R>> criteria) {
+    protected SendRequestAndGet<M, R> criteria(Criteria<? super RequestExecutionResult<R>> criteria) {
         return super.criteria(criteria);
     }
 }

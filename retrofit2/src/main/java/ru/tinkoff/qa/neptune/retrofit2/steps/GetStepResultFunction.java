@@ -3,29 +3,29 @@ package ru.tinkoff.qa.neptune.retrofit2.steps;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import ru.tinkoff.qa.neptune.retrofit2.RetrofitContext;
-import ru.tinkoff.qa.neptune.retrofit2.StepInterceptor;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static ru.tinkoff.qa.neptune.retrofit2.StepInterceptor.getCurrentInterceptor;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.StepInterceptor.getCurrentInterceptor;
 
-class GetStepResultFunction<T, R> implements Function<RetrofitContext<T>, RequestExecutionResult<R>> {
+class GetStepResultFunction<M, R> implements Function<Supplier<M>, RequestExecutionResult<R>> {
 
     private final StepInterceptor interceptor;
-    private final Function<T, R> f;
+    private final Function<M, R> f;
 
-    GetStepResultFunction(Function<T, R> f) {
+    GetStepResultFunction(Function<M, R> f) {
         checkNotNull(f);
         this.interceptor = getCurrentInterceptor();
         this.f = f;
     }
 
     @Override
-    public RequestExecutionResult<R> apply(RetrofitContext<T> t) {
+    public RequestExecutionResult<R> apply(Supplier<M> t) {
         interceptor.eraseRequest();
-        var result = f.apply(t.getService());
+        var m = t.get();
+        var result = f.apply(m);
         var req = interceptor.getRequest();
         if (req == null) {
             throw new NoRequestWasSentError();

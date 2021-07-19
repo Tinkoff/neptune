@@ -9,10 +9,10 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.retrofit2.RetrofitContext;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.stream.StreamSupport.stream;
@@ -23,78 +23,77 @@ import static ru.tinkoff.qa.neptune.retrofit2.criteria.ResponseCriteria.bodyMatc
 import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getResponse;
 
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Result criteria")
-public class GetObjectFromIterableSupplier<T, R> extends SequentialGetStepSupplier
-        .GetObjectFromIterableChainedStepSupplier<RetrofitContext<T>, R, RequestExecutionResult<Iterable<R>>, GetObjectFromIterableSupplier<T, R>> {
+public class GetObjectFromIterableSupplier<M, R> extends SequentialGetStepSupplier
+        .GetObjectFromIterableChainedStepSupplier<RetrofitContext, R, RequestExecutionResult<Iterable<R>>, GetObjectFromIterableSupplier<M, R>> {
 
-    private final SendRequestAndGet<T, Iterable<R>> delegateTo;
+    private final SendRequestAndGet<M, Iterable<R>> delegateTo;
 
     @SuppressWarnings("unchecked")
-    protected <S extends Iterable<R>> GetObjectFromIterableSupplier(Function<T, S> f) {
+    protected <S extends Iterable<R>> GetObjectFromIterableSupplier(Supplier<M> call, Function<M, S> f) {
         super(RequestExecutionResult::getResult);
-        this.delegateTo = (SendRequestAndGet<T, Iterable<R>>) getResponse(new GetStepResultFunction<>(f));
+        this.delegateTo = (SendRequestAndGet<M, Iterable<R>>) getResponse(new GetStepResultFunction<>(f)).from(call);
         from(this.delegateTo);
     }
 
     @Description("{description}")
-    public static <T, R, S extends Iterable<R>> GetObjectFromIterableSupplier<T, R> iterableItemFromCall(
+    public static <M, R, S extends Iterable<R>> GetObjectFromIterableSupplier<M, R> iterableItem(
             @DescriptionFragment(
                     value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class) String description,
-            Function<T, Call<S>> f) {
+            Supplier<M> call, Function<M, S> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectFromIterableSupplier<>(f.andThen(call -> {
-            try {
-                return call.execute().body();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }));
+        return new GetObjectFromIterableSupplier<>(call, f);
     }
 
-    @Description("{description}")
-    public static <T, R, S extends Iterable<R>> GetObjectFromIterableSupplier<T, R> iterableItem(
-            @DescriptionFragment(
-                    value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class) String description,
-            Function<T, S> f) {
-        checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectFromIterableSupplier<>(f);
+    public static <R, S extends Iterable<R>> GetObjectFromIterableSupplier<S, R> iterableItem(String description, Supplier<S> call) {
+        return iterableItem(description, call, rs -> rs);
     }
 
-    public GetObjectFromIterableSupplier<T, R> retryTimeOut(Duration timeOut) {
+    public static <M, R, S extends Iterable<R>> GetObjectFromIterableSupplier<M, R> callIterableItem(String description,
+                                                                                                     Supplier<Call<M>> call,
+                                                                                                     Function<M, S> f) {
+        return iterableItem(description, new CallBodySupplier<>(call), f);
+    }
+
+    public static <R, S extends Iterable<R>> GetObjectFromIterableSupplier<S, R> callIterableItem(String description,
+                                                                                                  Supplier<Call<S>> call) {
+        return callIterableItem(description, call, rs -> rs);
+    }
+
+    public GetObjectFromIterableSupplier<M, R> retryTimeOut(Duration timeOut) {
         delegateTo.timeOut(timeOut);
         return this;
     }
 
     @Override
-    public GetObjectFromIterableSupplier<T, R> pollingInterval(Duration timeOut) {
+    public GetObjectFromIterableSupplier<M, R> pollingInterval(Duration timeOut) {
         delegateTo.pollingInterval(timeOut);
         return this;
     }
 
-    public GetObjectFromIterableSupplier<T, R> responseCriteria(Criteria<Response> criteria) {
+    public GetObjectFromIterableSupplier<M, R> responseCriteria(Criteria<Response> criteria) {
         delegateTo.criteria(condition(criteria.toString(), r -> criteria.get().test(r.getLastResponse())));
         return this;
     }
 
-    public GetObjectFromIterableSupplier<T, R> responseCriteria(String description, Predicate<Response> predicate) {
+    public GetObjectFromIterableSupplier<M, R> responseCriteria(String description, Predicate<Response> predicate) {
         return responseCriteria(condition(description, predicate));
     }
 
     @Override
-    public GetObjectFromIterableSupplier<T, R> criteria(Criteria<? super R> criteria) {
+    public GetObjectFromIterableSupplier<M, R> criteria(Criteria<? super R> criteria) {
         delegateTo.criteria(bodyMatches(new BodyHasItems(criteria.toString()).toString(),
                 r -> stream(r.spliterator(), false).anyMatch(criteria.get())));
         return super.criteria(criteria);
     }
 
     @Override
-    public GetObjectFromIterableSupplier<T, R> criteria(String description, Predicate<? super R> criteria) {
+    public GetObjectFromIterableSupplier<M, R> criteria(String description, Predicate<? super R> criteria) {
         return criteria(condition(translate(description), criteria));
     }
 
     @Override
-    public GetObjectFromIterableSupplier<T, R> throwOnNoResult() {
+    public GetObjectFromIterableSupplier<M, R> throwOnNoResult() {
         delegateTo.throwOnNoResult();
         return this;
     }

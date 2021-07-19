@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.retrofit2;
+package ru.tinkoff.qa.neptune.retrofit2.steps;
 
 import okhttp3.Interceptor;
 import okhttp3.Request;
