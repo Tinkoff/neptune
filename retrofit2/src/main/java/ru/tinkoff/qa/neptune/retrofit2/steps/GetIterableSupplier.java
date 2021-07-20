@@ -15,11 +15,11 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.stream.StreamSupport.stream;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
-import static ru.tinkoff.qa.neptune.retrofit2.criteria.ResponseCriteria.bodyMatches;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.iterableBodyMatches;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.resultResponseCriteria;
 import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getResponse;
 
 @SuppressWarnings("unchecked")
@@ -69,8 +69,7 @@ public class GetIterableSupplier<M, R, S extends Iterable<R>> extends Sequential
     }
 
     public GetIterableSupplier<M, R, S> responseCriteria(Criteria<Response> criteria) {
-        ((SendRequestAndGet<M, S>) getFrom()).criteria(condition(criteria.toString(), r -> criteria.get()
-                .test(r.getLastResponse())));
+        ((SendRequestAndGet<M, S>) getFrom()).criteria(resultResponseCriteria(criteria));
         return this;
     }
 
@@ -80,8 +79,7 @@ public class GetIterableSupplier<M, R, S extends Iterable<R>> extends Sequential
 
     @Override
     public GetIterableSupplier<M, R, S> criteria(Criteria<? super R> criteria) {
-        ((SendRequestAndGet<M, S>) getFrom()).criteria(bodyMatches(new BodyHasItems(criteria.toString()).toString(),
-                r -> stream(r.spliterator(), false).anyMatch(criteria.get())));
+        ((SendRequestAndGet<M, S>) getFrom()).criteria(iterableBodyMatches(new BodyHasItems(criteria), criteria));
         return super.criteria(criteria);
     }
 

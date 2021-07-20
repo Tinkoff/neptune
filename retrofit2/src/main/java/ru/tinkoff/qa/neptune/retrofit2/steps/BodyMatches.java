@@ -6,12 +6,12 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
-@Description("Response body has items: {description}")
-final class BodyHasItems {
+@Description("Response body: {description}")
+final class BodyMatches {
     @DescriptionFragment(value = "description")
     final String description;
 
-    BodyHasItems(Criteria<?> criteria) {
+    BodyMatches(Criteria<?> criteria) {
         this.description = criteria.toString();
     }
 

@@ -4,14 +4,11 @@ import okhttp3.Response;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
-import ru.tinkoff.qa.neptune.retrofit2.steps.RequestExecutionResult;
 
 import java.net.URL;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
@@ -36,26 +33,6 @@ public final class ResponseCriteria {
     @Description("status code is {code}")
     public static Criteria<Response> statusCode(@DescriptionFragment("code") int code) {
         return condition(r -> r.code() == code);
-    }
-
-    /**
-     * Builds criteria to match status code of a response fluently.
-     *
-     * @param description description of the expectation
-     * @param predicate   is the expectation that response body should meet
-     * @param <T>         is a type of response body
-     * @return criteria
-     */
-    @Description("Response body: {description}")
-    public static <T> Criteria<RequestExecutionResult<T>> bodyMatches(
-            @DescriptionFragment(
-                    value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
-                    String description,
-            Predicate<? super T> predicate) {
-        checkArgument(nonNull(predicate), "Predicate that checks response body should be defined");
-        checkArgument(isNotBlank(description), "Description should not be defined as a blank or null string");
-        return condition(r -> predicate.test(r.getResult()));
     }
 
     /**

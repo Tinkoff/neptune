@@ -18,7 +18,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
-import static ru.tinkoff.qa.neptune.retrofit2.criteria.ResponseCriteria.bodyMatches;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.bodyMatches;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.resultResponseCriteria;
 import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getResponse;
 
 @SuppressWarnings("unchecked")
@@ -69,8 +70,7 @@ public class GetObjectSupplier<M, R> extends SequentialGetStepSupplier
     }
 
     public GetObjectSupplier<M, R> responseCriteria(Criteria<Response> criteria) {
-        ((SendRequestAndGet<M, R>) getFrom()).criteria(condition(criteria.toString(), r -> criteria.get()
-                .test(r.getLastResponse())));
+        ((SendRequestAndGet<M, R>) getFrom()).criteria(resultResponseCriteria(criteria));
         return this;
     }
 
@@ -80,7 +80,7 @@ public class GetObjectSupplier<M, R> extends SequentialGetStepSupplier
 
     @Override
     public GetObjectSupplier<M, R> criteria(Criteria<? super R> criteria) {
-        ((SendRequestAndGet<M, R>) getFrom()).criteria(bodyMatches(criteria.toString(), r -> criteria.get().test(r)));
+        ((SendRequestAndGet<M, R>) getFrom()).criteria(bodyMatches(new BodyMatches(criteria), criteria));
         return super.criteria(criteria);
     }
 

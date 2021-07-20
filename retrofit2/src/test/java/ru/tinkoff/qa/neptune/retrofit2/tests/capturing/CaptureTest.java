@@ -22,12 +22,18 @@ import static com.github.tomakehurst.wiremock.http.Fault.MALFORMED_RESPONSE_CHUN
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.nullValue;
+import static org.testng.Assert.fail;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.not.NotMatcher.notOf;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.MapEntryMatcher.entryKey;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.MapEntryMatcher.mapEntry;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.mapInOrder;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.mapOf;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsIncludesMatcher.mapIncludes;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.NOT;
 import static ru.tinkoff.qa.neptune.retrofit2.RetrofitContext.retrofit;
+import static ru.tinkoff.qa.neptune.retrofit2.criteria.ResponseCriteria.isSuccessful;
 import static ru.tinkoff.qa.neptune.retrofit2.properties.DefaultRetrofitURLProperty.DEFAULT_RETROFIT_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.retrofit2.steps.GetObjectSupplier.callBody;
 import static ru.tinkoff.qa.neptune.retrofit2.tests.capturing.TestEventLogger.ADDITIONAL_ARGUMENTS;
@@ -116,56 +122,208 @@ public class CaptureTest {
         assertThat(TestStringInjector.MESSAGES.get(), nullValue());
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /*@Test
+    @Test
     public void responseCaptureTest1() {
-        retrofit(service).receive(bodyFromCall(
-                s -> s.getSuccessful("Test body")
-        ));
+        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
+
+        retrofit().get(callBody(
+                () -> service.getSuccessful("Test body")));
 
         assertThat(ADDITIONAL_ARGUMENTS.get(), mapIncludes(
                 entryKey("URL"),
                 entryKey("METHOD")));
 
-        assertThat(MESSAGES.get(), mapInOrder(
+        assertThat(MESSAGES.get(), mapOf(
+                mapEntry("Request body", instanceOf(File.class)),
+                mapEntry("Response body", instanceOf(File.class))
+        ));
+
+        assertThat(TestStringInjector.MESSAGES.get(), mapOf(
+                mapEntry("Response", notOf(nullValue()))
+        ));
+    }
+
+    @Test
+    public void responseCaptureTest2() {
+        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
+
+        retrofit().get(callBody(
+                () -> service.getSuccessful("Test body"))
+                .responseCriteria(NOT(isSuccessful())));
+
+        assertThat(ADDITIONAL_ARGUMENTS.get(), mapIncludes(
+                entryKey("URL"),
+                entryKey("METHOD")));
+
+        assertThat(MESSAGES.get(), mapOf(
+                mapEntry("Request body", instanceOf(File.class)),
+                mapEntry("Response body", instanceOf(File.class))
+        ));
+
+        assertThat(TestStringInjector.MESSAGES.get(), mapOf(
+                mapEntry("Response", notOf(nullValue()))
+        ));
+    }
+
+    @Test
+    public void responseCaptureTest3() {
+        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
+
+        try {
+            retrofit().get(callBody(
+                    () -> service.getSuccessful("Test body"))
+                    .responseCriteria(NOT(isSuccessful()))
+                    .throwOnNoResult());
+        } catch (Throwable t) {
+            assertThat(ADDITIONAL_ARGUMENTS.get(), mapIncludes(
+                    entryKey("URL"),
+                    entryKey("METHOD")));
+
+            assertThat(MESSAGES.get(), mapOf(
+                    mapEntry("Request body", instanceOf(File.class))
+            ));
+
+            assertThat(TestStringInjector.MESSAGES.get(), nullValue());
+            return;
+        }
+
+        fail("Exception was expected");
+    }
+
+
+    @Test
+    public void responseCaptureTest4() {
+        DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
+
+        retrofit().get(callBody(
+                () -> service.getSuccessful("Test body")));
+
+        assertThat(ADDITIONAL_ARGUMENTS.get(), mapIncludes(
+                entryKey("URL"),
+                entryKey("METHOD")));
+
+        assertThat(MESSAGES.get(), mapOf(
+                mapEntry("Request body", instanceOf(File.class))
+        ));
+
+        assertThat(TestStringInjector.MESSAGES.get(), nullValue());
+    }
+
+    @Test
+    public void responseCaptureTest5() {
+        DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
+
+        retrofit().get(callBody(
+                () -> service.getSuccessful("Test body"))
+                .responseCriteria(NOT(isSuccessful())));
+
+        assertThat(ADDITIONAL_ARGUMENTS.get(), mapIncludes(
+                entryKey("URL"),
+                entryKey("METHOD")));
+
+        assertThat(MESSAGES.get(), mapOf(
                 mapEntry("Request body", instanceOf(File.class))));
 
         assertThat(TestStringInjector.MESSAGES.get(), nullValue());
     }
 
     @Test
-    public void responseCaptureTest2() {
-        retrofit(service).receive(bodyFromCall(
-                s -> s.getFailed("Test body")
-        ));
+    public void responseCaptureTest6() {
+        DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
+
+        try {
+            retrofit().get(callBody(
+                    () -> service.getSuccessful("Test body"))
+                    .responseCriteria(NOT(isSuccessful()))
+                    .throwOnNoResult());
+        } catch (Throwable t) {
+            assertThat(ADDITIONAL_ARGUMENTS.get(), mapIncludes(
+                    entryKey("URL"),
+                    entryKey("METHOD")));
+
+            assertThat(MESSAGES.get(), mapOf(
+                    mapEntry("Request body", instanceOf(File.class)),
+                    mapEntry("Response body", instanceOf(File.class))
+            ));
+
+            assertThat(TestStringInjector.MESSAGES.get(), mapOf(
+                    mapEntry("Response", notOf(nullValue()))
+            ));
+            return;
+        }
+
+        fail("Exception was expected");
+    }
+
+
+    @Test
+    public void responseCaptureTest7() {
+        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
+
+        retrofit().get(callBody(
+                () -> service.getSuccessful("Test body")));
 
         assertThat(ADDITIONAL_ARGUMENTS.get(), mapIncludes(
                 entryKey("URL"),
                 entryKey("METHOD")));
 
-        assertThat(MESSAGES.get(), mapInOrder(
-                mapEntry("Request body", instanceOf(File.class))));
+        assertThat(MESSAGES.get(), mapOf(
+                mapEntry("Request body", instanceOf(File.class)),
+                mapEntry("Response body", instanceOf(File.class))
+        ));
 
-        assertThat(TestStringInjector.MESSAGES.get(), nullValue());
-    }*/
+        assertThat(TestStringInjector.MESSAGES.get(), mapOf(
+                mapEntry("Response", notOf(nullValue()))
+        ));
+    }
+
+    @Test
+    public void responseCaptureTest8() {
+        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
+
+        retrofit().get(callBody(
+                () -> service.getSuccessful("Test body"))
+                .responseCriteria(NOT(isSuccessful())));
+
+        assertThat(ADDITIONAL_ARGUMENTS.get(), mapIncludes(
+                entryKey("URL"),
+                entryKey("METHOD")));
+
+        assertThat(MESSAGES.get(), mapOf(
+                mapEntry("Request body", instanceOf(File.class)),
+                mapEntry("Response body", instanceOf(File.class))
+        ));
+
+        assertThat(TestStringInjector.MESSAGES.get(), mapOf(
+                mapEntry("Response", notOf(nullValue()))
+        ));
+    }
+
+    @Test
+    public void responseCaptureTest9() {
+        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
+
+        try {
+            retrofit().get(callBody(
+                    () -> service.getSuccessful("Test body"))
+                    .responseCriteria(NOT(isSuccessful()))
+                    .throwOnNoResult());
+        } catch (Throwable t) {
+            assertThat(ADDITIONAL_ARGUMENTS.get(), mapIncludes(
+                    entryKey("URL"),
+                    entryKey("METHOD")));
+
+            assertThat(MESSAGES.get(), mapOf(
+                    mapEntry("Request body", instanceOf(File.class)),
+                    mapEntry("Response body", instanceOf(File.class))
+            ));
+
+            assertThat(TestStringInjector.MESSAGES.get(), mapOf(
+                    mapEntry("Response", notOf(nullValue()))
+            ));
+            return;
+        }
+
+        fail("Exception was expected");
+    }
 }

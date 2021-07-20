@@ -15,11 +15,11 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Arrays.stream;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
-import static ru.tinkoff.qa.neptune.retrofit2.criteria.ResponseCriteria.bodyMatches;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.arrayBodyMatches;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.resultResponseCriteria;
 import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getResponse;
 
 @SuppressWarnings("unchecked")
@@ -69,8 +69,7 @@ public class GetObjectFromArraySupplier<M, R> extends SequentialGetStepSupplier
     }
 
     public GetObjectFromArraySupplier<M, R> responseCriteria(Criteria<Response> criteria) {
-        ((SendRequestAndGet<M, R[]>) getFrom())
-                .criteria(condition(criteria.toString(), r -> criteria.get().test(r.getLastResponse())));
+        ((SendRequestAndGet<M, R[]>) getFrom()).criteria(resultResponseCriteria(criteria));
         return this;
     }
 
@@ -80,9 +79,7 @@ public class GetObjectFromArraySupplier<M, R> extends SequentialGetStepSupplier
 
     @Override
     public GetObjectFromArraySupplier<M, R> criteria(Criteria<? super R> criteria) {
-        ((SendRequestAndGet<M, R[]>) getFrom())
-                .criteria(bodyMatches(new BodyHasItems(criteria.toString()).toString(),
-                        r -> stream(r).anyMatch(criteria.get())));
+        ((SendRequestAndGet<M, R[]>) getFrom()).criteria(arrayBodyMatches(new BodyHasItems(criteria), criteria));
         return super.criteria(criteria);
     }
 

@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.retrofit2.steps;
 
 import okhttp3.Response;
 
-public final class RequestExecutionResult<T> {
+final class RequestExecutionResult<T> {
 
     private final Response lastResponse;
     private final T result;
