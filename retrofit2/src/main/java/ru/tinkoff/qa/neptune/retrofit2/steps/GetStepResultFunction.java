@@ -24,8 +24,14 @@ class GetStepResultFunction<M, R> implements Function<Supplier<M>, RequestExecut
     @Override
     public RequestExecutionResult<R> apply(Supplier<M> t) {
         interceptor.eraseRequest();
+
         var m = t.get();
-        var result = f.apply(m);
+
+        R result = null;
+        if (m != null) {
+            result = f.apply(m);
+        }
+
         var req = interceptor.getRequest();
         if (req == null) {
             throw new NoRequestWasSentError();

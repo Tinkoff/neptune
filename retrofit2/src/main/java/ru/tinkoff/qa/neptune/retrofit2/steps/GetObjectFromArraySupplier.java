@@ -22,16 +22,14 @@ import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.retrofit2.criteria.ResponseCriteria.bodyMatches;
 import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getResponse;
 
+@SuppressWarnings("unchecked")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Result criteria")
 public class GetObjectFromArraySupplier<M, R> extends SequentialGetStepSupplier
         .GetObjectFromArrayChainedStepSupplier<RetrofitContext, R, RequestExecutionResult<R[]>, GetObjectFromArraySupplier<M, R>> {
 
-    private final SendRequestAndGet<M, R[]> delegateTo;
-
     protected GetObjectFromArraySupplier(Supplier<M> call, Function<M, R[]> f) {
         super(RequestExecutionResult::getResult);
-        this.delegateTo = getResponse(new GetStepResultFunction<>(f)).from(call);
-        from(this.delegateTo);
+        from(getResponse(new GetStepResultFunction<>(f)).from(call));
     }
 
     @Description("{description}")
@@ -60,18 +58,19 @@ public class GetObjectFromArraySupplier<M, R> extends SequentialGetStepSupplier
     }
 
     public GetObjectFromArraySupplier<M, R> retryTimeOut(Duration timeOut) {
-        delegateTo.timeOut(timeOut);
+        ((SendRequestAndGet<M, R[]>) getFrom()).timeOut(timeOut);
         return this;
     }
 
     @Override
     public GetObjectFromArraySupplier<M, R> pollingInterval(Duration timeOut) {
-        delegateTo.pollingInterval(timeOut);
+        ((SendRequestAndGet<M, R[]>) getFrom()).pollingInterval(timeOut);
         return this;
     }
 
     public GetObjectFromArraySupplier<M, R> responseCriteria(Criteria<Response> criteria) {
-        delegateTo.criteria(condition(criteria.toString(), r -> criteria.get().test(r.getLastResponse())));
+        ((SendRequestAndGet<M, R[]>) getFrom())
+                .criteria(condition(criteria.toString(), r -> criteria.get().test(r.getLastResponse())));
         return this;
     }
 
@@ -81,8 +80,9 @@ public class GetObjectFromArraySupplier<M, R> extends SequentialGetStepSupplier
 
     @Override
     public GetObjectFromArraySupplier<M, R> criteria(Criteria<? super R> criteria) {
-        delegateTo.criteria(bodyMatches(new BodyHasItems(criteria.toString()).toString(),
-                r -> stream(r).anyMatch(criteria.get())));
+        ((SendRequestAndGet<M, R[]>) getFrom())
+                .criteria(bodyMatches(new BodyHasItems(criteria.toString()).toString(),
+                        r -> stream(r).anyMatch(criteria.get())));
         return super.criteria(criteria);
     }
 
@@ -93,7 +93,7 @@ public class GetObjectFromArraySupplier<M, R> extends SequentialGetStepSupplier
 
     @Override
     public GetObjectFromArraySupplier<M, R> throwOnNoResult() {
-        delegateTo.throwOnNoResult();
+        ((SendRequestAndGet<M, R[]>) getFrom()).throwOnNoResult();
         return this;
     }
 }

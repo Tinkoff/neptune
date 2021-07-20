@@ -12,7 +12,7 @@ class ExceptionSupplierForAbsenceAndPresence extends ExceptionSupplier {
     String getExceptionMessage(String messageStarting) {
         var stringBuilder = new StringBuilder(messageStarting)
                 .append(SPACE)
-                .append(((SequentialGetStepSupplier<?, ?, ?, ?, ?>) stepThatCanBeFailed.from).getDescription());
+                .append(((SequentialGetStepSupplier<?, ?, ?, ?, ?>) stepThatCanBeFailed.getFrom()).getDescription());
         stepThatCanBeFailed.getParameters().forEach((key, value) -> stringBuilder.append("\r\n")
                 .append("- ")
                 .append(key)

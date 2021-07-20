@@ -22,17 +22,14 @@ import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.retrofit2.criteria.ResponseCriteria.bodyMatches;
 import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getResponse;
 
+@SuppressWarnings("unchecked")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Result criteria")
 public class GetObjectFromIterableSupplier<M, R> extends SequentialGetStepSupplier
         .GetObjectFromIterableChainedStepSupplier<RetrofitContext, R, RequestExecutionResult<Iterable<R>>, GetObjectFromIterableSupplier<M, R>> {
 
-    private final SendRequestAndGet<M, Iterable<R>> delegateTo;
-
-    @SuppressWarnings("unchecked")
     protected <S extends Iterable<R>> GetObjectFromIterableSupplier(Supplier<M> call, Function<M, S> f) {
         super(RequestExecutionResult::getResult);
-        this.delegateTo = (SendRequestAndGet<M, Iterable<R>>) getResponse(new GetStepResultFunction<>(f)).from(call);
-        from(this.delegateTo);
+        from((SendRequestAndGet<M, Iterable<R>>) getResponse(new GetStepResultFunction<>(f)).from(call));
     }
 
     @Description("{description}")
@@ -45,7 +42,8 @@ public class GetObjectFromIterableSupplier<M, R> extends SequentialGetStepSuppli
         return new GetObjectFromIterableSupplier<>(call, f);
     }
 
-    public static <R, S extends Iterable<R>> GetObjectFromIterableSupplier<S, R> iterableItem(String description, Supplier<S> call) {
+    public static <R, S extends Iterable<R>> GetObjectFromIterableSupplier<S, R> iterableItem(String description,
+                                                                                              Supplier<S> call) {
         return iterableItem(description, call, rs -> rs);
     }
 
@@ -61,18 +59,18 @@ public class GetObjectFromIterableSupplier<M, R> extends SequentialGetStepSuppli
     }
 
     public GetObjectFromIterableSupplier<M, R> retryTimeOut(Duration timeOut) {
-        delegateTo.timeOut(timeOut);
+        ((SendRequestAndGet<M, Iterable<R>>) getFrom()).timeOut(timeOut);
         return this;
     }
 
     @Override
     public GetObjectFromIterableSupplier<M, R> pollingInterval(Duration timeOut) {
-        delegateTo.pollingInterval(timeOut);
+        ((SendRequestAndGet<M, Iterable<R>>) getFrom()).pollingInterval(timeOut);
         return this;
     }
 
     public GetObjectFromIterableSupplier<M, R> responseCriteria(Criteria<Response> criteria) {
-        delegateTo.criteria(condition(criteria.toString(), r -> criteria.get().test(r.getLastResponse())));
+        ((SendRequestAndGet<M, Iterable<R>>) getFrom()).criteria(condition(criteria.toString(), r -> criteria.get().test(r.getLastResponse())));
         return this;
     }
 
@@ -82,7 +80,8 @@ public class GetObjectFromIterableSupplier<M, R> extends SequentialGetStepSuppli
 
     @Override
     public GetObjectFromIterableSupplier<M, R> criteria(Criteria<? super R> criteria) {
-        delegateTo.criteria(bodyMatches(new BodyHasItems(criteria.toString()).toString(),
+        ((SendRequestAndGet<M, Iterable<R>>) getFrom()).criteria(bodyMatches(new BodyHasItems(criteria.toString())
+                        .toString(),
                 r -> stream(r.spliterator(), false).anyMatch(criteria.get())));
         return super.criteria(criteria);
     }
@@ -94,7 +93,7 @@ public class GetObjectFromIterableSupplier<M, R> extends SequentialGetStepSuppli
 
     @Override
     public GetObjectFromIterableSupplier<M, R> throwOnNoResult() {
-        delegateTo.throwOnNoResult();
+        ((SendRequestAndGet<M, Iterable<R>>) getFrom()).throwOnNoResult();
         return this;
     }
 }

@@ -22,16 +22,14 @@ import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.retrofit2.criteria.ResponseCriteria.bodyMatches;
 import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getResponse;
 
+@SuppressWarnings("unchecked")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted iterable")
 public class GetIterableSupplier<M, R, S extends Iterable<R>> extends SequentialGetStepSupplier
         .GetIterableChainedStepSupplier<RetrofitContext, S, RequestExecutionResult<S>, R, GetIterableSupplier<M, R, S>> {
 
-    private final SendRequestAndGet<M, S> delegateTo;
-
     protected GetIterableSupplier(Supplier<M> call, Function<M, S> f) {
         super(RequestExecutionResult::getResult);
-        delegateTo = getResponse(new GetStepResultFunction<>(f)).from(call);
-        from(this.delegateTo);
+        from(getResponse(new GetStepResultFunction<>(f)).from(call));
     }
 
     @Description("{description}")
@@ -60,18 +58,19 @@ public class GetIterableSupplier<M, R, S extends Iterable<R>> extends Sequential
     }
 
     public GetIterableSupplier<M, R, S> retryTimeOut(Duration timeOut) {
-        delegateTo.timeOut(timeOut);
+        ((SendRequestAndGet<M, S>) getFrom()).timeOut(timeOut);
         return this;
     }
 
     @Override
     public GetIterableSupplier<M, R, S> pollingInterval(Duration timeOut) {
-        delegateTo.pollingInterval(timeOut);
+        ((SendRequestAndGet<M, S>) getFrom()).pollingInterval(timeOut);
         return this;
     }
 
     public GetIterableSupplier<M, R, S> responseCriteria(Criteria<Response> criteria) {
-        delegateTo.criteria(condition(criteria.toString(), r -> criteria.get().test(r.getLastResponse())));
+        ((SendRequestAndGet<M, S>) getFrom()).criteria(condition(criteria.toString(), r -> criteria.get()
+                .test(r.getLastResponse())));
         return this;
     }
 
@@ -81,7 +80,7 @@ public class GetIterableSupplier<M, R, S extends Iterable<R>> extends Sequential
 
     @Override
     public GetIterableSupplier<M, R, S> criteria(Criteria<? super R> criteria) {
-        delegateTo.criteria(bodyMatches(new BodyHasItems(criteria.toString()).toString(),
+        ((SendRequestAndGet<M, S>) getFrom()).criteria(bodyMatches(new BodyHasItems(criteria.toString()).toString(),
                 r -> stream(r.spliterator(), false).anyMatch(criteria.get())));
         return super.criteria(criteria);
     }
@@ -93,7 +92,7 @@ public class GetIterableSupplier<M, R, S extends Iterable<R>> extends Sequential
 
     @Override
     public GetIterableSupplier<M, R, S> throwOnNoResult() {
-        delegateTo.throwOnNoResult();
+        ((SendRequestAndGet<M, S>) getFrom()).throwOnNoResult();
         return this;
     }
 }

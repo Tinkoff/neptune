@@ -68,7 +68,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     private Criteria<P> condition;
 
-    Object from;
+    private Object from;
 
     Duration timeToGet;
 
@@ -388,6 +388,10 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     Criteria<P> getCriteria() {
         return condition;
+    }
+
+    protected final Object getFrom() {
+        return from;
     }
 
     private static abstract class PrivateGetObjectStepSupplier<T, R, M, THIS extends PrivateGetObjectStepSupplier<T, R, M, THIS>>
