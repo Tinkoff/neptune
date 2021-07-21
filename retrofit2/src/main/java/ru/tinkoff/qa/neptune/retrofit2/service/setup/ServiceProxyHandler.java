@@ -1,7 +1,5 @@
 package ru.tinkoff.qa.neptune.retrofit2.service.setup;
 
-import retrofit2.Retrofit;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -16,12 +14,12 @@ final class ServiceProxyHandler implements InvocationHandler {
 
     private final Class<?> toInstantiate;
     private final URL baseURL;
-    private final Retrofit.Builder retrofit;
+    private final RetrofitBuilderSupplier retrofitBuilderSupplier;
 
-    public ServiceProxyHandler(Class<?> toInstantiate, URL baseURL, Retrofit.Builder retrofit) {
+    public ServiceProxyHandler(Class<?> toInstantiate, URL baseURL, RetrofitBuilderSupplier retrofitBuilderSupplier) {
         this.toInstantiate = toInstantiate;
         this.baseURL = baseURL;
-        this.retrofit = retrofit;
+        this.retrofitBuilderSupplier = retrofitBuilderSupplier;
     }
 
     @Override
@@ -34,7 +32,7 @@ final class ServiceProxyHandler implements InvocationHandler {
                 });
 
         var service = map.computeIfAbsent(this,
-                ih -> retrofit.baseUrl(baseURL).build().create(toInstantiate));
+                ih -> retrofitBuilderSupplier.get().baseUrl(baseURL).build().create(toInstantiate));
 
         return method.invoke(service, args);
     }

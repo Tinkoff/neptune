@@ -24,7 +24,7 @@ public final class HttpServiceCreator {
 
         return newProxyInstance(getSystemClassLoader(),
                 new Class[]{toInstantiate},
-                new ServiceProxyHandler(toInstantiate, baseURL, retrofit.get()));
+                new ServiceProxyHandler(toInstantiate, baseURL, retrofit));
     }
 
     public static Object create(Class<?> toInstantiate, RetrofitBuilderSupplier retrofit) {
