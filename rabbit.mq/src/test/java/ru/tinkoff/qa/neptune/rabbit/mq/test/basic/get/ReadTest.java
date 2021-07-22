@@ -1,8 +1,8 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.test.basic.get;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.BaseRabbitMqTest;
+import ru.tinkoff.qa.neptune.rabbit.mq.test.DefaultMapper;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.DraftDto;
 
 import java.io.IOException;
@@ -14,17 +14,17 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetSuppl
 
 public class ReadTest extends BaseRabbitMqTest {
 
-    @Test
-    public void purgeTest1() throws IOException {
+    @Test(description = "Checking method call with default mapper")
+    public void readTest1() throws IOException {
         rabbitMqStepContext.read(valueOf("queue", true, DraftDto.class).timeOut(ofSeconds(1)));
 
-        verify(channel, atLeast(1)).basicGet("queue", true);
+        verify(channel, atLeast(2)).basicGet("queue", true);
     }
 
-    @Test
-    public void purgeTest2() throws IOException {
-        rabbitMqStepContext.read(valueOf("test", true, DraftDto.class).timeOut(ofSeconds(1)), new XmlMapper());
+    @Test(description = "Checking method call with custom mapper")
+    public void readTest2() throws IOException {
+        rabbitMqStepContext.read(valueOf("test", true, DraftDto.class).timeOut(ofSeconds(1)), new DefaultMapper());
 
-        verify(channel, atLeast(15)).basicGet("test", true);
+        verify(channel, atLeast(2)).basicGet("test", true);
     }
 }

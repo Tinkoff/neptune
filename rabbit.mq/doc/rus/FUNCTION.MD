@@ -86,15 +86,17 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        //Выполняем связывание queue к exchange c дополнительными аргументами
-        //queue - имя очереди
-        //exchange - имя exchange
-        //routingKey - ключ маршрутизации, используемый для привязки
-        //arguments - другие свойства (параметры привязки)
-        rabbitMq().queueBind("queue", "exchange", "routingKey", arguments().setArgument("key", "value"));
+      //Выполняем связывание queue к exchange c дополнительными аргументами
+      //queue - имя очереди
+      //exchange - имя exchange
+      //routingKey - ключ маршрутизации, используемый для привязки
+      //arguments - другие свойства (параметры привязки)
+      rabbitMq().queueBind("queue", "exchange", "routingKey", arguments().setArgument("key", "value"));
     }
 }
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ### Отвязывание
 
@@ -105,7 +107,7 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
 
 public class MyTest {
 
-    @Test
+  @Test
     public void myTest() {
         //Отвязывание exchange от exchange без дополнительных аргументов
         //destination - имя exchange, к которому сообщения передаются через привязку
@@ -162,15 +164,17 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        //Выполняем отвязывание queue от exchange c дополнительными аргументами
-        //queue - имя очереди
-        //exchange - имя exchange
-        //routingKey - ключ маршрутизации, используемый для привязки
-        //arguments - другие свойства (параметры привязки)
-        rabbitMq().queueUnbind("queue", "exchange", "routingKey", arguments().setArgument("key", "value"));
+      //Выполняем отвязывание queue от exchange c дополнительными аргументами
+      //queue - имя очереди
+      //exchange - имя exchange
+      //routingKey - ключ маршрутизации, используемый для привязки
+      //arguments - другие свойства (параметры привязки)
+      rabbitMq().queueUnbind("queue", "exchange", "routingKey", arguments().setArgument("key", "value"));
     }
 }
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ### Объявление
 
@@ -302,6 +306,8 @@ public class MyTest {
 }
 ```
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 ### Удаление
 
 #### exchange
@@ -311,7 +317,7 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
 
 public class MyTest {
 
-    @Test
+  @Test
     public void myTest() {
         //Выполняем удаление exchange, независимо от того, используется он или нет
         rabbitMq().exchangeDelete("exchange");
@@ -356,14 +362,16 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        //Выполняем удаление очереди
-        //queue – имя очереди
-        //ifUnused – true, если очередь должна быть удалена, только если она не используется
-        //ifEmpty – true, если очередь должна быть удалена, только если она пуста
-        rabbitMq().deleteQueue("queue", deleteParams().empty().unused());
+      //Выполняем удаление очереди
+      //queue – имя очереди
+      //ifUnused – true, если очередь должна быть удалена, только если она не используется
+      //ifEmpty – true, если очередь должна быть удалена, только если она пуста
+      rabbitMq().deleteQueue("queue", deleteParams().empty().unused());
     }
 }
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ### Получение сообщения
 
@@ -373,7 +381,7 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetSuppl
 
 public class MyTest {
 
-    @Test
+  @Test
     public void myTest() {
         //Выполняем получение сообщения из очереди
         //В метод реад используется метод valueOf(String queue, boolean autoAck, Class<T> classT), где:
@@ -381,7 +389,6 @@ public class MyTest {
         //      autoAck - true, если сервер должен считать сообщения подтвержденными после доставки; 
         //                false, если сервер должен ожидать явных подтверждений
         //      classT - моделька для десериализации
-        //Используется ObjectMapper по умолчанию
         rabbitMq().read(valueOf("queue", true, ClassToDeserialize.class));
     }
 }
@@ -393,17 +400,18 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetSuppl
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        //Выполняем получение сообщения из очереди
-        //В метод read используется метод valueOf(String queue, boolean autoAck, Class<T> classT), где:
-        //      queue - имя очереди
-        //      autoAck - true, если сервер должен считать сообщения подтвержденными после доставки; 
-        //                false, если сервер должен ожидать явных подтверждений
-        //      classT - моделька для десериализации
-        //В данном примере мы передаем в метод read уже определенный ObjectMapper, который будет перекрывать дефолтный
-        rabbitMq().read(valueOf("queue", true, ClassToDeserialize.class), new XmlMapper());
-    }
+  @Test
+  public void myTest() {
+    //Выполняем получение сообщения из очереди
+    //В метод read используется метод valueOf(String queue, boolean autoAck, Class<T> classT), где:
+    //      queue - имя очереди
+    //      autoAck - true, если сервер должен считать сообщения подтвержденными после доставки; 
+    //                false, если сервер должен ожидать явных подтверждений
+    //      classT - моделька для десериализации
+    //В данном примере мы передаем в метод read уже определенный объект CustomMapper, который реализует RabbitMqMapper
+    //и будет перекрывать дефолтный
+    rabbitMq().read(valueOf("queue", true, ClassToDeserialize.class), new CustomMapper());
+  }
 }
 ```
 
@@ -413,7 +421,7 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetSuppl
 
 public class MyTest {
 
-    @Test
+  @Test
     public void myTest() {
         //Выполняем получение сообщения из очереди, которое удовлетворяет определенному критерию
         //для этого используется метод criteria(String description, Predicate<? super T> predicate)
@@ -431,15 +439,17 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetSuppl
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        //Пытаемся получить сообщение из очереди за определенное время 
-        //для этого используется метод timeOut(Duration timeOut)
-        //по дефолту сообщение ищется 10 секунд
-        rabbitMq().read(valueOf("queue", true, ClassToDeserialize.class).timeOut(ofSeconds(30)));
-    }
+  @Test
+  public void myTest() {
+    //Пытаемся получить сообщение из очереди за определенное время 
+    //для этого используется метод timeOut(Duration timeOut)
+    //по дефолту сообщение ищется 10 секунд
+    rabbitMq().read(valueOf("queue", true, ClassToDeserialize.class).timeOut(ofSeconds(30)));
+  }
 }
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ### Публикация сообщений
 
@@ -448,8 +458,8 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
+  @Test
+  public void myTest() {
         //Выполняем отправку сообщения
         //  Параметры:
         //      exchange - обмен для публикации сообщения
@@ -482,8 +492,8 @@ public class MyTest {
         //      new SomeObject() - объект, который нужно сериализовать и отправить в rabbit
         //Неявные параметры которые уходят:
         //      mandatory со значением false
-        //      mmediate со значением false
-        rabbitMq().publishMessage("exchange", "routingKey", new SomeObject(), new XmlMapper());
+      //      mmediate со значением false
+      rabbitMq().publishMessage("exchange", "routingKey", new SomeObject(), new CustomMapper());
     }
 }
 ```
@@ -522,16 +532,18 @@ public class MyTest {
         //Выполняем отправку сообщения
         //  Параметры:
         //      exchange - обмен для публикации сообщения
-        //      routingKey - ключ маршрутизации
-        //      ParametersForPublish - объект, необходимый для изменения дефолтных значений mandatory и immediate
-        //                             в данном примере 'parameters().mandatory().immediate()' 
-        //                             сообщение отправится с mandatory = true и immediate = true
-        //      new SomeObject() - объект, который нужно сериализовать и отправить в rabbit
-        //      new XmlMapper() - новый ObjectMapper
-        rabbitMq().publishMessage("exchange", "routingKey", parameters().mandatory().immediate(), new SomeObject(), new XmlMapper());
+      //      routingKey - ключ маршрутизации
+      //      ParametersForPublish - объект, необходимый для изменения дефолтных значений mandatory и immediate
+      //                             в данном примере 'parameters().mandatory().immediate()' 
+      //                             сообщение отправится с mandatory = true и immediate = true
+      //      new SomeObject() - объект, который нужно сериализовать и отправить в rabbit
+      //      new XmlMapper() - новый ObjectMapper
+      rabbitMq().publishMessage("exchange", "routingKey", parameters().mandatory().immediate(), new SomeObject(), new CustomMapper());
     }
 }
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ### Очистка очереди
 
@@ -540,10 +552,12 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        //Выполняем очищение содержимого очереди
-        rabbitMq().purgeQueue("queue");
-    }
+  @Test
+  public void myTest() {
+    //Выполняем очищение содержимого очереди
+    rabbitMq().purgeQueue("queue");
+  }
 }
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)

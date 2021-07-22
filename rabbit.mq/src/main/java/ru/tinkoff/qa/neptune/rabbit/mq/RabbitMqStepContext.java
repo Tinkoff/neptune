@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.rabbit.mq;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
@@ -19,6 +18,7 @@ import ru.tinkoff.qa.neptune.rabbit.mq.function.publish.ParametersForPublish;
 import ru.tinkoff.qa.neptune.rabbit.mq.function.purge.RabbitMqPurgeQueueSupplier;
 import ru.tinkoff.qa.neptune.rabbit.mq.function.unbind.exchange.RabbitMqExchangeUnbindSupplier;
 import ru.tinkoff.qa.neptune.rabbit.mq.function.unbind.queue.RabbitMqQueueUnbindSupplier;
+import ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqMapper;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -45,7 +45,7 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
         return channel;
     }
 
-    public <T> T read(RabbitMqBasicGetSupplier<T> basicGet, ObjectMapper mapper) {
+    public <T> T read(RabbitMqBasicGetSupplier<T> basicGet, RabbitMqMapper mapper) {
         return get(basicGet.setObjectMapper(mapper));
     }
 
@@ -57,7 +57,7 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
         return perform(publish(exchange, routingKey, toSerialize, RABBIT_MQ_DEFAULT_MAPPER.get()));
     }
 
-    public RabbitMqStepContext publishMessage(String exchange, String routingKey, Object toSerialize, ObjectMapper mapper) {
+    public RabbitMqStepContext publishMessage(String exchange, String routingKey, Object toSerialize, RabbitMqMapper mapper) {
         return perform(publish(exchange, routingKey, toSerialize, mapper));
     }
 
@@ -65,7 +65,7 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
         return perform(publish(exchange, routingKey, toSerialize, RABBIT_MQ_DEFAULT_MAPPER.get()).setParams(params));
     }
 
-    public RabbitMqStepContext publishMessage(String exchange, String routingKey, ParametersForPublish params, Object toSerialize, ObjectMapper mapper) {
+    public RabbitMqStepContext publishMessage(String exchange, String routingKey, ParametersForPublish params, Object toSerialize, RabbitMqMapper mapper) {
         return perform(publish(exchange, routingKey, toSerialize, mapper).setParams(params));
     }
 

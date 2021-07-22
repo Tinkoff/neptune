@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.function.get;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Supplier;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.GetResponse;
@@ -10,6 +9,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
+import ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqMapper;
 
 import java.time.Duration;
 import java.util.function.Predicate;
@@ -19,19 +19,22 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.Duration.ofSeconds;
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Retrieve:")
+@SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for messages")
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Message criteria")
 @MaxDepthOfReporting(0)
 public class RabbitMqBasicGetSupplier<T> extends SequentialGetStepSupplier.GetObjectStepSupplier<RabbitMqStepContext,T, RabbitMqBasicGetSupplier<T>> {
-    private ObjectMapper objectMapper;
+    private RabbitMqMapper rabbitMqMapper;
     private final MapperSupplier supplier;
 
     protected RabbitMqBasicGetSupplier(String queue, boolean autoAck, Class<T> classT, MapperSupplier supplier) {
         super(input ->{
             checkNotNull(queue);
-            var objectMapper = supplier.get();
+            var rabbitMqMapper = supplier.get();
             try {
                 Channel channel = input.getChannel();
                 GetResponse getResponse = channel.basicGet(queue, autoAck);
-                return objectMapper.readValue(new String(getResponse.getBody(), UTF_8), classT);
+
+                return rabbitMqMapper.deserialize(new String(getResponse.getBody(), UTF_8), classT);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -40,9 +43,9 @@ public class RabbitMqBasicGetSupplier<T> extends SequentialGetStepSupplier.GetOb
         this.supplier = supplier;
     }
 
-    public RabbitMqBasicGetSupplier<T> setObjectMapper(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-        supplier.setMapper(objectMapper);
+    public RabbitMqBasicGetSupplier<T> setObjectMapper(RabbitMqMapper rabbitMqMapper) {
+        this.rabbitMqMapper = rabbitMqMapper;
+        supplier.setMapper(rabbitMqMapper);
         return this;
     }
 
@@ -72,16 +75,16 @@ public class RabbitMqBasicGetSupplier<T> extends SequentialGetStepSupplier.GetOb
     }
 
 
-    private static final class MapperSupplier implements Supplier<ObjectMapper> {
+    private static final class MapperSupplier implements Supplier<RabbitMqMapper> {
 
-        private ObjectMapper mapper;
+        private RabbitMqMapper mapper;
 
         @Override
-        public ObjectMapper get() {
+        public RabbitMqMapper get() {
             return mapper;
         }
 
-        MapperSupplier setMapper(ObjectMapper mapper) {
+        MapperSupplier setMapper(RabbitMqMapper mapper) {
             this.mapper = mapper;
             return this;
         }

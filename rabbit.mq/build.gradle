@@ -10,7 +10,7 @@ dependencies {
     }
     implementation group: 'com.rabbitmq', name: 'amqp-client', version: '5.12.0'
     testCompile group: 'org.mockito', name: 'mockito-core', version: '3.7.7'
-
+    testImplementation 'org.mockito:mockito-inline:2.7.21'
 }
 
 task javadocJar(type: Jar) {
@@ -52,15 +52,15 @@ uploadArchives {
 
             pom.project {
                 packaging 'jar'
-                name 'check'
+                name 'rabbit.mq'
                 version version
                 url 'https://github.com/TinkoffCreditSystems/neptune'
                 developers {
                     developer {
-                        name 'Sergey Tikhomirov'
-                        email 'tichomirovsergey@gmail.com'
-                        url 'https://github.com/TikhomirovSergey'
-                        id 'TikhomirovSergey'
+                        name 'Andrew Charykov'
+                        email 'a.s.charykov@yandex.ru'
+                        url 'https://github.com/AndrewCharykov'
+                        id 'AndrewCharykov'
                     }
                 }
                 licenses {

@@ -10,7 +10,7 @@ import static org.mockito.Mockito.verify;
 
 public class PurgeQueueTest extends BaseRabbitMqTest {
 
-    @Test
+    @Test(description = "Check ")
     public void purgeTest() throws IOException {
         rabbitMqStepContext.purgeQueue("queue1");
         verify(channel, times(1)).queuePurge("queue1");

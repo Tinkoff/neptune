@@ -15,6 +15,7 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArguments.arguments;
 public class ExchangeBindTest extends BaseRabbitMqTest {
     AMQP.Exchange.BindOk bindOk1;
     AMQP.Exchange.BindOk bindOk2;
+    AMQP.Exchange.BindOk bindOk3;
 
     @BeforeClass(dependsOnMethods = "setUp")
     public void configureMock() throws IOException {
@@ -23,15 +24,24 @@ public class ExchangeBindTest extends BaseRabbitMqTest {
 
         when(channel.exchangeBind("destination", "source", "routingKey", arguments().getHashMap()))
                 .thenReturn(bindOk2 = new AMQImpl.Exchange.BindOk());
+
+        when(channel.exchangeBind("destination", "source", "routingKey",
+                arguments().setArgument("key", "value").getHashMap()))
+                .thenReturn(bindOk3 = new AMQImpl.Exchange.BindOk());
     }
 
-    @Test
+    @Test(description = "Check bind exchange to exchange without additional arguments")
     public void bindTest1() {
         assertEquals(bindOk1, rabbitMqStepContext.exchangeBind("destination", "source", "routingKey"));
     }
 
-    @Test
+    @Test(description = "Check bind exchange to exchange with empty additional arguments")
     public void bindTest2() {
         assertEquals(bindOk2, rabbitMqStepContext.exchangeBind("destination", "source", "routingKey", arguments()));
+    }
+
+    @Test(description = "Check bind exchange to exchange with additional arguments")
+    public void bindTest3() {
+        assertEquals(bindOk3, rabbitMqStepContext.exchangeBind("destination", "source", "routingKey", arguments().setArgument("key", "value")));
     }
 }

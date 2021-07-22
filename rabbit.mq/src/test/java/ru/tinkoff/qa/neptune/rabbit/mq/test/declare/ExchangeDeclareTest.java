@@ -15,6 +15,7 @@ public class ExchangeDeclareTest extends BaseRabbitMqTest {
     AMQImpl.Exchange.DeclareOk declareOk1;
     AMQImpl.Exchange.DeclareOk declareOk2;
     AMQImpl.Exchange.DeclareOk declareOk3;
+    AMQImpl.Exchange.DeclareOk declareOk4;
 
     @BeforeClass(dependsOnMethods = "setUp")
     public void configureMock() throws IOException {
@@ -24,25 +25,32 @@ public class ExchangeDeclareTest extends BaseRabbitMqTest {
                 .thenReturn(declareOk2 = new AMQImpl.Exchange.DeclareOk());
         when(channel.exchangeDeclare("exchange", "type", true, true, false, null))
                 .thenReturn(declareOk3 = new AMQImpl.Exchange.DeclareOk());
+        when(channel.exchangeDeclare("exchange", "type", false, false, false, exchangeParams().argument("name", "value").getAdditionalArguments()))
+                .thenReturn(declareOk4 = new AMQImpl.Exchange.DeclareOk());
     }
 
-    @Test
+    @Test(description = "Check passive declare exchange")
     public void declareTest1() {
         assertEquals(declareOk1, rabbitMqStepContext.exchangeDeclare("passive"));
     }
 
-    @Test
+    @Test(description = "Check declare exchange")
     public void declareTest2() {
         assertEquals(declareOk2, rabbitMqStepContext.exchangeDeclare("exchange", "type"));
     }
 
-    @Test
+    @Test(description = "Check declare exchange with params")
     public void declareTest3() {
         assertEquals(declareOk2, rabbitMqStepContext.exchangeDeclare("exchange", "type", exchangeParams()));
     }
 
-    @Test
+    @Test(description = "Check declare exchange with params")
     public void declareTest4() {
         assertEquals(declareOk3, rabbitMqStepContext.exchangeDeclare("exchange", "type", exchangeParams().durable().autoDelete()));
+    }
+
+    @Test(description = "Check declare exchange with params and additional arguments")
+    public void declareTest5() {
+        assertEquals(declareOk4, rabbitMqStepContext.exchangeDeclare("exchange", "type", exchangeParams().argument("name", "value")));
     }
 }

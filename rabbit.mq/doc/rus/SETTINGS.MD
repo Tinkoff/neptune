@@ -50,6 +50,8 @@ public class SomeClass {
 }
 ```
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 ## RABBIT_MQ_PASSWORD
 
 Настройка, в которой указывается значение пароля для rabbitMq
@@ -72,6 +74,8 @@ public class SomeClass {
 #Значение свойства указывается так
 RABBIT_MQ_PASSWORD=guest
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## RABBIT_MQ_USERNAME
 
@@ -96,22 +100,30 @@ public class SomeClass {
 RABBIT_MQ_USERNAME=guest
 ```
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 ## RABBIT_MQ_DEFAULT_READ_MAPPER
 
 ```java
-//Создаем поставщика, который будет поставлять объекты класса ObjectMapper
-public class MyMapperSupplier implements Supplier<ObjectMapper> {
+//Создаем реализацию механизма сериализации и десериализации
+public class MyMapper implements RabbitMqMapper {
+
 
     @Override
-    public ObjectMapper get() {
-        //Тут создается объект, который будет использован клиентом
+    public <T> T deserialize(String message, Class<T> cls) {
+        //тут описываем механизм десериализации
+    }
+
+    @Override
+    public String serialize(Object obj) {
+        //тут описываем механизм сериализации
     }
 }
 ```
 
 ```properties
 #Значение свойства указывается так
-RABBIT_MQ_DEFAULT_READ_MAPPER=org.my.pack.MyMapperSupplier
+RABBIT_MQ_DEFAULT_MAPPER=org.my.pack.MyMapper
 ```
 
 ```java
@@ -123,10 +135,12 @@ public class SomeClass {
 
     public void someVoid() {
         //пример доступа до значения свойства
-        ObjectMapper mapper = RABBIT_MQ_DEFAULT_MAPPER.get();
+        RabbitMqMapper mapper = RABBIT_MQ_DEFAULT_MAPPER.get();
     }
 }
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## RABBIT_MQ_CLUSTER
 
@@ -152,3 +166,5 @@ public class SomeClass {
 #Значение свойства указывается так
 RABBIT_MQ_CLUSTER_PROPERTY=host:port,host:port
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)

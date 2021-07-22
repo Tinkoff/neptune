@@ -1,13 +1,12 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.function.publish;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.AMQP;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
+import ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqMapper;
 
 import java.util.Date;
 import java.util.Map;
@@ -66,12 +65,8 @@ public class RabbitMqPublishSupplier extends SequentialActionSupplier<RabbitMqSt
             "Params:\r\n" +
             "exchange – {exchange}\r\n" +
             "routingKey – {routingKey}")
-    public static RabbitMqPublishSupplier publish(@DescriptionFragment("exchange") String exchange, @DescriptionFragment("routingKey") String routingKey, Object toSerialize, ObjectMapper mapper) {
-        try {
-            return new RabbitMqPublishSupplier(exchange, routingKey, mapper.writeValueAsString(toSerialize));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+    public static RabbitMqPublishSupplier publish(@DescriptionFragment("exchange") String exchange, @DescriptionFragment("routingKey") String routingKey, Object toSerialize, RabbitMqMapper mapper) {
+        return new RabbitMqPublishSupplier(exchange, routingKey, mapper.serialize(toSerialize));
     }
 
     @Override
