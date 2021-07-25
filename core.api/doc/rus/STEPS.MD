@@ -676,7 +676,7 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetObjectFro
         this(myTestContext -> {
             var o = myTestContext.getSomeResource();
             ///дальнейшие вычисления
-            return //возврат КОЛЛЕКЦИИ или какого либо другого Iterable
+            return //возврат КОЛЛЕКЦИИ или какого либо другого Iterable<T>
         });
     }
 
@@ -705,9 +705,6 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetObjectFro
 
 
 - 2
-
-
-  
 
 ```java
 package org.my.pack;
@@ -738,7 +735,7 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObject
     protected MyGetStepSupplier() {
         this(m -> {
             ///дальнейшие вычисления
-            return //возврат КОЛЛЕКЦИИ или какого либо другого Iterable
+            return //возврат КОЛЛЕКЦИИ или какого либо другого Iterable<T>
         });
     }
 
@@ -803,7 +800,7 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetObjectFro
         this(myTestContext -> {
             var o = myTestContext.getSomeResource();
             ///дальнейшие вычисления
-            return //возврат МАССИВА
+            return //возврат МАССИВА T[]
         });
     }
 
@@ -861,7 +858,7 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObject
     protected MyGetStepSupplier() {
         this(m -> {
             ///дальнейшие вычисления
-            return //возврат МАССИВА
+            return //возврат МАССИВА T[]
         });
     }
 
@@ -933,7 +930,7 @@ public class MyGetStepSupplier<T, S extends Iterable<T>> extends SequentialGetSt
         this(myTestContext -> {
             var o = myTestContext.getSomeResource();
             ///дальнейшие вычисления
-            return //возврат КОЛЛЕКЦИИ или какого либо другого Iterable
+            return //возврат КОЛЛЕКЦИИ или какого либо другого Iterable<T>
         });
     }
 
@@ -945,14 +942,14 @@ public class MyGetStepSupplier<T, S extends Iterable<T>> extends SequentialGetSt
     //..........
 
     //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должен соответствовать конечный результат
+    //которым должны соответствовать все элементы, входящие в результирующий Iterable
     @Override
     public MyGetStepSupplier<T, S> criteria(Criteria<? super T> criteria) {
         return super.criteria(criteria);
     }
 
     //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должен соответствовать конечный результат
+    //которым должны соответствовать все элементы, входящие в результирующий Iterable
     @Override
     public MyGetStepSupplier<T, S> criteria(String description, Predicate<? super T> predicate) {
         return super.criteria(description, predicate);
@@ -997,7 +994,7 @@ public class MyGetStepSupplier<T, M, S extends Iterable<T>> extends SequentialGe
     protected MyGetStepSupplier() {
         this(m -> {
             ///дальнейшие вычисления
-            return //возврат КОЛЛЕКЦИИ или какого либо другого Iterable
+            return //возврат КОЛЛЕКЦИИ или какого либо другого Iterable<T>
         });
     }
 
@@ -1009,14 +1006,14 @@ public class MyGetStepSupplier<T, M, S extends Iterable<T>> extends SequentialGe
     //..........
 
     //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должен соответствовать конечный результат
+    //которым должны соответствовать все элементы, входящие в результирующий Iterable
     @Override
     public MyGetStepSupplier<T, M, S> criteria(Criteria<? super T> criteria) {
         return super.criteria(criteria);
     }
 
     //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должен соответствовать конечный результат
+    //которым должны соответствовать все элементы, входящие в результирующий Iterable
     @Override
     public MyGetStepSupplier<T, M, S> criteria(String description, Predicate<? super T> predicate) {
         return super.criteria(description, predicate);
@@ -1067,7 +1064,7 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetArrayStep
         this(myTestContext -> {
             var o = myTestContext.getSomeResource();
             ///дальнейшие вычисления
-            return //возврат МАССИВА
+            return //возврат МАССИВА T[]
         });
     }
 
@@ -1079,14 +1076,14 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetArrayStep
     //..........
 
     //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должен соответствовать конечный результат
+    //которым должны соответствовать все элементы, входящие в результирующий массив
     @Override
     public MyGetStepSupplier<T> criteria(Criteria<? super T> criteria) {
         return super.criteria(criteria);
     }
 
     //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должен соответствовать конечный результат
+    //которым должны соответствовать все элементы, входящие в результирующий массив
     @Override
     public MyGetStepSupplier<T> criteria(String description, Predicate<? super T> predicate) {
         return super.criteria(description, predicate);
@@ -1123,15 +1120,15 @@ import java.util.function.Predicate;
 @ThrowWhenNoData(toThrow = IllegalStateException.class, startDescription = "Can't get:")
 public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetArrayChainedStepSupplier<
         MyTestContext,
-        M,
         T,
+        M,
         MyGetStepSupplier<T, M>>
 {
 
     protected MyGetStepSupplier() {
-        this(myTestContext -> {
+        this(m -> {
             ///дальнейшие вычисления
-            return //возврат МАССИВА
+            return  //возврат МАССИВА T[]
         });
     }
 
@@ -1143,14 +1140,14 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetArrayC
     //..........
 
     //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должен соответствовать конечный результат
+    //которым должны соответствовать все элементы, входящие в результирующий массив
     @Override
     public MyGetStepSupplier<T, M> criteria(Criteria<? super T> criteria) {
         return super.criteria(criteria);
     }
 
     //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должен соответствовать конечный результат
+    //которым должны соответствовать все элементы, входящие в результирующий массив
     @Override
     public MyGetStepSupplier<T, M> criteria(String description, Predicate<? super T> predicate) {
         return super.criteria(description, predicate);

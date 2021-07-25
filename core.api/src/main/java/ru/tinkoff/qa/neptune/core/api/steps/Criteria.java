@@ -11,12 +11,13 @@ import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
+import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.joining;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.logical.lexemes.Not.NOT_LEXEME;
 import static ru.tinkoff.qa.neptune.core.api.logical.lexemes.OnlyOne.ONLY_ONE_LEXEME;
 import static ru.tinkoff.qa.neptune.core.api.logical.lexemes.Or.OR_LEXEME;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 /**
  * This class is designed to create a {@link Predicate} used by {@link SequentialGetStepSupplier}
@@ -168,7 +169,31 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
         return new Criteria<>(predicate);
     }
 
-    public Criteria<T> setDescription(String description) {
+    /**
+     * An auxiliary method that helps to describe some {@link Criteria} when it is necessary to check some string
+     * on containing of a substring / regexp matching
+     *
+     * @param subStringOrRegExp substring or reg exp
+     * @return auxiliary predicate
+     */
+    public static Predicate<String> checkByStringContainingOrRegExp(String subStringOrRegExp) {
+        return s -> {
+            if (s.contains(subStringOrRegExp)) {
+                return true;
+            }
+
+            try {
+                var pattern = compile(subStringOrRegExp);
+                var m = pattern.matcher(s);
+                return m.matches();
+            } catch (Throwable t) {
+                t.printStackTrace();
+                return false;
+            }
+        };
+    }
+
+    final Criteria<T> setDescription(String description) {
         checkArgument(isNotBlank(description), "Description of the criteria should not be blank or null string");
         this.description = description;
         return this;

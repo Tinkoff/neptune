@@ -60,7 +60,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
         setStartBenchMark();
         List<WebElement> webElements = seleniumSteps.find(webElements(tagName(TABLE)).timeOut(FIVE_SECONDS));
         setEndBenchMark();
-        assertThat(getTimeDifference(), lessThan(100L));
+        assertThat(getTimeDifference(), lessThan(150L));
         assertThat(webElements,
                 contains(equalTo(COMMON_LABELED_TABLE1),
                         equalTo(COMMON_LABELED_TABLE2),
@@ -80,7 +80,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
             setStartBenchMark();
             List<WebElement> webElements = seleniumSteps.find(webElements(tagName(TABLE)));
             setEndBenchMark();
-            assertThat(getTimeDifference(), lessThan(100L));
+            assertThat(getTimeDifference(), lessThan(150L));
             assertThat(webElements,
                     contains(equalTo(COMMON_LABELED_TABLE1),
                             equalTo(COMMON_LABELED_TABLE2),
@@ -134,7 +134,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
         List<WebElement> webElements = seleniumSteps.find(webElements(className(CUSTOM_BUTTON_CLASS)).timeOut(FIVE_SECONDS)
                 .foundFrom(webElement(className(SPREAD_SHEET_CLASS)).timeOut(FIVE_SECONDS)));
         setEndBenchMark();
-        assertThat(getTimeDifference(), lessThan(100L));
+        assertThat(getTimeDifference(), lessThan(150L));
         assertThat(webElements, contains(equalTo(CUSTOM_LABELED_BUTTON1)));
     }
 
@@ -147,7 +147,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
             List<WebElement> webElements = seleniumSteps.find(webElements(className(CUSTOM_BUTTON_CLASS))
                     .foundFrom(webElement(className(SPREAD_SHEET_CLASS))));
             setEndBenchMark();
-            assertThat(getTimeDifference(), lessThan(100L));
+            assertThat(getTimeDifference(), lessThan(150L));
             assertThat(webElements, contains(equalTo(CUSTOM_LABELED_BUTTON1)));
         } finally {
             removeProperty(ELEMENT_WAITING_TIME_UNIT.getName());
@@ -184,7 +184,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
         List<WebElement> webElements = seleniumSteps.find(webElements(className(CUSTOM_BUTTON_CLASS)).timeOut(FIVE_SECONDS)
                 .foundFrom(spreadSheet));
         setEndBenchMark();
-        assertThat(getTimeDifference(), lessThan(100L));
+        assertThat(getTimeDifference(), lessThan(150L));
         assertThat(webElements, contains(equalTo(CUSTOM_LABELED_BUTTON1)));
     }
 
@@ -198,7 +198,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
             List<WebElement> webElements = seleniumSteps.find(webElements(className(CUSTOM_BUTTON_CLASS))
                     .foundFrom(spreadSheet));
             setEndBenchMark();
-            assertThat(getTimeDifference(), lessThan(100L));
+            assertThat(getTimeDifference(), lessThan(150L));
             assertThat(webElements, contains(equalTo(CUSTOM_LABELED_BUTTON1)));
         } finally {
             removeProperty(ELEMENT_WAITING_TIME_UNIT.getName());
@@ -372,7 +372,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
         List<WebElement> webElements = seleniumSteps.find(webElements(by).criteria(criteria));
         setEndBenchMark();
         assertThat(new BigDecimal(getTimeDifference()),
-                either(closeTo(new BigDecimal(100L), new BigDecimal(450)))
+                either(closeTo(new BigDecimal(150L), new BigDecimal(450)))
                         .or(closeTo(new BigDecimal(ONE_SECOND.toMillis()), new BigDecimal(200))));
         assertThat(webElements, matcher);
     }
@@ -386,7 +386,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
                 .criteria(criteria));
         setEndBenchMark();
         assertThat(new BigDecimal(getTimeDifference()),
-                either(closeTo(new BigDecimal(100L), new BigDecimal(450)))
+                either(closeTo(new BigDecimal(150L), new BigDecimal(450)))
                         .or(closeTo(new BigDecimal(ONE_SECOND.toMillis()), new BigDecimal(200))));
         assertThat(webElements, matcher);
     }
@@ -401,7 +401,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
             List<WebElement> webElements = seleniumSteps.find(webElements(by).criteria(criteria));
             setEndBenchMark();
             assertThat(new BigDecimal(getTimeDifference()),
-                    either(closeTo(new BigDecimal(100L), new BigDecimal(450)))
+                    either(closeTo(new BigDecimal(150L), new BigDecimal(450)))
                             .or(closeTo(new BigDecimal(ONE_SECOND.toMillis()), new BigDecimal(200))));
             assertThat(webElements, matcher);
         } finally {

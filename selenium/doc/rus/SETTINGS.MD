@@ -807,8 +807,6 @@ public class SomeClass {
 ## WEB_DRIVER_CREDENTIALS
 
 
-  
-
 Настройка предоставляет объект `ru.tinkoff.qa.neptune.selenium.authentication.BrowserCredentials`, который выполняет логин/аутентификацию 
 в приложении через браузер.
 

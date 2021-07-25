@@ -217,6 +217,6 @@ public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
         setEndBenchMark();
         assertThat(t.getClass().getSuperclass(), is(widgetClass));
         ofNullable(element).ifPresent(element1 -> assertThat(t.getWrappedElement(), equalTo(element1)));
-        assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(100L));
+        assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(150L));
     }
 }

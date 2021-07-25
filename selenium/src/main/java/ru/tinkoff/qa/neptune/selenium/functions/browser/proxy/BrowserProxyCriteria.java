@@ -11,13 +11,12 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
 import static java.net.http.HttpClient.Version.HTTP_1_1;
 import static java.net.http.HttpClient.Version.HTTP_2;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static java.util.regex.Pattern.compile;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.checkByStringContainingOrRegExp;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 
 public final class BrowserProxyCriteria {
@@ -58,20 +57,7 @@ public final class BrowserProxyCriteria {
             String requestUrl = entry.getRequest().getUrl();
 
             return ofNullable(requestUrl)
-                    .map(s -> {
-                        if (s.contains(urlExpression)) {
-                            return true;
-                        }
-
-                        try {
-                            var pattern = compile(urlExpression);
-                            var matcher = pattern.matcher(s);
-                            return matcher.matches();
-                        } catch (Throwable thrown) {
-                            thrown.printStackTrace();
-                            return false;
-                        }
-                    })
+                    .map(s -> checkByStringContainingOrRegExp(urlExpression).test(s))
                     .orElse(false);
         });
     }
@@ -170,22 +156,11 @@ public final class BrowserProxyCriteria {
             List<HarQueryParam> queryParams = entry.getRequest().getQueryString();
 
             return ofNullable(queryParams)
-                    .map(params ->
-                            params.stream().anyMatch(param -> {
-                                if (param.getValue().contains(valueExpression)) {
-                                    return true;
-                                }
-
-                                try {
-                                    var pattern = compile(valueExpression);
-                                    var matcher = pattern.matcher(param.getValue());
-
-                                    return matcher.matches();
-                                } catch (Throwable thrown) {
-                                    thrown.printStackTrace();
-                                    return false;
-                                }
-                            }))
+                    .map(params -> params
+                            .stream()
+                            .filter(param -> Objects.equals(param.getName(), queryParam))
+                            .map(HarQueryParam::getValue)
+                            .anyMatch(checkByStringContainingOrRegExp(valueExpression)))
                     .orElse(false);
         });
     }
@@ -198,7 +173,8 @@ public final class BrowserProxyCriteria {
      * @return criteria that checks HAR entry
      */
     @Description("request has header '{name}' with value '{value}'")
-    public static Criteria<HarEntry> recordedRequestHeader(@DescriptionFragment("name") String name, @DescriptionFragment("value") String value) {
+    public static Criteria<HarEntry> recordedRequestHeader(@DescriptionFragment("name") String name,
+                                                           @DescriptionFragment("value") String value) {
         checkArgument(isNotBlank(name), "Request header name should be defined");
         checkArgument(isNotBlank(value), "Request header value should be defined");
 
@@ -208,8 +184,9 @@ public final class BrowserProxyCriteria {
             return ofNullable(requestHeaders)
                     .map(reqHeaders ->
                             reqHeaders.stream()
-                                    .anyMatch(header ->
-                                            header.getName().equals(name) && header.getValue().equals(value)))
+                                    .filter(param -> Objects.equals(param.getName(), name))
+                                    .map(HarHeader::getValue)
+                                    .anyMatch(value::equals))
                     .orElse(false);
         });
     }
@@ -233,21 +210,11 @@ public final class BrowserProxyCriteria {
 
             return ofNullable(requestHeaders)
                     .map(reqHeaders ->
-                            reqHeaders.stream().anyMatch(header -> {
-                                if (header.getValue().contains(valueExpression)) {
-                                    return true;
-                                }
-
-                                try {
-                                    var pattern = compile(valueExpression);
-                                    var matcher = pattern.matcher(header.getValue());
-
-                                    return matcher.matches();
-                                } catch (Throwable thrown) {
-                                    thrown.printStackTrace();
-                                    return false;
-                                }
-                            }))
+                            reqHeaders
+                                    .stream()
+                                    .filter(param -> Objects.equals(param.getName(), name))
+                                    .map(HarHeader::getValue)
+                                    .anyMatch(checkByStringContainingOrRegExp(valueExpression)))
                     .orElse(false);
         });
     }
@@ -260,18 +227,20 @@ public final class BrowserProxyCriteria {
      * @return criteria that checks HAR entry
      */
     @Description("response has header '{name}' with value '{value}'")
-    public static Criteria<HarEntry> recordedResponseHeader(String name, String value) {
+    public static Criteria<HarEntry> recordedResponseHeader(@DescriptionFragment("name") String name,
+                                                            @DescriptionFragment("value") String value) {
         checkArgument(isNotBlank(name), "Response header name should be defined");
         checkArgument(isNotBlank(value), "Response header value should be defined");
 
-        return condition(format("response has header '%s' with value '%s'", name, value), entry -> {
+        return condition(entry -> {
             List<HarHeader> responseHeaders = entry.getResponse().getHeaders();
 
             return ofNullable(responseHeaders)
                     .map(respHeaders ->
                             respHeaders.stream()
-                                    .anyMatch(header ->
-                                            header.getName().equals(name) && header.getValue().equals(value)))
+                                    .filter(param -> Objects.equals(param.getName(), name))
+                                    .map(HarHeader::getValue)
+                                    .anyMatch(value::equals))
                     .orElse(false);
         });
     }
@@ -295,21 +264,11 @@ public final class BrowserProxyCriteria {
 
             return ofNullable(responseHeaders)
                     .map(respHeaders ->
-                            respHeaders.stream().anyMatch(header -> {
-                                if (header.getValue().contains(valueExpression)) {
-                                    return true;
-                                }
-
-                                try {
-                                    var pattern = compile(valueExpression);
-                                    var matcher = pattern.matcher(header.getValue());
-
-                                    return matcher.matches();
-                                } catch (Throwable thrown) {
-                                    thrown.printStackTrace();
-                                    return false;
-                                }
-                            }))
+                            respHeaders
+                                    .stream()
+                                    .filter(param -> Objects.equals(param.getName(), name))
+                                    .map(HarHeader::getValue)
+                                    .anyMatch(checkByStringContainingOrRegExp(valueExpression)))
                     .orElse(false);
         });
     }
@@ -367,21 +326,7 @@ public final class BrowserProxyCriteria {
             HarPostData postData = entry.getRequest().getPostData();
 
             return ofNullable(postData)
-                    .map(data -> {
-                        if (data.getText().contains(bodyExpression)) {
-                            return true;
-                        }
-
-                        try {
-                            var pattern = compile(bodyExpression);
-                            var matcher = pattern.matcher(data.getText());
-
-                            return matcher.matches();
-                        } catch (Throwable thrown) {
-                            thrown.printStackTrace();
-                            return false;
-                        }
-                    })
+                    .map(data -> checkByStringContainingOrRegExp(bodyExpression).test(data.getText()))
                     .orElse(false);
         });
     }
@@ -401,21 +346,7 @@ public final class BrowserProxyCriteria {
             HarContent responseContent = entry.getResponse().getContent();
 
             return ofNullable(responseContent)
-                    .map(content -> {
-                        if (content.getText().contains(bodyExpression)) {
-                            return true;
-                        }
-
-                        try {
-                            var pattern = compile(bodyExpression);
-                            var matcher = pattern.matcher(content.getText());
-
-                            return matcher.matches();
-                        } catch (Throwable thrown) {
-                            thrown.printStackTrace();
-                            return false;
-                        }
-                    })
+                    .map(content -> checkByStringContainingOrRegExp(bodyExpression).test(content.getText()))
                     .orElse(false);
         });
     }
@@ -428,7 +359,7 @@ public final class BrowserProxyCriteria {
      */
     @Description("status code of response is {code}")
     public static Criteria<HarEntry> recordedResponseStatusCode(@DescriptionFragment("code") int status) {
-        return condition(format("response status code is '%s'", status), entry -> {
+        return condition(entry -> {
             var statusCode = entry.getResponse().getStatus();
             return statusCode == status;
         });
@@ -481,7 +412,6 @@ public final class BrowserProxyCriteria {
 
         return condition(entry -> {
             long time = entry.getTime();
-
             return time > millis;
         });
     }

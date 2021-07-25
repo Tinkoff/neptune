@@ -22,7 +22,7 @@ public abstract class Captor<T, S> {
     protected final List<? extends CapturedDataInjector<S>> injectors;
 
     protected Captor(String message, List<? extends CapturedDataInjector<S>> injectors) {
-        this.message = translate(message);
+        this.message = message;
         this.injectors = injectors;
     }
 
@@ -33,7 +33,7 @@ public abstract class Captor<T, S> {
 
     @SuppressWarnings("unchecked")
     public Captor(String message) {
-        this.message = translate(message);
+        this.message = message;
         this.injectors = createInjectors(this.getClass())
                 .stream()
                 .map(i -> (CapturedDataInjector<S>) i)
