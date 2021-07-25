@@ -1,4 +1,4 @@
-Integration of Neptune with [Retrofit2](https://square.github.io/retrofit/).
+Integration of Neptune with [rabbitmq](https://www.rabbitmq.com/).
 
 ## Maven
 
@@ -6,7 +6,7 @@ Integration of Neptune with [Retrofit2](https://square.github.io/retrofit/).
     <dependencies>
         <dependency>
             <groupId>ru.tinkoff.qa.neptune</groupId>
-            <artifactId>retrofit2</artifactId>
+            <artifactId>rabbit.mq</artifactId>
             <version>${LATEST_RELEASE_OR_BETA_VERSION}</version>
             <scope>test</scope>
         </dependency>
@@ -17,7 +17,7 @@ Integration of Neptune with [Retrofit2](https://square.github.io/retrofit/).
 
 ```groovy
     dependencies {
-        testCompile group: 'ru.tinkoff.qa.neptune', name: 'retrofit2', version: LATEST_RELEASE_OR_BETA_VERSION    
+        testCompile group: 'ru.tinkoff.qa.neptune', name: 'rabbit.mq', version: LATEST_RELEASE_OR_BETA_VERSION    
     }
 ```
 
@@ -25,4 +25,4 @@ Integration of Neptune with [Retrofit2](https://square.github.io/retrofit/).
 
 [Brief documentation in English](./doc/eng/README.MD)
 
-[API overview](https://tinkoffcreditsystems.github.io/neptune/retrofit2/index.html)
+[API overview](https://tinkoffcreditsystems.github.io/neptune/rabbit.mq/index.html)
