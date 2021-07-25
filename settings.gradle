@@ -8,5 +8,6 @@ include 'allure.testng.bridge'
 include 'data.base.api'
 include 'http.api'
 include 'neptune.swagger.codegen'
+include 'rabbit.mq'
 include 'retrofit2'
 
