@@ -11,7 +11,7 @@ dependencies {
     compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-parameter-names', version: jacksonVersion
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: jacksonVersion
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion
-    testCompile "com.github.tomakehurst:wiremock-jre8-standalone:2.27.2"
+    testCompile group: 'com.github.tomakehurst', name: 'wiremock-jre8-standalone', version: '2.29.0'
 }
 
 task javadocJar(type: Jar) {

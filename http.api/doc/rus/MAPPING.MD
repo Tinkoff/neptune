@@ -1216,8 +1216,7 @@ public class MyTest {
 - [Свойства для создания и возврата объектов URL](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов-URL)
 - [Связывание классов](./../../../core.api/doc/rus/CLASS_BINDING.MD)
 
-Добавим возможность указывать/читать свойства / переменные окружения / среды, и при чтении представлять их значения в виде
-URL/URI.
+Добавим возможность указывать/читать свойства/переменные окружения для специфических адресов хостов.
 
 ```java
 import ru.tinkoff.qa.neptune.core.api.properties.PropertyDefaultValue;
@@ -1329,7 +1328,7 @@ public class MyTest {
 
 Основная статья - [внедрения зависимостей](./../../../core.api/doc/rus/DEPENDENCY_INJECTION.MD).
 
-Модули, интегрирующие Neptune c фреймворком тестирования, имеют возможности использования механизмов внедрения
+Модули, интегрирующие Neptune c различными фреймворками тестирования, имеют возможности использования механизмов внедрения
 зависимостей:
 
 - [Testng](./../../../testng.integration/doc/rus/README.MD)  
@@ -1339,8 +1338,6 @@ public class MyTest {
 Интеграция Neptune и нативного http-клиента Java имеет свой механизм внедрения зависимостей, позволяющий
 инициализировать объекты классов, моделирующих http API тестируемых приложений.
 
-
-    
 
 ```java
 import java.net.http.HttpResponse;
@@ -1359,7 +1356,7 @@ public class MyTest {
     //Если есть необходимость использовать RequestTuner для какого либо/всех приложений - 
     //реализовать и выполнить привязку к моделирующим классам.
     private ServiceAPI1 service1;
-    private ServiceAPI2 service1;
+    private ServiceAPI2 service2;
 
     @Test
     public void myTest() {

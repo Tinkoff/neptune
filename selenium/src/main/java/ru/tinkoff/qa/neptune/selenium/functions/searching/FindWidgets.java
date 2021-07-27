@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
 import io.github.classgraph.ClassGraph;
-import io.github.classgraph.ScanResult;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
@@ -25,9 +24,11 @@ import static ru.tinkoff.qa.neptune.selenium.functions.searching.WidgetPriorityC
 class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> {
 
     private static final FindByBuilder BUILDER = new FindByBuilder();
-    private static final ScanResult SCAN_RESULT = new ClassGraph()
+    private static final List<Class<? extends Widget>> SCAN_RESULT = new ArrayList<>(new ClassGraph()
             .enableAllInfo()
-            .scan();
+            .scan()
+            .getSubclasses(Widget.class.getName())
+            .loadClasses(Widget.class));
 
     final Class<? extends R> classOfAWidget;
     private final Predicate<Class<? extends R>> classPredicate;
@@ -55,11 +56,13 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
         return new FindWidgets<>(classOfAWidget);
     }
 
+    @SuppressWarnings("unchecked")
     private static <R extends Widget> List<Class<? extends R>> findSubclasses(Class<? extends R> classOfAWidget,
                                                                               Predicate<Class<? extends R>> classPredicate) {
-        return SCAN_RESULT.getSubclasses(classOfAWidget.getName())
-                .loadClasses(classOfAWidget)
+        return SCAN_RESULT
                 .stream()
+                .filter(classOfAWidget::isAssignableFrom)
+                .map(cls -> (Class<? extends R>) cls)
                 .filter(classPredicate)
                 .sorted(widgetPriorityComparator()).collect(toList());
     }
