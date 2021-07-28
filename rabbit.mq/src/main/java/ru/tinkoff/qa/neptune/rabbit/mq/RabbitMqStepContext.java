@@ -25,7 +25,7 @@ import java.util.concurrent.TimeoutException;
 
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.DataTransformerSetter.setDataTransformer;
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.publish.RabbitMqPublishSupplier.publish;
-import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaulDataTransformer.RABBIT_MQ_DEFAULT_DATA_TRANSFORMER;
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaultDataTransformer.RABBIT_MQ_DEFAULT_DATA_TRANSFORMER;
 
 
 @CreateWith(provider = RabbitMqParameterProvider.class)

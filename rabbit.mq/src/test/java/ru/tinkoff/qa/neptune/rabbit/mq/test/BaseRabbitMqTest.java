@@ -14,7 +14,7 @@ import java.util.concurrent.TimeoutException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqClusterProperty.RABBIT_MQ_CLUSTER_PROPERTY;
-import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaulDataTransformer.RABBIT_MQ_DEFAULT_DATA_TRANSFORMER;
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaultDataTransformer.RABBIT_MQ_DEFAULT_DATA_TRANSFORMER;
 
 public class BaseRabbitMqTest {
     @Mock

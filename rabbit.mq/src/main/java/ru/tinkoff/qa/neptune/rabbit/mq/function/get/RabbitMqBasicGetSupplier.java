@@ -22,8 +22,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Object criteria")
 @MaxDepthOfReporting(0)
-public class RabbitMqBasicGetSupplier<T> extends SequentialGetStepSupplier
-        .GetObjectStepSupplier<RabbitMqStepContext, T, RabbitMqBasicGetSupplier<T>> {
+public class RabbitMqBasicGetSupplier<T> extends SequentialGetStepSupplier.GetObjectStepSupplier<RabbitMqStepContext, T, RabbitMqBasicGetSupplier<T>> {
 
     final GetFromQueue<?> getFromQueue;
 
