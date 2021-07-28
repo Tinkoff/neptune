@@ -2125,9 +2125,6 @@ public class MyGetStepSupplier<T, M, P>
 
 #### Предопределенные параметры шагов, выполняющих действия
 
-
-  
-
 ```java
 package org.my.pack;
 
@@ -2180,9 +2177,6 @@ public class MyActionStepSupplier<T> extends SequentialActionSupplier<MyTestCont
 
 Выше описано, как обозначить стандартный набор параметров для шагов определенных классов. 
 Ниже описано, как обозначить набор кастомных параметров.
-
-
-  
 
 ```java
 package org.my.pack;
@@ -2244,9 +2238,9 @@ public class MyStepClass /*extends a subclass of SequentialGetStepSupplier, or S
 package org.my.pack;
 
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterWrapper;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 
-public class ParameterPojo extends StepParameterWrapper { //класс объектов, цель которых - собирать 
+public class ParameterPojo implements StepParameterPojo{ //интерфейс объектов, цель которых - собирать 
     //все параметры определенного шага/набора шагов
 
     //все тоже самое, что в примере выше
