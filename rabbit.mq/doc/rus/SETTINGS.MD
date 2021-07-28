@@ -123,19 +123,20 @@ public class MyMapper implements RabbitMqMapper {
 
 ```properties
 #Значение свойства указывается так
-RABBIT_MQ_DEFAULT_MAPPER=org.my.pack.MyMapper
+RABBIT_MQ_DEFAULT_DATA_TRANSFORMER=org.my.pack.MyMapper
 ```
 
 ```java
 import java.net.*;
 
-import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaultMapper.RABBIT_MQ_DEFAULT_MAPPER;
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties
+        .RabbitMqDefaulDataTransformer.RABBIT_MQ_DEFAULT_DATA_TRANSFORMER;
 
 public class SomeClass {
 
     public void someVoid() {
         //пример доступа до значения свойства
-        RabbitMqMapper mapper = RABBIT_MQ_DEFAULT_MAPPER.get();
+        RabbitMqMapper mapper = RABBIT_MQ_DEFAULT_DATA_TRANSFORMER.get();
     }
 }
 ```
