@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterWrapper;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 
 import java.time.Duration;
 import java.util.Map;
@@ -705,7 +705,7 @@ public class StepParametersTest {
         }
     }
 
-    private static class ParamObj extends StepParameterWrapper {
+    private static class ParamObj implements StepParameterPojo {
 
         @StepParameter("Pojo Parameter 1")
         private Boolean param1;
