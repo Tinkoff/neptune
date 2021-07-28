@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.rabbit.mq;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
+import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 import ru.tinkoff.qa.neptune.rabbit.mq.function.bind.exchange.RabbitMqExchangeBindSupplier;
@@ -13,18 +14,18 @@ import ru.tinkoff.qa.neptune.rabbit.mq.function.declare.queue.RabbitMqQueueDecla
 import ru.tinkoff.qa.neptune.rabbit.mq.function.delete.exchange.RabbitMqExchangeDeleteSupplier;
 import ru.tinkoff.qa.neptune.rabbit.mq.function.delete.queue.ParametersForDelete;
 import ru.tinkoff.qa.neptune.rabbit.mq.function.delete.queue.RabbitMqQueueDeleteSupplier;
-import ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetSupplier;
+import ru.tinkoff.qa.neptune.rabbit.mq.function.get.*;
 import ru.tinkoff.qa.neptune.rabbit.mq.function.publish.ParametersForPublish;
 import ru.tinkoff.qa.neptune.rabbit.mq.function.purge.RabbitMqPurgeQueueSupplier;
 import ru.tinkoff.qa.neptune.rabbit.mq.function.unbind.exchange.RabbitMqExchangeUnbindSupplier;
 import ru.tinkoff.qa.neptune.rabbit.mq.function.unbind.queue.RabbitMqQueueUnbindSupplier;
-import ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqMapper;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.DataTransformerSetter.setDataTransformer;
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.publish.RabbitMqPublishSupplier.publish;
-import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaultMapper.RABBIT_MQ_DEFAULT_MAPPER;
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaulDataTransformer.RABBIT_MQ_DEFAULT_DATA_TRANSFORMER;
 
 
 @CreateWith(provider = RabbitMqParameterProvider.class)
@@ -45,27 +46,134 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
         return channel;
     }
 
-    public <T> T read(RabbitMqBasicGetSupplier<T> basicGet, RabbitMqMapper mapper) {
-        return get(basicGet.setObjectMapper(mapper));
+    /**
+     * Reads some value from queue
+     *
+     * @param basicGet how to read value
+     * @param mapper   how to deserialize read message
+     * @param <T>      is a type of desired value
+     * @return read value
+     */
+    public <T> T read(RabbitMqBasicGetSupplier<T> basicGet, DataTransformer mapper) {
+        return get(setDataTransformer(mapper, basicGet));
     }
 
+    /**
+     * Reads some value from queue
+     *
+     * @param basicGet how to read value
+     * @param <T>      is a type of desired value
+     * @return read value
+     */
     public <T> T read(RabbitMqBasicGetSupplier<T> basicGet) {
-        return read(basicGet, RABBIT_MQ_DEFAULT_MAPPER.get());
+        return read(basicGet, RABBIT_MQ_DEFAULT_DATA_TRANSFORMER.get());
+    }
+
+    /**
+     * Reads some value from queue
+     *
+     * @param basicGet how to read value
+     * @param mapper   how to deserialize read message
+     * @param <T>      is a type of desired value
+     * @return read value
+     */
+    public <T> T read(RabbitMqBasicGetArrayItemSupplier<T> basicGet, DataTransformer mapper) {
+        return get(setDataTransformer(mapper, basicGet));
+    }
+
+    /**
+     * Reads some value from queue
+     *
+     * @param basicGet how to read value
+     * @param <T>      is a type of desired value
+     * @return read value
+     */
+    public <T> T read(RabbitMqBasicGetArrayItemSupplier<T> basicGet) {
+        return read(basicGet, RABBIT_MQ_DEFAULT_DATA_TRANSFORMER.get());
+    }
+
+    /**
+     * Reads some array value from queue
+     *
+     * @param basicGet how to read value
+     * @param mapper   how to deserialize read message
+     * @param <T>      is a type of desired value
+     * @return read value
+     */
+    public <T> T[] read(RabbitMqBasicGetArraySupplier<T> basicGet, DataTransformer mapper) {
+        return get(setDataTransformer(mapper, basicGet));
+    }
+
+    /**
+     * Reads some array value from queue
+     *
+     * @param basicGet how to read value
+     * @param <T>      is a type of desired value
+     * @return read value
+     */
+    public <T> T[] read(RabbitMqBasicGetArraySupplier<T> basicGet) {
+        return read(basicGet, RABBIT_MQ_DEFAULT_DATA_TRANSFORMER.get());
+    }
+
+    /**
+     * Reads some value from queue
+     *
+     * @param basicGet how to read value
+     * @param mapper   how to deserialize read message
+     * @param <T>      is a type of desired value
+     * @return read value
+     */
+    public <T> T read(RabbitMqBasicGetIterableItemSupplier<T> basicGet, DataTransformer mapper) {
+        return get(setDataTransformer(mapper, basicGet));
+    }
+
+    /**
+     * Reads some value from queue
+     *
+     * @param basicGet how to read value
+     * @param <T>      is a type of desired value
+     * @return read value
+     */
+    public <T> T read(RabbitMqBasicGetIterableItemSupplier<T> basicGet) {
+        return read(basicGet, RABBIT_MQ_DEFAULT_DATA_TRANSFORMER.get());
+    }
+
+    /**
+     * Reads some iterable value from queue
+     *
+     * @param basicGet how to read value
+     * @param mapper   how to deserialize read message
+     * @param <T>      is a type of desired value
+     * @return read value
+     */
+    public <T, S extends Iterable<T>> S read(RabbitMqBasicGetIterableSupplier<T, S> basicGet, DataTransformer mapper) {
+        return get(setDataTransformer(mapper, basicGet));
+    }
+
+    /**
+     * Reads some iterable value from queue
+     *
+     * @param basicGet how to read value
+     * @param <T>      is a type of desired value
+     * @return read value
+     */
+    public <T, S extends Iterable<T>> S read(RabbitMqBasicGetIterableSupplier<T, S> basicGet) {
+        return read(basicGet, RABBIT_MQ_DEFAULT_DATA_TRANSFORMER.get());
     }
 
     public RabbitMqStepContext publishMessage(String exchange, String routingKey, Object toSerialize) {
-        return perform(publish(exchange, routingKey, toSerialize, RABBIT_MQ_DEFAULT_MAPPER.get()));
+        return publishMessage(exchange, routingKey, toSerialize, RABBIT_MQ_DEFAULT_DATA_TRANSFORMER.get());
     }
 
-    public RabbitMqStepContext publishMessage(String exchange, String routingKey, Object toSerialize, RabbitMqMapper mapper) {
+    public RabbitMqStepContext publishMessage(String exchange, String routingKey, Object toSerialize, DataTransformer mapper) {
         return perform(publish(exchange, routingKey, toSerialize, mapper));
     }
 
     public RabbitMqStepContext publishMessage(String exchange, String routingKey, ParametersForPublish params, Object toSerialize) {
-        return perform(publish(exchange, routingKey, toSerialize, RABBIT_MQ_DEFAULT_MAPPER.get()).setParams(params));
+        return publishMessage(exchange, routingKey, params, toSerialize, RABBIT_MQ_DEFAULT_DATA_TRANSFORMER.get());
     }
 
-    public RabbitMqStepContext publishMessage(String exchange, String routingKey, ParametersForPublish params, Object toSerialize, RabbitMqMapper mapper) {
+    public RabbitMqStepContext publishMessage(String exchange, String routingKey, ParametersForPublish params, Object toSerialize, DataTransformer mapper) {
         return perform(publish(exchange, routingKey, toSerialize, mapper).setParams(params));
     }
 

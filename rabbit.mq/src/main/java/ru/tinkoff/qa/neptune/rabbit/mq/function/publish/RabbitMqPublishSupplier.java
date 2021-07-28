@@ -1,12 +1,12 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.function.publish;
 
 import com.rabbitmq.client.AMQP;
+import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
-import ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqMapper;
 
 import java.util.Date;
 import java.util.Map;
@@ -18,19 +18,20 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqAMQPProperty.RA
 
 @SequentialActionSupplier.DefinePerformImperativeParameterName("Publish:")
 @MaxDepthOfReporting(0)
-public class RabbitMqPublishSupplier extends SequentialActionSupplier<RabbitMqStepContext, RabbitMqStepContext,RabbitMqPublishSupplier> {
+public class RabbitMqPublishSupplier extends SequentialActionSupplier<RabbitMqStepContext, RabbitMqStepContext, RabbitMqPublishSupplier> {
     private final String exchange;
     private final String routingKey;
-    private final byte[] body;
+
+    private final String body;
     private final AMQP.BasicProperties.Builder propertyBuilder;
-    private  ParametersForPublish params;
+    private ParametersForPublish params;
 
     public RabbitMqPublishSupplier(String exchange, String routingKey, String body) {
         super();
         this.exchange = exchange;
         this.routingKey = routingKey;
         checkNotNull(body);
-        this.body = body.getBytes(UTF_8);
+        this.body = body;
         performOn(rabbitStepContext -> rabbitStepContext);
         propertyBuilder = ofNullable(RABBIT_AMQP_PROPERTY.get())
                 .orElseGet(AMQP.BasicProperties.Builder::new);
@@ -65,7 +66,10 @@ public class RabbitMqPublishSupplier extends SequentialActionSupplier<RabbitMqSt
             "Params:\r\n" +
             "exchange – {exchange}\r\n" +
             "routingKey – {routingKey}")
-    public static RabbitMqPublishSupplier publish(@DescriptionFragment("exchange") String exchange, @DescriptionFragment("routingKey") String routingKey, Object toSerialize, RabbitMqMapper mapper) {
+    public static RabbitMqPublishSupplier publish(@DescriptionFragment("exchange") String exchange,
+                                                  @DescriptionFragment("routingKey") String routingKey,
+                                                  Object toSerialize,
+                                                  DataTransformer mapper) {
         return new RabbitMqPublishSupplier(exchange, routingKey, mapper.serialize(toSerialize));
     }
 
@@ -75,9 +79,11 @@ public class RabbitMqPublishSupplier extends SequentialActionSupplier<RabbitMqSt
         var props = propertyBuilder.build();
         try{
             if (params == null) {
-                channel.basicPublish(exchange, routingKey, false, false, props, body);
+                channel.basicPublish(exchange, routingKey, false, false, props,
+                        body.getBytes(UTF_8));
             } else {
-                channel.basicPublish(exchange, routingKey, params.isMandatory(), params.isImmediate(), props, body);
+                channel.basicPublish(exchange, routingKey, params.isMandatory(), params.isImmediate(), props,
+                        body.getBytes(UTF_8));
             }
         } catch (Exception e){
             throw new RuntimeException(e);
