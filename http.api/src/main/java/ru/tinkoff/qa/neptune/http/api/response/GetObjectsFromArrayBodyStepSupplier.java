@@ -1,5 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.response;
 
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
@@ -8,6 +10,11 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
+import ru.tinkoff.qa.neptune.http.api.captors.request.AbstractRequestBodyCaptor;
+import ru.tinkoff.qa.neptune.http.api.captors.response.AbstractResponseBodyObjectCaptor;
+import ru.tinkoff.qa.neptune.http.api.captors.response.AbstractResponseBodyObjectsCaptor;
+import ru.tinkoff.qa.neptune.http.api.captors.response.RequestResponseLogCaptor;
+import ru.tinkoff.qa.neptune.http.api.captors.response.ResponseCaptor;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 
 import java.net.http.HttpResponse;
@@ -19,6 +26,8 @@ import java.util.function.Predicate;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.createCaptors;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplier.response;
 
 /**
@@ -174,14 +183,24 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
     public static final class GetObjectsFromArrayWhenResponseReceiving<T, R>
             extends GetObjectsFromArrayBodyStepSupplier<T, R, GetObjectsFromArrayWhenResponseReceiving<T, R>> {
 
-        private final ResponseSequentialGetSupplier<T> getResponse;
-        private final StepExecutionHook stepExecutionHook;
+
+        private final ReceiveResponseAndGetResultFunction<T, R[]> f;
+
+        @CaptureOnSuccess(by = RequestResponseLogCaptor.class)
+        @CaptureOnFailure(by = RequestResponseLogCaptor.class)
+        ResponseExecutionInfo info;
+
+        @CaptureOnSuccess(by = {ResponseCaptor.class,
+                AbstractResponseBodyObjectCaptor.class,
+                AbstractResponseBodyObjectsCaptor.class})
+        @CaptureOnFailure(by = {ResponseCaptor.class,
+                AbstractResponseBodyObjectCaptor.class,
+                AbstractResponseBodyObjectsCaptor.class})
+        HttpResponse<?> lastReceived;
 
         private GetObjectsFromArrayWhenResponseReceiving(ReceiveResponseAndGetResultFunction<T, R[]> f) {
             super(f);
-            var s = f.getGetResponseSupplier();
-            getResponse = s;
-            stepExecutionHook = new StepExecutionHook(s.getInfo(), s);
+            this.f = f;
         }
 
         private GetObjectsFromArrayWhenResponseReceiving(ResponseSequentialGetSupplier<T> getResponse,
@@ -214,7 +233,7 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
          * @see SequentialGetStepSupplier#criteria(String, Predicate)
          */
         public GetObjectsFromArrayWhenResponseReceiving<T, R> responseCriteria(String description, Predicate<HttpResponse<T>> predicate) {
-            getResponse.criteria(description, predicate);
+            f.getGetResponseSupplier().criteria(description, predicate);
             return this;
         }
 
@@ -226,35 +245,42 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
          * @see SequentialGetStepSupplier#criteria(Criteria)
          */
         public GetObjectsFromArrayWhenResponseReceiving<T, R> responseCriteria(Criteria<HttpResponse<T>> criteria) {
-            getResponse.criteria(criteria);
+            f.getGetResponseSupplier().criteria(criteria);
             return this;
         }
 
         @Override
         public Map<String, String> getParameters() {
             var params = super.getParameters();
-            params.putAll(stepExecutionHook.getParameters());
+            params.putAll(f.getGetResponseSupplier().getParameters());
             return params;
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         protected void onStart(HttpStepContext httpStepContext) {
-            stepExecutionHook.onStart();
+            catchValue(f.getGetResponseSupplier().getRequest().body(),
+                    createCaptors(new Class[]{AbstractRequestBodyCaptor.class}));
+        }
+
+        private void fillResultData() {
+            info = f.getGetResponseSupplier().getInfo();
+            lastReceived = info.getLastReceived();
         }
 
         @Override
-        protected void onSuccess(R[] rs) {
-            stepExecutionHook.onSuccess();
+        protected void onSuccess(R[] r) {
+            fillResultData();
         }
 
         @Override
         protected void onFailure(HttpStepContext httpStepContext, Throwable throwable) {
-            stepExecutionHook.onFailure();
+            fillResultData();
         }
 
         @Override
         public GetObjectsFromArrayWhenResponseReceiving<T, R> throwOnNoResult() {
-            getResponse.throwOnNoResult();
+            f.getGetResponseSupplier().throwOnNoResult();
             return super.throwOnNoResult();
         }
     }

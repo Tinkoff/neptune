@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.BaseRabbitMqTest;
 
 import java.io.IOException;
+import java.util.Map;
 
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
@@ -25,7 +26,7 @@ public class ExchangeDeclareTest extends BaseRabbitMqTest {
                 .thenReturn(declareOk2 = new AMQImpl.Exchange.DeclareOk());
         when(channel.exchangeDeclare("exchange", "type", true, true, false, null))
                 .thenReturn(declareOk3 = new AMQImpl.Exchange.DeclareOk());
-        when(channel.exchangeDeclare("exchange", "type", false, false, false, exchangeParams().argument("name", "value").getAdditionalArguments()))
+        when(channel.exchangeDeclare("exchange", "type", false, false, false, Map.of("name", "value")))
                 .thenReturn(declareOk4 = new AMQImpl.Exchange.DeclareOk());
     }
 

@@ -1,5 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.data.format;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 /**
  * This interface allows to not force users to use specific serialization / deserialization library.
  * It wraps serialization / deserialization to make use it fluently.
@@ -24,7 +26,7 @@ public interface DataTransformer {
      * @param <T>    is a type of resulted object
      * @return result of deserialization
      */
-    <T> T deserialize(String string, TypeRef<T> type);
+    <T> T deserialize(String string, TypeReference<T> type);
 
     /**
      * Serializes java object to formatted string.

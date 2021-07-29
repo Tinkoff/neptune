@@ -12,7 +12,7 @@
 - [RABBIT_AMQP_PROPERTY](#RABBIT_AMQP_PROPERTY)
 - [RABBIT_MQ_PASSWORD](#RABBIT_MQ_PASSWORD)
 - [RABBIT_MQ_USERNAME](#RABBIT_MQ_USERNAME)
-- [RABBIT_MQ_DEFAULT_READ_MAPPER](#RABBIT_MQ_DEFAULT_READ_MAPPER)
+- [RABBIT_MQ_DEFAULT_DATA_TRANSFORMER](#RABBIT_MQ_DEFAULT_DATA_TRANSFORMER)
 - [RABBIT_MQ_CLUSTER](#RABBIT_MQ_CLUSTER)
 
 ## RABBIT_AMQP_PROPERTY
@@ -102,15 +102,27 @@ RABBIT_MQ_USERNAME=guest
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-## RABBIT_MQ_DEFAULT_READ_MAPPER
+## RABBIT_MQ_DEFAULT_DATA_TRANSFORMER
+
+Основная статья: [Сериализация и десериализация](./../../../core.api/doc/rus/SERIALIZATION_DESERIALIZATION.MD)
 
 ```java
+import org.my.pack;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
+
 //Создаем реализацию механизма сериализации и десериализации
-public class MyMapper implements RabbitMqMapper {
+public class MyDataTransformer implements DataTransformer {
 
 
     @Override
     public <T> T deserialize(String message, Class<T> cls) {
+        //тут описываем механизм десериализации
+    }
+
+    @Override
+    public <T> T deserialize(String string, TypeReference<T> type) {
         //тут описываем механизм десериализации
     }
 
@@ -123,20 +135,20 @@ public class MyMapper implements RabbitMqMapper {
 
 ```properties
 #Значение свойства указывается так
-RABBIT_MQ_DEFAULT_DATA_TRANSFORMER=org.my.pack.MyMapper
+RABBIT_MQ_DEFAULT_DATA_TRANSFORMER=org.my.pack.MyDataTransformer
 ```
 
 ```java
-import java.net.*;
+import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties
-        .RabbitMqDefaulDataTransformer.RABBIT_MQ_DEFAULT_DATA_TRANSFORMER;
+        .RabbitMqDefaultDataTransformer.RABBIT_MQ_DEFAULT_DATA_TRANSFORMER;
 
 public class SomeClass {
 
     public void someVoid() {
         //пример доступа до значения свойства
-        RabbitMqMapper mapper = RABBIT_MQ_DEFAULT_DATA_TRANSFORMER.get();
+        DataTransformer transformer = RABBIT_MQ_DEFAULT_DATA_TRANSFORMER.get();
     }
 }
 ```

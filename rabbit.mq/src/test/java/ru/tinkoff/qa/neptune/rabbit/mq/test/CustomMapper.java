@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
-import ru.tinkoff.qa.neptune.core.api.data.format.TypeRef;
 
 import java.util.Map;
 
@@ -30,7 +29,7 @@ public class CustomMapper implements DataTransformer {
     }
 
     @Override
-    public <T> T deserialize(String string, TypeRef<T> type) {
+    public <T> T deserialize(String string, TypeReference<T> type) {
         try {
             var map = new ObjectMapper().readValue(string, new TypeReference<Map<String, String>>() {
             });
@@ -40,7 +39,7 @@ public class CustomMapper implements DataTransformer {
                     .collect(toMap(Map.Entry::getKey, v -> "PREFIX" + v.getValue()));
 
             var json = new ObjectMapper().writeValueAsString(newMap);
-            return new ObjectMapper().readValue(json, type.jacksonTypeReference());
+            return new ObjectMapper().readValue(json, type);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

@@ -13,7 +13,7 @@ public class ParametersForPublish implements StepParameterPojo {
         return new ParametersForPublish();
     }
 
-    public boolean isMandatory() {
+    boolean isMandatory() {
         return mandatory;
     }
 
@@ -22,7 +22,7 @@ public class ParametersForPublish implements StepParameterPojo {
         return this;
     }
 
-    public boolean isImmediate() {
+    boolean isImmediate() {
         return immediate;
     }
 

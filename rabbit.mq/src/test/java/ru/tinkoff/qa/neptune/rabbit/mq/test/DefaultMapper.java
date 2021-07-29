@@ -2,10 +2,9 @@ package ru.tinkoff.qa.neptune.rabbit.mq.test;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
-import ru.tinkoff.qa.neptune.core.api.data.format.TypeRef;
-
 
 public class DefaultMapper implements DataTransformer {
 
@@ -19,9 +18,9 @@ public class DefaultMapper implements DataTransformer {
     }
 
     @Override
-    public <T> T deserialize(String string, TypeRef<T> type) {
+    public <T> T deserialize(String string, TypeReference<T> type) {
         try {
-            return new ObjectMapper().readValue(string, type.jacksonTypeReference());
+            return new ObjectMapper().readValue(string, type);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

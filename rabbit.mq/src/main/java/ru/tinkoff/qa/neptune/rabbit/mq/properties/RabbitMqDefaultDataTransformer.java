@@ -8,11 +8,11 @@ import ru.tinkoff.qa.neptune.core.api.properties.object.ObjectByClassPropertySup
 @PropertyDescription(description = "Defines a serialization and deserialization mechanism",
         section = "RabbitMQ. Mappers")
 @PropertyName("RABBIT_MQ_DEFAULT_DATA_TRANSFORMER")
-public final class RabbitMqDefaulDataTransformer implements ObjectByClassPropertySupplier<DataTransformer> {
+public final class RabbitMqDefaultDataTransformer implements ObjectByClassPropertySupplier<DataTransformer> {
 
-    public static final RabbitMqDefaulDataTransformer RABBIT_MQ_DEFAULT_DATA_TRANSFORMER = new RabbitMqDefaulDataTransformer();
+    public static final RabbitMqDefaultDataTransformer RABBIT_MQ_DEFAULT_DATA_TRANSFORMER = new RabbitMqDefaultDataTransformer();
 
-    private RabbitMqDefaulDataTransformer() {
+    private RabbitMqDefaultDataTransformer() {
         super();
     }
 }

@@ -1,15 +1,27 @@
 package ru.tinkoff.qa.neptune.retrofit2.steps;
 
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.retrofit2.RetrofitContext;
+import ru.tinkoff.qa.neptune.retrofit2.captors.AbstractRequestBodyCaptor;
+import ru.tinkoff.qa.neptune.retrofit2.captors.MultipartRequestBodyCaptor;
+import ru.tinkoff.qa.neptune.retrofit2.captors.ResponseBodyCaptor;
+import ru.tinkoff.qa.neptune.retrofit2.captors.ResponseCaptor;
 
 import java.time.Duration;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.createCaptors;
 
 
 @Description("Http response")
@@ -19,11 +31,19 @@ import java.util.function.Supplier;
 class SendRequestAndGet<M, R> extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<RetrofitContext, RequestExecutionResult<R>, Supplier<M>, SendRequestAndGet<M, R>> {
 
-    private final StepExecutionHook hook;
+    private final GetStepResultFunction<M, R> f;
+
+    @CaptureOnSuccess(by = ResponseCaptor.class)
+    @CaptureOnFailure(by = ResponseCaptor.class)
+    Response response;
+
+    @CaptureOnSuccess(by = ResponseBodyCaptor.class)
+    @CaptureOnFailure(by = ResponseBodyCaptor.class)
+    ResponseBody body;
 
     private SendRequestAndGet(GetStepResultFunction<M, R> f) {
         super(f);
-        hook = new StepExecutionHook(f);
+        this.f = f;
         addIgnored(Exception.class);
     }
 
@@ -33,17 +53,39 @@ class SendRequestAndGet<M, R> extends SequentialGetStepSupplier
 
     @Override
     protected Map<String, String> additionalParameters() {
-        return hook.getRequestParameters();
+        var r = f.request();
+        if (r != null) {
+            var result = new LinkedHashMap<String, String>();
+            result.put("URL", r.url().toString());
+            result.put("METHOD", r.method());
+            var h = r.headers();
+            var headerMap = h.toMultimap();
+
+            headerMap.forEach((k, v) -> result.put("Header " + k, String.join(",", v)));
+            return result;
+        }
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void fillResultData() {
+        var r = f.request();
+        if (r != null) {
+            catchValue(r.body(), createCaptors(new Class[]{AbstractRequestBodyCaptor.class, MultipartRequestBodyCaptor.class}));
+        }
+
+        response = f.response();
+        body = f.body();
     }
 
     @Override
     protected void onSuccess(RequestExecutionResult<R> rRequestExecutionResult) {
-        hook.onSuccess();
+        fillResultData();
     }
 
     @Override
     protected void onFailure(Supplier<M> supplier, Throwable throwable) {
-        hook.onFailure();
+        fillResultData();
     }
 
     @Override
