@@ -112,7 +112,7 @@ import org.my.pack;
 import com.fasterxml.jackson.core.type.TypeReference;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 
-//Создаем реализацию механизма сериализации и десериализации
+//Описываем сериализацию и десериализацию для текущего проекта
 public class MyDataTransformer implements DataTransformer {
 
 
