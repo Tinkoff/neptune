@@ -7,8 +7,8 @@ import ru.tinkoff.qa.neptune.rabbit.mq.test.DefaultMapper;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.DraftDto;
 
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 
+import static java.time.Duration.ofSeconds;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anEmptyMap;
 import static org.mockito.Mockito.when;
@@ -84,7 +84,7 @@ public class GetObjectCaptorTest extends BaseCaptorTest {
                 true,
                 DraftDto.class)
                 .criteria("name=test2", draftDto -> draftDto.getName().equals("test2"))
-                .timeOut(Duration.ofSeconds(5)));
+                .timeOut(ofSeconds(5)));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
@@ -97,7 +97,7 @@ public class GetObjectCaptorTest extends BaseCaptorTest {
                 true,
                 DraftDto.class)
                 .criteria("name=test2", draftDto -> draftDto.getName().equals("test2"))
-                .timeOut(Duration.ofSeconds(5)));
+                .timeOut(ofSeconds(5)));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Read RabbitMQ messages", "#1\r\n" +
                 "\r\n" +
@@ -112,7 +112,7 @@ public class GetObjectCaptorTest extends BaseCaptorTest {
                 true,
                 DraftDto.class)
                 .criteria("name=test2", draftDto -> draftDto.getName().equals("test2"))
-                .timeOut(Duration.ofSeconds(5)));
+                .timeOut(ofSeconds(5)));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
@@ -125,7 +125,7 @@ public class GetObjectCaptorTest extends BaseCaptorTest {
                 true,
                 DraftDto.class)
                 .criteria("name=test2", draftDto -> draftDto.getName().equals("test2"))
-                .timeOut(Duration.ofSeconds(5)));
+                .timeOut(ofSeconds(5)));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Read RabbitMQ messages", "#1\r\n" +
                 "\r\n" +
@@ -140,7 +140,7 @@ public class GetObjectCaptorTest extends BaseCaptorTest {
                     true,
                     DraftDto.class)
                     .criteria("name=test2", draftDto -> draftDto.getName().equals("test2"))
-                    .timeOut(Duration.ofSeconds(5))
+                    .timeOut(ofSeconds(5))
                     .throwOnNoResult());
         }
         catch (Exception e) {
@@ -161,7 +161,7 @@ public class GetObjectCaptorTest extends BaseCaptorTest {
                     true,
                     DraftDto.class)
                     .criteria("name=test2", draftDto -> draftDto.getName().equals("test2"))
-                    .timeOut(Duration.ofSeconds(5))
+                    .timeOut(ofSeconds(5))
                     .throwOnNoResult());
         }
         catch (Exception e) {
@@ -183,7 +183,7 @@ public class GetObjectCaptorTest extends BaseCaptorTest {
                     true,
                     DraftDto.class)
                     .criteria("name=test2", draftDto -> draftDto.getName().equals("test2"))
-                    .timeOut(Duration.ofSeconds(5))
+                    .timeOut(ofSeconds(5))
                     .throwOnNoResult());
         }
         catch (Exception e) {
@@ -207,7 +207,7 @@ public class GetObjectCaptorTest extends BaseCaptorTest {
                     true,
                     DraftDto.class)
                     .criteria("name=test2", draftDto -> draftDto.getName().equals("test2"))
-                    .timeOut(Duration.ofSeconds(5))
+                    .timeOut(ofSeconds(5))
                     .throwOnNoResult());
         }
         catch (Exception e) {

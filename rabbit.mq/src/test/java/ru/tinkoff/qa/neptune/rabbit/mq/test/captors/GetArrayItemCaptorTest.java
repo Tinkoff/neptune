@@ -8,9 +8,9 @@ import ru.tinkoff.qa.neptune.rabbit.mq.test.DefaultMapper;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.DraftDto;
 
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.List;
 
+import static java.time.Duration.ofSeconds;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anEmptyMap;
 import static org.mockito.Mockito.when;
@@ -107,10 +107,11 @@ public class GetArrayItemCaptorTest extends BaseCaptorTest {
         rabbitMqStepContext.read(rabbitArrayItem("Value of fields 'name'",
                 "test_queue5",
                 true,
-                new TypeReference<List<DraftDto>>() {},
+                new TypeReference<List<DraftDto>>() {
+                },
                 list -> list.stream().map(DraftDto::getName).toArray(String[]::new))
                 .criteria("Value contains 'test", s -> s.contains("fail"))
-                .timeOut(Duration.ofSeconds(5)));
+                .timeOut(ofSeconds(5)));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Read RabbitMQ messages", "#1\r\n" +
                 "\r\n" +
@@ -123,10 +124,11 @@ public class GetArrayItemCaptorTest extends BaseCaptorTest {
         rabbitMqStepContext.read(rabbitArrayItem("Value of fields 'name'",
                 "test_queue5",
                 true,
-                new TypeReference<List<DraftDto>>() {},
+                new TypeReference<List<DraftDto>>() {
+                },
                 list -> list.stream().map(DraftDto::getName).toArray(String[]::new))
                 .criteria("Value contains 'test", s -> s.contains("fail"))
-                .timeOut(Duration.ofSeconds(5)));
+                .timeOut(ofSeconds(5)));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
@@ -137,10 +139,11 @@ public class GetArrayItemCaptorTest extends BaseCaptorTest {
         rabbitMqStepContext.read(rabbitArrayItem("Value of fields 'name'",
                 "test_queue5",
                 true,
-                new TypeReference<List<DraftDto>>() {},
+                new TypeReference<List<DraftDto>>() {
+                },
                 list -> list.stream().map(DraftDto::getName).toArray(String[]::new))
                 .criteria("Value contains 'test", s -> s.contains("fail"))
-                .timeOut(Duration.ofSeconds(5)));
+                .timeOut(ofSeconds(5)));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Read RabbitMQ messages", "#1\r\n" +
                 "\r\n" +
@@ -153,10 +156,11 @@ public class GetArrayItemCaptorTest extends BaseCaptorTest {
             rabbitMqStepContext.read(rabbitArrayItem("Value of fields 'name'",
                     "test_queue5",
                     true,
-                    new TypeReference<List<DraftDto>>() {},
+                    new TypeReference<List<DraftDto>>() {
+                    },
                     list -> list.stream().map(DraftDto::getName).toArray(String[]::new))
                     .criteria("Value contains 'test", s -> s.contains("fail"))
-                    .timeOut(Duration.ofSeconds(5))
+                    .timeOut(ofSeconds(5))
                     .throwOnNoResult());
         }
         catch (Exception e) {
@@ -175,10 +179,11 @@ public class GetArrayItemCaptorTest extends BaseCaptorTest {
             rabbitMqStepContext.read(rabbitArrayItem("Value of fields 'name'",
                     "test_queue5",
                     true,
-                    new TypeReference<List<DraftDto>>() {},
+                    new TypeReference<List<DraftDto>>() {
+                    },
                     list -> list.stream().map(DraftDto::getName).toArray(String[]::new))
                     .criteria("Value contains 'test", s -> s.contains("fail"))
-                    .timeOut(Duration.ofSeconds(5))
+                    .timeOut(ofSeconds(5))
                     .throwOnNoResult());
         }
         catch (Exception e) {
@@ -198,10 +203,11 @@ public class GetArrayItemCaptorTest extends BaseCaptorTest {
             rabbitMqStepContext.read(rabbitArrayItem("Value of fields 'name'",
                     "test_queue5",
                     true,
-                    new TypeReference<List<DraftDto>>() {},
+                    new TypeReference<List<DraftDto>>() {
+                    },
                     list -> list.stream().map(DraftDto::getName).toArray(String[]::new))
                     .criteria("Value contains 'test", s -> s.contains("fail"))
-                    .timeOut(Duration.ofSeconds(5))
+                    .timeOut(ofSeconds(5))
                     .throwOnNoResult());
         }
         catch (Exception e) {
@@ -223,10 +229,11 @@ public class GetArrayItemCaptorTest extends BaseCaptorTest {
             rabbitMqStepContext.read(rabbitArrayItem("Value of fields 'name'",
                     "test_queue5",
                     true,
-                    new TypeReference<List<DraftDto>>() {},
+                    new TypeReference<List<DraftDto>>() {
+                    },
                     list -> list.stream().map(DraftDto::getName).toArray(String[]::new))
                     .criteria("Value contains 'test", s -> s.contains("fail"))
-                    .timeOut(Duration.ofSeconds(5))
+                    .timeOut(ofSeconds(5))
                     .throwOnNoResult());
         }
         catch (Exception e) {
