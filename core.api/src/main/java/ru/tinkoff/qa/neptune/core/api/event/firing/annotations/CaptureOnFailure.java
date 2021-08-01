@@ -6,6 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Collection;
 
+import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.createCaptors;
@@ -13,11 +14,15 @@ import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil
 /**
  * Annotates subclasses of {@link ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier} and
  * {@link ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier} to define which capture should be made
- * if a step is failed. All that is defined by this annotation is inherited by subclasses. Also it may be
+ * then step is failed. All parameters defined by this annotation are inherited by subclasses. Also it may be
  * overridden in subclasses by declaration of another CaptureOnFailure.
+ * 
+ * Also it annotates fields subclasses of {@link ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier} and
+ * {@link ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier}. Values of annotated fields form captures then
+ * step is failed.
  */
 @Retention(RUNTIME)
-@Target(TYPE)
+@Target({TYPE, FIELD})
 public @interface CaptureOnFailure {
     /**
      * @return subclasses of {@link Captor} that make captures on failure. ATTENTION!!! Defined classes should
@@ -38,6 +43,12 @@ public @interface CaptureOnFailure {
                     return;
                 }
                 cls = cls.getSuperclass();
+            }
+        }
+
+        public static void readCaptorsOnFailure(CaptureOnFailure onFailure, Collection<Captor<Object, Object>> toFill) {
+            if (onFailure != null) {
+                toFill.addAll(createCaptors(onFailure.by()));
             }
         }
     }

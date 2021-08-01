@@ -1,7 +1,9 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.function.get;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
-import ru.tinkoff.qa.neptune.core.api.data.format.TypeRef;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
@@ -9,8 +11,11 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
+import ru.tinkoff.qa.neptune.rabbit.mq.captors.MessageCaptor;
+import ru.tinkoff.qa.neptune.rabbit.mq.captors.MessagesCaptor;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -26,6 +31,13 @@ public class RabbitMqBasicGetSupplier<T> extends SequentialGetStepSupplier
         .GetObjectStepSupplier<RabbitMqStepContext, T, RabbitMqBasicGetSupplier<T>> {
 
     final GetFromQueue<?> getFromQueue;
+
+    @CaptureOnSuccess(by = MessageCaptor.class)
+    String message;
+
+    @CaptureOnSuccess(by = MessagesCaptor.class)
+    @CaptureOnFailure(by = MessagesCaptor.class)
+    List<String> messages;
 
     protected <M> RabbitMqBasicGetSupplier(GetFromQueue<M> getFromQueue, Function<M, T> function) {
         super(function.compose(getFromQueue));
@@ -80,7 +92,7 @@ public class RabbitMqBasicGetSupplier<T> extends SequentialGetStepSupplier
             ) String description,
             String queue,
             boolean autoAck,
-            TypeRef<M> typeT,
+            TypeReference<M> typeT,
             Function<M, T> toGet) {
         checkArgument(isNotBlank(description), "Description should be defined");
         return new RabbitMqBasicGetSupplier<>(new GetFromQueue<>(queue, autoAck, typeT), toGet);
@@ -118,7 +130,7 @@ public class RabbitMqBasicGetSupplier<T> extends SequentialGetStepSupplier
     @Description("Message body")
     public static <T> RabbitMqBasicGetSupplier<T> rabbitBody(String queue,
                                                              boolean autoAck,
-                                                             TypeRef<T> typeT) {
+                                                             TypeReference<T> typeT) {
         return new RabbitMqBasicGetSupplier<>(new GetFromQueue<>(queue, autoAck, typeT), t -> t);
     }
 
@@ -135,6 +147,22 @@ public class RabbitMqBasicGetSupplier<T> extends SequentialGetStepSupplier
     @Override
     public RabbitMqBasicGetSupplier<T> criteria(Criteria<? super T> criteria) {
         return super.criteria(criteria);
+    }
+
+    @Override
+    protected void onSuccess(T t) {
+        var ms = getFromQueue.getMessages();
+        if (t != null) {
+            message = ms.getLast();
+        }
+        else {
+            messages = ms;
+        }
+    }
+
+    @Override
+    protected void onFailure(RabbitMqStepContext m, Throwable throwable) {
+        messages = getFromQueue.getMessages();
     }
 
     RabbitMqBasicGetSupplier<T> setDataTransformer(DataTransformer dataTransformer) {

@@ -21,6 +21,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.valueOf;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static java.util.List.of;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
@@ -28,6 +29,8 @@ import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnF
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess.CaptureOnSuccessReader.readCaptorsOnSuccess;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting.MaxDepthOfReportingReader.getMaxDepth;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchFailureEvent;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchSuccessEvent;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.AND;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultGetParameterReader.*;
@@ -58,27 +61,19 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         Supplier<Function<T, R>>, StepParameterPojo {
 
     private String description;
-    final List<Captor<Object, Object>> successCaptors = new ArrayList<>();
-    final List<Captor<Object, Object>> failureCaptors = new ArrayList<>();
     protected boolean toReport = true;
 
     final Set<Class<? extends Throwable>> ignored = new HashSet<>();
-
     final List<Criteria<P>> conditions = new ArrayList<>();
-
     private Criteria<P> condition;
-
     private Object from;
 
     Duration timeToGet;
-
     Duration sleepingTime;
-
     ExceptionSupplier exceptionSupplier;
 
     protected SequentialGetStepSupplier() {
-        readCaptorsOnFailure(this.getClass(), failureCaptors);
-        readCaptorsOnSuccess(this.getClass(), successCaptors);
+        super();
     }
 
     public static <T extends SequentialGetStepSupplier<?, ?, ?, ?, ?>> T turnReportingOff(T t) {
@@ -333,12 +328,26 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         var description = translate(translate(getImperativeMetadata(this.getClass(), true)) + " " + this.description).trim();
 
         var toBeReturned = new Get<>(description, endFunction)
-                .addSuccessCaptors(successCaptors)
-                .addFailureCaptors(failureCaptors)
                 .setResultDescription(resultDescription)
                 .setParameters(params)
                 .setMaxDepth(getMaxDepth(this.getClass()))
                 .compose(composeWith);
+
+        if (toReport && catchSuccessEvent()) {
+            var successCaptors = new ArrayList<Captor<Object, Object>>();
+            readCaptorsOnSuccess(this.getClass(), successCaptors);
+            toBeReturned
+                    .addOnSuccessAdditional(of(FieldValueCaptureMaker.onSuccess(this)))
+                    .addSuccessCaptors(successCaptors);
+        }
+
+        if (toReport && catchFailureEvent()) {
+            var failureCaptors = new ArrayList<Captor<Object, Object>>();
+            readCaptorsOnFailure(this.getClass(), failureCaptors);
+            toBeReturned
+                    .addOnFailureAdditional(of(FieldValueCaptureMaker.onFailure(this)))
+                    .addFailureCaptors(failureCaptors);
+        }
 
         if (!toReport) {
             toBeReturned.turnReportingOff();

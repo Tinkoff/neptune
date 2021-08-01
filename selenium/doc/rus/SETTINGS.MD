@@ -31,13 +31,11 @@
   - [Ожидание загрузки страницы](#Ожидание-загрузки-страницы)
 - [WEB_DRIVER_CREDENTIALS](#web_driver_credentials)
 - [WEB_DRIVER_DEFAULT_AUTO_SCROLLER](#web_driver_default_auto_scroller)
+- [PROXIED_TRAFFIC_BODY_TRANSFORMER](#PROXIED_TRAFFIC_BODY_TRANSFORMER)
 
 ## Запуск WebDriver'а
 
 ### WEB_DRIVER_TO_LAUNCH
-
-
-  
 
 Настройка указывает класс того WebDriver'а, который должен быть использован в тестах.
 Доступные значения (объекты перечисления `ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers`):
@@ -286,9 +284,6 @@ public class SomeClass {
 
 #### WEB_DRIVER_CAPABILITY_BROWSER_VERSION
 
-
-  
-
 Указывает значение `browserVersion`.
 
 ```properties
@@ -310,15 +305,9 @@ public class SomeClass {
 ```
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
 ## Параметры сессии
 
 ### FIND_ONLY_VISIBLE_ELEMENTS
-
-
-  
 
 Настройка указывает на необходимость работать только с видимыми элементами страницы. Доступные значения - `true` (рекомендуемое 
 для большинства случаев) или `false`. Если значение `true`, то работа будет выполняться только с видимыми на странице элементами,
@@ -428,13 +417,7 @@ public class SomeClass {
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
 ### KEEP_WEB_DRIVER_SESSION_OPENED
-
-
-  
 
 Настройка указывает на необходимость сохранять открытой сессию WebDriver'а настолько долго, насколько это возможно. Доступные 
 значения - `true` или `false`. Если значение `true`, то ранее созданная сессия WebDriver'а будет держаться открытой и 
@@ -511,13 +494,7 @@ public class SomeClass {
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
 ## BASE_WEB_DRIVER_URL
-
-
-  
 
 Настройка указывает URL стартовой страницы приложения/корневой URL, по которому приложение доступно для открытия в браузере, 
 обычно в формате `схема или протокол`://`хост:порт если есть/фрагмент/пути/если/надо`.
@@ -801,9 +778,6 @@ public class SomeClass {
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
 ## WEB_DRIVER_CREDENTIALS
 
 
@@ -862,9 +836,6 @@ public class SomeClass {
 
 ## WEB_DRIVER_DEFAULT_AUTO_SCROLLER
 
-
-  
-
 Настройка предоставляет объект `ru.tinkoff.qa.neptune.selenium.auto.scrolling.AutoScroller`, который выполняет автоскроллирование/
 автоматический фокус на нужном элементе.
 
@@ -913,5 +884,59 @@ public class SomeClass {
 ```
 
 [Про авто-скроллирование](./AUTO_SCROLLING.MD)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+## PROXIED_TRAFFIC_BODY_TRANSFORMER
+
+Основная статья: [Сериализация и десериализация](./../../../core.api/doc/rus/SERIALIZATION_DESERIALIZATION.MD)
+Используется: [Mатчеры. Тело запроса и ответа](HAMCREST.MD#Тело-запроса-и-ответа)
+
+```java
+import org.my.pack;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
+
+//Описываем сериализацию и десериализацию для текущего проекта
+public class MyDataTransformer implements DataTransformer {
+
+
+    @Override
+    public <T> T deserialize(String message, Class<T> cls) {
+        //тут описываем механизм десериализации
+    }
+
+    @Override
+    public <T> T deserialize(String string, TypeReference<T> type) {
+        //тут описываем механизм десериализации
+    }
+
+    @Override
+    public String serialize(Object obj) {
+        //тут описываем механизм сериализации
+    }
+}
+```
+
+```properties
+#Значение свойства указывается так
+PROXIED_TRAFFIC_BODY_TRANSFORMER=org.my.pack.MyDataTransformer
+```
+
+```java
+import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
+
+import static ru.tinkoff.qa.neptune.selenium.properties.
+        ProxiedTrafficBodyTransformer.PROXIED_TRAFFIC_BODY_TRANSFORMER;
+
+public class SomeClass {
+
+    public void someVoid() {
+        //пример доступа до значения свойства
+        DataTransformer transformer = PROXIED_TRAFFIC_BODY_TRANSFORMER.get();
+    }
+}
+```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)

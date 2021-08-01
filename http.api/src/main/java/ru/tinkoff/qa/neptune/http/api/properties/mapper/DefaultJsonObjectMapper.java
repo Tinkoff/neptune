@@ -7,6 +7,10 @@ import ru.tinkoff.qa.neptune.core.api.properties.object.ObjectPropertySupplier;
 
 import java.util.function.Supplier;
 
+/**
+ * This is deprecated in favour of usage of {@link ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer}
+ */
+@Deprecated
 @PropertyDescription(description = {"Defines full name of a class which implements Supplier<ObjectMapper> and whose objects",
         "supply mappers for serialization/deserialization of json strings. This may be necessary",
         "for default serialization/deserialization rules"},

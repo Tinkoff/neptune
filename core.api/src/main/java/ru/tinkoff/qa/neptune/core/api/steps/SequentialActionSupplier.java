@@ -11,7 +11,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -20,12 +19,15 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.valueOf;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static java.util.List.of;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure.CaptureOnFailureReader.readCaptorsOnFailure;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess.CaptureOnSuccessReader.readCaptorsOnSuccess;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting.MaxDepthOfReportingReader.getMaxDepth;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchFailureEvent;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchSuccessEvent;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultActionParameterReader.getImperativeMetadata;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultActionParameterReader.getPerformOnMetadata;
 import static ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter.StepParameterCreator.createStepParameter;
@@ -44,14 +46,9 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
         StepParameterPojo {
 
     private String actionDescription;
-    private final List<Captor<Object, Object>> successCaptors = new ArrayList<>();
-    private final List<Captor<Object, Object>> failureCaptors = new ArrayList<>();
-
     Object toBePerformedOn;
 
     protected SequentialActionSupplier() {
-        readCaptorsOnFailure(this.getClass(), failureCaptors);
-        readCaptorsOnSuccess(this.getClass(), successCaptors);
     }
 
     @SuppressWarnings("unused")
@@ -174,10 +171,25 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
         }
 
         var description = translate(translate(getImperativeMetadata(this.getClass(), true)) + " " + actionDescription).trim();
-        return new ActionImpl<>(description, this, function)
-                .addSuccessCaptors(successCaptors)
-                .addFailureCaptors(failureCaptors)
-                .setParameters(getParameters())
+        var toBeReturned = new ActionImpl<>(description, this, function);
+
+        if (catchSuccessEvent()) {
+            var successCaptors = new ArrayList<Captor<Object, Object>>();
+            readCaptorsOnSuccess(this.getClass(), successCaptors);
+            toBeReturned
+                    .addOnSuccessAdditional(of(FieldValueCaptureMaker.onSuccess(this)))
+                    .addSuccessCaptors(successCaptors);
+        }
+
+        if (catchFailureEvent()) {
+            var failureCaptors = new ArrayList<Captor<Object, Object>>();
+            readCaptorsOnFailure(this.getClass(), failureCaptors);
+            toBeReturned
+                    .addOnFailureAdditional(of(FieldValueCaptureMaker.onFailure(this)))
+                    .addFailureCaptors(failureCaptors);
+        }
+
+        return toBeReturned.setParameters(getParameters())
                 .setMaxDepth(getMaxDepth(this.getClass()))
                 .setAdditionalParams(this::additionalParameters);
     }

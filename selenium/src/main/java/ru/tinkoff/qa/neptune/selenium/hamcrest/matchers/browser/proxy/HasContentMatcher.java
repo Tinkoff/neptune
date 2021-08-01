@@ -3,10 +3,9 @@ package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy;
 import com.browserup.harreader.model.HarContent;
 import com.browserup.harreader.model.HarEntry;
 import com.browserup.harreader.model.HarPostData;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matcher;
+import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NullValueMismatch;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
@@ -21,6 +20,7 @@ import static java.util.Optional.ofNullable;
 import static org.hamcrest.Matchers.equalTo;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.AnyThingMatcher.anything;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.all.AllCriteriaMatcher.all;
+import static ru.tinkoff.qa.neptune.selenium.properties.ProxiedTrafficBodyTransformer.PROXIED_TRAFFIC_BODY_TRANSFORMER;
 
 @Description("{getFrom} body {responseBody}")
 public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
@@ -30,17 +30,17 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
 
     @DescriptionFragment(value = "responseBody", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
     private final Matcher<?> bodyMatcher;
-    private final ObjectMapper objectMapper;
+    private final DataTransformer transformer;
     private final Class<?> objectClass;
     private final TypeReference<?> objectTypeRef;
 
-    private HasContentMatcher(Object getFrom, Matcher<?> bodyMatcher, ObjectMapper objectMapper, Class<?> objectClass, TypeReference<?> objectTypeRef) {
+    private HasContentMatcher(Object getFrom, Matcher<?> bodyMatcher, DataTransformer dataTransformer, Class<?> objectClass, TypeReference<?> objectTypeRef) {
         super(true);
         checkNotNull(getFrom);
         this.getFrom = getFrom;
         checkNotNull(bodyMatcher);
         this.bodyMatcher = bodyMatcher;
-        this.objectMapper = objectMapper;
+        this.transformer = dataTransformer;
         this.objectClass = objectClass;
         this.objectTypeRef = objectTypeRef;
     }
@@ -48,56 +48,56 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
     /**
      * Creates matcher that checks deserialized body of the response.
      *
-     * @param tClass       is a class of a value of deserialized string body
-     * @param mapper       is a mapper that performs deserialization
-     * @param bodyMatchers criteria to check response body
-     * @param <T>          is a type of a value of deserialized string body
+     * @param tClass          is a class of a value of deserialized string body
+     * @param dataTransformer performs deserialization
+     * @param bodyMatchers    criteria to check response body
+     * @param <T>             is a type of a value of deserialized string body
      * @return a matcher
      */
     @SafeVarargs
-    public static <T> Matcher<HarEntry> responseHasBody(Class<T> tClass, ObjectMapper mapper, Matcher<? super T>... bodyMatchers) {
+    public static <T> Matcher<HarEntry> responseHasBody(Class<T> tClass, DataTransformer dataTransformer, Matcher<? super T>... bodyMatchers) {
         checkNotNull(tClass);
-        checkNotNull(mapper);
-        return new HasContentMatcher(new RecordedResponse(), all(bodyMatchers), mapper, tClass, null);
+        checkNotNull(dataTransformer);
+        return new HasContentMatcher(new RecordedResponse(), all(bodyMatchers), dataTransformer, tClass, null);
     }
 
     /**
      * Creates matcher that checks deserialized body of the response.
      *
-     * @param tClass      is a class of a value of deserialized string body
-     * @param mapper      is a mapper that performs deserialization
-     * @param bodyMatcher criteria to check response body
-     * @param <T>         is a type of a value of deserialized string body
+     * @param tClass          is a class of a value of deserialized string body
+     * @param dataTransformer performs deserialization
+     * @param bodyMatcher     criteria to check response body
+     * @param <T>             is a type of a value of deserialized string body
      * @return a matcher
      */
     @SuppressWarnings("unchecked")
-    public static <T> Matcher<HarEntry> responseHasBody(Class<T> tClass, ObjectMapper mapper, Matcher<? super T> bodyMatcher) {
-        return responseHasBody(tClass, mapper, new Matcher[]{bodyMatcher});
+    public static <T> Matcher<HarEntry> responseHasBody(Class<T> tClass, DataTransformer dataTransformer, Matcher<? super T> bodyMatcher) {
+        return responseHasBody(tClass, dataTransformer, new Matcher[]{bodyMatcher});
     }
 
     /**
      * Creates matcher that checks deserialized body of the response.
      *
-     * @param tClass is a class of a value of deserialized string body
-     * @param mapper is a mapper that performs deserialization
-     * @param <T>    is a type of a value of deserialized string body
+     * @param tClass          is a class of a value of deserialized string body
+     * @param dataTransformer performs deserialization
+     * @param <T>             is a type of a value of deserialized string body
      * @return a matcher
      */
-    public static <T> Matcher<HarEntry> responseHasBody(Class<T> tClass, ObjectMapper mapper) {
-        return responseHasBody(tClass, mapper, anything());
+    public static <T> Matcher<HarEntry> responseHasBody(Class<T> tClass, DataTransformer dataTransformer) {
+        return responseHasBody(tClass, dataTransformer, anything());
     }
 
     /**
      * Creates matcher that checks deserialized body of the response.
      *
-     * @param t      is expected response body
-     * @param mapper is a mapper that performs deserialization
-     * @param <T>    is a type of a value of deserialized string body
+     * @param t               is expected response body
+     * @param dataTransformer performs deserialization
+     * @param <T>             is a type of a value of deserialized string body
      * @return a matcher
      */
     @SuppressWarnings("unchecked")
-    public static <T> Matcher<HarEntry> responseHasBody(T t, ObjectMapper mapper) {
-        return responseHasBody((Class<T>) t.getClass(), mapper, equalTo(t));
+    public static <T> Matcher<HarEntry> responseHasBody(T t, DataTransformer dataTransformer) {
+        return responseHasBody((Class<T>) t.getClass(), dataTransformer, equalTo(t));
     }
 
     /**
@@ -110,7 +110,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      */
     @SafeVarargs
     public static <T> Matcher<HarEntry> responseHasBody(Class<T> tClass, Matcher<? super T>... bodyMatchers) {
-        return responseHasBody(tClass, new ObjectMapper(), bodyMatchers);
+        return responseHasBody(tClass, PROXIED_TRAFFIC_BODY_TRANSFORMER.get(), bodyMatchers);
     }
 
     /**
@@ -145,50 +145,50 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a matcher
      */
     public static <T> Matcher<HarEntry> responseHasBody(T t) {
-        return responseHasBody(t, new ObjectMapper());
+        return responseHasBody(t, PROXIED_TRAFFIC_BODY_TRANSFORMER.get());
     }
 
 
     /**
      * Creates matcher that checks deserialized body of the response.
      *
-     * @param tTypeReference is a reference to type of a value of deserialized string body
-     * @param mapper         is a mapper that performs deserialization
-     * @param bodyMatchers   criteria to check response body
-     * @param <T>            is a type of a value of deserialized string body
+     * @param tTypeReference  is a reference to type of a value of deserialized string body
+     * @param dataTransformer performs deserialization
+     * @param bodyMatchers    criteria to check response body
+     * @param <T>             is a type of a value of deserialized string body
      * @return a matcher
      */
     @SafeVarargs
-    public static <T> Matcher<HarEntry> responseHasBody(TypeReference<T> tTypeReference, ObjectMapper mapper, Matcher<? super T>... bodyMatchers) {
+    public static <T> Matcher<HarEntry> responseHasBody(TypeReference<T> tTypeReference, DataTransformer dataTransformer, Matcher<? super T>... bodyMatchers) {
         checkNotNull(tTypeReference);
-        checkNotNull(mapper);
-        return new HasContentMatcher(new RecordedResponse(), all(bodyMatchers), mapper, null, tTypeReference);
+        checkNotNull(dataTransformer);
+        return new HasContentMatcher(new RecordedResponse(), all(bodyMatchers), dataTransformer, null, tTypeReference);
     }
 
     /**
      * Creates matcher that checks deserialized body of the response.
      *
-     * @param tTypeReference is a reference to type of a value of deserialized string body
-     * @param mapper         is a mapper that performs deserialization
-     * @param bodyMatcher    criteria to check response body
-     * @param <T>            is a type of a value of deserialized string body
+     * @param tTypeReference  is a reference to type of a value of deserialized string body
+     * @param dataTransformer performs deserialization
+     * @param bodyMatcher     criteria to check response body
+     * @param <T>             is a type of a value of deserialized string body
      * @return a matcher
      */
     @SuppressWarnings("unchecked")
-    public static <T> Matcher<HarEntry> responseHasBody(TypeReference<T> tTypeReference, ObjectMapper mapper, Matcher<? super T> bodyMatcher) {
-        return responseHasBody(tTypeReference, mapper, new Matcher[]{bodyMatcher});
+    public static <T> Matcher<HarEntry> responseHasBody(TypeReference<T> tTypeReference, DataTransformer dataTransformer, Matcher<? super T> bodyMatcher) {
+        return responseHasBody(tTypeReference, dataTransformer, new Matcher[]{bodyMatcher});
     }
 
     /**
      * Creates matcher that checks deserialized body of the response.
      *
-     * @param tTypeReference is a reference to type of a value of deserialized string body
-     * @param mapper         is a mapper that performs deserialization
-     * @param <T>            is a type of a value of deserialized string body
+     * @param tTypeReference  is a reference to type of a value of deserialized string body
+     * @param dataTransformer performs deserialization
+     * @param <T>             is a type of a value of deserialized string body
      * @return a matcher
      */
-    public static <T> Matcher<HarEntry> responseHasBody(TypeReference<T> tTypeReference, ObjectMapper mapper) {
-        return responseHasBody(tTypeReference, mapper, anything());
+    public static <T> Matcher<HarEntry> responseHasBody(TypeReference<T> tTypeReference, DataTransformer dataTransformer) {
+        return responseHasBody(tTypeReference, dataTransformer, anything());
     }
 
 
@@ -202,7 +202,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      */
     @SafeVarargs
     public static <T> Matcher<HarEntry> responseHasBody(TypeReference<T> tTypeReference, Matcher<? super T>... bodyMatchers) {
-        return responseHasBody(tTypeReference, new ObjectMapper(), bodyMatchers);
+        return responseHasBody(tTypeReference, PROXIED_TRAFFIC_BODY_TRANSFORMER.get(), bodyMatchers);
     }
 
     /**
@@ -265,56 +265,56 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
     /**
      * Creates matcher that checks deserialized body of the request.
      *
-     * @param tClass       is a class of a value of deserialized string body
-     * @param mapper       is a mapper that performs deserialization
-     * @param bodyMatchers criteria to check request body
-     * @param <T>          is a type of a value of deserialized string body
+     * @param tClass          is a class of a value of deserialized string body
+     * @param dataTransformer performs deserialization
+     * @param bodyMatchers    criteria to check request body
+     * @param <T>             is a type of a value of deserialized string body
      * @return a matcher
      */
     @SafeVarargs
-    public static <T> Matcher<HarEntry> requestHasBody(Class<T> tClass, ObjectMapper mapper, Matcher<? super T>... bodyMatchers) {
+    public static <T> Matcher<HarEntry> requestHasBody(Class<T> tClass, DataTransformer dataTransformer, Matcher<? super T>... bodyMatchers) {
         checkNotNull(tClass);
-        checkNotNull(mapper);
-        return new HasContentMatcher(new RecordedRequest(), all(bodyMatchers), mapper, tClass, null);
+        checkNotNull(dataTransformer);
+        return new HasContentMatcher(new RecordedRequest(), all(bodyMatchers), dataTransformer, tClass, null);
     }
 
     /**
      * Creates matcher that checks deserialized body of the request.
      *
-     * @param tClass      is a class of a value of deserialized string body
-     * @param mapper      is a mapper that performs deserialization
-     * @param bodyMatcher criteria to check request body
-     * @param <T>         is a type of a value of deserialized string body
+     * @param tClass          is a class of a value of deserialized string body
+     * @param dataTransformer performs deserialization
+     * @param bodyMatcher     criteria to check request body
+     * @param <T>             is a type of a value of deserialized string body
      * @return a matcher
      */
     @SuppressWarnings("unchecked")
-    public static <T> Matcher<HarEntry> requestHasBody(Class<T> tClass, ObjectMapper mapper, Matcher<? super T> bodyMatcher) {
-        return requestHasBody(tClass, mapper, new Matcher[]{bodyMatcher});
+    public static <T> Matcher<HarEntry> requestHasBody(Class<T> tClass, DataTransformer dataTransformer, Matcher<? super T> bodyMatcher) {
+        return requestHasBody(tClass, dataTransformer, new Matcher[]{bodyMatcher});
     }
 
     /**
      * Creates matcher that checks deserialized body of the request.
      *
-     * @param tClass is a class of a value of deserialized string body
-     * @param mapper is a mapper that performs deserialization
-     * @param <T>    is a type of a value of deserialized string body
+     * @param tClass          is a class of a value of deserialized string body
+     * @param dataTransformer performs deserialization
+     * @param <T>             is a type of a value of deserialized string body
      * @return a matcher
      */
-    public static <T> Matcher<HarEntry> requestHasBody(Class<T> tClass, ObjectMapper mapper) {
-        return requestHasBody(tClass, mapper, anything());
+    public static <T> Matcher<HarEntry> requestHasBody(Class<T> tClass, DataTransformer dataTransformer) {
+        return requestHasBody(tClass, dataTransformer, anything());
     }
 
     /**
      * Creates matcher that checks deserialized body of the request.
      *
-     * @param t      is expected request body
-     * @param mapper is a mapper that performs deserialization
-     * @param <T>    is a type of a value of deserialized string body
+     * @param t               is expected request body
+     * @param dataTransformer performs deserialization
+     * @param <T>             is a type of a value of deserialized string body
      * @return a matcher
      */
     @SuppressWarnings("unchecked")
-    public static <T> Matcher<HarEntry> requestHasBody(T t, ObjectMapper mapper) {
-        return requestHasBody((Class<T>) t.getClass(), mapper, equalTo(t));
+    public static <T> Matcher<HarEntry> requestHasBody(T t, DataTransformer dataTransformer) {
+        return requestHasBody((Class<T>) t.getClass(), dataTransformer, equalTo(t));
     }
 
     /**
@@ -327,7 +327,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      */
     @SafeVarargs
     public static <T> Matcher<HarEntry> requestHasBody(Class<T> tClass, Matcher<? super T>... bodyMatchers) {
-        return requestHasBody(tClass, new ObjectMapper(), bodyMatchers);
+        return requestHasBody(tClass, PROXIED_TRAFFIC_BODY_TRANSFORMER.get(), bodyMatchers);
     }
 
     /**
@@ -362,50 +362,50 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a matcher
      */
     public static <T> Matcher<HarEntry> requestHasBody(T t) {
-        return requestHasBody(t, new ObjectMapper());
+        return requestHasBody(t, PROXIED_TRAFFIC_BODY_TRANSFORMER.get());
     }
 
 
     /**
      * Creates matcher that checks deserialized body of the request.
      *
-     * @param tTypeReference is a reference to type of a value of deserialized string body
-     * @param mapper         is a mapper that performs deserialization
-     * @param bodyMatchers   criteria to check request body
-     * @param <T>            is a type of a value of deserialized string body
+     * @param tTypeReference  is a reference to type of a value of deserialized string body
+     * @param dataTransformer performs deserialization
+     * @param bodyMatchers    criteria to check request body
+     * @param <T>             is a type of a value of deserialized string body
      * @return a matcher
      */
     @SafeVarargs
-    public static <T> Matcher<HarEntry> requestHasBody(TypeReference<T> tTypeReference, ObjectMapper mapper, Matcher<? super T>... bodyMatchers) {
+    public static <T> Matcher<HarEntry> requestHasBody(TypeReference<T> tTypeReference, DataTransformer dataTransformer, Matcher<? super T>... bodyMatchers) {
         checkNotNull(tTypeReference);
-        checkNotNull(mapper);
-        return new HasContentMatcher(new RecordedRequest(), all(bodyMatchers), mapper, null, tTypeReference);
+        checkNotNull(dataTransformer);
+        return new HasContentMatcher(new RecordedRequest(), all(bodyMatchers), dataTransformer, null, tTypeReference);
     }
 
     /**
      * Creates matcher that checks deserialized body of the request.
      *
-     * @param tTypeReference is a reference to type of a value of deserialized string body
-     * @param mapper         is a mapper that performs deserialization
-     * @param bodyMatcher    criteria to check request body
-     * @param <T>            is a type of a value of deserialized string body
+     * @param tTypeReference  is a reference to type of a value of deserialized string body
+     * @param dataTransformer performs deserialization
+     * @param bodyMatcher     criteria to check request body
+     * @param <T>             is a type of a value of deserialized string body
      * @return a matcher
      */
     @SuppressWarnings("unchecked")
-    public static <T> Matcher<HarEntry> requestHasBody(TypeReference<T> tTypeReference, ObjectMapper mapper, Matcher<? super T> bodyMatcher) {
-        return requestHasBody(tTypeReference, mapper, new Matcher[]{bodyMatcher});
+    public static <T> Matcher<HarEntry> requestHasBody(TypeReference<T> tTypeReference, DataTransformer dataTransformer, Matcher<? super T> bodyMatcher) {
+        return requestHasBody(tTypeReference, dataTransformer, new Matcher[]{bodyMatcher});
     }
 
     /**
      * Creates matcher that checks deserialized body of the request.
      *
-     * @param tTypeReference is a reference to type of a value of deserialized string body
-     * @param mapper         is a mapper that performs deserialization
-     * @param <T>            is a type of a value of deserialized string body
+     * @param tTypeReference  is a reference to type of a value of deserialized string body
+     * @param dataTransformer performs deserialization
+     * @param <T>             is a type of a value of deserialized string body
      * @return a matcher
      */
-    public static <T> Matcher<HarEntry> requestHasBody(TypeReference<T> tTypeReference, ObjectMapper mapper) {
-        return requestHasBody(tTypeReference, mapper, anything());
+    public static <T> Matcher<HarEntry> requestHasBody(TypeReference<T> tTypeReference, DataTransformer dataTransformer) {
+        return requestHasBody(tTypeReference, dataTransformer, anything());
     }
 
 
@@ -419,7 +419,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      */
     @SafeVarargs
     public static <T> Matcher<HarEntry> requestHasBody(TypeReference<T> tTypeReference, Matcher<? super T>... bodyMatchers) {
-        return requestHasBody(tTypeReference, new ObjectMapper(), bodyMatchers);
+        return requestHasBody(tTypeReference, PROXIED_TRAFFIC_BODY_TRANSFORMER.get(), bodyMatchers);
     }
 
     /**
@@ -494,13 +494,13 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
         }
 
         Object toCheck;
-        if (objectMapper != null) {
+        if (transformer != null) {
             try {
                 Object o;
                 if (objectClass != null) {
-                    o = objectMapper.readValue(body, objectClass);
+                    o = transformer.deserialize(body, objectClass);
                 } else {
-                    o = objectMapper.readValue(body, objectTypeRef);
+                    o = transformer.deserialize(body, objectTypeRef);
                 }
 
                 var result = bodyMatcher.matches(o);
@@ -509,7 +509,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
                     return false;
                 }
 
-            } catch (JsonProcessingException e) {
+            } catch (Exception e) {
                 appendMismatchDescription(new DeserializationErrorMismatch(body, objectClass != null ?
                         objectClass :
                         objectTypeRef.getType()));

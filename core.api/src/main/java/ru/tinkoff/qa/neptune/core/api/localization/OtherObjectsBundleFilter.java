@@ -18,6 +18,7 @@ import static ru.tinkoff.qa.neptune.core.api.localization.CriteriaBundleFilter.C
 import static ru.tinkoff.qa.neptune.core.api.localization.MatchedObjectsBundleFilter.MATCHED_OBJECTS;
 import static ru.tinkoff.qa.neptune.core.api.localization.MatchersBundleFilter.MATCHERS;
 import static ru.tinkoff.qa.neptune.core.api.localization.MismatchDescriptionBundleFilter.MISMATCH_DESCRIPTIONS;
+import static ru.tinkoff.qa.neptune.core.api.localization.ParameterPojoBundleFilter.PARAMETER_POJOS;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepBundleFilter.STEPS;
 
 final class OtherObjectsBundleFilter extends DefaultAbstractBundleFiller {
@@ -34,10 +35,11 @@ final class OtherObjectsBundleFilter extends DefaultAbstractBundleFiller {
                     !MATCHERS.contains(c) &&
                     !MISMATCH_DESCRIPTIONS.contains(c) &&
                     !MATCHED_OBJECTS.contains(c) &&
+                    !PARAMETER_POJOS.contains(c) &&
                     !Captor.class.isAssignableFrom(c) &&
                     !NeptuneFeatureMatcher.class.isAssignableFrom(c) &&
                     !MismatchDescriber.class.isAssignableFrom(c) &&
-                    !MatchObjectName.class.isAssignableFrom(c)&&
+                    !MatchObjectName.class.isAssignableFrom(c) &&
                     !SequentialGetStepSupplier.class.isAssignableFrom(c) &&
                     !SequentialActionSupplier.class.isAssignableFrom(c))
             .map(cls -> (Class<?>) cls)

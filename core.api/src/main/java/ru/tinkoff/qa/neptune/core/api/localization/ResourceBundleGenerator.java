@@ -100,6 +100,7 @@ public class ResourceBundleGenerator {
             new MatchersBundleFilter(partition).fill(output, properties);
             new MismatchDescriptionBundleFilter(partition).fill(output, properties);
             new MatchedObjectsBundleFilter(partition).fill(output, properties);
+            new ParameterPojoBundleFilter(partition).fill(output, properties);
             new OtherObjectsBundleFilter(partition).fill(output, properties);
 
             new ClassGraph().enableAllInfo()
@@ -114,6 +115,7 @@ public class ResourceBundleGenerator {
                             !cls.equals(MatchersBundleFilter.class) &&
                             !cls.equals(MismatchDescriptionBundleFilter.class) &&
                             !cls.equals(MatchedObjectsBundleFilter.class) &&
+                            !cls.equals(ParameterPojoBundleFilter.class) &&
                             !cls.equals(OtherObjectsBundleFilter.class) &&
                             ofNullable(cls.getAnnotation(BindToPartition.class))
                                     .map(b -> b.value().equalsIgnoreCase(partition.getName()))

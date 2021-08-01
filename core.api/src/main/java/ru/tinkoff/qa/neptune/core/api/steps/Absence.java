@@ -20,6 +20,7 @@ import static java.time.Duration.ofMillis;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess.CaptureOnSuccessReader.readCaptorsOnSuccess;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
 
 @SuppressWarnings("unchecked")
@@ -52,7 +53,7 @@ public final class Absence<T> extends SequentialGetStepSupplier.GetObjectChained
                 .pollingInterval(ofMillis(0))
                 .addIgnored(Throwable.class)));
 
-        successCaptors.addAll(toBeAbsent.successCaptors);
+        readCaptorsOnSuccess(toBeAbsent.getClass(), successCaptors);
     }
 
     /**

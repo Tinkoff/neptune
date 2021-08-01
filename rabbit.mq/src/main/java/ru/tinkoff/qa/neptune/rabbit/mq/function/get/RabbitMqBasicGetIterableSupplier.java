@@ -1,7 +1,10 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.function.get;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.common.collect.Iterables;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
-import ru.tinkoff.qa.neptune.core.api.data.format.TypeRef;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
@@ -9,8 +12,11 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
+import ru.tinkoff.qa.neptune.rabbit.mq.captors.MessageCaptor;
+import ru.tinkoff.qa.neptune.rabbit.mq.captors.MessagesCaptor;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -26,6 +32,13 @@ public class RabbitMqBasicGetIterableSupplier<T, S extends Iterable<T>> extends 
         .GetIterableStepSupplier<RabbitMqStepContext, S, T, RabbitMqBasicGetIterableSupplier<T, S>> {
 
     final GetFromQueue<?> getFromQueue;
+
+    @CaptureOnSuccess(by = MessageCaptor.class)
+    String message;
+
+    @CaptureOnSuccess(by = MessagesCaptor.class)
+    @CaptureOnFailure(by = MessagesCaptor.class)
+    List<String> messages;
 
     protected <M> RabbitMqBasicGetIterableSupplier(GetFromQueue<M> getFromQueue, Function<M, S> function) {
         super(function.compose(getFromQueue));
@@ -82,7 +95,7 @@ public class RabbitMqBasicGetIterableSupplier<T, S extends Iterable<T>> extends 
             ) String description,
             String queue,
             boolean autoAck,
-            TypeRef<M> typeT,
+            TypeReference<M> typeT,
             Function<M, S> toGet) {
         checkArgument(isNotBlank(description), "Description should be defined");
         return new RabbitMqBasicGetIterableSupplier<>(new GetFromQueue<>(queue, autoAck, typeT), toGet);
@@ -127,7 +140,7 @@ public class RabbitMqBasicGetIterableSupplier<T, S extends Iterable<T>> extends 
             String description,
             String queue,
             boolean autoAck,
-            TypeRef<S> typeT) {
+            TypeReference<S> typeT) {
         return rabbitIterable(description, queue, autoAck, typeT, ts -> ts);
     }
 
@@ -144,6 +157,22 @@ public class RabbitMqBasicGetIterableSupplier<T, S extends Iterable<T>> extends 
     @Override
     public RabbitMqBasicGetIterableSupplier<T, S> criteria(Criteria<? super T> criteria) {
         return super.criteria(criteria);
+    }
+
+    @Override
+    protected void onSuccess(S s) {
+        var ms = getFromQueue.getMessages();
+        if (s != null && Iterables.size(s) > 0) {
+            message = ms.getLast();
+        }
+        else {
+            messages = ms;
+        }
+    }
+
+    @Override
+    protected void onFailure(RabbitMqStepContext m, Throwable throwable) {
+        messages = getFromQueue.getMessages();
     }
 
     RabbitMqBasicGetIterableSupplier<T, S> setDataTransformer(DataTransformer dataTransformer) {
