@@ -2358,16 +2358,16 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
 
 //Предположим, что объект-контекст может содержать данные,
 // которые можно использовать как текстовое приложение к отчету о тесте
-public class ExampleCaptor extends Captor<MyTestContext, String> {
+public class ExampleCaptor extends Captor<T, String> {
 
     @Override
-    public String getData(MyTestContext caught) {
+    public String getData(T caught) {
         return //возврат какой-то строки
     }
 
     @Override
     public MyTestContext getCaptured(Object toBeCaptured) {
-        return //убеждаемся, что объект типа MyTestContext / приводим объект к этому типу
+        return //убеждаемся, что объект типа T / приводим объект к этому типу
         // или создаем объект этого типа
     }
 }
@@ -2417,9 +2417,6 @@ public class ExampleCaptor3 extends Captor<M, String> {
 
 #### Аттачи для шагов, которые возвращают результат
 
-
-  
-
 ```java
 package org.my.pack;
 
@@ -2456,6 +2453,12 @@ public class MyGetStepSupplier<T, M, P>
         //extends SequentialGetStepSupplier.GetArrayStepSupplier<>
         //extends SequentialGetStepSupplier.GetArrayChainedStepSupplier<>
 {
+
+    //так же можжно делать аттачи, используя значения нестатических полей
+    @CaptureOnSuccess(by = {ExampleCaptor.class, ExampleCaptor2.class})
+    @CaptureOnFailure(by = ExampleCaptor3.class)
+    private Object someValue;
+    
     //реализация поведения
 }
 ```
@@ -2463,9 +2466,6 @@ public class MyGetStepSupplier<T, M, P>
 
 
 #### Аттачи для шагов, которые выполняют действие
-
-
-  
 
 ```java
 package org.my.pack;
@@ -2489,6 +2489,11 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 // выполнении тестов, если действие построенного шага завершилось выбрасыванием исключения.
 public class MyActionStepSupplier<T> extends SequentialActionSupplier<MyTestContext, T, MyActionStepSupplier<T>>
 {
+
+    //так же можжно делать аттачи, используя значения нестатических полей
+    @CaptureOnSuccess(by = {ExampleCaptor.class, ExampleCaptor2.class})
+    @CaptureOnFailure(by = ExampleCaptor3.class)
+    private Object someValue;
     //реализация поведения
 }
 ```

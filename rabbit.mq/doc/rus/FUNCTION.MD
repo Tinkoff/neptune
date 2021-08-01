@@ -1310,7 +1310,6 @@ public class MyTest {
         //Неявные параметры которые уходят:
         //      mandatory со значением false
         //      mmediate со значением false
-        //Для сериализации используется mapper по дефолту RABBIT_MQ_DEFAULT_MAPPER
         rabbitMq().publishMessage("exchange",
                 "routingKey",
                 new SomeObject());
@@ -1386,9 +1385,10 @@ public class MyTest {
         //      exchange - обмен для публикации сообщения
         //      routingKey - ключ маршрутизации
         //      new SomeObject() - объект, который нужно сериализовать и отправить в rabbit
-        //Неявные параметры которые уходят:
-        //      mandatory со значением false
-        //      mmediate со значением false
+        //      Неявные параметры которые уходят:
+        //         mandatory со значением false
+        //         mmediate со значением false
+        //  new MyDataTransformer() - переданный сериализатор
         rabbitMq().publishMessage("exchange",
                 "routingKey",
                 new SomeObject(),
@@ -1415,7 +1415,7 @@ public class MyTest {
         //                             в данном примере 'parameters().mandatory().immediate()' 
         //                             сообщение отправится с mandatory = true и immediate = true
         //      new SomeObject() - объект, который нужно сериализовать и отправить в rabbit
-        //      new XmlMapper() - новый ObjectMapper
+        //      new MyDataTransformer() - переданный сериализатор
         rabbitMq().publishMessage("exchange",
                 "routingKey",
                 parameters().mandatory().immediate(),

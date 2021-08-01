@@ -228,7 +228,7 @@ public class MyTest {
                 match(iterableHasItem(responseHasHeaderValue("value123"))), //содержит ответ, у которого
                 // заголовок с указанным значением
                 match(iterableHasItem(responseHasHeaderValue(containsString("value"))))); //содержит ответ
-                // c заголовком, у которого значение соответствует указанному критерию
+        // c заголовком, у которого значение соответствует указанному критерию
     }
 }
 ```
@@ -286,7 +286,7 @@ public class MyTest {
         var httpTraffic = inBrowser()
                 .resetProxyRecording()
                 .get(proxiedRequests());
-        
+
         check("записанный трафик",
                 httpTraffic,
                 match(iterableHasItem(requestHasVersion(HTTP_1_1))), //содержит запрос, у которого
@@ -296,7 +296,7 @@ public class MyTest {
                 match(iterableHasItem(responseHasVersion(HTTP_1_1))), //содержит ответ, у которого
                 // указанная версия http протокола
                 match(iterableHasItem(responseHasVersion(notOf(equalTo(HTTP_1_1)))))); //содержит ответ, у которого
-                // версия http протокола соответствует критерию
+        // версия http протокола соответствует критерию
     }
 }
 ```
@@ -305,11 +305,14 @@ public class MyTest {
 
 ### Тело запроса и ответа
 
+В примерах ниже предполагается, что настройка / свойство / переменная окружения
+[PROXIED_TRAFFIC_BODY_TRANSFORMER](./SETTINGS.MD#PROXIED_TRAFFIC_BODY_TRANSFORMER) перед началом выполнения имеет
+непустое значения
+
 ```java
 package org.mypack;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -334,68 +337,36 @@ public class MyTest {
         assertThat("записанный трафик",
                 httpTraffic,
                 iterableHasItem(requestHasBody(SomeObjectClass.class))); //содержит запрос, чье тело может быть
-        // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
-        // помощью объекта new ObjectMapper()
+        // десериализовано в объект класса SomeObjectClass.
 
         assertThat("записанный трафик",
                 httpTraffic,
-                iterableHasItem(requestHasBody(new TypeReference<SomeObjectClass>() {}))); //содержит запрос,
-        // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
-        // помощью объекта new ObjectMapper()
-
-        assertThat("записанный трафик",
-                httpTraffic,
-                iterableHasItem(requestHasBody(SomeObjectClass.class, new ObjectMapper())));
-        //содержит запрос, чье тело может быть
-        // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
-        // помощью переданного ObjectMapper'а
-
-        assertThat("записанный трафик",
-                httpTraffic,
-                iterableHasItem(requestHasBody(new TypeReference<SomeObjectClass>() {}, new ObjectMapper())));
-        //содержит запрос,
-        // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
-        // помощью переданного ObjectMapper'а
+                iterableHasItem(requestHasBody(new TypeReference<SomeObjectClass>() {
+                }))); //содержит запрос,
+        // чье тело может быть де-сериализовано в объект типа SomeObjectClass.
 
         assertThat("записанный трафик",
                 httpTraffic,
                 iterableHasItem(requestHasBody(SomeObjectClass.class, equalTo(someExpectedBody))));
         //содержит запрос, чье тело может быть
-        // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
-        // помощью объекта new ObjectMapper(). Ожидается, что де-сериализованное тело соответствует
+        // десериализовано в объект класса SomeObjectClass. Ожидается, что де-сериализованное тело соответствует
         // одному или нескольким (перечисленным через запятую) критериям-матчерам
 
         assertThat("записанный трафик",
                 httpTraffic,
-                iterableHasItem(requestHasBody(new TypeReference<SomeObjectClass>() {}, equalTo(someExpectedBody))));
+                iterableHasItem(requestHasBody(
+                        new TypeReference<SomeObjectClass>() {
+                        },
+                        equalTo(someExpectedBody)
+                )));
         //содержит запрос,
-        // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
-        // помощью объекта new ObjectMapper(). Ожидается, что де-сериализованное тело соответствует
-        // одному или нескольким (перечисленным через запятую) критериям-матчерам
-
+        // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Ожидается, что де-сериализованное 
+        // тело соответствует одному или нескольким (перечисленным через запятую) критериям-матчерам
 
         assertThat("записанный трафик",
                 httpTraffic,
-                iterableHasItem(requestHasBody(SomeObjectClass.class, new ObjectMapper(), equalTo(someExpectedBody))));
-        //содержит запрос, чье тело может быть
-        // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
-        // помощью переданного ObjectMapper'а. Ожидается, что де-сериализованное тело соответствует
-        // одному или нескольким (перечисленным через запятую) критериям-матчерам
-
-        assertThat("записанный трафик",
-                httpTraffic,
-                iterableHasItem(requestHasBody(new TypeReference<SomeObjectClass>() {},
-                        new ObjectMapper(),
-                        equalTo(someExpectedBody))));
-        //содержит запрос,
-        // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
-        // помощью переданного ObjectMapper'а. Ожидается, что де-сериализованное тело соответствует
-        // одному или нескольким (перечисленным через запятую) критериям-матчерам
-        
-        assertThat("записанный трафик",
-                httpTraffic,
-                iterableHasItem(requestHasBody(someExpectedBody))); //содержит запрос, чье тело равно
-        // указанному объекту. Де-сериализация тела происходит с помощью объекта new ObjectMapper()
+                iterableHasItem(requestHasBody(someExpectedBody))); //содержит запрос, чье десериализованное 
+        // тело равно указанному объекту
 
         assertThat("записанный трафик",
                 httpTraffic,
@@ -407,72 +378,39 @@ public class MyTest {
                 iterableHasItem(requestHasRawBody(containsString("ABC")))); //содержит запрос, 
         // чье тело в строковом виде соответствует одному или нескольким перечисленным через запятую
         //матчерам-критериям
-        
+
         assertThat("записанный трафик",
                 httpTraffic,
                 iterableHasItem(responseHasBody(SomeObjectClass.class))); //содержит ответ, чье тело может быть
-        // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
-        // помощью объекта new ObjectMapper()
+        // десериализовано в объект класса SomeObjectClass.
 
         assertThat("записанный трафик",
                 httpTraffic,
-                iterableHasItem(responseHasBody(new TypeReference<SomeObjectClass>() {}))); //содержит ответ,
-        // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
-        // помощью объекта new ObjectMapper()
-
-        assertThat("записанный трафик",
-                httpTraffic,
-                iterableHasItem(responseHasBody(SomeObjectClass.class, new ObjectMapper())));
-        //содержит ответ, чье тело может быть
-        // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
-        // помощью переданного ObjectMapper'а
-
-        assertThat("записанный трафик",
-                httpTraffic,
-                iterableHasItem(responseHasBody(new TypeReference<SomeObjectClass>() {}, new ObjectMapper())));
-        //содержит ответ,
-        // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
-        // помощью переданного ObjectMapper'а
+                iterableHasItem(responseHasBody(new TypeReference<SomeObjectClass>() {
+                }))); //содержит ответ,
+        // чье тело может быть де-сериализовано в объект типа SomeObjectClass.
 
         assertThat("записанный трафик",
                 httpTraffic,
                 iterableHasItem(responseHasBody(SomeObjectClass.class, equalTo(someExpectedBody))));
         //содержит ответ, чье тело может быть
-        // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
-        // помощью объекта new ObjectMapper(). Ожидается, что де-сериализованное тело соответствует
+        // десериализовано в объект класса SomeObjectClass. Ожидается, что де-сериализованное тело соответствует
         // одному или нескольким (перечисленным через запятую) критериям-матчерам
 
         assertThat("записанный трафик",
                 httpTraffic,
-                iterableHasItem(responseHasBody(new TypeReference<SomeObjectClass>() {}, equalTo(someExpectedBody))));
-        //содержит ответ,
-        // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
-        // помощью объекта new ObjectMapper(). Ожидается, что де-сериализованное тело соответствует
-        // одному или нескольким (перечисленным через запятую) критериям-матчерам
-
-
-        assertThat("записанный трафик",
-                httpTraffic,
-                iterableHasItem(responseHasBody(SomeObjectClass.class, new ObjectMapper(), equalTo(someExpectedBody))));
-        //содержит ответ, чье тело может быть
-        // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
-        // помощью переданного ObjectMapper'а. Ожидается, что де-сериализованное тело соответствует
-        // одному или нескольким (перечисленным через запятую) критериям-матчерам
-
-        assertThat("записанный трафик",
-                httpTraffic,
-                iterableHasItem(responseHasBody(new TypeReference<SomeObjectClass>() {},
-                        new ObjectMapper(),
-                        equalTo(someExpectedBody))));
-        //содержит ответ,
-        // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
-        // помощью переданного ObjectMapper'а. Ожидается, что де-сериализованное тело соответствует
+                iterableHasItem(responseHasBody(
+                        new TypeReference<SomeObjectClass>() {
+                        }, equalTo(someExpectedBody)
+                ))); //содержит ответ,
+        // чье тело может быть де-сериализовано в объект типа SomeObjectClass. 
+        // Ожидается, что де-сериализованное тело соответствует
         // одному или нескольким (перечисленным через запятую) критериям-матчерам
 
         assertThat("записанный трафик",
                 httpTraffic,
                 iterableHasItem(responseHasBody(someExpectedBody))); //содержит ответ, чье тело равно
-        // указанному объекту. Де-сериализация тела происходит с помощью объекта new ObjectMapper()
+        // указанному объекту.
 
         assertThat("записанный трафик",
                 httpTraffic,
@@ -498,90 +436,280 @@ public class MyTest {
                 httpTraffic,
                 match(iterableHasItem(requestHasBody(SomeObjectClass.class))), //содержит 
                 // запрос, чье тело может быть
-                // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
-                // помощью объекта new ObjectMapper()
-                match(iterableHasItem(requestHasBody(new TypeReference<SomeObjectClass>() {}))), //содержит запрос,
-                // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
-                // помощью объекта new ObjectMapper()
-                match(iterableHasItem(requestHasBody(SomeObjectClass.class, new ObjectMapper()))),
-                //содержит запрос, чье тело может быть
-                // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
-                // помощью переданного ObjectMapper'а
-                match(iterableHasItem(requestHasBody(new TypeReference<SomeObjectClass>() {}, new ObjectMapper()))),
-                //содержит запрос,
-                // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
-                // помощью переданного ObjectMapper'а
+                // десериализовано в объект класса SomeObjectClass.
+                match(iterableHasItem(requestHasBody(new TypeReference<SomeObjectClass>() {
+                }))), //содержит запрос,
+                // чье тело может быть де-сериализовано в объект типа SomeObjectClass.
                 match(iterableHasItem(requestHasBody(SomeObjectClass.class, equalTo(someExpectedBody)))),
                 //содержит запрос, чье тело может быть
-                // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
-                // помощью объекта new ObjectMapper(). Ожидается, что де-сериализованное тело соответствует
+                // десериализовано в объект класса SomeObjectClass. 
+                // Ожидается, что де-сериализованное тело соответствует
                 // одному или нескольким (перечисленным через запятую) критериям-матчерам
-                match(iterableHasItem(requestHasBody(new TypeReference<SomeObjectClass>() {}, equalTo(someExpectedBody)))),
-                //содержит запрос,
-                // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
-                // помощью объекта new ObjectMapper(). Ожидается, что де-сериализованное тело соответствует
-                // одному или нескольким (перечисленным через запятую) критериям-матчерам
-                match(iterableHasItem(requestHasBody(SomeObjectClass.class, new ObjectMapper(), equalTo(someExpectedBody)))),
-                //содержит запрос, чье тело может быть
-                // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
-                // помощью переданного ObjectMapper'а. Ожидается, что де-сериализованное тело соответствует
-                // одному или нескольким (перечисленным через запятую) критериям-матчерам
-                match(iterableHasItem(requestHasBody(new TypeReference<SomeObjectClass>() {},
-                        new ObjectMapper(),
+                match(iterableHasItem(requestHasBody(
+                        new TypeReference<SomeObjectClass>() {
+                        },
                         equalTo(someExpectedBody)))), //содержит запрос,
-                // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
-                // помощью переданного ObjectMapper'а. Ожидается, что де-сериализованное тело соответствует
+                // чье тело может быть де-сериализовано в объект типа SomeObjectClass. 
+                // Ожидается, что де-сериализованное тело соответствует
                 // одному или нескольким (перечисленным через запятую) критериям-матчерам
                 match(iterableHasItem(requestHasBody(someExpectedBody))), //содержит запрос, чье тело равно
-                // указанному объекту. Де-сериализация тела происходит с помощью объекта new ObjectMapper()
+                // указанному объекту. 
                 match(iterableHasItem(requestHasRawBody("String ABC"))), //содержит запрос, чье тело в строковом виде
                 // соответствует переданной строке
                 match(iterableHasItem(requestHasRawBody(containsString("ABC")))), //содержит запрос,
                 // чье тело в строковом виде соответствует одному или нескольким перечисленным через запятую
                 // матчерам-критериям
                 match(iterableHasItem(responseHasBody(SomeObjectClass.class))), //содержит ответ, чье тело может быть
-                // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
-                // помощью объекта new ObjectMapper()
-                match(iterableHasItem(responseHasBody(new TypeReference<SomeObjectClass>() {}))), //содержит ответ,
-                // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
-                // помощью объекта new ObjectMapper()
-                match(iterableHasItem(responseHasBody(SomeObjectClass.class, new ObjectMapper()))),
-                //содержит ответ, чье тело может быть
-                // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
-                // помощью переданного ObjectMapper'а
-                match(iterableHasItem(responseHasBody(new TypeReference<SomeObjectClass>() {}, new ObjectMapper()))),
-                //содержит ответ,
-                // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
-                // помощью переданного ObjectMapper'а
+                // десериализовано в объект класса SomeObjectClass.
+                match(iterableHasItem(responseHasBody(new TypeReference<SomeObjectClass>() {
+                }))), //содержит ответ,
+                // чье тело может быть де-сериализовано в объект типа SomeObjectClass.
                 match(iterableHasItem(responseHasBody(SomeObjectClass.class, equalTo(someExpectedBody)))),
                 //содержит ответ, чье тело может быть
-                // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
-                // помощью объекта new ObjectMapper(). Ожидается, что де-сериализованное тело соответствует
+                // десериализовано в объект класса SomeObjectClass. Ожидается, что де-сериализованное тело соответствует
                 // одному или нескольким (перечисленным через запятую) критериям-матчерам
-                match(iterableHasItem(responseHasBody(new TypeReference<SomeObjectClass>() {}, equalTo(someExpectedBody)))),
-                //содержит ответ,
-                // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
-                // помощью объекта new ObjectMapper(). Ожидается, что де-сериализованное тело соответствует
-                // одному или нескольким (перечисленным через запятую) критериям-матчерам
-                match(iterableHasItem(responseHasBody(SomeObjectClass.class, new ObjectMapper(), equalTo(someExpectedBody)))),
-                //содержит ответ, чье тело может быть
-                // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
-                // помощью переданного ObjectMapper'а. Ожидается, что де-сериализованное тело соответствует
-                // одному или нескольким (перечисленным через запятую) критериям-матчерам
-                match(iterableHasItem(responseHasBody(new TypeReference<SomeObjectClass>() {},
-                        new ObjectMapper(),
-                        equalTo(someExpectedBody)))),
-                //содержит ответ,
-                // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
-                // помощью переданного ObjectMapper'а. Ожидается, что де-сериализованное тело соответствует
+                match(iterableHasItem(responseHasBody(
+                        new TypeReference<SomeObjectClass>() {
+                        },
+                        equalTo(someExpectedBody)
+                ))),//содержит ответ,
+                // чье тело может быть де-сериализовано в объект типа SomeObjectClass. 
+                // Ожидается, что де-сериализованное тело соответствует
                 // одному или нескольким (перечисленным через запятую) критериям-матчерам
                 match(iterableHasItem(responseHasBody(someExpectedBody))), //содержит ответ, чье тело равно
-                // указанному объекту. Де-сериализация тела происходит с помощью объекта new ObjectMapper()
+                // указанному объекту.
                 match(iterableHasItem(responseHasRawBody("String ABC"))), //содержит ответ, чье тело в строковом виде 
                 // соответствует переданной строке
                 match(iterableHasItem(responseHasRawBody(containsString("ABC"))))); //содержит ответ, 
         // чье тело в строковом виде соответствует одному или нескольким перечисленным через запятую
         //матчерам-критериям
+    }
+}
+```
+
+Ниже примеры ситуаций, когда [сериализатор](./../../../core.api/doc/rus/SERIALIZATION_DESERIALIZATION.MD) нужно передать
+явно.
+
+```java
+import org.my.pack;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
+
+//Описываем сериализацию и десериализацию для текущего проекта
+public class MyDataTransformer implements DataTransformer {
+
+
+    @Override
+    public <T> T deserialize(String message, Class<T> cls) {
+        //тут описываем механизм десериализации
+    }
+
+    @Override
+    public <T> T deserialize(String string, TypeReference<T> type) {
+        //тут описываем механизм десериализации
+    }
+
+    @Override
+    public String serialize(Object obj) {
+        //тут описываем механизм сериализации
+    }
+}
+```
+
+```java
+package org.mypack;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static ru.tinkoff.qa.neptune.check.CheckActionSupplier.check;
+import static ru.tinkoff.qa.neptune.check.MatchAction.match;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsItemsMatcher.iterableHasItem;
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
+import static ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyGetStepSupplier.proxiedRequests;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.HasContentMatcher.*;
+
+public class MyTest {
+
+    @Test(description = "Использование assertThat")
+    public void test() {
+        var httpTraffic = inBrowser()
+                .resetProxyRecording()
+                .get(proxiedRequests());
+
+        var someExpectedBody = new SomeObjectClass();
+
+        assertThat("записанный трафик",
+                httpTraffic,
+                iterableHasItem(requestHasBody(SomeObjectClass.class, new MyDataTransformer())));
+        //содержит запрос, чье тело может быть
+        // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
+        // помощью переданного new MyDataTransformer()
+
+        assertThat("записанный трафик",
+                httpTraffic,
+                iterableHasItem(requestHasBody(
+                        new TypeReference<SomeObjectClass>() {
+                        },
+                        new MyDataTransformer()
+                ))); //содержит запрос,
+        // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
+        // помощью переданного new MyDataTransformer()
+
+        assertThat("записанный трафик",
+                httpTraffic,
+                iterableHasItem(requestHasBody(SomeObjectClass.class, new MyDataTransformer(), equalTo(someExpectedBody))));
+        //содержит запрос, чье тело может быть
+        // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
+        // помощью переданного new MyDataTransformer(). Ожидается, что де-сериализованное тело соответствует
+        // одному или нескольким (перечисленным через запятую) критериям-матчерам
+
+        assertThat("записанный трафик",
+                httpTraffic,
+                iterableHasItem(requestHasBody(
+                        new TypeReference<SomeObjectClass>() {
+                        },
+                        new MyDataTransformer(),
+                        equalTo(someExpectedBody)
+                ))); //содержит запрос,
+        // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
+        // помощью переданного new MyDataTransformer(). Ожидается, что де-сериализованное тело соответствует
+        // одному или нескольким (перечисленным через запятую) критериям-матчера
+
+        assertThat("записанный трафик",
+                httpTraffic,
+                iterableHasItem(requestHasBody(someExpectedBody, new MyDataTransformer()))); //содержит запрос, 
+        // чье тело равно указанному объекту. Де-сериализация тела происходит с помощью объекта new MyDataTransformer()
+
+        assertThat("записанный трафик",
+                httpTraffic,
+                iterableHasItem(responseHasBody(SomeObjectClass.class, new MyDataTransformer())));
+        //содержит ответ, чье тело может быть
+        // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
+        // помощью переданного new MyDataTransformer()
+
+        assertThat("записанный трафик",
+                httpTraffic,
+                iterableHasItem(responseHasBody(
+                        new TypeReference<SomeObjectClass>() {
+                        },
+                        new MyDataTransformer()
+                ))); //содержит ответ,
+        // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
+        // помощью переданного new MyDataTransformer()
+
+
+        assertThat("записанный трафик",
+                httpTraffic,
+                iterableHasItem(responseHasBody(
+                        SomeObjectClass.class,
+                        new MyDataTransformer(),
+                        equalTo(someExpectedBody)
+                ))); //содержит ответ, чье тело может быть
+        // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
+        // помощью переданного new MyDataTransformer(). Ожидается, что де-сериализованное тело соответствует
+        // одному или нескольким (перечисленным через запятую) критериям-матчерам
+
+        assertThat("записанный трафик",
+                httpTraffic,
+                iterableHasItem(responseHasBody(
+                        new TypeReference<SomeObjectClass>() {
+                        },
+                        new MyDataTransformer(),
+                        equalTo(someExpectedBody)
+                ))); //содержит ответ,
+        // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
+        // помощью переданного new MyDataTransformer(). Ожидается, что де-сериализованное тело соответствует
+        // одному или нескольким (перечисленным через запятую) критериям-матчерам
+
+        assertThat("записанный трафик",
+                httpTraffic,
+                iterableHasItem(responseHasBody(
+                        someExpectedBody,
+                        new MyDataTransformer()
+                ))); //содержит ответ, 
+        // чье тело равно указанному объекту. Де-сериализация тела происходит с помощью 
+        // объекта new MyDataTransformer()
+    }
+
+    @Test(description = "Использование check")
+    public void test2() {
+        var httpTraffic = inBrowser()
+                .resetProxyRecording()
+                .get(proxiedRequests());
+
+        var someExpectedBody = new SomeObjectClass();
+
+        check("записанный трафик",
+                httpTraffic,
+                match(iterableHasItem(requestHasBody(SomeObjectClass.class, new MyDataTransformer()))),
+                //содержит запрос, чье тело может быть
+                // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
+                // помощью переданного new MyDataTransformer()
+                match(iterableHasItem(requestHasBody(
+                        new TypeReference<SomeObjectClass>() {
+                        },
+                        new MyDataTransformer()
+                ))),
+                //содержит запрос,
+                // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
+                // помощью переданного new MyDataTransformer()
+                match(iterableHasItem(requestHasBody(
+                        SomeObjectClass.class,
+                        new MyDataTransformer(),
+                        equalTo(someExpectedBody)
+                ))), //содержит запрос, чье тело может быть
+                // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
+                // помощью переданного new MyDataTransformer(). Ожидается, что де-сериализованное тело соответствует
+                // одному или нескольким (перечисленным через запятую) критериям-матчерам
+                match(iterableHasItem(requestHasBody(
+                        new TypeReference<SomeObjectClass>() {
+                        },
+                        new MyDataTransformer(),
+                        equalTo(someExpectedBody)
+                ))), //содержит запрос,
+                // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
+                // помощью переданного new MyDataTransformer(). Ожидается, что де-сериализованное тело соответствует
+                // одному или нескольким (перечисленным через запятую) критериям-матчерам
+                match(iterableHasItem(requestHasBody(someExpectedBody, new MyDataTransformer()))), //содержит запрос, чье тело равно
+                // указанному объекту. Де-сериализация тела происходит с помощью объекта new MyDataTransformer()
+                match(iterableHasItem(responseHasBody(SomeObjectClass.class, new MyDataTransformer()))),
+                //содержит ответ, чье тело может быть
+                // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
+                // помощью переданного new MyDataTransformer()
+                match(iterableHasItem(responseHasBody(
+                        new TypeReference<SomeObjectClass>() {
+                        },
+                        new MyDataTransformer()
+                ))), //содержит ответ,
+                // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
+                // помощью переданного new MyDataTransformer()
+                match(iterableHasItem(responseHasBody(
+                        SomeObjectClass.class,
+                        new MyDataTransformer(),
+                        equalTo(someExpectedBody)
+                ))), //содержит ответ, чье тело может быть
+                // десериализовано в объект класса SomeObjectClass. Де-сериализация тела происходит с
+                // помощью переданного new MyDataTransformer(). Ожидается, что де-сериализованное тело соответствует
+                // одному или нескольким (перечисленным через запятую) критериям-матчерам
+                match(iterableHasItem(responseHasBody(
+                        new TypeReference<SomeObjectClass>() {
+                        },
+                        new MyDataTransformer(),
+                        equalTo(someExpectedBody)
+                ))), //содержит ответ,
+                // чье тело может быть де-сериализовано в объект типа SomeObjectClass. Де-сериализация тела происходит с
+                // помощью переданного new MyDataTransformer(). Ожидается, что де-сериализованное тело соответствует
+                // одному или нескольким (перечисленным через запятую) критериям-матчерам
+                match(iterableHasItem(responseHasBody(
+                        someExpectedBody,
+                        new MyDataTransformer()
+                ))) //содержит ответ, чье тело равно
+                // указанному объекту. Де-сериализация тела происходит с помощью объекта new MyDataTransformer()
+        );
     }
 }
 ```
@@ -628,13 +756,13 @@ public class MyTest {
         var httpTraffic = inBrowser()
                 .resetProxyRecording()
                 .get(proxiedRequests());
-        
+
         check("записанный трафик",
                 httpTraffic,
                 match(iterableHasItem(requestHasMethod(GET))), //содержит запрос, у которого
                 // указанный http-метод
                 match(iterableHasItem(requestHasMethod(notOf(equalTo(GET)))))); //содержит запрос, у которого
-                // http-метод соответствует критерию
+        // http-метод соответствует критерию
     }
 }
 ```
@@ -730,7 +858,7 @@ public class MyTest {
                 match(iterableHasItem(requestHasQueryParameterValue("value123"))), //содержит запрос, у которого
                 // query-параметр с указанным значением
                 match(iterableHasItem(requestHasQueryParameterValue(containsString("value"))))); //содержит запрос
-                // c query-параметром, у которого значение соответствует указанному критерию
+        // c query-параметром, у которого значение соответствует указанному критерию
     }
 }
 ```
@@ -804,7 +932,7 @@ public class MyTest {
                 match(iterableHasItem(requestHasUrl(url))),//содержит запрос, url которого соответствует переданному объекту
                 //java.net.URL
                 match(iterableHasItem(requestHasUrl(urlHasHost("www.google.com"))))); //содержит запрос, url которого 
-               // соответствует указанному критерию
+        // соответствует указанному критерию
     }
 }
 ```
@@ -835,7 +963,7 @@ public class MyTest {
         var httpTraffic = inBrowser()
                 .resetProxyRecording()
                 .get(proxiedRequests());
-        
+
         assertThat("записанный трафик",
                 httpTraffic,
                 iterableHasItem(responseHasStatusCode(200)));
@@ -858,7 +986,7 @@ public class MyTest {
                 match(iterableHasItem(responseHasStatusCode(200))),
                 //содержит ответ с указанным кодом статуса
                 match(iterableHasItem(responseHasStatusCode(anyOne(is(200), is(201))))));
-                //содержит ответ с кодом статуса, соответствующим переданному критерию
+        //содержит ответ с кодом статуса, соответствующим переданному критерию
     }
 }
 ```
@@ -872,7 +1000,8 @@ public class MyTest {
 - [Поиск элементов страницы](./ELEMENTS_SEARCHING.MD)
 - [Виджеты](./WIDGET.MD)
 
-Внимание!!!!! Данные матчеры рекомендуется использовать вместе с подключенным [check](./../../../check/doc/rus/README.MD).
+Внимание!!!!! Данные матчеры рекомендуется использовать вместе с
+подключенным [check](./../../../check/doc/rus/README.MD).
 
 ### Доступность / Интерактивность
 
@@ -899,7 +1028,7 @@ public class MyTest {
         check("Элемент страницы",
                 inBrowser().find(webElement(xpath("./some/path"))),
                 match(ofSeconds(5), isEnabled())); //проверка того, что элемент доступен
-                //или станет доступен в течение 5 секунд
+        //или станет доступен в течение 5 секунд
     }
 
     @Test(description = "Проверка доступности / интерактивности виджета")
@@ -1083,7 +1212,6 @@ public class MyTest {
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-
 ### Значение элемента
 
 Основная статья: [Значение элементов страницы](./ELEMENT_VALUE.MD)
@@ -1176,7 +1304,7 @@ public class MyTest {
                 //опций селекта. Ожидается, что список опций включает только указанные опции
                 //в перечисленном порядке
                 match(hasOptions(iterableOf("option2", "option1", "option3")))); //проверка
-                //опций селекта. Ожидается, что список опций соответствует критерию-матчеру
+        //опций селекта. Ожидается, что список опций соответствует критерию-матчеру
 
         check("Элемент страницы",
                 inBrowser().find(multiSelect()),
@@ -1184,7 +1312,7 @@ public class MyTest {
                 //опций мульти-селекта. Ожидается, что список опций включает только указанные опции
                 //в перечисленном порядке
                 match(hasOptions(iterableOf("option2", "option1", "option3")))); //проверка
-                //опций селекта. Ожидается, что список опций соответствует критерию-матчеру
+        //опций селекта. Ожидается, что список опций соответствует критерию-матчеру
     }
 }
 ```
@@ -1298,8 +1426,8 @@ public class MyTest {
                 match(hasAColumn("Column 1", iterableOf("Value 2", "Value 1", "Value 3"))), //ожидается, что 
                 //есть колонка, которая имеет указанный заголовок, и значение которой соответствует указанному критерию 
                 match(hasAColumn(containsString("Column"), iterableOf("Value 2", "Value 1", "Value 3"))));
-                //ожидается, что есть колонка, заголовок которой соответствует указанному критерию, и значение которой 
-                // соответствует указанному критерию 
+        //ожидается, что есть колонка, заголовок которой соответствует указанному критерию, и значение которой 
+        // соответствует указанному критерию 
     }
 }
 ```
@@ -1312,12 +1440,13 @@ public class MyTest {
 
 - [Работа с окнами. Поиск и переключение](./WINDOWS.MD)
 
-Внимание!!!!! Данные матчеры рекомендуется использовать вместе с подключенным [check](./../../../check/doc/rus/README.MD).
+Внимание!!!!! Данные матчеры рекомендуется использовать вместе с
+подключенным [check](./../../../check/doc/rus/README.MD).
 
 ### Наличие окна
 
-Бывает так, что пользовательские действия приводят к появлению новых окон / вкладок, и последующее продолжение выполнения 
-операций в приложении приводят к закрытию ранее появившихся окон / вкладок. 
+Бывает так, что пользовательские действия приводят к появлению новых окон / вкладок, и последующее продолжение
+выполнения операций в приложении приводят к закрытию ранее появившихся окон / вкладок.
 
 ```java
 package org.mypack;

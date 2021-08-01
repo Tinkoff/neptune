@@ -105,6 +105,7 @@ RABBIT_MQ_USERNAME=guest
 ## RABBIT_MQ_DEFAULT_DATA_TRANSFORMER
 
 Основная статья: [Сериализация и десериализация](./../../../core.api/doc/rus/SERIALIZATION_DESERIALIZATION.MD)
+Используется: [Получение сообщения](FUNCTION.MD#Получение-сообщения)
 
 ```java
 import org.my.pack;
