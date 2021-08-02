@@ -1,38 +1,32 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.test;
 
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
-import ru.tinkoff.qa.neptune.core.api.data.format.TypeRef;
-
 
 public class DefaultMapper implements DataTransformer {
 
-    @Override
-    public <T> T deserialize(String message, Class<T> cls) {
-        try {
-            return new ObjectMapper().readValue(message, cls);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+    private final Gson gson;
+
+    public DefaultMapper() {
+        this.gson = new GsonBuilder()
+                //Указываем нужные настройки
+                .create();
     }
 
     @Override
-    public <T> T deserialize(String string, TypeRef<T> type) {
-        try {
-            return new ObjectMapper().readValue(string, type.jacksonTypeReference());
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+    public <T> T deserialize(String message, Class<T> cls) {
+        return gson.fromJson(message, cls);
+    }
+
+    @Override
+    public <T> T deserialize(String string, TypeReference<T> type) {
+        return gson.fromJson(string, type.getType());
     }
 
     @Override
     public String serialize(Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        return gson.toJson(obj);
     }
 }

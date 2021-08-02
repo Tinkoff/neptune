@@ -7,6 +7,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
+import ru.tinkoff.qa.neptune.rabbit.mq.captors.MessageCaptor;
 
 import java.util.Date;
 import java.util.Map;
@@ -14,6 +15,8 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.createCaptors;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqAMQPProperty.RABBIT_AMQP_PROPERTY;
 
 @SequentialActionSupplier.DefinePerformImperativeParameterName("Publish:")
@@ -23,6 +26,7 @@ public class RabbitMqPublishSupplier extends SequentialActionSupplier<RabbitMqSt
     private final String routingKey;
 
     private final String body;
+
     private final AMQP.BasicProperties.Builder propertyBuilder;
     private ParametersForPublish params;
 
@@ -158,5 +162,11 @@ public class RabbitMqPublishSupplier extends SequentialActionSupplier<RabbitMqSt
     public RabbitMqPublishSupplier clusterId(String clusterId) {
         propertyBuilder.clusterId(clusterId);
         return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void onStart(RabbitMqStepContext rabbitMqStepContext) {
+        catchValue(body, createCaptors(new Class[] {MessageCaptor.class}));
     }
 }

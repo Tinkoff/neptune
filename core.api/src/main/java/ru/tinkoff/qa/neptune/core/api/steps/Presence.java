@@ -18,6 +18,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess.CaptureOnSuccessReader.readCaptorsOnSuccess;
 
 @SequentialGetStepSupplier.DefineResultDescriptionParameterName("Is present")
 @IncludeParamsOfInnerGetterStep
@@ -35,7 +36,7 @@ public final class Presence<T> extends SequentialGetStepSupplier.GetObjectChaine
     private Presence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBePresent) {
         this();
         from(turnReportingOff(toBePresent.clone()));
-        this.successCaptors.addAll(toBePresent.successCaptors);
+        readCaptorsOnSuccess(toBePresent.getClass(), successCaptors);
     }
 
     private static boolean isValuable(Object o) {

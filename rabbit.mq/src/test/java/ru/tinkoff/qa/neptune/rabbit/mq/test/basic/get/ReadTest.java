@@ -1,9 +1,9 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.test.basic.get;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.rabbitmq.client.GetResponse;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.data.format.TypeRef;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.BaseRabbitMqTest;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.CustomMapper;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.DefaultMapper;
@@ -66,7 +66,7 @@ public class ReadTest extends BaseRabbitMqTest {
         var dtos = rabbitMqStepContext.read(rabbitBody(
                 "test2",
                 true,
-                new TypeRef<List<DraftDto>>() {
+                new TypeReference<List<DraftDto>>() {
                 }));
 
         assertThat(dtos, hasSize(2));

@@ -19,6 +19,10 @@ import static ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultJsonObject
 import static ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultXmlObjectMapper.DEFAULT_XML_OBJECT_MAPPER;
 
 /**
+ * This is deprecated in favour of usage of {@link ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer}
+ */
+@Deprecated
+/**
  * Default mappers of serialized/deserialized http request/response bodies.
  *
  * @see DefaultJsonObjectMapper

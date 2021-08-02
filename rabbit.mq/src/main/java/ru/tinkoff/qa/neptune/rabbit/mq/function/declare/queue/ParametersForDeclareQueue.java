@@ -17,15 +17,15 @@ public class ParametersForDeclareQueue implements StepParameterPojo {
     private boolean autoDelete;
     private AdditionalArguments additionalArguments;
 
-    public boolean isDurable() {
+    boolean isDurable() {
         return durable;
     }
 
-    public boolean isExclusive() {
+    boolean isExclusive() {
         return exclusive;
     }
 
-    public boolean isAutoDelete() {
+    boolean isAutoDelete() {
         return autoDelete;
     }
 

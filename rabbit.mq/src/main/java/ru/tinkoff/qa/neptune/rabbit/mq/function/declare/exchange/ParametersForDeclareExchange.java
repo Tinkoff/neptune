@@ -30,7 +30,7 @@ public class ParametersForDeclareExchange implements StepParameterPojo {
         return this;
     }
 
-    public boolean isAutoDelete() {
+    boolean isAutoDelete() {
         return autoDelete;
     }
 
@@ -39,7 +39,7 @@ public class ParametersForDeclareExchange implements StepParameterPojo {
         return this;
     }
 
-    public boolean isInternal() {
+    boolean isInternal() {
         return internal;
     }
 
@@ -48,7 +48,7 @@ public class ParametersForDeclareExchange implements StepParameterPojo {
         return this;
     }
 
-    public HashMap<String, Object> getAdditionalArguments() {
+    HashMap<String, Object> getAdditionalArguments() {
         return additionalArguments == null ? null : additionalArguments.getHashMap();
     }
 

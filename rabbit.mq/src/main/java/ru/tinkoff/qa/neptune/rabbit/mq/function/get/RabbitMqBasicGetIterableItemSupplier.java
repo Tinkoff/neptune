@@ -1,7 +1,9 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.function.get;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
-import ru.tinkoff.qa.neptune.core.api.data.format.TypeRef;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
@@ -9,8 +11,11 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
+import ru.tinkoff.qa.neptune.rabbit.mq.captors.MessageCaptor;
+import ru.tinkoff.qa.neptune.rabbit.mq.captors.MessagesCaptor;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -26,6 +31,13 @@ public class RabbitMqBasicGetIterableItemSupplier<T> extends SequentialGetStepSu
         .GetObjectFromIterableStepSupplier<RabbitMqStepContext, T, RabbitMqBasicGetIterableItemSupplier<T>> {
 
     final GetFromQueue<?> getFromQueue;
+
+    @CaptureOnSuccess(by = MessageCaptor.class)
+    String message;
+
+    @CaptureOnSuccess(by = MessagesCaptor.class)
+    @CaptureOnFailure(by = MessagesCaptor.class)
+    List<String> messages;
 
     protected <M, S extends Iterable<T>> RabbitMqBasicGetIterableItemSupplier(GetFromQueue<M> getFromQueue, Function<M, S> function) {
         super(function.compose(getFromQueue));
@@ -48,7 +60,7 @@ public class RabbitMqBasicGetIterableItemSupplier<T> extends SequentialGetStepSu
      * @return an instance of {@link RabbitMqBasicGetIterableItemSupplier}
      */
     @Description("{description}")
-    public static <M, T, S extends Iterable<T>> RabbitMqBasicGetIterableItemSupplier<T> rabbitIterable(
+    public static <M, T, S extends Iterable<T>> RabbitMqBasicGetIterableItemSupplier<T> rabbitIterableItem(
             @DescriptionFragment(value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
             ) String description,
@@ -76,13 +88,13 @@ public class RabbitMqBasicGetIterableItemSupplier<T> extends SequentialGetStepSu
      * @return an instance of {@link RabbitMqBasicGetIterableItemSupplier}
      */
     @Description("{description}")
-    public static <M, T, S extends Iterable<T>> RabbitMqBasicGetIterableItemSupplier<T> rabbitIterable(
+    public static <M, T, S extends Iterable<T>> RabbitMqBasicGetIterableItemSupplier<T> rabbitIterableItem(
             @DescriptionFragment(value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
             ) String description,
             String queue,
             boolean autoAck,
-            TypeRef<M> typeT,
+            TypeReference<M> typeT,
             Function<M, S> toGet) {
         checkArgument(isNotBlank(description), "Description should be defined");
         return new RabbitMqBasicGetIterableItemSupplier<>(new GetFromQueue<>(queue, autoAck, typeT), toGet);
@@ -101,13 +113,13 @@ public class RabbitMqBasicGetIterableItemSupplier<T> extends SequentialGetStepSu
      * @param <S>         is a type of iterable
      * @return an instance of {@link RabbitMqBasicGetIterableItemSupplier}
      */
-    public static <T, S extends Iterable<T>> RabbitMqBasicGetIterableItemSupplier<T> rabbitIterable(
+    public static <T, S extends Iterable<T>> RabbitMqBasicGetIterableItemSupplier<T> rabbitIterableItem(
             String description,
             String queue,
             boolean autoAck,
             Class<S> classT) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return rabbitIterable(description, queue, autoAck, classT, ts -> ts);
+        return rabbitIterableItem(description, queue, autoAck, classT, ts -> ts);
     }
 
     /**
@@ -123,12 +135,12 @@ public class RabbitMqBasicGetIterableItemSupplier<T> extends SequentialGetStepSu
      * @param <S>         is a type of iterable
      * @return an instance of {@link RabbitMqBasicGetIterableItemSupplier}
      */
-    public static <T, S extends Iterable<T>> RabbitMqBasicGetIterableItemSupplier<T> rabbitIterable(
+    public static <T, S extends Iterable<T>> RabbitMqBasicGetIterableItemSupplier<T> rabbitIterableItem(
             String description,
             String queue,
             boolean autoAck,
-            TypeRef<S> typeT) {
-        return rabbitIterable(description, queue, autoAck, typeT, ts -> ts);
+            TypeReference<S> typeT) {
+        return rabbitIterableItem(description, queue, autoAck, typeT, ts -> ts);
     }
 
     @Override
@@ -144,6 +156,22 @@ public class RabbitMqBasicGetIterableItemSupplier<T> extends SequentialGetStepSu
     @Override
     public RabbitMqBasicGetIterableItemSupplier<T> criteria(Criteria<? super T> criteria) {
         return super.criteria(criteria);
+    }
+
+    @Override
+    protected void onSuccess(T t) {
+        var ms = getFromQueue.getMessages();
+        if (t != null) {
+            message = ms.getLast();
+        }
+        else {
+            messages = ms;
+        }
+    }
+
+    @Override
+    protected void onFailure(RabbitMqStepContext m, Throwable throwable) {
+        messages = getFromQueue.getMessages();
     }
 
     RabbitMqBasicGetIterableItemSupplier<T> setDataTransformer(DataTransformer dataTransformer) {

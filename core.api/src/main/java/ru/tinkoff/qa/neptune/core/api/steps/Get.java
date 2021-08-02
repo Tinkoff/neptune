@@ -1,6 +1,8 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,8 +28,10 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 final class Get<T, R> implements Function<T, R> {
 
     private final Set<Class<? extends Throwable>> ignored = new HashSet<>();
+
     private final Set<Captor<Object, Object>> successCaptors = new HashSet<>();
     private final Set<Captor<Object, Object>> failureCaptors = new HashSet<>();
+
     String description;
     Function<T, R> function;
     private boolean toReport = true;
@@ -36,6 +40,9 @@ final class Get<T, R> implements Function<T, R> {
     private int maxDepth;
     private Get<?, ?> previous;
     private Supplier<Map<String, String>> additionalParams;
+
+    private final Set<FieldValueCaptureMaker<CaptureOnSuccess>> onSuccessAdditional = new HashSet<>();
+    private final Set<FieldValueCaptureMaker<CaptureOnFailure>> onFailureAdditional = new HashSet<>();
 
     Get(String description, Function<T, R> function) {
         checkArgument(nonNull(function), "Function should be defined");
@@ -80,6 +87,7 @@ final class Get<T, R> implements Function<T, R> {
             }
             if (catchSuccessEvent() && toReport) {
                 catchValue(result, successCaptors);
+                onSuccessAdditional.forEach(FieldValueCaptureMaker::makeCaptures);
             }
             return result;
         } catch (Throwable thrown) {
@@ -90,6 +98,7 @@ final class Get<T, R> implements Function<T, R> {
                 }
                 if (catchFailureEvent() && toReport) {
                     catchValue(t, failureCaptors);
+                    onFailureAdditional.forEach(FieldValueCaptureMaker::makeCaptures);
                 }
                 throw thrown;
             } else {
@@ -139,6 +148,8 @@ final class Get<T, R> implements Function<T, R> {
                 .addIgnored(ignored)
                 .addSuccessCaptors(successCaptors)
                 .addFailureCaptors(failureCaptors)
+                .addOnSuccessAdditional(onSuccessAdditional)
+                .addOnFailureAdditional(onFailureAdditional)
                 .setParameters(parameters);
 
         if (!toReport) {
@@ -176,6 +187,16 @@ final class Get<T, R> implements Function<T, R> {
 
     Get<T, R> addFailureCaptors(Collection<Captor<Object, Object>> failureCaptors) {
         this.failureCaptors.addAll(failureCaptors);
+        return this;
+    }
+
+    Get<T, R> addOnSuccessAdditional(Collection<FieldValueCaptureMaker<CaptureOnSuccess>> additional) {
+        this.onSuccessAdditional.addAll(additional);
+        return this;
+    }
+
+    Get<T, R> addOnFailureAdditional(Collection<FieldValueCaptureMaker<CaptureOnFailure>> additional) {
+        this.onFailureAdditional.addAll(additional);
         return this;
     }
 

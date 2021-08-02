@@ -1,11 +1,10 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -35,6 +34,9 @@ final class ActionImpl<T, R> implements Action<T> {
     private int maxDepth;
     private Supplier<Map<String, String>> additionalParams;
 
+    private final Set<FieldValueCaptureMaker<CaptureOnSuccess>> onSuccessAdditional = new HashSet<>();
+    private final Set<FieldValueCaptureMaker<CaptureOnFailure>> onFailureAdditional = new HashSet<>();
+
     ActionImpl(String description, SequentialActionSupplier<T, R, ?> supplier, Function<T, R> getFrom) {
         this.supplier = supplier;
         this.description = description;
@@ -62,6 +64,7 @@ final class ActionImpl<T, R> implements Action<T> {
 
             if (catchSuccessEvent() && toReport) {
                 catchValue(performOn, successCaptors);
+                onSuccessAdditional.forEach(FieldValueCaptureMaker::makeCaptures);
             }
         } catch (Throwable thrown) {
 
@@ -74,6 +77,7 @@ final class ActionImpl<T, R> implements Action<T> {
             if (catchFailureEvent() && toReport) {
                 ofNullable(performOn).ifPresent(o -> catchValue(o, failureCaptors));
                 catchValue(t, failureCaptors);
+                onFailureAdditional.forEach(FieldValueCaptureMaker::makeCaptures);
             }
             throw thrown;
         } finally {
@@ -110,6 +114,16 @@ final class ActionImpl<T, R> implements Action<T> {
 
     ActionImpl<T, R> setAdditionalParams(Supplier<Map<String, String>> additionalParams) {
         this.additionalParams = additionalParams;
+        return this;
+    }
+
+    ActionImpl<T, R> addOnSuccessAdditional(Collection<FieldValueCaptureMaker<CaptureOnSuccess>> additional) {
+        this.onSuccessAdditional.addAll(additional);
+        return this;
+    }
+
+    ActionImpl<T, R> addOnFailureAdditional(Collection<FieldValueCaptureMaker<CaptureOnFailure>> additional) {
+        this.onFailureAdditional.addAll(additional);
         return this;
     }
 }
