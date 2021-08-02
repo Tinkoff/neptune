@@ -14,7 +14,7 @@ public class ParametersForSend implements StepParameterPojo {
     @StepParameter("headers")
     private Iterable<Header> headers;
 
-    public Integer getPartition() {
+    Integer getPartition() {
         return partition;
     }
 
@@ -23,7 +23,7 @@ public class ParametersForSend implements StepParameterPojo {
         return this;
     }
 
-    public Long getTimestamp() {
+    Long getTimestamp() {
         return timestamp;
     }
 
@@ -32,7 +32,7 @@ public class ParametersForSend implements StepParameterPojo {
         return this;
     }
 
-    public Object getKey() {
+    Object getKey() {
         return key;
     }
 
@@ -41,7 +41,7 @@ public class ParametersForSend implements StepParameterPojo {
         return this;
     }
 
-    public Iterable<Header> getHeaders() {
+    Iterable<Header> getHeaders() {
         return headers;
     }
 

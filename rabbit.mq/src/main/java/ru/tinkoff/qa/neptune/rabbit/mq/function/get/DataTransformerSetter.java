@@ -28,9 +28,8 @@ public final class DataTransformerSetter {
         return addTo.setDataTransformer(d);
     }
 
-    public static <T, S extends Iterable<T>> RabbitMqBasicGetIterableSupplier<T, S> setDataTransformer(
-            DataTransformer d,
-            RabbitMqBasicGetIterableSupplier<T, S> addTo) {
+    public static <T, S extends Iterable<T>> RabbitMqBasicGetIterableSupplier<T, S> setDataTransformer(DataTransformer d,
+                                                                                                       RabbitMqBasicGetIterableSupplier<T, S> addTo) {
         return addTo.setDataTransformer(d);
     }
 }

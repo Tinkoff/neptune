@@ -8,6 +8,7 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporti
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 
 @SequentialActionSupplier.DefinePerformImperativeParameterName("Send:")
@@ -15,7 +16,9 @@ import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 @SuppressWarnings("unchecked")
 public class KafkaSendRecordsActionSupplier<K, V> extends SequentialActionSupplier<KafkaStepContext, KafkaStepContext, KafkaSendRecordsActionSupplier<K, V>> {
     private final String topic;
+    @StepParameter("value")
     private final Object value;
+
     private Callback callback;
     private ParametersForSend parametersForSend;
     private DataTransformer dataTransformer;
