@@ -32,6 +32,17 @@ public class GetObjectFromIterableSupplier<M, R> extends SequentialGetStepSuppli
         from((SendRequestAndGet<M, Iterable<R>>) getResponse(new GetStepResultFunction<>(f)).from(call));
     }
 
+    /**
+     * Creates a step that gets some value from iterable which is calculated by body of synchronous http call.
+     *
+     * @param description is description of value to get
+     * @param call        describes a single synchronous call
+     * @param f           describes how to get desired value
+     * @param <M>         deserialized body
+     * @param <R>         is a type of an item of iterable
+     * @param <S>         is a type of iterable
+     * @return an instance of {@link GetObjectFromIterableSupplier}
+     */
     @Description("{description}")
     public static <M, R, S extends Iterable<R>> GetObjectFromIterableSupplier<M, R> iterableItem(
             @DescriptionFragment(
@@ -42,17 +53,46 @@ public class GetObjectFromIterableSupplier<M, R> extends SequentialGetStepSuppli
         return new GetObjectFromIterableSupplier<>(call, f);
     }
 
+    /**
+     * Creates a step that gets some value from iterable body of synchronous http call.
+     *
+     * @param description is description of value to get
+     * @param call        describes a single synchronous call
+     * @param <R>         is a type of an item of iterable
+     * @param <S>         is a type of iterable
+     * @return an instance of {@link GetObjectFromIterableSupplier}
+     */
     public static <R, S extends Iterable<R>> GetObjectFromIterableSupplier<S, R> iterableItem(String description,
                                                                                               Supplier<S> call) {
         return iterableItem(description, call, rs -> rs);
     }
 
+    /**
+     * Creates a step that gets some value from iterable which is calculated by body of http call.
+     *
+     * @param description is description of value to get
+     * @param call        describes a single synchronous call
+     * @param f           describes how to get desired value
+     * @param <M>         deserialized body
+     * @param <R>         is a type of an item of iterable
+     * @param <S>         is a type of iterable
+     * @return an instance of {@link GetObjectFromIterableSupplier}
+     */
     public static <M, R, S extends Iterable<R>> GetObjectFromIterableSupplier<M, R> callIterableItem(String description,
                                                                                                      Supplier<Call<M>> call,
                                                                                                      Function<M, S> f) {
         return iterableItem(description, new CallBodySupplier<>(call), f);
     }
 
+    /**
+     * Creates a step that gets some value from iterable body of http call.
+     *
+     * @param description is description of value to get
+     * @param call        describes a single synchronous call
+     * @param <R>         is a type of an item of iterable
+     * @param <S>         is a type of iterable
+     * @return an instance of {@link GetObjectFromIterableSupplier}
+     */
     public static <R, S extends Iterable<R>> GetObjectFromIterableSupplier<S, R> callIterableItem(String description,
                                                                                                   Supplier<Call<S>> call) {
         return callIterableItem(description, call, rs -> rs);

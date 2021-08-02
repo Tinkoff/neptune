@@ -32,6 +32,16 @@ public class GetArraySupplier<M, R> extends SequentialGetStepSupplier
         from(getResponse(new GetStepResultFunction<>(f)).from(call));
     }
 
+    /**
+     * Creates a step that gets some array value which is calculated by body of synchronous http call.
+     *
+     * @param description is description of value to get
+     * @param call        describes a single synchronous call
+     * @param f           describes how to get desired value
+     * @param <M>         deserialized body
+     * @param <R>         is a type of an item of array
+     * @return an instance of {@link GetArraySupplier}
+     */
     @Description("{description}")
     public static <M, R> GetArraySupplier<M, R> array(
             @DescriptionFragment(
@@ -42,14 +52,40 @@ public class GetArraySupplier<M, R> extends SequentialGetStepSupplier
         return new GetArraySupplier<>(call, f);
     }
 
+    /**
+     * Creates a step that gets some array value from array body of synchronous http call.
+     *
+     * @param description is description of value to get
+     * @param call        describes a single synchronous call
+     * @param <M>         is a type of an item of array
+     * @return an instance of {@link GetArraySupplier}
+     */
     public static <M> GetArraySupplier<M[], M> array(String description, Supplier<M[]> call) {
         return array(description, call, ms -> ms);
     }
 
+    /**
+     * Creates a step that gets some array value which is calculated by body of http call.
+     *
+     * @param description is description of value to get
+     * @param call        describes a single call
+     * @param f           describes how to get desired value
+     * @param <M>         deserialized body
+     * @param <R>         is a type of an item of array
+     * @return an instance of {@link GetArraySupplier}
+     */
     public static <M, R> GetArraySupplier<M, R> callArray(String description, Supplier<Call<M>> call, Function<M, R[]> f) {
         return array(description, new CallBodySupplier<>(call), f);
     }
 
+    /**
+     * Creates a step that gets some array value from array body of http call.
+     *
+     * @param description is description of value to get
+     * @param call        describes a single call
+     * @param <M>         is a type of an item of array
+     * @return an instance of {@link GetArraySupplier}
+     */
     public static <M> GetArraySupplier<M[], M> callArray(String description, Supplier<Call<M[]>> call) {
         return callArray(description, call, ms -> ms);
     }
