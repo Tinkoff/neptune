@@ -51,9 +51,9 @@ public class RabbitMqBasicGetSupplier<T> extends SequentialGetStepSupplier.GetOb
      * @param autoAck     true if the server should consider messages
      *                    acknowledged once delivered; false if the server should expect
      *                    explicit acknowledgements
-     * @param classT      is a class of a value to deserialize body
+     * @param classT      is a class of a value to deserialize message
      * @param toGet       describes how to get desired value
-     * @param <M>         is a type of deserialized body
+     * @param <M>         is a type of deserialized message
      * @param <T>         is a type of a target value
      * @return an instance of {@link RabbitMqBasicGetSupplier}
      */
@@ -78,9 +78,9 @@ public class RabbitMqBasicGetSupplier<T> extends SequentialGetStepSupplier.GetOb
      * @param autoAck     true if the server should consider messages
      *                    acknowledged once delivered; false if the server should expect
      *                    explicit acknowledgements
-     * @param typeT       is a reference to type of a value to deserialize body
+     * @param typeT       is a reference to type of a value to deserialize message
      * @param toGet       describes how to get desired value
-     * @param <M>         is a type of deserialized body
+     * @param <M>         is a type of deserialized message
      * @param <T>         is a type of a target value
      * @return an instance of {@link RabbitMqBasicGetSupplier}
      */
@@ -104,8 +104,8 @@ public class RabbitMqBasicGetSupplier<T> extends SequentialGetStepSupplier.GetOb
      * @param autoAck true if the server should consider messages
      *                acknowledged once delivered; false if the server should expect
      *                explicit acknowledgements
-     * @param classT  is a class of a value to deserialize body
-     * @param <T>     is a type of deserialized body
+     * @param classT  is a class of a value to deserialize message
+     * @param <T>     is a type of deserialized message
      * @return an instance of {@link RabbitMqBasicGetSupplier}
      */
     @Description("Message body")
@@ -122,8 +122,8 @@ public class RabbitMqBasicGetSupplier<T> extends SequentialGetStepSupplier.GetOb
      * @param autoAck true if the server should consider messages
      *                acknowledged once delivered; false if the server should expect
      *                explicit acknowledgements
-     * @param typeT   is a reference to type of a value to deserialize body
-     * @param <T>     is a type of deserialized body
+     * @param typeT   is a reference to type of a value to deserialize message
+     * @param <T>     is a type of deserialized message
      * @return an instance of {@link RabbitMqBasicGetSupplier}
      */
     @Description("Message body")
