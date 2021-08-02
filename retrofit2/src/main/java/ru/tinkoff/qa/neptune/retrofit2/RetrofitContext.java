@@ -11,7 +11,7 @@ public class RetrofitContext extends Context<RetrofitContext> {
 
     private static final RetrofitContext context = getInstance(RetrofitContext.class);
 
-    public static <T> RetrofitContext retrofit() {
+    public static RetrofitContext retrofit() {
         return context;
     }
 

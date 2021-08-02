@@ -32,6 +32,16 @@ public class GetObjectSupplier<M, R> extends SequentialGetStepSupplier
         from(getResponse(new GetStepResultFunction<>(f)).from(call));
     }
 
+    /**
+     * Creates a step that gets some value from object which is calculated by body of synchronous http call.
+     *
+     * @param description is description of value to get
+     * @param call        describes a single synchronous call
+     * @param f           describes how to get desired value
+     * @param <M>         deserialized body
+     * @param <R>         is a type of an object
+     * @return an instance of {@link GetObjectSupplier}
+     */
     @Description("{description}")
     public static <M, R> GetObjectSupplier<M, R> object(
             @DescriptionFragment(
@@ -42,17 +52,41 @@ public class GetObjectSupplier<M, R> extends SequentialGetStepSupplier
         return new GetObjectSupplier<>(call, f);
     }
 
+    /**
+     * Creates a step that gets body of synchronous http call.
+     *
+     * @param call describes a single synchronous call
+     * @param <M>  deserialized body
+     * @return an instance of {@link GetObjectSupplier}
+     */
     @Description("Response body")
     public static <M> GetObjectSupplier<M, M> body(Supplier<M> call) {
         return new GetObjectSupplier<>(call, m -> m);
     }
 
+    /**
+     * Creates a step that gets some value from object which is calculated by body of http call.
+     *
+     * @param description is description of value to get
+     * @param call        describes a single synchronous call
+     * @param f           describes how to get desired value
+     * @param <M>         deserialized body
+     * @param <R>         is a type of an object
+     * @return an instance of {@link GetObjectSupplier}
+     */
     public static <M, R> GetObjectSupplier<M, R> callObject(String description,
                                                             Supplier<Call<M>> call,
                                                             Function<M, R> f) {
         return object(description, new CallBodySupplier<>(call), f);
     }
 
+    /**
+     * Creates a step that gets body of http call.
+     *
+     * @param call describes a single synchronous call
+     * @param <M>  deserialized body
+     * @return an instance of {@link GetObjectSupplier}
+     */
     @Description("Response body")
     public static <M> GetObjectSupplier<M, M> callBody(Supplier<Call<M>> call) {
         return new GetObjectSupplier<>(new CallBodySupplier<>(call), m -> m);
