@@ -6,7 +6,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import java.util.Collection;
 import java.util.List;
 
-import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -36,8 +35,10 @@ public class MessagesCaptor extends StringCaptor<List<String>> {
         var stringBuilder = new StringBuilder();
 
         list.forEach(item -> {
-            stringBuilder.append(item);
-            stringBuilder.append(lineSeparator());
+            stringBuilder
+                    .append(item)
+                    .append("\r\n")
+                    .append("\r\n");
         });
 
         return stringBuilder;

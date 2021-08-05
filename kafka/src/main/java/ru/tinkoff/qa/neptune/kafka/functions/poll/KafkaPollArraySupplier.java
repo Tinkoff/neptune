@@ -35,7 +35,7 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
     final GetFromTopics<?> getFromTopics;
 
     @CaptureOnSuccess(by = MessageCaptor.class)
-    String message;
+    List<String> successMessages;
 
     @CaptureOnSuccess(by = MessagesCaptor.class)
     @CaptureOnFailure(by = MessagesCaptor.class)
@@ -109,11 +109,10 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
 
     @Override
     protected void onSuccess(T[] t) {
-        var ms = getFromTopics.getMessages();
-        if (t != null && t.length > 0) {
-            message = ms.getLast();
-        } else {
-            messages = ms;
+        var mss = getFromTopics.getSuccessMessages();
+
+        for (T item : t) {
+            successMessages.add(mss.get(item));
         }
     }
 

@@ -34,7 +34,7 @@ public class KafkaPollIterableSupplier<T> extends SequentialGetStepSupplier
     final GetFromTopics<?> getFromTopics;
 
     @CaptureOnSuccess(by = MessageCaptor.class)
-    String message;
+    List<String> successMessages;
 
     @CaptureOnSuccess(by = MessagesCaptor.class)
     @CaptureOnFailure(by = MessagesCaptor.class)
@@ -108,12 +108,11 @@ public class KafkaPollIterableSupplier<T> extends SequentialGetStepSupplier
 
     @Override
     protected void onSuccess(List<T> tList) {
-        var ms = getFromTopics.getMessages();
-        if (tList != null && tList.size() > 0) {
-            message = ms.getLast();
-        } else {
-            messages = ms;
-        }
+        var mss = getFromTopics.getSuccessMessages();
+
+        tList.forEach(item -> {
+            successMessages.add(mss.get(item));
+        });
     }
 
     @Override

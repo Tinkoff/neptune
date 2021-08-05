@@ -10,10 +10,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -34,6 +31,8 @@ final class GetFromTopics<T> implements Function<KafkaStepContext, List<T>>, Ste
     private DataTransformer transformer;
 
     private final LinkedList<String> readMessages = new LinkedList<>();
+
+    private final Map<Object, String> successMessages = new HashMap<>();
 
     GetFromTopics(List<String> topics, Class<T> cls, TypeReference<T> typeRef) {
         checkArgument(!topics.isEmpty(), "Topics should be defined");
@@ -71,9 +70,23 @@ final class GetFromTopics<T> implements Function<KafkaStepContext, List<T>>, Ste
         }
 
         if (cls != null) {
-            return messages.stream().map(record -> transformer.deserialize(record, cls)).collect(toList());
+            return messages
+                    .stream()
+                    .map(record -> {
+                        var t = transformer.deserialize(record, cls);
+                        successMessages.put(t, record);
+                        return t;
+                    })
+                    .collect(toList());
         }
-        return messages.stream().map(record -> transformer.deserialize(record, typeRef)).collect(toList());
+        return messages.
+                stream()
+                .map(record -> {
+                    var t = transformer.deserialize(record, typeRef);
+                    successMessages.put(t, record);
+                    return t;
+                })
+                .collect(toList());
     }
 
     void setTransformer(DataTransformer transformer) {
@@ -82,5 +95,9 @@ final class GetFromTopics<T> implements Function<KafkaStepContext, List<T>>, Ste
 
     LinkedList<String> getMessages() {
         return readMessages;
+    }
+
+    Map<Object, String> getSuccessMessages() {
+        return successMessages;
     }
 }
