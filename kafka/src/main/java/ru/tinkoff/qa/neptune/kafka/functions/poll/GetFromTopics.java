@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.kafka.functions.poll;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
@@ -10,6 +11,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -28,8 +30,10 @@ final class GetFromTopics<T> implements Function<KafkaStepContext, List<T>>, Ste
 
     @StepParameter(value = "Type to deserialize to", doNotReportNullValues = true)
     private final TypeReference<T> typeRef;
+
     private DataTransformer transformer;
 
+    private final LinkedList<String> readMessages = new LinkedList<>();
 
     GetFromTopics(List<String> topics, Class<T> cls, TypeReference<T> typeRef) {
         checkArgument(!topics.isEmpty(), "Topics should be defined");
@@ -59,19 +63,24 @@ final class GetFromTopics<T> implements Function<KafkaStepContext, List<T>>, Ste
             return new ArrayList<>();
         }
 
-        if (cls != null) {
-            return consumerRecords.records(((TopicPartition) partitions.toArray()[0]))
-                    .stream()
-                    .map(consumerRecord -> transformer.deserialize(consumerRecord.value(), cls))
-                    .collect(toList());
+        List<String> messages = consumerRecords.records(((TopicPartition) partitions.toArray()[0]))
+                .stream().map(ConsumerRecord::value).collect(toList());
+
+        if (!readMessages.containsAll(messages)) {
+            readMessages.addAll(messages);
         }
-        return consumerRecords.records(((TopicPartition) partitions.toArray()[0]))
-                .stream()
-                .map(consumerRecord -> transformer.deserialize(consumerRecord.value(), typeRef))
-                .collect(toList());
+
+        if (cls != null) {
+            return messages.stream().map(record -> transformer.deserialize(record, cls)).collect(toList());
+        }
+        return messages.stream().map(record -> transformer.deserialize(record, typeRef)).collect(toList());
     }
 
     void setTransformer(DataTransformer transformer) {
         this.transformer = transformer;
+    }
+
+    LinkedList<String> getMessages() {
+        return readMessages;
     }
 }

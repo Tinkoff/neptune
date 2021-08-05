@@ -2,6 +2,8 @@ package ru.tinkoff.qa.neptune.kafka.functions.poll;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
@@ -9,6 +11,8 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
+import ru.tinkoff.qa.neptune.kafka.captors.MessageCaptor;
+import ru.tinkoff.qa.neptune.kafka.captors.MessagesCaptor;
 
 import java.time.Duration;
 import java.util.List;
@@ -28,6 +32,13 @@ public class KafkaPollIterableItemSupplier<T> extends SequentialGetStepSupplier
         .GetObjectFromIterableStepSupplier<KafkaStepContext, T, KafkaPollIterableItemSupplier<T>> {
 
     final GetFromTopics<?> getFromTopics;
+
+    @CaptureOnSuccess(by = MessageCaptor.class)
+    String message;
+
+    @CaptureOnSuccess(by = MessagesCaptor.class)
+    @CaptureOnFailure(by = MessagesCaptor.class)
+    List<String> messages;
 
     protected <S> KafkaPollIterableItemSupplier(GetFromTopics<S> getFromTopics, Function<S, T> originalFunction) {
         super(getFromTopics.andThen(list -> list.stream().map(originalFunction).collect(toList())));
@@ -93,5 +104,20 @@ public class KafkaPollIterableItemSupplier<T> extends SequentialGetStepSupplier
         checkNotNull(dataTransformer);
         getFromTopics.setTransformer(dataTransformer);
         return this;
+    }
+
+    @Override
+    protected void onSuccess(T t) {
+        var ms = getFromTopics.getMessages();
+        if (t != null) {
+            message = ms.getLast();
+        } else {
+            messages = ms;
+        }
+    }
+
+    @Override
+    protected void onFailure(KafkaStepContext m, Throwable throwable) {
+        messages = getFromTopics.getMessages();
     }
 }

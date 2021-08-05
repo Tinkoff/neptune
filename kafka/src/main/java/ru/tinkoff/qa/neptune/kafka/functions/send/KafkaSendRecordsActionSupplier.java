@@ -10,6 +10,10 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
+import ru.tinkoff.qa.neptune.kafka.captors.MessageCaptor;
+
+import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.createCaptors;
 
 @SequentialActionSupplier.DefinePerformImperativeParameterName("Send:")
 @MaxDepthOfReporting(0)
@@ -65,5 +69,11 @@ public class KafkaSendRecordsActionSupplier<K, V> extends SequentialActionSuppli
         } else {
             producer.send((ProducerRecord<K, V>) records, callback);
         }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void onStart(KafkaStepContext kafkaStepContext) {
+        catchValue(dataTransformer.serialize(value), createCaptors(new Class[]{MessageCaptor.class}));
     }
 }
