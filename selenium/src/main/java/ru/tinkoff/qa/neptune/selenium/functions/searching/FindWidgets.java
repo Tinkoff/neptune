@@ -67,18 +67,8 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
                 .sorted(widgetPriorityComparator()).collect(toList());
     }
 
-    List<Class<? extends R>> findSubclasses() {
-        List<Class<? extends R>> resultList = findSubclasses(classOfAWidget, classPredicate);
-
-        if (classPredicate.test(classOfAWidget)) {
-            resultList.add(classOfAWidget);
-        }
-
-        return resultList;
-    }
-
     List<Class<? extends R>> getSubclasses() {
-        var resultList = findSubclasses();
+        var resultList = findSubclasses(classOfAWidget, classPredicate);
 
         if (resultList.size() > 0) {
             return resultList;
