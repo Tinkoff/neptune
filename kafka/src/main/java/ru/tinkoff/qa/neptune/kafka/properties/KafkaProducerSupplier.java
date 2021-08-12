@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 @PropertyDescription(description = "Defines KafkaProducer",
         section = "Kafka")
 @PropertyName("KAFKA_PRODUCER")
-public final class KafkaProducerSupplier implements ObjectPropertySupplier<KafkaProducer<?, ?>, Supplier<KafkaProducer<?, ?>>> {
+public final class KafkaProducerSupplier implements ObjectPropertySupplier<KafkaProducer<Object, Object>, Supplier<KafkaProducer<Object, Object>>> {
     public static final KafkaProducerSupplier KAFKA_PRODUCER = new KafkaProducerSupplier();
 
     private KafkaProducerSupplier() {

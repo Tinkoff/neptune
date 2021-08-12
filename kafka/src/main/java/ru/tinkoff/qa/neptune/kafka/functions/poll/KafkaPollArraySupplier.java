@@ -11,16 +11,20 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
-import ru.tinkoff.qa.neptune.kafka.captors.MessageCaptor;
+import ru.tinkoff.qa.neptune.kafka.captors.AllMessagesCaptor;
 import ru.tinkoff.qa.neptune.kafka.captors.MessagesCaptor;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.ParameterizedType;
 import java.time.Duration;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 
@@ -34,15 +38,23 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
 
     final GetFromTopics<?> getFromTopics;
 
-    @CaptureOnSuccess(by = MessageCaptor.class)
-    List<String> successMessages;
-
     @CaptureOnSuccess(by = MessagesCaptor.class)
-    @CaptureOnFailure(by = MessagesCaptor.class)
+    List<String> successMessages = new LinkedList<>();
+
+    @CaptureOnSuccess(by = AllMessagesCaptor.class)
+    @CaptureOnFailure(by = AllMessagesCaptor.class)
     List<String> messages;
 
-    protected <M> KafkaPollArraySupplier(GetFromTopics<M> getFromTopics, Function<M, T> originalFunction) {
-        super(getFromTopics.andThen(list -> list.stream().map(originalFunction).toArray(value -> (T[]) new Object[value])));
+    protected <M> KafkaPollArraySupplier(GetFromTopics<M> getFromTopics, Function<M, T> originalFunction, Class<T> componentClass) {
+        super(getFromTopics.andThen(list -> {
+            var listT = list.stream().map(originalFunction).collect(toList());
+            T[] ts = (T[]) Array.newInstance(componentClass, listT.size());
+
+            for (int i = 0; i < listT.size(); i++) {
+                ts[i] = listT.get(i);
+            }
+            return ts;
+        }));
         this.getFromTopics = getFromTopics;
     }
 
@@ -53,9 +65,10 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
             ) String description,
             List<String> topics,
             Class<M> classT,
+            Class<T> componentClass,
             Function<M, T> toGet) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return new KafkaPollArraySupplier<>(new GetFromTopics<>(topics, classT), toGet);
+        return new KafkaPollArraySupplier<>(new GetFromTopics<>(topics, classT), toGet, componentClass);
     }
 
     @Description("{description}")
@@ -65,9 +78,10 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
             ) String description,
             List<String> topics,
             TypeReference<M> typeT,
+            Class<T> componentClass,
             Function<M, T> toGet) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return new KafkaPollArraySupplier<>(new GetFromTopics<>(topics, typeT), toGet);
+        return new KafkaPollArraySupplier<>(new GetFromTopics<>(topics, typeT), toGet, componentClass);
     }
 
     public static <T> KafkaPollArraySupplier<T> kafkaArray(
@@ -75,7 +89,7 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
             List<String> topics,
             Class<T> classT) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return kafkaArray(description, topics, classT, ts -> ts);
+        return kafkaArray(description, topics, classT, classT, ts -> ts);
     }
 
     public static <T> KafkaPollArraySupplier<T> kafkaArray(
@@ -83,7 +97,8 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
             List<String> topics,
             TypeReference<T> typeT) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return kafkaArray(description, topics, typeT, ts -> ts);
+        var clazz = (Class) (typeT.getType() instanceof ParameterizedType ? ((ParameterizedType) typeT.getType()).getRawType() : typeT.getType());
+        return kafkaArray(description, topics, typeT, clazz, ts -> ts);
     }
 
     @Override
@@ -111,8 +126,12 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
     protected void onSuccess(T[] t) {
         var mss = getFromTopics.getSuccessMessages();
 
-        for (T item : t) {
-            successMessages.add(mss.get(item));
+        if (t != null && t.length > 0) {
+            for (T item : t) {
+                successMessages.add(mss.get(item));
+            }
+        } else {
+            messages = getFromTopics.getMessages();
         }
     }
 

@@ -10,12 +10,14 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.time.Duration.ofNanos;
 import static java.util.Objects.isNull;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 final class GetFromTopics<T> implements Function<KafkaStepContext, List<T>>, StepParameterPojo {
@@ -25,8 +27,10 @@ final class GetFromTopics<T> implements Function<KafkaStepContext, List<T>>, Ste
     @StepParameter(value = "Class to deserialize to", doNotReportNullValues = true)
     private final Class<T> cls;
 
-    @StepParameter(value = "Type to deserialize to", doNotReportNullValues = true)
     private final TypeReference<T> typeRef;
+
+    @StepParameter(value = "Type to deserialize to", doNotReportNullValues = true)
+    final Type type;
 
     private DataTransformer transformer;
 
@@ -40,6 +44,8 @@ final class GetFromTopics<T> implements Function<KafkaStepContext, List<T>>, Ste
         this.topics = topics;
         this.cls = cls;
         this.typeRef = typeRef;
+        this.type = ofNullable(typeRef).map(TypeReference::getType).orElse(null);
+
     }
 
     GetFromTopics(List<String> topics, Class<T> cls) {
@@ -73,19 +79,31 @@ final class GetFromTopics<T> implements Function<KafkaStepContext, List<T>>, Ste
             return messages
                     .stream()
                     .map(record -> {
-                        var t = transformer.deserialize(record, cls);
-                        successMessages.put(t, record);
-                        return t;
+                        try {
+                            var t = transformer.deserialize(record, cls);
+                            successMessages.put(t, record);
+                            return t;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return null;
                     })
+                    .filter(Objects::nonNull)
                     .collect(toList());
         }
-        return messages.
-                stream()
+        return messages
+                .stream()
                 .map(record -> {
-                    var t = transformer.deserialize(record, typeRef);
-                    successMessages.put(t, record);
-                    return t;
+                    try {
+                        var t = transformer.deserialize(record, typeRef);
+                        successMessages.put(t, record);
+                        return t;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;
                 })
+                .filter(Objects::nonNull)
                 .collect(toList());
     }
 

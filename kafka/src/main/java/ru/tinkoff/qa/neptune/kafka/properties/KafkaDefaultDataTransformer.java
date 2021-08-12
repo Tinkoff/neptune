@@ -8,7 +8,7 @@ import ru.tinkoff.qa.neptune.core.api.properties.object.ObjectByClassPropertySup
 @PropertyDescription(description = "Defines a serialization and deserialization mechanism",
         section = "Kafka. Mappers")
 @PropertyName("KAFKA_DEFAULT_DATA_TRANSFORMER")
-public class KafkaDefaultDataTransformer implements ObjectByClassPropertySupplier<DataTransformer> {
+public final class KafkaDefaultDataTransformer implements ObjectByClassPropertySupplier<DataTransformer> {
 
     public static final KafkaDefaultDataTransformer KAFKA_DEFAULT_DATA_TRANSFORMER = new KafkaDefaultDataTransformer();
 

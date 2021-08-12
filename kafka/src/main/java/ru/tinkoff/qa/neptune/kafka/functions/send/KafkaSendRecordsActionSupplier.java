@@ -20,7 +20,7 @@ import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil
 @SuppressWarnings("unchecked")
 public class KafkaSendRecordsActionSupplier<K, V> extends SequentialActionSupplier<KafkaStepContext, KafkaStepContext, KafkaSendRecordsActionSupplier<K, V>> {
     private final String topic;
-    @StepParameter("value")
+    @StepParameter(value = "value", makeReadableBy = ObjectParameterValueGetter.class)
     private final Object value;
 
     private Callback callback;
@@ -56,13 +56,24 @@ public class KafkaSendRecordsActionSupplier<K, V> extends SequentialActionSuppli
     protected void howToPerform(KafkaStepContext kafkaStepContext) {
         KafkaProducer<K, V> producer = kafkaStepContext.getProducer();
 
-        var records = new ProducerRecord<>(
-                topic,
-                parametersForSend.getPartition(),
-                parametersForSend.getTimestamp(),
-                parametersForSend.getKey(),
-                dataTransformer.serialize(value),
-                parametersForSend.getHeaders());
+        ProducerRecord<Object, String> records;
+        if (parametersForSend != null) {
+            records = new ProducerRecord<>(
+                    topic,
+                    parametersForSend.getPartition(),
+                    parametersForSend.getTimestamp(),
+                    parametersForSend.getKey(),
+                    dataTransformer.serialize(value),
+                    parametersForSend.getHeaders());
+        } else {
+            records = new ProducerRecord<>(
+                    topic,
+                    null,
+                    null,
+                    null,
+                    dataTransformer.serialize(value),
+                    null);
+        }
 
         if (callback == null) {
             producer.send((ProducerRecord<K, V>) records);

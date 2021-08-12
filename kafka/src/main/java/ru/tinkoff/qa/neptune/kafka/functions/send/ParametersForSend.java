@@ -14,6 +14,10 @@ public class ParametersForSend implements StepParameterPojo {
     @StepParameter("headers")
     private Iterable<Header> headers;
 
+    public static ParametersForSend parameters() {
+        return new ParametersForSend();
+    }
+
     Integer getPartition() {
         return partition;
     }

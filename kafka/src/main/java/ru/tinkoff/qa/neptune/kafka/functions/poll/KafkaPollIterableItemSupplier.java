@@ -11,10 +11,11 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
+import ru.tinkoff.qa.neptune.kafka.captors.AllMessagesCaptor;
 import ru.tinkoff.qa.neptune.kafka.captors.MessageCaptor;
-import ru.tinkoff.qa.neptune.kafka.captors.MessagesCaptor;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -36,8 +37,8 @@ public class KafkaPollIterableItemSupplier<T> extends SequentialGetStepSupplier
     @CaptureOnSuccess(by = MessageCaptor.class)
     String message;
 
-    @CaptureOnSuccess(by = MessagesCaptor.class)
-    @CaptureOnFailure(by = MessagesCaptor.class)
+    @CaptureOnSuccess(by = AllMessagesCaptor.class)
+    @CaptureOnFailure(by = AllMessagesCaptor.class)
     List<String> messages;
 
     protected <S> KafkaPollIterableItemSupplier(GetFromTopics<S> getFromTopics, Function<S, T> originalFunction) {
@@ -69,20 +70,20 @@ public class KafkaPollIterableItemSupplier<T> extends SequentialGetStepSupplier
         return new KafkaPollIterableItemSupplier<>(new GetFromTopics<>(topics, typeT), toGet);
     }
 
-    public static <M, T> KafkaPollIterableItemSupplier<T> kafkaIterableItem(
+    public static <M> KafkaPollIterableItemSupplier<M> kafkaIterableItem(
             String description,
             List<String> topics,
             Class<M> cls) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return (KafkaPollIterableItemSupplier<T>) kafkaIterableItem(description, topics, cls, t -> t);
+        return kafkaIterableItem(description, topics, cls, t -> t);
     }
 
-    public static <M, T> KafkaPollIterableItemSupplier<T> kafkaIterableItem(
+    public static <M> KafkaPollIterableItemSupplier<M> kafkaIterableItem(
             String description,
             List<String> topics,
             TypeReference<M> typeT) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return (KafkaPollIterableItemSupplier<T>) kafkaIterableItem(description, topics, typeT, t -> t);
+        return kafkaIterableItem(description, topics, typeT, t -> t);
     }
 
     @Override
@@ -108,11 +109,11 @@ public class KafkaPollIterableItemSupplier<T> extends SequentialGetStepSupplier
 
     @Override
     protected void onSuccess(T t) {
-        var ms = getFromTopics.getMessages();
+        var ms = getFromTopics.getSuccessMessages();
         if (t != null) {
-            message = ms.getLast();
+            message = ms.get(t);
         } else {
-            messages = ms;
+            messages = new ArrayList<>(ms.values());
         }
     }
 

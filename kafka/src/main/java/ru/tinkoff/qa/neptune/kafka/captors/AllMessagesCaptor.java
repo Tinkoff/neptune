@@ -9,8 +9,8 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-@Description("Kafka messages")
-public class MessagesCaptor extends StringCaptor<List<String>> {
+@Description("All received Kafka messages")
+public class AllMessagesCaptor extends StringCaptor<List<String>> {
     @Override
     public List<String> getCaptured(Object toBeCaptured) {
         if (!(toBeCaptured instanceof Collection)) {

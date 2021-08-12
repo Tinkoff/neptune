@@ -11,10 +11,11 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
-import ru.tinkoff.qa.neptune.kafka.captors.MessageCaptor;
+import ru.tinkoff.qa.neptune.kafka.captors.AllMessagesCaptor;
 import ru.tinkoff.qa.neptune.kafka.captors.MessagesCaptor;
 
 import java.time.Duration;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -33,11 +34,11 @@ public class KafkaPollIterableSupplier<T> extends SequentialGetStepSupplier
 
     final GetFromTopics<?> getFromTopics;
 
-    @CaptureOnSuccess(by = MessageCaptor.class)
-    List<String> successMessages;
-
     @CaptureOnSuccess(by = MessagesCaptor.class)
-    @CaptureOnFailure(by = MessagesCaptor.class)
+    List<String> successMessages = new LinkedList<>();
+
+    @CaptureOnSuccess(by = AllMessagesCaptor.class)
+    @CaptureOnFailure(by = AllMessagesCaptor.class)
     List<String> messages;
 
     protected <M> KafkaPollIterableSupplier(GetFromTopics<M> getFromTopics, Function<M, T> function) {
@@ -110,9 +111,13 @@ public class KafkaPollIterableSupplier<T> extends SequentialGetStepSupplier
     protected void onSuccess(List<T> tList) {
         var mss = getFromTopics.getSuccessMessages();
 
-        tList.forEach(item -> {
-            successMessages.add(mss.get(item));
-        });
+        if (tList != null && tList.size() > 0) {
+            tList.forEach(item -> {
+                successMessages.add(mss.get(item));
+            });
+        } else {
+            messages = getFromTopics.getMessages();
+        }
     }
 
     @Override
