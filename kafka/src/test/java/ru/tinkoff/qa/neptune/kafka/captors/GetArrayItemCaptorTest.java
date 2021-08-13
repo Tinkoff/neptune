@@ -14,7 +14,7 @@ import static java.time.Duration.ofNanos;
 import static java.time.Duration.ofSeconds;
 import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.anEmptyMap;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.fail;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.MapEntryMatcher.mapEntry;
@@ -104,8 +104,10 @@ public class GetArrayItemCaptorTest extends BaseCaptorTest {
                 DraftDto.class)
                 .criteria("name = 'kek'", d -> d.getName().equals("kek")));
 
-        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("All received Kafka messages",
-                "{\"name\":\"testName1\"}\r\n\r\n{\"name\":\"testName2\"}\r\n\r\n")));
+        assertThat(CAUGHT_MESSAGES,
+                mapOf(mapEntry(is("All received Kafka messages"),
+                        allOf(containsString("{\"name\":\"testName1\"}"),
+                                containsString("{\"name\":\"testName2\"}")))));
     }
 
     @Test
@@ -129,8 +131,10 @@ public class GetArrayItemCaptorTest extends BaseCaptorTest {
                 DraftDto.class)
                 .criteria("name = 'kek'", d -> d.getName().equals("kek")));
 
-        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("All received Kafka messages",
-                "{\"name\":\"testName1\"}\r\n\r\n{\"name\":\"testName2\"}\r\n\r\n")));
+        assertThat(CAUGHT_MESSAGES,
+                mapOf(mapEntry(is("All received Kafka messages"),
+                        allOf(containsString("{\"name\":\"testName1\"}"),
+                                containsString("{\"name\":\"testName2\"}")))));
     }
 
     @Test
