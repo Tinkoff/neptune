@@ -39,12 +39,12 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
      * The joining of defined criteria with AND-condition.
      *
      * @param criteria to be joined
-     * @param <T> <T> is a type of a value to be checked/filtered by each criteria
-     *           and resulted criteria as well
+     * @param <T>      <T> is a type of a value to be checked/filtered by each criteria
+     *                 and resulted criteria as well
      * @return a new joined criteria
      */
     @SafeVarargs
-    public static <T> Criteria<T> AND(Criteria<T>... criteria) {
+    public static <T> Criteria<T> AND(Criteria<? super T>... criteria) {
         checkArgument(nonNull(criteria), "List of criteria should not be null");
         checkArgument(criteria.length > 1, "At least two criteria should be defined");
 
@@ -53,10 +53,10 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
                 .collect(joining(", "));
 
         Predicate<T> newPredicate = null;
-        for (var tCriteria: criteria) {
+        for (var tCriteria : criteria) {
             newPredicate = ofNullable(newPredicate)
                     .map(predicate -> predicate.and(tCriteria.get()))
-                    .orElseGet(tCriteria);
+                    .orElseGet((Criteria<T>) tCriteria);
         }
 
         return new Criteria<>(newPredicate).setDescription(description);
@@ -71,7 +71,7 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
      * @return a new joined criteria
      */
     @SafeVarargs
-    public static <T> Criteria<T> OR(Criteria<T>... criteria) {
+    public static <T> Criteria<T> OR(Criteria<? super T>... criteria) {
         checkArgument(nonNull(criteria), "List of criteria should not be null");
         checkArgument(criteria.length > 1, "At least two criteria should be defined");
 
@@ -84,7 +84,7 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
         for (var tCriteria : criteria) {
             newPredicate = ofNullable(newPredicate)
                     .map(predicate -> predicate.or(tCriteria.get()))
-                    .orElseGet(tCriteria);
+                    .orElseGet((Criteria<T>) tCriteria);
         }
 
         return new Criteria<>(newPredicate).setDescription(description);
@@ -111,7 +111,7 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
      * @return a new joined criteria
      */
     @SafeVarargs
-    public static <T> Criteria<T> ONLY_ONE(Criteria<T>... criteria) {
+    public static <T> Criteria<T> ONLY_ONE(Criteria<? super T>... criteria) {
         checkArgument(nonNull(criteria), "List of criteria should not be null");
         checkArgument(criteria.length > 1, "At least two criteria should be defined");
 
@@ -131,11 +131,11 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
      * The joining of defined criteria with AND NOT-condition.
      *
      * @param criteria to be joined
-     * @param <T> is a type of a value to be checked/filtered
+     * @param <T>      is a type of a value to be checked/filtered
      * @return a new joined criteria
      */
     @SafeVarargs
-    public static <T> Criteria<T> NOT(Criteria<T>... criteria) {
+    public static <T> Criteria<T> NOT(Criteria<? super T>... criteria) {
         checkArgument(nonNull(criteria), "List of criteria should not be null");
         checkArgument(criteria.length > 0, "At least one criteria should be defined");
 
@@ -144,7 +144,7 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
                 .collect(joining(", "));
 
         Predicate<T> newPredicate = null;
-        for (var tCriteria: criteria) {
+        for (var tCriteria : criteria) {
             newPredicate = ofNullable(newPredicate)
                     .map(predicate -> predicate.and(not(tCriteria.get())))
                     .orElseGet(() -> not(tCriteria.get()));

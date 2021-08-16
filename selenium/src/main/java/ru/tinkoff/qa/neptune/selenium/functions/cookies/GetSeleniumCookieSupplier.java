@@ -5,7 +5,6 @@ import org.openqa.selenium.WebDriver;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.event.firing.collections.CollectionCaptor;
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -13,7 +12,6 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import java.time.Duration;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
@@ -41,16 +39,6 @@ public final class GetSeleniumCookieSupplier extends SequentialGetStepSupplier
      */
     public static GetSeleniumCookieSupplier cookies() {
         return new GetSeleniumCookieSupplier();
-    }
-
-    @Override
-    public GetSeleniumCookieSupplier criteria(Criteria<? super Cookie> condition) {
-        return super.criteria(condition);
-    }
-
-    @Override
-    public GetSeleniumCookieSupplier criteria(String conditionDescription, Predicate<? super Cookie> condition) {
-        return super.criteria(conditionDescription, condition);
     }
 
     @Override

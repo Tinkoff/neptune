@@ -12,7 +12,7 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.function.binding.ExchangesBindUnbi
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_EXCHANGE_NAME;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_ROUTING_KEY_NAME;
 
-public class ExchangeBindTest extends BaseRabbitMqTest {
+public class ExchangeUnbindTest extends BaseRabbitMqTest {
 
     @BeforeMethod
     public void beforeMethods() {
@@ -20,70 +20,72 @@ public class ExchangeBindTest extends BaseRabbitMqTest {
         DEFAULT_ROUTING_KEY_NAME.accept(null);
     }
 
-    @Test(description = "Check bind exchange to exchange without additional arguments")
-    public void bindTest1() throws Exception {
-        rabbitMqStepContext.bind(exchanges(
+    @Test(description = "Check unbind exchange from exchange")
+    public void unbindTest1() throws Exception {
+        rabbitMqStepContext.unbind(exchanges(
                 "source",
                 "destination")
                 .withRoutingKey("routingKey"));
 
-        verify(channel, times(1))
-                .exchangeBind("destination", "source", "routingKey");
+        verify(channel, times(1)).exchangeUnbind(
+                "destination",
+                "source",
+                "routingKey");
     }
 
-
-    @Test(description = "Check bind exchange to exchange with additional arguments")
-    public void bindTest2() throws Exception {
-        rabbitMqStepContext.bind(exchanges(
+    @Test(description = "Check unbind exchange from exchange with arguments")
+    public void unbindTest2() throws Exception {
+        rabbitMqStepContext.unbind(exchanges(
                 "source",
                 "destination")
                 .withRoutingKey("routingKey")
                 .argument("key", "value"));
 
-        verify(channel, times(1)).exchangeBind(
+        verify(channel, times(1)).exchangeUnbind(
                 "destination",
                 "source",
                 "routingKey",
                 Map.of("key", "value"));
     }
 
-    @Test(description = "Check bind exchange to exchange without additional arguments and routing key")
-    public void bindTest3() throws Exception {
-        rabbitMqStepContext.bind(exchanges(
+
+    @Test(description = "Check unbind exchange to exchange without additional arguments and routing key")
+    public void unbindTest3() throws Exception {
+        rabbitMqStepContext.unbind(exchanges(
                 "source",
                 "destination"));
 
         verify(channel, times(1))
-                .exchangeBind("destination", "source", "");
+                .exchangeUnbind("destination", "source", "");
     }
 
-    @Test(description = "Check bind source exchange to default named exchange")
-    public void bindTest4() throws Exception {
+    @Test(description = "Check unbind source exchange to default named exchange")
+    public void unbindTest4() throws Exception {
         DEFAULT_EXCHANGE_NAME.accept("destination_exchange");
-        rabbitMqStepContext.bind(sourceExchange("source"));
+        rabbitMqStepContext.unbind(sourceExchange("source"));
 
         verify(channel, times(1))
-                .exchangeBind("destination_exchange", "source", "");
+                .exchangeUnbind("destination_exchange", "source", "");
     }
 
-    @Test(description = "Check bind destination exchange to default named exchange")
-    public void bindTest5() throws Exception {
+    @Test(description = "Check unbind destination exchange to default named exchange")
+    public void unbindTest5() throws Exception {
         DEFAULT_EXCHANGE_NAME.accept("source_exchange");
-        rabbitMqStepContext.bind(destinationExchange("destination"));
+        rabbitMqStepContext.unbind(destinationExchange("destination"));
 
         verify(channel, times(1))
-                .exchangeBind("destination", "source_exchange", "");
+                .exchangeUnbind("destination", "source_exchange", "");
     }
 
-    @Test(description = "Check bind exchanges with default named routing key")
-    public void bindTest6() throws Exception {
+    @Test(description = "Check unbind exchanges with default named routing key")
+    public void unbindTest6() throws Exception {
         DEFAULT_ROUTING_KEY_NAME.accept("default.routing");
-        rabbitMqStepContext.bind(exchanges(
+        rabbitMqStepContext.unbind(exchanges(
                 "source",
                 "destination")
                 .withDefaultRoutingKey());
 
         verify(channel, times(1))
-                .exchangeBind("destination", "source", "default.routing");
+                .exchangeUnbind("destination", "source", "default.routing");
     }
 }

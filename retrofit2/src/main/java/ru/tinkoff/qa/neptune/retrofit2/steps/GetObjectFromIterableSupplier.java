@@ -17,9 +17,8 @@ import java.util.function.Supplier;
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
-import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
-import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.iterableBodyMatches;
-import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.resultResponseCriteria;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.*;
 import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getResponse;
 
 @SuppressWarnings("unchecked")
@@ -116,6 +115,39 @@ public class GetObjectFromIterableSupplier<M, R> extends SequentialGetStepSuppli
 
     public GetObjectFromIterableSupplier<M, R> responseCriteria(String description, Predicate<Response> predicate) {
         return responseCriteria(condition(description, predicate));
+    }
+
+    public GetObjectFromIterableSupplier<M, R> responseCriteriaOr(Criteria<Response>... criteria) {
+        ((SendRequestAndGet<M, R[]>) getFrom()).criteria(resultResponseCriteria(OR(criteria)));
+        return this;
+    }
+
+    public GetObjectFromIterableSupplier<M, R> responseCriteriaOnlyOne(Criteria<Response>... criteria) {
+        ((SendRequestAndGet<M, R[]>) getFrom()).criteria(resultResponseCriteria(ONLY_ONE(criteria)));
+        return this;
+    }
+
+    public GetObjectFromIterableSupplier<M, R> responseCriteriaNot(Criteria<Response>... criteria) {
+        ((SendRequestAndGet<M, R[]>) getFrom()).criteria(resultResponseCriteria(NOT(criteria)));
+        return this;
+    }
+
+    @Override
+    public GetObjectFromIterableSupplier<M, R> criteriaOr(Criteria<? super R>... criteria) {
+        ((SendRequestAndGet<M, R[]>) getFrom()).criteriaOr(arrayBodyMatches(new BodyHasItems(OR(criteria)), OR(criteria)));
+        return super.criteriaOr(criteria);
+    }
+
+    @Override
+    public GetObjectFromIterableSupplier<M, R> criteriaOnlyOne(Criteria<? super R>... criteria) {
+        ((SendRequestAndGet<M, R[]>) getFrom()).criteriaOnlyOne(arrayBodyMatches(new BodyHasItems(ONLY_ONE(criteria)), ONLY_ONE(criteria)));
+        return super.criteriaOnlyOne(criteria);
+    }
+
+    @Override
+    public GetObjectFromIterableSupplier<M, R> criteriaNot(Criteria<? super R>... criteria) {
+        ((SendRequestAndGet<M, R[]>) getFrom()).criteriaNot(arrayBodyMatches(new BodyHasItems(NOT(criteria)), NOT(criteria)));
+        return super.criteriaNot(criteria);
     }
 
     @Override

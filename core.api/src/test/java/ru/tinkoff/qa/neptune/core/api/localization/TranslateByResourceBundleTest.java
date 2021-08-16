@@ -117,10 +117,6 @@ public class TranslateByResourceBundleTest {
             return o -> 1;
         }
 
-        protected GetStepSupplier criteria(Criteria<? super Object> criteria) {
-            return super.criteria(criteria);
-        }
-
         protected GetStepSupplier from(Object o) {
             return super.from(o);
         }

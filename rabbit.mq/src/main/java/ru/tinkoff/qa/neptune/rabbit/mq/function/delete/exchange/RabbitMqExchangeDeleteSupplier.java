@@ -14,8 +14,12 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @SequentialActionSupplier.DefinePerformImperativeParameterName("Delete:")
 @MaxDepthOfReporting(0)
+@Description("exchange '{exchange}', ifUnused = '{ifUnused}'")
 public class RabbitMqExchangeDeleteSupplier extends SequentialActionSupplier<RabbitMqStepContext, Channel, RabbitMqExchangeDeleteSupplier> {
+    @DescriptionFragment("exchange")
     private final String exchange;
+
+    @DescriptionFragment("ifUnused")
     private final boolean ifUnused;
 
     public RabbitMqExchangeDeleteSupplier(String exchange, boolean ifUnused) {
@@ -26,9 +30,7 @@ public class RabbitMqExchangeDeleteSupplier extends SequentialActionSupplier<Rab
         performOn(RabbitMqStepContext::getChannel);
     }
 
-    @Description("exchange '{exchange}' with ifUnused = '{ifUnused}'")
-    public static RabbitMqExchangeDeleteSupplier exchangeDelete(@DescriptionFragment("exchange") String exchange,
-                                                                @DescriptionFragment("ifUnused") boolean ifUnused) {
+    public static RabbitMqExchangeDeleteSupplier exchangeDelete(String exchange, boolean ifUnused) {
         return new RabbitMqExchangeDeleteSupplier(exchange, ifUnused);
     }
 

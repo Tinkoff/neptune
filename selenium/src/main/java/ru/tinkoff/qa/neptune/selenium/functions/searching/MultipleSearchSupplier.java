@@ -7,7 +7,6 @@ import org.openqa.selenium.WebElement;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -20,7 +19,6 @@ import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
 import java.time.Duration;
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.OR;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
@@ -686,16 +684,6 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
     @Override
     public MultipleSearchSupplier<R> timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
-    }
-
-    @Override
-    public MultipleSearchSupplier<R> criteria(Criteria<? super R> condition) {
-        return super.criteria(condition);
-    }
-
-    @Override
-    public MultipleSearchSupplier<R> criteria(String description, Predicate<? super R> condition) {
-        return super.criteria(description, condition);
     }
 
     @Override

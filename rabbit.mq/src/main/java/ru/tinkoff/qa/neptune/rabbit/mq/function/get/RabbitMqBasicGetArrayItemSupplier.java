@@ -5,7 +5,6 @@ import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -13,15 +12,16 @@ import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 import ru.tinkoff.qa.neptune.rabbit.mq.captors.MessageCaptor;
 import ru.tinkoff.qa.neptune.rabbit.mq.captors.MessagesCaptor;
+import ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Retrieve:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
@@ -55,7 +55,7 @@ public class RabbitMqBasicGetArrayItemSupplier<T> extends SequentialGetStepSuppl
      * @param classT      is a class of a value to deserialize message
      * @param toGet       describes how to get desired value
      * @param <M>         is a type of deserialized message
-     * @param <T>         is a type of an item of array
+     * @param <T>         is a type of item of array
      * @return an instance of {@link RabbitMqBasicGetArrayItemSupplier}
      */
     @Description("{description}")
@@ -69,6 +69,29 @@ public class RabbitMqBasicGetArrayItemSupplier<T> extends SequentialGetStepSuppl
             Function<M, T[]> toGet) {
         checkArgument(isNotBlank(description), "Description should be defined");
         return new RabbitMqBasicGetArrayItemSupplier<>(new GetFromQueue<>(queue, autoAck, classT), toGet);
+    }
+
+    /**
+     * Creates a step that gets some value from array which is calculated by body of message.
+     * It gets required value from default queue.
+     *
+     * @param description is description of value to get
+     * @param autoAck     true if the server should consider messages
+     *                    acknowledged once delivered; false if the server should expect
+     *                    explicit acknowledgements
+     * @param classT      is a class of a value to deserialize message
+     * @param toGet       describes how to get desired value
+     * @param <M>         is a type of deserialized message
+     * @param <T>         is a type of item of array
+     * @return an instance of {@link RabbitMqBasicGetArrayItemSupplier}
+     * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
+     */
+    public static <M, T> RabbitMqBasicGetArrayItemSupplier<T> rabbitArrayItem(
+            String description,
+            boolean autoAck,
+            Class<M> classT,
+            Function<M, T[]> toGet) {
+        return rabbitArrayItem(description, DEFAULT_QUEUE_NAME.get(), autoAck, classT, toGet);
     }
 
     /**
@@ -99,6 +122,29 @@ public class RabbitMqBasicGetArrayItemSupplier<T> extends SequentialGetStepSuppl
     }
 
     /**
+     * Creates a step that gets some value from array which is calculated by body of message.
+     * It gets required value from default queue.
+     *
+     * @param description is description of value to get
+     * @param autoAck     true if the server should consider messages
+     *                    acknowledged once delivered; false if the server should expect
+     *                    explicit acknowledgements
+     * @param typeT       is a reference to type of a value to deserialize message
+     * @param toGet       describes how to get desired value
+     * @param <M>         is a type of deserialized message
+     * @param <T>         is a type of item of array
+     * @return an instance of {@link RabbitMqBasicGetArrayItemSupplier}
+     * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
+     */
+    public static <M, T> RabbitMqBasicGetArrayItemSupplier<T> rabbitArrayItem(
+            String description,
+            boolean autoAck,
+            TypeReference<M> typeT,
+            Function<M, T[]> toGet) {
+        return rabbitArrayItem(description, DEFAULT_QUEUE_NAME.get(), autoAck, typeT, toGet);
+    }
+
+    /**
      * Creates a step that gets value from array body of message.
      *
      * @param description is description of value to get
@@ -115,8 +161,26 @@ public class RabbitMqBasicGetArrayItemSupplier<T> extends SequentialGetStepSuppl
             String queue,
             boolean autoAck,
             Class<T[]> classT) {
-        checkArgument(isNotBlank(description), "Description should be defined");
         return rabbitArrayItem(description, queue, autoAck, classT, ts -> ts);
+    }
+
+    /**
+     * Creates a step that gets value from array body of message. It gets required value from default queue.
+     *
+     * @param description is description of value to get
+     * @param autoAck     true if the server should consider messages
+     *                    acknowledged once delivered; false if the server should expect
+     *                    explicit acknowledgements
+     * @param classT      is a class of a value to deserialize message
+     * @param <T>         is a type of an item of array
+     * @return an instance of {@link RabbitMqBasicGetArrayItemSupplier}
+     * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
+     */
+    public static <T> RabbitMqBasicGetArrayItemSupplier<T> rabbitArrayItem(
+            String description,
+            boolean autoAck,
+            Class<T[]> classT) {
+        return rabbitArrayItem(description, DEFAULT_QUEUE_NAME.get(), autoAck, classT);
     }
 
     /**
@@ -139,19 +203,28 @@ public class RabbitMqBasicGetArrayItemSupplier<T> extends SequentialGetStepSuppl
         return rabbitArrayItem(description, queue, autoAck, typeT, ts -> ts);
     }
 
+    /**
+     * Creates a step that gets value from array body of message. It gets required value from default queue.
+     *
+     * @param description is description of value to get
+     * @param autoAck     true if the server should consider messages
+     *                    acknowledged once delivered; false if the server should expect
+     *                    explicit acknowledgements
+     * @param typeT       is a reference to type of a value to deserialize message
+     * @param <T>         is a type of an item of array
+     * @return an instance of {@link RabbitMqBasicGetArrayItemSupplier}
+     * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
+     */
+    public static <T> RabbitMqBasicGetArrayItemSupplier<T> rabbitArrayItem(
+            String description,
+            boolean autoAck,
+            TypeReference<T[]> typeT) {
+        return rabbitArrayItem(description, DEFAULT_QUEUE_NAME.get(), autoAck, typeT);
+    }
+
     @Override
     public RabbitMqBasicGetArrayItemSupplier<T> timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
-    }
-
-    @Override
-    public RabbitMqBasicGetArrayItemSupplier<T> criteria(String description, Predicate<? super T> predicate) {
-        return super.criteria(description, predicate);
-    }
-
-    @Override
-    public RabbitMqBasicGetArrayItemSupplier<T> criteria(Criteria<? super T> criteria) {
-        return super.criteria(criteria);
     }
 
     @Override
@@ -159,8 +232,7 @@ public class RabbitMqBasicGetArrayItemSupplier<T> extends SequentialGetStepSuppl
         var ms = getFromQueue.getMessages();
         if (t != null) {
             message = ms.getLast();
-        }
-        else {
+        } else {
             messages = ms;
         }
     }

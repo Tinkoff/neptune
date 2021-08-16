@@ -14,8 +14,12 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @SequentialActionSupplier.DefinePerformImperativeParameterName("Delete:")
 @MaxDepthOfReporting(0)
+@Description("queue '{queue}'")
 public class RabbitMqQueueDeleteSupplier extends SequentialActionSupplier<RabbitMqStepContext, Channel, RabbitMqQueueDeleteSupplier> {
+
+    @DescriptionFragment("queue")
     private final String queue;
+
     private ParametersForDelete parametersForDelete;
 
     protected RabbitMqQueueDeleteSupplier(String queue) {
@@ -25,8 +29,7 @@ public class RabbitMqQueueDeleteSupplier extends SequentialActionSupplier<Rabbit
         performOn(RabbitMqStepContext::getChannel);
     }
 
-    @Description("queue - '{queue}'")
-    public static RabbitMqQueueDeleteSupplier deleteQueue(@DescriptionFragment("queue") String queue) {
+    public static RabbitMqQueueDeleteSupplier deleteQueue(String queue) {
         return new RabbitMqQueueDeleteSupplier(queue);
     }
 

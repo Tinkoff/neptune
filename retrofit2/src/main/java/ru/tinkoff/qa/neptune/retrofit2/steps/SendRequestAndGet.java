@@ -4,7 +4,6 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
@@ -17,7 +16,6 @@ import ru.tinkoff.qa.neptune.retrofit2.captors.ResponseCaptor;
 import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
@@ -101,15 +99,5 @@ class SendRequestAndGet<M, R> extends SequentialGetStepSupplier
     @Override
     protected SendRequestAndGet<M, R> pollingInterval(Duration pollingTime) {
         return super.pollingInterval(pollingTime);
-    }
-
-    @Override
-    protected SendRequestAndGet<M, R> criteria(String description, Predicate<? super RequestExecutionResult<R>> predicate) {
-        return super.criteria(description, predicate);
-    }
-
-    @Override
-    protected SendRequestAndGet<M, R> criteria(Criteria<? super RequestExecutionResult<R>> criteria) {
-        return super.criteria(criteria);
     }
 }

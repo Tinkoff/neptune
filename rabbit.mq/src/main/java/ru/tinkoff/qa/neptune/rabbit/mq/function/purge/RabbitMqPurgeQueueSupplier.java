@@ -13,8 +13,9 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @MaxDepthOfReporting(0)
-@Description("Purge the contents of the queue - {queue}.")
+@Description("Purge the contents of the queue '{queue}'")
 public class RabbitMqPurgeQueueSupplier extends SequentialActionSupplier<RabbitMqStepContext, Channel, RabbitMqPurgeQueueSupplier> {
+
     @DescriptionFragment("queue")
     private final String queue;
 

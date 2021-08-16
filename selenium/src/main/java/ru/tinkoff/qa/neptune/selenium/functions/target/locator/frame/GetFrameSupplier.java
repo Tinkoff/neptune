@@ -2,7 +2,6 @@ package ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchFrameException;
-import org.openqa.selenium.WebDriver;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
@@ -25,12 +24,12 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITIN
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for the frame")
 @MaxDepthOfReporting(0)
 @ThrowWhenNoData(toThrow = NoSuchFrameException.class)
-public final class GetFrameSupplier extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<SeleniumStepContext, Frame, WebDriver, GetFrameSupplier>
+public final class GetFrameSupplier extends SequentialGetStepSupplier.GetSimpleStepSupplier<SeleniumStepContext, Frame, GetFrameSupplier>
         implements TargetLocatorSupplier<Frame> {
 
 
     private GetFrameSupplier(GetFrameFunction getFrame) {
-        super(getFrame);
+        super(currentContent().andThen(getFrame));
         timeOut(WAITING_FRAME_SWITCHING_DURATION.get());
         throwOnNoResult();
     }
@@ -44,7 +43,7 @@ public final class GetFrameSupplier extends SequentialGetStepSupplier.GetObjectC
      */
     @Description("Frame by name or id {nameOrId}")
     public static GetFrameSupplier frame(@DescriptionFragment("nameOrId") String nameOrId) {
-        return new GetFrameSupplier(nameOrId(nameOrId)).from(currentContent());
+        return new GetFrameSupplier(nameOrId(nameOrId));
     }
 
     /**
@@ -56,7 +55,7 @@ public final class GetFrameSupplier extends SequentialGetStepSupplier.GetObjectC
      */
     @Description("Frame by index {index}")
     public static GetFrameSupplier frame(@DescriptionFragment("index") int index) {
-        return new GetFrameSupplier(index(index)).from(currentContent());
+        return new GetFrameSupplier(index(index));
     }
 
     /**
@@ -68,7 +67,7 @@ public final class GetFrameSupplier extends SequentialGetStepSupplier.GetObjectC
      */
     @Description("Frame {by}")
     public static GetFrameSupplier frame(@DescriptionFragment("by") By by) {
-        return new GetFrameSupplier(by(by)).from(currentContent());
+        return new GetFrameSupplier(by(by));
     }
 
     public GetFrameSupplier timeOut(Duration timeOut) {

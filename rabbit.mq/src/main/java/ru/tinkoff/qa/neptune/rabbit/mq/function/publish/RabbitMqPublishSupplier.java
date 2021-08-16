@@ -21,8 +21,13 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqAMQPProperty.RA
 
 @SequentialActionSupplier.DefinePerformImperativeParameterName("Publish:")
 @MaxDepthOfReporting(0)
+@Description("message. exchange = '{exchange}', routingKey = '{routingKey}'")
 public class RabbitMqPublishSupplier extends SequentialActionSupplier<RabbitMqStepContext, RabbitMqStepContext, RabbitMqPublishSupplier> {
+
+    @DescriptionFragment("exchange")
     private final String exchange;
+
+    @DescriptionFragment("routingKey")
     private final String routingKey;
 
     private final String body;
@@ -66,12 +71,8 @@ public class RabbitMqPublishSupplier extends SequentialActionSupplier<RabbitMqSt
         return this;
     }
 
-    @Description("message.\r\n" +
-            "Params:\r\n" +
-            "exchange – {exchange}\r\n" +
-            "routingKey – {routingKey}")
-    public static RabbitMqPublishSupplier publish(@DescriptionFragment("exchange") String exchange,
-                                                  @DescriptionFragment("routingKey") String routingKey,
+    public static RabbitMqPublishSupplier publish(String exchange,
+                                                  String routingKey,
                                                   Object toSerialize,
                                                   DataTransformer mapper) {
         return new RabbitMqPublishSupplier(exchange, routingKey, mapper.serialize(toSerialize));
@@ -81,7 +82,7 @@ public class RabbitMqPublishSupplier extends SequentialActionSupplier<RabbitMqSt
     protected void howToPerform(RabbitMqStepContext value) {
         var channel = value.getChannel();
         var props = propertyBuilder.build();
-        try{
+        try {
             if (params == null) {
                 channel.basicPublish(exchange, routingKey, false, false, props,
                         body.getBytes(UTF_8));

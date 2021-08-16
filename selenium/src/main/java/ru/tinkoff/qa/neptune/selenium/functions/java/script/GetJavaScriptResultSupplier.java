@@ -8,7 +8,6 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporti
 import ru.tinkoff.qa.neptune.core.api.event.firing.collections.ArrayCaptor;
 import ru.tinkoff.qa.neptune.core.api.event.firing.collections.CollectionCaptor;
 import ru.tinkoff.qa.neptune.core.api.event.firing.collections.MapCaptor;
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
@@ -21,7 +20,6 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -194,15 +192,6 @@ public final class GetJavaScriptResultSupplier extends SequentialGetStepSupplier
                 script,
                 ofNullable(arguments).map(Arrays::asList).orElse(null))
                 .from(currentContent());
-    }
-
-    @Override
-    public GetJavaScriptResultSupplier criteria(Criteria<? super Object> condition) {
-        return super.criteria(condition);
-    }
-
-    public GetJavaScriptResultSupplier criteria(String conditionDescription, Predicate<? super Object> condition) {
-        return super.criteria(conditionDescription, condition);
     }
 
     @Override
