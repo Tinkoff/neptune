@@ -6,41 +6,49 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporti
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 import ru.tinkoff.qa.neptune.rabbit.mq.captors.MessageCaptor;
+import ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties;
 
+import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.createCaptors;
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_EXCHANGE_NAME;
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_ROUTING_KEY_NAME;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqAMQPProperty.RABBIT_AMQP_PROPERTY;
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaultDataTransformer.RABBIT_MQ_DEFAULT_DATA_TRANSFORMER;
 
 @SequentialActionSupplier.DefinePerformImperativeParameterName("Publish:")
 @MaxDepthOfReporting(0)
 @Description("message. exchange = '{exchange}', routingKey = '{routingKey}'")
-public class RabbitMqPublishSupplier extends SequentialActionSupplier<RabbitMqStepContext, RabbitMqStepContext, RabbitMqPublishSupplier> {
+@SuppressWarnings("unchecked")
+public abstract class RabbitMqPublishSupplier<T extends RabbitMqPublishSupplier<T>> extends SequentialActionSupplier<RabbitMqStepContext, RabbitMqStepContext, T> {
 
+    private final Map<String, Object> headers = new LinkedHashMap<>();
+    String body;
     @DescriptionFragment("exchange")
-    private final String exchange;
-
+    private String exchange = "";
     @DescriptionFragment("routingKey")
-    private final String routingKey;
-
-    private final String body;
+    private String routingKey = "";
+    @StepParameter("mandatory")
+    private boolean mandatory;
+    @StepParameter("immediate")
+    private boolean immediate;
 
     private final AMQP.BasicProperties.Builder propertyBuilder;
-    private ParametersForPublish params;
 
-    public RabbitMqPublishSupplier(String exchange, String routingKey, String body) {
+    private RabbitMqPublishSupplier() {
         super();
-        this.exchange = exchange;
-        this.routingKey = routingKey;
-        checkNotNull(body);
-        this.body = body;
         performOn(rabbitStepContext -> rabbitStepContext);
         propertyBuilder = ofNullable(RABBIT_AMQP_PROPERTY.get())
                 .orElseGet(AMQP.BasicProperties.Builder::new);
@@ -66,16 +74,35 @@ public class RabbitMqPublishSupplier extends SequentialActionSupplier<RabbitMqSt
         return map;
     }
 
-    public RabbitMqPublishSupplier setParams(ParametersForPublish params) {
-        this.params = params;
-        return this;
+    /**
+     * Publishes an object serialized into text message
+     *
+     * @param toSerialize is an object to be serialized into string message
+     * @return a new instance of {@link RabbitMqPublishSupplier}
+     */
+    public static RabbitMqPublishSupplier.Mapped serializedMessage(Object toSerialize) {
+        return new Mapped(toSerialize);
     }
 
-    public static RabbitMqPublishSupplier publish(String exchange,
-                                                  String routingKey,
-                                                  Object toSerialize,
-                                                  DataTransformer mapper) {
-        return new RabbitMqPublishSupplier(exchange, routingKey, mapper.serialize(toSerialize));
+    /**
+     * Publishes a text message
+     *
+     * @param toPublish is a text to publish
+     * @param charset   is a required charset
+     * @return new instance of {@link RabbitMqPublishSupplier}
+     */
+    public static RabbitMqPublishSupplier.StringMessage textMessage(String toPublish, Charset charset) {
+        return new StringMessage(toPublish, charset);
+    }
+
+    /**
+     * Publishes a text message
+     *
+     * @param toPublish is a text to publish
+     * @return new instance of {@link RabbitMqPublishSupplier}
+     */
+    public static RabbitMqPublishSupplier.StringMessage textMessage(String toPublish) {
+        return textMessage(toPublish, UTF_8);
     }
 
     @Override
@@ -83,91 +110,188 @@ public class RabbitMqPublishSupplier extends SequentialActionSupplier<RabbitMqSt
         var channel = value.getChannel();
         var props = propertyBuilder.build();
         try {
-            if (params == null) {
-                channel.basicPublish(exchange, routingKey, false, false, props,
-                        body.getBytes(UTF_8));
-            } else {
-                channel.basicPublish(exchange, routingKey, params.isMandatory(), params.isImmediate(), props,
-                        body.getBytes(UTF_8));
-            }
-        } catch (Exception e){
+            channel.basicPublish(exchange, routingKey, mandatory, immediate, props,
+                    body.getBytes());
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public RabbitMqPublishSupplier contentType(String contentType) {
+    public T contentType(String contentType) {
         propertyBuilder.contentType(contentType);
-        return this;
+        return (T) this;
     }
 
-    public RabbitMqPublishSupplier setContentEncoding(String contentEncoding) {
+    public T contentEncoding(String contentEncoding) {
         propertyBuilder.contentEncoding(contentEncoding);
-        return this;
+        return (T) this;
     }
 
-    public RabbitMqPublishSupplier headers(Map<String, Object> headers) {
+    public T header(String name, Object value) {
+        headers.put(name, value);
         propertyBuilder.headers(headers);
-        return this;
+        return (T) this;
     }
 
-    public RabbitMqPublishSupplier deliveryMode(Integer deliveryMode) {
+    public T deliveryMode(Integer deliveryMode) {
         propertyBuilder.deliveryMode(deliveryMode);
-        return this;
+        return (T) this;
     }
 
-    public RabbitMqPublishSupplier priority(Integer priority) {
+    public T priority(Integer priority) {
         propertyBuilder.priority(priority);
-        return this;
+        return (T) this;
     }
 
-    public RabbitMqPublishSupplier correlationId(String correlationId) {
+    public T correlationId(String correlationId) {
         propertyBuilder.correlationId(correlationId);
-        return this;
+        return (T) this;
     }
 
-    public RabbitMqPublishSupplier replyTo(String replyTo) {
+    public T replyTo(String replyTo) {
         propertyBuilder.replyTo(replyTo);
-        return this;
+        return (T) this;
     }
 
-    public RabbitMqPublishSupplier expiration(String expiration) {
+    public T expiration(String expiration) {
         propertyBuilder.expiration(expiration);
-        return this;
+        return (T) this;
     }
 
-    public RabbitMqPublishSupplier messageId(String messageId) {
+    public T messageId(String messageId) {
         propertyBuilder.messageId(messageId);
-        return this;
+        return (T) this;
     }
 
-    public RabbitMqPublishSupplier timestamp(Date timestamp) {
+    public T timestamp(Date timestamp) {
         propertyBuilder.timestamp(timestamp);
-        return this;
+        return (T) this;
     }
 
-    public RabbitMqPublishSupplier type(String type) {
+    public T type(String type) {
         propertyBuilder.type(type);
-        return this;
+        return (T) this;
     }
 
-    public RabbitMqPublishSupplier userId(String userId) {
+    public T userId(String userId) {
         propertyBuilder.userId(userId);
-        return this;
+        return (T) this;
     }
 
-    public RabbitMqPublishSupplier appId(String appId) {
+    public T appId(String appId) {
         propertyBuilder.appId(appId);
-        return this;
+        return (T) this;
     }
 
-    public RabbitMqPublishSupplier clusterId(String clusterId) {
+    public T clusterId(String clusterId) {
         propertyBuilder.clusterId(clusterId);
-        return this;
+        return (T) this;
+    }
+
+    /**
+     * Makes the publishing mandatory
+     *
+     * @return self-reference
+     */
+    public T mandatory() {
+        this.mandatory = true;
+        return (T) this;
+    }
+
+    /**
+     * Makes the publishing immediate
+     *
+     * @return self-reference
+     */
+    public T immediate() {
+        this.immediate = true;
+        return (T) this;
+    }
+
+    /**
+     * Defines exchange to publish.
+     *
+     * @param exchange is the name of exchange
+     * @return self-reference
+     */
+    public T exchange(String exchange) {
+        this.exchange = exchange;
+        return (T) this;
+    }
+
+    /**
+     * Defines the necessity to publish to default named exchange.
+     * Value of the {@link RabbitMQRoutingProperties#DEFAULT_EXCHANGE_NAME} is used
+     * as exchange.
+     *
+     * @return self-reference
+     */
+    public T toDefaultExchange() {
+        return exchange(DEFAULT_EXCHANGE_NAME.get());
+    }
+
+    /**
+     * Defines routing key.
+     *
+     * @param routingKey is the name of routing key
+     * @return self-reference
+     */
+    public T routingKey(String routingKey) {
+        this.routingKey = routingKey;
+        return (T) this;
+    }
+
+    /**
+     * Defines the necessity to use default routing key.
+     * Value of the {@link RabbitMQRoutingProperties#DEFAULT_ROUTING_KEY_NAME} is used
+     * as routing key.
+     *
+     * @return self-reference
+     */
+    public T useDefaultRoutingKey() {
+        return routingKey(DEFAULT_ROUTING_KEY_NAME.get());
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void onStart(RabbitMqStepContext rabbitMqStepContext) {
-        catchValue(body, createCaptors(new Class[] {MessageCaptor.class}));
+        catchValue(body, createCaptors(new Class[]{MessageCaptor.class}));
+    }
+
+    public static final class Mapped extends RabbitMqPublishSupplier<Mapped> {
+
+        private final Object toPublish;
+        private DataTransformer transformer;
+
+        private Mapped(Object toPublish) {
+            super();
+            checkNotNull(toPublish);
+            this.toPublish = toPublish;
+        }
+
+        public Mapped withDataTransformer(DataTransformer dataTransformer) {
+            this.transformer = dataTransformer;
+            return this;
+        }
+
+        @Override
+        protected void onStart(RabbitMqStepContext rabbitMqStepContext) {
+            var transformer = ofNullable(this.transformer)
+                    .orElseGet(RABBIT_MQ_DEFAULT_DATA_TRANSFORMER);
+            checkState(nonNull(transformer), "Data transformer is not defined. Please invoke "
+                    + "the '#withDataTransformer(DataTransformer)' method or define '"
+                    + RABBIT_MQ_DEFAULT_DATA_TRANSFORMER.getName()
+                    + "' property/env variable");
+            body = transformer.serialize(toPublish);
+            super.onStart(rabbitMqStepContext);
+        }
+    }
+
+    public static final class StringMessage extends RabbitMqPublishSupplier<StringMessage> {
+
+        private StringMessage(String message, Charset charset) {
+            checkNotNull(charset);
+            checkArgument(isNotBlank(message), "Message to publish should not be blank");
+            body = new String(message.getBytes(), charset);
+        }
     }
 }

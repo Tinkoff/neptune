@@ -5,15 +5,16 @@ import com.rabbitmq.client.Channel;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArguments;
+import ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.io.IOException;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.valueOf;
 import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_EXCHANGE_NAME;
 
 @Description("Exchange '{exchange}'")
 public final class DeclareExchangeParameters extends DeclareParameters<DeclareExchangeParameters> {
@@ -24,24 +25,32 @@ public final class DeclareExchangeParameters extends DeclareParameters<DeclareEx
     @StepParameter("type")
     private String type = "direct";
 
-    @StepParameter("autoDelete")
-    private boolean autoDelete;
-
     @StepParameter("internal")
     private boolean internal;
 
-    @StepParameter(value = "passive")
-    private Boolean passive;
-
-    public DeclareExchangeParameters(String exchange) {
+    private DeclareExchangeParameters(String exchange) {
         checkArgument(isNotBlank(exchange), "Name of the exchange should be defined");
         this.exchange = exchange;
     }
 
-    DeclareExchangeParameters setType(String type) {
-        checkArgument(isNotBlank(type), "Name of the type of exchange should be defined");
-        this.type = type;
-        return this;
+    /**
+     * Declares an exchange
+     *
+     * @param exchange is a name of exchange
+     * @return a nwe {@link DeclareExchangeParameters}
+     */
+    public static DeclareExchangeParameters newExchange(String exchange) {
+        return new DeclareExchangeParameters(exchange);
+    }
+
+    /**
+     * Declares an exchange. Value of the {@link RabbitMQRoutingProperties#DEFAULT_EXCHANGE_NAME} is used
+     * as name of the exchange
+     *
+     * @return a nwe {@link DeclareExchangeParameters}
+     */
+    public static DeclareExchangeParameters newExchange() {
+        return newExchange(DEFAULT_EXCHANGE_NAME.get());
     }
 
     /**
@@ -51,7 +60,9 @@ public final class DeclareExchangeParameters extends DeclareParameters<DeclareEx
      * @return self-reference
      */
     public DeclareExchangeParameters type(String type) {
-        return setType(type);
+        checkArgument(isNotBlank(type), "Name of the type of exchange should be defined");
+        this.type = type;
+        return this;
     }
 
     /**
@@ -70,46 +81,27 @@ public final class DeclareExchangeParameters extends DeclareParameters<DeclareEx
      *
      * @return self-reference
      */
-    public DeclareExchangeParameters autoDelete() {
-        this.autoDelete = true;
-        return this;
-    }
-
-    /**
-     * Makes new exchange autoDelete
-     *
-     * @return self-reference
-     */
     public DeclareExchangeParameters internal() {
         this.internal = true;
         return this;
     }
 
-    /**
-     * Forces a new exchange to be declared passively.
-     * It makes ignore values of fields which represent such properties as
-     * type, autoDelete, internal, durable and additional arguments
-     *
-     * @return self-reference
-     */
-    public DeclareExchangeParameters passive() {
-        this.passive = true;
-        return this;
-    }
-
     @Override
-    public Map<String, String> getParameters() {
-        var result = new LinkedHashMap<String, String>();
-        if (passive != null) {
-            result.put(translate(this.getClass().getDeclaredField("passive")), valueOf(true));
-        } else {
-            result.putAll(super);
+    void declare(Channel channel) {
+        try {
+            if (isPassive()) {
+                channel.exchangeDeclarePassive(exchange);
+                return;
+            }
+
+            channel.exchangeDeclare(exchange,
+                    type,
+                    isDurable(),
+                    isAutoDelete(),
+                    internal,
+                    ofNullable(arguments).map(AdditionalArguments::getHashMap).orElse(null));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return super.getParameters();
-    }
-
-    @Override
-    public void declare(Channel channel) {
-
     }
 }

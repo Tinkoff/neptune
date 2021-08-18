@@ -19,9 +19,12 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaultDataTransformer.RABBIT_MQ_DEFAULT_DATA_TRANSFORMER;
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Retrieve:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
@@ -39,6 +42,8 @@ public class RabbitMqBasicGetArraySupplier<T> extends SequentialGetStepSupplier
     @CaptureOnFailure(by = MessagesCaptor.class)
     List<String> messages;
 
+    private DataTransformer transformer;
+
     protected <M> RabbitMqBasicGetArraySupplier(GetFromQueue<M> getFromQueue, Function<M, T[]> function) {
         super(function.compose(getFromQueue));
         this.getFromQueue = getFromQueue;
@@ -49,13 +54,10 @@ public class RabbitMqBasicGetArraySupplier<T> extends SequentialGetStepSupplier
      *
      * @param description is description of value to get
      * @param queue       is a queue to read
-     * @param autoAck     true if the server should consider messages
-     *                    acknowledged once delivered; false if the server should expect
-     *                    explicit acknowledgements
      * @param classT      is a class of a value to deserialize message
      * @param toGet       describes how to get desired value
      * @param <M>         is a type of deserialized message
-     * @param <T>         is a type of an item of array
+     * @param <T>         is a type of item of array
      * @return an instance of {@link RabbitMqBasicGetArraySupplier}
      */
     @Description("{description}")
@@ -64,11 +66,10 @@ public class RabbitMqBasicGetArraySupplier<T> extends SequentialGetStepSupplier
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
             ) String description,
             String queue,
-            boolean autoAck,
             Class<M> classT,
             Function<M, T[]> toGet) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return new RabbitMqBasicGetArraySupplier<>(new GetFromQueue<>(queue, autoAck, classT), toGet);
+        return new RabbitMqBasicGetArraySupplier<>(new GetFromQueue<>(queue, classT), toGet);
     }
 
     /**
@@ -76,21 +77,17 @@ public class RabbitMqBasicGetArraySupplier<T> extends SequentialGetStepSupplier
      * It gets required value from default queue.
      *
      * @param description is description of value to get
-     * @param autoAck     true if the server should consider messages
-     *                    acknowledged once delivered; false if the server should expect
-     *                    explicit acknowledgements
      * @param classT      is a class of a value to deserialize message
      * @param toGet       describes how to get desired value
      * @param <M>         is a type of deserialized message
-     * @param <T>         is a type of an item of array
+     * @param <T>         is a type of item of array
      * @return an instance of {@link RabbitMqBasicGetArraySupplier}
      * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
      */
     public static <M, T> RabbitMqBasicGetArraySupplier<T> rabbitArray(String description,
-                                                                      boolean autoAck,
                                                                       Class<M> classT,
                                                                       Function<M, T[]> toGet) {
-        return rabbitArray(description, DEFAULT_QUEUE_NAME.get(), autoAck, classT, toGet);
+        return rabbitArray(description, DEFAULT_QUEUE_NAME.get(), classT, toGet);
     }
 
     /**
@@ -98,13 +95,10 @@ public class RabbitMqBasicGetArraySupplier<T> extends SequentialGetStepSupplier
      *
      * @param description is description of value to get
      * @param queue       is a queue to read
-     * @param autoAck     true if the server should consider messages
-     *                    acknowledged once delivered; false if the server should expect
-     *                    explicit acknowledgements
-     * @param typeT       is a reference to type of a value to deserialize message
+     * @param typeT       is a reference to type of value to deserialize message
      * @param toGet       describes how to get desired value
      * @param <M>         is a type of deserialized message
-     * @param <T>         is a type of an item of array
+     * @param <T>         is a type of item of array
      * @return an instance of {@link RabbitMqBasicGetArraySupplier}
      */
     @Description("{description}")
@@ -113,11 +107,10 @@ public class RabbitMqBasicGetArraySupplier<T> extends SequentialGetStepSupplier
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
             ) String description,
             String queue,
-            boolean autoAck,
             TypeReference<M> typeT,
             Function<M, T[]> toGet) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return new RabbitMqBasicGetArraySupplier<>(new GetFromQueue<>(queue, autoAck, typeT), toGet);
+        return new RabbitMqBasicGetArraySupplier<>(new GetFromQueue<>(queue, typeT), toGet);
     }
 
     /**
@@ -125,21 +118,17 @@ public class RabbitMqBasicGetArraySupplier<T> extends SequentialGetStepSupplier
      * It gets required value from default queue.
      *
      * @param description is description of value to get
-     * @param autoAck     true if the server should consider messages
-     *                    acknowledged once delivered; false if the server should expect
-     *                    explicit acknowledgements
-     * @param typeT       is a reference to type of a value to deserialize message
+     * @param typeT       is a reference to type of value to deserialize message
      * @param toGet       describes how to get desired value
      * @param <M>         is a type of deserialized message
-     * @param <T>         is a type of an item of array
+     * @param <T>         is a type of item of array
      * @return an instance of {@link RabbitMqBasicGetArraySupplier}
      * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
      */
     public static <M, T> RabbitMqBasicGetArraySupplier<T> rabbitArray(String description,
-                                                                      boolean autoAck,
                                                                       TypeReference<M> typeT,
                                                                       Function<M, T[]> toGet) {
-        return rabbitArray(description, DEFAULT_QUEUE_NAME.get(), autoAck, typeT, toGet);
+        return rabbitArray(description, DEFAULT_QUEUE_NAME.get(), typeT, toGet);
     }
 
     /**
@@ -147,19 +136,15 @@ public class RabbitMqBasicGetArraySupplier<T> extends SequentialGetStepSupplier
      *
      * @param description is description of value to get
      * @param queue       is a queue to read
-     * @param autoAck     true if the server should consider messages
-     *                    acknowledged once delivered; false if the server should expect
-     *                    explicit acknowledgements
      * @param classT      is a class of a value to deserialize message
-     * @param <T>         is a type of an item of array
+     * @param <T>         is a type of item of array
      * @return an instance of {@link RabbitMqBasicGetArraySupplier}
      */
     public static <T> RabbitMqBasicGetArraySupplier<T> rabbitArray(
             String description,
             String queue,
-            boolean autoAck,
             Class<T[]> classT) {
-        return rabbitArray(description, queue, autoAck, classT, ts -> ts);
+        return rabbitArray(description, queue, classT, ts -> ts);
     }
 
     /**
@@ -167,19 +152,15 @@ public class RabbitMqBasicGetArraySupplier<T> extends SequentialGetStepSupplier
      * It gets required value from default queue.
      *
      * @param description is description of value to get
-     * @param autoAck     true if the server should consider messages
-     *                    acknowledged once delivered; false if the server should expect
-     *                    explicit acknowledgements
      * @param classT      is a class of a value to deserialize message
-     * @param <T>         is a type of an item of array
+     * @param <T>         is a type of item of array
      * @return an instance of {@link RabbitMqBasicGetArraySupplier}
      * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
      */
     public static <T> RabbitMqBasicGetArraySupplier<T> rabbitArray(
             String description,
-            boolean autoAck,
             Class<T[]> classT) {
-        return rabbitArray(description, DEFAULT_QUEUE_NAME.get(), autoAck, classT);
+        return rabbitArray(description, DEFAULT_QUEUE_NAME.get(), classT);
     }
 
     /**
@@ -187,19 +168,15 @@ public class RabbitMqBasicGetArraySupplier<T> extends SequentialGetStepSupplier
      *
      * @param description is description of value to get
      * @param queue       is a queue to read
-     * @param autoAck     true if the server should consider messages
-     *                    acknowledged once delivered; false if the server should expect
-     *                    explicit acknowledgements
-     * @param typeT       is a reference to type of a value to deserialize message
-     * @param <T>         is a type of an item of array
+     * @param typeT       is a reference to type of value to deserialize message
+     * @param <T>         is a type of item of array
      * @return an instance of {@link RabbitMqBasicGetArraySupplier}
      */
     public static <T> RabbitMqBasicGetArraySupplier<T> rabbitArray(
             String description,
             String queue,
-            boolean autoAck,
             TypeReference<T[]> typeT) {
-        return rabbitArray(description, queue, autoAck, typeT, ts -> ts);
+        return rabbitArray(description, queue, typeT, ts -> ts);
     }
 
     /**
@@ -207,19 +184,15 @@ public class RabbitMqBasicGetArraySupplier<T> extends SequentialGetStepSupplier
      * It gets required value from default queue.
      *
      * @param description is description of value to get
-     * @param autoAck     true if the server should consider messages
-     *                    acknowledged once delivered; false if the server should expect
-     *                    explicit acknowledgements
-     * @param typeT       is a reference to type of a value to deserialize message
-     * @param <T>         is a type of an item of array
+     * @param typeT       is a reference to type of value to deserialize message
+     * @param <T>         is a type of item of array
      * @return an instance of {@link RabbitMqBasicGetArraySupplier}
      * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
      */
     public static <T> RabbitMqBasicGetArraySupplier<T> rabbitArray(
             String description,
-            boolean autoAck,
             TypeReference<T[]> typeT) {
-        return rabbitArray(description, DEFAULT_QUEUE_NAME.get(), autoAck, typeT);
+        return rabbitArray(description, DEFAULT_QUEUE_NAME.get(), typeT);
     }
 
     @Override
@@ -232,8 +205,7 @@ public class RabbitMqBasicGetArraySupplier<T> extends SequentialGetStepSupplier
         var ms = getFromQueue.getMessages();
         if (t != null && t.length > 0) {
             message = ms.getLast();
-        }
-        else {
+        } else {
             messages = ms;
         }
     }
@@ -243,9 +215,29 @@ public class RabbitMqBasicGetArraySupplier<T> extends SequentialGetStepSupplier
         messages = getFromQueue.getMessages();
     }
 
-    RabbitMqBasicGetArraySupplier<T> setDataTransformer(DataTransformer dataTransformer) {
-        checkNotNull(dataTransformer);
-        getFromQueue.setTransformer(dataTransformer);
+    @Override
+    protected void onStart(RabbitMqStepContext rabbitMqStepContext) {
+        var transformer = ofNullable(this.transformer)
+                .orElseGet(RABBIT_MQ_DEFAULT_DATA_TRANSFORMER);
+        checkState(nonNull(transformer), "Data transformer is not defined. Please invoke "
+                + "the '#withDataTransformer(DataTransformer)' method or define '"
+                + RABBIT_MQ_DEFAULT_DATA_TRANSFORMER.getName()
+                + "' property/env variable");
+        getFromQueue.setTransformer(transformer);
+    }
+
+    public RabbitMqBasicGetArraySupplier<T> withDataTransformer(DataTransformer transformer) {
+        this.transformer = transformer;
+        return this;
+    }
+
+    /**
+     * It means that server should consider messages acknowledged once delivered.
+     *
+     * @return self-reference
+     */
+    public RabbitMqBasicGetArraySupplier<T> autoAck() {
+        this.getFromQueue.setAutoAck();
         return this;
     }
 }

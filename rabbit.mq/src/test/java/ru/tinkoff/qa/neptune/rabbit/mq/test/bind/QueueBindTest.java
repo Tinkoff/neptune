@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.test.bind;
 
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.BaseRabbitMqTest;
@@ -13,8 +14,9 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperti
 
 public class QueueBindTest extends BaseRabbitMqTest {
 
+    @AfterMethod
     @BeforeMethod
-    public void beforeMethods() {
+    public void clear() {
         DEFAULT_EXCHANGE_NAME.accept(null);
         DEFAULT_QUEUE_NAME.accept(null);
         DEFAULT_ROUTING_KEY_NAME.accept(null);

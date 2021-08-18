@@ -9,6 +9,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 
 import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.function.Function;
 
@@ -22,11 +23,13 @@ final class GetFromQueue<T> implements Function<RabbitMqStepContext, T>, StepPar
 
     @StepParameter("queue")
     private final String queue;
-    @StepParameter("autoAck")
-    private final boolean autoAck;
+
+    private final Charset charset;
 
     @StepParameter(value = "Class to deserialize to", doNotReportNullValues = true)
     private final Class<T> cls;
+    @StepParameter("autoAck")
+    private boolean autoAck;
 
     private final TypeReference<T> typeRef;
 
@@ -37,22 +40,27 @@ final class GetFromQueue<T> implements Function<RabbitMqStepContext, T>, StepPar
 
     private final LinkedList<String> readMessages = new LinkedList<>();
 
-    private GetFromQueue(String queue, boolean autoAck, Class<T> cls, TypeReference<T> typeRef) {
+    private GetFromQueue(String queue, Class<T> cls, TypeReference<T> typeRef, Charset charset) {
         checkArgument(isNotBlank(queue), "Queue should be defined");
         checkArgument(!(isNull(cls) && isNull(typeRef)), "Any class or type reference should be defined");
         this.queue = queue;
-        this.autoAck = autoAck;
         this.cls = cls;
         this.typeRef = typeRef;
         this.type = ofNullable(typeRef).map(TypeReference::getType).orElse(null);
+        this.charset = charset;
     }
 
-    GetFromQueue(String queue, boolean autoAck, Class<T> cls) {
-        this(queue, autoAck, cls, null);
+
+    GetFromQueue(String queue, Class<T> cls) {
+        this(queue, cls, null, UTF_8);
     }
 
-    GetFromQueue(String queue, boolean autoAck, TypeReference<T> typeRef) {
-        this(queue, autoAck, null, typeRef);
+    GetFromQueue(String queue, TypeReference<T> typeRef) {
+        this(queue, null, typeRef, UTF_8);
+    }
+
+    static GetFromQueue<String> getStringResult(String queue, Charset charset) {
+        return new GetFromQueue<>(queue, String.class, null, charset);
     }
 
     @Override
@@ -61,7 +69,7 @@ final class GetFromQueue<T> implements Function<RabbitMqStepContext, T>, StepPar
             Channel channel = input.getChannel();
             GetResponse getResponse = channel.basicGet(queue, autoAck);
 
-            var msg = new String(getResponse.getBody(), UTF_8);
+            var msg = new String(getResponse.getBody(), charset);
             if (!readMessages.contains(msg)) {
                 readMessages.addLast(msg);
             }
@@ -82,5 +90,9 @@ final class GetFromQueue<T> implements Function<RabbitMqStepContext, T>, StepPar
 
     LinkedList<String> getMessages() {
         return readMessages;
+    }
+
+    void setAutoAck() {
+        this.autoAck = true;
     }
 }

@@ -20,9 +20,12 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaultDataTransformer.RABBIT_MQ_DEFAULT_DATA_TRANSFORMER;
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Retrieve:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
@@ -40,6 +43,8 @@ public class RabbitMqBasicGetIterableSupplier<T, S extends Iterable<T>> extends 
     @CaptureOnFailure(by = MessagesCaptor.class)
     List<String> messages;
 
+    private DataTransformer transformer;
+
     protected <M> RabbitMqBasicGetIterableSupplier(GetFromQueue<M> getFromQueue, Function<M, S> function) {
         super(function.compose(getFromQueue));
         this.getFromQueue = getFromQueue;
@@ -50,13 +55,10 @@ public class RabbitMqBasicGetIterableSupplier<T, S extends Iterable<T>> extends 
      *
      * @param description is description of value to get
      * @param queue       is a queue to read
-     * @param autoAck     true if the server should consider messages
-     *                    acknowledged once delivered; false if the server should expect
-     *                    explicit acknowledgements
      * @param classT      is a class of a value to deserialize message
      * @param toGet       describes how to get desired value
      * @param <M>         is a type of deserialized message
-     * @param <T>         is a type of an item of iterable
+     * @param <T>         is a type of item of iterable
      * @param <S>         is a type of iterable
      * @return an instance of {@link RabbitMqBasicGetIterableSupplier}
      */
@@ -66,11 +68,10 @@ public class RabbitMqBasicGetIterableSupplier<T, S extends Iterable<T>> extends 
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
             ) String description,
             String queue,
-            boolean autoAck,
             Class<M> classT,
             Function<M, S> toGet) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return new RabbitMqBasicGetIterableSupplier<>(new GetFromQueue<>(queue, autoAck, classT), toGet);
+        return new RabbitMqBasicGetIterableSupplier<>(new GetFromQueue<>(queue, classT), toGet);
     }
 
     /**
@@ -78,23 +79,19 @@ public class RabbitMqBasicGetIterableSupplier<T, S extends Iterable<T>> extends 
      * It gets required value from default queue.
      *
      * @param description is description of value to get
-     * @param autoAck     true if the server should consider messages
-     *                    acknowledged once delivered; false if the server should expect
-     *                    explicit acknowledgements
      * @param classT      is a class of a value to deserialize message
      * @param toGet       describes how to get desired value
      * @param <M>         is a type of deserialized message
-     * @param <T>         is a type of an item of iterable
+     * @param <T>         is a type of item of iterable
      * @param <S>         is a type of iterable
      * @return an instance of {@link RabbitMqBasicGetIterableSupplier}
      * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
      */
     public static <M, T, S extends Iterable<T>> RabbitMqBasicGetIterableSupplier<T, S> rabbitIterable(
             String description,
-            boolean autoAck,
             Class<M> classT,
             Function<M, S> toGet) {
-        return rabbitIterable(description, DEFAULT_QUEUE_NAME.get(), autoAck, classT, toGet);
+        return rabbitIterable(description, DEFAULT_QUEUE_NAME.get(), classT, toGet);
     }
 
     /**
@@ -102,13 +99,10 @@ public class RabbitMqBasicGetIterableSupplier<T, S extends Iterable<T>> extends 
      *
      * @param description is description of value to get
      * @param queue       is a queue to read
-     * @param autoAck     true if the server should consider messages
-     *                    acknowledged once delivered; false if the server should expect
-     *                    explicit acknowledgements
-     * @param typeT       is a reference to type of a value to deserialize message
+     * @param typeT       is a reference to type of value to deserialize message
      * @param toGet       describes how to get desired value
      * @param <M>         is a type of deserialized message
-     * @param <T>         is a type of an item of iterable
+     * @param <T>         is a type of item of iterable
      * @param <S>         is a type of iterable
      * @return an instance of {@link RabbitMqBasicGetIterableSupplier}
      */
@@ -118,11 +112,10 @@ public class RabbitMqBasicGetIterableSupplier<T, S extends Iterable<T>> extends 
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
             ) String description,
             String queue,
-            boolean autoAck,
             TypeReference<M> typeT,
             Function<M, S> toGet) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return new RabbitMqBasicGetIterableSupplier<>(new GetFromQueue<>(queue, autoAck, typeT), toGet);
+        return new RabbitMqBasicGetIterableSupplier<>(new GetFromQueue<>(queue, typeT), toGet);
     }
 
     /**
@@ -130,23 +123,19 @@ public class RabbitMqBasicGetIterableSupplier<T, S extends Iterable<T>> extends 
      * It gets required value from default queue.
      *
      * @param description is description of value to get
-     * @param autoAck     true if the server should consider messages
-     *                    acknowledged once delivered; false if the server should expect
-     *                    explicit acknowledgements
-     * @param typeT       is a reference to type of a value to deserialize message
+     * @param typeT       is a reference to type of value to deserialize message
      * @param toGet       describes how to get desired value
      * @param <M>         is a type of deserialized message
-     * @param <T>         is a type of an item of iterable
+     * @param <T>         is a type of item of iterable
      * @param <S>         is a type of iterable
      * @return an instance of {@link RabbitMqBasicGetIterableSupplier}
      * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
      */
     public static <M, T, S extends Iterable<T>> RabbitMqBasicGetIterableSupplier<T, S> rabbitIterable(
             String description,
-            boolean autoAck,
             TypeReference<M> typeT,
             Function<M, S> toGet) {
-        return rabbitIterable(description, DEFAULT_QUEUE_NAME.get(), autoAck, typeT, toGet);
+        return rabbitIterable(description, DEFAULT_QUEUE_NAME.get(), typeT, toGet);
     }
 
     /**
@@ -154,20 +143,16 @@ public class RabbitMqBasicGetIterableSupplier<T, S extends Iterable<T>> extends 
      *
      * @param description is description of value to get
      * @param queue       is a queue to read
-     * @param autoAck     true if the server should consider messages
-     *                    acknowledged once delivered; false if the server should expect
-     *                    explicit acknowledgements
      * @param classT      is a class of a value to deserialize message
-     * @param <T>         is a type of an item of iterable
+     * @param <T>         is a type of item of iterable
      * @param <S>         is a type of iterable
      * @return an instance of {@link RabbitMqBasicGetIterableSupplier}
      */
     public static <T, S extends Iterable<T>> RabbitMqBasicGetIterableSupplier<T, S> rabbitIterable(
             String description,
             String queue,
-            boolean autoAck,
             Class<S> classT) {
-        return rabbitIterable(description, queue, autoAck, classT, ts -> ts);
+        return rabbitIterable(description, queue, classT, ts -> ts);
     }
 
     /**
@@ -175,20 +160,16 @@ public class RabbitMqBasicGetIterableSupplier<T, S extends Iterable<T>> extends 
      * It gets required value from default queue.
      *
      * @param description is description of value to get
-     * @param autoAck     true if the server should consider messages
-     *                    acknowledged once delivered; false if the server should expect
-     *                    explicit acknowledgements
      * @param classT      is a class of a value to deserialize message
-     * @param <T>         is a type of an item of iterable
+     * @param <T>         is a type of item of iterable
      * @param <S>         is a type of iterable
      * @return an instance of {@link RabbitMqBasicGetIterableSupplier}
      * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
      */
     public static <T, S extends Iterable<T>> RabbitMqBasicGetIterableSupplier<T, S> rabbitIterable(
             String description,
-            boolean autoAck,
             Class<S> classT) {
-        return rabbitIterable(description, DEFAULT_QUEUE_NAME.get(), autoAck, classT);
+        return rabbitIterable(description, DEFAULT_QUEUE_NAME.get(), classT);
     }
 
     /**
@@ -196,20 +177,16 @@ public class RabbitMqBasicGetIterableSupplier<T, S extends Iterable<T>> extends 
      *
      * @param description is description of value to get
      * @param queue       is a queue to read
-     * @param autoAck     true if the server should consider messages
-     *                    acknowledged once delivered; false if the server should expect
-     *                    explicit acknowledgements
-     * @param typeT       is a reference to type of a value to deserialize message
-     * @param <T>         is a type of an item of iterable
+     * @param typeT       is a reference to type of value to deserialize message
+     * @param <T>         is a type of item of iterable
      * @param <S>         is a type of iterable
      * @return an instance of {@link RabbitMqBasicGetIterableSupplier}
      */
     public static <T, S extends Iterable<T>> RabbitMqBasicGetIterableSupplier<T, S> rabbitIterable(
             String description,
             String queue,
-            boolean autoAck,
             TypeReference<S> typeT) {
-        return rabbitIterable(description, queue, autoAck, typeT, ts -> ts);
+        return rabbitIterable(description, queue, typeT, ts -> ts);
     }
 
     /**
@@ -217,20 +194,16 @@ public class RabbitMqBasicGetIterableSupplier<T, S extends Iterable<T>> extends 
      * It gets required value from default queue.
      *
      * @param description is description of value to get
-     * @param autoAck     true if the server should consider messages
-     *                    acknowledged once delivered; false if the server should expect
-     *                    explicit acknowledgements
-     * @param typeT       is a reference to type of a value to deserialize message
-     * @param <T>         is a type of an item of iterable
+     * @param typeT       is a reference to type of value to deserialize message
+     * @param <T>         is a type of item of iterable
      * @param <S>         is a type of iterable
      * @return an instance of {@link RabbitMqBasicGetIterableSupplier}
      * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
      */
     public static <T, S extends Iterable<T>> RabbitMqBasicGetIterableSupplier<T, S> rabbitIterable(
             String description,
-            boolean autoAck,
             TypeReference<S> typeT) {
-        return rabbitIterable(description, DEFAULT_QUEUE_NAME.get(), autoAck, typeT);
+        return rabbitIterable(description, DEFAULT_QUEUE_NAME.get(), typeT);
     }
 
     @Override
@@ -253,9 +226,29 @@ public class RabbitMqBasicGetIterableSupplier<T, S extends Iterable<T>> extends 
         messages = getFromQueue.getMessages();
     }
 
-    RabbitMqBasicGetIterableSupplier<T, S> setDataTransformer(DataTransformer dataTransformer) {
-        checkNotNull(dataTransformer);
-        getFromQueue.setTransformer(dataTransformer);
+    @Override
+    protected void onStart(RabbitMqStepContext rabbitMqStepContext) {
+        var transformer = ofNullable(this.transformer)
+                .orElseGet(RABBIT_MQ_DEFAULT_DATA_TRANSFORMER);
+        checkState(nonNull(transformer), "Data transformer is not defined. Please invoke "
+                + "the '#withDataTransformer(DataTransformer)' method or define '"
+                + RABBIT_MQ_DEFAULT_DATA_TRANSFORMER.getName()
+                + "' property/env variable");
+        getFromQueue.setTransformer(transformer);
+    }
+
+    public RabbitMqBasicGetIterableSupplier<T, S> withDataTransformer(DataTransformer transformer) {
+        this.transformer = transformer;
+        return this;
+    }
+
+    /**
+     * It means that server should consider messages acknowledged once delivered.
+     *
+     * @return self-reference
+     */
+    public RabbitMqBasicGetIterableSupplier<T, S> autoAck() {
+        this.getFromQueue.setAutoAck();
         return this;
     }
 }

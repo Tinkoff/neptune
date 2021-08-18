@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.rabbit.mq.test.captors;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.rabbitmq.client.GetResponse;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.DefaultMapper;
@@ -21,6 +22,7 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsCons
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetIterableItemSupplier.rabbitIterableItem;
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
 import static ru.tinkoff.qa.neptune.rabbit.mq.test.captors.TestStringInjector.CAUGHT_MESSAGES;
 
 public class GetIterableItemCaptorTest extends BaseCaptorTest {
@@ -30,16 +32,23 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
 
     @BeforeClass
     public void beforeClass() throws Exception {
-        when(channel.basicGet("test_queue4", true))
+        when(channel.basicGet("test_queue4", false))
                 .thenReturn(new GetResponse(null, null, body.getBytes(StandardCharsets.UTF_8), 0));
+
+        DEFAULT_QUEUE_NAME.accept("test_queue4");
+    }
+
+    @AfterClass
+    public void afterClass() {
+        DEFAULT_QUEUE_NAME.accept(null);
+        DO_CAPTURES_OF_INSTANCE.accept(null);
     }
 
     @Test
     public void test1() {
         rabbitMqStepContext.read(rabbitIterableItem("Value of a field 'name'",
-                "test_queue4",
-                true,
-                new TypeReference<List<DraftDto>>() {},
+                new TypeReference<List<DraftDto>>() {
+                },
                 list -> list.stream().map(DraftDto::getName).collect(toList()))
                 .criteria("Value contains 'test", s -> s.contains("test")));
 
@@ -51,8 +60,6 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
 
         rabbitMqStepContext.read(rabbitIterableItem("Value of a field 'name'",
-                "test_queue4",
-                true,
                 new TypeReference<List<DraftDto>>() {},
                 list -> list.stream().map(DraftDto::getName).collect(toList()))
                 .criteria("Value contains 'test", s -> s.contains("test")));
@@ -66,8 +73,6 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
 
         rabbitMqStepContext.read(rabbitIterableItem("Value of a field 'name'",
-                "test_queue4",
-                true,
                 new TypeReference<List<DraftDto>>() {},
                 list -> list.stream().map(DraftDto::getName).collect(toList()))
                 .criteria("Value contains 'test", s -> s.contains("test")));
@@ -80,8 +85,6 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
 
         rabbitMqStepContext.read(rabbitIterableItem("Value of a field 'name'",
-                "test_queue4",
-                true,
                 new TypeReference<List<DraftDto>>() {},
                 list -> list.stream().map(DraftDto::getName).collect(toList()))
                 .criteria("Value contains 'test", s -> s.contains("test")));
@@ -93,8 +96,6 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
     @Test
     public void test5() {
         rabbitMqStepContext.read(rabbitIterableItem("Value of a field 'name'",
-                "test_queue4",
-                true,
                 new TypeReference<List<DraftDto>>() {},
                 list -> list.stream().map(DraftDto::getName).collect(toList()))
                 .criteria("Value contains 'test", s -> s.contains("fail")));
@@ -106,8 +107,6 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
     public void test6() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
         rabbitMqStepContext.read(rabbitIterableItem("Value of a field 'name'",
-                "test_queue4",
-                true,
                 new TypeReference<List<DraftDto>>() {
                 },
                 list -> list.stream().map(DraftDto::getName).collect(toList()))
@@ -123,8 +122,6 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
     public void test7() {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
         rabbitMqStepContext.read(rabbitIterableItem("Value of a field 'name'",
-                "test_queue4",
-                true,
                 new TypeReference<List<DraftDto>>() {
                 },
                 list -> list.stream().map(DraftDto::getName).collect(toList()))
@@ -138,8 +135,6 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
     public void test8() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
         rabbitMqStepContext.read(rabbitIterableItem("Value of a field 'name'",
-                "test_queue4",
-                true,
                 new TypeReference<List<DraftDto>>() {
                 },
                 list -> list.stream().map(DraftDto::getName).collect(toList()))
@@ -155,8 +150,6 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
     public void test9() {
         try {
             rabbitMqStepContext.read(rabbitIterableItem("Value of a field 'name'",
-                    "test_queue4",
-                    true,
                     new TypeReference<List<DraftDto>>() {
                     },
                     list -> list.stream().map(DraftDto::getName).collect(toList()))
@@ -178,8 +171,6 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
 
         try {
             rabbitMqStepContext.read(rabbitIterableItem("Value of a field 'name'",
-                    "test_queue4",
-                    true,
                     new TypeReference<List<DraftDto>>() {
                     },
                     list -> list.stream().map(DraftDto::getName).collect(toList()))
@@ -202,8 +193,6 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
 
         try {
             rabbitMqStepContext.read(rabbitIterableItem("Value of a field 'name'",
-                    "test_queue4",
-                    true,
                     new TypeReference<List<DraftDto>>() {
                     },
                     list -> list.stream().map(DraftDto::getName).collect(toList()))
@@ -228,8 +217,6 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
 
         try {
             rabbitMqStepContext.read(rabbitIterableItem("Value of a field 'name'",
-                    "test_queue4",
-                    true,
                     new TypeReference<List<DraftDto>>() {
                     },
                     list -> list.stream().map(DraftDto::getName).collect(toList()))
