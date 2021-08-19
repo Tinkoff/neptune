@@ -1,49 +1,42 @@
 package ru.tinkoff.qa.neptune.http.api.response;
 
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
-import ru.tinkoff.qa.neptune.http.api.captors.request.AbstractRequestBodyCaptor;
-import ru.tinkoff.qa.neptune.http.api.captors.response.AbstractResponseBodyObjectCaptor;
-import ru.tinkoff.qa.neptune.http.api.captors.response.AbstractResponseBodyObjectsCaptor;
-import ru.tinkoff.qa.neptune.http.api.captors.response.RequestResponseLogCaptor;
-import ru.tinkoff.qa.neptune.http.api.captors.response.ResponseCaptor;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
-import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.createCaptors;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplier.response;
+import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
+import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplierInternal.responseInternal;
+import static ru.tinkoff.qa.neptune.http.api.response.ResultCriteria.iterableBodyMatches;
 
 /**
  * Builds a step-function that retrieves an object from some {@link Iterable} which is retrieved from
  * http response body.
  *
- * @param <T> is a type of a response body
+ * @param <T> is a type of response body
  * @param <R> is a type of resulted object
  */
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of a resulted value")
 @ThrowWhenNoData(toThrow = DesiredDataHasNotBeenReceivedException.class, startDescription = "No data received:")
+@SuppressWarnings("unchecked")
 public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetObjectFromIterableBodyStepSupplier<T, R, S>>
-        extends SequentialGetStepSupplier.GetObjectFromIterableStepSupplier<HttpStepContext, R, S> {
+        extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<HttpStepContext, R, HttpResponse<T>, S> {
 
-    private <Q extends Iterable<R>> GetObjectFromIterableBodyStepSupplier(Function<HttpStepContext, Q> f) {
-        super(f);
+    private <Q extends Iterable<R>> GetObjectFromIterableBodyStepSupplier(Function<T, Q> f) {
+        super(((Function<HttpResponse<T>, T>) HttpResponse::body).andThen(f));
         addIgnored(Exception.class);
     }
 
@@ -54,7 +47,7 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
      * @param description is a description of resulted object
      * @param received    is a received http response
      * @param f           is a function that describes how to get an {@link Iterable} from a body of http response
-     * @param <T>         is a type of a response body
+     * @param <T>         is a type of response body
      * @param <R>         is a type of resulted object
      * @param <S>         if a type of {@link Iterable} of R
      * @return an instance of {@link GetObjectFromIterableWhenResponseReceived}
@@ -79,7 +72,7 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
      * @param requestBuilder describes a request to be sent
      * @param handler        is a response body handler
      * @param f              is a function that describes how to get an {@link Iterable} from a body of http response
-     * @param <T>            is a type of a response body
+     * @param <T>            is a type of response body
      * @param <R>            is a type of resulted object
      * @param <S>            if a type of {@link Iterable} of R
      * @return an instance of {@link GetObjectFromIterableWhenResponseReceived}
@@ -93,7 +86,7 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
             HttpResponse.BodyHandler<T> handler,
             Function<T, S> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectFromIterableWhenResponseReceiving<>(response(requestBuilder, handler),
+        return new GetObjectFromIterableWhenResponseReceiving<>(responseInternal(requestBuilder, handler),
                 f);
     }
 
@@ -104,18 +97,14 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
      *
      * @param description is a description of resulted object
      * @param received    is a received http response
-     * @param <R>         is a type of an element of an iterable of response body
+     * @param <R>         is a type of element of an iterable of response body
      * @param <S>         if a type of {@link Iterable} of response body
      * @return an instance of {@link GetObjectFromIterableWhenResponseReceived}
      */
-    @Description("{description}")
     public static <R, S extends Iterable<R>> GetObjectFromIterableWhenResponseReceived<S, R> asOneOfIterable(
-            @DescriptionFragment(
-                    value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class) String description,
+            String description,
             HttpResponse<S> received) {
-        checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectFromIterableWhenResponseReceived<>(received, rs -> rs);
+        return asOneOfIterable(description, received, rs -> rs);
     }
 
     /**
@@ -125,88 +114,55 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
      * @param description    is a description of resulted object
      * @param requestBuilder describes a request to be sent
      * @param handler        is a response body handler
-     * @param <R>            is a type of an element of an iterable of response body
+     * @param <R>            is a type of element of an iterable of response body
      * @param <S>            if a type of {@link Iterable} of response body
      * @return an instance of {@link GetObjectFromIterableWhenResponseReceived}
      */
-    @Description("{description}")
     public static <R, S extends Iterable<R>> GetObjectFromIterableWhenResponseReceiving<S, R> asOneOfIterable(
-            @DescriptionFragment(
-                    value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class) String description,
+            String description,
             RequestBuilder requestBuilder,
             HttpResponse.BodyHandler<S> handler) {
-        checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectFromIterableWhenResponseReceiving<>(response(requestBuilder, handler),
-                rs -> rs);
-    }
-
-
-    @Override
-    public S criteria(Criteria<? super R> criteria) {
-        return super.criteria(criteria);
-    }
-
-    @Override
-    public S criteria(String description, Predicate<? super R> predicate) {
-        return super.criteria(description, predicate);
+        return asOneOfIterable(description, requestBuilder, handler, rs -> rs);
     }
 
     /**
      * Returns an object from a body of http response which is received already.
      *
-     * @param <T> is a type of a response body
+     * @param <T> is a type of response body
      * @param <R> is a type of resulted object
      */
     @SuppressWarnings("unused")
     @DefineGetImperativeParameterName(value = "From http response get:")
+    @DefineFromParameterName("From body of received http response")
     public static final class GetObjectFromIterableWhenResponseReceived<T, R>
             extends GetObjectFromIterableBodyStepSupplier<T, R, GetObjectFromIterableWhenResponseReceived<T, R>> {
-
-        @StepParameter("From body of received http response")
-        final HttpResponse<T> response;
 
         private <S extends Iterable<R>> GetObjectFromIterableWhenResponseReceived(HttpResponse<T> response,
                                                                                   Function<T, S> f) {
             super(f.compose(ignored -> response.body()));
             checkNotNull(response);
-            this.response = response;
+            from(response);
         }
     }
 
     /**
      * Returns an object from a body of http response. Response is supposed to be received during the step execution
      *
-     * @param <T> is a type of a response body
-     * @param <R> is a type of a resulted object
+     * @param <T> is a type of response body
+     * @param <R> is a type of resulted object
      */
     @SequentialGetStepSupplier.DefineTimeOutParameterName("Time to receive expected http response and get the result")
     @DefineGetImperativeParameterName(value = "Send http request. Wait for the response and then get:")
     public static final class GetObjectFromIterableWhenResponseReceiving<T, R>
             extends GetObjectFromIterableBodyStepSupplier<T, R, GetObjectFromIterableWhenResponseReceiving<T, R>> {
 
-        private final ReceiveResponseAndGetResultFunction<T, ?> f;
+        private final Function<T, Iterable<R>> f;
 
-        @CaptureOnSuccess(by = RequestResponseLogCaptor.class)
-        @CaptureOnFailure(by = RequestResponseLogCaptor.class)
-        ResponseExecutionInfo info;
-
-        @CaptureOnSuccess(by = {ResponseCaptor.class,
-                AbstractResponseBodyObjectCaptor.class,
-                AbstractResponseBodyObjectsCaptor.class})
-        @CaptureOnFailure(by = {ResponseCaptor.class,
-                AbstractResponseBodyObjectCaptor.class,
-                AbstractResponseBodyObjectsCaptor.class})
-        HttpResponse<?> lastReceived;
-
-        private <S extends Iterable<R>> GetObjectFromIterableWhenResponseReceiving(ReceiveResponseAndGetResultFunction<T, S> f) {
-            super(f);
-            this.f = f;
-        }
-
-        private <S extends Iterable<R>> GetObjectFromIterableWhenResponseReceiving(ResponseSequentialGetSupplier<T> getResponse,
+        private <S extends Iterable<R>> GetObjectFromIterableWhenResponseReceiving(ResponseSequentialGetSupplierInternal<T> getResponse,
                                                                                    Function<T, S> f) {
-            this(new ReceiveResponseAndGetResultFunction<>(f, getResponse));
+            super(f);
+            from(getResponse.addIgnored(Exception.class));
+            this.f = (Function<T, Iterable<R>>) f;
         }
 
         /**
@@ -217,12 +173,14 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
          * @see SequentialGetStepSupplier#timeOut(Duration)
          */
         public GetObjectFromIterableWhenResponseReceiving<T, R> retryTimeOut(Duration timeOut) {
-            return super.timeOut(timeOut);
+            ((ResponseSequentialGetSupplierInternal<T>) getFrom()).timeOut(timeOut);
+            return this;
         }
 
         @Override
         public GetObjectFromIterableWhenResponseReceiving<T, R> pollingInterval(Duration pollingTime) {
-            return super.pollingInterval(pollingTime);
+            ((ResponseSequentialGetSupplierInternal<T>) getFrom()).pollingInterval(pollingTime);
+            return this;
         }
 
         /**
@@ -231,10 +189,9 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
          * @param description criteria description
          * @param predicate   is how to match http response
          * @return self-reference
-         * @see SequentialGetStepSupplier#criteria(String, Predicate)
          */
         public GetObjectFromIterableWhenResponseReceiving<T, R> responseCriteria(String description, Predicate<HttpResponse<T>> predicate) {
-            f.getGetResponseSupplier().criteria(description, predicate);
+            ((ResponseSequentialGetSupplierInternal<T>) getFrom()).criteria(description, predicate);
             return this;
         }
 
@@ -243,45 +200,80 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
          *
          * @param criteria describes how to match http response
          * @return self-reference
-         * @see SequentialGetStepSupplier#criteria(Criteria)
          */
         public GetObjectFromIterableWhenResponseReceiving<T, R> responseCriteria(Criteria<HttpResponse<T>> criteria) {
-            f.getGetResponseSupplier().criteria(criteria);
+            ((ResponseSequentialGetSupplierInternal<T>) getFrom()).criteria(criteria);
+            return this;
+        }
+
+        /**
+         * Defines OR-expression for expected http response.
+         *
+         * @param criteria describes how to match http response
+         * @return self-reference
+         */
+        public GetObjectFromIterableWhenResponseReceiving<T, R> responseCriteriaOr(Criteria<HttpResponse<T>>... criteria) {
+            ((ResponseSequentialGetSupplierInternal<T>) getFrom()).criteriaOr(criteria);
+            return this;
+        }
+
+        /**
+         * Defines XOR-expression for expected http response.
+         *
+         * @param criteria describes how to match http response
+         * @return self-reference
+         */
+        public GetObjectFromIterableWhenResponseReceiving<T, R> responseCriteriaOnlyOne(Criteria<HttpResponse<T>>... criteria) {
+            ((ResponseSequentialGetSupplierInternal<T>) getFrom()).criteriaOnlyOne(criteria);
+            return this;
+        }
+
+        /**
+         * Defines NOT-expression for expected http response.
+         *
+         * @param criteria describes how to match http response
+         * @return self-reference
+         */
+        public GetObjectFromIterableWhenResponseReceiving<T, R> responseCriteriaNot(Criteria<HttpResponse<T>>... criteria) {
+            ((ResponseSequentialGetSupplierInternal<T>) getFrom()).criteriaNot(criteria);
             return this;
         }
 
         @Override
-        public Map<String, String> getParameters() {
-            var params = super.getParameters();
-            params.putAll(f.getGetResponseSupplier().getParameters());
-            return params;
+        public GetObjectFromIterableWhenResponseReceiving<T, R> criteriaOr(Criteria<? super R>... criteria) {
+            var orCriteria = OR(criteria);
+            ((ResponseSequentialGetSupplierInternal<T>) getFrom()).criteria(iterableBodyMatches(new BodyHasItems(orCriteria), f, orCriteria));
+            return super.criteriaOr(criteria);
         }
 
         @Override
-        @SuppressWarnings("unchecked")
-        protected void onStart(HttpStepContext httpStepContext) {
-            catchValue(f.getGetResponseSupplier().getRequest().body(),
-                    createCaptors(new Class[]{AbstractRequestBodyCaptor.class}));
-        }
-
-        private void fillResultData() {
-            info = f.getGetResponseSupplier().getInfo();
-            lastReceived = info.getLastReceived();
+        public GetObjectFromIterableWhenResponseReceiving<T, R> criteriaOnlyOne(Criteria<? super R>... criteria) {
+            var xorCriteria = ONLY_ONE(criteria);
+            ((ResponseSequentialGetSupplierInternal<T>) getFrom()).criteria(iterableBodyMatches(new BodyHasItems(xorCriteria), f, xorCriteria));
+            return super.criteriaOnlyOne(criteria);
         }
 
         @Override
-        protected void onSuccess(R r) {
-            fillResultData();
+        public GetObjectFromIterableWhenResponseReceiving<T, R> criteriaNot(Criteria<? super R>... criteria) {
+            var notCriteria = NOT(criteria);
+            ((ResponseSequentialGetSupplierInternal<T>) getFrom()).criteria(iterableBodyMatches(new BodyHasItems(notCriteria), f, notCriteria));
+            return super.criteriaNot(criteria);
         }
 
         @Override
-        protected void onFailure(HttpStepContext httpStepContext, Throwable throwable) {
-            fillResultData();
+        public GetObjectFromIterableWhenResponseReceiving<T, R> criteria(Criteria<? super R> criteria) {
+            ((ResponseSequentialGetSupplierInternal<T>) getFrom()).criteria(iterableBodyMatches(new BodyHasItems(criteria), f, criteria));
+            return super.criteria(criteria);
+        }
+
+        @Override
+        public GetObjectFromIterableWhenResponseReceiving<T, R> criteria(String description, Predicate<? super R> criteria) {
+            return criteria(condition(translate(description), criteria));
         }
 
         @Override
         public GetObjectFromIterableWhenResponseReceiving<T, R> throwOnNoResult() {
-            f.getGetResponseSupplier().throwOnNoResult();
+            ((ResponseSequentialGetSupplierInternal<?>) getFrom()).throwOnNoResult();
             return super.throwOnNoResult();
         }
     }
