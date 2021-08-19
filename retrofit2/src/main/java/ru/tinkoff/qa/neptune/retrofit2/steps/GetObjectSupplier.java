@@ -18,7 +18,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
-import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.*;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.bodyMatches;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.resultResponseCriteria;
 import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getResponse;
 
 @SuppressWarnings("unchecked")
@@ -112,35 +113,38 @@ public class GetObjectSupplier<M, R> extends SequentialGetStepSupplier
     }
 
     public GetObjectSupplier<M, R> responseCriteriaOr(Criteria<Response>... criteria) {
-        ((SendRequestAndGet<M, R[]>) getFrom()).criteria(resultResponseCriteria(OR(criteria)));
+        ((SendRequestAndGet<M, R>) getFrom()).criteria(resultResponseCriteria(OR(criteria)));
         return this;
     }
 
     public GetObjectSupplier<M, R> responseCriteriaOnlyOne(Criteria<Response>... criteria) {
-        ((SendRequestAndGet<M, R[]>) getFrom()).criteria(resultResponseCriteria(ONLY_ONE(criteria)));
+        ((SendRequestAndGet<M, R>) getFrom()).criteria(resultResponseCriteria(ONLY_ONE(criteria)));
         return this;
     }
 
     public GetObjectSupplier<M, R> responseCriteriaNot(Criteria<Response>... criteria) {
-        ((SendRequestAndGet<M, R[]>) getFrom()).criteria(resultResponseCriteria(NOT(criteria)));
+        ((SendRequestAndGet<M, R>) getFrom()).criteria(resultResponseCriteria(NOT(criteria)));
         return this;
     }
 
     @Override
     public GetObjectSupplier<M, R> criteriaOr(Criteria<? super R>... criteria) {
-        ((SendRequestAndGet<M, R[]>) getFrom()).criteriaOr(arrayBodyMatches(new BodyHasItems(OR(criteria)), OR(criteria)));
+        var orCriteria = OR(criteria);
+        ((SendRequestAndGet<M, R>) getFrom()).criteria(bodyMatches(new BodyMatches(orCriteria), orCriteria));
         return super.criteriaOr(criteria);
     }
 
     @Override
     public GetObjectSupplier<M, R> criteriaOnlyOne(Criteria<? super R>... criteria) {
-        ((SendRequestAndGet<M, R[]>) getFrom()).criteriaOnlyOne(arrayBodyMatches(new BodyHasItems(ONLY_ONE(criteria)), ONLY_ONE(criteria)));
+        var xorCriteria = ONLY_ONE(criteria);
+        ((SendRequestAndGet<M, R>) getFrom()).criteria(bodyMatches(new BodyMatches(xorCriteria), xorCriteria));
         return super.criteriaOnlyOne(criteria);
     }
 
     @Override
     public GetObjectSupplier<M, R> criteriaNot(Criteria<? super R>... criteria) {
-        ((SendRequestAndGet<M, R[]>) getFrom()).criteriaNot(arrayBodyMatches(new BodyHasItems(NOT(criteria)), NOT(criteria)));
+        var notCriteria = NOT(criteria);
+        ((SendRequestAndGet<M, R>) getFrom()).criteria(bodyMatches(new BodyMatches(notCriteria), notCriteria));
         return super.criteriaNot(criteria);
     }
 
@@ -158,6 +162,7 @@ public class GetObjectSupplier<M, R> extends SequentialGetStepSupplier
     @Override
     public GetObjectSupplier<M, R> throwOnNoResult() {
         ((SendRequestAndGet<M, R>) getFrom()).throwOnNoResult();
+        super.throwOnNoResult();
         return this;
     }
 }

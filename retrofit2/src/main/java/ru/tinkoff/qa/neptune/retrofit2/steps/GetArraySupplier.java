@@ -127,19 +127,22 @@ public class GetArraySupplier<M, R> extends SequentialGetStepSupplier
 
     @Override
     public GetArraySupplier<M, R> criteriaOr(Criteria<? super R>... criteria) {
-        ((SendRequestAndGet<M, R[]>) getFrom()).criteriaOr(arrayBodyMatches(new BodyHasItems(OR(criteria)), OR(criteria)));
+        var orCriteria = OR(criteria);
+        ((SendRequestAndGet<M, R[]>) getFrom()).criteria(arrayBodyMatches(new BodyHasItems(orCriteria), orCriteria));
         return super.criteriaOr(criteria);
     }
 
     @Override
     public GetArraySupplier<M, R> criteriaOnlyOne(Criteria<? super R>... criteria) {
-        ((SendRequestAndGet<M, R[]>) getFrom()).criteriaOnlyOne(arrayBodyMatches(new BodyHasItems(ONLY_ONE(criteria)), ONLY_ONE(criteria)));
+        var xorCriteria = ONLY_ONE(criteria);
+        ((SendRequestAndGet<M, R[]>) getFrom()).criteria(arrayBodyMatches(new BodyHasItems(xorCriteria), xorCriteria));
         return super.criteriaOnlyOne(criteria);
     }
 
     @Override
     public GetArraySupplier<M, R> criteriaNot(Criteria<? super R>... criteria) {
-        ((SendRequestAndGet<M, R[]>) getFrom()).criteriaNot(arrayBodyMatches(new BodyHasItems(NOT(criteria)), NOT(criteria)));
+        var notCriteria = NOT(criteria);
+        ((SendRequestAndGet<M, R[]>) getFrom()).criteria(arrayBodyMatches(new BodyHasItems(notCriteria), notCriteria));
         return super.criteriaNot(criteria);
     }
 
@@ -157,6 +160,7 @@ public class GetArraySupplier<M, R> extends SequentialGetStepSupplier
     @Override
     public GetArraySupplier<M, R> throwOnNoResult() {
         ((SendRequestAndGet<M, R[]>) getFrom()).throwOnNoResult();
+        super.throwOnNoResult();
         return this;
     }
 }

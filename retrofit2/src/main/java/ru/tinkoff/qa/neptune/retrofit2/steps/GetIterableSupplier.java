@@ -18,7 +18,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
-import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.*;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.iterableBodyMatches;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.resultResponseCriteria;
 import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getResponse;
 
 @SuppressWarnings("unchecked")
@@ -117,35 +118,38 @@ public class GetIterableSupplier<M, R, S extends Iterable<R>> extends Sequential
     }
 
     public GetIterableSupplier<M, R, S> responseCriteriaOr(Criteria<Response>... criteria) {
-        ((SendRequestAndGet<M, R[]>) getFrom()).criteria(resultResponseCriteria(OR(criteria)));
+        ((SendRequestAndGet<M, S>) getFrom()).criteria(resultResponseCriteria(OR(criteria)));
         return this;
     }
 
     public GetIterableSupplier<M, R, S> responseCriteriaOnlyOne(Criteria<Response>... criteria) {
-        ((SendRequestAndGet<M, R[]>) getFrom()).criteria(resultResponseCriteria(ONLY_ONE(criteria)));
+        ((SendRequestAndGet<M, S>) getFrom()).criteria(resultResponseCriteria(ONLY_ONE(criteria)));
         return this;
     }
 
     public GetIterableSupplier<M, R, S> responseCriteriaNot(Criteria<Response>... criteria) {
-        ((SendRequestAndGet<M, R[]>) getFrom()).criteria(resultResponseCriteria(NOT(criteria)));
+        ((SendRequestAndGet<M, S>) getFrom()).criteria(resultResponseCriteria(NOT(criteria)));
         return this;
     }
 
     @Override
     public GetIterableSupplier<M, R, S> criteriaOr(Criteria<? super R>... criteria) {
-        ((SendRequestAndGet<M, R[]>) getFrom()).criteriaOr(arrayBodyMatches(new BodyHasItems(OR(criteria)), OR(criteria)));
+        var orCriteria = OR(criteria);
+        ((SendRequestAndGet<M, S>) getFrom()).criteria(iterableBodyMatches(new BodyHasItems(orCriteria), orCriteria));
         return super.criteriaOr(criteria);
     }
 
     @Override
     public GetIterableSupplier<M, R, S> criteriaOnlyOne(Criteria<? super R>... criteria) {
-        ((SendRequestAndGet<M, R[]>) getFrom()).criteriaOnlyOne(arrayBodyMatches(new BodyHasItems(ONLY_ONE(criteria)), ONLY_ONE(criteria)));
+        var xorCriteria = ONLY_ONE(criteria);
+        ((SendRequestAndGet<M, S>) getFrom()).criteria(iterableBodyMatches(new BodyHasItems(xorCriteria), xorCriteria));
         return super.criteriaOnlyOne(criteria);
     }
 
     @Override
     public GetIterableSupplier<M, R, S> criteriaNot(Criteria<? super R>... criteria) {
-        ((SendRequestAndGet<M, R[]>) getFrom()).criteriaNot(arrayBodyMatches(new BodyHasItems(NOT(criteria)), NOT(criteria)));
+        var notCriteria = NOT(criteria);
+        ((SendRequestAndGet<M, S>) getFrom()).criteria(iterableBodyMatches(new BodyHasItems(notCriteria), notCriteria));
         return super.criteriaNot(criteria);
     }
 
@@ -163,6 +167,7 @@ public class GetIterableSupplier<M, R, S extends Iterable<R>> extends Sequential
     @Override
     public GetIterableSupplier<M, R, S> throwOnNoResult() {
         ((SendRequestAndGet<M, S>) getFrom()).throwOnNoResult();
+        super.throwOnNoResult();
         return this;
     }
 }
