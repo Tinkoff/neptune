@@ -44,9 +44,9 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
     @Test
     public void test1() {
         kafka.poll(kafkaIterable("test description",
-                of("testTopic"),
                 new TypeReference<DraftDto>() {
-                }));
+                },
+                "testTopic"));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
@@ -56,9 +56,9 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
 
         kafka.poll(kafkaIterable("test description",
-                of("testTopic"),
                 new TypeReference<DraftDto>() {
-                }));
+                },
+                "testTopic"));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Kafka messages",
                 "{\"name\":\"testName1\"}\r\n\r\n{\"name\":\"testName2\"}\r\n\r\n")));
@@ -69,9 +69,9 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
 
         kafka.poll(kafkaIterable("test description",
-                of("testTopic"),
                 new TypeReference<DraftDto>() {
-                }));
+                },
+                "testTopic"));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
@@ -81,9 +81,9 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
 
         kafka.poll(kafkaIterable("test description",
-                of("testTopic"),
                 new TypeReference<DraftDto>() {
-                }));
+                },
+                "testTopic"));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Kafka messages",
                 "{\"name\":\"testName1\"}\r\n\r\n{\"name\":\"testName2\"}\r\n\r\n")));
@@ -92,9 +92,9 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
     @Test
     public void test5() {
         kafka.poll(kafkaIterable("test description",
-                of("testTopic"),
                 new TypeReference<DraftDto>() {
-                })
+                },
+                "testTopic")
                 .criteria("name = 'kek'", d -> d.getName().equals("kek")));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
@@ -105,9 +105,9 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
 
         kafka.poll(kafkaIterable("test description",
-                of("testTopic"),
                 new TypeReference<DraftDto>() {
-                })
+                },
+                "testTopic")
                 .criteria("name = 'kek'", d -> d.getName().equals("kek")));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("All received Kafka messages",
@@ -119,9 +119,9 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
 
         kafka.poll(kafkaIterable("test description",
-                of("testTopic"),
                 new TypeReference<DraftDto>() {
-                })
+                },
+                "testTopic")
                 .criteria("name = 'kek'", d -> d.getName().equals("kek")));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
@@ -132,9 +132,9 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
 
         kafka.poll(kafkaIterable("test description",
-                of("testTopic"),
                 new TypeReference<DraftDto>() {
-                })
+                },
+                "testTopic")
                 .criteria("name = 'kek'", d -> d.getName().equals("kek")));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("All received Kafka messages",
@@ -145,10 +145,10 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
     public void test9() {
         try {
             kafka.poll(kafkaIterable("TestDescription",
-                    of("testTopic"),
                     new TypeReference<>() {
                     },
-                    DraftDto::getName)
+                    DraftDto::getName,
+                    "testTopic")
                     .criteria("Value contains 'test", s -> s.contains("fail"))
                     .timeOut(ofSeconds(5))
                     .throwOnNoResult());
@@ -167,10 +167,10 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
 
         try {
             kafka.poll(kafkaIterable("TestDescription",
-                    of("testTopic"),
                     new TypeReference<>() {
                     },
-                    DraftDto::getName)
+                    DraftDto::getName,
+                    "testTopic")
                     .criteria("Value contains 'test", s -> s.contains("fail"))
                     .timeOut(ofSeconds(5))
                     .throwOnNoResult());
@@ -188,10 +188,10 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
 
         try {
             kafka.poll(kafkaIterable("TestDescription",
-                    of("testTopic"),
                     new TypeReference<>() {
                     },
-                    DraftDto::getName)
+                    DraftDto::getName,
+                    "testTopic")
                     .criteria("Value contains 'test", s -> s.contains("fail"))
                     .timeOut(ofSeconds(5))
                     .throwOnNoResult());
@@ -212,10 +212,10 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
 
         try {
             kafka.poll(kafkaIterable("TestDescription",
-                    of("testTopic"),
                     new TypeReference<>() {
                     },
-                    DraftDto::getName)
+                    DraftDto::getName,
+                    "testTopic")
                     .criteria("Value contains 'test", s -> s.contains("fail"))
                     .timeOut(ofSeconds(5))
                     .throwOnNoResult());

@@ -16,13 +16,14 @@ import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.time.Duration.ofNanos;
+import static java.util.Arrays.asList;
 import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 final class GetFromTopics<T> implements Function<KafkaStepContext, List<T>>, StepParameterPojo {
-    @StepParameter("topics")
-    private final List<String> topics;
+    @StepParameter(value = "topics", makeReadableBy = TopicValueGetter.class)
+    private final String[] topics;
 
     @StepParameter(value = "Class to deserialize to", doNotReportNullValues = true)
     private final Class<T> cls;
@@ -38,8 +39,8 @@ final class GetFromTopics<T> implements Function<KafkaStepContext, List<T>>, Ste
 
     private final Map<Object, String> successMessages = new HashMap<>();
 
-    GetFromTopics(List<String> topics, Class<T> cls, TypeReference<T> typeRef) {
-        checkArgument(!topics.isEmpty(), "Topics should be defined");
+    GetFromTopics(Class<T> cls, TypeReference<T> typeRef, String... topics) {
+        checkArgument(topics.length > 0, "Topics should be defined");
         checkArgument(!(isNull(cls) && isNull(typeRef)), "Any class or type reference should be defined");
         this.topics = topics;
         this.cls = cls;
@@ -48,18 +49,22 @@ final class GetFromTopics<T> implements Function<KafkaStepContext, List<T>>, Ste
 
     }
 
-    GetFromTopics(List<String> topics, Class<T> cls) {
-        this(topics, cls, null);
+    GetFromTopics(Class<T> cls, String... topics) {
+        this(cls, null, topics);
     }
 
-    GetFromTopics(List<String> topics, TypeReference<T> typeRef) {
-        this(topics, null, typeRef);
+    GetFromTopics(TypeReference<T> typeRef, String... topics) {
+        this(null, typeRef, topics);
+    }
+
+    static GetFromTopics<String> getStringResult(String... topics) {
+        return new GetFromTopics<>(String.class, null, topics);
     }
 
     @Override
     public List<T> apply(KafkaStepContext kafkaStepContext) {
         KafkaConsumer<String, String> consumer = kafkaStepContext.getConsumer();
-        consumer.subscribe(topics);
+        consumer.subscribe(asList(topics));
 
         ConsumerRecords<String, String> consumerRecords = consumer.poll(ofNanos(1));
         Set<TopicPartition> partitions = consumerRecords.partitions();
@@ -74,28 +79,16 @@ final class GetFromTopics<T> implements Function<KafkaStepContext, List<T>>, Ste
         if (!readMessages.containsAll(messages)) {
             readMessages.addAll(messages);
         }
-
-        if (cls != null) {
-            return messages
-                    .stream()
-                    .map(record -> {
-                        try {
-                            var t = transformer.deserialize(record, cls);
-                            successMessages.put(t, record);
-                            return t;
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        return null;
-                    })
-                    .filter(Objects::nonNull)
-                    .collect(toList());
-        }
         return messages
                 .stream()
                 .map(record -> {
                     try {
-                        var t = transformer.deserialize(record, typeRef);
+                        T t;
+                        if (cls != null) {
+                            t = transformer.deserialize(record, cls);
+                        } else {
+                            t = transformer.deserialize(record, typeRef);
+                        }
                         successMessages.put(t, record);
                         return t;
                     } catch (Exception e) {

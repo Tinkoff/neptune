@@ -7,10 +7,12 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultDataTransformer.KAFKA_DEFAULT_DATA_TRANSFORMER;
+import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollSupplier.DEFAULT_TOPICS_FOR_POLL;
 
 public class KafkaBaseTest {
     @Mock
@@ -27,8 +29,6 @@ public class KafkaBaseTest {
         kafkaProducer = mock(KafkaProducer.class);
         kafkaConsumer = mock(KafkaConsumer.class);
 
-        KAFKA_DEFAULT_DATA_TRANSFORMER.accept(DefaultMapper.class);
-
         provider = mockStatic(KafkaParameterProvider.class);
         provider.when(KafkaParameterProvider::parameters).thenReturn(new Object[]{kafkaProducer, kafkaConsumer});
 
@@ -36,6 +36,12 @@ public class KafkaBaseTest {
 
         callBack = (metadata, exception) -> {
         };
+    }
+
+    @BeforeMethod
+    public void prepareDataTransformer() {
+        DEFAULT_TOPICS_FOR_POLL.accept(null);
+        KAFKA_DEFAULT_DATA_TRANSFORMER.accept(DefaultMapper.class);
     }
 
     @AfterClass

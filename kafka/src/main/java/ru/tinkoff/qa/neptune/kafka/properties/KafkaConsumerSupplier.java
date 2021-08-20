@@ -16,6 +16,4 @@ public final class KafkaConsumerSupplier implements ObjectPropertySupplier<Kafka
     private KafkaConsumerSupplier() {
         super();
     }
-
-
 }

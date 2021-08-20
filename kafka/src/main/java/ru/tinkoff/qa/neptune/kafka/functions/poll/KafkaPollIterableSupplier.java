@@ -21,9 +21,13 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultDataTransformer.KAFKA_DEFAULT_DATA_TRANSFORMER;
+import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollSupplier.DEFAULT_TOPICS_FOR_POLL;
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Poll:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
@@ -41,6 +45,8 @@ public class KafkaPollIterableSupplier<T> extends SequentialGetStepSupplier
     @CaptureOnFailure(by = AllMessagesCaptor.class)
     List<String> messages;
 
+    private DataTransformer transformer;
+
     protected <M> KafkaPollIterableSupplier(GetFromTopics<M> getFromTopics, Function<M, T> function) {
         super(getFromTopics.andThen(list -> list.stream().map(function).collect(toList())));
         this.getFromTopics = getFromTopics;
@@ -51,11 +57,15 @@ public class KafkaPollIterableSupplier<T> extends SequentialGetStepSupplier
             @DescriptionFragment(value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
             ) String description,
-            List<String> topics,
             Class<M> cls,
-            Function<M, T> toGet) {
+            Function<M, T> toGet,
+            String... topics) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return new KafkaPollIterableSupplier<>(new GetFromTopics<>(topics, cls), toGet);
+        if (topics.length == 0) {
+            return new KafkaPollIterableSupplier<>(new GetFromTopics<>(cls, DEFAULT_TOPICS_FOR_POLL.get()), toGet);
+        } else {
+            return new KafkaPollIterableSupplier<>(new GetFromTopics<>(cls, topics), toGet);
+        }
     }
 
     @Description("{description}")
@@ -63,27 +73,31 @@ public class KafkaPollIterableSupplier<T> extends SequentialGetStepSupplier
             @DescriptionFragment(value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
             ) String description,
-            List<String> topics,
             TypeReference<M> typeT,
-            Function<M, T> toGet) {
+            Function<M, T> toGet,
+            String... topics) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return new KafkaPollIterableSupplier<>(new GetFromTopics<>(topics, typeT), toGet);
+        if (topics.length == 0) {
+            return new KafkaPollIterableSupplier<>(new GetFromTopics<>(typeT, DEFAULT_TOPICS_FOR_POLL.get()), toGet);
+        } else {
+            return new KafkaPollIterableSupplier<>(new GetFromTopics<>(typeT, topics), toGet);
+        }
     }
 
     public static <T> KafkaPollIterableSupplier<T> kafkaIterable(
             String description,
-            List<String> topics,
-            TypeReference<T> typeT) {
+            TypeReference<T> typeT,
+            String... topics) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return kafkaIterable(description, topics, typeT, ts -> ts);
+        return kafkaIterable(description, typeT, ts -> ts, topics);
     }
 
     public static <T> KafkaPollIterableSupplier<T> kafkaIterable(
             String description,
-            List<String> topics,
-            Class<T> cls) {
+            Class<T> cls,
+            String... topics) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return kafkaIterable(description, topics, cls, ts -> ts);
+        return kafkaIterable(description, cls, ts -> ts, topics);
     }
 
     @Override
@@ -101,9 +115,19 @@ public class KafkaPollIterableSupplier<T> extends SequentialGetStepSupplier
         return super.criteria(criteria);
     }
 
-    KafkaPollIterableSupplier<T> setDataTransformer(DataTransformer dataTransformer) {
-        checkNotNull(dataTransformer);
-        getFromTopics.setTransformer(dataTransformer);
+    @Override
+    protected void onStart(KafkaStepContext kafkaStepContext) {
+        var transformer = ofNullable(this.transformer)
+                .orElseGet(KAFKA_DEFAULT_DATA_TRANSFORMER);
+        checkState(nonNull(transformer), "Data transformer is not defined. Please invoke "
+                + "the '#withDataTransformer(DataTransformer)' method or define '"
+                + KAFKA_DEFAULT_DATA_TRANSFORMER.getName()
+                + "' property/env variable");
+        getFromTopics.setTransformer(transformer);
+    }
+
+    public KafkaPollIterableSupplier<T> withDataTransformer(DataTransformer dataTransformer) {
+        this.transformer = dataTransformer;
         return this;
     }
 
@@ -112,9 +136,7 @@ public class KafkaPollIterableSupplier<T> extends SequentialGetStepSupplier
         var mss = getFromTopics.getSuccessMessages();
 
         if (tList != null && tList.size() > 0) {
-            tList.forEach(item -> {
-                successMessages.add(mss.get(item));
-            });
+            tList.forEach(item -> successMessages.add(mss.get(item)));
         } else {
             messages = getFromTopics.getMessages();
         }

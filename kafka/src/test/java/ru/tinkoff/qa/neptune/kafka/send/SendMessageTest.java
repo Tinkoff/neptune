@@ -8,13 +8,16 @@ import ru.tinkoff.qa.neptune.kafka.KafkaBaseTest;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static ru.tinkoff.qa.neptune.kafka.functions.send.ParametersForSend.parameters;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.serializedMessage;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.textMessage;
+import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicForSendSupplier.DEFAULT_TOPIC_FOR_SEND;
 
 public class SendMessageTest extends KafkaBaseTest {
+    private DraftDto draftDto = new DraftDto().setName("testName");
 
     @Test(description = "check basic sending of a message with a topic and an object")
     public void checkBaseMessageSending() {
-        kafka.sendMessage("testTopic", new DraftDto().setName("testName"));
+        kafka.send(serializedMessage(draftDto).topic("testTopic"));
 
         verify(kafka.getProducer(), times(1))
                 .send(new ProducerRecord<>("testTopic",
@@ -25,9 +28,24 @@ public class SendMessageTest extends KafkaBaseTest {
                         null));
     }
 
+    @Test(description = "check string message")
+    public void checkStringSending() {
+        kafka.send(textMessage("I'm a String!").topic("testTopic"));
+
+        verify(kafka.getProducer(), times(1))
+                .send(new ProducerRecord<>("testTopic",
+                        null,
+                        null,
+                        null,
+                        "I'm a String!",
+                        null));
+    }
+
     @Test(description = "check message sending with no-default DataTransformer")
     public void checkMessageSendingWithNoDefaultDataTransformer() {
-        kafka.sendMessage("testTopic", new DraftDto().setName("testName"), new CustomMapper());
+        kafka.send(serializedMessage(draftDto)
+                .topic("testTopic")
+                .dataTransformer(new CustomMapper()));
 
         verify(kafka.getProducer(), times(1))
                 .send(new ProducerRecord<>("testTopic",
@@ -40,7 +58,9 @@ public class SendMessageTest extends KafkaBaseTest {
 
     @Test(description = "check message sending with callBack")
     public void checkMessageSendingWithCallBack() {
-        kafka.sendMessage("testTopic", new DraftDto().setName("testName"), callBack);
+        kafka.send(serializedMessage(draftDto)
+                .topic("testTopic")
+                .callback(callBack));
 
         verify(kafka.getProducer(), times(1))
                 .send(new ProducerRecord<>("testTopic",
@@ -54,7 +74,10 @@ public class SendMessageTest extends KafkaBaseTest {
 
     @Test(description = "check message sending with parameterForSend")
     public void checkMessageSendingWithParametersForSend() {
-        kafka.sendMessage("testTopic", new DraftDto().setName("testName"), parameters().partition(1).timestamp(10L));
+        kafka.send(serializedMessage(draftDto)
+                .topic("testTopic")
+                .partition(1)
+                .timestamp(10L));
 
         verify(kafka.getProducer(), times(1))
                 .send(new ProducerRecord<>("testTopic",
@@ -65,23 +88,15 @@ public class SendMessageTest extends KafkaBaseTest {
                         null));
     }
 
-    @Test(description = "check message sending with callBack and DataTransformer")
-    public void checkMessageSendingWithCallBackAndDataTransformer() {
-        kafka.sendMessage("testTopic", new DraftDto().setName("testName"), callBack, new CustomMapper());
-
-        verify(kafka.getProducer(), times(1))
-                .send(new ProducerRecord<>("testTopic",
-                                null,
-                                null,
-                                null,
-                                "customSerialize",
-                                null),
-                        callBack);
-    }
 
     @Test(description = "check message sending with callBack and parameters")
     public void checkMessageSendingWithParametersAndCallBack() {
-        kafka.sendMessage("testTopic", new DraftDto().setName("testName"), parameters().partition(1).timestamp(10L), callBack);
+        kafka.send(
+                serializedMessage(draftDto)
+                        .topic("testTopic")
+                        .partition(1)
+                        .timestamp(10L)
+                        .callback(callBack));
 
         verify(kafka.getProducer(), times(1))
                 .send(new ProducerRecord<>("testTopic",
@@ -96,7 +111,12 @@ public class SendMessageTest extends KafkaBaseTest {
 
     @Test(description = "check message sending with parameters and custom DataTransformer")
     public void checkMessageSendingWithParametersAndDataTransformer() {
-        kafka.sendMessage("testTopic", new DraftDto().setName("testName"), parameters().partition(1).timestamp(10L), new CustomMapper());
+        kafka.send(serializedMessage(draftDto)
+                .topic("testTopic")
+                .partition(1)
+                .timestamp(10L)
+                .dataTransformer(new CustomMapper())
+        );
 
         verify(kafka.getProducer(), times(1))
                 .send(new ProducerRecord<>("testTopic",
@@ -109,7 +129,12 @@ public class SendMessageTest extends KafkaBaseTest {
 
     @Test(description = "check message sending with parameters, custom DataTransformer and CallBack")
     public void checkMessageSendingWithParametersAndDataTransformerAndCallback() {
-        kafka.sendMessage("testTopic", new DraftDto().setName("testName"), parameters().partition(1).timestamp(10L), callBack, new CustomMapper());
+        kafka.send(serializedMessage(draftDto)
+                .topic("testTopic")
+                .partition(1)
+                .timestamp(10L)
+                .callback(callBack)
+                .dataTransformer(new CustomMapper()));
 
         verify(kafka.getProducer(), times(1))
                 .send(new ProducerRecord<>("testTopic",
@@ -117,6 +142,45 @@ public class SendMessageTest extends KafkaBaseTest {
                                 10L,
                                 null,
                                 "customSerialize",
+                                null),
+                        callBack);
+    }
+
+    @Test(description = "check default topic")
+    public void checkDefaultTopic() {
+        DEFAULT_TOPIC_FOR_SEND.accept("default_Topic");
+
+        kafka.send(serializedMessage(draftDto)
+                .partition(1)
+                .timestamp(10L)
+                .callback(callBack)
+                .dataTransformer(new CustomMapper()));
+
+        verify(kafka.getProducer(), times(1))
+                .send(new ProducerRecord<>("default_Topic",
+                                1,
+                                10L,
+                                null,
+                                "customSerialize",
+                                null),
+                        callBack);
+    }
+
+    @Test(description = "check default topic and raw message")
+    public void checkSendingRawString() {
+        DEFAULT_TOPIC_FOR_SEND.accept("default_Topic");
+
+        kafka.send(textMessage("I'm a String!")
+                .partition(1)
+                .timestamp(10L)
+                .callback(callBack));
+
+        verify(kafka.getProducer(), times(1))
+                .send(new ProducerRecord<>("default_Topic",
+                                1,
+                                10L,
+                                null,
+                                "I'm a String!",
                                 null),
                         callBack);
     }

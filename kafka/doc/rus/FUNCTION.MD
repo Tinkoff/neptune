@@ -20,9 +20,10 @@
 
 ### Получение данных сообщения как Iterable
 
-В примерах ниже предполагается, что настройка / свойство / переменная окружения
-[KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER) перед началом выполнения имеет непустое
-значения
+В примерах ниже предполагается, что настройки / свойства / переменные окружения
+[KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER),
+[DEFAULT_TOPICS_FOR_POLL](./SETTINGS.MD#DEFAULT_TOPICS_FOR_POLL)
+перед началом выполнения имеют непустое значения
 
 ```java
 import static java.time.Duration.ofSeconds;
@@ -37,9 +38,9 @@ public class MyTest {
         //Из общего сообщения (Iterable/коллекции) вернется под-множество подходящих элементов.
         List<ClassToDeserialize> results = kafka().poll(kafkaIterable("Результирующий лист", //описываем то, 
                 // что нужно получить
-                of("test_topic"), //список топиков
-                ClassToDeserialize.class) //класс, который реализует Iterable<ClassToDeserialize> 
+                ClassToDeserialize.class, //класс, который реализует Iterable<ClassToDeserialize>
                 // или Collection<ClassToDeserialize>
+                "test_topic1", "test_topic2") //топики для получения сообщений
                 .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
                 // которому должен соответствовать каждый элемент результирующей коллекции
                 .timeOut(ofSeconds(5)) //можно указать время на получение 
@@ -60,22 +61,22 @@ import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplie
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        // Возвращает сообщение из очереди, десериализованное в коллекцию/Iterable
-        // Из общего сообщения (Iterable/коллекции) вернется под-множество подходящих элементов.
-        List<ClassToDeserialize> result = kafka().poll(kafkaIterable("Результирующий лист", //описываем то, 
-                // что нужно получить
-                of("test_topic"), //список топиков
-                new TypeReference<ClassToDeserialize>() {
-                }) //тип объекта-модели для десериализации
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-                // которому должен соответствовать каждый элемент результирующей коллекции
-                .timeOut(ofSeconds(5)) //можно указать время на получение 
-                // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
-    }
+  @Test
+  public void myTest() {
+    // Возвращает сообщение из очереди, десериализованное в коллекцию/Iterable
+    // Из общего сообщения (Iterable/коллекции) вернется под-множество подходящих элементов.
+    List<ClassToDeserialize> result = kafka().poll(kafkaIterable("Результирующий лист", //описываем то, 
+            // что нужно получить
+            new TypeReference<ClassToDeserialize>() {
+            }, //тип объекта-модели для десериализации
+            "test_topic1", "test_topic2") //топики для получения сообщений
+            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
+            // которому должен соответствовать каждый элемент результирующей коллекции
+            .timeOut(ofSeconds(5)) //можно указать время на получение 
+            // ожидаемого результата = 5 секунд
+            .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
+    // если результат не был получен
+  }
 }
 ```
 
@@ -88,25 +89,40 @@ import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplie
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        // Возвращается Iterable или коллекция. Сообщение не обязательно является коллекцией 
-        // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
-        // вычислений. Из коллекции вернется под-множество подходящих элементов.
-        List<Object> result = kafka().poll(kafkaIterable("Результирующий лист", //описываем 
-                // то, что нужно получить
-                of("test_topic"), //список топиков
-                ClassToDeserialize.class, //класс модели для десериализации
-                o -> {
-                    return /*описываем то, как получаем из ClassToDeserialize Object */;
-                })
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-                // которому должен соответствовать каждый элемент результирующей коллекции
-                .timeOut(ofSeconds(5)) //можно указать время на получение 
-                // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
-    }
+  @Test
+  public void myTest() {
+    // Возвращается Iterable или коллекция. Сообщение не обязательно является коллекцией 
+    // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
+    // вычислений. Из коллекции вернется под-множество подходящих элементов.
+    List<Object> result = kafka().poll(kafkaIterable("Результирующий лист", //описываем 
+            // то, что нужно получить
+            ClassToDeserialize.class, //класс модели для десериализации
+            o -> {
+              return /*описываем то, как получаем из ClassToDeserialize Object */;
+            },
+            "test_topic1", "test_topic2") //топики для получения сообщений
+            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
+            // которому должен соответствовать каждый элемент результирующей коллекции
+            .timeOut(ofSeconds(5)) //можно указать время на получение 
+            // ожидаемого результата = 5 секунд
+            .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
+    // если результат не был получен
+  }
+}
+```
+
+```java
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaIterable;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    //Если не указывать топики, то значение топиков возьмется из DEFAULT_TOPICS_FOR_POLL
+    List<ClassToDeserialize> results = kafka().poll(kafkaIterable("Результирующий лист", ClassToDeserialize.class));
+  }
 }
 ```
 
@@ -146,13 +162,13 @@ import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplie
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        kafka().poll(kafkaIterable("Результирующий лист",
-                of("test_topic"),
-                ClassToDeserialize.class),
-                new MyDataTransformer());
-    }
+  @Test
+  public void myTest() {
+    kafka().poll(kafkaIterable("Результирующий лист",
+            ClassToDeserialize.class,
+            "test_topic1", "test_topic2")
+            .withDataTransformer(new MyDataTransformer()));
+  }
 }
 ```
 
@@ -160,9 +176,10 @@ public class MyTest {
 
 ### Получение данных сообщения в виде массива
 
-В примерах ниже предполагается, что настройка / свойство / переменная окружения
-[KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER) перед началом выполнения имеет непустое
-значения
+В примерах ниже предполагается, что настройки / свойства / переменные окружения
+[KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER),
+[DEFAULT_TOPICS_FOR_POLL](./SETTINGS.MD#DEFAULT_TOPICS_FOR_POLL)
+перед началом выполнения имеют непустое значения
 
 ```java
 import static java.time.Duration.ofSeconds;
@@ -171,21 +188,21 @@ import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollArraySupplier.k
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        // Возвращает сообщение из очереди, десериализованное в массив
-        // Из общего сообщения-массива вернется под-массив подходящих элементов.
-        ClassToDeserialize[] result = kafka().poll(kafkaArray("Результирующий массив", //описываем то, 
-                // что нужно получить
-                of("testTopic"), //список топиков
-                ClassToDeserialize.class) //класс массива
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-                // которому должен соответствовать каждый элемент результирующего массива
-                .timeOut(ofSeconds(5)) //можно указать время на получение 
-                // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
-    }
+  @Test
+  public void myTest() {
+    // Возвращает сообщение из очереди, десериализованное в массив
+    // Из общего сообщения-массива вернется под-массив подходящих элементов.
+    ClassToDeserialize[] result = kafka().poll(kafkaArray("Результирующий массив", //описываем то, 
+            // что нужно получить
+            ClassToDeserialize.class, //класс массива
+            "test_topic1", "test_topic2") //топики для получения сообщений
+            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
+            // которому должен соответствовать каждый элемент результирующего массива
+            .timeOut(ofSeconds(5)) //можно указать время на получение 
+            // ожидаемого результата = 5 секунд
+            .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
+    // если результат не был получен
+  }
 }
 ```
 
@@ -199,24 +216,53 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        // Возвращается массив. Сообщение не обязательно является массивом. 
-        // Промежуточный массив получаются в ходе дополнительных 
-        // вычислений. Из массива вернется под-массив подходящих элементов.
-        Object[] result = kafka().poll(kafkaArray("Результирующий массив", //описываем 
-                // то, что нужно получить
-                of("test_topic"), //список топиков
-                ClassToDeserialize.class, //класс модели для десериализации
-                Object.class, //необходимо явно указать результирующий класс функции
-                o -> {
-                    return /*описываем то, как получаем из ClassToDeserialize в Object */;
-                })
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-                // которому должен соответствовать каждый элемент результирующего массива
-                .timeOut(ofSeconds(5)) //можно указать время на получение 
-                // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
+      // Возвращается массив. Сообщение не обязательно является массивом. 
+      // Промежуточный массив получаются в ходе дополнительных 
+      // вычислений. Из массива вернется под-массив подходящих элементов.
+      Object[] result = kafka().poll(kafkaArray("Результирующий массив", //описываем 
+              // то, что нужно получить
+              ClassToDeserialize.class, //класс модели для десериализации
+              Object.class, //необходимо явно указать результирующий класс функции
+              o -> {
+                return /*описываем то, как получаем из ClassToDeserialize в Object */;
+              },
+              "test_topic1", "test_topic2") //топики для получения сообщений
+              .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
+              // которому должен соответствовать каждый элемент результирующего массива
+              .timeOut(ofSeconds(5)) //можно указать время на получение 
+              // ожидаемого результата = 5 секунд
+              .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
+      // если результат не был получен
     }
+}
+```
+
+```java
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollArraySupplier.kafkaArray;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    // Возвращается массив. Сообщение не обязательно является массивом. 
+    // Промежуточный массив получаются в ходе дополнительных 
+    // вычислений. Из массива вернется под-массив подходящих элементов.
+    ClassToDeserialize[] result = kafka().poll(kafkaArray("Результирующий массив", //описываем то, 
+            // что нужно получить
+            new TypeReference<ClassToDeserialize>() {
+            }, //тип объекта-модели для десериализации
+            "test_topic1", "test_topic2") //топики для получения сообщений
+            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
+            // которому должен соответствовать каждый элемент результирующего массива
+            .timeOut(ofSeconds(5)) //можно указать время на получение 
+            // ожидаемого результата = 5 секунд
+            .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
+    // если результат не был получен
+  }
 }
 ```
 
@@ -231,54 +277,40 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        // Возвращается массив. Сообщение не обязательно является массивом. 
-        // Промежуточный массив получаются в ходе дополнительных 
-        // вычислений. Из массива вернется под-массив подходящих элементов.
-        ClassToDeserialize[] result = kafka().poll(kafkaArray("Результирующий массив", //описываем то, 
-                // что нужно получить
-                of("testTopic"), //список топиков
-                new TypeReference<ClassToDeserialize>() {
-                }) //тип объекта-модели для десериализации
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-                // которому должен соответствовать каждый элемент результирующего массива
-                .timeOut(ofSeconds(5)) //можно указать время на получение 
-                // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
+      // Возвращается массив. Сообщение не обязательно является массивом. 
+      // Промежуточный массив получаются в ходе дополнительных 
+      // вычислений. Из массива вернется под-массив подходящих элементов.
+      Object[] result = kafka().poll(kafkaArray("Результирующий массив", //описываем то, 
+              // что нужно получить
+              new TypeReference<ClassToDeserialize>() {
+              }, //тип объекта-модели для десериализации
+              Object.class, //необходимо явно указать результирующий класс функции
+              o -> {
+                return /*описываем то, как получаем из ClassToDeserialize в Object */;
+              },
+              "test_topic1", "test_topic2") //топики для получения сообщений
+              .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
+              // которому должен соответствовать каждый элемент результирующего массива
+              .timeOut(ofSeconds(5)) //можно указать время на получение 
+              // ожидаемого результата = 5 секунд
+              .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
+      // если результат не был получен
     }
 }
 ```
 
 ```java
-import com.fasterxml.jackson.core.type.TypeReference;
-
 import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
 import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollArraySupplier.kafkaArray;
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        // Возвращается массив. Сообщение не обязательно является массивом. 
-        // Промежуточный массив получаются в ходе дополнительных 
-        // вычислений. Из массива вернется под-массив подходящих элементов.
-        Object[] result = kafka().poll(kafkaArray("Результирующий массив", //описываем то, 
-                // что нужно получить
-                of("testTopic"), //список топиков
-                new TypeReference<ClassToDeserialize>() {
-                }, //тип объекта-модели для десериализации
-                Object.class, //необходимо явно указать результирующий класс функции
-                o -> {
-                    return /*описываем то, как получаем из ClassToDeserialize в Object */;
-                })
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-                // которому должен соответствовать каждый элемент результирующего массива
-                .timeOut(ofSeconds(5)) //можно указать время на получение 
-                // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
-    }
+  @Test
+  public void myTest() {
+    //Если не указывать топики, то значение топиков возьмется из DEFAULT_TOPICS_FOR_POLL
+    ClassToDeserialize[] result = kafka().poll(kafkaArray("Результирующий массив", ClassToDeserialize.class));
+  }
 }
 ```
 
@@ -318,13 +350,11 @@ import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollArraySupplier.k
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        kafka().poll(kafkaArray("Результирующий массив",
-                of("testTopic"),
-                ClassToDeserialize.class), //или ссылка на тип
-                new MyDataTransformer());
-    }
+  @Test
+  public void myTest() {
+    kafka().poll(kafkaArray("Результирующий массив", ClassToDeserialize.class)
+            .withDataTransformer(new MyDataTransformer()));
+  }
 }
 ```
 
@@ -332,9 +362,10 @@ public class MyTest {
 
 ### Получение данных сообщения как Java-объект из Iterable
 
-В примерах ниже предполагается, что настройка / свойство / переменная окружения
-[KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER) перед началом выполнения имеет непустое
-значения
+В примерах ниже предполагается, что настройки / свойства / переменные окружения
+[KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER),
+[DEFAULT_TOPICS_FOR_POLL](./SETTINGS.MD#DEFAULT_TOPICS_FOR_POLL)
+перед началом выполнения имеют непустое значения
 
 ```java
 import static java.time.Duration.ofSeconds;
@@ -343,21 +374,21 @@ import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSu
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        //Возвращается элемент коллекции / Iterable. Сообщение из очереди десериализуется в коллекцию/Iterable
-        //Из общего сообщения (Iterable/коллекции) вернется первый подходящий элемент.
-        ClassToDeserialize result = kafka().poll(kafkaIterableItem("Нужный элемент листа", //описываем то, 
-                // что нужно получить
-                of("testTopic"), //список топиков
-                ClassToDeserialize.class)
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-                // которому должен соответствовать результирующий элемент из коллекции
-                .timeOut(ofSeconds(5)) //можно указать время на получение 
-                // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
-    }
+  @Test
+  public void myTest() {
+    //Возвращается элемент коллекции / Iterable. Сообщение из очереди десериализуется в коллекцию/Iterable
+    //Из общего сообщения (Iterable/коллекции) вернется первый подходящий элемент.
+    ClassToDeserialize result = kafka().poll(kafkaIterableItem("Нужный элемент листа", //описываем то, 
+            // что нужно получить
+            ClassToDeserialize.class,
+            "test_topic1", "test_topic2") //топики для получения сообщений
+            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
+            // которому должен соответствовать результирующий элемент из коллекции
+            .timeOut(ofSeconds(5)) //можно указать время на получение 
+            // ожидаемого результата = 5 секунд
+            .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
+    // если результат не был получен
+  }
 }
 ```
 
@@ -370,21 +401,21 @@ import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSu
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        //Возвращается элемент коллекции / Iterable. Сообщение из очереди десериализуется в коллекцию/Iterable
-        //Из общего сообщения (Iterable/коллекции) вернется первый подходящий элемент.
-        ClassToDeserialize result = kafka().poll(kafkaIterableItem("Нужный элемент листа",
-                of("testTopic"),
-                new TypeReference<ClassToDeserialize>() {
-                }) //тип объекта-модели для десериализации
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-                // которому должен соответствовать результирующий элемент из коллекции
-                .timeOut(ofSeconds(5)) //можно указать время на получение 
-                // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
-    }
+  @Test
+  public void myTest() {
+    //Возвращается элемент коллекции / Iterable. Сообщение из очереди десериализуется в коллекцию/Iterable
+    //Из общего сообщения (Iterable/коллекции) вернется первый подходящий элемент.
+    ClassToDeserialize result = kafka().poll(kafkaIterableItem("Нужный элемент листа",
+            new TypeReference<ClassToDeserialize>() {
+            }, //тип объекта-модели для десериализации
+            "test_topic1", "test_topic2") //топики для получения сообщений
+            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
+            // которому должен соответствовать результирующий элемент из коллекции
+            .timeOut(ofSeconds(5)) //можно указать время на получение 
+            // ожидаемого результата = 5 секунд
+            .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
+    // если результат не был получен
+  }
 }
 ```
 
@@ -395,25 +426,25 @@ import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSu
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        //Возвращается элемент коллекции / Iterable.  Сообщение не обязательно является коллекцией 
-        // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
-        // вычислений. Из коллекции вернется первый подходящий элемент.
-        Object result = kafka().poll(kafkaIterableItem("Нужный элемент листа", //описываем 
-                // то, что нужно получить
-                of("testTopic"), //имя очереди
-                ClassToDeserialize.class, //класс модели для десериализации
-                o -> {
-                    return /*описываем то, как получаем из объекта ClassToDeserialize объект  Object*/;
-                })
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-                // которому должен соответствовать результирующий элемент из коллекции
-                .timeOut(ofSeconds(5)) //можно указать время на получение 
-                // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
-    }
+  @Test
+  public void myTest() {
+    //Возвращается элемент коллекции / Iterable.  Сообщение не обязательно является коллекцией 
+    // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
+    // вычислений. Из коллекции вернется первый подходящий элемент.
+    Object result = kafka().poll(kafkaIterableItem("Нужный элемент листа", //описываем 
+            // то, что нужно получить
+            ClassToDeserialize.class, //класс модели для десериализации
+            o -> {
+              return /*описываем то, как получаем из объекта ClassToDeserialize объект  Object*/;
+            },
+            "test_topic1", "test_topic2") //топики для получения сообщений
+            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
+            // которому должен соответствовать результирующий элемент из коллекции
+            .timeOut(ofSeconds(5)) //можно указать время на получение 
+            // ожидаемого результата = 5 секунд
+            .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
+    // если результат не был получен
+  }
 }
 ```
 
@@ -426,25 +457,40 @@ import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSu
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        //Возвращается элемент коллекции / Iterable.  Сообщение не обязательно является коллекцией 
-        // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
-        // вычислений. Из коллекции вернется первый подходящий элемент.
-        Object result = kafka().poll(kafkaIterableItem("Нужный элемент листа",
-                of("testTopic"),
-                new TypeReference<ClassToDeserialize>() {
-                }, //тип объекта-модели для десериализации
-                o -> {
-                    return /*описываем то, как получаем из объекта ClassToDeserialize объект  Object*/;
-                })
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-                // которому должен соответствовать результирующий элемент из коллекции
-                .timeOut(ofSeconds(5)) //можно указать время на получение 
-                // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
-    }
+  @Test
+  public void myTest() {
+    //Возвращается элемент коллекции / Iterable.  Сообщение не обязательно является коллекцией 
+    // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
+    // вычислений. Из коллекции вернется первый подходящий элемент.
+    Object result = kafka().poll(kafkaIterableItem("Нужный элемент листа",
+            new TypeReference<ClassToDeserialize>() {
+            }, //тип объекта-модели для десериализации
+            o -> {
+              return /*описываем то, как получаем из объекта ClassToDeserialize объект  Object*/;
+            },
+            "test_topic1", "test_topic2") //топики для получения сообщений
+            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
+            // которому должен соответствовать результирующий элемент из коллекции
+            .timeOut(ofSeconds(5)) //можно указать время на получение 
+            // ожидаемого результата = 5 секунд
+            .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
+    // если результат не был получен
+  }
+}
+```
+
+```java
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.kafkaIterableItem;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    //Если не указывать топики, то значение топиков возьмется из DEFAULT_TOPICS_FOR_POLL
+    ClassToDeserialize result = kafka().poll(kafkaIterableItem("Нужный элемент листа", ClassToDeserialize.class));
+  }
 }
 ```
 
@@ -484,13 +530,11 @@ import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSu
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        kafka().poll(kafkaIterableItem("Нужный элемент листа",
-                of("testTopic"),
-                ClassToDeserialize.class),
-                new MyDataTransformer());
-    }
+  @Test
+  public void myTest() {
+    kafka().poll(kafkaIterableItem("Нужный элемент листа", ClassToDeserialize.class)
+            .withDataTransformer(new MyDataTransformer()));
+  }
 }
 ```
 
@@ -498,9 +542,10 @@ public class MyTest {
 
 ### Получение данных сообщения как Java-объект из массива
 
-В примерах ниже предполагается, что настройка / свойство / переменная окружения
-[KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER) перед началом выполнения имеет непустое
-значения
+В примерах ниже предполагается, что настройки / свойства / переменные окружения
+[KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER),
+[DEFAULT_TOPICS_FOR_POLL](./SETTINGS.MD#DEFAULT_TOPICS_FOR_POLL)
+перед началом выполнения имеют непустое значения
 
 ```java
 import static java.time.Duration.ofSeconds;
@@ -509,21 +554,21 @@ import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArrayItemSuppl
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        //Возвращается элемент массива. Сообщение из очереди десериализуется в массив.
-        //Из общего сообщения-массива вернется первый подходящий элемент.
-        ClassToDeserialize result = kafka().poll(kafkaArrayItem("Нужный элемент массива", //описываем то, 
-                // что нужно получить
-                of("testTopic"), //список топиков
-                ClassToDeserialize.class) //класс массива
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-                // которому должен соответствовать результирующий элемент из массива
-                .timeOut(ofSeconds(5)) //можно указать время на получение 
-                // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
-    }
+  @Test
+  public void myTest() {
+    //Возвращается элемент массива. Сообщение из очереди десериализуется в массив.
+    //Из общего сообщения-массива вернется первый подходящий элемент.
+    ClassToDeserialize result = kafka().poll(kafkaArrayItem("Нужный элемент массива", //описываем то, 
+            // что нужно получить
+            ClassToDeserialize.class, //класс массива
+            "test_topic1", "test_topic2") //топики для получения сообщений
+            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
+            // которому должен соответствовать результирующий элемент из массива
+            .timeOut(ofSeconds(5)) //можно указать время на получение 
+            // ожидаемого результата = 5 секунд
+            .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
+    // если результат не был получен
+  }
 }
 ```
 
@@ -536,21 +581,21 @@ import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArrayItemSuppl
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        //Возвращается элемент массива. Сообщение из очереди десериализуется в массив.
-        //Из общего сообщения-массива вернется первый подходящий элемент.
-        ClassToDeserialize result = kafka().poll(kafkaArrayItem("Нужный элемент массива",
-                of("testTopic"),
-                new TypeReference<ClassToDeserialize>() {
-                }) //тип объекта-модели для десериализации
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-                // которому должен соответствовать результирующий элемент из массива
-                .timeOut(ofSeconds(5)) //можно указать время на получение 
-                // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
-    }
+  @Test
+  public void myTest() {
+    //Возвращается элемент массива. Сообщение из очереди десериализуется в массив.
+    //Из общего сообщения-массива вернется первый подходящий элемент.
+    ClassToDeserialize result = kafka().poll(kafkaArrayItem("Нужный элемент массива",
+            new TypeReference<ClassToDeserialize>() {
+            }, //тип объекта-модели для десериализации
+            "test_topic1", "test_topic2") //топики для получения сообщений
+            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
+            // которому должен соответствовать результирующий элемент из массива
+            .timeOut(ofSeconds(5)) //можно указать время на получение 
+            // ожидаемого результата = 5 секунд
+            .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
+    // если результат не был получен
+  }
 }
 ```
 
@@ -561,25 +606,25 @@ import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArrayItemSuppl
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        //Возвращается элемент массива. Сообщение не обязательно является массивом. 
-        // Промежуточный массив получаются в ходе дополнительных вычислений. 
-        // Из массива вернется первый подходящий элемент.
-        Object result = kafka().poll(kafkaArrayItem("Нужный элемент массива", //описываем 
-                // то, что нужно получить
-                of("testTopic"),
-                ClassToDeserialize.class, //класс модели для десериализации
-                o -> {
-                    return /*описываем то, как получить из объекта ClassToDeserialize объект Object */;
-                })
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-                // которому должен соответствовать результирующий элемент массива
-                .timeOut(ofSeconds(5)) //можно указать время на получение 
-                // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
-    }
+  @Test
+  public void myTest() {
+    //Возвращается элемент массива. Сообщение не обязательно является массивом. 
+    // Промежуточный массив получаются в ходе дополнительных вычислений. 
+    // Из массива вернется первый подходящий элемент.
+    Object result = kafka().poll(kafkaArrayItem("Нужный элемент массива", //описываем 
+            // то, что нужно получить
+            ClassToDeserialize.class, //класс модели для десериализации
+            o -> {
+              return /*описываем то, как получить из объекта ClassToDeserialize объект Object */;
+            },
+            "test_topic1", "test_topic2") //топики для получения сообщений
+            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
+            // которому должен соответствовать результирующий элемент массива
+            .timeOut(ofSeconds(5)) //можно указать время на получение 
+            // ожидаемого результата = 5 секунд
+            .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
+    // если результат не был получен
+  }
 }
 ```
 
@@ -592,24 +637,41 @@ import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArrayItemSuppl
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        //Возвращается элемент массива. Сообщение не обязательно является массивом. 
-        // Промежуточный массив получаются в ходе дополнительных вычислений. 
-        // Из массива вернется первый подходящий элемент.
-        Object result = kafka().poll(kafkaArrayItem("Нужный элемент массива",
-                of("testTopic"),
-                ClassToDeserializ.class, //тип объекта-модели для десериализации
-                o -> {
-                    return /*описываем то, как получить из объекта ClassToDeserialize объект Object*/;
-                })
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-                // которому должен соответствовать результирующий элемент из массива
-                .timeOut(ofSeconds(5)) //можно указать время на получение 
-                // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
-    }
+  @Test
+  public void myTest() {
+    //Возвращается элемент массива. Сообщение не обязательно является массивом. 
+    // Промежуточный массив получаются в ходе дополнительных вычислений. 
+    // Из массива вернется первый подходящий элемент.
+    Object result = kafka().poll(kafkaArrayItem("Нужный элемент массива",
+            ClassToDeserializ.class, //тип объекта-модели для десериализации
+            o -> {
+              return /*описываем то, как получить из объекта ClassToDeserialize объект Object*/;
+            },
+            "test_topic1", "test_topic2") //топики для получения сообщений
+            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
+            // которому должен соответствовать результирующий элемент из массива
+            .timeOut(ofSeconds(5)) //можно указать время на получение 
+            // ожидаемого результата = 5 секунд
+            .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
+    // если результат не был получен
+  }
+}
+```
+
+```java
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArrayItemSupplier.kafkaArrayItem;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    //Если не указывать топики, то значение топиков возьмется из DEFAULT_TOPICS_FOR_POLL
+    ClassToDeserializ result = kafka().poll(kafkaArrayItem("Нужный элемент массива", ClassToDeserializ.class));
+  }
 }
 ```
 
@@ -649,67 +711,62 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetArray
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        kafka().poll(kafkaArrayItem("Нужный элемент массива",
-                of("testTopic"),
-                ClassToDeserialize.class),
-                new MyDataTransformer());
-    }
+  @Test
+  public void myTest() {
+    kafka().poll(kafkaArrayItem("Нужный элемент массива", ClassToDeserialize.class)
+            .withDataTransformer(new MyDataTransformer()));
+  }
 }
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
+
 ## Публикация сообщений
 
-В примерах ниже предполагается, что настройка / свойство / переменная окружения
-[KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER) перед началом выполнения имеет непустое
-значения
+В примерах ниже предполагается, что настройки / свойства / переменные окружения
+[KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER),
+[DEFAULT_TOPIC_FOR_SEND](./SETTINGS.MD#DEFAULT_TOPIC_FOR_SEND)
+перед началом выполнения имеют непустое значения
 
 ```java
-import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.serializedMessage;
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        //Выполняем отправку сообщения
-        //  Параметры:
-        //      exchange - обмен для публикации сообщения
-        //      routingKey - ключ маршрутизации
-        //      new SomeObject() - объект, который нужно сериализовать и отправить в rabbit
-        //Неявные параметры которые уходят:
-        //      mandatory со значением false
-        //      mmediate со значением false
-        rabbitMq().publishMessage("exchange",
-                "routingKey",
-                new SomeObject());
-    }
+  @Test
+  public void myTest() {
+    //Выполняем отправку сообщения
+    //сериализатор берется дефолтный из KAFKA_DEFAULT_DATA_TRANSFORMER
+    kafka.send(serializedMessage(new SomeObject()) //new SomeObject() - объект, который нужно сериализовать и отправить в kafka
+            .topic("testTopic") //топик для публикации сообщения
+            .partition(1) // значение partition
+            .timestamp(10L) // значение timestamp
+            // значение callback
+            .callback(new Callback() {
+              @Override
+              public void onCompletion(RecordMetadata metadata, Exception exception) {
+
+              }
+            })
+            .headers(headers)// значение headers
+    );
+  }
 }
 ```
 
 ```java
-import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
-import static ru.tinkoff.qa.neptune.rabbit.mq.function.publish.ParametersForPublish.parameters;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.serializedMessage;
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        //Выполняем отправку сообщения
-        //  Параметры:
-        //      exchange - обмен для публикации сообщения
-        //      routingKey - ключ маршрутизации
-        //      ParametersForPublish - объект, необходимый для изменения дефолтных значений mandatory и immediate
-        //                             в данном примере 'parameters().mandatory().immediate()' 
-        //                             сообщение отправится с mandatory = true и immediate = true
-        //      new SomeObject() - объект, который нужно сериализовать и отправить в rabbit
-        rabbitMq().publishMessage("exchange",
-                "routingKey",
-                parameters().mandatory().immediate(),
-                new SomeObject());
-    }
+  @Test
+  public void myTest() {
+    //Если не указывать топик для отправки сообщения, то он возьмет дефолтное значение из DEFAULT_TOPIC_FOR_SEND
+    kafka.send(serializedMessage(new SomeObject()));
+  }
 }
 ```
 
@@ -736,202 +793,69 @@ public class MyDataTransformer implements DataTransformer {
         //тут описываем механизм десериализации
     }
 
-    @Override
-    public String serialize(Object obj) {
-        //тут описываем механизм сериализации
-    }
-}
-```
-
-```java
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-
-import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем отправку сообщения
-        //  Параметры:
-        //      exchange - обмен для публикации сообщения
-        //      routingKey - ключ маршрутизации
-        //      new SomeObject() - объект, который нужно сериализовать и отправить в rabbit
-        //      Неявные параметры которые уходят:
-        //         mandatory со значением false
-        //         mmediate со значением false
-        //  new MyDataTransformer() - переданный сериализатор
-        rabbitMq().publishMessage("exchange",
-                "routingKey",
-                new SomeObject(),
-                new MyDataTransformer());
-    }
-}
-```
-
-```java
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-
-import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
-import static ru.tinkoff.qa.neptune.rabbit.mq.function.publish.ParametersForPublish.parameters;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем отправку сообщения
-        //  Параметры:
-        //      exchange - обмен для публикации сообщения
-        //      routingKey - ключ маршрутизации
-        //      ParametersForPublish - объект, необходимый для изменения дефолтных значений mandatory и immediate
-        //                             в данном примере 'parameters().mandatory().immediate()' 
-        //                             сообщение отправится с mandatory = true и immediate = true
-        //      new SomeObject() - объект, который нужно сериализовать и отправить в rabbit
-        //      new MyDataTransformer() - переданный сериализатор
-        rabbitMq().publishMessage("exchange",
-                "routingKey",
-                parameters().mandatory().immediate(),
-                new SomeObject(),
-                new MyDataTransformer());
-    }
-}
-```
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
-## Публикация сообщений
-
-В примерах ниже предполагается, что настройка / свойство / переменная окружения
-[KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER) перед началом выполнения имеет непустое
-значения
-
-```java
-import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем отправку сообщения
-        //  Параметры:
-        //      testTopic - топик для публикации сообщения
-        //      new SomeObject() - объект, который нужно сериализовать и отправить в kafka
-
-        kafka().sendMessage("testTopic", new SomeObject());
-
-    }
+  @Override
+  public String serialize(Object obj) {
+    //тут описываем механизм сериализации
+  }
 }
 ```
 
 ```java
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.serializedMessage;
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        //Выполняем отправку сообщения
-        //  Параметры:
-        //      testTopic - топик для публикации сообщения
-        //      new SomeObject() - объект, который нужно сериализовать и отправить в kafka
-        //      callBack - обратного вызова, который пользователь может реализовать, 
-        //      чтобы разрешить выполнение кода после завершения запроса. 
+  @Test
+  public void myTest() {
+    //Выполняем отправку сообщения
+    //сериализатор берется дефолтный из KAFKA_DEFAULT_DATA_TRANSFORMER
+    kafka.send(serializedMessage(new SomeObject()) //new SomeObject() - объект, который нужно сериализовать и отправить в kafka
+            .dataTransformer(new MyDataTransformer()) // устанавливаем кастомный DataTransformer
+    );
+  }
+}
+```
 
-        kafka().sendMessage("testTopic", new SomeObject(), new Callback() {
-                    @Override
-                    public void onCompletion(RecordMetadata metadata, Exception exception) {
-                    }
-                }
-        );
-    }
+Так же Neptune поддерживает отправку обычных строк, которые не нужно сериализовать
+
+```java
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.textMessage;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    //Выполняем отправку сообщения
+    kafka.send(textMessage("I'm a String!") //строка, которую нужно отправить в kafka
+            .topic("testTopic") //топик для публикации сообщения
+            .partition(1) // значение partition
+            .timestamp(10L) // значение timestamp
+            // значение callback
+            .callback(new Callback() {
+              @Override
+              public void onCompletion(RecordMetadata metadata, Exception exception) {
+
+              }
+            })
+            .headers(headers)// значение headers
+    );
+  }
 }
 ```
 
 ```java
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.textMessage;
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        //Выполняем отправку сообщения
-        //  Параметры:
-        //      testTopic - топик для публикации сообщения
-        //      new SomeObject() - объект, который нужно сериализовать и отправить в kafka
-        //      ParametersForSend - объект, необходимый для изменения установки дополнительных параметров, таких как:
-        //                           partition, timestamp, key, headers
-
-        kafka().sendMessage("testTopic", new SomeObject(), parameters());
-    }
-}
-```
-
-Ниже примеры ситуаций, когда [сериализатор](./../../../core.api/doc/rus/SERIALIZATION_DESERIALIZATION.MD) нужно передать
-явно.
-
-```java
-import org.my.pack;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
-
-//Описываем сериализацию и десериализацию для текущего проекта
-public class MyDataTransformer implements DataTransformer {
-
-
-    @Override
-    public <T> T deserialize(String message, Class<T> cls) {
-        //тут описываем механизм десериализации
-    }
-
-    @Override
-    public <T> T deserialize(String string, TypeReference<T> type) {
-        //тут описываем механизм десериализации
-    }
-
-    @Override
-    public String serialize(Object obj) {
-        //тут описываем механизм сериализации
-    }
-}
-```
-
-```java
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-
-import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем отправку сообщения
-        //  Параметры:
-        //      testTopic - топик для публикации сообщения
-        //      new SomeObject() - объект, который нужно сериализовать и отправить в kafka
-        //      new CustomMapper() - переданный сериализатор
-
-        kafka().sendMessage("testTopic", new SomeObject(), new CustomMapper());
-    }
-}
-```
-
-```java
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-
-import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
-import static ru.tinkoff.qa.neptune.rabbit.mq.function.publish.ParametersForPublish.parameters;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        kafka().sendMessage("testTopic",
-                new SomeObject(),
-                parameters().partition(1).timestamp(10L),
-                callBack,
-                new CustomMapper());
-    }
+  @Test
+  public void myTest() {
+    //Если не указывать топик для отправки сообщения, то он возьмет дефолтное значение из DEFAULT_TOPIC_FOR_SEND
+    kafka.send(textMessage("I'm a String!"));
+  }
 }
 ```
 

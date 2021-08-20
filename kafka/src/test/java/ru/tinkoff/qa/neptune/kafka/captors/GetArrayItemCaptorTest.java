@@ -44,8 +44,8 @@ public class GetArrayItemCaptorTest extends BaseCaptorTest {
     @Test
     public void test1() {
         kafka.poll(kafkaArrayItem("kafkaArrayItem",
-                of("testTopic"),
-                DraftDto.class));
+                DraftDto.class,
+                "testTopic"));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
@@ -55,8 +55,8 @@ public class GetArrayItemCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
 
         kafka.poll(kafkaArrayItem("kafkaArrayItem",
-                of("testTopic"),
-                DraftDto.class));
+                DraftDto.class,
+                "testTopic"));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Kafka message",
                 "{\"name\":\"testName1\"}")));
@@ -67,8 +67,8 @@ public class GetArrayItemCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
 
         kafka.poll(kafkaArrayItem("kafkaArrayItem",
-                of("testTopic"),
-                DraftDto.class));
+                DraftDto.class,
+                "testTopic"));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
@@ -78,8 +78,8 @@ public class GetArrayItemCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
 
         kafka.poll(kafkaArrayItem("kafkaArrayItem",
-                of("testTopic"),
-                DraftDto.class));
+                DraftDto.class,
+                "testTopic"));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Kafka message",
                 "{\"name\":\"testName1\"}")));
@@ -88,8 +88,8 @@ public class GetArrayItemCaptorTest extends BaseCaptorTest {
     @Test
     public void test5() {
         kafka.poll(kafkaArrayItem("kafkaArrayItem",
-                of("testTopic"),
-                DraftDto.class)
+                DraftDto.class,
+                "testTopic")
                 .criteria("name = 'kek'", d -> d.getName().equals("kek")));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
@@ -100,8 +100,8 @@ public class GetArrayItemCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
 
         kafka.poll(kafkaArrayItem("kafkaArrayItem",
-                of("testTopic"),
-                DraftDto.class)
+                DraftDto.class,
+                "testTopic")
                 .criteria("name = 'kek'", d -> d.getName().equals("kek")));
 
         assertThat(CAUGHT_MESSAGES,
@@ -115,8 +115,8 @@ public class GetArrayItemCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
 
         kafka.poll(kafkaArrayItem("kafkaArrayItem",
-                of("testTopic"),
-                DraftDto.class)
+                DraftDto.class,
+                "testTopic")
                 .criteria("name = 'kek'", d -> d.getName().equals("kek")));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
@@ -127,8 +127,8 @@ public class GetArrayItemCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
 
         kafka.poll(kafkaArrayItem("kafkaArrayItem",
-                of("testTopic"),
-                DraftDto.class)
+                DraftDto.class,
+                "testTopic")
                 .criteria("name = 'kek'", d -> d.getName().equals("kek")));
 
         assertThat(CAUGHT_MESSAGES,
@@ -141,8 +141,8 @@ public class GetArrayItemCaptorTest extends BaseCaptorTest {
     public void test9() {
         try {
             kafka.poll(kafkaArrayItem("kafkaArrayItem",
-                    of("testTopic"),
-                    DraftDto.class)
+                    DraftDto.class,
+                    "testTopic")
                     .criteria("name = 'kek'", d -> d.getName().equals("kek"))
                     .timeOut(ofSeconds(5))
                     .throwOnNoResult());
@@ -160,8 +160,8 @@ public class GetArrayItemCaptorTest extends BaseCaptorTest {
 
         try {
             kafka.poll(kafkaArrayItem("kafkaArrayItem",
-                    of("testTopic"),
-                    DraftDto.class)
+                    DraftDto.class,
+                    "testTopic")
                     .criteria("name = 'kek'", d -> d.getName().equals("kek"))
                     .timeOut(ofSeconds(5))
                     .throwOnNoResult());
@@ -179,8 +179,8 @@ public class GetArrayItemCaptorTest extends BaseCaptorTest {
 
         try {
             kafka.poll(kafkaArrayItem("kafkaArrayItem",
-                    of("testTopic"),
-                    DraftDto.class)
+                    DraftDto.class,
+                    "testTopic")
                     .criteria("name = 'kek'", d -> d.getName().equals("kek"))
                     .timeOut(ofSeconds(5))
                     .throwOnNoResult());
@@ -199,8 +199,8 @@ public class GetArrayItemCaptorTest extends BaseCaptorTest {
 
         try {
             kafka.poll(kafkaArrayItem("kafkaArrayItem",
-                    of("testTopic"),
-                    DraftDto.class)
+                    DraftDto.class,
+                    "testTopic")
                     .criteria("name = 'kek'", d -> d.getName().equals("kek"))
                     .timeOut(ofSeconds(5))
                     .throwOnNoResult());

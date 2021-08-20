@@ -43,10 +43,10 @@ public class GetArrayCaptorTest extends BaseCaptorTest {
 
     @Test
     public void test1() {
-        var s = kafka.poll(kafkaArray("test description",
-                of("testTopic"),
+        kafka.poll(kafkaArray("test description",
                 new TypeReference<DraftDto>() {
-                }));
+                },
+                "testTopic"));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
@@ -56,9 +56,9 @@ public class GetArrayCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
 
         kafka.poll(kafkaArray("test description",
-                of("testTopic"),
                 new TypeReference<DraftDto>() {
-                }));
+                },
+                "testTopic"));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Kafka messages",
                 "{\"name\":\"testName1\"}\r\n\r\n{\"name\":\"testName2\"}\r\n\r\n")));
@@ -69,9 +69,9 @@ public class GetArrayCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
 
         kafka.poll(kafkaArray("test description",
-                of("testTopic"),
                 new TypeReference<DraftDto>() {
-                }));
+                },
+                "testTopic"));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
@@ -82,9 +82,9 @@ public class GetArrayCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
 
         kafka.poll(kafkaArray("test description",
-                of("testTopic"),
                 new TypeReference<DraftDto>() {
-                }));
+                },
+                "testTopic"));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Kafka messages",
                 "{\"name\":\"testName1\"}\r\n\r\n{\"name\":\"testName2\"}\r\n\r\n")));
@@ -93,9 +93,9 @@ public class GetArrayCaptorTest extends BaseCaptorTest {
     @Test
     public void test5() {
         kafka.poll(kafkaArray("test description",
-                of("testTopic"),
                 new TypeReference<DraftDto>() {
-                })
+                },
+                "testTopic")
                 .criteria("Contains name = 'fail'", d -> d.getName().equals("fail")));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
@@ -106,9 +106,9 @@ public class GetArrayCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
 
         kafka.poll(kafkaArray("test description",
-                of("testTopic"),
                 new TypeReference<DraftDto>() {
-                })
+                },
+                "testTopic")
                 .criteria("Contains name = 'fail'", d -> d.getName().equals("fail")));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("All received Kafka messages",
@@ -120,9 +120,9 @@ public class GetArrayCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
 
         kafka.poll(kafkaArray("test description",
-                of("testTopic"),
                 new TypeReference<DraftDto>() {
-                })
+                },
+                "testTopic")
                 .criteria("Contains name = 'fail'", d -> d.getName().equals("fail")));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
@@ -132,10 +132,10 @@ public class GetArrayCaptorTest extends BaseCaptorTest {
     public void test8() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
 
-        var ss = kafka.poll(kafkaArray("test description",
-                of("testTopic"),
+        kafka.poll(kafkaArray("test description",
                 new TypeReference<DraftDto>() {
-                })
+                },
+                "testTopic")
                 .criteria("Contains name = 'fail'", d -> d.getName().equals("fail"))
                 .timeOut(ofSeconds(5)));
 
@@ -147,10 +147,11 @@ public class GetArrayCaptorTest extends BaseCaptorTest {
     public void test9() {
         try {
             kafka.poll(kafkaArray("TestDescription",
-                    of("testTopic"),
                     new TypeReference<>() {
                     },
-                    String.class, DraftDto::getName)
+                    String.class,
+                    DraftDto::getName,
+                    "testTopic")
                     .criteria("Value contains 'test", s -> s.contains("fail"))
                     .timeOut(ofSeconds(5))
                     .throwOnNoResult());
@@ -169,10 +170,11 @@ public class GetArrayCaptorTest extends BaseCaptorTest {
 
         try {
             kafka.poll(kafkaArray("TestDescription",
-                    of("testTopic"),
                     new TypeReference<>() {
                     },
-                    String.class, DraftDto::getName)
+                    String.class,
+                    DraftDto::getName,
+                    "testTopic")
                     .criteria("Value contains 'test", s -> s.contains("fail"))
                     .timeOut(ofSeconds(5))
                     .throwOnNoResult());
@@ -190,10 +192,9 @@ public class GetArrayCaptorTest extends BaseCaptorTest {
 
         try {
             kafka.poll(kafkaArray("TestDescription",
-                    of("testTopic"),
                     new TypeReference<>() {
                     },
-                    String.class, DraftDto::getName)
+                    String.class, DraftDto::getName, "testTopic")
                     .criteria("Value contains 'test", s -> s.contains("fail"))
                     .timeOut(ofSeconds(5))
                     .throwOnNoResult());
@@ -214,10 +215,9 @@ public class GetArrayCaptorTest extends BaseCaptorTest {
 
         try {
             kafka.poll(kafkaArray("TestDescription",
-                    of("testTopic"),
                     new TypeReference<>() {
                     },
-                    String.class, DraftDto::getName)
+                    String.class, DraftDto::getName, "testTopic")
                     .criteria("Value contains 'test", s -> s.contains("fail"))
                     .timeOut(ofSeconds(5))
                     .throwOnNoResult());

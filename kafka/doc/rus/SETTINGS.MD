@@ -12,6 +12,8 @@
 - [KAFKA_CONSUMER](./SETTINGS.MD#KAFKA_CONSUMER)
 - [KAFKA_PRODUCER](./SETTINGS.MD#KAFKA_PRODUCER)
 - [KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER)
+- [DEFAULT_TOPIC_FOR_SEND](./SETTINGS.MD#DEFAULT_TOPIC_FOR_SEND)
+- [DEFAULT_TOPICS_FOR_POLL](./SETTINGS.MD#DEFAULT_TOPICS_FOR_POLL)
 
 ## KAFKA_CONSUMER
 
@@ -131,6 +133,48 @@ public class SomeClass {
     public void someVoid() {
         //пример доступа до значения свойства
         DataTransformer transformer = KAFKA_DEFAULT_DATA_TRANSFORMER.get();
+    }
+}
+```
+
+## DEFAULT_TOPIC_FOR_SEND
+
+Данная настройка предоставляет возможность указывать дефолтный топик для отправки сообщения.
+
+```properties
+#Значение свойства указывается так
+DEFAULT_TOPIC_FOR_SEND=testTopic
+```
+
+```java
+import static ru.tinkoff.qa.neptune.kafka.properties.DEFAULT_TOPIC_FOR_SEND;
+
+public class SomeClass {
+
+    public void someVoid() {
+        //пример доступа до значения свойства
+        String topic = DEFAULT_TOPIC_FOR_SEND.get();
+    }
+}
+```
+
+## DEFAULT_TOPICS_FOR_POLL
+
+Данная настройка предоставляет возможность указывать дефолтный список топиков для получения сообщений.
+
+```properties
+#Значение топиков указываются через запятую
+DEFAULT_TOPICS_FOR_POLL=testTopic1,testTopic2,testTopic3
+```
+
+```java
+import static ru.tinkoff.qa.neptune.kafka.properties.DEFAULT_TOPICS_FOR_POLL;
+
+public class SomeClass {
+
+    public void someVoid() {
+        //пример доступа до значения свойства
+        String[] topics = DEFAULT_TOPICS_FOR_POLL.get();
     }
 }
 ```
