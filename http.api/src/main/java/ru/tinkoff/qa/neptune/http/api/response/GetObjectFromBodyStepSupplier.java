@@ -19,23 +19,21 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
+import static ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionCriteria.executionResultMatches;
+import static ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionCriteria.responseResultMatches;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplierInternal.responseInternal;
-import static ru.tinkoff.qa.neptune.http.api.response.ResultCriteria.bodyMatches;
 
 /**
  * Builds a step-function that retrieves an object from http response body.
- *
- * @param <T> is a type of response body
- * @param <R> is a type of resulted object
  */
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of a resulted value")
 @ThrowWhenNoData(toThrow = DesiredDataHasNotBeenReceivedException.class, startDescription = "No data received:")
 @SuppressWarnings("unchecked")
-public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFromBodyStepSupplier<T, R, S>>
-        extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<HttpStepContext, R, HttpResponse<T>, S> {
+public abstract class GetObjectFromBodyStepSupplier<T, R, M, S extends GetObjectFromBodyStepSupplier<T, R, M, S>>
+        extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<HttpStepContext, R, M, S> {
 
-    private GetObjectFromBodyStepSupplier(Function<T, R> f) {
-        super(((Function<HttpResponse<T>, T>) HttpResponse::body).andThen(f));
+    private GetObjectFromBodyStepSupplier(Function<M, R> f) {
+        super(f);
         addIgnored(Exception.class);
     }
 
@@ -96,8 +94,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
             HttpResponse.BodyHandler<T> handler,
             Function<T, R> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectWhenResponseReceiving<>(responseInternal(requestBuilder, handler),
-                f);
+        return new GetObjectWhenResponseReceiving<>(responseInternal(requestBuilder, handler, f));
     }
 
     /**
@@ -112,8 +109,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
     @Description("Body of http response")
     public static <T> GetObjectWhenResponseReceiving<T, T> asIs(RequestBuilder requestBuilder,
                                                                 HttpResponse.BodyHandler<T> handler) {
-        return new GetObjectWhenResponseReceiving<>(responseInternal(requestBuilder, handler),
-                t -> t);
+        return new GetObjectWhenResponseReceiving<>(responseInternal(requestBuilder, handler, t -> t));
     }
 
     /**
@@ -124,12 +120,12 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
      */
     @SuppressWarnings("unused")
     @DefineGetImperativeParameterName(value = "From http response get:")
-    @DefineFromParameterName("From body of received http response")
+    @DefineFromParameterName("Response")
     public static final class GetObjectWhenResponseReceived<T, R>
-            extends GetObjectFromBodyStepSupplier<T, R, GetObjectWhenResponseReceived<T, R>> {
+            extends GetObjectFromBodyStepSupplier<T, R, HttpResponse<T>, GetObjectWhenResponseReceived<T, R>> {
 
         private GetObjectWhenResponseReceived(HttpResponse<T> response, Function<T, R> f) {
-            super(f);
+            super(f.compose(HttpResponse::body));
             checkNotNull(response);
             from(response);
         }
@@ -141,18 +137,12 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
      * @param <T> is a type of response body
      * @param <R> is a type of resulted object
      */
-    @SequentialGetStepSupplier.DefineTimeOutParameterName("Time to receive expected http response and get the result")
-    @DefineGetImperativeParameterName(value = "Send http request. Wait for the response and then get:")
     public static final class GetObjectWhenResponseReceiving<T, R>
-            extends GetObjectFromBodyStepSupplier<T, R, GetObjectWhenResponseReceiving<T, R>> {
+            extends GetObjectFromBodyStepSupplier<T, R, ResponseExecutionResult<T, R>, GetObjectWhenResponseReceiving<T, R>> {
 
-        private final Function<T, R> f;
-
-        private GetObjectWhenResponseReceiving(ResponseSequentialGetSupplierInternal<T> getResponse,
-                                               Function<T, R> f) {
-            super(f);
+        private GetObjectWhenResponseReceiving(ResponseSequentialGetSupplierInternal<T, R> getResponse) {
+            super(ResponseExecutionResult::getResult);
             from(getResponse.addIgnored(Exception.class));
-            this.f = f;
         }
 
         /**
@@ -163,13 +153,13 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
          * @see SequentialGetStepSupplier#timeOut(Duration)
          */
         public GetObjectWhenResponseReceiving<T, R> retryTimeOut(Duration timeOut) {
-            ((ResponseSequentialGetSupplierInternal<T>) getFrom()).timeOut(timeOut);
+            ((ResponseSequentialGetSupplierInternal<?, ?>) getFrom()).timeOut(timeOut);
             return this;
         }
 
         @Override
         public GetObjectWhenResponseReceiving<T, R> pollingInterval(Duration pollingTime) {
-            ((ResponseSequentialGetSupplierInternal<T>) getFrom()).pollingInterval(pollingTime);
+            ((ResponseSequentialGetSupplierInternal<?, ?>) getFrom()).pollingInterval(pollingTime);
             return this;
         }
 
@@ -181,7 +171,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
          * @return self-reference
          */
         public GetObjectWhenResponseReceiving<T, R> responseCriteria(String description, Predicate<HttpResponse<T>> predicate) {
-            ((ResponseSequentialGetSupplierInternal<T>) getFrom()).criteria(description, predicate);
+            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(responseResultMatches(description, predicate));
             return this;
         }
 
@@ -192,7 +182,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
          * @return self-reference
          */
         public GetObjectWhenResponseReceiving<T, R> responseCriteria(Criteria<HttpResponse<T>> criteria) {
-            ((ResponseSequentialGetSupplierInternal<T>) getFrom()).criteria(criteria);
+            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(responseResultMatches(criteria));
             return this;
         }
 
@@ -203,7 +193,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
          * @return self-reference
          */
         public GetObjectWhenResponseReceiving<T, R> responseCriteriaOr(Criteria<HttpResponse<T>>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T>) getFrom()).criteriaOr(criteria);
+            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(responseResultMatches(OR(criteria)));
             return this;
         }
 
@@ -214,7 +204,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
          * @return self-reference
          */
         public GetObjectWhenResponseReceiving<T, R> responseCriteriaOnlyOne(Criteria<HttpResponse<T>>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T>) getFrom()).criteriaOnlyOne(criteria);
+            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(responseResultMatches(ONLY_ONE(criteria)));
             return this;
         }
 
@@ -225,34 +215,31 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
          * @return self-reference
          */
         public GetObjectWhenResponseReceiving<T, R> responseCriteriaNot(Criteria<HttpResponse<T>>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T>) getFrom()).criteriaNot(criteria);
+            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(responseResultMatches(NOT(criteria)));
             return this;
         }
 
         @Override
         public GetObjectWhenResponseReceiving<T, R> criteriaOr(Criteria<? super R>... criteria) {
-            var orCriteria = OR(criteria);
-            ((ResponseSequentialGetSupplierInternal<T>) getFrom()).criteria(bodyMatches(new BodyMatches(orCriteria), f, orCriteria));
+            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(executionResultMatches(new ResponseExecutionResultMatches<>(OR(criteria))));
             return super.criteriaOr(criteria);
         }
 
         @Override
         public GetObjectWhenResponseReceiving<T, R> criteriaOnlyOne(Criteria<? super R>... criteria) {
-            var xorCriteria = ONLY_ONE(criteria);
-            ((ResponseSequentialGetSupplierInternal<T>) getFrom()).criteria(bodyMatches(new BodyMatches(xorCriteria), f, xorCriteria));
+            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(executionResultMatches(new ResponseExecutionResultMatches<>(ONLY_ONE(criteria))));
             return super.criteriaOnlyOne(criteria);
         }
 
         @Override
         public GetObjectWhenResponseReceiving<T, R> criteriaNot(Criteria<? super R>... criteria) {
-            var notCriteria = NOT(criteria);
-            ((ResponseSequentialGetSupplierInternal<T>) getFrom()).criteria(bodyMatches(new BodyMatches(notCriteria), f, notCriteria));
+            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(executionResultMatches(new ResponseExecutionResultMatches<>(NOT(criteria))));
             return super.criteriaNot(criteria);
         }
 
         @Override
         public GetObjectWhenResponseReceiving<T, R> criteria(Criteria<? super R> criteria) {
-            ((ResponseSequentialGetSupplierInternal<T>) getFrom()).criteria(bodyMatches(new BodyMatches(criteria), f, criteria));
+            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(executionResultMatches(new ResponseExecutionResultMatches<>(criteria)));
             return super.criteria(criteria);
         }
 
@@ -263,7 +250,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
 
         @Override
         public GetObjectWhenResponseReceiving<T, R> throwOnNoResult() {
-            ((ResponseSequentialGetSupplierInternal<?>) getFrom()).throwOnNoResult();
+            ((ResponseSequentialGetSupplierInternal<?, ?>) getFrom()).throwOnNoResult();
             return super.throwOnNoResult();
         }
     }

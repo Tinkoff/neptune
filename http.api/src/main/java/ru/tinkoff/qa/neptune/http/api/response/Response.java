@@ -62,6 +62,6 @@ public class Response<T> implements HttpResponse<T> {
     }
 
     public String toString() {
-        return translate(this);
+        return translate(this) + " " + response.toString();
     }
 }

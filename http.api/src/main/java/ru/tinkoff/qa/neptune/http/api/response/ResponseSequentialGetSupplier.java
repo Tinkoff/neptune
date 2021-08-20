@@ -30,14 +30,15 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
         ResponseSequentialGetSupplier<T>> {
 
     final RequestParameters parameters;
-    private final GetResponseFunction<T> f;
     @CaptureOnSuccess(by = RequestResponseLogCaptor.class)
     @CaptureOnFailure(by = RequestResponseLogCaptor.class)
-    ResponseExecutionInfo info;
+    final ResponseExecutionInfo info;
+    private final GetResponseFunction<T, T> f;
 
-    private ResponseSequentialGetSupplier(GetResponseFunction<T> f) {
-        super(f);
+    private ResponseSequentialGetSupplier(GetResponseFunction<T, T> f) {
+        super(f.andThen(ResponseExecutionResult::getResponse));
         this.f = f;
+        info = f.getInfo();
         parameters = new RequestParameters(f.getRequest());
     }
 
@@ -52,7 +53,7 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
      */
     public static <T> ResponseSequentialGetSupplier<T> response(RequestBuilder requestBuilder,
                                                                 HttpResponse.BodyHandler<T> bodyHandler) {
-        return new ResponseSequentialGetSupplier<>(new GetResponseFunction<>(requestBuilder.build(), bodyHandler));
+        return new ResponseSequentialGetSupplier<>(new GetResponseFunction<>(requestBuilder.build(), bodyHandler, t -> t));
     }
 
     @Override
@@ -61,6 +62,5 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
         if (toReport) {
             catchValue(f.getRequest().body(), createCaptors(new Class[]{AbstractRequestBodyCaptor.class}));
         }
-        info = f.getInfo();
     }
 }

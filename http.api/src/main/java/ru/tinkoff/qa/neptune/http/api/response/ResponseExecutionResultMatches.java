@@ -6,18 +6,23 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
-@Description("Response body: {description}")
-final class BodyMatches {
+@Description("Response body has: {description}")
+@SuppressWarnings("unchecked")
+final class ResponseExecutionResultMatches<R> {
     @DescriptionFragment(value = "description")
-    final String description;
+    private final Criteria<R> criteria;
 
-    BodyMatches(Criteria<?> criteria) {
-        this.description = criteria.toString();
+    ResponseExecutionResultMatches(Criteria<? super R> criteria) {
+        this.criteria = (Criteria<R>) criteria;
     }
 
     @Override
     public String toString() {
         return translate(this);
+    }
+
+    Criteria<R> getCriteria() {
+        return criteria;
     }
 }
 
