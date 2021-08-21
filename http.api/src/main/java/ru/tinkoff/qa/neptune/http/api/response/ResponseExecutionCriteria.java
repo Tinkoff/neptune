@@ -18,8 +18,8 @@ final class ResponseExecutionCriteria {
         super();
     }
 
-    private static <T, R> Criteria<ResponseExecutionResult<T, R>> executionResultMatches(String description,
-                                                                                         Predicate<? super R> predicate) {
+    static <T, R> Criteria<ResponseExecutionResult<T, R>> executionResultMatches(String description,
+                                                                                 Predicate<? super R> predicate) {
         checkArgument(nonNull(predicate), "Predicate should be defined");
         checkArgument(isNotBlank(description), "Description should not be defined as a blank or null string");
         return condition(description, r -> predicate.test(r.getResult()));

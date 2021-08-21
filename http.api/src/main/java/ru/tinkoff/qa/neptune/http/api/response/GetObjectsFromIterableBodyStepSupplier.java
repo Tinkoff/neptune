@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.response;
 
+import com.google.common.collect.Iterables;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
@@ -84,7 +85,10 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
             HttpResponse.BodyHandler<T> handler,
             Function<T, S> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectsFromIterableWhenResponseReceiving<>(responseInternal(requestBuilder, handler, f));
+        return new GetObjectsFromIterableWhenResponseReceiving<>(responseInternal(translate(description),
+                requestBuilder,
+                handler,
+                f, rs -> Iterables.size(rs) > 0));
     }
 
 

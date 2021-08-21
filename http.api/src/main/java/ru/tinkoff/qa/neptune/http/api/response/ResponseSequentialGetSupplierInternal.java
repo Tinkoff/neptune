@@ -5,6 +5,7 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.captors.request.AbstractRequestBodyCaptor;
@@ -17,16 +18,18 @@ import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.createCaptors;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
+import static ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionCriteria.executionResultMatches;
 
 @MaxDepthOfReporting(1)
 @ThrowWhenNoData(toThrow = ExpectedHttpResponseHasNotBeenReceivedException.class, startDescription = "Not received")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Response criteria")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time to receive expected http response and get the result")
-@Description("Http Response")
 final class ResponseSequentialGetSupplierInternal<T, R> extends SequentialGetStepSupplier
         .GetObjectStepSupplier<HttpStepContext, ResponseExecutionResult<T, R>, ResponseSequentialGetSupplierInternal<T, R>> {
 
@@ -47,12 +50,25 @@ final class ResponseSequentialGetSupplierInternal<T, R> extends SequentialGetSte
         parameters = new RequestParameters(f.getRequest());
     }
 
-    static <T, R> ResponseSequentialGetSupplierInternal<T, R> responseInternal(RequestBuilder requestBuilder,
+    @Description("Http Response. Body of the response is expected to have: '{description}'")
+    static <T, R> ResponseSequentialGetSupplierInternal<T, R> responseInternal(@DescriptionFragment("description") String description,
+                                                                               RequestBuilder requestBuilder,
                                                                                HttpResponse.BodyHandler<T> bodyHandler,
-                                                                               Function<T, R> function) {
+                                                                               Function<T, R> function,
+                                                                               Predicate<R> predicate) {
         return new ResponseSequentialGetSupplierInternal<>(new GetResponseFunction<>(requestBuilder.build(),
                 bodyHandler,
-                function));
+                function))
+                .criteria(executionResultMatches(new ResponseExecutionResultMatches<>(condition(description,
+                        r -> r != null && predicate.test(r)))));
+    }
+
+    @Description("Http Response")
+    static <T, R> ResponseSequentialGetSupplierInternal<T, T> responseInternal(RequestBuilder requestBuilder,
+                                                                               HttpResponse.BodyHandler<T> bodyHandler) {
+        return new ResponseSequentialGetSupplierInternal<>(new GetResponseFunction<>(requestBuilder.build(),
+                bodyHandler,
+                t -> t));
     }
 
     @Override

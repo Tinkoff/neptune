@@ -94,7 +94,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, M, S extends GetObject
             HttpResponse.BodyHandler<T> handler,
             Function<T, R> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectWhenResponseReceiving<>(responseInternal(requestBuilder, handler, f));
+        return new GetObjectWhenResponseReceiving<>(responseInternal(translate(description), requestBuilder, handler, f, r -> true));
     }
 
     /**
@@ -109,7 +109,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, M, S extends GetObject
     @Description("Body of http response")
     public static <T> GetObjectWhenResponseReceiving<T, T> asIs(RequestBuilder requestBuilder,
                                                                 HttpResponse.BodyHandler<T> handler) {
-        return new GetObjectWhenResponseReceiving<>(responseInternal(requestBuilder, handler, t -> t));
+        return new GetObjectWhenResponseReceiving<>(responseInternal(requestBuilder, handler));
     }
 
     /**
