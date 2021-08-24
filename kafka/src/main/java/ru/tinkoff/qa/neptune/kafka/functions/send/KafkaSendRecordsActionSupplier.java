@@ -44,11 +44,11 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
         performOn(kafkaStepContext -> kafkaStepContext);
     }
 
-    public static KafkaSendRecordsActionSupplier.Mapped serializedMessage(Object toSend) {
+    public static Mapped serializedMessage(Object toSend) {
         return new Mapped(toSend);
     }
 
-    public static KafkaSendRecordsActionSupplier.StringMessage textMessage(String message) {
+    public static StringMessage textMessage(String message) {
         return new StringMessage(message);
     }
 

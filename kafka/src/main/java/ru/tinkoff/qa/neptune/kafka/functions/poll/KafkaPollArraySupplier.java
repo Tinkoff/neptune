@@ -66,7 +66,7 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
     }
 
     @Description("{description}")
-    public static <M, T> KafkaPollArraySupplier<T> kafkaArray(
+    public static <M, T> Mapped<T> kafkaArray(
             @DescriptionFragment(value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
             ) String description,
@@ -76,14 +76,14 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
             String... topics) {
         checkArgument(isNotBlank(description), "Description should be defined");
         if (topics.length == 0) {
-            return new KafkaPollArraySupplier<>(new GetFromTopics<>(classT, DEFAULT_TOPICS_FOR_POLL.get()), toGet, componentClass);
+            return new KafkaPollArraySupplier.Mapped<>(new GetFromTopics<>(classT, DEFAULT_TOPICS_FOR_POLL.get()), toGet, componentClass);
         } else {
-            return new KafkaPollArraySupplier<>(new GetFromTopics<>(classT, topics), toGet, componentClass);
+            return new KafkaPollArraySupplier.Mapped<>(new GetFromTopics<>(classT, topics), toGet, componentClass);
         }
     }
 
     @Description("{description}")
-    public static <M, T> KafkaPollArraySupplier<T> kafkaArray(
+    public static <M, T> Mapped<T> kafkaArray(
             @DescriptionFragment(value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
             ) String description,
@@ -93,20 +93,20 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
             String... topics) {
         checkArgument(isNotBlank(description), "Description should be defined");
         if (topics.length == 0) {
-            return new KafkaPollArraySupplier<>(new GetFromTopics<>(typeT, DEFAULT_TOPICS_FOR_POLL.get()), toGet, componentClass);
+            return new KafkaPollArraySupplier.Mapped<>(new GetFromTopics<>(typeT, DEFAULT_TOPICS_FOR_POLL.get()), toGet, componentClass);
         } else {
-            return new KafkaPollArraySupplier<>(new GetFromTopics<>(typeT, topics), toGet, componentClass);
+            return new KafkaPollArraySupplier.Mapped<>(new GetFromTopics<>(typeT, topics), toGet, componentClass);
         }
     }
 
-    public static <T> KafkaPollArraySupplier<T> kafkaArray(
+    public static <T> Mapped<T> kafkaArray(
             String description,
             Class<T> classT,
             String... topics) {
         return kafkaArray(description, classT, classT, ts -> ts, topics);
     }
 
-    public static <T> KafkaPollArraySupplier<T> kafkaArray(
+    public static <T> Mapped<T> kafkaArray(
             String description,
             TypeReference<T> typeT,
             String... topics) {
@@ -149,7 +149,7 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
         getFromTopics.setTransformer(transformer);
     }
 
-    public KafkaPollArraySupplier<T> withDataTransformer(DataTransformer dataTransformer) {
+    KafkaPollArraySupplier<T> withDataTransformer(DataTransformer dataTransformer) {
         this.transformer = dataTransformer;
         return this;
     }
@@ -170,6 +170,16 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
     @Override
     protected void onFailure(KafkaStepContext m, Throwable throwable) {
         messages = getFromTopics.getMessages();
+    }
+
+    public static class Mapped<T> extends KafkaPollArraySupplier<T> {
+        public <M> Mapped(GetFromTopics<M> getFromTopics, Function<M, T> originalFunction, Class<T> componentClass) {
+            super(getFromTopics, originalFunction, componentClass);
+        }
+
+        public KafkaPollArraySupplier<T> withDataTransformer(DataTransformer transformer) {
+            return super.withDataTransformer(transformer);
+        }
     }
 
     public static class StringMessages extends KafkaPollArraySupplier<String> {
