@@ -53,7 +53,7 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
      */
     public static <T> ResponseSequentialGetSupplier<T> response(RequestBuilder requestBuilder,
                                                                 HttpResponse.BodyHandler<T> bodyHandler) {
-        return new ResponseSequentialGetSupplier<>(new GetResponseFunction<>(requestBuilder.build(), bodyHandler, t -> t));
+        return new ResponseSequentialGetSupplier<>(new GetResponseFunction<>(requestBuilder.build(), bodyHandler, t -> t, null));
     }
 
     @Override

@@ -18,8 +18,8 @@ final class ResponseExecutionCriteria {
         super();
     }
 
-    static <T, R> Criteria<ResponseExecutionResult<T, R>> executionResultMatches(String description,
-                                                                                 Predicate<? super R> predicate) {
+    private static <T, R> Criteria<ResponseExecutionResult<T, R>> executionResultMatches(String description,
+                                                                                         Predicate<? super R> predicate) {
         checkArgument(nonNull(predicate), "Predicate should be defined");
         checkArgument(isNotBlank(description), "Description should not be defined as a blank or null string");
         return condition(description, r -> predicate.test(r.getResult()));
@@ -41,9 +41,5 @@ final class ResponseExecutionCriteria {
 
     static <T, R> Criteria<ResponseExecutionResult<T, R>> responseResultMatches(Criteria<HttpResponse<T>> criteria) {
         return condition(criteria.toString(), r -> criteria.get().test(r.getResponse()));
-    }
-
-    static <T, R> Criteria<ResponseExecutionResult<T, R>> responseResultMatches(String description, Predicate<HttpResponse<T>> predicate) {
-        return responseResultMatches(condition(description, predicate));
     }
 }

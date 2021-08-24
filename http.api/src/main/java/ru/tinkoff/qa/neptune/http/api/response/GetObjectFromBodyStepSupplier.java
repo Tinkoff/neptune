@@ -21,6 +21,7 @@ import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.trans
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionCriteria.executionResultMatches;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionCriteria.responseResultMatches;
+import static ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionResultMatches.resultMatches;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplierInternal.responseInternal;
 
 /**
@@ -171,8 +172,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, M, S extends GetObject
          * @return self-reference
          */
         public GetObjectWhenResponseReceiving<T, R> responseCriteria(String description, Predicate<HttpResponse<T>> predicate) {
-            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(responseResultMatches(description, predicate));
-            return this;
+            return responseCriteria(condition(description, predicate));
         }
 
         /**
@@ -193,8 +193,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, M, S extends GetObject
          * @return self-reference
          */
         public GetObjectWhenResponseReceiving<T, R> responseCriteriaOr(Criteria<HttpResponse<T>>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(responseResultMatches(OR(criteria)));
-            return this;
+            return responseCriteria(OR(criteria));
         }
 
         /**
@@ -204,8 +203,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, M, S extends GetObject
          * @return self-reference
          */
         public GetObjectWhenResponseReceiving<T, R> responseCriteriaOnlyOne(Criteria<HttpResponse<T>>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(responseResultMatches(ONLY_ONE(criteria)));
-            return this;
+            return responseCriteria(ONLY_ONE(criteria));
         }
 
         /**
@@ -215,37 +213,36 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, M, S extends GetObject
          * @return self-reference
          */
         public GetObjectWhenResponseReceiving<T, R> responseCriteriaNot(Criteria<HttpResponse<T>>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(responseResultMatches(NOT(criteria)));
-            return this;
+            return responseCriteria(NOT(criteria));
         }
 
         @Override
         public GetObjectWhenResponseReceiving<T, R> criteriaOr(Criteria<? super R>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(executionResultMatches(new ResponseExecutionResultMatches<>(OR(criteria))));
+            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(executionResultMatches(resultMatches(OR(criteria))));
             return super.criteriaOr(criteria);
         }
 
         @Override
         public GetObjectWhenResponseReceiving<T, R> criteriaOnlyOne(Criteria<? super R>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(executionResultMatches(new ResponseExecutionResultMatches<>(ONLY_ONE(criteria))));
+            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(executionResultMatches(resultMatches(ONLY_ONE(criteria))));
             return super.criteriaOnlyOne(criteria);
         }
 
         @Override
         public GetObjectWhenResponseReceiving<T, R> criteriaNot(Criteria<? super R>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(executionResultMatches(new ResponseExecutionResultMatches<>(NOT(criteria))));
+            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(executionResultMatches(resultMatches(NOT(criteria))));
             return super.criteriaNot(criteria);
         }
 
         @Override
         public GetObjectWhenResponseReceiving<T, R> criteria(Criteria<? super R> criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(executionResultMatches(new ResponseExecutionResultMatches<>(criteria)));
+            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(executionResultMatches(resultMatches(criteria)));
             return super.criteria(criteria);
         }
 
         @Override
         public GetObjectWhenResponseReceiving<T, R> criteria(String description, Predicate<? super R> criteria) {
-            return criteria(condition(translate(description), criteria));
+            return criteria(condition(description, criteria));
         }
 
         @Override

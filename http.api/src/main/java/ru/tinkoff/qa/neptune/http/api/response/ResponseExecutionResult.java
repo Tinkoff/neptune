@@ -1,16 +1,15 @@
 package ru.tinkoff.qa.neptune.http.api.response;
 
 import java.net.http.HttpResponse;
-import java.util.function.Function;
 
 final class ResponseExecutionResult<T, R> {
 
     private final HttpResponse<T> response;
     private final R result;
 
-    ResponseExecutionResult(HttpResponse<T> response, Function<T, R> f) {
+    ResponseExecutionResult(HttpResponse<T> response, R result) {
         this.response = response;
-        result = f.apply(response.body());
+        this.result = result;
     }
 
     HttpResponse<T> getResponse() {
@@ -19,5 +18,9 @@ final class ResponseExecutionResult<T, R> {
 
     public R getResult() {
         return result;
+    }
+
+    public String toString() {
+        return response.toString();
     }
 }

@@ -20,11 +20,11 @@ import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.createCaptors;
-import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionCriteria.executionResultMatches;
 
 @MaxDepthOfReporting(1)
 @ThrowWhenNoData(toThrow = ExpectedHttpResponseHasNotBeenReceivedException.class, startDescription = "Not received")
@@ -56,19 +56,18 @@ final class ResponseSequentialGetSupplierInternal<T, R> extends SequentialGetSte
                                                                                HttpResponse.BodyHandler<T> bodyHandler,
                                                                                Function<T, R> function,
                                                                                Predicate<R> predicate) {
+        checkArgument(isNotBlank(description), "Description should be defined");
         return new ResponseSequentialGetSupplierInternal<>(new GetResponseFunction<>(requestBuilder.build(),
                 bodyHandler,
-                function))
-                .criteria(executionResultMatches(new ResponseExecutionResultMatches<>(condition(description,
-                        r -> r != null && predicate.test(r)))));
+                function, r -> r != null && predicate.test(r)));
     }
 
     @Description("Http Response")
-    static <T, R> ResponseSequentialGetSupplierInternal<T, T> responseInternal(RequestBuilder requestBuilder,
-                                                                               HttpResponse.BodyHandler<T> bodyHandler) {
+    static <T> ResponseSequentialGetSupplierInternal<T, T> responseInternal(RequestBuilder requestBuilder,
+                                                                            HttpResponse.BodyHandler<T> bodyHandler) {
         return new ResponseSequentialGetSupplierInternal<>(new GetResponseFunction<>(requestBuilder.build(),
                 bodyHandler,
-                t -> t));
+                t -> t, null));
     }
 
     @Override

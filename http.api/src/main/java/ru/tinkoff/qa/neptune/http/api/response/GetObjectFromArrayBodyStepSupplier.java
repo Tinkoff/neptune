@@ -21,6 +21,7 @@ import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.trans
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionCriteria.arrayResultMatches;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionCriteria.responseResultMatches;
+import static ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionResultHasItems.hasResultItems;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplierInternal.responseInternal;
 
 /**
@@ -62,7 +63,7 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, M, S extends GetO
     }
 
     /**
-     * Creates an instance of {@link GetObjectFromArrayWhenResponseReceived}. It builds a step-function that retrieves an object from some
+     * Creates an instance of {@link GetObjectFromArrayWhenResponseReceiving}. It builds a step-function that retrieves an object from some
      * array which is retrieved from http response body.
      *
      * @param description    is a description of resulted object
@@ -71,7 +72,7 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, M, S extends GetO
      * @param f              is a function that describes how to get an array from a body of http response
      * @param <T>            is a type of response body
      * @param <R>            is a type of resulted object
-     * @return an instance of {@link GetObjectFromArrayWhenResponseReceived}
+     * @return an instance of {@link GetObjectFromArrayWhenResponseReceiving}
      */
     @Description("{description}")
     public static <T, R> GetObjectFromArrayWhenResponseReceiving<T, R> asOneOfArray(
@@ -106,14 +107,14 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, M, S extends GetO
     }
 
     /**
-     * Creates an instance of {@link GetObjectFromArrayWhenResponseReceived}. It builds a step-function that retrieves an object from some
+     * Creates an instance of {@link GetObjectFromArrayWhenResponseReceiving}. It builds a step-function that retrieves an object from some
      * array which is retrieved from http response body.
      *
      * @param description    is a description of resulted object
      * @param requestBuilder describes a request to be sent
      * @param handler        is a response body handler
      * @param <R>            is a type of an item of array of response body
-     * @return an instance of {@link GetObjectFromArrayWhenResponseReceived}
+     * @return an instance of {@link GetObjectFromArrayWhenResponseReceiving}
      */
     public static <R> GetObjectFromArrayWhenResponseReceiving<R[], R> asOneOfArray(
             String description,
@@ -181,8 +182,7 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, M, S extends GetO
          * @return self-reference
          */
         public GetObjectFromArrayWhenResponseReceiving<T, R> responseCriteria(String description, Predicate<HttpResponse<T>> predicate) {
-            ((ResponseSequentialGetSupplierInternal<T, R[]>) getFrom()).criteria(responseResultMatches(description, predicate));
-            return this;
+            return responseCriteria(condition(description, predicate));
         }
 
         /**
@@ -203,8 +203,7 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, M, S extends GetO
          * @return self-reference
          */
         public GetObjectFromArrayWhenResponseReceiving<T, R> responseCriteriaOr(Criteria<HttpResponse<T>>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, R[]>) getFrom()).criteria(responseResultMatches(OR(criteria)));
-            return this;
+            return responseCriteria(OR(criteria));
         }
 
         /**
@@ -214,8 +213,7 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, M, S extends GetO
          * @return self-reference
          */
         public GetObjectFromArrayWhenResponseReceiving<T, R> responseCriteriaOnlyOne(Criteria<HttpResponse<T>>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, R[]>) getFrom()).criteria(responseResultMatches(ONLY_ONE(criteria)));
-            return this;
+            return responseCriteria(ONLY_ONE(criteria));
         }
 
         /**
@@ -225,37 +223,36 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, M, S extends GetO
          * @return self-reference
          */
         public GetObjectFromArrayWhenResponseReceiving<T, R> responseCriteriaNot(Criteria<HttpResponse<T>>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, R[]>) getFrom()).criteria(responseResultMatches(NOT(criteria)));
-            return this;
+            return responseCriteria(NOT(criteria));
         }
 
         @Override
         public GetObjectFromArrayWhenResponseReceiving<T, R> criteriaOr(Criteria<? super R>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, R[]>) getFrom()).criteria(arrayResultMatches(new ResponseExecutionResultHasItems<>(OR(criteria))));
+            ((ResponseSequentialGetSupplierInternal<T, R[]>) getFrom()).criteria(arrayResultMatches(hasResultItems(OR(criteria))));
             return super.criteriaOr(criteria);
         }
 
         @Override
         public GetObjectFromArrayWhenResponseReceiving<T, R> criteriaOnlyOne(Criteria<? super R>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, R[]>) getFrom()).criteria(arrayResultMatches(new ResponseExecutionResultHasItems<>(ONLY_ONE(criteria))));
+            ((ResponseSequentialGetSupplierInternal<T, R[]>) getFrom()).criteria(arrayResultMatches(hasResultItems(ONLY_ONE(criteria))));
             return super.criteriaOnlyOne(criteria);
         }
 
         @Override
         public GetObjectFromArrayWhenResponseReceiving<T, R> criteriaNot(Criteria<? super R>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, R[]>) getFrom()).criteria(arrayResultMatches(new ResponseExecutionResultHasItems<>(NOT(criteria))));
+            ((ResponseSequentialGetSupplierInternal<T, R[]>) getFrom()).criteria(arrayResultMatches(hasResultItems(NOT(criteria))));
             return super.criteriaNot(criteria);
         }
 
         @Override
         public GetObjectFromArrayWhenResponseReceiving<T, R> criteria(Criteria<? super R> criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, R[]>) getFrom()).criteria(arrayResultMatches(new ResponseExecutionResultHasItems<>(criteria)));
+            ((ResponseSequentialGetSupplierInternal<T, R[]>) getFrom()).criteria(arrayResultMatches(hasResultItems(criteria)));
             return super.criteria(criteria);
         }
 
         @Override
         public GetObjectFromArrayWhenResponseReceiving<T, R> criteria(String description, Predicate<? super R> criteria) {
-            return criteria(condition(translate(description), criteria));
+            return criteria(condition(description, criteria));
         }
 
         @Override

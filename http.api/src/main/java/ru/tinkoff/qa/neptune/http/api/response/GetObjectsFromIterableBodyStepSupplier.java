@@ -22,6 +22,7 @@ import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.trans
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionCriteria.iterableResultMatches;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionCriteria.responseResultMatches;
+import static ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionResultHasItems.hasResultItems;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplierInternal.responseInternal;
 
 /**
@@ -169,13 +170,13 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
          * @see SequentialGetStepSupplier#timeOut(Duration)
          */
         public GetObjectsFromIterableWhenResponseReceiving<T, R, S> retryTimeOut(Duration timeOut) {
-            ((ResponseSequentialGetSupplierInternal<T, S>) getFrom()).timeOut(timeOut);
+            ((ResponseSequentialGetSupplierInternal<?, ?>) getFrom()).timeOut(timeOut);
             return this;
         }
 
         @Override
         public GetObjectsFromIterableWhenResponseReceiving<T, R, S> pollingInterval(Duration pollingTime) {
-            ((ResponseSequentialGetSupplierInternal<T, S>) getFrom()).pollingInterval(pollingTime);
+            ((ResponseSequentialGetSupplierInternal<?, ?>) getFrom()).pollingInterval(pollingTime);
             return this;
         }
 
@@ -187,8 +188,7 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
          * @return self-reference
          */
         public GetObjectsFromIterableWhenResponseReceiving<T, R, S> responseCriteria(String description, Predicate<HttpResponse<T>> predicate) {
-            ((ResponseSequentialGetSupplierInternal<T, S>) getFrom()).criteria(responseResultMatches(description, predicate));
-            return this;
+            return responseCriteria(condition(description, predicate));
         }
 
         /**
@@ -209,8 +209,7 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
          * @return self-reference
          */
         public GetObjectsFromIterableWhenResponseReceiving<T, R, S> responseCriteriaOr(Criteria<HttpResponse<T>>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, S>) getFrom()).criteria(responseResultMatches(OR(criteria)));
-            return this;
+            return responseCriteria(OR(criteria));
         }
 
         /**
@@ -220,8 +219,7 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
          * @return self-reference
          */
         public GetObjectsFromIterableWhenResponseReceiving<T, R, S> responseCriteriaOnlyOne(Criteria<HttpResponse<T>>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, S>) getFrom()).criteria(responseResultMatches(ONLY_ONE(criteria)));
-            return this;
+            return responseCriteria(ONLY_ONE(criteria));
         }
 
         /**
@@ -231,37 +229,36 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
          * @return self-reference
          */
         public GetObjectsFromIterableWhenResponseReceiving<T, R, S> responseCriteriaNot(Criteria<HttpResponse<T>>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, S>) getFrom()).criteria(responseResultMatches(NOT(criteria)));
-            return this;
+            return responseCriteria(NOT(criteria));
         }
 
         @Override
         public GetObjectsFromIterableWhenResponseReceiving<T, R, S> criteriaOr(Criteria<? super R>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, S>) getFrom()).criteria(iterableResultMatches((new ResponseExecutionResultHasItems<>(OR(criteria)))));
+            ((ResponseSequentialGetSupplierInternal<T, S>) getFrom()).criteria(iterableResultMatches(hasResultItems(OR(criteria))));
             return super.criteriaOr(criteria);
         }
 
         @Override
         public GetObjectsFromIterableWhenResponseReceiving<T, R, S> criteriaOnlyOne(Criteria<? super R>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, S>) getFrom()).criteria(iterableResultMatches(new ResponseExecutionResultHasItems<>(ONLY_ONE(criteria))));
+            ((ResponseSequentialGetSupplierInternal<T, S>) getFrom()).criteria(iterableResultMatches(hasResultItems(ONLY_ONE(criteria))));
             return super.criteriaOnlyOne(criteria);
         }
 
         @Override
         public GetObjectsFromIterableWhenResponseReceiving<T, R, S> criteriaNot(Criteria<? super R>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, S>) getFrom()).criteria(iterableResultMatches(new ResponseExecutionResultHasItems<>(NOT(criteria))));
+            ((ResponseSequentialGetSupplierInternal<T, S>) getFrom()).criteria(iterableResultMatches(hasResultItems(NOT(criteria))));
             return super.criteriaNot(criteria);
         }
 
         @Override
         public GetObjectsFromIterableWhenResponseReceiving<T, R, S> criteria(Criteria<? super R> criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, S>) getFrom()).criteria(iterableResultMatches(new ResponseExecutionResultHasItems<>(criteria)));
+            ((ResponseSequentialGetSupplierInternal<T, S>) getFrom()).criteria(iterableResultMatches(hasResultItems(criteria)));
             return super.criteria(criteria);
         }
 
         @Override
         public GetObjectsFromIterableWhenResponseReceiving<T, R, S> criteria(String description, Predicate<? super R> criteria) {
-            return criteria(condition(translate(description), criteria));
+            return criteria(condition(description, criteria));
         }
 
         @Override

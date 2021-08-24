@@ -22,6 +22,7 @@ import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.trans
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionCriteria.iterableResultMatches;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionCriteria.responseResultMatches;
+import static ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionResultHasItems.hasResultItems;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplierInternal.responseInternal;
 
 /**
@@ -64,7 +65,7 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, M, S extends G
     }
 
     /**
-     * Creates an instance of {@link GetObjectFromIterableWhenResponseReceived}. It builds a step-function that retrieves an object from some
+     * Creates an instance of {@link GetObjectFromIterableWhenResponseReceiving}. It builds a step-function that retrieves an object from some
      * {@link Iterable} which is retrieved from http response body.
      *
      * @param description    is a description of resulted object
@@ -74,7 +75,7 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, M, S extends G
      * @param <T>            is a type of response body
      * @param <R>            is a type of resulted object
      * @param <S>            if a type of {@link Iterable} of R
-     * @return an instance of {@link GetObjectFromIterableWhenResponseReceived}
+     * @return an instance of {@link GetObjectFromIterableWhenResponseReceiving}
      */
     @Description("{description}")
     public static <T, R, S extends Iterable<R>> GetObjectFromIterableWhenResponseReceiving<T, R> asOneOfIterable(
@@ -110,7 +111,7 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, M, S extends G
     }
 
     /**
-     * Creates an instance of {@link GetObjectFromIterableWhenResponseReceived}. It builds a step-function that retrieves an object from some
+     * Creates an instance of {@link GetObjectFromIterableWhenResponseReceiving}. It builds a step-function that retrieves an object from some
      * {@link Iterable} which is retrieved from http response body.
      *
      * @param description    is a description of resulted object
@@ -118,7 +119,7 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, M, S extends G
      * @param handler        is a response body handler
      * @param <R>            is a type of element of an iterable of response body
      * @param <S>            if a type of {@link Iterable} of response body
-     * @return an instance of {@link GetObjectFromIterableWhenResponseReceived}
+     * @return an instance of {@link GetObjectFromIterableWhenResponseReceiving}
      */
     public static <R, S extends Iterable<R>> GetObjectFromIterableWhenResponseReceiving<S, R> asOneOfIterable(
             String description,
@@ -168,13 +169,13 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, M, S extends G
          * @see SequentialGetStepSupplier#timeOut(Duration)
          */
         public GetObjectFromIterableWhenResponseReceiving<T, R> retryTimeOut(Duration timeOut) {
-            ((ResponseSequentialGetSupplierInternal<T, Iterable<R>>) getFrom()).timeOut(timeOut);
+            ((ResponseSequentialGetSupplierInternal<?, ?>) getFrom()).timeOut(timeOut);
             return this;
         }
 
         @Override
         public GetObjectFromIterableWhenResponseReceiving<T, R> pollingInterval(Duration pollingTime) {
-            ((ResponseSequentialGetSupplierInternal<T, Iterable<R>>) getFrom()).pollingInterval(pollingTime);
+            ((ResponseSequentialGetSupplierInternal<?, ?>) getFrom()).pollingInterval(pollingTime);
             return this;
         }
 
@@ -186,8 +187,7 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, M, S extends G
          * @return self-reference
          */
         public GetObjectFromIterableWhenResponseReceiving<T, R> responseCriteria(String description, Predicate<HttpResponse<T>> predicate) {
-            ((ResponseSequentialGetSupplierInternal<T, Iterable<R>>) getFrom()).criteria(responseResultMatches(description, predicate));
-            return this;
+            return responseCriteria(condition(description, predicate));
         }
 
         /**
@@ -208,8 +208,7 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, M, S extends G
          * @return self-reference
          */
         public GetObjectFromIterableWhenResponseReceiving<T, R> responseCriteriaOr(Criteria<HttpResponse<T>>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, Iterable<R>>) getFrom()).criteria(responseResultMatches(OR(criteria)));
-            return this;
+            return responseCriteria(OR(criteria));
         }
 
         /**
@@ -219,8 +218,7 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, M, S extends G
          * @return self-reference
          */
         public GetObjectFromIterableWhenResponseReceiving<T, R> responseCriteriaOnlyOne(Criteria<HttpResponse<T>>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, Iterable<R>>) getFrom()).criteria(responseResultMatches(ONLY_ONE(criteria)));
-            return this;
+            return responseCriteria(ONLY_ONE(criteria));
         }
 
         /**
@@ -230,37 +228,36 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, M, S extends G
          * @return self-reference
          */
         public GetObjectFromIterableWhenResponseReceiving<T, R> responseCriteriaNot(Criteria<HttpResponse<T>>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, Iterable<R>>) getFrom()).criteria(responseResultMatches(NOT(criteria)));
-            return this;
+            return responseCriteria(NOT(criteria));
         }
 
         @Override
         public GetObjectFromIterableWhenResponseReceiving<T, R> criteriaOr(Criteria<? super R>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, Iterable<R>>) getFrom()).criteria(iterableResultMatches((new ResponseExecutionResultHasItems<>(OR(criteria)))));
+            ((ResponseSequentialGetSupplierInternal<T, Iterable<R>>) getFrom()).criteria(iterableResultMatches(hasResultItems(OR(criteria))));
             return super.criteriaOr(criteria);
         }
 
         @Override
         public GetObjectFromIterableWhenResponseReceiving<T, R> criteriaOnlyOne(Criteria<? super R>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, Iterable<R>>) getFrom()).criteria(iterableResultMatches(new ResponseExecutionResultHasItems<>(ONLY_ONE(criteria))));
+            ((ResponseSequentialGetSupplierInternal<T, Iterable<R>>) getFrom()).criteria(iterableResultMatches(hasResultItems(ONLY_ONE(criteria))));
             return super.criteriaOnlyOne(criteria);
         }
 
         @Override
         public GetObjectFromIterableWhenResponseReceiving<T, R> criteriaNot(Criteria<? super R>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, Iterable<R>>) getFrom()).criteria(iterableResultMatches(new ResponseExecutionResultHasItems<>(NOT(criteria))));
+            ((ResponseSequentialGetSupplierInternal<T, Iterable<R>>) getFrom()).criteria(iterableResultMatches(hasResultItems(NOT(criteria))));
             return super.criteriaNot(criteria);
         }
 
         @Override
         public GetObjectFromIterableWhenResponseReceiving<T, R> criteria(Criteria<? super R> criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, Iterable<R>>) getFrom()).criteria(iterableResultMatches(new ResponseExecutionResultHasItems<>(criteria)));
+            ((ResponseSequentialGetSupplierInternal<T, Iterable<R>>) getFrom()).criteria(iterableResultMatches(hasResultItems(criteria)));
             return super.criteria(criteria);
         }
 
         @Override
         public GetObjectFromIterableWhenResponseReceiving<T, R> criteria(String description, Predicate<? super R> criteria) {
-            return criteria(condition(translate(description), criteria));
+            return criteria(condition(description, criteria));
         }
 
         @Override

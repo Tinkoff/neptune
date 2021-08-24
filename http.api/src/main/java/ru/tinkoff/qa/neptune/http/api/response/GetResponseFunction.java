@@ -6,6 +6,9 @@ import ru.tinkoff.qa.neptune.http.api.request.NeptuneHttpRequestImpl;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.function.Function;
+import java.util.function.Predicate;
+
+import static java.util.Optional.ofNullable;
 
 @SuppressWarnings("unchecked")
 final class GetResponseFunction<T, R> implements Function<HttpStepContext, ResponseExecutionResult<T, R>> {
@@ -14,10 +17,12 @@ final class GetResponseFunction<T, R> implements Function<HttpStepContext, Respo
     private final HttpRequest request;
     private final HttpResponse.BodyHandler<T> bodyHandler;
     private final Function<T, R> function;
+    private final Predicate<? super R> predicate;
 
-    GetResponseFunction(HttpRequest request, HttpResponse.BodyHandler<T> bodyHandler, Function<T, R> function) {
+    GetResponseFunction(HttpRequest request, HttpResponse.BodyHandler<T> bodyHandler, Function<T, R> function, Predicate<? super R> predicate) {
         this.bodyHandler = bodyHandler;
         this.function = function;
+        this.predicate = predicate;
         info = new ResponseExecutionInfo();
         this.request = request;
     }
@@ -34,7 +39,15 @@ final class GetResponseFunction<T, R> implements Function<HttpStepContext, Respo
             info.stopExecutionLogging();
         }
 
-        return new ResponseExecutionResult<>((HttpResponse<T>) info.getLastReceived(), function);
+        var result = function.apply(((HttpResponse<T>) info.getLastReceived()).body());
+        if (ofNullable(predicate)
+                .map(p -> p.test(result))
+                .orElse(true)) {
+            return new ResponseExecutionResult<>((HttpResponse<T>) info.getLastReceived(), result);
+        }
+        else {
+            return null;
+        }
     }
 
     NeptuneHttpRequestImpl getRequest() {
