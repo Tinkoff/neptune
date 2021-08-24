@@ -89,7 +89,6 @@ public class KafkaPollIterableItemSupplier<T> extends SequentialGetStepSupplier
             String description,
             Class<M> cls,
             String... topics) {
-        checkArgument(isNotBlank(description), "Description should be defined");
         return kafkaIterableItem(description, cls, t -> t, topics);
     }
 
@@ -97,7 +96,6 @@ public class KafkaPollIterableItemSupplier<T> extends SequentialGetStepSupplier
             String description,
             TypeReference<M> typeT,
             String... topics) {
-        checkArgument(isNotBlank(description), "Description should be defined");
         return kafkaIterableItem(description, typeT, t -> t, topics);
     }
 

@@ -18,16 +18,16 @@ import static java.time.Duration.ofSeconds;
 import static java.util.Arrays.asList;
 import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArrayItemSupplier.kafkaArrayItem;
-import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArrayItemSupplier.kafkaRawMessage;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.kafkaArray;
+import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.kafkaRawMessagesArray;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.kafkaIterableItem;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.kafkaRawMessageIterableItem;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.kafkaIterable;
+import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.kafkaRawMessagesIterable;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollSupplier.DEFAULT_TOPICS_FOR_POLL;
 
 public class PollMessagesTest extends KafkaBaseTest {
@@ -42,19 +42,7 @@ public class PollMessagesTest extends KafkaBaseTest {
         consumer = kafka.getConsumer();
         topicPartition = new TopicPartition("testTopic", 1);
         consumerRecord1 = new ConsumerRecord("testTopic", 1, 0, null,
-                "{\"name\":\"testName\"," +
-                        "\"name1\":29," +
-                        "\"name2\": true," +
-                        " \"member\" : {\n" +
-                        "      \"name\": \"Madame Uppercut\",\n" +
-                        "      \"age\": 39,\n" +
-                        "      \"secretIdentity\": \"Jane Wilson\",\n" +
-                        "      \"powers\": [\n" +
-                        "        \"Million tonne punch\",\n" +
-                        "        \"Damage resistance\",\n" +
-                        "        \"Superhuman reflexes\"\n" +
-                        "      ]\n" +
-                        "    }}");
+                "{\"name\":\"testName\", \"name1\":29, \"name2\": true}");
         consumerRecord2 = new ConsumerRecord("testTopic", 1, 0, null, "{\"1\":1}");
         consumerRecord3 = new ConsumerRecord("testTopic", 1, 0, null, "{\"name\":\"Condition\"}");
 
@@ -313,31 +301,46 @@ public class PollMessagesTest extends KafkaBaseTest {
 
     @Test
     public void test22() {
-        var result = kafka.poll(kafkaRawMessage("testTopic"));
-
-        assertThat(result, is(consumerRecord1.value()));
-    }
-
-    @Test
-    public void test23() {
-        DEFAULT_TOPICS_FOR_POLL.accept("t");
-        kafka.poll(kafkaRawMessage());
-
-        verify(consumer, times(1)).subscribe(asList("t"));
-    }
-
-    @Test
-    public void test24() {
         var result = kafka.poll(kafkaRawMessageIterableItem("testTopic"));
 
         assertThat(result, is(consumerRecord1.value()));
     }
 
     @Test
-    public void test25() {
+    public void test23() {
         DEFAULT_TOPICS_FOR_POLL.accept("tt");
         kafka.poll(kafkaRawMessageIterableItem());
 
         verify(consumer, times(1)).subscribe(asList("tt"));
+    }
+
+    @Test
+    public void test24() {
+        var result = kafka.poll(kafkaRawMessagesIterable("testTopic"));
+
+        assertThat(result, containsInAnyOrder(consumerRecord1.value(), consumerRecord2.value(), consumerRecord3.value()));
+    }
+
+    @Test
+    public void test25() {
+        DEFAULT_TOPICS_FOR_POLL.accept("ttt");
+        kafka.poll(kafkaRawMessagesIterable());
+
+        verify(consumer, times(1)).subscribe(asList("ttt"));
+    }
+
+    @Test
+    public void test26() {
+        var result = kafka.poll(kafkaRawMessagesArray("testTopic"));
+
+        assertThat(result, arrayContainingInAnyOrder(consumerRecord1.value(), consumerRecord2.value(), consumerRecord3.value()));
+    }
+
+    @Test
+    public void test27() {
+        DEFAULT_TOPICS_FOR_POLL.accept("tttt");
+        kafka.poll(kafkaRawMessagesArray());
+
+        verify(consumer, times(1)).subscribe(asList("tttt"));
     }
 }

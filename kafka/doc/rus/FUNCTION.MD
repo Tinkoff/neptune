@@ -126,6 +126,37 @@ public class MyTest {
 }
 ```
 
+```java
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessagesIterable;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    //Если необходимо получить 'сырые' строки, которые возвращаются из kafka
+    List<String> results = kafka().poll(kafkaRawMessagesIterable("testTopic"));
+  }
+}
+```
+
+```java
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessagesIterable;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    //Если необходимо получить 'сырые' строки, которые возвращаются из kafka
+    //Если не указывать топики, то значение топиков возьмется из DEFAULT_TOPICS_FOR_POLL
+    List<String> results = kafka().poll(kafkaRawMessagesIterable());
+  }
+}
+```
+
 Ниже примеры ситуаций, когда [десериализатор](./../../../core.api/doc/rus/SERIALIZATION_DESERIALIZATION.MD) нужно
 передать явно.
 
@@ -314,6 +345,37 @@ public class MyTest {
 }
 ```
 
+```java
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessagesArray;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    //Если необходимо получить 'сырые' строки, которые возвращаются из kafka
+    String[] results = kafka().poll(kafkaRawMessagesArray("testTopic"));
+  }
+}
+```
+
+```java
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessagesArray;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    //Если необходимо получить 'сырые' строки, которые возвращаются из kafka
+    //Если не указывать топики, то значение топиков возьмется из DEFAULT_TOPICS_FOR_POLL
+    String[] results = kafka().poll(kafkaRawMessagesArray());
+  }
+}
+```
+
 Ниже примеры ситуаций, когда [десериализатор](./../../../core.api/doc/rus/SERIALIZATION_DESERIALIZATION.MD) нужно
 передать явно.
 
@@ -490,6 +552,37 @@ public class MyTest {
   public void myTest() {
     //Если не указывать топики, то значение топиков возьмется из DEFAULT_TOPICS_FOR_POLL
     ClassToDeserialize result = kafka().poll(kafkaIterableItem("Нужный элемент листа", ClassToDeserialize.class));
+  }
+}
+```
+
+```java
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessageIterableItem;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    //Если необходимо получить 'сырую' строку, которая возвращается из kafka
+    String results = kafka().poll(kafkaRawMessageIterableItem("testTopic"));
+  }
+}
+```
+
+```java
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessageIterableItem;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    //Если необходимо получить 'сырую' строку, которая возвращается из kafka
+    //Если не указывать топики, то значение топиков возьмется из DEFAULT_TOPICS_FOR_POLL
+    String results = kafka().poll(kafkaRawMessageIterableItem());
   }
 }
 ```

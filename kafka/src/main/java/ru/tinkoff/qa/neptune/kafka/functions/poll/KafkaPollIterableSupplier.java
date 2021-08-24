@@ -26,6 +26,7 @@ import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetFromTopics.getStringResult;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultDataTransformer.KAFKA_DEFAULT_DATA_TRANSFORMER;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollSupplier.DEFAULT_TOPICS_FOR_POLL;
 
@@ -88,7 +89,6 @@ public class KafkaPollIterableSupplier<T> extends SequentialGetStepSupplier
             String description,
             TypeReference<T> typeT,
             String... topics) {
-        checkArgument(isNotBlank(description), "Description should be defined");
         return kafkaIterable(description, typeT, ts -> ts, topics);
     }
 
@@ -96,8 +96,16 @@ public class KafkaPollIterableSupplier<T> extends SequentialGetStepSupplier
             String description,
             Class<T> cls,
             String... topics) {
-        checkArgument(isNotBlank(description), "Description should be defined");
         return kafkaIterable(description, cls, ts -> ts, topics);
+    }
+
+    @Description("String messages")
+    public static StringMessages kafkaRawMessagesIterable(String... topics) {
+        return new StringMessages(getStringResult(topics));
+    }
+
+    public static StringMessages kafkaRawMessagesIterable() {
+        return kafkaRawMessagesIterable(DEFAULT_TOPICS_FOR_POLL.get());
     }
 
     @Override
@@ -145,5 +153,27 @@ public class KafkaPollIterableSupplier<T> extends SequentialGetStepSupplier
     @Override
     protected void onFailure(KafkaStepContext m, Throwable throwable) {
         messages = getFromTopics.getMessages();
+    }
+
+    public static class StringMessages extends KafkaPollIterableSupplier<String> {
+        public StringMessages(GetFromTopics<String> getFromTopics) {
+            super(getFromTopics, s -> s);
+            withDataTransformer(new DataTransformer() {
+                @Override
+                public <T> T deserialize(String string, Class<T> cls) {
+                    return (T) string;
+                }
+
+                @Override
+                public <T> T deserialize(String string, TypeReference<T> type) {
+                    return (T) string;
+                }
+
+                @Override
+                public String serialize(Object obj) {
+                    return obj.toString();
+                }
+            });
+        }
     }
 }
