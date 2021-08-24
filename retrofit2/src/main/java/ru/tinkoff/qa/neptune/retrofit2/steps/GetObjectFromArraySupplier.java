@@ -15,21 +15,26 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
-import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.arrayBodyMatches;
-import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.resultResponseCriteria;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.BodyMatches.body;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.*;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultHasItems.hasResultItems;
 import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getResponse;
 
 @SuppressWarnings("unchecked")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Result criteria")
-public class GetObjectFromArraySupplier<M, R> extends SequentialGetStepSupplier
-        .GetObjectFromArrayChainedStepSupplier<RetrofitContext, R, RequestExecutionResult<R[]>, GetObjectFromArraySupplier<M, R>> {
+public abstract class GetObjectFromArraySupplier<M, R, S extends GetObjectFromArraySupplier<M, R, S>> extends SequentialGetStepSupplier
+        .GetObjectFromArrayChainedStepSupplier<RetrofitContext, R, RequestExecutionResult<M, R[]>, S> {
 
-    protected GetObjectFromArraySupplier(Supplier<M> call, Function<M, R[]> f) {
+    private Criteria<R> derivedValueCriteria;
+
+    protected GetObjectFromArraySupplier(SendRequestAndGet<M, R[]> from) {
         super(RequestExecutionResult::getResult);
-        from(getResponse(new GetStepResultFunction<>(f)).from(call));
+        from(from);
     }
 
     /**
@@ -39,17 +44,19 @@ public class GetObjectFromArraySupplier<M, R> extends SequentialGetStepSupplier
      * @param call        describes a single synchronous call
      * @param f           describes how to get desired value
      * @param <M>         deserialized body
-     * @param <R>         is a type of an item of array
-     * @return an instance of {@link GetObjectFromArraySupplier}
+     * @param <R>         is a type of item of array
+     * @return an instance of {@link ChainedGetObjectFromArraySupplier}
      */
     @Description("{description}")
-    public static <M, R> GetObjectFromArraySupplier<M, R> arrayItem(
+    public static <M, R> ChainedGetObjectFromArraySupplier<M, R> arrayItem(
             @DescriptionFragment(
                     value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class) String description,
             Supplier<M> call, Function<M, R[]> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectFromArraySupplier<>(call, f);
+        return new ChainedGetObjectFromArraySupplier<>(getResponse(translate(description),
+                new GetStepResultFunction<>(f, rs -> nonNull(rs) && rs.length > 0))
+                .from(call));
     }
 
     /**
@@ -58,11 +65,18 @@ public class GetObjectFromArraySupplier<M, R> extends SequentialGetStepSupplier
      * @param description is description of value to get
      * @param call        describes a single synchronous call
      * @param <M>         deserialized body
-     * @return an instance of {@link GetObjectFromArraySupplier}
+     * @return an instance of {@link SimpleGetObjectFromArraySupplier}
      */
-    public static <M> GetObjectFromArraySupplier<M[], M> arrayItem(String description,
-                                                                   Supplier<M[]> call) {
-        return arrayItem(description, call, ms -> ms);
+    @Description("{description}")
+    public static <M> SimpleGetObjectFromArraySupplier<M> arrayItem(
+            @DescriptionFragment(
+                    value = "description",
+                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class) String description,
+            Supplier<M[]> call) {
+        checkArgument(isNotBlank(description), "description of resulted value is not defined");
+        return new SimpleGetObjectFromArraySupplier<>(getResponse(translate(description),
+                new GetStepResultFunction<>((Function<M[], M[]>) ms -> ms, ms -> nonNull(ms) && ms.length > 0))
+                .from(call));
     }
 
     /**
@@ -72,11 +86,11 @@ public class GetObjectFromArraySupplier<M, R> extends SequentialGetStepSupplier
      * @param call        describes a single synchronous call
      * @param f           describes how to get desired value
      * @param <M>         deserialized body
-     * @param <R>         is a type of an item of array
-     * @return an instance of {@link GetObjectFromArraySupplier}
+     * @param <R>         is a type of item of array
+     * @return an instance of {@link ChainedGetObjectFromArraySupplier}
      */
-    public static <M, R> GetObjectFromArraySupplier<M, R> callArrayItem(String description,
-                                                                        Supplier<Call<M>> call, Function<M, R[]> f) {
+    public static <M, R> ChainedGetObjectFromArraySupplier<M, R> callArrayItem(String description,
+                                                                               Supplier<Call<M>> call, Function<M, R[]> f) {
         return arrayItem(description, new CallBodySupplier<>(call), f);
     }
 
@@ -88,82 +102,128 @@ public class GetObjectFromArraySupplier<M, R> extends SequentialGetStepSupplier
      * @param <M>         deserialized body
      * @return an instance of {@link GetObjectFromArraySupplier}
      */
-    public static <M> GetObjectFromArraySupplier<M[], M> callArrayItem(String description,
-                                                                       Supplier<Call<M[]>> call) {
-        return callArrayItem(description, call, ms -> ms);
+    public static <M> SimpleGetObjectFromArraySupplier<M> callArrayItem(String description,
+                                                                        Supplier<Call<M[]>> call) {
+        return arrayItem(description, new CallBodySupplier<>(call));
     }
 
-    public GetObjectFromArraySupplier<M, R> retryTimeOut(Duration timeOut) {
+    public S retryTimeOut(Duration timeOut) {
         ((SendRequestAndGet<M, R[]>) getFrom()).timeOut(timeOut);
-        return this;
+        return (S) this;
     }
 
     @Override
-    public GetObjectFromArraySupplier<M, R> pollingInterval(Duration timeOut) {
+    public S pollingInterval(Duration timeOut) {
         ((SendRequestAndGet<M, R[]>) getFrom()).pollingInterval(timeOut);
-        return this;
+        return (S) this;
     }
 
-    public GetObjectFromArraySupplier<M, R> responseCriteria(Criteria<Response> criteria) {
+    public S responseCriteria(Criteria<Response> criteria) {
         ((SendRequestAndGet<M, R[]>) getFrom()).criteria(resultResponseCriteria(criteria));
-        return this;
+        return (S) this;
     }
 
-    public GetObjectFromArraySupplier<M, R> responseCriteria(String description, Predicate<Response> predicate) {
+    public S responseCriteria(String description, Predicate<Response> predicate) {
         return responseCriteria(condition(description, predicate));
     }
 
-    public GetObjectFromArraySupplier<M, R> responseCriteriaOr(Criteria<Response>... criteria) {
+    public S responseCriteriaOr(Criteria<Response>... criteria) {
         ((SendRequestAndGet<M, R[]>) getFrom()).criteria(resultResponseCriteria(OR(criteria)));
-        return this;
+        return (S) this;
     }
 
-    public GetObjectFromArraySupplier<M, R> responseCriteriaOnlyOne(Criteria<Response>... criteria) {
+    public S responseCriteriaOnlyOne(Criteria<Response>... criteria) {
         ((SendRequestAndGet<M, R[]>) getFrom()).criteria(resultResponseCriteria(ONLY_ONE(criteria)));
-        return this;
+        return (S) this;
     }
 
-    public GetObjectFromArraySupplier<M, R> responseCriteriaNot(Criteria<Response>... criteria) {
+    public S responseCriteriaNot(Criteria<Response>... criteria) {
         ((SendRequestAndGet<M, R[]>) getFrom()).criteria(resultResponseCriteria(NOT(criteria)));
-        return this;
+        return (S) this;
+    }
+
+    private void criteriaForDerivedValue(Criteria<? super R> criteria) {
+        derivedValueCriteria = ofNullable(derivedValueCriteria)
+                .map(c -> AND(c, criteria))
+                .orElse((Criteria<R>) criteria);
     }
 
     @Override
-    public GetObjectFromArraySupplier<M, R> criteriaOr(Criteria<? super R>... criteria) {
-        var orCriteria = OR(criteria);
-        ((SendRequestAndGet<M, R[]>) getFrom()).criteria(arrayBodyMatches(new BodyHasItems(orCriteria), orCriteria));
+    public S criteriaOr(Criteria<? super R>... criteria) {
+        criteriaForDerivedValue(OR(criteria));
         return super.criteriaOr(criteria);
     }
 
     @Override
-    public GetObjectFromArraySupplier<M, R> criteriaOnlyOne(Criteria<? super R>... criteria) {
-        var xorCriteria = ONLY_ONE(criteria);
-        ((SendRequestAndGet<M, R[]>) getFrom()).criteria(arrayBodyMatches(new BodyHasItems(xorCriteria), xorCriteria));
+    public S criteriaOnlyOne(Criteria<? super R>... criteria) {
+        criteriaForDerivedValue(ONLY_ONE(criteria));
         return super.criteriaOnlyOne(criteria);
     }
 
     @Override
-    public GetObjectFromArraySupplier<M, R> criteriaNot(Criteria<? super R>... criteria) {
-        var notCriteria = NOT(criteria);
-        ((SendRequestAndGet<M, R[]>) getFrom()).criteria(arrayBodyMatches(new BodyHasItems(notCriteria), notCriteria));
+    public S criteriaNot(Criteria<? super R>... criteria) {
+        criteriaForDerivedValue(NOT(criteria));
         return super.criteriaNot(criteria);
     }
 
     @Override
-    public GetObjectFromArraySupplier<M, R> criteria(Criteria<? super R> criteria) {
-        ((SendRequestAndGet<M, R[]>) getFrom()).criteria(arrayBodyMatches(new BodyHasItems(criteria), criteria));
+    public S criteria(Criteria<? super R> criteria) {
+        criteriaForDerivedValue(criteria);
         return super.criteria(criteria);
     }
 
     @Override
-    public GetObjectFromArraySupplier<M, R> criteria(String description, Predicate<? super R> criteria) {
-        return criteria(condition(translate(description), criteria));
+    public S criteria(String description, Predicate<? super R> criteria) {
+        return criteria(condition(description, criteria));
     }
 
     @Override
-    public GetObjectFromArraySupplier<M, R> throwOnNoResult() {
+    public S throwOnNoResult() {
         ((SendRequestAndGet<M, R[]>) getFrom()).throwOnNoResult();
         super.throwOnNoResult();
-        return this;
+        return (S) this;
+    }
+
+    @Override
+    public Function<RetrofitContext, R> get() {
+        if (derivedValueCriteria != null) {
+            ((SendRequestAndGet<M, R[]>) getFrom()).criteria(arrayResultMatches(hasResultItems(derivedValueCriteria)));
+        }
+        return super.get();
+    }
+
+    public static class SimpleGetObjectFromArraySupplier<M> extends GetObjectFromArraySupplier<M[], M, SimpleGetObjectFromArraySupplier<M>> {
+
+        private SimpleGetObjectFromArraySupplier(SendRequestAndGet<M[], M[]> from) {
+            super(from);
+        }
+    }
+
+    public static class ChainedGetObjectFromArraySupplier<M, R> extends GetObjectFromArraySupplier<M, R, ChainedGetObjectFromArraySupplier<M, R>> {
+
+        private ChainedGetObjectFromArraySupplier(SendRequestAndGet<M, R[]> from) {
+            super(from);
+        }
+
+        public ChainedGetObjectFromArraySupplier<M, R> callBodyCriteria(Criteria<? super M> criteria) {
+            ((SendRequestAndGet<M, R>) getFrom()).criteria(bodyMatches(body(criteria)));
+            return this;
+        }
+
+        public ChainedGetObjectFromArraySupplier<M, R> callBodyCriteria(String description, Predicate<? super M> predicate) {
+            return callBodyCriteria(condition(description, predicate));
+        }
+
+        public ChainedGetObjectFromArraySupplier<M, R> callBodyCriteriaOr(Criteria<? super M>... criteria) {
+            return callBodyCriteria(OR(criteria));
+        }
+
+        public ChainedGetObjectFromArraySupplier<M, R> callBodyCriteriaOnlyOne(Criteria<? super M>... criteria) {
+            return callBodyCriteria(ONLY_ONE(criteria));
+        }
+
+        public ChainedGetObjectFromArraySupplier<M, R> callBodyCriteriaNot(Criteria<? super M>... criteria) {
+            return callBodyCriteria(NOT(criteria));
+        }
     }
 }

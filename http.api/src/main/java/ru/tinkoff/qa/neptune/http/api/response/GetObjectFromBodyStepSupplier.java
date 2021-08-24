@@ -16,6 +16,7 @@ import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
@@ -141,6 +142,8 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, M, S extends GetObject
     public static final class GetObjectWhenResponseReceiving<T, R>
             extends GetObjectFromBodyStepSupplier<T, R, ResponseExecutionResult<T, R>, GetObjectWhenResponseReceiving<T, R>> {
 
+        private Criteria<R> derivedValueCriteria;
+
         private GetObjectWhenResponseReceiving(ResponseSequentialGetSupplierInternal<T, R> getResponse) {
             super(ResponseExecutionResult::getResult);
             from(getResponse.addIgnored(Exception.class));
@@ -216,27 +219,33 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, M, S extends GetObject
             return responseCriteria(NOT(criteria));
         }
 
+        private void criteriaForDerivedValue(Criteria<? super R> criteria) {
+            derivedValueCriteria = ofNullable(derivedValueCriteria)
+                    .map(c -> AND(c, criteria))
+                    .orElse((Criteria<R>) criteria);
+        }
+
         @Override
         public GetObjectWhenResponseReceiving<T, R> criteriaOr(Criteria<? super R>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(executionResultMatches(resultMatches(OR(criteria))));
+            criteriaForDerivedValue(OR(criteria));
             return super.criteriaOr(criteria);
         }
 
         @Override
         public GetObjectWhenResponseReceiving<T, R> criteriaOnlyOne(Criteria<? super R>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(executionResultMatches(resultMatches(ONLY_ONE(criteria))));
+            criteriaForDerivedValue(ONLY_ONE(criteria));
             return super.criteriaOnlyOne(criteria);
         }
 
         @Override
         public GetObjectWhenResponseReceiving<T, R> criteriaNot(Criteria<? super R>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(executionResultMatches(resultMatches(NOT(criteria))));
+            criteriaForDerivedValue(NOT(criteria));
             return super.criteriaNot(criteria);
         }
 
         @Override
         public GetObjectWhenResponseReceiving<T, R> criteria(Criteria<? super R> criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(executionResultMatches(resultMatches(criteria)));
+            criteriaForDerivedValue(criteria);
             return super.criteria(criteria);
         }
 
@@ -249,6 +258,15 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, M, S extends GetObject
         public GetObjectWhenResponseReceiving<T, R> throwOnNoResult() {
             ((ResponseSequentialGetSupplierInternal<?, ?>) getFrom()).throwOnNoResult();
             return super.throwOnNoResult();
+        }
+
+        @Override
+        public Function<HttpStepContext, R> get() {
+            if (derivedValueCriteria != null) {
+                ((ResponseSequentialGetSupplierInternal<T, R>) getFrom())
+                        .criteria(executionResultMatches(resultMatches((derivedValueCriteria))));
+            }
+            return super.get();
         }
     }
 }

@@ -6,18 +6,18 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
-@Description("Response body: {description}")
+@Description("Derived value from data of http-response body has items: {description}")
 @SuppressWarnings("unchecked")
-final class BodyMatches<R> {
+final class ResultHasItems<R> {
     @DescriptionFragment(value = "description")
     final Criteria<R> criteria;
 
-    private BodyMatches(Criteria<? super R> criteria) {
+    private ResultHasItems(Criteria<? super R> criteria) {
         this.criteria = (Criteria<R>) criteria;
     }
 
-    static <R> BodyMatches<R> body(Criteria<? super R> criteria) {
-        return new BodyMatches<>(criteria);
+    static <R> ResultHasItems<R> hasResultItems(Criteria<? super R> criteria) {
+        return new ResultHasItems<>(criteria);
     }
 
     @Override

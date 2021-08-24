@@ -17,6 +17,7 @@ import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
@@ -157,6 +158,8 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
     public static final class GetObjectsFromIterableWhenResponseReceiving<T, R, S extends Iterable<R>>
             extends GetObjectsFromIterableBodyStepSupplier<T, R, S, ResponseExecutionResult<T, S>, GetObjectsFromIterableWhenResponseReceiving<T, R, S>> {
 
+        private Criteria<R> derivedValueCriteria;
+
         private GetObjectsFromIterableWhenResponseReceiving(ResponseSequentialGetSupplierInternal<T, S> getResponse) {
             super(ResponseExecutionResult::getResult);
             from(getResponse.addIgnored(Exception.class));
@@ -232,33 +235,47 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
             return responseCriteria(NOT(criteria));
         }
 
+        private void criteriaForDerivedValue(Criteria<? super R> criteria) {
+            derivedValueCriteria = ofNullable(derivedValueCriteria)
+                    .map(c -> AND(c, criteria))
+                    .orElse((Criteria<R>) criteria);
+        }
+
         @Override
         public GetObjectsFromIterableWhenResponseReceiving<T, R, S> criteriaOr(Criteria<? super R>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, S>) getFrom()).criteria(iterableResultMatches(hasResultItems(OR(criteria))));
+            criteriaForDerivedValue(OR(criteria));
             return super.criteriaOr(criteria);
         }
 
         @Override
         public GetObjectsFromIterableWhenResponseReceiving<T, R, S> criteriaOnlyOne(Criteria<? super R>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, S>) getFrom()).criteria(iterableResultMatches(hasResultItems(ONLY_ONE(criteria))));
+            criteriaForDerivedValue(ONLY_ONE(criteria));
             return super.criteriaOnlyOne(criteria);
         }
 
         @Override
         public GetObjectsFromIterableWhenResponseReceiving<T, R, S> criteriaNot(Criteria<? super R>... criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, S>) getFrom()).criteria(iterableResultMatches(hasResultItems(NOT(criteria))));
+            criteriaForDerivedValue(NOT(criteria));
             return super.criteriaNot(criteria);
         }
 
         @Override
         public GetObjectsFromIterableWhenResponseReceiving<T, R, S> criteria(Criteria<? super R> criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, S>) getFrom()).criteria(iterableResultMatches(hasResultItems(criteria)));
+            criteriaForDerivedValue(criteria);
             return super.criteria(criteria);
         }
 
         @Override
         public GetObjectsFromIterableWhenResponseReceiving<T, R, S> criteria(String description, Predicate<? super R> criteria) {
             return criteria(condition(description, criteria));
+        }
+
+        @Override
+        public Function<HttpStepContext, S> get() {
+            if (derivedValueCriteria != null) {
+                ((ResponseSequentialGetSupplierInternal<T, S>) getFrom()).criteria(iterableResultMatches(hasResultItems(derivedValueCriteria)));
+            }
+            return super.get();
         }
 
         @Override

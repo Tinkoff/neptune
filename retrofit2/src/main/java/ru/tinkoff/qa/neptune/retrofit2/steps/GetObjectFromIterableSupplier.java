@@ -15,21 +15,27 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.collect.Iterables.size;
+import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
-import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.iterableBodyMatches;
-import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.resultResponseCriteria;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.BodyMatches.body;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.*;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultHasItems.hasResultItems;
 import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getResponse;
 
 @SuppressWarnings("unchecked")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Result criteria")
-public class GetObjectFromIterableSupplier<M, R> extends SequentialGetStepSupplier
-        .GetObjectFromIterableChainedStepSupplier<RetrofitContext, R, RequestExecutionResult<Iterable<R>>, GetObjectFromIterableSupplier<M, R>> {
+public abstract class GetObjectFromIterableSupplier<M, R, S extends GetObjectFromIterableSupplier<M, R, S>> extends SequentialGetStepSupplier
+        .GetObjectFromIterableChainedStepSupplier<RetrofitContext, R, RequestExecutionResult<M, Iterable<R>>, S> {
 
-    protected <S extends Iterable<R>> GetObjectFromIterableSupplier(Supplier<M> call, Function<M, S> f) {
+    private Criteria<R> derivedValueCriteria;
+
+    protected GetObjectFromIterableSupplier(SendRequestAndGet<M, Iterable<R>> from) {
         super(RequestExecutionResult::getResult);
-        from((SendRequestAndGet<M, Iterable<R>>) getResponse(new GetStepResultFunction<>(f)).from(call));
+        from(from);
     }
 
     /**
@@ -39,18 +45,20 @@ public class GetObjectFromIterableSupplier<M, R> extends SequentialGetStepSuppli
      * @param call        describes a single synchronous call
      * @param f           describes how to get desired value
      * @param <M>         deserialized body
-     * @param <R>         is a type of an item of iterable
+     * @param <R>         is a type of item of iterable
      * @param <S>         is a type of iterable
-     * @return an instance of {@link GetObjectFromIterableSupplier}
+     * @return an instance of {@link ChainedGetObjectFromIterableSupplier}
      */
     @Description("{description}")
-    public static <M, R, S extends Iterable<R>> GetObjectFromIterableSupplier<M, R> iterableItem(
+    public static <M, R, S extends Iterable<R>> ChainedGetObjectFromIterableSupplier<M, R> iterableItem(
             @DescriptionFragment(
                     value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class) String description,
             Supplier<M> call, Function<M, S> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectFromIterableSupplier<>(call, f);
+        return new ChainedGetObjectFromIterableSupplier<>(getResponse(translate(description),
+                new GetStepResultFunction<>((Function<M, Iterable<R>>) f, rs -> nonNull(rs) && size(rs) > 0))
+                .from(call));
     }
 
     /**
@@ -58,13 +66,20 @@ public class GetObjectFromIterableSupplier<M, R> extends SequentialGetStepSuppli
      *
      * @param description is description of value to get
      * @param call        describes a single synchronous call
-     * @param <R>         is a type of an item of iterable
+     * @param <R>         is a type of item of iterable
      * @param <S>         is a type of iterable
-     * @return an instance of {@link GetObjectFromIterableSupplier}
+     * @return an instance of {@link SimpleGetObjectFromIterableSupplier}
      */
-    public static <R, S extends Iterable<R>> GetObjectFromIterableSupplier<S, R> iterableItem(String description,
-                                                                                              Supplier<S> call) {
-        return iterableItem(description, call, rs -> rs);
+    @Description("{description}")
+    public static <R, S extends Iterable<R>> SimpleGetObjectFromIterableSupplier<R> iterableItem(
+            @DescriptionFragment(
+                    value = "description",
+                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class) String description,
+            Supplier<S> call) {
+        checkArgument(isNotBlank(description), "description of resulted value is not defined");
+        return new SimpleGetObjectFromIterableSupplier<>(getResponse(translate(description),
+                new GetStepResultFunction<>((Function<Iterable<R>, Iterable<R>>) rs -> rs, rs -> nonNull(rs) && size(rs) > 0))
+                .from((Supplier<Iterable<R>>) call));
     }
 
     /**
@@ -74,13 +89,13 @@ public class GetObjectFromIterableSupplier<M, R> extends SequentialGetStepSuppli
      * @param call        describes a single synchronous call
      * @param f           describes how to get desired value
      * @param <M>         deserialized body
-     * @param <R>         is a type of an item of iterable
+     * @param <R>         is a type of item of iterable
      * @param <S>         is a type of iterable
-     * @return an instance of {@link GetObjectFromIterableSupplier}
+     * @return an instance of {@link ChainedGetObjectFromIterableSupplier}
      */
-    public static <M, R, S extends Iterable<R>> GetObjectFromIterableSupplier<M, R> callIterableItem(String description,
-                                                                                                     Supplier<Call<M>> call,
-                                                                                                     Function<M, S> f) {
+    public static <M, R, S extends Iterable<R>> ChainedGetObjectFromIterableSupplier<M, R> callIterableItem(String description,
+                                                                                                            Supplier<Call<M>> call,
+                                                                                                            Function<M, S> f) {
         return iterableItem(description, new CallBodySupplier<>(call), f);
     }
 
@@ -89,86 +104,132 @@ public class GetObjectFromIterableSupplier<M, R> extends SequentialGetStepSuppli
      *
      * @param description is description of value to get
      * @param call        describes a single synchronous call
-     * @param <R>         is a type of an item of iterable
+     * @param <R>         is a type of item of iterable
      * @param <S>         is a type of iterable
-     * @return an instance of {@link GetObjectFromIterableSupplier}
+     * @return an instance of {@link SimpleGetObjectFromIterableSupplier}
      */
-    public static <R, S extends Iterable<R>> GetObjectFromIterableSupplier<S, R> callIterableItem(String description,
-                                                                                                  Supplier<Call<S>> call) {
-        return callIterableItem(description, call, rs -> rs);
+    public static <R, S extends Iterable<R>> SimpleGetObjectFromIterableSupplier<R> callIterableItem(String description,
+                                                                                                     Supplier<Call<S>> call) {
+        return iterableItem(description, new CallBodySupplier<>(call));
     }
 
-    public GetObjectFromIterableSupplier<M, R> retryTimeOut(Duration timeOut) {
+    public S retryTimeOut(Duration timeOut) {
         ((SendRequestAndGet<M, Iterable<R>>) getFrom()).timeOut(timeOut);
-        return this;
+        return (S) this;
     }
 
     @Override
-    public GetObjectFromIterableSupplier<M, R> pollingInterval(Duration timeOut) {
+    public S pollingInterval(Duration timeOut) {
         ((SendRequestAndGet<M, Iterable<R>>) getFrom()).pollingInterval(timeOut);
-        return this;
+        return (S) this;
     }
 
-    public GetObjectFromIterableSupplier<M, R> responseCriteria(Criteria<Response> criteria) {
+    public S responseCriteria(Criteria<Response> criteria) {
         ((SendRequestAndGet<M, Iterable<R>>) getFrom()).criteria(resultResponseCriteria(criteria));
-        return this;
+        return (S) this;
     }
 
-    public GetObjectFromIterableSupplier<M, R> responseCriteria(String description, Predicate<Response> predicate) {
+    public S responseCriteria(String description, Predicate<Response> predicate) {
         return responseCriteria(condition(description, predicate));
     }
 
-    public GetObjectFromIterableSupplier<M, R> responseCriteriaOr(Criteria<Response>... criteria) {
+    public S responseCriteriaOr(Criteria<Response>... criteria) {
         ((SendRequestAndGet<M, Iterable<R>>) getFrom()).criteria(resultResponseCriteria(OR(criteria)));
-        return this;
+        return (S) this;
     }
 
-    public GetObjectFromIterableSupplier<M, R> responseCriteriaOnlyOne(Criteria<Response>... criteria) {
+    public S responseCriteriaOnlyOne(Criteria<Response>... criteria) {
         ((SendRequestAndGet<M, Iterable<R>>) getFrom()).criteria(resultResponseCriteria(ONLY_ONE(criteria)));
-        return this;
+        return (S) this;
     }
 
-    public GetObjectFromIterableSupplier<M, R> responseCriteriaNot(Criteria<Response>... criteria) {
+    public S responseCriteriaNot(Criteria<Response>... criteria) {
         ((SendRequestAndGet<M, Iterable<R>>) getFrom()).criteria(resultResponseCriteria(NOT(criteria)));
-        return this;
+        return (S) this;
+    }
+
+    private void criteriaForDerivedValue(Criteria<? super R> criteria) {
+        derivedValueCriteria = ofNullable(derivedValueCriteria)
+                .map(c -> AND(c, criteria))
+                .orElse((Criteria<R>) criteria);
     }
 
     @Override
-    public GetObjectFromIterableSupplier<M, R> criteriaOr(Criteria<? super R>... criteria) {
-        var orCriteria = OR(criteria);
-        ((SendRequestAndGet<M, Iterable<R>>) getFrom()).criteria(iterableBodyMatches(new BodyHasItems(orCriteria), orCriteria));
+    public S criteriaOr(Criteria<? super R>... criteria) {
+        criteriaForDerivedValue(OR(criteria));
         return super.criteriaOr(criteria);
     }
 
     @Override
-    public GetObjectFromIterableSupplier<M, R> criteriaOnlyOne(Criteria<? super R>... criteria) {
-        var xorCriteria = ONLY_ONE(criteria);
-        ((SendRequestAndGet<M, Iterable<R>>) getFrom()).criteria(iterableBodyMatches(new BodyHasItems(xorCriteria), xorCriteria));
+    public S criteriaOnlyOne(Criteria<? super R>... criteria) {
+        criteriaForDerivedValue(ONLY_ONE(criteria));
         return super.criteriaOnlyOne(criteria);
     }
 
     @Override
-    public GetObjectFromIterableSupplier<M, R> criteriaNot(Criteria<? super R>... criteria) {
-        var notCriteria = NOT(criteria);
-        ((SendRequestAndGet<M, Iterable<R>>) getFrom()).criteria(iterableBodyMatches(new BodyHasItems(notCriteria), notCriteria));
+    public S criteriaNot(Criteria<? super R>... criteria) {
+        criteriaForDerivedValue(NOT(criteria));
         return super.criteriaNot(criteria);
     }
 
     @Override
-    public GetObjectFromIterableSupplier<M, R> criteria(Criteria<? super R> criteria) {
-        ((SendRequestAndGet<M, Iterable<R>>) getFrom()).criteria(iterableBodyMatches(new BodyHasItems(criteria), criteria));
+    public S criteria(Criteria<? super R> criteria) {
+        criteriaForDerivedValue(criteria);
         return super.criteria(criteria);
     }
 
     @Override
-    public GetObjectFromIterableSupplier<M, R> criteria(String description, Predicate<? super R> criteria) {
-        return criteria(condition(translate(description), criteria));
+    public S criteria(String description, Predicate<? super R> criteria) {
+        return criteria(condition(description, criteria));
     }
 
     @Override
-    public GetObjectFromIterableSupplier<M, R> throwOnNoResult() {
+    public S throwOnNoResult() {
         ((SendRequestAndGet<M, Iterable<R>>) getFrom()).throwOnNoResult();
         super.throwOnNoResult();
-        return this;
+        return (S) this;
+    }
+
+    @Override
+    public Function<RetrofitContext, R> get() {
+        if (derivedValueCriteria != null) {
+            ((SendRequestAndGet<M, Iterable<R>>) getFrom()).criteria(iterableResultMatches(hasResultItems(derivedValueCriteria)));
+        }
+        return super.get();
+    }
+
+    public static class SimpleGetObjectFromIterableSupplier<R> extends GetObjectFromIterableSupplier<Iterable<R>, R, SimpleGetObjectFromIterableSupplier<R>> {
+
+        private SimpleGetObjectFromIterableSupplier(SendRequestAndGet<Iterable<R>, Iterable<R>> from) {
+            super(from);
+        }
+    }
+
+    public static class ChainedGetObjectFromIterableSupplier<M, R> extends GetObjectFromIterableSupplier<M, R, ChainedGetObjectFromIterableSupplier<M, R>> {
+
+        protected ChainedGetObjectFromIterableSupplier(SendRequestAndGet<M, Iterable<R>> from) {
+            super(from);
+        }
+
+        public ChainedGetObjectFromIterableSupplier<M, R> callBodyCriteria(Criteria<? super M> criteria) {
+            ((SendRequestAndGet<M, R>) getFrom()).criteria(bodyMatches(body(criteria)));
+            return this;
+        }
+
+        public ChainedGetObjectFromIterableSupplier<M, R> callBodyCriteria(String description, Predicate<? super M> predicate) {
+            return callBodyCriteria(condition(description, predicate));
+        }
+
+        public ChainedGetObjectFromIterableSupplier<M, R> callBodyCriteriaOr(Criteria<? super M>... criteria) {
+            return callBodyCriteria(OR(criteria));
+        }
+
+        public ChainedGetObjectFromIterableSupplier<M, R> callBodyCriteriaOnlyOne(Criteria<? super M>... criteria) {
+            return callBodyCriteria(ONLY_ONE(criteria));
+        }
+
+        public ChainedGetObjectFromIterableSupplier<M, R> callBodyCriteriaNot(Criteria<? super M>... criteria) {
+            return callBodyCriteria(NOT(criteria));
+        }
     }
 }
