@@ -5,40 +5,46 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.retrofit2.steps.StepInterceptor.getCurrentInterceptor;
 
-class GetStepResultFunction<M, R> implements Function<Supplier<M>, RequestExecutionResult<R>> {
+class GetStepResultFunction<M, R> implements Function<Supplier<M>, RequestExecutionResult<M, R>> {
 
     private final StepInterceptor interceptor;
     private final Function<M, R> f;
+    private final Predicate<? super R> predicate;
 
-    GetStepResultFunction(Function<M, R> f) {
+    GetStepResultFunction(Function<M, R> f, Predicate<? super R> predicate) {
+        this.predicate = predicate;
         checkNotNull(f);
         this.interceptor = getCurrentInterceptor();
         this.f = f;
     }
 
     @Override
-    public RequestExecutionResult<R> apply(Supplier<M> t) {
+    public RequestExecutionResult<M, R> apply(Supplier<M> t) {
         interceptor.eraseRequest();
 
         var m = t.get();
-
-        R result = null;
-        if (m != null) {
-            result = f.apply(m);
-        }
 
         var req = interceptor.getRequest();
         if (req == null) {
             throw new NoRequestWasSentError();
         }
 
-        var response = interceptor.getLastResponse();
-        return new RequestExecutionResult<>(response, result);
+        R result = f.apply(m);
+        if (ofNullable(predicate)
+                .map(p -> p.test(result))
+                .orElse(true)) {
+            var response = interceptor.getLastResponse();
+            return new RequestExecutionResult<>(response, m, result);
+        } else {
+            return null;
+        }
     }
 
     Request request() {

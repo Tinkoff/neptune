@@ -8,7 +8,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -111,10 +110,10 @@ public class BasicLocalizationTest {
 
     @Description("Class Description GetSupplier")
     @SequentialGetStepSupplier.DefineCriteriaParameterName
-    static class TestGetStepSupplier extends SequentialGetStepSupplier<Object, Object, Object, Object, TestGetStepSupplier> {
+    static class TestGetStepSupplier extends SequentialGetStepSupplier.GetObjectStepSupplier<Object, Object, TestGetStepSupplier> {
 
         protected TestGetStepSupplier() {
-            super();
+            super(null);
         }
 
         public static TestGetStepSupplier methodWithoutAnnotation() {
@@ -135,16 +134,6 @@ public class BasicLocalizationTest {
         public static TestGetStepSupplier methodWithCompositeAnnotation2(@DescriptionFragment("element1") String s1,
                                                                          @DescriptionFragment("element2") String s2) {
             return new TestGetStepSupplier();
-        }
-
-        @Override
-        protected Function<Object, Object> getEndFunction() {
-            return null;
-        }
-
-        @Override
-        protected TestGetStepSupplier criteria(Criteria<? super Object> criteria) {
-            return super.criteria(criteria);
         }
     }
 

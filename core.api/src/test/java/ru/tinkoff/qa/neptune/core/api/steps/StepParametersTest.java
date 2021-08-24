@@ -11,7 +11,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 import java.time.Duration;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
@@ -411,16 +410,6 @@ public class StepParametersTest {
         }
 
         @Override
-        protected TestGetStepSupplier criteria(Criteria<? super Object> criteria) {
-            return super.criteria(criteria);
-        }
-
-        @Override
-        protected TestGetStepSupplier criteria(String description, Predicate<? super Object> predicate) {
-            return super.criteria(description, predicate);
-        }
-
-        @Override
         protected TestGetStepSupplier pollingInterval(Duration pollingTime) {
             return super.pollingInterval(pollingTime);
         }
@@ -503,16 +492,6 @@ public class StepParametersTest {
         @Override
         protected TestGetStepSupplier2 from(SequentialGetStepSupplier<Object, ?, ?, ?, ?> from) {
             return super.from(from);
-        }
-
-        @Override
-        protected TestGetStepSupplier2 criteria(Criteria<? super Object> criteria) {
-            return super.criteria(criteria);
-        }
-
-        @Override
-        protected TestGetStepSupplier2 criteria(String description, Predicate<? super Object> predicate) {
-            return super.criteria(description, predicate);
         }
 
         @Override

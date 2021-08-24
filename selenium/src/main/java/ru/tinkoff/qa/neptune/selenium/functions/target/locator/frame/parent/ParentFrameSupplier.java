@@ -13,18 +13,18 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentF
 @Description("Parent frame")
 @ThrowWhenNoData(toThrow = WebDriverException.class)
 public final class ParentFrameSupplier extends SequentialGetStepSupplier
-        .GetObjectChainedStepSupplier<SeleniumStepContext, WebDriver, WebDriver, ParentFrameSupplier>
+        .GetSimpleStepSupplier<SeleniumStepContext, WebDriver, ParentFrameSupplier>
         implements TargetLocatorSupplier<WebDriver> {
 
 
     private ParentFrameSupplier() {
-        super(driver -> {
+        super(currentContent().andThen(webDriver -> {
             try {
-                return driver.switchTo().parentFrame();
+                return webDriver.switchTo().parentFrame();
             } catch (WebDriverException e) {
                 return null;
             }
-        });
+        }));
         throwOnNoResult();
     }
 
@@ -40,6 +40,6 @@ public final class ParentFrameSupplier extends SequentialGetStepSupplier
      *      performs the switching to the parent frame and returns it.
      */
     public static ParentFrameSupplier parentFrame() {
-        return new ParentFrameSupplier().from(currentContent());
+        return new ParentFrameSupplier();
     }
 }

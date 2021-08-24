@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.test.captors;
 
 import com.rabbitmq.client.GetResponse;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.DefaultMapper;
@@ -18,6 +19,8 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsCons
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetSupplier.rabbitBody;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetSupplier.rabbitRawMessage;
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
 import static ru.tinkoff.qa.neptune.rabbit.mq.test.captors.TestStringInjector.CAUGHT_MESSAGES;
 
 public class GetObjectCaptorTest extends BaseCaptorTest {
@@ -27,16 +30,21 @@ public class GetObjectCaptorTest extends BaseCaptorTest {
 
     @BeforeClass
     public void beforeClass() throws Exception {
-        when(channel.basicGet("test_queue", true))
+        when(channel.basicGet("test_queue", false))
                 .thenReturn(new GetResponse(null, null, body.getBytes(StandardCharsets.UTF_8), 0));
+
+        DEFAULT_QUEUE_NAME.accept("test_queue");
+    }
+
+    @AfterClass
+    public void afterClass() {
+        DEFAULT_QUEUE_NAME.accept(null);
+        DO_CAPTURES_OF_INSTANCE.accept(null);
     }
 
     @Test
     public void test1() {
-        rabbitMqStepContext.read(rabbitBody(
-                "test_queue",
-                true,
-                DraftDto.class));
+        rabbitMqStepContext.read(rabbitRawMessage());
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
@@ -45,10 +53,7 @@ public class GetObjectCaptorTest extends BaseCaptorTest {
     public void test2() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
 
-        rabbitMqStepContext.read(rabbitBody(
-                "test_queue",
-                true,
-                DraftDto.class));
+        rabbitMqStepContext.read(rabbitRawMessage());
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("RabbitMQ message", "{\"name\":\"test\"}")));
     }
@@ -57,10 +62,7 @@ public class GetObjectCaptorTest extends BaseCaptorTest {
     public void test3() {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
 
-        rabbitMqStepContext.read(rabbitBody(
-                "test_queue",
-                true,
-                DraftDto.class));
+        rabbitMqStepContext.read(rabbitRawMessage());
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
@@ -70,8 +72,6 @@ public class GetObjectCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
 
         rabbitMqStepContext.read(rabbitBody(
-                "test_queue",
-                true,
                 DraftDto.class));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("RabbitMQ message", "{\"name\":\"test\"}")));
@@ -80,8 +80,6 @@ public class GetObjectCaptorTest extends BaseCaptorTest {
     @Test
     public void test5() {
         rabbitMqStepContext.read(rabbitBody(
-                "test_queue",
-                true,
                 DraftDto.class)
                 .criteria("name=test2", draftDto -> draftDto.getName().equals("test2"))
                 .timeOut(ofSeconds(5)));
@@ -93,8 +91,6 @@ public class GetObjectCaptorTest extends BaseCaptorTest {
     public void test6() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
         rabbitMqStepContext.read(rabbitBody(
-                "test_queue",
-                true,
                 DraftDto.class)
                 .criteria("name=test2", draftDto -> draftDto.getName().equals("test2"))
                 .timeOut(ofSeconds(5)));
@@ -108,8 +104,6 @@ public class GetObjectCaptorTest extends BaseCaptorTest {
     public void test7() {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
         rabbitMqStepContext.read(rabbitBody(
-                "test_queue",
-                true,
                 DraftDto.class)
                 .criteria("name=test2", draftDto -> draftDto.getName().equals("test2"))
                 .timeOut(ofSeconds(5)));
@@ -121,8 +115,6 @@ public class GetObjectCaptorTest extends BaseCaptorTest {
     public void test8() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
         rabbitMqStepContext.read(rabbitBody(
-                "test_queue",
-                true,
                 DraftDto.class)
                 .criteria("name=test2", draftDto -> draftDto.getName().equals("test2"))
                 .timeOut(ofSeconds(5)));
@@ -136,8 +128,6 @@ public class GetObjectCaptorTest extends BaseCaptorTest {
     public void test9() {
         try {
             rabbitMqStepContext.read(rabbitBody(
-                    "test_queue",
-                    true,
                     DraftDto.class)
                     .criteria("name=test2", draftDto -> draftDto.getName().equals("test2"))
                     .timeOut(ofSeconds(5))
@@ -157,8 +147,6 @@ public class GetObjectCaptorTest extends BaseCaptorTest {
 
         try {
             rabbitMqStepContext.read(rabbitBody(
-                    "test_queue",
-                    true,
                     DraftDto.class)
                     .criteria("name=test2", draftDto -> draftDto.getName().equals("test2"))
                     .timeOut(ofSeconds(5))
@@ -179,8 +167,6 @@ public class GetObjectCaptorTest extends BaseCaptorTest {
 
         try {
             rabbitMqStepContext.read(rabbitBody(
-                    "test_queue",
-                    true,
                     DraftDto.class)
                     .criteria("name=test2", draftDto -> draftDto.getName().equals("test2"))
                     .timeOut(ofSeconds(5))
@@ -203,8 +189,6 @@ public class GetObjectCaptorTest extends BaseCaptorTest {
 
         try {
             rabbitMqStepContext.read(rabbitBody(
-                    "test_queue",
-                    true,
                     DraftDto.class)
                     .criteria("name=test2", draftDto -> draftDto.getName().equals("test2"))
                     .timeOut(ofSeconds(5))

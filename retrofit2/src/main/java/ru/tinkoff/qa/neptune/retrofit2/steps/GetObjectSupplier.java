@@ -10,26 +10,30 @@ import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.retrofit2.RetrofitContext;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
-import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
-import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.bodyMatches;
-import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.resultResponseCriteria;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.*;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultMatches.result;
 import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getResponse;
 
 @SuppressWarnings("unchecked")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Result criteria")
-public class GetObjectSupplier<M, R> extends SequentialGetStepSupplier
-        .GetObjectChainedStepSupplier<RetrofitContext, R, RequestExecutionResult<R>, GetObjectSupplier<M, R>> {
+public abstract class GetObjectSupplier<M, R, S extends GetObjectSupplier<M, R, S>> extends SequentialGetStepSupplier
+        .GetObjectChainedStepSupplier<RetrofitContext, R, RequestExecutionResult<M, R>, S> {
 
-    protected GetObjectSupplier(Supplier<M> call, Function<M, R> f) {
+    private Criteria<R> derivedValueCriteria;
+
+    protected GetObjectSupplier(SendRequestAndGet<M, R> from) {
         super(RequestExecutionResult::getResult);
-        from(getResponse(new GetStepResultFunction<>(f)).from(call));
+        from(from);
     }
 
     /**
@@ -39,17 +43,19 @@ public class GetObjectSupplier<M, R> extends SequentialGetStepSupplier
      * @param call        describes a single synchronous call
      * @param f           describes how to get desired value
      * @param <M>         deserialized body
-     * @param <R>         is a type of an object
-     * @return an instance of {@link GetObjectSupplier}
+     * @param <R>         is a type of object
+     * @return an instance of {@link ChainedGetObjectSupplier}
      */
     @Description("{description}")
-    public static <M, R> GetObjectSupplier<M, R> object(
+    public static <M, R> ChainedGetObjectSupplier<M, R> object(
             @DescriptionFragment(
                     value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class) String description,
             Supplier<M> call, Function<M, R> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectSupplier<>(call, f);
+        return new ChainedGetObjectSupplier<>(getResponse(translate(description),
+                new GetStepResultFunction<>(f, Objects::nonNull))
+                .from(call));
     }
 
     /**
@@ -57,11 +63,11 @@ public class GetObjectSupplier<M, R> extends SequentialGetStepSupplier
      *
      * @param call describes a single synchronous call
      * @param <M>  deserialized body
-     * @return an instance of {@link GetObjectSupplier}
+     * @return an instance of {@link SimpleGetObjectSupplier}
      */
     @Description("Response body")
-    public static <M> GetObjectSupplier<M, M> body(Supplier<M> call) {
-        return new GetObjectSupplier<>(call, m -> m);
+    public static <M> SimpleGetObjectSupplier<M> body(Supplier<M> call) {
+        return new SimpleGetObjectSupplier<>(getResponse(new GetStepResultFunction<M, M>(m -> m, null)).from(call));
     }
 
     /**
@@ -71,12 +77,12 @@ public class GetObjectSupplier<M, R> extends SequentialGetStepSupplier
      * @param call        describes a single synchronous call
      * @param f           describes how to get desired value
      * @param <M>         deserialized body
-     * @param <R>         is a type of an object
-     * @return an instance of {@link GetObjectSupplier}
+     * @param <R>         is a type of object
+     * @return an instance of {@link ChainedGetObjectSupplier}
      */
-    public static <M, R> GetObjectSupplier<M, R> callObject(String description,
-                                                            Supplier<Call<M>> call,
-                                                            Function<M, R> f) {
+    public static <M, R> ChainedGetObjectSupplier<M, R> callObject(String description,
+                                                                   Supplier<Call<M>> call,
+                                                                   Function<M, R> f) {
         return object(description, new CallBodySupplier<>(call), f);
     }
 
@@ -85,47 +91,129 @@ public class GetObjectSupplier<M, R> extends SequentialGetStepSupplier
      *
      * @param call describes a single synchronous call
      * @param <M>  deserialized body
-     * @return an instance of {@link GetObjectSupplier}
+     * @return an instance of {@link SimpleGetObjectSupplier}
      */
-    @Description("Response body")
-    public static <M> GetObjectSupplier<M, M> callBody(Supplier<Call<M>> call) {
-        return new GetObjectSupplier<>(new CallBodySupplier<>(call), m -> m);
+    public static <M> SimpleGetObjectSupplier<M> callBody(Supplier<Call<M>> call) {
+        return body(new CallBodySupplier<>(call));
     }
 
-    public GetObjectSupplier<M, R> retryTimeOut(Duration timeOut) {
+    public S retryTimeOut(Duration timeOut) {
         ((SendRequestAndGet<M, R>) getFrom()).timeOut(timeOut);
-        return this;
+        return (S) this;
     }
 
     @Override
-    public GetObjectSupplier<M, R> pollingInterval(Duration timeOut) {
+    public S pollingInterval(Duration timeOut) {
         ((SendRequestAndGet<M, R>) getFrom()).pollingInterval(timeOut);
-        return this;
+        return (S) this;
     }
 
-    public GetObjectSupplier<M, R> responseCriteria(Criteria<Response> criteria) {
+    public S responseCriteria(Criteria<Response> criteria) {
         ((SendRequestAndGet<M, R>) getFrom()).criteria(resultResponseCriteria(criteria));
-        return this;
+        return (S) this;
     }
 
-    public GetObjectSupplier<M, R> responseCriteria(String description, Predicate<Response> predicate) {
+    public S responseCriteria(String description, Predicate<Response> predicate) {
         return responseCriteria(condition(description, predicate));
     }
 
+    public S responseCriteriaOr(Criteria<Response>... criteria) {
+        ((SendRequestAndGet<M, R>) getFrom()).criteria(resultResponseCriteria(OR(criteria)));
+        return (S) this;
+    }
+
+    public S responseCriteriaOnlyOne(Criteria<Response>... criteria) {
+        ((SendRequestAndGet<M, R>) getFrom()).criteria(resultResponseCriteria(ONLY_ONE(criteria)));
+        return (S) this;
+    }
+
+    public S responseCriteriaNot(Criteria<Response>... criteria) {
+        ((SendRequestAndGet<M, R>) getFrom()).criteria(resultResponseCriteria(NOT(criteria)));
+        return (S) this;
+    }
+
+    private void criteriaForDerivedValue(Criteria<? super R> criteria) {
+        derivedValueCriteria = ofNullable(derivedValueCriteria)
+                .map(c -> AND(c, criteria))
+                .orElse((Criteria<R>) criteria);
+    }
+
     @Override
-    public GetObjectSupplier<M, R> criteria(Criteria<? super R> criteria) {
-        ((SendRequestAndGet<M, R>) getFrom()).criteria(bodyMatches(new BodyMatches(criteria), criteria));
+    public S criteriaOr(Criteria<? super R>... criteria) {
+        criteriaForDerivedValue(OR(criteria));
+        return super.criteriaOr(criteria);
+    }
+
+    @Override
+    public S criteriaOnlyOne(Criteria<? super R>... criteria) {
+        criteriaForDerivedValue(ONLY_ONE(criteria));
+        return super.criteriaOnlyOne(criteria);
+    }
+
+    @Override
+    public S criteriaNot(Criteria<? super R>... criteria) {
+        criteriaForDerivedValue(NOT(criteria));
+        return super.criteriaNot(criteria);
+    }
+
+    @Override
+    public S criteria(Criteria<? super R> criteria) {
+        criteriaForDerivedValue(criteria);
         return super.criteria(criteria);
     }
 
     @Override
-    public GetObjectSupplier<M, R> criteria(String description, Predicate<? super R> criteria) {
-        return criteria(condition(translate(description), criteria));
+    public S criteria(String description, Predicate<? super R> criteria) {
+        return criteria(condition(description, criteria));
     }
 
     @Override
-    public GetObjectSupplier<M, R> throwOnNoResult() {
+    public S throwOnNoResult() {
         ((SendRequestAndGet<M, R>) getFrom()).throwOnNoResult();
-        return this;
+        super.throwOnNoResult();
+        return (S) this;
+    }
+
+    @Override
+    public Function<RetrofitContext, R> get() {
+        if (derivedValueCriteria != null) {
+            ((SendRequestAndGet<M, R>) getFrom()).criteria(resultMatches(result(derivedValueCriteria)));
+        }
+        return super.get();
+    }
+
+    public static class SimpleGetObjectSupplier<M> extends GetObjectSupplier<M, M, SimpleGetObjectSupplier<M>> {
+
+        private SimpleGetObjectSupplier(SendRequestAndGet<M, M> from) {
+            super(from);
+        }
+    }
+
+    public static class ChainedGetObjectSupplier<M, R> extends GetObjectSupplier<M, R, ChainedGetObjectSupplier<M, R>> {
+
+        private ChainedGetObjectSupplier(SendRequestAndGet<M, R> from) {
+            super(from);
+        }
+
+        public ChainedGetObjectSupplier<M, R> callBodyCriteria(Criteria<? super M> criteria) {
+            ((SendRequestAndGet<M, R>) getFrom()).criteria(bodyMatches(BodyMatches.body(criteria)));
+            return this;
+        }
+
+        public ChainedGetObjectSupplier<M, R> callBodyCriteria(String description, Predicate<? super M> predicate) {
+            return callBodyCriteria(condition(description, predicate));
+        }
+
+        public ChainedGetObjectSupplier<M, R> callBodyCriteriaOr(Criteria<? super M>... criteria) {
+            return callBodyCriteria(OR(criteria));
+        }
+
+        public ChainedGetObjectSupplier<M, R> callBodyCriteriaOnlyOne(Criteria<? super M>... criteria) {
+            return callBodyCriteria(ONLY_ONE(criteria));
+        }
+
+        public ChainedGetObjectSupplier<M, R> callBodyCriteriaNot(Criteria<? super M>... criteria) {
+            return callBodyCriteria(NOT(criteria));
+        }
     }
 }

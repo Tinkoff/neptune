@@ -8,6 +8,7 @@ import ru.tinkoff.qa.neptune.retrofit2.service.setup.ApiService;
 import ru.tinkoff.qa.neptune.retrofit2.steps.ExpectedHttpResponseHasNotBeenReceivedException;
 import ru.tinkoff.qa.neptune.retrofit2.tests.retrofit.suppliers.GsonRetrofitBuilderSupplier;
 import ru.tinkoff.qa.neptune.retrofit2.tests.services.common.CallService;
+import wiremock.org.eclipse.jetty.util.StringUtil;
 
 import java.net.URL;
 
@@ -16,6 +17,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 import static java.lang.System.currentTimeMillis;
 import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.AssertJUnit.fail;
@@ -29,6 +31,7 @@ import static ru.tinkoff.qa.neptune.retrofit2.steps.GetIterableSupplier.callIter
 import static ru.tinkoff.qa.neptune.retrofit2.steps.GetObjectFromArraySupplier.callArrayItem;
 import static ru.tinkoff.qa.neptune.retrofit2.steps.GetObjectFromIterableSupplier.callIterableItem;
 import static ru.tinkoff.qa.neptune.retrofit2.steps.GetObjectSupplier.callBody;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.GetObjectSupplier.callObject;
 
 public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
 
@@ -193,6 +196,221 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
 
 
     @Test
+    public void calculatedObjectFromBodyTest1() {
+        var result = retrofit().get(callObject(
+                "Values of string fields",
+                () -> callService.getJson(),
+                dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                .responseCriteria(statusCode(200))
+                .responseCriteria(headerValue("custom header", "true"))
+                .responseCriteria(headerValueMatches("custom header", "Some"))
+                .responseCriteria(message("Successful json"))
+                .responseCriteria(messageMatches("Successful"))
+                .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                .criteria("Size == 2", r -> r.size() == 2));
+
+        assertThat(result, hasSize(2));
+    }
+
+    @Test
+    public void calculatedObjectFromBodyTest2() {
+        var result = retrofit().get(callObject(
+                "Values of string fields",
+                () -> callService.getJson(),
+                dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                .responseCriteria(statusCode(200))
+                .responseCriteria(headerValue("custom header", "true"))
+                .responseCriteria(headerValueMatches("custom header", "Some"))
+                .responseCriteria(message("Successful json"))
+                .responseCriteria(messageMatches("Successful"))
+                .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                .criteria("Size > 2", r -> r.size() > 2));
+
+        assertThat(result, nullValue());
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedObjectFromBodyTest3() {
+        try {
+            retrofit().get(callObject(
+                    "Values of string fields",
+                    () -> callService.getJson(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .criteria("Size > 2", r -> r.size() > 2)
+                    .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            assertThat(e.getCause(), nullValue());
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedObjectFromBodyTest4() {
+        try {
+            retrofit().get(callObject(
+                    "Values of string fields",
+                    () -> callService.getXml(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                    .criteria("Size == 2", r -> r.size() == 2)
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            assertThat(e.getCause(), instanceOf(RuntimeException.class));
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedObjectFromBodyTest5() {
+        try {
+            retrofit().get(callObject(
+                    "Values of string fields",
+                    () -> callService.getJson(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size > 2", dtoObjects -> dtoObjects.size() > 2)
+                    .criteria("Size == 2", r -> r.size() == 2)
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            assertThat(e.getCause(), nullValue());
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test
+    public void calculatedObjectFromBodyTest6() {
+        var start = currentTimeMillis();
+        retrofit().get(callObject(
+                "Values of string fields",
+                () -> callService.getJson(),
+                dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                .responseCriteria(statusCode(200))
+                .responseCriteria(headerValue("custom header", "true"))
+                .responseCriteria(headerValueMatches("custom header", "Some"))
+                .responseCriteria(message("Successful json"))
+                .responseCriteria(messageMatches("Successful"))
+                .criteria("Size > 2", r -> r.size() > 2)
+                .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                .retryTimeOut(ofSeconds(5))
+                .pollingInterval(ofMillis(500)));
+
+        var stop = currentTimeMillis();
+        var time = stop - start;
+        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
+        assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedObjectFromBodyTest7() {
+        var start = currentTimeMillis();
+        try {
+            retrofit().get(callObject(
+                    "Values of string fields",
+                    () -> callService.getJson(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                    .criteria("Size > 2", r -> r.size() > 2)
+                    .retryTimeOut(ofSeconds(5))
+                    .pollingInterval(ofMillis(500))
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            var stop = currentTimeMillis();
+            var time = stop - start;
+            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
+            assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedObjectFromBodyTest8() {
+        var start = currentTimeMillis();
+        try {
+            retrofit().get(callObject(
+                    "Values of string fields",
+                    () -> callService.getXml(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                    .criteria("Size == 2", r -> r.size() == 2)
+                    .retryTimeOut(ofSeconds(5))
+                    .pollingInterval(ofMillis(500))
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            var stop = currentTimeMillis();
+            var time = stop - start;
+            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
+            assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedObjectFromBodyTest9() {
+        var start = currentTimeMillis();
+        try {
+            retrofit().get(callObject(
+                    "Values of string fields",
+                    () -> callService.getJson(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size > 2", dtoObjects -> dtoObjects.size() > 2)
+                    .criteria("Size == 2", r -> r.size() == 2)
+                    .retryTimeOut(ofSeconds(5))
+                    .pollingInterval(ofMillis(500))
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            var stop = currentTimeMillis();
+            var time = stop - start;
+            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
+            assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+
+    @Test
     public void getIterableTest1() {
         var result = retrofit().get(callIterable("Result list",
                 () -> callService.getJson())
@@ -319,6 +537,221 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     .responseCriteria(message("Successful json"))
                     .responseCriteria(messageMatches("Successful"))
                     .criteria("Size of 'object' == 2", r -> r.getObject().size() == 2)
+                    .retryTimeOut(ofSeconds(5))
+                    .pollingInterval(ofMillis(500))
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            var stop = currentTimeMillis();
+            var time = stop - start;
+            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
+            assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+
+    @Test
+    public void calculatedIterableTest1() {
+        var result = retrofit().get(callIterable(
+                "Values of string fields",
+                () -> callService.getJson(),
+                dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                .responseCriteria(statusCode(200))
+                .responseCriteria(headerValue("custom header", "true"))
+                .responseCriteria(headerValueMatches("custom header", "Some"))
+                .responseCriteria(message("Successful json"))
+                .responseCriteria(messageMatches("Successful"))
+                .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                .criteria("Not a blank string", StringUtil::isNotBlank));
+
+        assertThat(result, hasSize(2));
+    }
+
+    @Test
+    public void calculatedIterableTest2() {
+        var result = retrofit().get(callIterable(
+                "Values of string fields",
+                () -> callService.getJson(),
+                dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                .responseCriteria(statusCode(200))
+                .responseCriteria(headerValue("custom header", "true"))
+                .responseCriteria(headerValueMatches("custom header", "Some"))
+                .responseCriteria(message("Successful json"))
+                .responseCriteria(messageMatches("Successful"))
+                .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                .criteria("is a blank string", StringUtil::isBlank));
+
+        assertThat(result, nullValue());
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedIterableTest3() {
+        try {
+            retrofit().get(callIterable(
+                    "Values of string fields",
+                    () -> callService.getJson(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .criteria("is a blank string", StringUtil::isBlank)
+                    .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            assertThat(e.getCause(), nullValue());
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedIterableTest4() {
+        try {
+            retrofit().get(callIterable(
+                    "Values of string fields",
+                    () -> callService.getXml(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                    .criteria("Not a blank string", StringUtil::isNotBlank)
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            assertThat(e.getCause(), instanceOf(RuntimeException.class));
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedIterableTest5() {
+        try {
+            retrofit().get(callIterable(
+                    "Values of string fields",
+                    () -> callService.getJson(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size > 2", dtoObjects -> dtoObjects.size() > 2)
+                    .criteria("Not a blank string", StringUtil::isNotBlank)
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            assertThat(e.getCause(), nullValue());
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test
+    public void calculatedIterableTest6() {
+        var start = currentTimeMillis();
+        retrofit().get(callIterable(
+                "Values of string fields",
+                () -> callService.getJson(),
+                dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                .responseCriteria(statusCode(200))
+                .responseCriteria(headerValue("custom header", "true"))
+                .responseCriteria(headerValueMatches("custom header", "Some"))
+                .responseCriteria(message("Successful json"))
+                .responseCriteria(messageMatches("Successful"))
+                .criteria("is a blank string", StringUtil::isBlank)
+                .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                .retryTimeOut(ofSeconds(5))
+                .pollingInterval(ofMillis(500)));
+
+        var stop = currentTimeMillis();
+        var time = stop - start;
+        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
+        assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedIterableTest7() {
+        var start = currentTimeMillis();
+        try {
+            retrofit().get(callIterable(
+                    "Values of string fields",
+                    () -> callService.getJson(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                    .criteria("is a blank string", StringUtil::isBlank)
+                    .retryTimeOut(ofSeconds(5))
+                    .pollingInterval(ofMillis(500))
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            var stop = currentTimeMillis();
+            var time = stop - start;
+            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
+            assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedIterableTest8() {
+        var start = currentTimeMillis();
+        try {
+            retrofit().get(callIterable(
+                    "Values of string fields",
+                    () -> callService.getXml(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                    .criteria("Not a blank string", StringUtil::isNotBlank)
+                    .retryTimeOut(ofSeconds(5))
+                    .pollingInterval(ofMillis(500))
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            var stop = currentTimeMillis();
+            var time = stop - start;
+            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
+            assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedIterableTest9() {
+        var start = currentTimeMillis();
+        try {
+            retrofit().get(callIterable(
+                    "Values of string fields",
+                    () -> callService.getJson(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size > 2", dtoObjects -> dtoObjects.size() > 2)
+                    .criteria("Not a blank string", StringUtil::isNotBlank)
                     .retryTimeOut(ofSeconds(5))
                     .pollingInterval(ofMillis(500))
                     .throwOnNoResult());
@@ -477,6 +910,221 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
 
 
     @Test
+    public void calculatedArrayTest1() {
+        var result = retrofit().get(callArray(
+                "Values of string fields",
+                () -> callService.getJson(),
+                dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
+                .responseCriteria(statusCode(200))
+                .responseCriteria(headerValue("custom header", "true"))
+                .responseCriteria(headerValueMatches("custom header", "Some"))
+                .responseCriteria(message("Successful json"))
+                .responseCriteria(messageMatches("Successful"))
+                .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                .criteria("Not a blank string", StringUtil::isNotBlank));
+
+        assertThat(result, arrayWithSize(2));
+    }
+
+    @Test
+    public void calculatedArrayTest2() {
+        var result = retrofit().get(callArray(
+                "Values of string fields",
+                () -> callService.getJson(),
+                dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
+                .responseCriteria(statusCode(200))
+                .responseCriteria(headerValue("custom header", "true"))
+                .responseCriteria(headerValueMatches("custom header", "Some"))
+                .responseCriteria(message("Successful json"))
+                .responseCriteria(messageMatches("Successful"))
+                .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                .criteria("is a blank string", StringUtil::isBlank));
+
+        assertThat(result, nullValue());
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedArrayTest3() {
+        try {
+            retrofit().get(callArray(
+                    "Values of string fields",
+                    () -> callService.getJson(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .criteria("is a blank string", StringUtil::isBlank)
+                    .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            assertThat(e.getCause(), nullValue());
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedArrayTest4() {
+        try {
+            retrofit().get(callArray(
+                    "Values of string fields",
+                    () -> callService.getXml(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                    .criteria("Not a blank string", StringUtil::isNotBlank)
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            assertThat(e.getCause(), instanceOf(RuntimeException.class));
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedArrayTest5() {
+        try {
+            retrofit().get(callArray(
+                    "Values of string fields",
+                    () -> callService.getJson(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size > 2", dtoObjects -> dtoObjects.size() > 2)
+                    .criteria("Not a blank string", StringUtil::isNotBlank)
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            assertThat(e.getCause(), nullValue());
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test
+    public void calculatedArrayTest6() {
+        var start = currentTimeMillis();
+        retrofit().get(callArray(
+                "Values of string fields",
+                () -> callService.getJson(),
+                dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
+                .responseCriteria(statusCode(200))
+                .responseCriteria(headerValue("custom header", "true"))
+                .responseCriteria(headerValueMatches("custom header", "Some"))
+                .responseCriteria(message("Successful json"))
+                .responseCriteria(messageMatches("Successful"))
+                .criteria("is a blank string", StringUtil::isBlank)
+                .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                .retryTimeOut(ofSeconds(5))
+                .pollingInterval(ofMillis(500)));
+
+        var stop = currentTimeMillis();
+        var time = stop - start;
+        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
+        assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedArrayTest7() {
+        var start = currentTimeMillis();
+        try {
+            retrofit().get(callArray(
+                    "Values of string fields",
+                    () -> callService.getJson(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                    .criteria("is a blank string", StringUtil::isBlank)
+                    .retryTimeOut(ofSeconds(5))
+                    .pollingInterval(ofMillis(500))
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            var stop = currentTimeMillis();
+            var time = stop - start;
+            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
+            assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedArrayTest8() {
+        var start = currentTimeMillis();
+        try {
+            retrofit().get(callArray(
+                    "Values of string fields",
+                    () -> callService.getXml(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                    .criteria("Not a blank string", StringUtil::isNotBlank)
+                    .retryTimeOut(ofSeconds(5))
+                    .pollingInterval(ofMillis(500))
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            var stop = currentTimeMillis();
+            var time = stop - start;
+            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
+            assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedArrayTest9() {
+        var start = currentTimeMillis();
+        try {
+            retrofit().get(callArray(
+                    "Values of string fields",
+                    () -> callService.getJson(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size > 2", dtoObjects -> dtoObjects.size() > 2)
+                    .criteria("Not a blank string", StringUtil::isNotBlank)
+                    .retryTimeOut(ofSeconds(5))
+                    .pollingInterval(ofMillis(500))
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            var stop = currentTimeMillis();
+            var time = stop - start;
+            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
+            assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+
+    @Test
     public void getFromIterableTest1() {
         var result = retrofit().get(callIterableItem("Result",
                 () -> callService.getJson())
@@ -603,6 +1251,221 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     .responseCriteria(message("Successful json"))
                     .responseCriteria(messageMatches("Successful"))
                     .criteria("Size of 'object' == 2", r -> r.getObject().size() == 2)
+                    .retryTimeOut(ofSeconds(5))
+                    .pollingInterval(ofMillis(500))
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            var stop = currentTimeMillis();
+            var time = stop - start;
+            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
+            assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+
+    @Test
+    public void calculatedFromIterableTest1() {
+        var result = retrofit().get(callIterableItem(
+                "Value of string field",
+                () -> callService.getJson(),
+                dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                .responseCriteria(statusCode(200))
+                .responseCriteria(headerValue("custom header", "true"))
+                .responseCriteria(headerValueMatches("custom header", "Some"))
+                .responseCriteria(message("Successful json"))
+                .responseCriteria(messageMatches("Successful"))
+                .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                .criteria("Not a blank string", StringUtil::isNotBlank));
+
+        assertThat(result, not(nullValue()));
+    }
+
+    @Test
+    public void calculatedFromIterableTest2() {
+        var result = retrofit().get(callIterableItem(
+                "Value of string field",
+                () -> callService.getJson(),
+                dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                .responseCriteria(statusCode(200))
+                .responseCriteria(headerValue("custom header", "true"))
+                .responseCriteria(headerValueMatches("custom header", "Some"))
+                .responseCriteria(message("Successful json"))
+                .responseCriteria(messageMatches("Successful"))
+                .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                .criteria("is a blank string", StringUtil::isBlank));
+
+        assertThat(result, nullValue());
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedFromIterableTest3() {
+        try {
+            retrofit().get(callIterableItem(
+                    "Value of string field",
+                    () -> callService.getJson(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .criteria("is a blank string", StringUtil::isBlank)
+                    .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            assertThat(e.getCause(), nullValue());
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedFromIterableTest4() {
+        try {
+            retrofit().get(callIterableItem(
+                    "Value of string field",
+                    () -> callService.getXml(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                    .criteria("Not a blank string", StringUtil::isNotBlank)
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            assertThat(e.getCause(), instanceOf(RuntimeException.class));
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedFromIterableTest5() {
+        try {
+            retrofit().get(callIterableItem(
+                    "Value of string field",
+                    () -> callService.getJson(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size > 2", dtoObjects -> dtoObjects.size() > 2)
+                    .criteria("Not a blank string", StringUtil::isNotBlank)
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            assertThat(e.getCause(), nullValue());
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test
+    public void calculatedFromIterableTest6() {
+        var start = currentTimeMillis();
+        retrofit().get(callIterableItem(
+                "Value of string field",
+                () -> callService.getJson(),
+                dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                .responseCriteria(statusCode(200))
+                .responseCriteria(headerValue("custom header", "true"))
+                .responseCriteria(headerValueMatches("custom header", "Some"))
+                .responseCriteria(message("Successful json"))
+                .responseCriteria(messageMatches("Successful"))
+                .criteria("is a blank string", StringUtil::isBlank)
+                .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                .retryTimeOut(ofSeconds(5))
+                .pollingInterval(ofMillis(500)));
+
+        var stop = currentTimeMillis();
+        var time = stop - start;
+        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
+        assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedFromIterableTest7() {
+        var start = currentTimeMillis();
+        try {
+            retrofit().get(callIterableItem(
+                    "Value of string field",
+                    () -> callService.getJson(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                    .criteria("is a blank string", StringUtil::isBlank)
+                    .retryTimeOut(ofSeconds(5))
+                    .pollingInterval(ofMillis(500))
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            var stop = currentTimeMillis();
+            var time = stop - start;
+            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
+            assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedFromIterableTest8() {
+        var start = currentTimeMillis();
+        try {
+            retrofit().get(callIterableItem(
+                    "Value of string field",
+                    () -> callService.getXml(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                    .criteria("Not a blank string", StringUtil::isNotBlank)
+                    .retryTimeOut(ofSeconds(5))
+                    .pollingInterval(ofMillis(500))
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            var stop = currentTimeMillis();
+            var time = stop - start;
+            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
+            assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedFromIterableTest9() {
+        var start = currentTimeMillis();
+        try {
+            retrofit().get(callIterableItem(
+                    "Value of string field",
+                    () -> callService.getJson(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size > 2", dtoObjects -> dtoObjects.size() > 2)
+                    .criteria("Not a blank string", StringUtil::isNotBlank)
                     .retryTimeOut(ofSeconds(5))
                     .pollingInterval(ofMillis(500))
                     .throwOnNoResult());
@@ -758,6 +1621,222 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
 
         fail("Exception was expected");
     }
+
+
+    @Test
+    public void calculatedArrayItemTest1() {
+        var result = retrofit().get(callArrayItem(
+                "Value of string field",
+                () -> callService.getJson(),
+                dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
+                .responseCriteria(statusCode(200))
+                .responseCriteria(headerValue("custom header", "true"))
+                .responseCriteria(headerValueMatches("custom header", "Some"))
+                .responseCriteria(message("Successful json"))
+                .responseCriteria(messageMatches("Successful"))
+                .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                .criteria("Not a blank string", StringUtil::isNotBlank));
+
+        assertThat(result, not(nullValue()));
+    }
+
+    @Test
+    public void calculatedArrayItemTest2() {
+        var result = retrofit().get(callArrayItem(
+                "Value of string field",
+                () -> callService.getJson(),
+                dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
+                .responseCriteria(statusCode(200))
+                .responseCriteria(headerValue("custom header", "true"))
+                .responseCriteria(headerValueMatches("custom header", "Some"))
+                .responseCriteria(message("Successful json"))
+                .responseCriteria(messageMatches("Successful"))
+                .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                .criteria("is a blank string", StringUtil::isBlank));
+
+        assertThat(result, nullValue());
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedArrayItemTest3() {
+        try {
+            retrofit().get(callArrayItem(
+                    "Value of string field",
+                    () -> callService.getJson(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .criteria("is a blank string", StringUtil::isBlank)
+                    .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            assertThat(e.getCause(), nullValue());
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedArrayItemTest4() {
+        try {
+            retrofit().get(callArrayItem(
+                    "Value of string field",
+                    () -> callService.getXml(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                    .criteria("Not a blank string", StringUtil::isNotBlank)
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            assertThat(e.getCause(), instanceOf(RuntimeException.class));
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedArrayItemTest5() {
+        try {
+            retrofit().get(callArrayItem(
+                    "Value of string field",
+                    () -> callService.getJson(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size > 2", dtoObjects -> dtoObjects.size() > 2)
+                    .criteria("Not a blank string", StringUtil::isNotBlank)
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            assertThat(e.getCause(), nullValue());
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test
+    public void calculatedArrayItemTest6() {
+        var start = currentTimeMillis();
+        retrofit().get(callArrayItem(
+                "Value of string field",
+                () -> callService.getJson(),
+                dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
+                .responseCriteria(statusCode(200))
+                .responseCriteria(headerValue("custom header", "true"))
+                .responseCriteria(headerValueMatches("custom header", "Some"))
+                .responseCriteria(message("Successful json"))
+                .responseCriteria(messageMatches("Successful"))
+                .criteria("is a blank string", StringUtil::isBlank)
+                .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                .retryTimeOut(ofSeconds(5))
+                .pollingInterval(ofMillis(500)));
+
+        var stop = currentTimeMillis();
+        var time = stop - start;
+        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
+        assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedArrayItemTest7() {
+        var start = currentTimeMillis();
+        try {
+            retrofit().get(callArrayItem(
+                    "Value of string field",
+                    () -> callService.getJson(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                    .criteria("is a blank string", StringUtil::isBlank)
+                    .retryTimeOut(ofSeconds(5))
+                    .pollingInterval(ofMillis(500))
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            var stop = currentTimeMillis();
+            var time = stop - start;
+            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
+            assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedArrayItemTest8() {
+        var start = currentTimeMillis();
+        try {
+            retrofit().get(callArrayItem(
+                    "Value of string field",
+                    () -> callService.getXml(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
+                    .criteria("Not a blank string", StringUtil::isNotBlank)
+                    .retryTimeOut(ofSeconds(5))
+                    .pollingInterval(ofMillis(500))
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            var stop = currentTimeMillis();
+            var time = stop - start;
+            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
+            assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    public void calculatedArrayItemTest9() {
+        var start = currentTimeMillis();
+        try {
+            retrofit().get(callArrayItem(
+                    "Value of string field",
+                    () -> callService.getJson(),
+                    dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
+                    .responseCriteria(statusCode(200))
+                    .responseCriteria(headerValue("custom header", "true"))
+                    .responseCriteria(headerValueMatches("custom header", "Some"))
+                    .responseCriteria(message("Successful json"))
+                    .responseCriteria(messageMatches("Successful"))
+                    .callBodyCriteria("Body size > 2", dtoObjects -> dtoObjects.size() > 2)
+                    .criteria("Not a blank string", StringUtil::isNotBlank)
+                    .retryTimeOut(ofSeconds(5))
+                    .pollingInterval(ofMillis(500))
+                    .throwOnNoResult());
+        } catch (Exception e) {
+            var stop = currentTimeMillis();
+            var time = stop - start;
+            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
+            assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
+            throw e;
+        }
+
+        fail("Exception was expected");
+    }
+
 
     @AfterClass
     public void afterClass() {

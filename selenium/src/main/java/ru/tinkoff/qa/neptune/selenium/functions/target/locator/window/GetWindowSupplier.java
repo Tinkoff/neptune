@@ -93,7 +93,8 @@ public final class GetWindowSupplier extends SequentialGetStepSupplier
 
     /**
      * Creates an instance of {@link GetWindowSupplier} to get current browser window/tab.
-     * When {@link #criteria(Criteria)} or {@link #criteria(String, Predicate)} are defined
+     * When {@link #criteria(Criteria)} or {@link #criteria(String, Predicate)} or {@link #criteriaOr(Criteria[])}
+     * or {@link #criteriaOnlyOne(Criteria[])} ore {@link #criteriaNot(Criteria[])}are defined
      * then it returns current browser window/tab after it matches criteria. Otherwise it
      * returns current browser window/tab immediately.
      *
@@ -103,16 +104,6 @@ public final class GetWindowSupplier extends SequentialGetStepSupplier
     public static GetWindowSupplier currentWindow() {
         return new GetWindowSupplier(webDriver -> of(new DefaultWindow(webDriver.getWindowHandle(), webDriver)))
                 .from(currentContent());
-    }
-
-    @Override
-    public GetWindowSupplier criteria(Criteria<? super Window> condition) {
-        return super.criteria(condition);
-    }
-
-    @Override
-    public GetWindowSupplier criteria(String description, Predicate<? super Window> condition) {
-        return super.criteria(description, condition);
     }
 
     @Override
