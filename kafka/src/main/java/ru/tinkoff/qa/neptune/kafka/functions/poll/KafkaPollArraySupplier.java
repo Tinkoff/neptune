@@ -25,6 +25,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.ArrayUtils.add;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetFromTopics.getStringResult;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultDataTransformer.KAFKA_DEFAULT_DATA_TRANSFORMER;
@@ -35,7 +36,7 @@ import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollSu
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria for every item of resulted array")
 @MaxDepthOfReporting(0)
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
         .GetArrayStepSupplier<KafkaStepContext, T, KafkaPollArraySupplier<T>> {
 
@@ -53,11 +54,12 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
     protected <M> KafkaPollArraySupplier(GetFromTopics<M> getFromTopics, Function<M, T> originalFunction, Class<T> componentClass) {
         super(getFromTopics.andThen(list -> {
             var listT = list.stream().map(originalFunction).collect(toList());
-            T[] ts = (T[]) Array.newInstance(componentClass, listT.size());
+            T[] ts = (T[]) Array.newInstance(componentClass, 0);
 
-            for (int i = 0; i < listT.size(); i++) {
-                ts[i] = listT.get(i);
+            for (var t: listT) {
+                ts = add(ts, t);
             }
+
             return ts;
         }));
         this.getFromTopics = getFromTopics;
