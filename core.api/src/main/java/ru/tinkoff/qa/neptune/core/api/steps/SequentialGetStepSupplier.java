@@ -516,9 +516,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
             return ofNullable(getCriteria())
                     .map(c -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
-                                            ofNullable(exceptionSupplier)
-                                                    .map(supplier -> getSingle(originalFunction, c.get(), wait, sleep, supplier, ignored.toArray(new Class[]{})))
-                                                    .orElseGet(() -> getSingle(originalFunction, c.get(), wait, sleep, ignored.toArray(new Class[]{}))))
+                                    ofNullable(exceptionSupplier)
+                                            .map(supplier -> getSingle(originalFunction, c.get(), wait, sleep, supplier, ignored.toArray(new Class[]{})))
+                                            .orElseGet(() -> getSingle(originalFunction, c.get(), wait, sleep, ignored.toArray(new Class[]{}))))
 
                                     .orElseGet(() -> ofNullable(exceptionSupplier)
                                             .map(supplier -> getSingle(originalFunction, c.get(), wait, supplier, ignored.toArray(new Class[]{})))
@@ -631,9 +631,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
             return ofNullable(getCriteria())
                     .map(c -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
-                                            ofNullable(exceptionSupplier)
-                                                    .map(supplier -> getFromIterable(originalFunction, c.get(), wait, sleep, supplier, ignored.toArray(new Class[]{})))
-                                                    .orElseGet(() -> getFromIterable(originalFunction, c.get(), wait, sleep, ignored.toArray(new Class[]{}))))
+                                    ofNullable(exceptionSupplier)
+                                            .map(supplier -> getFromIterable(originalFunction, c.get(), wait, sleep, supplier, ignored.toArray(new Class[]{})))
+                                            .orElseGet(() -> getFromIterable(originalFunction, c.get(), wait, sleep, ignored.toArray(new Class[]{}))))
 
                                     .orElseGet(() -> ofNullable(exceptionSupplier)
                                             .map(supplier -> getFromIterable(originalFunction, c.get(), wait, supplier, ignored.toArray(new Class[]{})))
@@ -746,9 +746,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
             return ofNullable(getCriteria())
                     .map(c -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
-                                            ofNullable(exceptionSupplier)
-                                                    .map(supplier -> getFromArray(originalFunction, c.get(), wait, sleep, supplier, ignored.toArray(new Class[]{})))
-                                                    .orElseGet(() -> getFromArray(originalFunction, c.get(), wait, sleep, ignored.toArray(new Class[]{}))))
+                                    ofNullable(exceptionSupplier)
+                                            .map(supplier -> getFromArray(originalFunction, c.get(), wait, sleep, supplier, ignored.toArray(new Class[]{})))
+                                            .orElseGet(() -> getFromArray(originalFunction, c.get(), wait, sleep, ignored.toArray(new Class[]{}))))
 
                                     .orElseGet(() -> ofNullable(exceptionSupplier)
                                             .map(supplier -> getFromArray(originalFunction, c.get(), wait, supplier, ignored.toArray(new Class[]{})))
@@ -861,9 +861,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
             return ofNullable(getCriteria())
                     .map(c -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
-                                            ofNullable(exceptionSupplier)
-                                                    .map(supplier -> getIterable(originalFunction, c.get(), wait, sleep, supplier, ignored.toArray(new Class[]{})))
-                                                    .orElseGet(() -> getIterable(originalFunction, c.get(), wait, sleep, ignored.toArray(new Class[]{}))))
+                                    ofNullable(exceptionSupplier)
+                                            .map(supplier -> getIterable(originalFunction, c.get(), wait, sleep, supplier, ignored.toArray(new Class[]{})))
+                                            .orElseGet(() -> getIterable(originalFunction, c.get(), wait, sleep, ignored.toArray(new Class[]{}))))
 
                                     .orElseGet(() -> ofNullable(exceptionSupplier)
                                             .map(supplier -> getIterable(originalFunction, c.get(), wait, supplier, ignored.toArray(new Class[]{})))
@@ -978,9 +978,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
             return ofNullable(getCriteria())
                     .map(c -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
-                                            ofNullable(exceptionSupplier)
-                                                    .map(supplier -> getArray(originalFunction, c.get(), wait, sleep, supplier, ignored.toArray(new Class[]{})))
-                                                    .orElseGet(() -> getArray(originalFunction, c.get(), wait, sleep, ignored.toArray(new Class[]{}))))
+                                    ofNullable(exceptionSupplier)
+                                            .map(supplier -> getArray(originalFunction, c.get(), wait, sleep, supplier, ignored.toArray(new Class[]{})))
+                                            .orElseGet(() -> getArray(originalFunction, c.get(), wait, sleep, ignored.toArray(new Class[]{}))))
 
                                     .orElseGet(() -> ofNullable(exceptionSupplier)
                                             .map(supplier -> getArray(originalFunction, c.get(), wait, supplier, ignored.toArray(new Class[]{})))

@@ -1,0 +1,93 @@
+plugins {
+    id "io.freefair.aspectj.post-compile-weaving" version "5.3.0"
+}
+
+dependencies {
+    compile project(':core.api')
+
+    inpath(project(":core.api")) {
+        transitive = false
+    }
+    implementation group: 'org.apache.kafka', name: 'kafka-clients', version: '2.8.0'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.7.7'
+    testImplementation 'org.mockito:mockito-inline:2.7.21'
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task generateBundle(type: JavaExec)  {
+    classpath sourceSets.main.runtimeClasspath
+    main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
+    args "ru_RU",
+            "$projectDir/src/main/resources",
+            "false",
+            "kafka"
+}
+
+processResources {
+    doLast {
+        generateBundle.exec()
+    }
+}
+
+artifacts {
+    archives jar, javadocJar, sourcesJar
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: 'https://nexus-new.tcsbank.ru/repository/mvn-bigops-qa') {
+                authentication(userName: mavenDeployLogin, password: mavenDeployPassword)
+            }
+
+
+            pom.project {
+                packaging 'jar'
+                name 'kafka'
+                version version
+                url 'https://github.com/TinkoffCreditSystems/neptune'
+                developers {
+                    developer {
+                        name 'Andrew Charykov'
+                        email 'a.s.charykov@yandex.ru'
+                        url 'https://github.com/AndrewCharykov'
+                        id 'AndrewCharykov'
+                    }
+                }
+                licenses {
+                    license {
+                        name 'Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+                scm {
+                    url 'https://github.com/TinkoffCreditSystems/neptune'
+                    connection 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
+                    developerConnection 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
+                    tag 'HEAD'
+                }
+            }
+        }
+    }
+}
+
+javadoc {
+    destinationDir = file("${buildDir}/../../../neptune.documentation/javadocs/$project.name")
+
+    title = "Neptune Kafka. v$globalVersion"
+    options.author true
+    options.links 'http://download.oracle.com/javase/9/docs/api/'
+    options.addStringOption 'Xdoclint:none', '-quiet'
+    options.memberLevel = JavadocMemberLevel.PROTECTED
+    options.bottom = "Copyright &copy; 2021 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+}

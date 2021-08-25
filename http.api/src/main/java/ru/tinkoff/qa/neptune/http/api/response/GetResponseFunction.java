@@ -44,8 +44,7 @@ final class GetResponseFunction<T, R> implements Function<HttpStepContext, Respo
                 .map(p -> p.test(result))
                 .orElse(true)) {
             return new ResponseExecutionResult<>((HttpResponse<T>) info.getLastReceived(), result);
-        }
-        else {
+        } else {
             return null;
         }
     }
