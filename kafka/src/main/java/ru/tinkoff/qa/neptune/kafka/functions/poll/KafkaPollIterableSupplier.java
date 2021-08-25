@@ -13,6 +13,7 @@ import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 import ru.tinkoff.qa.neptune.kafka.captors.AllMessagesCaptor;
 import ru.tinkoff.qa.neptune.kafka.captors.MessagesCaptor;
 
+import java.time.Duration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
@@ -119,6 +120,11 @@ public abstract class KafkaPollIterableSupplier<T> extends SequentialGetStepSupp
     KafkaPollIterableSupplier<T> withDataTransformer(DataTransformer dataTransformer) {
         this.transformer = dataTransformer;
         return this;
+    }
+
+    @Override
+    public KafkaPollIterableSupplier<T> timeOut(Duration timeOut) {
+        return super.timeOut(timeOut);
     }
 
     @Override

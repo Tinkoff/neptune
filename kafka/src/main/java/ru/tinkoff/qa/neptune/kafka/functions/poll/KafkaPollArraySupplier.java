@@ -15,6 +15,7 @@ import ru.tinkoff.qa.neptune.kafka.captors.MessagesCaptor;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
+import java.time.Duration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
@@ -118,6 +119,11 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
 
     public static StringMessages kafkaRawMessagesArray() {
         return kafkaRawMessagesArray(DEFAULT_TOPICS_FOR_POLL.get());
+    }
+
+    @Override
+    public KafkaPollArraySupplier<T> timeOut(Duration timeOut) {
+        return super.timeOut(timeOut);
     }
 
     @Override

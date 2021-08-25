@@ -13,6 +13,7 @@ import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 import ru.tinkoff.qa.neptune.kafka.captors.AllMessagesCaptor;
 import ru.tinkoff.qa.neptune.kafka.captors.MessageCaptor;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -93,6 +94,11 @@ public class KafkaPollArrayItemSupplier<T> extends SequentialGetStepSupplier
             TypeReference<T> typeT,
             String... topics) {
         return kafkaArrayItem(description, typeT, t -> t, topics);
+    }
+
+    @Override
+    public KafkaPollArrayItemSupplier<T> timeOut(Duration timeOut) {
+        return super.timeOut(timeOut);
     }
 
     @Override
