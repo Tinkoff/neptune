@@ -4,7 +4,6 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
@@ -12,7 +11,6 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 
 import java.time.Duration;
-import java.util.function.Predicate;
 
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_ALERT_TIME_DURATION;
@@ -30,16 +28,6 @@ public final class GetAlertSupplier extends SequentialGetStepSupplier.GetObjectC
         super(webDriver -> new AlertImpl(webDriver.switchTo().alert()));
         throwOnNoResult();
         timeOut(WAITING_ALERT_TIME_DURATION.get());
-    }
-
-    @Override
-    public GetAlertSupplier criteria(Criteria<? super Alert> condition) {
-        return super.criteria(condition);
-    }
-
-    @Override
-    public GetAlertSupplier criteria(String description, Predicate<? super Alert> condition) {
-        return super.criteria(description, condition);
     }
 
     @Override

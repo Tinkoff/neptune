@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.active.element;
 
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
@@ -23,17 +22,17 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentF
 @MaxDepthOfReporting(1)
 @ThrowWhenNoData(toThrow = NoSuchElementException.class)
 public final class GetActiveElementSupplier extends SequentialGetStepSupplier
-        .GetObjectChainedStepSupplier<SeleniumStepContext, WebElement, WebDriver, GetActiveElementSupplier>
+        .GetSimpleStepSupplier<SeleniumStepContext, WebElement, GetActiveElementSupplier>
         implements TargetLocatorSupplier<WebElement> {
 
     private GetActiveElementSupplier() {
-        super(webDriver -> {
+        super(currentContent().andThen(webDriver -> {
             try {
                 return webDriver.switchTo().activeElement();
             } catch (WebDriverException e) {
                 return null;
             }
-        });
+        }));
         throwOnNoResult();
     }
 
@@ -54,6 +53,6 @@ public final class GetActiveElementSupplier extends SequentialGetStepSupplier
      * performs the switching to the active element and returns it.
      */
     public static GetActiveElementSupplier activeElement() {
-        return new GetActiveElementSupplier().from(currentContent());
+        return new GetActiveElementSupplier();
     }
 }

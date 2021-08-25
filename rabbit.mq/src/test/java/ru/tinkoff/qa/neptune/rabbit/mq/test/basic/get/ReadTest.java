@@ -42,8 +42,8 @@ public class ReadTest extends BaseRabbitMqTest {
     @Test(description = "Checking method call with default mapper")
     public void readTest1() throws IOException {
         var dto = rabbitMqStepContext.read(rabbitBody("queue",
-                true,
-                DraftDto.class));
+                DraftDto.class)
+                .autoAck());
 
         verify(channel, times(1)).basicGet("queue", true);
         assertThat(dto.getName(), is("test"));
@@ -53,9 +53,8 @@ public class ReadTest extends BaseRabbitMqTest {
     public void readTest2() throws IOException {
         var dto = rabbitMqStepContext.read(rabbitBody(
                 "test",
-                false,
-                DraftDto.class),
-                new CustomMapper());
+                DraftDto.class)
+                .withDataTransformer(new CustomMapper()));
 
         verify(channel, times(1)).basicGet("test", false);
         assertThat(dto.getName(), is("PREFIXtest"));
@@ -65,9 +64,9 @@ public class ReadTest extends BaseRabbitMqTest {
     public void readTest3() {
         var dtos = rabbitMqStepContext.read(rabbitBody(
                 "test2",
-                true,
                 new TypeReference<List<DraftDto>>() {
-                }));
+                })
+                .autoAck());
 
         assertThat(dtos, hasSize(2));
     }

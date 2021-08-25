@@ -2,7 +2,6 @@ package ru.tinkoff.qa.neptune.retrofit2.steps;
 
 import okhttp3.Response;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import java.util.Arrays;
@@ -20,32 +19,33 @@ final class ResultCriteria {
         super();
     }
 
-    @Description("{description}")
-    private static <T> Criteria<RequestExecutionResult<T>> bodyMatches(
+    private static <M, T> Criteria<RequestExecutionResult<M, T>> resultMatches(
             @DescriptionFragment("description") String description,
             Predicate<? super T> predicate) {
-        checkArgument(nonNull(predicate), "Predicate that checks response body should be defined");
+        checkArgument(nonNull(predicate), "Predicate should be defined");
         checkArgument(isNotBlank(description), "Description should not be defined as a blank or null string");
-        return condition(r -> predicate.test(r.getResult()));
+        return condition(description, r -> predicate.test(r.getResult()));
     }
 
-    static <T> Criteria<RequestExecutionResult<T>> bodyMatches(BodyMatches b, Criteria<? super T> criteria) {
-        return bodyMatches(b.toString(), criteria.get());
+    static <M, T> Criteria<RequestExecutionResult<M, T>> resultMatches(ResultMatches<T> b) {
+        return resultMatches(b.toString(), b.getCriteria().get());
     }
 
-    static <T, S extends Iterable<T>> Criteria<RequestExecutionResult<S>> iterableBodyMatches(BodyHasItems b,
-                                                                                              Criteria<? super T> criteria) {
-        return bodyMatches(b.toString(), iterable -> stream(iterable.spliterator(), false)
-                .anyMatch(criteria.get()));
+    static <M, T, S extends Iterable<T>> Criteria<RequestExecutionResult<M, S>> iterableResultMatches(ResultHasItems<T> b) {
+        return resultMatches(b.toString(), iterable -> stream(iterable.spliterator(), false)
+                .anyMatch(b.getCriteria().get()));
     }
 
-    static <T> Criteria<RequestExecutionResult<T[]>> arrayBodyMatches(BodyHasItems b,
-                                                                      Criteria<? super T> criteria) {
-        return bodyMatches(b.toString(), array -> Arrays.stream(array)
-                .anyMatch(criteria.get()));
+    static <M, T> Criteria<RequestExecutionResult<M, T[]>> arrayResultMatches(ResultHasItems<T> b) {
+        return resultMatches(b.toString(), array -> Arrays.stream(array)
+                .anyMatch(b.getCriteria().get()));
     }
 
-    static <T> Criteria<RequestExecutionResult<T>> resultResponseCriteria(Criteria<Response> criteria) {
+    static <M, T> Criteria<RequestExecutionResult<M, T>> bodyMatches(BodyMatches<M> b) {
+        return condition(b.toString(), r -> b.getCriteria().get().test(r.getCallBody()));
+    }
+
+    static <M, T> Criteria<RequestExecutionResult<M, T>> resultResponseCriteria(Criteria<Response> criteria) {
         return condition(criteria.toString(), r -> criteria.get().test(r.getLastResponse()));
     }
 }

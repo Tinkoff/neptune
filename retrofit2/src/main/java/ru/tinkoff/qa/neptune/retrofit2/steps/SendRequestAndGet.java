@@ -4,9 +4,9 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.retrofit2.RetrofitContext;
 import ru.tinkoff.qa.neptune.retrofit2.captors.AbstractRequestBodyCaptor;
@@ -17,19 +17,18 @@ import ru.tinkoff.qa.neptune.retrofit2.captors.ResponseCaptor;
 import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.createCaptors;
 
-
-@Description("Http response")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Response criteria")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time to receive expected http response and get the result")
 @ThrowWhenNoData(toThrow = ExpectedHttpResponseHasNotBeenReceivedException.class, startDescription = "Not received")
 class SendRequestAndGet<M, R> extends SequentialGetStepSupplier
-        .GetObjectChainedStepSupplier<RetrofitContext, RequestExecutionResult<R>, Supplier<M>, SendRequestAndGet<M, R>> {
+        .GetObjectChainedStepSupplier<RetrofitContext, RequestExecutionResult<M, R>, Supplier<M>, SendRequestAndGet<M, R>> {
 
     private final GetStepResultFunction<M, R> f;
 
@@ -47,6 +46,14 @@ class SendRequestAndGet<M, R> extends SequentialGetStepSupplier
         addIgnored(Exception.class);
     }
 
+    @Description("Http Response. Body of the response is expected to have: '{description}'")
+    static <T, R> SendRequestAndGet<T, R> getResponse(@DescriptionFragment("description") String description,
+                                                      GetStepResultFunction<T, R> f) {
+        checkArgument(isNotBlank(description), "Description should be defined");
+        return new SendRequestAndGet<>(f);
+    }
+
+    @Description("Http response")
     static <T, R> SendRequestAndGet<T, R> getResponse(GetStepResultFunction<T, R> f) {
         return new SendRequestAndGet<>(f);
     }
@@ -79,7 +86,7 @@ class SendRequestAndGet<M, R> extends SequentialGetStepSupplier
     }
 
     @Override
-    protected void onSuccess(RequestExecutionResult<R> rRequestExecutionResult) {
+    protected void onSuccess(RequestExecutionResult<M, R> rRequestExecutionResult) {
         fillResultData();
     }
 
@@ -101,15 +108,5 @@ class SendRequestAndGet<M, R> extends SequentialGetStepSupplier
     @Override
     protected SendRequestAndGet<M, R> pollingInterval(Duration pollingTime) {
         return super.pollingInterval(pollingTime);
-    }
-
-    @Override
-    protected SendRequestAndGet<M, R> criteria(String description, Predicate<? super RequestExecutionResult<R>> predicate) {
-        return super.criteria(description, predicate);
-    }
-
-    @Override
-    protected SendRequestAndGet<M, R> criteria(Criteria<? super RequestExecutionResult<R>> criteria) {
-        return super.criteria(criteria);
     }
 }

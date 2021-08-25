@@ -75,7 +75,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @param <R>    is a type of an object to get
      * @return an instance of {@code <R>}
      */
-    public <T, R> R bodyData(GetObjectFromBodyStepSupplier<T, R, ?> object) {
+    public <T, R> R bodyData(GetObjectFromBodyStepSupplier<T, R, ?, ?> object) {
         return get(object);
     }
 
@@ -89,7 +89,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @param <R>        is a type of an item of array which is extracted from a body of http response
      * @return an instance of {@code <R>}
      */
-    public <T, R> R bodyData(GetObjectFromArrayBodyStepSupplier<T, R, ?> oneOfArray) {
+    public <T, R> R bodyData(GetObjectFromArrayBodyStepSupplier<T, R, ?, ?> oneOfArray) {
         return get(oneOfArray);
     }
 
@@ -102,7 +102,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @param <R>           is a type of an element of {@link Iterable} which is extracted from a body of http response
      * @return an instance of {@code <R>}
      */
-    public <T, R> R bodyData(GetObjectFromIterableBodyStepSupplier<T, R, ?> oneOfIterable) {
+    public <T, R> R bodyData(GetObjectFromIterableBodyStepSupplier<T, R, ?, ?> oneOfIterable) {
         return get(oneOfIterable);
     }
 
@@ -115,7 +115,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @param <R>   is a type of an item of array which is extracted from a body of http response
      * @return an array of {@code <R>}
      */
-    public <T, R> R[] bodyData(GetObjectsFromArrayBodyStepSupplier<T, R, ?> array) {
+    public <T, R> R[] bodyData(GetObjectsFromArrayBodyStepSupplier<T, R, ?, ?> array) {
         return get(array);
     }
 
@@ -129,7 +129,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @param <S>      is a type of resulted {@link Iterable}
      * @return an instance of {@code <S>}
      */
-    public <T, R, S extends Iterable<R>> S bodyData(GetObjectsFromIterableBodyStepSupplier<T, R, S, ?> iterable) {
+    public <T, R, S extends Iterable<R>> S bodyData(GetObjectsFromIterableBodyStepSupplier<T, R, S, ?, ?> iterable) {
         return get(iterable);
     }
 

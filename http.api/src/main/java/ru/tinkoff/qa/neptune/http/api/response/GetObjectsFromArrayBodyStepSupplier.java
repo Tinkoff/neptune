@@ -1,47 +1,40 @@
 package ru.tinkoff.qa.neptune.http.api.response;
 
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
-import ru.tinkoff.qa.neptune.http.api.captors.request.AbstractRequestBodyCaptor;
-import ru.tinkoff.qa.neptune.http.api.captors.response.AbstractResponseBodyObjectCaptor;
-import ru.tinkoff.qa.neptune.http.api.captors.response.AbstractResponseBodyObjectsCaptor;
-import ru.tinkoff.qa.neptune.http.api.captors.response.RequestResponseLogCaptor;
-import ru.tinkoff.qa.neptune.http.api.captors.response.ResponseCaptor;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
-import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.createCaptors;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplier.response;
+import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
+import static ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionCriteria.arrayResultMatches;
+import static ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionCriteria.responseResultMatches;
+import static ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionResultHasItems.hasResultItems;
+import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplierInternal.responseInternal;
 
 /**
  * Builds a step-function that retrieves an array from http response body.
- *
- * @param <T> is a type of a response body
- * @param <R> is a type of an item of resulted array
  */
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted array")
 @ThrowWhenNoData(toThrow = DesiredDataHasNotBeenReceivedException.class, startDescription = "No data received:")
-public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObjectsFromArrayBodyStepSupplier<T, R, S>>
-        extends SequentialGetStepSupplier.GetArrayStepSupplier<HttpStepContext, R, S> {
+@SuppressWarnings("unchecked")
+public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, M, S extends GetObjectsFromArrayBodyStepSupplier<T, R, M, S>>
+        extends SequentialGetStepSupplier.GetArrayChainedStepSupplier<HttpStepContext, R, M, S> {
 
-    private GetObjectsFromArrayBodyStepSupplier(Function<HttpStepContext, R[]> f) {
+    private GetObjectsFromArrayBodyStepSupplier(Function<M, R[]> f) {
         super(f);
         addIgnored(Exception.class);
     }
@@ -53,8 +46,8 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
      * @param description is a description of resulted array
      * @param received    is a received http response
      * @param f           is a function that describes how to get an array from a body of http response
-     * @param <T>         is a type of a response body
-     * @param <R>         is a type of an item of resulted array
+     * @param <T>         is a type of response body
+     * @param <R>         is a type of item of resulted array
      * @return an instance of {@link GetObjectsFromArrayWhenResponseReceived}
      */
     @Description("{description}")
@@ -77,8 +70,8 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
      * @param requestBuilder describes a request to be sent
      * @param handler        is a response body handler
      * @param f              is a function that describes how to get an array from a body of http response
-     * @param <T>            is a type of a response body
-     * @param <R>            is a type of an item of resulted array
+     * @param <T>            is a type of response body
+     * @param <R>            is a type of item of resulted array
      * @return an instance of {@link GetObjectsFromArrayWhenResponseReceiving}
      */
     @Description("{description}")
@@ -91,8 +84,10 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
             HttpResponse.BodyHandler<T> handler,
             Function<T, R[]> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectsFromArrayWhenResponseReceiving<>(response(requestBuilder, handler),
-                f);
+        return new GetObjectsFromArrayWhenResponseReceiving<>(responseInternal(translate(description),
+                requestBuilder,
+                handler,
+                f, rs -> rs.length > 0));
     }
 
 
@@ -102,18 +97,13 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
      *
      * @param description is a description of resulted array
      * @param received    is a received http response
-     * @param <R>         is a type of an item of array of response body
+     * @param <R>         is a type of item of array of response body
      * @return an instance of {@link GetObjectsFromArrayWhenResponseReceived}
      */
-    @Description("{description}")
     public static <R> GetObjectsFromArrayWhenResponseReceived<R[], R> asArray(
-            @DescriptionFragment(
-                    value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
-                    String description,
+            String description,
             HttpResponse<R[]> received) {
-        checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectsFromArrayWhenResponseReceived<>(received, rs -> rs);
+        return asArray(description, received, rs -> rs);
     }
 
     /**
@@ -123,89 +113,49 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
      * @param description    is a description of resulted array
      * @param requestBuilder describes a request to be sent
      * @param handler        is a response body handler
-     * @param <R>            is a type of an item of array of response body
+     * @param <R>            is a type of item of array of response body
      * @return an instance of {@link GetObjectsFromArrayWhenResponseReceiving}
      */
-    @Description("{description}")
     public static <R> GetObjectsFromArrayWhenResponseReceiving<R[], R> asArray(
-            @DescriptionFragment(
-                    value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
-                    String description,
+            String description,
             RequestBuilder requestBuilder,
             HttpResponse.BodyHandler<R[]> handler) {
-        checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectsFromArrayWhenResponseReceiving<>(response(requestBuilder, handler),
-                rs -> rs);
-    }
-
-
-    @Override
-    public S criteria(Criteria<? super R> criteria) {
-        return super.criteria(criteria);
-    }
-
-    @Override
-    public S criteria(String description, Predicate<? super R> predicate) {
-        return super.criteria(description, predicate);
+        return asArray(description, requestBuilder, handler, rs -> rs);
     }
 
     /**
      * Returns an array from a body of http response which is received already.
      *
-     * @param <T> is a type of a response body
-     * @param <R> is a type of an item of resulted array
+     * @param <T> is a type of response body
+     * @param <R> is a type of item of resulted array
      */
     @SuppressWarnings("unused")
     @DefineGetImperativeParameterName(value = "From http response get:")
+    @DefineFromParameterName("Response")
     public static final class GetObjectsFromArrayWhenResponseReceived<T, R>
-            extends GetObjectsFromArrayBodyStepSupplier<T, R, GetObjectsFromArrayWhenResponseReceived<T, R>> {
+            extends GetObjectsFromArrayBodyStepSupplier<T, R, HttpResponse<T>, GetObjectsFromArrayWhenResponseReceived<T, R>> {
 
-        @StepParameter("From body of received http response")
-        final HttpResponse<T> response;
-
-        private GetObjectsFromArrayWhenResponseReceived(HttpResponse<T> response,
-                                                        Function<T, R[]> f) {
-            super(f.compose(ignored -> response.body()));
+        private GetObjectsFromArrayWhenResponseReceived(HttpResponse<T> response, Function<T, R[]> f) {
+            super(f.compose(HttpResponse::body));
             checkNotNull(response);
-            this.response = response;
+            from(response);
         }
     }
 
     /**
      * Returns an array from a body of http response. Response is supposed to be received during the step execution
      *
-     * @param <T> is a type of a response body
-     * @param <R> is a type of an item of resulted array
+     * @param <T> is a type of response body
+     * @param <R> is a type of item of resulted array
      */
-    @SequentialGetStepSupplier.DefineTimeOutParameterName("Time to receive expected http response and get the result")
-    @DefineGetImperativeParameterName(value = "Send http request. Wait for the response and then get:")
     public static final class GetObjectsFromArrayWhenResponseReceiving<T, R>
-            extends GetObjectsFromArrayBodyStepSupplier<T, R, GetObjectsFromArrayWhenResponseReceiving<T, R>> {
+            extends GetObjectsFromArrayBodyStepSupplier<T, R, ResponseExecutionResult<T, R[]>, GetObjectsFromArrayWhenResponseReceiving<T, R>> {
 
+        private Criteria<R> derivedValueCriteria;
 
-        private final ReceiveResponseAndGetResultFunction<T, R[]> f;
-
-        @CaptureOnSuccess(by = RequestResponseLogCaptor.class)
-        @CaptureOnFailure(by = RequestResponseLogCaptor.class)
-        ResponseExecutionInfo info;
-
-        @CaptureOnSuccess(by = {ResponseCaptor.class,
-                AbstractResponseBodyObjectCaptor.class,
-                AbstractResponseBodyObjectsCaptor.class})
-        @CaptureOnFailure(by = {ResponseCaptor.class,
-                AbstractResponseBodyObjectCaptor.class,
-                AbstractResponseBodyObjectsCaptor.class})
-        HttpResponse<?> lastReceived;
-
-        private GetObjectsFromArrayWhenResponseReceiving(ReceiveResponseAndGetResultFunction<T, R[]> f) {
-            super(f);
-            this.f = f;
-        }
-
-        private GetObjectsFromArrayWhenResponseReceiving(ResponseSequentialGetSupplier<T> getResponse,
-                                                         Function<T, R[]> f) {
-            this(new ReceiveResponseAndGetResultFunction<>(f, getResponse));
+        private GetObjectsFromArrayWhenResponseReceiving(ResponseSequentialGetSupplierInternal<T, R[]> getResponse) {
+            super(ResponseExecutionResult::getResult);
+            from(getResponse.addIgnored(Exception.class));
         }
 
         /**
@@ -216,12 +166,14 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
          * @see SequentialGetStepSupplier#timeOut(Duration)
          */
         public GetObjectsFromArrayWhenResponseReceiving<T, R> retryTimeOut(Duration timeOut) {
-            return super.timeOut(timeOut);
+            ((ResponseSequentialGetSupplierInternal<?, ?>) getFrom()).timeOut(timeOut);
+            return this;
         }
 
         @Override
         public GetObjectsFromArrayWhenResponseReceiving<T, R> pollingInterval(Duration pollingTime) {
-            return super.pollingInterval(pollingTime);
+            ((ResponseSequentialGetSupplierInternal<?, ?>) getFrom()).pollingInterval(pollingTime);
+            return this;
         }
 
         /**
@@ -230,11 +182,9 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
          * @param description criteria description
          * @param predicate   is how to match http response
          * @return self-reference
-         * @see SequentialGetStepSupplier#criteria(String, Predicate)
          */
         public GetObjectsFromArrayWhenResponseReceiving<T, R> responseCriteria(String description, Predicate<HttpResponse<T>> predicate) {
-            f.getGetResponseSupplier().criteria(description, predicate);
-            return this;
+            return responseCriteria(condition(description, predicate));
         }
 
         /**
@@ -242,45 +192,89 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
          *
          * @param criteria describes how to match http response
          * @return self-reference
-         * @see SequentialGetStepSupplier#criteria(Criteria)
          */
         public GetObjectsFromArrayWhenResponseReceiving<T, R> responseCriteria(Criteria<HttpResponse<T>> criteria) {
-            f.getGetResponseSupplier().criteria(criteria);
+            ((ResponseSequentialGetSupplierInternal<T, R[]>) getFrom()).criteria(responseResultMatches(criteria));
             return this;
         }
 
-        @Override
-        public Map<String, String> getParameters() {
-            var params = super.getParameters();
-            params.putAll(f.getGetResponseSupplier().getParameters());
-            return params;
+        /**
+         * Defines OR-expression for expected http response.
+         *
+         * @param criteria describes how to match http response
+         * @return self-reference
+         */
+        public GetObjectsFromArrayWhenResponseReceiving<T, R> responseCriteriaOr(Criteria<HttpResponse<T>>... criteria) {
+            return responseCriteria(OR(criteria));
+        }
+
+        /**
+         * Defines XOR-expression for expected http response.
+         *
+         * @param criteria describes how to match http response
+         * @return self-reference
+         */
+        public GetObjectsFromArrayWhenResponseReceiving<T, R> responseCriteriaOnlyOne(Criteria<HttpResponse<T>>... criteria) {
+            return responseCriteria(ONLY_ONE(criteria));
+        }
+
+        /**
+         * Defines NOT-expression for expected http response.
+         *
+         * @param criteria describes how to match http response
+         * @return self-reference
+         */
+        public GetObjectsFromArrayWhenResponseReceiving<T, R> responseCriteriaNot(Criteria<HttpResponse<T>>... criteria) {
+            return responseCriteria(NOT(criteria));
+        }
+
+        private void criteriaForDerivedValue(Criteria<? super R> criteria) {
+            derivedValueCriteria = ofNullable(derivedValueCriteria)
+                    .map(c -> AND(c, criteria))
+                    .orElse((Criteria<R>) criteria);
         }
 
         @Override
-        @SuppressWarnings("unchecked")
-        protected void onStart(HttpStepContext httpStepContext) {
-            catchValue(f.getGetResponseSupplier().getRequest().body(),
-                    createCaptors(new Class[]{AbstractRequestBodyCaptor.class}));
-        }
-
-        private void fillResultData() {
-            info = f.getGetResponseSupplier().getInfo();
-            lastReceived = info.getLastReceived();
+        public GetObjectsFromArrayWhenResponseReceiving<T, R> criteriaOr(Criteria<? super R>... criteria) {
+            criteriaForDerivedValue(OR(criteria));
+            return super.criteriaOr(criteria);
         }
 
         @Override
-        protected void onSuccess(R[] r) {
-            fillResultData();
+        public GetObjectsFromArrayWhenResponseReceiving<T, R> criteriaOnlyOne(Criteria<? super R>... criteria) {
+            criteriaForDerivedValue(ONLY_ONE(criteria));
+            return super.criteriaOnlyOne(criteria);
         }
 
         @Override
-        protected void onFailure(HttpStepContext httpStepContext, Throwable throwable) {
-            fillResultData();
+        public GetObjectsFromArrayWhenResponseReceiving<T, R> criteriaNot(Criteria<? super R>... criteria) {
+            criteriaForDerivedValue(NOT(criteria));
+            return super.criteriaNot(criteria);
+        }
+
+        @Override
+        public GetObjectsFromArrayWhenResponseReceiving<T, R> criteria(Criteria<? super R> criteria) {
+            criteriaForDerivedValue(criteria);
+            return super.criteria(criteria);
+        }
+
+        @Override
+        public GetObjectsFromArrayWhenResponseReceiving<T, R> criteria(String description, Predicate<? super R> criteria) {
+            return criteria(condition(description, criteria));
+        }
+
+        @Override
+        public Function<HttpStepContext, R[]> get() {
+            if (derivedValueCriteria != null) {
+                ((ResponseSequentialGetSupplierInternal<T, R[]>) getFrom())
+                        .criteria(arrayResultMatches(hasResultItems(derivedValueCriteria)));
+            }
+            return super.get();
         }
 
         @Override
         public GetObjectsFromArrayWhenResponseReceiving<T, R> throwOnNoResult() {
-            f.getGetResponseSupplier().throwOnNoResult();
+            ((ResponseSequentialGetSupplierInternal<?, ?>) getFrom()).throwOnNoResult();
             return super.throwOnNoResult();
         }
     }

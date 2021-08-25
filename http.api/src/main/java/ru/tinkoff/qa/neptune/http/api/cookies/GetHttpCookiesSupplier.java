@@ -2,7 +2,6 @@ package ru.tinkoff.qa.neptune.http.api.cookies;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.collections.CollectionCaptor;
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
@@ -53,11 +52,6 @@ public final class GetHttpCookiesSupplier extends SequentialGetStepSupplier
      */
     public static GetHttpCookiesSupplier httpCookies(URI uri) {
         return new GetHttpCookiesSupplier(uri);
-    }
-
-    @Override
-    public GetHttpCookiesSupplier criteria(Criteria<? super HttpCookie> criteria) {
-        return super.criteria(criteria);
     }
 
     private static class GetCookieManager implements Function<HttpStepContext, CookieManager> {

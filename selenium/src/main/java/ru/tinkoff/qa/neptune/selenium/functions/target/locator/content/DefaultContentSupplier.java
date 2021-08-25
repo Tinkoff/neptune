@@ -15,17 +15,17 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentF
 @MaxDepthOfReporting(0)
 @ThrowWhenNoData(toThrow = WebDriverException.class)
 public final class DefaultContentSupplier extends SequentialGetStepSupplier
-        .GetObjectChainedStepSupplier<SeleniumStepContext, WebDriver, WebDriver, DefaultContentSupplier>
+        .GetSimpleStepSupplier<SeleniumStepContext, WebDriver, DefaultContentSupplier>
         implements TargetLocatorSupplier<WebDriver> {
 
     private DefaultContentSupplier() {
-        super(driver -> {
+        super(currentContent().andThen(webDriver -> {
             try {
-                return driver.switchTo().defaultContent();
+                return webDriver.switchTo().defaultContent();
             } catch (WebDriverException e) {
                 return null;
             }
-        });
+        }));
         throwOnNoResult();
     }
 
@@ -43,6 +43,6 @@ public final class DefaultContentSupplier extends SequentialGetStepSupplier
      * performs the switching to the default content and returns it.
      */
     public static DefaultContentSupplier defaultContent() {
-        return new DefaultContentSupplier().from(currentContent());
+        return new DefaultContentSupplier();
     }
 }

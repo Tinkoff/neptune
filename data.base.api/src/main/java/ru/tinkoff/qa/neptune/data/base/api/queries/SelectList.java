@@ -2,7 +2,6 @@ package ru.tinkoff.qa.neptune.data.base.api.queries;
 
 import org.datanucleus.api.jdo.JDOPersistenceManager;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -21,7 +20,6 @@ import javax.jdo.query.PersistableExpression;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.SLEEPING_TIME;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.WAITING_FOR_SELECTION_RESULT_TIME;
@@ -243,16 +241,6 @@ public class SelectList<T, R extends List<T>> extends SequentialGetStepSupplier
     @Override
     public SelectList<T, R> pollingInterval(Duration pollingTime) {
         return super.pollingInterval(pollingTime);
-    }
-
-    @Override
-    public SelectList<T, R> criteria(Criteria<? super T> criteria) {
-        return super.criteria(criteria);
-    }
-
-    @Override
-    public SelectList<T, R> criteria(String conditionDescription, Predicate<? super T> condition) {
-        return super.criteria(conditionDescription, condition);
     }
 
     KeepResultPersistent getResultPersistent() {

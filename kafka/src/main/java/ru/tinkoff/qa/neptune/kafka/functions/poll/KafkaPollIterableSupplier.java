@@ -5,7 +5,6 @@ import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -14,11 +13,9 @@ import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 import ru.tinkoff.qa.neptune.kafka.captors.AllMessagesCaptor;
 import ru.tinkoff.qa.neptune.kafka.captors.MessagesCaptor;
 
-import java.time.Duration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
@@ -106,21 +103,6 @@ public abstract class KafkaPollIterableSupplier<T> extends SequentialGetStepSupp
 
     public static StringMessages kafkaRawMessagesIterable() {
         return kafkaRawMessagesIterable(DEFAULT_TOPICS_FOR_POLL.get());
-    }
-
-    @Override
-    public KafkaPollIterableSupplier<T> timeOut(Duration timeOut) {
-        return super.timeOut(timeOut);
-    }
-
-    @Override
-    public KafkaPollIterableSupplier<T> criteria(String description, Predicate<? super T> predicate) {
-        return super.criteria(description, predicate);
-    }
-
-    @Override
-    public KafkaPollIterableSupplier<T> criteria(Criteria<? super T> criteria) {
-        return super.criteria(criteria);
     }
 
     @Override

@@ -4,7 +4,6 @@ import org.openqa.selenium.*;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -16,7 +15,6 @@ import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
 
 import java.time.Duration;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.OR;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
@@ -681,16 +679,6 @@ public final class SearchSupplier<R extends SearchContext>
     @Override
     public SearchSupplier<R> timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
-    }
-
-    @Override
-    public SearchSupplier<R> criteria(Criteria<? super R> condition) {
-        return super.criteria(condition);
-    }
-
-    @Override
-    public SearchSupplier<R> criteria(String description, Predicate<? super R> condition) {
-        return super.criteria(description, condition);
     }
 
     @Override

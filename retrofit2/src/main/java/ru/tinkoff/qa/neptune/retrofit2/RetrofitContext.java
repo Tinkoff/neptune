@@ -15,23 +15,23 @@ public class RetrofitContext extends Context<RetrofitContext> {
         return context;
     }
 
-    public <M, R> R get(GetObjectSupplier<M, R> what) {
+    public <M, R> R get(GetObjectSupplier<M, R, ?> what) {
         return super.get(what);
     }
 
-    public <M, R> R[] get(GetArraySupplier<M, R> what) {
+    public <M, R> R[] get(GetArraySupplier<M, R, ?> what) {
         return super.get(what);
     }
 
-    public <M, R, S extends Iterable<R>> S get(GetIterableSupplier<M, R, S> what) {
+    public <M, R, S extends Iterable<R>> S get(GetIterableSupplier<M, R, S, ?> what) {
         return super.get(what);
     }
 
-    public <M, R> R get(GetObjectFromArraySupplier<M, R> what) {
+    public <M, R> R get(GetObjectFromArraySupplier<M, R, ?> what) {
         return super.get(what);
     }
 
-    public <M, R> R get(GetObjectFromIterableSupplier<M, R> what) {
+    public <M, R> R get(GetObjectFromIterableSupplier<M, R, ?> what) {
         return super.get(what);
     }
 }

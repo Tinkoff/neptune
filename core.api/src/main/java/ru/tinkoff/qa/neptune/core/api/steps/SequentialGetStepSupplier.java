@@ -31,8 +31,7 @@ import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOf
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchFailureEvent;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchSuccessEvent;
-import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.AND;
-import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultGetParameterReader.*;
 import static ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter.StepParameterCreator.createStepParameter;
 import static ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData.ThrowWhenNoDataReader.getDeclaredBy;
@@ -160,11 +159,13 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     /**
      * Sometimes it is necessary to get a value that suits some criteria.
      * This method adds the criteria to filter values.
-     * When this method and/or {@link #criteria(String, Predicate)} are invoked previously then it joins conditions with 'AND'.
+     * When this methods and/or {@link #criteria(String, Predicate)},
+     * {@link #criteriaOr(Criteria[])}, {@link #criteriaOnlyOne(Criteria[])},
+     * {@link #criteriaNot(Criteria[])} are invoked previously then it joins conditions with 'AND'.
      *
      * @param criteria is the criteria to get required value
      */
-    protected THIS criteria(Criteria<? super P> criteria) {
+    THIS criteria(Criteria<? super P> criteria) {
         conditions.add((Criteria<P>) criteria);
         condition = AND(conditions);
         return (THIS) this;
@@ -173,13 +174,56 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     /**
      * Sometimes it is necessary to get a value that suits some criteria.
      * This method adds the criteria to filter values.
-     * When this method and/or {@link #criteria(Criteria)} are invoked previously then it joins conditions with 'AND'.
+     * When this method and/or {@link #criteria(Criteria)},
+     * {@link #criteriaOr(Criteria[])}, {@link #criteriaOnlyOne(Criteria[])},
+     * {@link #criteriaNot(Criteria[])} are invoked previously then it joins conditions with 'AND'.
      *
      * @param description is a description of the criteria
      * @param predicate   is the the criteria
      */
-    protected THIS criteria(String description, Predicate<? super P> predicate) {
+    THIS criteria(String description, Predicate<? super P> predicate) {
         return criteria(condition(description, predicate));
+    }
+
+    /**
+     * Sometimes it is necessary to get a value that suits some composite criteria which
+     * unites multiple simple criteria in one OR-expression
+     * This method adds the criteria to filter values.
+     * When this method and/or {@link #criteria(Criteria)},
+     * {@link #criteria(String, Predicate)}, {@link #criteriaOnlyOne(Criteria[])},
+     * {@link #criteriaNot(Criteria[])} are invoked previously then it joins conditions with 'AND'.
+     *
+     * @param criteria to unite in OR-expression
+     */
+    THIS criteriaOr(Criteria<? super P>... criteria) {
+        return criteria(OR(criteria));
+    }
+
+    /**
+     * Sometimes it is necessary to get a value that suits some composite criteria which
+     * unites multiple simple criteria in one XOR-expression
+     * This method adds the criteria to filter values.
+     * When this method and/or {@link #criteria(Criteria)},
+     * {@link #criteriaOr(Criteria[])}, {@link #criteria(String, Predicate)},
+     * {@link #criteriaNot(Criteria[])} are invoked previously then it joins conditions with 'AND'.
+     *
+     * @param criteria to unite in XOR-expression
+     */
+    THIS criteriaOnlyOne(Criteria<? super P>... criteria) {
+        return criteria(ONLY_ONE(criteria));
+    }
+
+    /**
+     * Sometimes it is necessary to get a value that suits some inverted criteria.
+     * This method adds the criteria to filter values.
+     * When this method and/or {@link #criteria(Criteria)},
+     * {@link #criteriaOr(Criteria[])} (Criteria)}, {@link #criteria(String, Predicate)},
+     * {@link #criteriaOnlyOne{Criteria[])} are invoked previously then it joins conditions with 'AND'.
+     *
+     * @param criteria one or more criteria to be inverted
+     */
+    THIS criteriaNot(Criteria<? super P>... criteria) {
+        return criteria(NOT(criteria));
     }
 
     /**
@@ -403,6 +447,35 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         return from;
     }
 
+    public static class GetSimpleStepSupplier<T, R, THIS extends GetSimpleStepSupplier<T, R, THIS>>
+            extends SequentialGetStepSupplier<T, R, T, R, THIS> {
+
+        private final Function<T, R> originalFunction;
+
+        protected GetSimpleStepSupplier(Function<T, R> originalFunction) {
+            super();
+            this.originalFunction = originalFunction;
+            from(t -> t);
+        }
+
+        @Override
+        protected Function<T, R> getEndFunction() {
+            return ofNullable(timeToGet)
+                    .map(wait -> ofNullable(sleepingTime)
+                            .map(sleep -> ofNullable(exceptionSupplier)
+                                    .map(supplier -> getSingle(originalFunction, wait, sleep, supplier, ignored.toArray(new Class[]{})))
+                                    .orElseGet(() -> getSingle(originalFunction, wait, sleep, ignored.toArray(new Class[]{}))))
+
+                            .orElseGet(() -> ofNullable(exceptionSupplier)
+                                    .map(supplier -> getSingle(originalFunction, wait, supplier, ignored.toArray(new Class[]{})))
+                                    .orElseGet(() -> getSingle(originalFunction, wait, ignored.toArray(new Class[]{})))))
+
+                    .orElseGet(() -> ofNullable(exceptionSupplier)
+                            .map(supplier -> getSingle(originalFunction, supplier, ignored.toArray(new Class[]{})))
+                            .orElse(getSingle(originalFunction, ignored.toArray(new Class[]{}))));
+        }
+    }
+
     private static abstract class PrivateGetObjectStepSupplier<T, R, M, THIS extends PrivateGetObjectStepSupplier<T, R, M, THIS>>
             extends SequentialGetStepSupplier<T, R, M, R, THIS> {
 
@@ -411,6 +484,31 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         PrivateGetObjectStepSupplier(Function<M, R> originalFunction) {
             super();
             this.originalFunction = originalFunction;
+        }
+
+        @Override
+        public THIS criteria(Criteria<? super R> criteria) {
+            return super.criteria(criteria);
+        }
+
+        @Override
+        public THIS criteria(String description, Predicate<? super R> predicate) {
+            return super.criteria(description, predicate);
+        }
+
+        @Override
+        public THIS criteriaOr(Criteria<? super R>... criteria) {
+            return super.criteriaOr(criteria);
+        }
+
+        @Override
+        public THIS criteriaOnlyOne(Criteria<? super R>... criteria) {
+            return super.criteriaOnlyOne(criteria);
+        }
+
+        @Override
+        public THIS criteriaNot(Criteria<? super R>... criteria) {
+            return super.criteriaNot(criteria);
         }
 
         @Override
@@ -504,6 +602,31 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
 
         @Override
+        public THIS criteria(Criteria<? super R> criteria) {
+            return super.criteria(criteria);
+        }
+
+        @Override
+        public THIS criteria(String description, Predicate<? super R> predicate) {
+            return super.criteria(description, predicate);
+        }
+
+        @Override
+        public THIS criteriaOr(Criteria<? super R>... criteria) {
+            return super.criteriaOr(criteria);
+        }
+
+        @Override
+        public THIS criteriaOnlyOne(Criteria<? super R>... criteria) {
+            return super.criteriaOnlyOne(criteria);
+        }
+
+        @Override
+        public THIS criteriaNot(Criteria<? super R>... criteria) {
+            return super.criteriaNot(criteria);
+        }
+
+        @Override
         protected Function<M, R> getEndFunction() {
             return ofNullable(getCriteria())
                     .map(c -> ofNullable(timeToGet)
@@ -591,6 +714,31 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         PrivateGetObjectFromArrayStepSupplier(Function<M, R[]> originalFunction) {
             super();
             this.originalFunction = originalFunction;
+        }
+
+        @Override
+        public THIS criteria(Criteria<? super R> criteria) {
+            return super.criteria(criteria);
+        }
+
+        @Override
+        public THIS criteria(String description, Predicate<? super R> predicate) {
+            return super.criteria(description, predicate);
+        }
+
+        @Override
+        public THIS criteriaOr(Criteria<? super R>... criteria) {
+            return super.criteriaOr(criteria);
+        }
+
+        @Override
+        public THIS criteriaOnlyOne(Criteria<? super R>... criteria) {
+            return super.criteriaOnlyOne(criteria);
+        }
+
+        @Override
+        public THIS criteriaNot(Criteria<? super R>... criteria) {
+            return super.criteriaNot(criteria);
         }
 
         @Override
@@ -684,6 +832,31 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
 
         @Override
+        public THIS criteria(Criteria<? super R> criteria) {
+            return super.criteria(criteria);
+        }
+
+        @Override
+        public THIS criteria(String description, Predicate<? super R> predicate) {
+            return super.criteria(description, predicate);
+        }
+
+        @Override
+        public THIS criteriaOr(Criteria<? super R>... criteria) {
+            return super.criteriaOr(criteria);
+        }
+
+        @Override
+        public THIS criteriaOnlyOne(Criteria<? super R>... criteria) {
+            return super.criteriaOnlyOne(criteria);
+        }
+
+        @Override
+        public THIS criteriaNot(Criteria<? super R>... criteria) {
+            return super.criteriaNot(criteria);
+        }
+
+        @Override
         protected Function<M, S> getEndFunction() {
             return ofNullable(getCriteria())
                     .map(c -> ofNullable(timeToGet)
@@ -773,6 +946,31 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         PrivateGetArrayStepSupplier(Function<M, R[]> originalFunction) {
             super();
             this.originalFunction = originalFunction;
+        }
+
+        @Override
+        public THIS criteria(Criteria<? super R> criteria) {
+            return super.criteria(criteria);
+        }
+
+        @Override
+        public THIS criteria(String description, Predicate<? super R> predicate) {
+            return super.criteria(description, predicate);
+        }
+
+        @Override
+        public THIS criteriaOr(Criteria<? super R>... criteria) {
+            return super.criteriaOr(criteria);
+        }
+
+        @Override
+        public THIS criteriaOnlyOne(Criteria<? super R>... criteria) {
+            return super.criteriaOnlyOne(criteria);
+        }
+
+        @Override
+        public THIS criteriaNot(Criteria<? super R>... criteria) {
+            return super.criteriaNot(criteria);
         }
 
         @Override
