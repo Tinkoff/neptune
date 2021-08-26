@@ -1,0 +1,6 @@
+ru.tinkoff.qa.neptune.kafka
+ru.tinkoff.qa.neptune.kafka.captors
+ru.tinkoff.qa.neptune.kafka.functions.poll
+ru.tinkoff.qa.neptune.kafka.functions.send
+ru.tinkoff.qa.neptune.kafka.localization
+ru.tinkoff.qa.neptune.kafka.properties

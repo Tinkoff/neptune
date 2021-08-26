@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"ru.tinkoff.qa.neptune.kafka"},{"l":"ru.tinkoff.qa.neptune.kafka.captors"},{"l":"ru.tinkoff.qa.neptune.kafka.functions.poll"},{"l":"ru.tinkoff.qa.neptune.kafka.functions.send"},{"l":"ru.tinkoff.qa.neptune.kafka.localization"},{"l":"ru.tinkoff.qa.neptune.kafka.properties"}]
