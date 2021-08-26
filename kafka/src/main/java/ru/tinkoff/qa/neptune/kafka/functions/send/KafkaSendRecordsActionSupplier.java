@@ -1,9 +1,10 @@
 package ru.tinkoff.qa.neptune.kafka.functions.send;
 
 import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Header;
+import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.common.header.internals.RecordHeaders;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
@@ -18,8 +19,9 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.createCaptors;
+import static ru.tinkoff.qa.neptune.kafka.properties.KafkaCallbackProperty.KAFKA_CALLBACK;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultDataTransformer.KAFKA_DEFAULT_DATA_TRANSFORMER;
-import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicForSendSupplier.DEFAULT_TOPIC_FOR_SEND;
+import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicForSendProperty.DEFAULT_TOPIC_FOR_SEND;
 
 @SequentialActionSupplier.DefinePerformImperativeParameterName("Send:")
 @MaxDepthOfReporting(0)
@@ -36,18 +38,30 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
     @StepParameter("key")
     private Object key;
     @StepParameter("headers")
-    private Iterable<Header> headers;
-    private Callback callback;
+    private final Headers headers = new RecordHeaders();
+    private Callback callback  = KAFKA_CALLBACK.get();
 
     public KafkaSendRecordsActionSupplier() {
         super();
         performOn(kafkaStepContext -> kafkaStepContext);
     }
 
+    /**
+     * Sends an object to topic. This object is serialized to string message.
+     *
+     * @param toSend is a object to be serialized and send to the topic
+     * @return an instance of {@link KafkaSendRecordsActionSupplier.Mapped}
+     */
     public static Mapped serializedMessage(Object toSend) {
         return new Mapped(toSend);
     }
 
+    /**
+     * Sends a message to topic.
+     *
+     * @param message is a message to send
+     * @return an instance of {@link KafkaSendRecordsActionSupplier.StringMessage}
+     */
     public static StringMessage textMessage(String message) {
         return new StringMessage(message);
     }
@@ -72,9 +86,18 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
         return (T) this;
     }
 
-    public T headers(Iterable<Header> headers) {
-        this.headers = headers;
+    public T header(Header header) {
+        this.headers.add(header);
         return (T) this;
+    }
+
+    public T header(String header, byte[] bytes) {
+        this.headers.add(header, bytes);
+        return (T) this;
+    }
+
+    public T header(String header, String value) {
+        return header(header, value.getBytes());
     }
 
     public T callback(Callback callback) {
@@ -84,22 +107,23 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
 
     @Override
     protected void howToPerform(KafkaStepContext kafkaStepContext) {
-        KafkaProducer<K, V> producer = kafkaStepContext.getProducer();
+        var producer = kafkaStepContext.getProducer();
 
-        ProducerRecord<Object, String> records;
+        ProducerRecord<String, String> records;
 
         records = new ProducerRecord<>(
                 topic,
                 partition,
                 timestamp,
-                key,
+                //todo Very suspicious moment. I think keys property is ignored.
+                key == null ? null : String.valueOf(key),
                 value,
                 headers);
 
         if (callback == null) {
-            producer.send((ProducerRecord<K, V>) records);
+            producer.send(records);
         } else {
-            producer.send((ProducerRecord<K, V>) records, callback);
+            producer.send(records, callback);
         }
     }
 
@@ -114,7 +138,7 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
         private DataTransformer transformer;
 
 
-        public Mapped(Object toSend) {
+        private Mapped(Object toSend) {
             super();
             checkNotNull(toSend);
             this.toSend = toSend;

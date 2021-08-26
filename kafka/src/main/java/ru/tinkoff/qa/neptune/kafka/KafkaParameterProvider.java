@@ -2,8 +2,8 @@ package ru.tinkoff.qa.neptune.kafka;
 
 import ru.tinkoff.qa.neptune.core.api.steps.context.ParameterProvider;
 
-import static ru.tinkoff.qa.neptune.kafka.properties.KafkaConsumerSupplier.KAFKA_CONSUMER;
-import static ru.tinkoff.qa.neptune.kafka.properties.KafkaProducerSupplier.KAFKA_PRODUCER;
+import static ru.tinkoff.qa.neptune.kafka.properties.KafkaConsumerProperty.KAFKA_CONSUMER;
+import static ru.tinkoff.qa.neptune.kafka.properties.KafkaProducerProperty.KAFKA_PRODUCER;
 
 public class KafkaParameterProvider implements ParameterProvider {
     @Override

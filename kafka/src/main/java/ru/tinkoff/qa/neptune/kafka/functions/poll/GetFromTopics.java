@@ -20,6 +20,7 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty.DEFAULT_TOPICS_FOR_POLL;
 
 final class GetFromTopics<T> implements Function<KafkaStepContext, List<T>>, StepParameterPojo {
     @StepParameter(value = "topics", makeReadableBy = TopicValueGetter.class)
@@ -40,9 +41,8 @@ final class GetFromTopics<T> implements Function<KafkaStepContext, List<T>>, Ste
     private final Map<Object, String> successMessages = new HashMap<>();
 
     GetFromTopics(Class<T> cls, TypeReference<T> typeRef, String... topics) {
-        checkArgument(topics.length > 0, "Topics should be defined");
         checkArgument(!(isNull(cls) && isNull(typeRef)), "Any class or type reference should be defined");
-        this.topics = topics;
+        this.topics = topics.length == 0 ? DEFAULT_TOPICS_FOR_POLL.get() : topics;
         this.cls = cls;
         this.typeRef = typeRef;
         this.type = ofNullable(typeRef).map(TypeReference::getType).orElse(null);

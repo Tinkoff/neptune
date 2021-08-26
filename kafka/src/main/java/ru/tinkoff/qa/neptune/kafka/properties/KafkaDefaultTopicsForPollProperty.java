@@ -7,8 +7,8 @@ import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
 @PropertyDescription(description = "Defines default topics for poll",
         section = "Kafka")
 @PropertyName("DEFAULT_TOPICS_FOR_POLL")
-public final class KafkaDefaultTopicsForPollSupplier implements PropertySupplier<String[], String> {
-    public static final KafkaDefaultTopicsForPollSupplier DEFAULT_TOPICS_FOR_POLL = new KafkaDefaultTopicsForPollSupplier();
+public final class KafkaDefaultTopicsForPollProperty implements PropertySupplier<String[], String> {
+    public static final KafkaDefaultTopicsForPollProperty DEFAULT_TOPICS_FOR_POLL = new KafkaDefaultTopicsForPollProperty();
 
     @Override
     public String[] parse(String value) {
