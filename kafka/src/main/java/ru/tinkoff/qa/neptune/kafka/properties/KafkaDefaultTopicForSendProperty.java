@@ -7,6 +7,6 @@ import ru.tinkoff.qa.neptune.core.api.properties.string.StringValuePropertySuppl
 @PropertyDescription(description = "Defines default topic for send",
         section = "Kafka")
 @PropertyName("DEFAULT_TOPIC_FOR_SEND")
-public final class KafkaDefaultTopicForSendSupplier implements StringValuePropertySupplier {
-    public static final KafkaDefaultTopicForSendSupplier DEFAULT_TOPIC_FOR_SEND = new KafkaDefaultTopicForSendSupplier();
+public final class KafkaDefaultTopicForSendProperty implements StringValuePropertySupplier {
+    public static final KafkaDefaultTopicForSendProperty DEFAULT_TOPIC_FOR_SEND = new KafkaDefaultTopicForSendProperty();
 }

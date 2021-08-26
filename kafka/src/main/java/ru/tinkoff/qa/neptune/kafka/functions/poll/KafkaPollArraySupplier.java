@@ -12,6 +12,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 import ru.tinkoff.qa.neptune.kafka.captors.AllMessagesCaptor;
 import ru.tinkoff.qa.neptune.kafka.captors.MessagesCaptor;
+import ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
@@ -29,7 +30,6 @@ import static org.apache.commons.lang3.ArrayUtils.add;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetFromTopics.getStringResult;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultDataTransformer.KAFKA_DEFAULT_DATA_TRANSFORMER;
-import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollSupplier.DEFAULT_TOPICS_FOR_POLL;
 
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Poll:")
@@ -37,8 +37,8 @@ import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollSu
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria for every item of resulted array")
 @MaxDepthOfReporting(0)
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
-        .GetArrayStepSupplier<KafkaStepContext, T, KafkaPollArraySupplier<T>> {
+public abstract class KafkaPollArraySupplier<T, S extends KafkaPollArraySupplier<T, S>> extends SequentialGetStepSupplier
+        .GetArrayStepSupplier<KafkaStepContext, T, S> {
 
     final GetFromTopics<?> getFromTopics;
 
@@ -56,7 +56,7 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
             var listT = list.stream().map(originalFunction).collect(toList());
             T[] ts = (T[]) Array.newInstance(componentClass, 0);
 
-            for (var t: listT) {
+            for (var t : listT) {
                 ts = add(ts, t);
             }
 
@@ -65,6 +65,21 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
         this.getFromTopics = getFromTopics;
     }
 
+    /**
+     * Creates a step that returns array of values which are calculated by data of read messages.
+     * <p></p>
+     * It is not necessary to define {@code topics}. If there is no topic defined then value of the property
+     * {@link KafkaDefaultTopicsForPollProperty#DEFAULT_TOPICS_FOR_POLL} is used.
+     *
+     * @param description    is description of value to get
+     * @param classT         is a class of a value to deserialize a message from topics
+     * @param componentClass is a class of array item
+     * @param toGet          describes how to get desired value
+     * @param topics         are topics to get messages from
+     * @param <M>            is a type of deserialized message
+     * @param <T>            is a type of item of array
+     * @return an instance of {@link KafkaPollArraySupplier.Mapped}
+     */
     @Description("{description}")
     public static <M, T> Mapped<T> kafkaArray(
             @DescriptionFragment(value = "description",
@@ -75,13 +90,24 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
             Function<M, T> toGet,
             String... topics) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        if (topics.length == 0) {
-            return new KafkaPollArraySupplier.Mapped<>(new GetFromTopics<>(classT, DEFAULT_TOPICS_FOR_POLL.get()), toGet, componentClass);
-        } else {
-            return new KafkaPollArraySupplier.Mapped<>(new GetFromTopics<>(classT, topics), toGet, componentClass);
-        }
+        return new KafkaPollArraySupplier.Mapped<>(new GetFromTopics<>(classT, topics), toGet, componentClass);
     }
 
+    /**
+     * Creates a step that returns array of values which are calculated by data of read messages.
+     * <p></p>
+     * It is not necessary to define {@code topics}. If there is no topic defined then value of the property
+     * {@link KafkaDefaultTopicsForPollProperty#DEFAULT_TOPICS_FOR_POLL} is used.
+     *
+     * @param description    is description of value to get
+     * @param typeT          is a reference to type of value to deserialize message
+     * @param componentClass is a class of array item
+     * @param toGet          describes how to get desired value
+     * @param topics         are topics to get messages from
+     * @param <M>            is a type of deserialized message
+     * @param <T>            is a type of item of array
+     * @return an instance of {@link KafkaPollArraySupplier.Mapped}
+     */
     @Description("{description}")
     public static <M, T> Mapped<T> kafkaArray(
             @DescriptionFragment(value = "description",
@@ -92,13 +118,21 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
             Function<M, T> toGet,
             String... topics) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        if (topics.length == 0) {
-            return new KafkaPollArraySupplier.Mapped<>(new GetFromTopics<>(typeT, DEFAULT_TOPICS_FOR_POLL.get()), toGet, componentClass);
-        } else {
-            return new KafkaPollArraySupplier.Mapped<>(new GetFromTopics<>(typeT, topics), toGet, componentClass);
-        }
+        return new KafkaPollArraySupplier.Mapped<>(new GetFromTopics<>(typeT, topics), toGet, componentClass);
     }
 
+    /**
+     * Creates a step that returns array of deserialized messages.
+     * <p></p>
+     * It is not necessary to define {@code topics}. If there is no topic defined then value of the property
+     * {@link KafkaDefaultTopicsForPollProperty#DEFAULT_TOPICS_FOR_POLL} is used.
+     *
+     * @param description is description of value to get
+     * @param classT      is a class of a value to deserialize a message from topics
+     * @param topics      are topics to get messages from
+     * @param <T>         is a type of deserialized message
+     * @return an instance of {@link KafkaPollArraySupplier.Mapped}
+     */
     public static <T> Mapped<T> kafkaArray(
             String description,
             Class<T> classT,
@@ -106,6 +140,18 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
         return kafkaArray(description, classT, classT, ts -> ts, topics);
     }
 
+    /**
+     * Creates a step that returns array of deserialized messages.
+     * <p></p>
+     * It is not necessary to define {@code topics}. If there is no topic defined then value of the property
+     * {@link KafkaDefaultTopicsForPollProperty#DEFAULT_TOPICS_FOR_POLL} is used.
+     *
+     * @param description is description of value to get
+     * @param typeT       is a reference to type of value to deserialize message
+     * @param topics      are topics to get messages from
+     * @param <T>         is a type of deserialized message
+     * @return an instance of {@link KafkaPollArraySupplier.Mapped}
+     */
     public static <T> Mapped<T> kafkaArray(
             String description,
             TypeReference<T> typeT,
@@ -114,17 +160,22 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
         return kafkaArray(description, typeT, clazz, ts -> ts, topics);
     }
 
+    /**
+     * Creates a step that returns array of string contents of messages.
+     * <p></p>
+     * It is not necessary to define {@code topics}. If there is no topic defined then value of the property
+     * {@link KafkaDefaultTopicsForPollProperty#DEFAULT_TOPICS_FOR_POLL} is used.
+     *
+     * @param topics      are topics to get messages from
+     * @return an instance of {@link KafkaPollArraySupplier.StringMessages}
+     */
     @Description("String messages")
-    public static StringMessages kafkaRawMessagesArray(String... topics) {
+    public static StringMessages kafkaArrayOfRawMessages(String... topics) {
         return new StringMessages(getStringResult(topics));
     }
 
-    public static StringMessages kafkaRawMessagesArray() {
-        return kafkaRawMessagesArray(DEFAULT_TOPICS_FOR_POLL.get());
-    }
-
     @Override
-    public KafkaPollArraySupplier<T> timeOut(Duration timeOut) {
+    public S timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
     }
 
@@ -139,9 +190,9 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
         getFromTopics.setTransformer(transformer);
     }
 
-    KafkaPollArraySupplier<T> withDataTransformer(DataTransformer dataTransformer) {
+    S withDataTransformer(DataTransformer dataTransformer) {
         this.transformer = dataTransformer;
-        return this;
+        return (S) this;
     }
 
     @Override
@@ -162,18 +213,20 @@ public class KafkaPollArraySupplier<T> extends SequentialGetStepSupplier
         messages = getFromTopics.getMessages();
     }
 
-    public static class Mapped<T> extends KafkaPollArraySupplier<T> {
-        public <M> Mapped(GetFromTopics<M> getFromTopics, Function<M, T> originalFunction, Class<T> componentClass) {
+    public final static class Mapped<T> extends KafkaPollArraySupplier<T, Mapped<T>> {
+
+        private <M> Mapped(GetFromTopics<M> getFromTopics, Function<M, T> originalFunction, Class<T> componentClass) {
             super(getFromTopics, originalFunction, componentClass);
         }
 
-        public KafkaPollArraySupplier<T> withDataTransformer(DataTransformer transformer) {
+        public Mapped<T> withDataTransformer(DataTransformer transformer) {
             return super.withDataTransformer(transformer);
         }
     }
 
-    public static class StringMessages extends KafkaPollArraySupplier<String> {
-        public StringMessages(GetFromTopics<String> getFromTopics) {
+    public final static class StringMessages extends KafkaPollArraySupplier<String, StringMessages> {
+
+        private StringMessages(GetFromTopics<String> getFromTopics) {
             super(getFromTopics, s -> s, String.class);
             withDataTransformer(new DataTransformer() {
                 @Override

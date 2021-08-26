@@ -12,7 +12,7 @@ import org.testng.annotations.BeforeMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultDataTransformer.KAFKA_DEFAULT_DATA_TRANSFORMER;
-import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollSupplier.DEFAULT_TOPICS_FOR_POLL;
+import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty.DEFAULT_TOPICS_FOR_POLL;
 
 public class KafkaBaseTest {
     @Mock
@@ -21,7 +21,6 @@ public class KafkaBaseTest {
     protected KafkaConsumer kafkaConsumer;
 
     protected KafkaStepContext kafka;
-    protected Callback callBack;
     MockedStatic<KafkaParameterProvider> provider;
 
     @BeforeClass
@@ -33,9 +32,6 @@ public class KafkaBaseTest {
         provider.when(KafkaParameterProvider::parameters).thenReturn(new Object[]{kafkaProducer, kafkaConsumer});
 
         kafka = new KafkaStepContext(kafkaProducer, kafkaConsumer);
-
-        callBack = (metadata, exception) -> {
-        };
     }
 
     @BeforeMethod

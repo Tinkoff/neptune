@@ -12,6 +12,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 import ru.tinkoff.qa.neptune.kafka.captors.AllMessagesCaptor;
 import ru.tinkoff.qa.neptune.kafka.captors.MessageCaptor;
+import ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -26,14 +27,14 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetFromTopics.getStringResult;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultDataTransformer.KAFKA_DEFAULT_DATA_TRANSFORMER;
-import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollSupplier.DEFAULT_TOPICS_FOR_POLL;
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Poll:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Object criteria")
 @MaxDepthOfReporting(0)
-public abstract class KafkaPollIterableItemSupplier<T> extends SequentialGetStepSupplier
-        .GetObjectFromIterableStepSupplier<KafkaStepContext, T, KafkaPollIterableItemSupplier<T>> {
+@SuppressWarnings("unchecked")
+public abstract class KafkaPollIterableItemSupplier<T, I extends KafkaPollIterableItemSupplier<T, I>>
+        extends SequentialGetStepSupplier.GetObjectFromIterableStepSupplier<KafkaStepContext, T, I> {
 
     final GetFromTopics<?> getFromTopics;
 
@@ -51,6 +52,20 @@ public abstract class KafkaPollIterableItemSupplier<T> extends SequentialGetStep
         this.getFromTopics = getFromTopics;
     }
 
+    /**
+     * Creates a step that returns value which is calculated by data of a read message.
+     * <p></p>
+     * It is not necessary to define {@code topics}. If there is no topic defined then value of the property
+     * {@link KafkaDefaultTopicsForPollProperty#DEFAULT_TOPICS_FOR_POLL} is used.
+     *
+     * @param description    is description of value to get
+     * @param cls         is a class of a value to deserialize a message from topics
+     * @param toGet          describes how to get desired value
+     * @param topics         are topics to get messages from
+     * @param <M>            is a type of deserialized message
+     * @param <T>            is a type of resulted value
+     * @return an instance of {@link KafkaPollIterableItemSupplier.Mapped}
+     */
     @Description("{description}")
     public static <M, T> Mapped<T> kafkaIterableItem(
             @DescriptionFragment(value = "description",
@@ -60,13 +75,23 @@ public abstract class KafkaPollIterableItemSupplier<T> extends SequentialGetStep
             Function<M, T> toGet,
             String... topics) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        if (topics.length == 0) {
-            return new KafkaPollIterableItemSupplier.Mapped<>(new GetFromTopics<>(cls, DEFAULT_TOPICS_FOR_POLL.get()), toGet);
-        } else {
-            return new KafkaPollIterableItemSupplier.Mapped<>(new GetFromTopics<>(cls, topics), toGet);
-        }
+        return new KafkaPollIterableItemSupplier.Mapped<>(new GetFromTopics<>(cls, topics), toGet);
     }
 
+    /**
+     * Creates a step that returns value which is calculated by data of a read message.
+     * <p></p>
+     * It is not necessary to define {@code topics}. If there is no topic defined then value of the property
+     * {@link KafkaDefaultTopicsForPollProperty#DEFAULT_TOPICS_FOR_POLL} is used.
+     *
+     * @param description    is description of value to get
+     * @param typeT       is a reference to type of value to deserialize message
+     * @param toGet          describes how to get desired value
+     * @param topics         are topics to get messages from
+     * @param <M>            is a type of deserialized message
+     * @param <T>            is a type of resulted value
+     * @return an instance of {@link KafkaPollIterableItemSupplier.Mapped}
+     */
     @Description("{description}")
     public static <M, T> Mapped<T> kafkaIterableItem(
             @DescriptionFragment(value = "description",
@@ -76,13 +101,21 @@ public abstract class KafkaPollIterableItemSupplier<T> extends SequentialGetStep
             Function<M, T> toGet,
             String... topics) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        if (topics.length == 0) {
-            return new KafkaPollIterableItemSupplier.Mapped<>(new GetFromTopics<>(typeT, DEFAULT_TOPICS_FOR_POLL.get()), toGet);
-        } else {
-            return new KafkaPollIterableItemSupplier.Mapped<>(new GetFromTopics<>(typeT, topics), toGet);
-        }
+        return new KafkaPollIterableItemSupplier.Mapped<>(new GetFromTopics<>(typeT, topics), toGet);
     }
 
+    /**
+     * Creates a step that returns a deserialized message.
+     * <p></p>
+     * It is not necessary to define {@code topics}. If there is no topic defined then value of the property
+     * {@link KafkaDefaultTopicsForPollProperty#DEFAULT_TOPICS_FOR_POLL} is used.
+     *
+     * @param description is description of value to get
+     * @param cls         is a class of a value to deserialize a message from topics
+     * @param topics      are topics to get messages from
+     * @param <M>         is a type of deserialized message
+     * @return an instance of {@link KafkaPollIterableItemSupplier.Mapped}
+     */
     public static <M> Mapped<M> kafkaIterableItem(
             String description,
             Class<M> cls,
@@ -90,6 +123,18 @@ public abstract class KafkaPollIterableItemSupplier<T> extends SequentialGetStep
         return kafkaIterableItem(description, cls, t -> t, topics);
     }
 
+    /**
+     * Creates a step that returns a deserialized message.
+     * <p></p>
+     * It is not necessary to define {@code topics}. If there is no topic defined then value of the property
+     * {@link KafkaDefaultTopicsForPollProperty#DEFAULT_TOPICS_FOR_POLL} is used.
+     *
+     * @param description is description of value to get
+     * @param typeT       is a reference to type of value to deserialize message
+     * @param topics      are topics to get messages from
+     * @param <M>         is a type of deserialized message
+     * @return an instance of {@link KafkaPollIterableItemSupplier.Mapped}
+     */
     public static <M> Mapped<M> kafkaIterableItem(
             String description,
             TypeReference<M> typeT,
@@ -97,13 +142,18 @@ public abstract class KafkaPollIterableItemSupplier<T> extends SequentialGetStep
         return kafkaIterableItem(description, typeT, t -> t, topics);
     }
 
+    /**
+     * Creates a step that returns a string content of a message.
+     * <p></p>
+     * It is not necessary to define {@code topics}. If there is no topic defined then value of the property
+     * {@link KafkaDefaultTopicsForPollProperty#DEFAULT_TOPICS_FOR_POLL} is used.
+     *
+     * @param topics      are topics to get messages from
+     * @return an instance of {@link KafkaPollIterableItemSupplier.StringMessage}
+     */
     @Description("String message")
-    public static StringMessage kafkaRawMessageIterableItem(String... topics) {
+    public static StringMessage kafkaRawMessage(String... topics) {
         return new StringMessage(getStringResult(topics));
-    }
-
-    public static StringMessage kafkaRawMessageIterableItem() {
-        return kafkaRawMessageIterableItem(DEFAULT_TOPICS_FOR_POLL.get());
     }
 
     @Override
@@ -117,13 +167,13 @@ public abstract class KafkaPollIterableItemSupplier<T> extends SequentialGetStep
         getFromTopics.setTransformer(transformer);
     }
 
-    KafkaPollIterableItemSupplier<T> withDataTransformer(DataTransformer dataTransformer) {
+    I withDataTransformer(DataTransformer dataTransformer) {
         this.transformer = dataTransformer;
-        return this;
+        return (I) this;
     }
 
     @Override
-    public KafkaPollIterableItemSupplier<T> timeOut(Duration timeOut) {
+    public I timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
     }
 
@@ -143,18 +193,18 @@ public abstract class KafkaPollIterableItemSupplier<T> extends SequentialGetStep
     }
 
 
-    public static class Mapped<T> extends KafkaPollIterableItemSupplier<T> {
-        public <S> Mapped(GetFromTopics<S> getFromTopics, Function<S, T> originalFunction) {
+    public final static class Mapped<T> extends KafkaPollIterableItemSupplier<T, Mapped<T>> {
+        private  <S> Mapped(GetFromTopics<S> getFromTopics, Function<S, T> originalFunction) {
             super(getFromTopics, originalFunction);
         }
 
-        public KafkaPollIterableItemSupplier<T> withDataTransformer(DataTransformer transformer) {
+        public Mapped<T> withDataTransformer(DataTransformer transformer) {
             return super.withDataTransformer(transformer);
         }
 
     }
 
-    public static class StringMessage extends KafkaPollIterableItemSupplier<String> {
+    public final static class StringMessage extends KafkaPollIterableItemSupplier<String, StringMessage> {
         private StringMessage(GetFromTopics<String> getFromTopics) {
             super(getFromTopics, s -> s);
             withDataTransformer(new DataTransformer() {

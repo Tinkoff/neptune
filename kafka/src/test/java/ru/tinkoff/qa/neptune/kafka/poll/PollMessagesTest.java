@@ -15,20 +15,21 @@ import java.util.Map;
 
 import static java.time.Duration.ofNanos;
 import static java.time.Duration.ofSeconds;
-import static java.util.Arrays.asList;
 import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsEachItemMatcher.eachOfArray;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsEachItemMatcher.eachOfIterable;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.pojo.PojoGetterReturnsMatcher.getterReturns;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
-import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArrayItemSupplier.kafkaArrayItem;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.kafkaArray;
-import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.kafkaRawMessagesArray;
+import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.kafkaArrayOfRawMessages;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.kafkaIterableItem;
-import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.kafkaRawMessageIterableItem;
+import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.kafkaRawMessage;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.kafkaIterable;
-import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.kafkaRawMessagesIterable;
-import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollSupplier.DEFAULT_TOPICS_FOR_POLL;
+import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.kafkaRawMessages;
+import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty.DEFAULT_TOPICS_FOR_POLL;
 
 public class PollMessagesTest extends KafkaBaseTest {
     KafkaConsumer<Object, Object> consumer;
@@ -52,20 +53,8 @@ public class PollMessagesTest extends KafkaBaseTest {
     }
 
     @Test
-    public void test0() {
-        var result = kafka.poll(kafkaArrayItem(
-                "testDescription",
-                DraftDto.class,
-                "testTopic")
-                .withDataTransformer(new CustomMapper()));
-
-        assertThat(result.getName(), is("PREFIXCondition"));
-    }
-
-
-    @Test
     public void test1() {
-        var result = kafka.poll(kafkaArrayItem(
+        var result = kafka.poll(kafkaIterableItem(
                 "testTopic",
                 DraftDto.class,
                 "testTopic"));
@@ -75,7 +64,7 @@ public class PollMessagesTest extends KafkaBaseTest {
 
     @Test
     public void test2() {
-        var result = kafka.poll(kafkaArrayItem(
+        var result = kafka.poll(kafkaIterableItem(
                 "testTopic",
                 DraftDto.class,
                 DraftDto::getName,
@@ -86,10 +75,9 @@ public class PollMessagesTest extends KafkaBaseTest {
 
     @Test
     public void test3() {
-        var result = kafka.poll(kafkaArrayItem(
+        var result = kafka.poll(kafkaIterableItem(
                 "testTopic",
-                new TypeReference<DraftDto>() {
-                },
+                new TypeReference<DraftDto>() {},
                 "testTopic"));
 
         assertThat(result.getName(), is("testName"));
@@ -97,10 +85,9 @@ public class PollMessagesTest extends KafkaBaseTest {
 
     @Test
     public void test4() {
-        var result = kafka.poll(kafkaArrayItem(
+        var result = kafka.poll(kafkaIterableItem(
                 "testTopic",
-                new TypeReference<>() {
-                },
+                new TypeReference<>() {},
                 DraftDto::getName,
                 "testTopic"));
 
@@ -112,47 +99,14 @@ public class PollMessagesTest extends KafkaBaseTest {
         var result = kafka.poll(kafkaIterableItem(
                 "testTopic",
                 DraftDto.class,
-                "testTopic"));
+                "testTopic")
+                .withDataTransformer(new CustomMapper()));
 
-        assertThat(result.getName(), is("testName"));
+        assertThat(result, getterReturns("getName", "PREFIXCondition"));
     }
 
     @Test
     public void test6() {
-        var result = kafka.poll(kafkaIterableItem(
-                "testTopic",
-                DraftDto.class,
-                DraftDto::getName,
-                "testTopic"));
-
-        assertThat(result, is("testName"));
-    }
-
-    @Test
-    public void test7() {
-        var result = kafka.poll(kafkaIterableItem(
-                "testTopic",
-                new TypeReference<DraftDto>() {
-                },
-                "testTopic"));
-
-        assertThat(result.getName(), is("testName"));
-    }
-
-    @Test
-    public void test8() {
-        var result = kafka.poll(kafkaIterableItem(
-                "testTopic",
-                new TypeReference<>() {
-                },
-                DraftDto::getName,
-                "testTopic"));
-
-        assertThat(result, is("testName"));
-    }
-
-    @Test
-    public void test9() {
         var results = kafka.poll(kafkaIterable(
                 "testTopic",
                 DraftDto.class,
@@ -164,7 +118,7 @@ public class PollMessagesTest extends KafkaBaseTest {
     }
 
     @Test
-    public void test10() {
+    public void test7() {
         var results = kafka.poll(kafkaIterable(
                 "testTopic",
                 DraftDto.class,
@@ -175,11 +129,10 @@ public class PollMessagesTest extends KafkaBaseTest {
     }
 
     @Test
-    public void test11() {
+    public void test8() {
         var results = kafka.poll(kafkaIterable(
                 "testTopic",
-                new TypeReference<>() {
-                },
+                new TypeReference<>() {},
                 DraftDto::getName,
                 "testTopic"));
 
@@ -187,7 +140,7 @@ public class PollMessagesTest extends KafkaBaseTest {
     }
 
     @Test
-    public void test12() {
+    public void test9() {
         var results = kafka.poll(kafkaIterable(
                 "testTopic",
                 new TypeReference<DraftDto>() {
@@ -199,13 +152,47 @@ public class PollMessagesTest extends KafkaBaseTest {
     }
 
     @Test
-    public void test13() {
+    public void test10() {
         var result = kafka.poll(kafkaIterable(
                 "testTopic",
                 DraftDto.class,
                 "testTopic"));
 
-        assertThat(result.get(0).getName(), is("testName"));
+        assertThat(result, hasSize(3));
+    }
+
+    @Test
+    public void test11() {
+        var result = kafka.poll(kafkaIterable(
+                "testTopic",
+                DraftDto.class,
+                t -> t,
+                "testTopic"));
+
+        assertThat(result, hasSize(3));
+    }
+
+    @Test
+    public void test12() {
+        var result = kafka.poll(kafkaIterable(
+                "testTopic",
+                new TypeReference<DraftDto>() {
+                },
+                t -> t,
+                "testTopic"));
+
+        assertThat(result, hasSize(3));
+    }
+
+    @Test
+    public void test13() {
+        var result = kafka.poll(kafkaIterable(
+                "testTopic",
+                new TypeReference<DraftDto>() {
+                },
+                "testTopic"));
+
+        assertThat(result, hasSize(3));
     }
 
     @Test
@@ -213,33 +200,31 @@ public class PollMessagesTest extends KafkaBaseTest {
         var result = kafka.poll(kafkaIterable(
                 "testTopic",
                 DraftDto.class,
-                t -> t,
-                "testTopic"));
+                "testTopic")
+                .withDataTransformer(new CustomMapper()));
 
-        assertThat(result.get(0).getName(), is("testName"));
+        assertThat(result, eachOfIterable(getterReturns("getName", "PREFIXCondition")));
     }
 
     @Test
     public void test15() {
-        var result = kafka.poll(kafkaIterable(
+        var result = kafka.poll(kafkaArray(
                 "testTopic",
-                new TypeReference<DraftDto>() {
-                },
-                t -> t,
+                DraftDto.class,
                 "testTopic"));
 
-        assertThat(result.get(0).getName(), is("testName"));
+        assertThat(result[0].getName(), is("testName"));
     }
 
     @Test
     public void test16() {
-        var result = kafka.poll(kafkaIterable(
+        var result = kafka.poll(kafkaArray(
                 "testTopic",
                 new TypeReference<DraftDto>() {
                 },
                 "testTopic"));
 
-        assertThat(result.get(0).getName(), is("testName"));
+        assertThat(result[0].getName(), is("testName"));
     }
 
     @Test
@@ -247,20 +232,23 @@ public class PollMessagesTest extends KafkaBaseTest {
         var result = kafka.poll(kafkaArray(
                 "testTopic",
                 DraftDto.class,
+                String.class,
+                DraftDto::getName,
                 "testTopic"));
 
-        assertThat(result[0].getName(), is("testName"));
+        assertThat(result[0], is("testName"));
     }
 
     @Test
     public void test18() {
         var result = kafka.poll(kafkaArray(
                 "testTopic",
-                new TypeReference<DraftDto>() {
-                },
+                new TypeReference<>() {},
+                String.class,
+                DraftDto::getName,
                 "testTopic"));
 
-        assertThat(result[0].getName(), is("testName"));
+        assertThat(result[0], is("testName"));
     }
 
     @Test
@@ -268,79 +256,54 @@ public class PollMessagesTest extends KafkaBaseTest {
         var result = kafka.poll(kafkaArray(
                 "testTopic",
                 DraftDto.class,
-                String.class,
-                DraftDto::getName,
-                "testTopic"));
+                "testTopic")
+                .withDataTransformer(new CustomMapper()));
 
-        assertThat(result[0], is("testName"));
+        assertThat(result, eachOfArray(getterReturns("getName", "PREFIXCondition")));
     }
 
     @Test
     public void test20() {
-        var result = kafka.poll(kafkaArray(
-                "testTopic",
-                new TypeReference<>() {
-                },
-                String.class,
-                DraftDto::getName,
-                "testTopic"));
-
-        assertThat(result[0], is("testName"));
-    }
-
-    @Test
-    public void test21() {
-        DEFAULT_TOPICS_FOR_POLL.accept("topic1,topic2,topic3");
-
-        kafka.poll(kafkaArrayItem(
-                "testTopic",
-                DraftDto.class));
-
-        verify(consumer, times(1)).subscribe(asList(DEFAULT_TOPICS_FOR_POLL.get()));
-    }
-
-    @Test
-    public void test22() {
-        var result = kafka.poll(kafkaRawMessageIterableItem("testTopic"));
+        var result = kafka.poll(kafkaRawMessage("testTopic"));
 
         assertThat(result, is(consumerRecord1.value()));
     }
 
     @Test
-    public void test23() {
+    public void test21() {
         DEFAULT_TOPICS_FOR_POLL.accept("tt");
-        kafka.poll(kafkaRawMessageIterableItem());
+        kafka.poll(kafkaRawMessage());
 
-        verify(consumer, times(1)).subscribe(asList("tt"));
+        verify(consumer, times(1)).subscribe(of("tt"));
     }
 
     @Test
-    public void test24() {
-        var result = kafka.poll(kafkaRawMessagesIterable("testTopic"));
+    public void test22() {
+        var result = kafka.poll(kafkaRawMessages("testTopic"));
 
         assertThat(result, containsInAnyOrder(consumerRecord1.value(), consumerRecord2.value(), consumerRecord3.value()));
     }
 
     @Test
-    public void test25() {
+    public void test23() {
         DEFAULT_TOPICS_FOR_POLL.accept("ttt");
-        kafka.poll(kafkaRawMessagesIterable());
+        kafka.poll(kafkaRawMessages());
 
-        verify(consumer, times(1)).subscribe(asList("ttt"));
+        verify(consumer, times(1)).subscribe(of("ttt"));
     }
 
     @Test
-    public void test26() {
-        var result = kafka.poll(kafkaRawMessagesArray("testTopic"));
+    public void test24() {
+        var result = kafka.poll(kafkaArrayOfRawMessages("testTopic"));
 
         assertThat(result, arrayContainingInAnyOrder(consumerRecord1.value(), consumerRecord2.value(), consumerRecord3.value()));
     }
 
     @Test
-    public void test27() {
+    public void test25() {
         DEFAULT_TOPICS_FOR_POLL.accept("tttt");
-        kafka.poll(kafkaRawMessagesArray());
+        kafka.poll(kafkaArrayOfRawMessages());
 
-        verify(consumer, times(1)).subscribe(asList("tttt"));
+        verify(consumer, times(1)).subscribe(of("tttt"));
     }
 }

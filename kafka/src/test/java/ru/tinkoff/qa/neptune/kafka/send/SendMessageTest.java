@@ -1,19 +1,35 @@
 package ru.tinkoff.qa.neptune.kafka.send;
 
+import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.header.internals.RecordHeader;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.kafka.CustomMapper;
+import ru.tinkoff.qa.neptune.kafka.DefaultCallBackSupplier;
 import ru.tinkoff.qa.neptune.kafka.DraftDto;
 import ru.tinkoff.qa.neptune.kafka.KafkaBaseTest;
+
+import java.util.List;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.serializedMessage;
 import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.textMessage;
-import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicForSendSupplier.DEFAULT_TOPIC_FOR_SEND;
+import static ru.tinkoff.qa.neptune.kafka.properties.KafkaCallbackProperty.KAFKA_CALLBACK;
+import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicForSendProperty.DEFAULT_TOPIC_FOR_SEND;
 
 public class SendMessageTest extends KafkaBaseTest {
-    private DraftDto draftDto = new DraftDto().setName("testName");
+
+    DraftDto draftDto = new DraftDto().setName("testName");
+    private final Callback customCallBack = (metadata, exception) -> {
+    };
+
+    @AfterMethod
+    public void clear() {
+        DEFAULT_TOPIC_FOR_SEND.accept(null);
+        KAFKA_CALLBACK.accept(null);
+    }
 
     @Test(description = "check basic sending of a message with a topic and an object")
     public void checkBaseMessageSending() {
@@ -60,7 +76,7 @@ public class SendMessageTest extends KafkaBaseTest {
     public void checkMessageSendingWithCallBack() {
         kafka.send(serializedMessage(draftDto)
                 .topic("testTopic")
-                .callback(callBack));
+                .callback(customCallBack));
 
         verify(kafka.getProducer(), times(1))
                 .send(new ProducerRecord<>("testTopic",
@@ -69,7 +85,7 @@ public class SendMessageTest extends KafkaBaseTest {
                                 null,
                                 "{\"name\":\"testName\"}",
                                 null),
-                        callBack);
+                        customCallBack);
     }
 
     @Test(description = "check message sending with parameterForSend")
@@ -91,12 +107,11 @@ public class SendMessageTest extends KafkaBaseTest {
 
     @Test(description = "check message sending with callBack and parameters")
     public void checkMessageSendingWithParametersAndCallBack() {
-        kafka.send(
-                serializedMessage(draftDto)
-                        .topic("testTopic")
-                        .partition(1)
-                        .timestamp(10L)
-                        .callback(callBack));
+        kafka.send(serializedMessage(draftDto)
+                .topic("testTopic")
+                .partition(1)
+                .timestamp(10L)
+                .callback(customCallBack));
 
         verify(kafka.getProducer(), times(1))
                 .send(new ProducerRecord<>("testTopic",
@@ -105,7 +120,7 @@ public class SendMessageTest extends KafkaBaseTest {
                                 null,
                                 "{\"name\":\"testName\"}",
                                 null),
-                        callBack);
+                        customCallBack);
 
     }
 
@@ -133,7 +148,7 @@ public class SendMessageTest extends KafkaBaseTest {
                 .topic("testTopic")
                 .partition(1)
                 .timestamp(10L)
-                .callback(callBack)
+                .callback(customCallBack)
                 .dataTransformer(new CustomMapper()));
 
         verify(kafka.getProducer(), times(1))
@@ -143,7 +158,7 @@ public class SendMessageTest extends KafkaBaseTest {
                                 null,
                                 "customSerialize",
                                 null),
-                        callBack);
+                        customCallBack);
     }
 
     @Test(description = "check default topic")
@@ -153,17 +168,15 @@ public class SendMessageTest extends KafkaBaseTest {
         kafka.send(serializedMessage(draftDto)
                 .partition(1)
                 .timestamp(10L)
-                .callback(callBack)
                 .dataTransformer(new CustomMapper()));
 
         verify(kafka.getProducer(), times(1))
                 .send(new ProducerRecord<>("default_Topic",
-                                1,
-                                10L,
-                                null,
-                                "customSerialize",
-                                null),
-                        callBack);
+                        1,
+                        10L,
+                        null,
+                        "customSerialize",
+                        null));
     }
 
     @Test(description = "check default topic and raw message")
@@ -172,16 +185,48 @@ public class SendMessageTest extends KafkaBaseTest {
 
         kafka.send(textMessage("I'm a String!")
                 .partition(1)
-                .timestamp(10L)
-                .callback(callBack));
+                .timestamp(10L));
 
         verify(kafka.getProducer(), times(1))
                 .send(new ProducerRecord<>("default_Topic",
-                                1,
-                                10L,
-                                null,
-                                "I'm a String!",
-                                null),
-                        callBack);
+                        1,
+                        10L,
+                        null,
+                        "I'm a String!",
+                        null));
+    }
+
+    @Test(description = "check basic sending of a message with a topic and an object")
+    public void checkSendingWithHeaderAndKey() {
+        kafka.send(serializedMessage(draftDto)
+                .topic("testTopic")
+                .key("Some key")
+                .header("Header key", "Value1")
+                .header(new RecordHeader("Header key2", "Value2".getBytes())));
+
+        verify(kafka.getProducer(), times(1))
+                .send(new ProducerRecord<>("testTopic",
+                        null,
+                        null,
+                        "Some key",
+                        "{\"name\":\"testName\"}",
+                        List.of(new RecordHeader("Header key", "Value1".getBytes()), new RecordHeader("Header key2", "Value2".getBytes()))));
+    }
+
+    @Test(description = "check default topic and raw message")
+    public void checkSendingWithDefaultCallBack() {
+        KAFKA_CALLBACK.accept(DefaultCallBackSupplier.class);
+
+        kafka.send(textMessage("I'm a String!")
+                .topic("testTopic"));
+
+        verify(kafka.getProducer(), times(1))
+                .send(new ProducerRecord<>("testTopic",
+                        null,
+                        null,
+                        null,
+                        "I'm a String!",
+                        null),
+                        DefaultCallBackSupplier.CALLBACK);
     }
 }
