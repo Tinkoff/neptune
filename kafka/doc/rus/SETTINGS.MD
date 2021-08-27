@@ -43,7 +43,8 @@ KAFKA_CONSUMER_PROPERTIES=org.my.pack.MyConsumerPropertiesSupplier
 ```java
 import java.net.*;
 
-import static ru.tinkoff.qa.neptune.kafka.properties.KAFKA_CONSUMER_PROPERTIES;
+import static ru.tinkoff.qa.neptune.kafka.properties
+        .DefaultKafkaProperties.KAFKA_CONSUMER_PROPERTIES;
 
 public class SomeClass {
 
@@ -53,6 +54,8 @@ public class SomeClass {
     }
 }
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## KAFKA_PRODUCER_PROPERTIES
 
@@ -80,7 +83,8 @@ KAFKA_PRODUCER_PROPERTIES=org.my.pack.MyProducerPropertiesSupplier
 ```java
 import java.net.*;
 
-import static ru.tinkoff.qa.neptune.kafka.properties.KAFKA_PRODUCER_PROPERTIES;
+import static ru.tinkoff.qa.neptune.kafka.properties
+        .DefaultKafkaProperties.KAFKA_PRODUCER_PROPERTIES;
 
 public class SomeClass {
 
@@ -91,10 +95,13 @@ public class SomeClass {
 }
 ```
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 ## KAFKA_DEFAULT_DATA_TRANSFORMER
 
 Основная статья: [Сериализация и десериализация](./../../../core.api/doc/rus/SERIALIZATION_DESERIALIZATION.MD)
-Используется: [Получение сообщения](FUNCTION.MD#Получение-сообщения)
+
+Используется: [Получение сообщения](FUNCTION.MD#Получение-сообщения)  [Публикация сообщений](FUNCTION.MD#Публикация-сообщений)
 
 ```java
 import org.my.pack;
@@ -132,7 +139,7 @@ KAFKA_DEFAULT_DATA_TRANSFORMER=org.my.pack.MyDataTransformer
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 
 import static ru.tinkoff.qa.neptune.kafka.properties
-        .KafkaDefaultDataTransformer.KAFKA_DEFAULT_DATA_TRANSFORMER;
+        .DefaultDataTransformers.KAFKA_DEFAULT_DATA_TRANSFORMER;
 
 public class SomeClass {
 
@@ -142,6 +149,8 @@ public class SomeClass {
     }
 }
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## DEFAULT_TOPIC_FOR_SEND
 
@@ -153,7 +162,8 @@ DEFAULT_TOPIC_FOR_SEND=testTopic
 ```
 
 ```java
-import static ru.tinkoff.qa.neptune.kafka.properties.DEFAULT_TOPIC_FOR_SEND;
+import static ru.tinkoff.qa.neptune.kafka.properties
+        .KafkaDefaultTopicForSendProperty.DEFAULT_TOPIC_FOR_SEND;
 
 public class SomeClass {
 
@@ -163,6 +173,8 @@ public class SomeClass {
     }
 }
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## DEFAULT_TOPICS_FOR_POLL
 
@@ -174,7 +186,8 @@ DEFAULT_TOPICS_FOR_POLL=testTopic1,testTopic2,testTopic3
 ```
 
 ```java
-import static ru.tinkoff.qa.neptune.kafka.properties.DEFAULT_TOPICS_FOR_POLL;
+import static ru.tinkoff.qa.neptune.kafka.properties
+        .KafkaDefaultTopicsForPollProperty.DEFAULT_TOPICS_FOR_POLL;
 
 public class SomeClass {
 
@@ -185,7 +198,11 @@ public class SomeClass {
 }
 ```
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 ## KAFKA_CALL_BACK
+
+Используется: [Публикация сообщений](FUNCTION.MD#Публикация-сообщений)
 
 Данная настройка предоставляет возможность указывать дефолтный CallBack.
 
@@ -208,7 +225,8 @@ KAFKA_CALL_BACK=org.my.pack.CallBackSupplier
 ```java
 import java.net.*;
 
-import static ru.tinkoff.qa.neptune.kafka.properties.KAFKA_CALL_BACK;
+import static ru.tinkoff.qa.neptune.kafka.properties
+        .KafkaCallbackProperty.KAFKA_CALL_BACK;
 
 public class SomeClass {
 
@@ -219,10 +237,13 @@ public class SomeClass {
 }
 ```
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 ## KAFKA_KEY_TRANSFORMER
 
 Основная статья: [Сериализация и десериализация](./../../../core.api/doc/rus/SERIALIZATION_DESERIALIZATION.MD)
-Используется: [Получение сообщения](FUNCTION.MD#Получение-сообщения)
+
+Используется: [Публикация сообщений](FUNCTION.MD#Публикация-сообщений)
 
 ```java
 import org.my.pack;
@@ -262,7 +283,7 @@ KAFKA_KEY_TRANSFORMER=org.my.pack.MyKeyTransformer
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 
 import static ru.tinkoff.qa.neptune.kafka.properties
-        .KafkaDefaultDataTransformer.KAFKA_KEY_TRANSFORMER;
+        .DefaultDataTransformers.KAFKA_KEY_TRANSFORMER;
 
 public class SomeClass {
 
