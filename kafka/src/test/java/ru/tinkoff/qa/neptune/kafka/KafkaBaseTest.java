@@ -10,9 +10,9 @@ import org.testng.annotations.BeforeMethod;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
-import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultDataTransformer.KAFKA_DEFAULT_DATA_TRANSFORMER;
+import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAFKA_DEFAULT_DATA_TRANSFORMER;
+import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAFKA_KEY_TRANSFORMER;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty.DEFAULT_TOPICS_FOR_POLL;
-import static ru.tinkoff.qa.neptune.kafka.properties.KafkaKeyTransformer.KAFKA_KEY_TRANSFORMER;
 
 public class KafkaBaseTest {
     @Mock

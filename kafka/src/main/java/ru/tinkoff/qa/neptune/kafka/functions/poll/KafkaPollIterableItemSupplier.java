@@ -26,7 +26,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetFromTopics.getStringResult;
-import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultDataTransformer.KAFKA_DEFAULT_DATA_TRANSFORMER;
+import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAFKA_DEFAULT_DATA_TRANSFORMER;
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Poll:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")

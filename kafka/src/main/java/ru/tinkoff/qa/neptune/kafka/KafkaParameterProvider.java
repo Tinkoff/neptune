@@ -6,8 +6,9 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import ru.tinkoff.qa.neptune.core.api.steps.context.ParameterProvider;
 
-import static ru.tinkoff.qa.neptune.kafka.properties.KafkaConsumerProperty.KAFKA_CONSUMER_PROPERTY;
-import static ru.tinkoff.qa.neptune.kafka.properties.KafkaProducerProperty.KAFKA_PRODUCER_PROPERTIES;
+import static ru.tinkoff.qa.neptune.kafka.properties.DefaultKafkaProperties.KAFKA_CONSUMER_PROPERTIES;
+import static ru.tinkoff.qa.neptune.kafka.properties.DefaultKafkaProperties.KAFKA_PRODUCER_PROPERTIES;
+
 
 public class KafkaParameterProvider implements ParameterProvider {
     @Override
@@ -18,7 +19,7 @@ public class KafkaParameterProvider implements ParameterProvider {
     public static Object[] parameters() {
         return new Object[]{
                 new KafkaProducer<>(KAFKA_PRODUCER_PROPERTIES.get(), new StringSerializer(), new StringSerializer()),
-                new KafkaConsumer<>(KAFKA_CONSUMER_PROPERTY.get(), new StringDeserializer(), new StringDeserializer())
+                new KafkaConsumer<>(KAFKA_CONSUMER_PROPERTIES.get(), new StringDeserializer(), new StringDeserializer())
         };
     }
 }

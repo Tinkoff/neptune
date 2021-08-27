@@ -7,7 +7,7 @@ dependencies {
     inpath(project(":core.api")) {
         transitive = false
     }
-    compile group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
+    compile group: 'org.jsoup', name: 'jsoup', version: '1.14.2'
     compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-parameter-names', version: jacksonVersion
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: jacksonVersion
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion
