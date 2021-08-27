@@ -105,13 +105,13 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
         return (T) this;
     }
 
-    public T header(String header, byte[] bytes) {
-        this.headers.add(header, bytes);
+    public T header(String key, byte[] bytes) {
+        this.headers.add(key, bytes);
         return (T) this;
     }
 
-    public T header(String header, String value) {
-        return header(header, value.getBytes());
+    public T header(String key, String value) {
+        return header(key, value.getBytes());
     }
 
     public T callback(Callback callback) {

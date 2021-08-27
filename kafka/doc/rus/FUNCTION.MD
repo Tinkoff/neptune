@@ -135,7 +135,7 @@ public class MyTest {
   @Test
   public void myTest() {
     //Если необходимо получить 'сырые' строки, которые возвращаются из kafka
-    List<String> results = kafka().poll(kafkaRawMessagesIterable("testTopic"));
+    List<String> results = kafka().poll(kafkaRawMessages("testTopic"));
   }
 }
 ```
@@ -151,7 +151,7 @@ public class MyTest {
   public void myTest() {
     //Если необходимо получить 'сырые' строки, которые возвращаются из kafka
     //Если не указывать топики, то значение топиков возьмется из DEFAULT_TOPICS_FOR_POLL
-    List<String> results = kafka().poll(kafkaRawMessagesIterable());
+    List<String> results = kafka().poll(kafkaRawMessages());
   }
 }
 ```
@@ -354,7 +354,7 @@ public class MyTest {
   @Test
   public void myTest() {
     //Если необходимо получить 'сырые' строки, которые возвращаются из kafka
-    String[] results = kafka().poll(kafkaRawMessagesArray("testTopic"));
+    String[] results = kafka().poll(kafkaArrayOfRawMessages("testTopic"));
   }
 }
 ```
@@ -370,7 +370,7 @@ public class MyTest {
   public void myTest() {
     //Если необходимо получить 'сырые' строки, которые возвращаются из kafka
     //Если не указывать топики, то значение топиков возьмется из DEFAULT_TOPICS_FOR_POLL
-    String[] results = kafka().poll(kafkaRawMessagesArray());
+    String[] results = kafka().poll(kafkaArrayOfRawMessages());
   }
 }
 ```
@@ -565,7 +565,7 @@ public class MyTest {
   @Test
   public void myTest() {
     //Если необходимо получить 'сырую' строку, которая возвращается из kafka
-    String results = kafka().poll(kafkaRawMessageIterableItem("testTopic"));
+    String results = kafka().poll(kafkaRawMessage("testTopic"));
   }
 }
 ```
@@ -581,7 +581,7 @@ public class MyTest {
   public void myTest() {
     //Если необходимо получить 'сырую' строку, которая возвращается из kafka
     //Если не указывать топики, то значение топиков возьмется из DEFAULT_TOPICS_FOR_POLL
-    String results = kafka().poll(kafkaRawMessageIterableItem());
+    String results = kafka().poll(kafkaRawMessage());
   }
 }
 ```
@@ -635,6 +635,7 @@ public class MyTest {
 ## Публикация сообщений
 
 В примерах ниже предполагается, что настройки / свойства / переменные окружения
+[KAFKA_KEY_TRANSFORMER](./SETTINGS.MD#KAFKA_KEY_TRANSFORMER),
 [KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER),
 [DEFAULT_TOPIC_FOR_SEND](./SETTINGS.MD#DEFAULT_TOPIC_FOR_SEND)
 перед началом выполнения имеют непустое значения
@@ -660,7 +661,12 @@ public class MyTest {
 
               }
             })
-            .headers(headers)// значение headers
+            //header можно добавить как объект RecordHeader
+            .header(new RecordHeader("Header key1", "Value1".getBytes()))
+            //header можно добавить передав строковое значение key и строковое значение value
+            .header("Header key2", "Value2")
+            //header можно добавить передав строковое значение key и byte[] для value
+            .header("Header key3", "Value3".getBytes())
     );
   }
 }
@@ -676,6 +682,65 @@ public class MyTest {
   public void myTest() {
     //Если не указывать топик для отправки сообщения, то он возьмет дефолтное значение из DEFAULT_TOPIC_FOR_SEND
     kafka.send(serializedMessage(new SomeObject()));
+  }
+}
+```
+
+```java
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.serializedMessage;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    //Если настройка KAFKA_CALLBACK имеет непустое значение, то сообщение будет автоматом отправлено с данным значением
+    kafka.send(serializedMessage(new SomeObject()));
+  }
+}
+```
+
+```java
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.serializedMessage;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    //Ключ можно отправлять 'сырой' строкой
+    kafka.send(serializedMessage(new SomeObject())
+            .key("SomeString"));
+  }
+}
+```
+
+```java
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.serializedMessage;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    //В качестве ключа можно отправлять объект, который будет сериализован с помощью DataTransformer из KAFKA_KEY_TRANSFORMER.get()
+    kafka.send(serializedMessage(new SomeObject())
+            .key(draftDto));
+  }
+}
+```
+
+```java
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.serializedMessage;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    //В качестве ключа можно отправлять объект и объект DataTransformer, с помощью которого объект будет сериализован
+    kafka.send(serializedMessage(new SomeObject())
+            .key(draftDto, new MyDataTransformer()));
   }
 }
 ```
