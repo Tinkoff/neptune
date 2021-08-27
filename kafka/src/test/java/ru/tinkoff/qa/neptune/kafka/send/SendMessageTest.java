@@ -222,11 +222,45 @@ public class SendMessageTest extends KafkaBaseTest {
 
         verify(kafka.getProducer(), times(1))
                 .send(new ProducerRecord<>("testTopic",
-                        null,
-                        null,
-                        null,
-                        "I'm a String!",
-                        null),
+                                null,
+                                null,
+                                null,
+                                "I'm a String!",
+                                null),
                         DefaultCallBackSupplier.CALLBACK);
+    }
+
+    @Test()
+    public void checkSendingWithKey() {
+        kafka.send(serializedMessage(draftDto)
+                .topic("testTopic")
+                .key(draftDto)
+                .header("Header key", "Value1")
+                .header(new RecordHeader("Header key2", "Value2".getBytes())));
+
+        verify(kafka.getProducer(), times(1))
+                .send(new ProducerRecord<>("testTopic",
+                        null,
+                        null,
+                        "{\"name\":\"testName\"}",
+                        "{\"name\":\"testName\"}",
+                        List.of(new RecordHeader("Header key", "Value1".getBytes()), new RecordHeader("Header key2", "Value2".getBytes()))));
+    }
+
+    @Test()
+    public void checkSendingWithKeyAndKeyTransformer() {
+        kafka.send(serializedMessage(draftDto)
+                .topic("testTopic")
+                .key(draftDto, new CustomMapper())
+                .header("Header key", "Value1")
+                .header(new RecordHeader("Header key2", "Value2".getBytes())));
+
+        verify(kafka.getProducer(), times(1))
+                .send(new ProducerRecord<>("testTopic",
+                        null,
+                        null,
+                        "customSerialize",
+                        "{\"name\":\"testName\"}",
+                        List.of(new RecordHeader("Header key", "Value1".getBytes()), new RecordHeader("Header key2", "Value2".getBytes()))));
     }
 }

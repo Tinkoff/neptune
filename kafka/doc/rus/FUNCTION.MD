@@ -8,7 +8,6 @@
     - [Получение данных сообщения как Iterable](#Получение-данных-сообщения-как-Iterable)
     - [Получение данных сообщения в виде массива](#Получение-данных-сообщения-в-виде-массива)
     - [Получение данных сообщения как Java-объект из Iterable](#Получение-данных-сообщения-как-Java-объект-из-Iterable)
-    - [Получение данных сообщения как Java-объект из массива](#Получение-данных-сообщения-как-Java-объект-из-массива)
 - [Публикация сообщений](#Публикация-сообщений)
 
 ## Получение сообщения
@@ -53,8 +52,6 @@ public class MyTest {
 ```java
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import java.util.List;
-
 import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
 import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaIterable;
@@ -81,8 +78,6 @@ public class MyTest {
 ```
 
 ```java
-import java.util.List;
-
 import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
 import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaIterable;
@@ -112,7 +107,6 @@ public class MyTest {
 ```
 
 ```java
-import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
 import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaIterable;
 
@@ -127,24 +121,22 @@ public class MyTest {
 ```
 
 ```java
-import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessagesIterable;
+import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessages;
 
 public class MyTest {
 
   @Test
   public void myTest() {
     //Если необходимо получить 'сырые' строки, которые возвращаются из kafka
-    List<String> results = kafka().poll(kafkaRawMessagesIterable("testTopic"));
+    List<String> results = kafka().poll(kafkaRawMessages("testTopic"));
   }
 }
 ```
 
 ```java
-import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessagesIterable;
+import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessages;
 
 public class MyTest {
 
@@ -152,7 +144,7 @@ public class MyTest {
   public void myTest() {
     //Если необходимо получить 'сырые' строки, которые возвращаются из kafka
     //Если не указывать топики, то значение топиков возьмется из DEFAULT_TOPICS_FOR_POLL
-    List<String> results = kafka().poll(kafkaRawMessagesIterable());
+    List<String> results = kafka().poll(kafkaRawMessages());
   }
 }
 ```
@@ -331,7 +323,6 @@ public class MyTest {
 ```
 
 ```java
-import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
 import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollArraySupplier.kafkaArray;
 
@@ -346,24 +337,22 @@ public class MyTest {
 ```
 
 ```java
-import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessagesArray;
+import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaArrayOfRawMessages;
 
 public class MyTest {
 
   @Test
   public void myTest() {
     //Если необходимо получить 'сырые' строки, которые возвращаются из kafka
-    String[] results = kafka().poll(kafkaRawMessagesArray("testTopic"));
+    String[] results = kafka().poll(kafkaArrayOfRawMessages("testTopic"));
   }
 }
 ```
 
 ```java
-import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessagesArray;
+import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaArrayOfRawMessages;
 
 public class MyTest {
 
@@ -371,7 +360,7 @@ public class MyTest {
   public void myTest() {
     //Если необходимо получить 'сырые' строки, которые возвращаются из kafka
     //Если не указывать топики, то значение топиков возьмется из DEFAULT_TOPICS_FOR_POLL
-    String[] results = kafka().poll(kafkaRawMessagesArray());
+    String[] results = kafka().poll(kafkaArrayOfRawMessages());
   }
 }
 ```
@@ -542,7 +531,6 @@ public class MyTest {
 ```
 
 ```java
-import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.kafkaIterableItem;
 
@@ -557,24 +545,22 @@ public class MyTest {
 ```
 
 ```java
-import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessageIterableItem;
+import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessage;
 
 public class MyTest {
 
   @Test
   public void myTest() {
     //Если необходимо получить 'сырую' строку, которая возвращается из kafka
-    String results = kafka().poll(kafkaRawMessageIterableItem("testTopic"));
+    String results = kafka().poll(kafkaRawMessage("testTopic"));
   }
 }
 ```
 
 ```java
-import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessageIterableItem;
+import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessage;
 
 public class MyTest {
 
@@ -582,7 +568,7 @@ public class MyTest {
   public void myTest() {
     //Если необходимо получить 'сырую' строку, которая возвращается из kafka
     //Если не указывать топики, то значение топиков возьмется из DEFAULT_TOPICS_FOR_POLL
-    String results = kafka().poll(kafkaRawMessageIterableItem());
+    String results = kafka().poll(kafkaRawMessage());
   }
 }
 ```
@@ -633,191 +619,10 @@ public class MyTest {
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-### Получение данных сообщения как Java-объект из массива
-
-В примерах ниже предполагается, что настройки / свойства / переменные окружения
-[KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER),
-[DEFAULT_TOPICS_FOR_POLL](./SETTINGS.MD#DEFAULT_TOPICS_FOR_POLL)
-перед началом выполнения имеют непустое значения
-
-```java
-import static java.time.Duration.ofSeconds;
-import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArrayItemSupplier.kafkaArrayItem;
-
-public class MyTest {
-
-  @Test
-  public void myTest() {
-    //Возвращается элемент массива. Сообщение из очереди десериализуется в массив.
-    //Из общего сообщения-массива вернется первый подходящий элемент.
-    ClassToDeserialize result = kafka().poll(kafkaArrayItem("Нужный элемент массива", //описываем то, 
-            // что нужно получить
-            ClassToDeserialize.class, //класс массива
-            "test_topic1", "test_topic2") //топики для получения сообщений
-            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-            // которому должен соответствовать результирующий элемент из массива
-            .timeOut(ofSeconds(5)) //можно указать время на получение 
-            // ожидаемого результата = 5 секунд
-            .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-    // если результат не был получен
-  }
-}
-```
-
-```java
-import com.fasterxml.jackson.core.type.TypeReference;
-
-import static java.time.Duration.ofSeconds;
-import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArrayItemSupplier.kafkaArrayItem;
-
-public class MyTest {
-
-  @Test
-  public void myTest() {
-    //Возвращается элемент массива. Сообщение из очереди десериализуется в массив.
-    //Из общего сообщения-массива вернется первый подходящий элемент.
-    ClassToDeserialize result = kafka().poll(kafkaArrayItem("Нужный элемент массива",
-            new TypeReference<ClassToDeserialize>() {
-            }, //тип объекта-модели для десериализации
-            "test_topic1", "test_topic2") //топики для получения сообщений
-            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-            // которому должен соответствовать результирующий элемент из массива
-            .timeOut(ofSeconds(5)) //можно указать время на получение 
-            // ожидаемого результата = 5 секунд
-            .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-    // если результат не был получен
-  }
-}
-```
-
-```java
-import static java.time.Duration.ofSeconds;
-import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArrayItemSupplier.kafkaArrayItem;
-
-public class MyTest {
-
-  @Test
-  public void myTest() {
-    //Возвращается элемент массива. Сообщение не обязательно является массивом. 
-    // Промежуточный массив получаются в ходе дополнительных вычислений. 
-    // Из массива вернется первый подходящий элемент.
-    Object result = kafka().poll(kafkaArrayItem("Нужный элемент массива", //описываем 
-            // то, что нужно получить
-            ClassToDeserialize.class, //класс модели для десериализации
-            o -> {
-              return /*описываем то, как получить из объекта ClassToDeserialize объект Object */;
-            },
-            "test_topic1", "test_topic2") //топики для получения сообщений
-            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-            // которому должен соответствовать результирующий элемент массива
-            .timeOut(ofSeconds(5)) //можно указать время на получение 
-            // ожидаемого результата = 5 секунд
-            .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-    // если результат не был получен
-  }
-}
-```
-
-```java
-import com.fasterxml.jackson.core.type.TypeReference;
-
-import static java.time.Duration.ofSeconds;
-import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArrayItemSupplier.kafkaArrayItem;
-
-public class MyTest {
-
-  @Test
-  public void myTest() {
-    //Возвращается элемент массива. Сообщение не обязательно является массивом. 
-    // Промежуточный массив получаются в ходе дополнительных вычислений. 
-    // Из массива вернется первый подходящий элемент.
-    Object result = kafka().poll(kafkaArrayItem("Нужный элемент массива",
-            ClassToDeserializ.class, //тип объекта-модели для десериализации
-            o -> {
-              return /*описываем то, как получить из объекта ClassToDeserialize объект Object*/;
-            },
-            "test_topic1", "test_topic2") //топики для получения сообщений
-            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-            // которому должен соответствовать результирующий элемент из массива
-            .timeOut(ofSeconds(5)) //можно указать время на получение 
-            // ожидаемого результата = 5 секунд
-            .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-    // если результат не был получен
-  }
-}
-```
-
-```java
-import com.fasterxml.jackson.core.type.TypeReference;
-
-import static java.time.Duration.ofSeconds;
-import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArrayItemSupplier.kafkaArrayItem;
-
-public class MyTest {
-
-  @Test
-  public void myTest() {
-    //Если не указывать топики, то значение топиков возьмется из DEFAULT_TOPICS_FOR_POLL
-    ClassToDeserializ result = kafka().poll(kafkaArrayItem("Нужный элемент массива", ClassToDeserializ.class));
-  }
-}
-```
-
-Ниже примеры ситуаций, когда [десериализатор](./../../../core.api/doc/rus/SERIALIZATION_DESERIALIZATION.MD) нужно
-передать явно.
-
-```java
-import org.my.pack;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
-
-//Описываем сериализацию и десериализацию для текущего проекта
-public class MyDataTransformer implements DataTransformer {
-
-
-    @Override
-    public <T> T deserialize(String message, Class<T> cls) {
-        //тут описываем механизм десериализации
-    }
-
-    @Override
-    public <T> T deserialize(String string, TypeReference<T> type) {
-        //тут описываем механизм десериализации
-    }
-
-    @Override
-    public String serialize(Object obj) {
-        //тут описываем механизм сериализации
-    }
-}
-```
-
-```java
-import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
-import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetArrayItemSupplier.rabbitArrayItem;
-
-public class MyTest {
-
-  @Test
-  public void myTest() {
-    kafka().poll(kafkaArrayItem("Нужный элемент массива", ClassToDeserialize.class)
-            .withDataTransformer(new MyDataTransformer()));
-  }
-}
-```
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
-
 ## Публикация сообщений
 
 В примерах ниже предполагается, что настройки / свойства / переменные окружения
+[KAFKA_KEY_TRANSFORMER](./SETTINGS.MD#KAFKA_KEY_TRANSFORMER),
 [KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER),
 [DEFAULT_TOPIC_FOR_SEND](./SETTINGS.MD#DEFAULT_TOPIC_FOR_SEND)
 перед началом выполнения имеют непустое значения
@@ -843,7 +648,12 @@ public class MyTest {
 
               }
             })
-            .headers(headers)// значение headers
+            //header можно добавить как объект RecordHeader
+            .header(new RecordHeader("Header key1", "Value1".getBytes()))
+            //header можно добавить передав строковое значение key и строковое значение value
+            .header("Header key2", "Value2")
+            //header можно добавить передав строковое значение key и byte[] для value
+            .header("Header key3", "Value3".getBytes())
     );
   }
 }
@@ -859,6 +669,65 @@ public class MyTest {
   public void myTest() {
     //Если не указывать топик для отправки сообщения, то он возьмет дефолтное значение из DEFAULT_TOPIC_FOR_SEND
     kafka.send(serializedMessage(new SomeObject()));
+  }
+}
+```
+
+```java
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.serializedMessage;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    //Если настройка KAFKA_CALLBACK имеет непустое значение, то сообщение будет автоматом отправлено с данным значением
+    kafka.send(serializedMessage(new SomeObject()));
+  }
+}
+```
+
+```java
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.serializedMessage;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    //Ключ можно отправлять 'сырой' строкой
+    kafka.send(serializedMessage(new SomeObject())
+            .key("SomeString"));
+  }
+}
+```
+
+```java
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.serializedMessage;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    //В качестве ключа можно отправлять объект, который будет сериализован с помощью DataTransformer из KAFKA_KEY_TRANSFORMER.get()
+    kafka.send(serializedMessage(new SomeObject())
+            .key(draftDto));
+  }
+}
+```
+
+```java
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.serializedMessage;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    //В качестве ключа можно отправлять объект и объект DataTransformer, с помощью которого объект будет сериализован
+    kafka.send(serializedMessage(new SomeObject())
+            .key(draftDto, new MyDataTransformer()));
   }
 }
 ```

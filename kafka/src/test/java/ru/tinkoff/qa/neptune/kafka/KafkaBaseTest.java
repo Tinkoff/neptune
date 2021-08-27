@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.kafka;
 
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
@@ -13,6 +12,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultDataTransformer.KAFKA_DEFAULT_DATA_TRANSFORMER;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty.DEFAULT_TOPICS_FOR_POLL;
+import static ru.tinkoff.qa.neptune.kafka.properties.KafkaKeyTransformer.KAFKA_KEY_TRANSFORMER;
 
 public class KafkaBaseTest {
     @Mock
@@ -38,6 +38,7 @@ public class KafkaBaseTest {
     public void prepareDataTransformer() {
         DEFAULT_TOPICS_FOR_POLL.accept(null);
         KAFKA_DEFAULT_DATA_TRANSFORMER.accept(DefaultMapper.class);
+        KAFKA_KEY_TRANSFORMER.accept(DefaultMapper.class);
     }
 
     @AfterClass
