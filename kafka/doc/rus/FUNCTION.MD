@@ -111,7 +111,6 @@ public class MyTest {
 ```
 
 ```java
-import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
 import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaIterable;
 
@@ -126,9 +125,8 @@ public class MyTest {
 ```
 
 ```java
-import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessagesIterable;
+import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessages;
 
 public class MyTest {
 
@@ -141,9 +139,8 @@ public class MyTest {
 ```
 
 ```java
-import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessagesIterable;
+import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessages;
 
 public class MyTest {
 
@@ -330,7 +327,6 @@ public class MyTest {
 ```
 
 ```java
-import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
 import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollArraySupplier.kafkaArray;
 
@@ -345,9 +341,8 @@ public class MyTest {
 ```
 
 ```java
-import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessagesArray;
+import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaArrayOfRawMessages;
 
 public class MyTest {
 
@@ -360,9 +355,8 @@ public class MyTest {
 ```
 
 ```java
-import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessagesArray;
+import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaArrayOfRawMessages;
 
 public class MyTest {
 
@@ -541,7 +535,6 @@ public class MyTest {
 ```
 
 ```java
-import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.kafkaIterableItem;
 
@@ -556,7 +549,6 @@ public class MyTest {
 ```
 
 ```java
-import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
 import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessageIterableItem;
 
@@ -571,9 +563,8 @@ public class MyTest {
 ```
 
 ```java
-import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessageIterableItem;
+import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessage;
 
 public class MyTest {
 
