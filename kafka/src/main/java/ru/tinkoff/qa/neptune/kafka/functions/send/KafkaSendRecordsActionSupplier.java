@@ -93,8 +93,8 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
 
     public T key(Object key) {
         var transformer = KAFKA_KEY_TRANSFORMER.get();
-        checkState(nonNull(transformer), "Data transformer is not defined. Please invoke "
-                + "the '#withDataTransformer(DataTransformer)' method or define '"
+        checkState(nonNull(transformer), "Key transformer is not defined. Please invoke "
+                + "the '#key(Object key, DataTransformer dataTransformer)' method or define '"
                 + KAFKA_KEY_TRANSFORMER.getName()
                 + "' property/env variable");
         return key(key, transformer);
