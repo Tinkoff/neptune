@@ -22,6 +22,7 @@ import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaCallbackProperty.KAFKA_CALLBACK;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultDataTransformer.KAFKA_DEFAULT_DATA_TRANSFORMER;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicForSendProperty.DEFAULT_TOPIC_FOR_SEND;
+import static ru.tinkoff.qa.neptune.kafka.properties.KafkaKeyTransformer.KAFKA_KEY_TRANSFORMER;
 
 @SequentialActionSupplier.DefinePerformImperativeParameterName("Send:")
 @MaxDepthOfReporting(0)
@@ -36,7 +37,7 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
     @StepParameter("timestamp")
     private Long timestamp;
     @StepParameter("key")
-    private Object key;
+    private String key;
     @StepParameter("headers")
     private final Headers headers = new RecordHeaders();
     private Callback callback  = KAFKA_CALLBACK.get();
@@ -81,9 +82,22 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
         return (T) this;
     }
 
-    public T key(Object key) {
+    public T key(String key) {
         this.key = key;
         return (T) this;
+    }
+
+    public T key(Object key, DataTransformer dataTransformer) {
+        return key(dataTransformer.serialize(key));
+    }
+
+    public T key(Object key) {
+        var transformer = KAFKA_KEY_TRANSFORMER.get();
+        checkState(nonNull(transformer), "Data transformer is not defined. Please invoke "
+                + "the '#withDataTransformer(DataTransformer)' method or define '"
+                + KAFKA_KEY_TRANSFORMER.getName()
+                + "' property/env variable");
+        return key(key, transformer);
     }
 
     public T header(Header header) {
@@ -115,8 +129,7 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
                 topic,
                 partition,
                 timestamp,
-                //todo Very suspicious moment. I think keys property is ignored.
-                key == null ? null : String.valueOf(key),
+                key,
                 value,
                 headers);
 
@@ -136,7 +149,6 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
     public static final class Mapped extends KafkaSendRecordsActionSupplier<Object, Object, Mapped> {
         private final Object toSend;
         private DataTransformer transformer;
-
 
         private Mapped(Object toSend) {
             super();

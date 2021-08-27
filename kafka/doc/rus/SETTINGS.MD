@@ -9,23 +9,27 @@
 
 ## Оглавление
 
-- [KAFKA_CONSUMER](./SETTINGS.MD#KAFKA_CONSUMER)
-- [KAFKA_PRODUCER](./SETTINGS.MD#KAFKA_PRODUCER)
+- [KAFKA_CONSUMER_PROPERTIES](./SETTINGS.MD#KAFKA_CONSUMER_PROPERTIES)
+- [KAFKA_PRODUCER_PROPERTIES](./SETTINGS.MD#KAFKA_PRODUCER_PROPERTIES)
 - [KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER)
 - [DEFAULT_TOPIC_FOR_SEND](./SETTINGS.MD#DEFAULT_TOPIC_FOR_SEND)
 - [DEFAULT_TOPICS_FOR_POLL](./SETTINGS.MD#DEFAULT_TOPICS_FOR_POLL)
+- [KAFKA_CALL_BACK](./SETTINGS.MD#KAFKA_CALL_BACK)
+- [KAFKA_KEY_TRANSFORMER](./SETTINGS.MD#KAFKA_KEY_TRANSFORMER)
 
-## KAFKA_CONSUMER
+## KAFKA_CONSUMER_PROPERTIES
 
-Настройка предоставляет объект `KafkaConsumer`, подготовленный нужным образом, и который используется kafka клиентом по
-умолчанию.
+Настройка предоставляет объект `Properties`, подготовленный нужным образом, и который используется kafka клиентом для
+создания kafkaConsumer'a.
+
+Примеры properties можно посмотреть [тут](https://kafka.apache.org/documentation/#consumerconfigs)
 
 ```java
-//Создаем поставщика, который будет поставлять объекты класса KafkaConsumer
-public class MyConsumerSupplier implements ObjectPropertySupplier<KafkaConsumer<Object, Object>, Supplier<KafkaConsumer<Object, Object>>> {
+//Создаем поставщика, который будет поставлять объект класса Properties
+public class MyConsumerPropertiesSupplier implements ObjectPropertySupplier<Properties, Supplier<Properties>> {
 
     @Override
-    public KafkaConsumer<Object, Object> get() {
+    public Properties get() {
         //Тут создается объект, который будет использован клиентом
     }
 }
@@ -33,34 +37,36 @@ public class MyConsumerSupplier implements ObjectPropertySupplier<KafkaConsumer<
 
 ```properties
 #Значение свойства указывается так
-KAFKA_CONSUMER=org.my.pack.MyConsumerSupplier
+KAFKA_CONSUMER_PROPERTIES=org.my.pack.MyConsumerPropertiesSupplier
 ```
 
 ```java
 import java.net.*;
 
-import static ru.tinkoff.qa.neptune.kafka.properties.KAFKA_CONSUMER;
+import static ru.tinkoff.qa.neptune.kafka.properties.KAFKA_CONSUMER_PROPERTIES;
 
 public class SomeClass {
 
     public void someVoid() {
         //пример доступа до значения свойства
-        KafkaConsumer<Object, Object> consumer = KAFKA_CONSUMER.get();
+        Properties consumerProperties = KAFKA_CONSUMER_PROPERTIES.get();
     }
 }
 ```
 
-## KAFKA_PRODUCER
+## KAFKA_PRODUCER_PROPERTIES
 
-Настройка предоставляет объект `KafkaProducer`, подготовленный нужным образом, и который используется kafka клиентом по
-умолчанию.
+Настройка предоставляет объект `Properties`, подготовленный нужным образом, и который используется kafka клиентом для
+создания kafkaProducer'a.
+
+Примеры properties можно посмотреть [тут](https://kafka.apache.org/documentation/#producerconfigs)
 
 ```java
-//Создаем поставщика, который будет поставлять объекты класса KafkaConsumer
-public class MyProducerSupplier implements ObjectPropertySupplier<KafkaProducer<Object, Object>, Supplier<KafkaProducer<Object, Object>>> {
+//Создаем поставщика, который будет поставлять объект класса Properties
+public class MyProducerPropertiesSupplier implements ObjectPropertySupplier<Properties, Supplier<Properties>> {
 
     @Override
-    public KafkaProducer<Object, Object> get() {
+    public Properties get() {
         //Тут создается объект, который будет использован клиентом
     }
 }
@@ -68,19 +74,19 @@ public class MyProducerSupplier implements ObjectPropertySupplier<KafkaProducer<
 
 ```properties
 #Значение свойства указывается так
-KAFKA_PRODUCER=org.my.pack.MyProducerSupplier
+KAFKA_PRODUCER_PROPERTIES=org.my.pack.MyProducerPropertiesSupplier
 ```
 
 ```java
 import java.net.*;
 
-import static ru.tinkoff.qa.neptune.kafka.properties.KAFKA_PRODUCER;
+import static ru.tinkoff.qa.neptune.kafka.properties.KAFKA_PRODUCER_PROPERTIES;
 
 public class SomeClass {
 
     public void someVoid() {
         //пример доступа до значения свойства
-        KafkaProducer<Object, Object> producer = KAFKA_PRODUCER.get();
+        Properties producerProperties = KAFKA_PRODUCER_PROPERTIES.get();
     }
 }
 ```
@@ -175,6 +181,94 @@ public class SomeClass {
     public void someVoid() {
         //пример доступа до значения свойства
         String[] topics = DEFAULT_TOPICS_FOR_POLL.get();
+    }
+}
+```
+
+## KAFKA_CALL_BACK
+
+Данная настройка предоставляет возможность указывать дефолтный CallBack.
+
+```java
+//Создаем поставщика, который будет поставлять объект класса CallBack
+public class CallBackSupplier implements ObjectPropertySupplier<CallBack, Supplier<CallBack>> {
+
+    @Override
+    public CallBack get() {
+
+    }
+}
+```
+
+```properties
+#Значение свойства указывается так
+KAFKA_CALL_BACK=org.my.pack.CallBackSupplier
+```
+
+```java
+import java.net.*;
+
+import static ru.tinkoff.qa.neptune.kafka.properties.KAFKA_CALL_BACK;
+
+public class SomeClass {
+
+    public void someVoid() {
+        //пример доступа до значения свойства
+        CallBack myCallBack = KAFKA_CALL_BACK.get();
+    }
+}
+```
+
+## KAFKA_KEY_TRANSFORMER
+
+Основная статья: [Сериализация и десериализация](./../../../core.api/doc/rus/SERIALIZATION_DESERIALIZATION.MD)
+Используется: [Получение сообщения](FUNCTION.MD#Получение-сообщения)
+
+```java
+import org.my.pack;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
+
+//Описываем сериализацию key для текущего проекта
+public class MyKeyTransformer implements DataTransformer {
+
+
+    @Override
+    public <T> T deserialize(String message, Class<T> cls) {
+        //тут описывается механизм десериализации
+        // но для поля ключ нас интересует только метод serialize
+    }
+
+    @Override
+    public <T> T deserialize(String string, TypeReference<T> type) {
+        //тут описывается механизм десериализации
+        // но для поля ключ нас интересует только метод serialize
+    }
+
+    @Override
+    public String serialize(Object obj) {
+        //тут описываем механизм сериализации ключа
+    }
+}
+```
+
+```properties
+#Значение свойства указывается так
+KAFKA_KEY_TRANSFORMER=org.my.pack.MyKeyTransformer
+```
+
+```java
+import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
+
+import static ru.tinkoff.qa.neptune.kafka.properties
+        .KafkaDefaultDataTransformer.KAFKA_KEY_TRANSFORMER;
+
+public class SomeClass {
+
+    public void someVoid() {
+        //пример доступа до значения свойства
+        DataTransformer transformer = KAFKA_KEY_TRANSFORMER.get();
     }
 }
 ```
