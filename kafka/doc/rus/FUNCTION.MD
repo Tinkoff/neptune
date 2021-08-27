@@ -52,8 +52,6 @@ public class MyTest {
 ```java
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import java.util.List;
-
 import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
 import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaIterable;
@@ -80,8 +78,6 @@ public class MyTest {
 ```
 
 ```java
-import java.util.List;
-
 import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
 import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaIterable;
@@ -550,7 +546,7 @@ public class MyTest {
 
 ```java
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessageIterableItem;
+import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaRawMessage;
 
 public class MyTest {
 
