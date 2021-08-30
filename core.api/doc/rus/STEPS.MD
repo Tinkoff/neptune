@@ -8,6 +8,8 @@
     - [Произвольные шаги, которые могут быть описаны в тесте](#Произвольные-шаги-которые-могут-быть-описаны-в-тесте)
     - [Шаги, которые возвращают результат](#Шаги-которые-возвращают-результат)
         - [Шаг, который возвращает объект (`java.lang.Object` и его наследники).](#Шаг-который-возвращает-объект-javalangObject-и-его-наследники)
+          - [Шаг, который возвращает объект.](#Шаг-который-возвращает-объект)
+          - [Шаг, который возвращает объект, соответствующий определенным критериям.](#Шаг-который-возвращает-объект-соответствующий-определенным-критериям)
         - [Шаг, который возвращает один из объектов, входящих в состав Iterable<?>.](#Шаг-который-возвращает-один-из-объектов-входящих-в-состав-iterable)
         - [Шаг, который возвращает один из объектов, входящих в состав массива.](#Шаг-который-возвращает-один-из-объектов-входящих-в-состав-массива)
         - [Шаг, который возвращает Iterable<?>.](#Шаг-который-возвращает-iterable)
@@ -171,14 +173,11 @@ public class SomeTest {
 Для описания набора действий с возвратом некоторого результата, в рамках некоторого контекста, используется 
 наследники `ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier`. Ниже пример, демонстрирующий
 работу и принцип данного класса.
-
-
   
 
 ```java
 package org.my.pack;
 
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -186,7 +185,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 
 import java.time.Duration;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 //Данный класс строит шаг, работающий по принципу функции.
 // Входным значением является объект-контекст, содержащий нужные ресурсы для выполнения.
@@ -260,22 +258,6 @@ public class MyGetStepSupplier<T, M, P>
         return super.pollingInterval(pollingTime);
     }
 
-    // В процессе вычислений функция, возвращенная методом `protected Function<M, T> getEndFunction()`,
-    // может возвращать результат, который на самом деле не соответствует некоторым нашим ожиданиям.
-    // Если такое может происходить, следует предусмотреть возможность указывать критерии, которым
-    // должен соответствовать возвращаемый результат.
-    @Override
-    public MyGetStepSupplier<T, M, P> criteria(Criteria<? super P> criteria) {
-        return super.criteria(criteria);
-    }
-
-    // Аналогично примеру выше. В данном случае критерий задается в виде предиката с пояснительным
-    // описанием критерия
-    @Override
-    public MyGetStepSupplier<T, M, P> criteria(String description, Predicate<? super P> predicate) {
-        return super.criteria(description, predicate);
-    }
-
     // здесь можно описать действия, выполняемые после того, как промежуточное значение
     // типа M было получено, до того как вычисление результата началось.
     // По умолчанию данный метод пустой, но не абстрактный, т.к. в большинстве случаев
@@ -344,17 +326,13 @@ public class SomeTest {
     @Test
     public void test() {
         var result = myTestContext().retrieve(something(1, 2, 3)
-                //Можно указать критерий результата, который надо получить
-                .criteria("Some criteria", o -> )
-                //если надо
-                .criteria("One more criteria", o -> ) //и еще один
                 //можно указать время, за которое нужно получить требуемый результат
                 .timeOut(ofSeconds(10))
                 //паузу между попытками получить требуемые данные, в рамках указанного 
                 //времени ожидания
                 .pollingInterval(ofMillis(500))
                 .throwOnNoResult()); //Если ничего походящего/значимого построенный шаг не вернет, 
-        // и в этом случая нужно выбросить исключение и уронить тест. 
+        // и в этом случае нужно выбросить исключение и уронить тест. 
         // Будет выброшено исключения, указанное аннотацией
         //ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData над классом из 
         //примера
@@ -370,15 +348,124 @@ public class SomeTest {
 
 #### Шаг, который возвращает объект (`java.lang.Object` и его наследники).
 
-Подходит для ситуаций, когда результат выполнения шага рассматривается как один объект, а не коллекция или массив 
-объектов. 
+Подходит для ситуаций, когда результат выполнения шага рассматривается как один объект.
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+##### Шаг, который возвращает объект. 
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
+
+import java.time.Duration;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+/**
+ * Так описывается шаг, возвращающий некий объект-результат. В данном случае наличие 
+ * "посредника" не предусматривается.
+ */
+@ThrowWhenNoData(toThrow = IllegalStateException.class, startDescription = "Can't get:")
+public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetSimpleStepSupplier<
+        MyTestContext,
+        T,
+        MyGetStepSupplier<T>>
+{
+
+    protected MyGetStepSupplier() {
+        this(myTestContext -> {
+            /**логика выполнения шага сводится к строчкам внутри этого лямбда-выражения**/
+            var o = myTestContext.getSomeResource();
+            ///дальнейшие вычисления
+            return //возврат результата
+        });
+    }
+    
+    protected MyGetStepSupplier(Function<MyTestContext, T> originalFunction) {
+        /**или к функции, переданной через данный конструктор**/
+        super(originalFunction);
+    }
+
+
+    @Description("Something by parameters {a}, {b}, {c}")
+    public static <T> MyGetStepSupplier<T> something(
+            @DescriptionFragment("a") Object a, //параметры, которые формируют
+            @DescriptionFragment("b") Object b,  //название шага.
+            @DescriptionFragment("c") Object c) { //Об этом будет ниже
+        return //возвращает представление/построитель шага
+    }
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать время,
+    //в пределах которого конечный результат должен быть получен
+    @Override
+    public MyGetStepSupplier<T> timeOut(Duration timeOut) {
+        return super.timeOut(timeOut);
+    }
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать паузу между попытками
+    //получить нужный конечный результат.
+    //Попытки совершаются циклически в пределах времени, указанного в timeOut(Duration timeOut)
+    @Override
+    public MyGetStepSupplier<T> pollingInterval(Duration pollingTime) {
+        return super.pollingInterval(pollingTime);
+    }
+
+    @Override //перекрывать необязательно, уже писали ранее. Для наглядности
+    protected void onStart(MyTestContext m) {
+        //Какая-то логика
+    }
+
+    @Override //перекрывать необязательно, уже писали ранее. Для наглядности
+    protected void onSuccess(T t) {
+        //Какая-то логика
+    }
+
+
+    @Override //перекрывать необязательно, уже писали ранее. Для наглядности
+    protected void onFailure(MyTestContext m, Throwable throwable) {
+        //Какая-то логика
+    }
+}
+```
+
+Пример связи контекста и шага в тесте
+
+```java
+package org.my.pack;
+
+import static java.time.Duration.ofMillis;
+import static java.time.Duration.ofSeconds;
+import static org.my.pack.MyGetStepSupplier.something;
+import static org.my.pack.MyGetSomeOtherValue.someOtherValue;
+import static org.my.pack.MyTestContext.myTestContext;
+
+public class SomeTest {
+
+    @Test
+    public void test() {
+        var result = myTestContext().retrieve(something(1, 2, 3)
+                .timeOut(ofSeconds(10))
+                .pollingInterval(ofMillis(500))
+                .throwOnNoResult());
+    }
+}
+```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+
+##### Шаг, который возвращает объект, соответствующий определенным критериям.
 
 - 1
 
 ```java
 package org.my.pack;
 
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -438,20 +525,6 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetObjectSte
         return super.pollingInterval(pollingTime);
     }
 
-    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должен соответствовать конечный результат
-    @Override
-    public MyGetStepSupplier<T> criteria(Criteria<? super T> criteria) {
-        return super.criteria(criteria);
-    }
-
-    // Аналогично примеру выше. В данном случае критерий задается в виде предиката с пояснительным
-    // описанием критерия
-    @Override
-    public MyGetStepSupplier<T> criteria(String description, Predicate<? super T> predicate) {
-        return super.criteria(description, predicate);
-    }
-
     @Override //перекрывать необязательно, уже писали ранее. Для наглядности
     protected void onStart(MyTestContext m) {
         //Какая-то логика
@@ -476,7 +549,6 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetObjectSte
 ```java
 package org.my.pack;
 
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -568,20 +640,6 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObject
         return super.pollingInterval(pollingTime);
     }
 
-    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должен соответствовать конечный результат
-    @Override
-    public MyGetStepSupplier<T, M> criteria(Criteria<? super T> criteria) {
-        return super.criteria(criteria);
-    }
-
-    // Аналогично примеру выше. В данном случае критерий задается в виде предиката с пояснительным
-    // описанием критерия
-    @Override
-    public MyGetStepSupplier<T, M> criteria(String description, Predicate<? super T> predicate) {
-        return super.criteria(description, predicate);
-    }
-
     @Override //перекрывать необязательно, уже писали ранее. Для наглядности
     protected void onStart(M m) {
         //Какая-то логика
@@ -623,6 +681,8 @@ public class SomeTest {
     @Test
     public void test() {
         var result = myTestContext().retrieve(something(1, 2, 3)
+                //указываем критерии, которым
+                // должен соответствовать возвращаемый результат.
                 .criteria("Some criteria", o -> )
                 .criteria("One more criteria", o -> )
                 .timeOut(ofSeconds(10))
@@ -632,7 +692,6 @@ public class SomeTest {
     }
 }
 ```
-
 
 Примеры ниже работают по тем же принципам, что и примеры выше. Поэтому фокус на принципиальных отличиях.
 
@@ -648,7 +707,6 @@ public class SomeTest {
 ```java
 package org.my.pack;
 
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -684,22 +742,6 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetObjectFro
         /**или к функции, переданной через данный конструктор**/
         super(originalFunction);
     }
-
-    //..........
-
-    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должен соответствовать конечный результат
-    @Override
-    public MyGetStepSupplier<T> criteria(Criteria<? super T> criteria) {
-        return super.criteria(criteria);
-    }
-
-    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должен соответствовать конечный результат
-    @Override
-    public MyGetStepSupplier<T> criteria(String description, Predicate<? super T> predicate) {
-        return super.criteria(description, predicate);
-    }
 }
 ```
 
@@ -709,7 +751,6 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetObjectFro
 ```java
 package org.my.pack;
 
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 
@@ -743,22 +784,6 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObject
         /**или к функции, переданной через данный конструктор**/
         super(originalFunction);
     }
-
-    //..........
-
-    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должен соответствовать конечный результат
-    @Override
-    public MyGetStepSupplier<T, M> criteria(Criteria<? super T> criteria) {
-        return super.criteria(criteria);
-    }
-
-    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должен соответствовать конечный результат
-    @Override
-    public MyGetStepSupplier<T, M> criteria(String description, Predicate<? super T> predicate) {
-        return super.criteria(description, predicate);
-    }
 }
 ```
 
@@ -775,7 +800,6 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObject
 ```java
 package org.my.pack;
 
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 
@@ -808,22 +832,6 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetObjectFro
         /**или к функции, переданной через данный конструктор**/
         super(originalFunction);
     }
-
-    //..........
-
-    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должен соответствовать конечный результат
-    @Override
-    public MyGetStepSupplier<T> criteria(Criteria<? super T> criteria) {
-        return super.criteria(criteria);
-    }
-
-    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должен соответствовать конечный результат
-    @Override
-    public MyGetStepSupplier<T> criteria(String description, Predicate<? super T> predicate) {
-        return super.criteria(description, predicate);
-    }
 }
 ```
 
@@ -833,7 +841,6 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetObjectFro
 ```java
 package org.my.pack;
 
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 
@@ -866,22 +873,6 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObject
         /**или к функции, переданной через данный конструктор**/
         super(originalFunction);
     }
-
-    //..........
-
-    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должен соответствовать конечный результат
-    @Override
-    public MyGetStepSupplier<T> criteria(Criteria<? super T> criteria) {
-        return super.criteria(criteria);
-    }
-
-    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должен соответствовать конечный результат
-    @Override
-    public MyGetStepSupplier<T> criteria(String description, Predicate<? super T> predicate) {
-        return super.criteria(description, predicate);
-    }
 }
 ```
 
@@ -898,7 +889,6 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObject
 ```java
 package org.my.pack;
 
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 
@@ -938,22 +928,6 @@ public class MyGetStepSupplier<T, S extends Iterable<T>> extends SequentialGetSt
         /**или к функции, переданной через данный конструктор**/
         super(originalFunction);
     }
-
-    //..........
-
-    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должны соответствовать все элементы, входящие в результирующий Iterable
-    @Override
-    public MyGetStepSupplier<T, S> criteria(Criteria<? super T> criteria) {
-        return super.criteria(criteria);
-    }
-
-    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должны соответствовать все элементы, входящие в результирующий Iterable
-    @Override
-    public MyGetStepSupplier<T, S> criteria(String description, Predicate<? super T> predicate) {
-        return super.criteria(description, predicate);
-    }
 }
 ```
 
@@ -962,7 +936,6 @@ public class MyGetStepSupplier<T, S extends Iterable<T>> extends SequentialGetSt
 ```java
 package org.my.pack;
 
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 
@@ -1002,22 +975,6 @@ public class MyGetStepSupplier<T, M, S extends Iterable<T>> extends SequentialGe
         /**или к функции, переданной через данный конструктор**/
         super(originalFunction);
     }
-
-    //..........
-
-    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должны соответствовать все элементы, входящие в результирующий Iterable
-    @Override
-    public MyGetStepSupplier<T, M, S> criteria(Criteria<? super T> criteria) {
-        return super.criteria(criteria);
-    }
-
-    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должны соответствовать все элементы, входящие в результирующий Iterable
-    @Override
-    public MyGetStepSupplier<T, M, S> criteria(String description, Predicate<? super T> predicate) {
-        return super.criteria(description, predicate);
-    }
 }
 ```
 
@@ -1034,7 +991,6 @@ public class MyGetStepSupplier<T, M, S extends Iterable<T>> extends SequentialGe
 ```java
 package org.my.pack;
 
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 
@@ -1072,22 +1028,6 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetArrayStep
         /**или к функции, переданной через данный конструктор**/
         super(originalFunction);
     }
-
-    //..........
-
-    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должны соответствовать все элементы, входящие в результирующий массив
-    @Override
-    public MyGetStepSupplier<T> criteria(Criteria<? super T> criteria) {
-        return super.criteria(criteria);
-    }
-
-    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должны соответствовать все элементы, входящие в результирующий массив
-    @Override
-    public MyGetStepSupplier<T> criteria(String description, Predicate<? super T> predicate) {
-        return super.criteria(description, predicate);
-    }
 }
 ```
 
@@ -1097,7 +1037,6 @@ public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetArrayStep
 ```java
 package org.my.pack;
 
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 
@@ -1135,22 +1074,6 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetArrayC
     protected MyGetStepSupplier(Function<M, T[]> originalFunction) {
         /**или к функции, переданной через данный конструктор**/
         super(originalFunction);
-    }
-
-    //..........
-
-    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должны соответствовать все элементы, входящие в результирующий массив
-    @Override
-    public MyGetStepSupplier<T, M> criteria(Criteria<? super T> criteria) {
-        return super.criteria(criteria);
-    }
-
-    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
-    //которым должны соответствовать все элементы, входящие в результирующий массив
-    @Override
-    public MyGetStepSupplier<T, M> criteria(String description, Predicate<? super T> predicate) {
-        return super.criteria(description, predicate);
     }
 }
 ```
@@ -1459,7 +1382,9 @@ public class SomeTest {
     @Test
     public void test() {
         var result = myTestContext().retrieve(something(1, 2, 3)
-                .criteria(OR(someCriteria("A", "B"), oneMoreCriteria(4, 5))));
+                .criteria(OR(someCriteria("A", "B"), oneMoreCriteria(4, 5)))
+                //тоже самое, что строкой выше, но боле удобным способом
+                .criteriaOr(someCriteria("A", "B"), oneMoreCriteria(4, 5)));
     }
 }
 ```
@@ -1481,7 +1406,9 @@ public class SomeTest {
     @Test
     public void test() {
         var result = myTestContext().retrieve(something(1, 2, 3)
-                .criteria(ONLY_ONE(someCriteria("A", "B"), oneMoreCriteria(4, 5))));
+                .criteria(ONLY_ONE(someCriteria("A", "B"), oneMoreCriteria(4, 5)))
+                //тоже самое, что строкой выше, но боле удобным способом
+                .criteriaOnlyOne(someCriteria("A", "B"), oneMoreCriteria(4, 5)));
     }
 }
 ```
@@ -1503,8 +1430,12 @@ public class SomeTest {
     @Test
     public void test() {
         var result = myTestContext().retrieve(something(1, 2, 3)
-                .criteria(someCriteria("A", "B"))
-                .criteria(NOT(oneMoreCriteria(4, 5)))); //<-- критерий инвертирован
+                .criteria(NOT(someCriteria("A", "B"))) //<-- критерий инвертирован
+                .criteria(NOT(oneMoreCriteria(4, 5))) //<-- критерий инвертирован
+                //тоже самое, что и выше, но боле удобным способом
+                .criteriaNot(someCriteria("A", "B"))
+                //инверсия каждого переданного критерия
+                .criteriaNot(someCriteria("A", "B"), oneMoreCriteria(4, 5)));
     }
 }
 ```
@@ -1779,9 +1710,6 @@ public class SomeTest {
 
 Пример ниже актуален для классов — наследников `SequentialGetStepSupplier` и `SequentialActionSupplier`.
 
-
-  
-
 ```java
 package org.my.pack;
 
@@ -1899,13 +1827,10 @@ public class ExampleGetParameterValue
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-
 #### Для критериев
 
 В данном примере описания критериев, которые подготовлены для многократного повторного использования.
 
-
-  
 
 ```java
 package org.my.pack;
@@ -2013,9 +1938,6 @@ public class MyCustomObject {
 
 #### Предопределенные параметры шагов, возвращающих результат
 
-
-  
-
 ```java
 package org.my.pack;
 
@@ -2122,7 +2044,6 @@ public class MyGetStepSupplier<T, M, P>
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-
 #### Предопределенные параметры шагов, выполняющих действия
 
 ```java
@@ -2171,7 +2092,6 @@ public class MyActionStepSupplier<T> extends SequentialActionSupplier<MyTestCont
 }
 ```
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
 
 #### Другие параметры
 
@@ -2297,9 +2217,6 @@ public class ExampleGetParameterValue
 
 Пример ниже актуален для классов — наследников `SequentialGetStepSupplier`. Параметр `startDescription` 
 аннотации `ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData` используются [локализацией](./LOCALIZATION.MD).
-
-
-  
 
 ```java
 package org.my.pack;

@@ -306,8 +306,8 @@ public class MyTest {
 ### Тело запроса и ответа
 
 В примерах ниже предполагается, что настройка / свойство / переменная окружения
-[PROXIED_TRAFFIC_BODY_TRANSFORMER](./SETTINGS.MD#PROXIED_TRAFFIC_BODY_TRANSFORMER) перед началом выполнения имеет
-непустое значения
+[PROXIED_TRAFFIC_BODY_TRANSFORMER](./SETTINGS.MD#PROXIED_TRAFFIC_BODY_TRANSFORMER) перед началом выполнения теста имеет
+непустое значение
 
 ```java
 package org.mypack;

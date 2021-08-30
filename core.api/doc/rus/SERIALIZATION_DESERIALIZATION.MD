@@ -125,7 +125,16 @@ public class MyGsonDataTransformer implements DataTransformer {
 
 Где используется описанный механизм:
 
-- [RabbitMQ](./../../../rabbit.mq/doc/rus/README.MD): [Настройки](./../../../rabbit.mq/doc/rus/SETTINGS.MD#RABBIT_MQ_DEFAULT_DATA_TRANSFORMER),
-  [Получение сообщения](./../../../rabbit.mq/doc/rus/FUNCTION.MD#Получение-сообщения).
+- [RabbitMQ](./../../../rabbit.mq/doc/rus/README.MD): 
+  - [Настройки](./../../../rabbit.mq/doc/rus/SETTINGS.MD#RABBIT_MQ_DEFAULT_DATA_TRANSFORMER)
+  - [Получение сообщения](./../../../rabbit.mq/doc/rus/FUNCTION.MD#Получение-сообщения)
+  - [Публикация сообщений](./../../../rabbit.mq/doc/rus/FUNCTION.MD#Публикация-сообщений)
+- [Kafka](./../../../kafka/doc/rus/README.MD):
+  - [Настройки](./../../../kafka/doc/rus/SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER)
+  - [Получение сообщения](./../../../kafka/doc/rus/FUNCTION.MD#Получение-сообщения)
+  - [Публикация сообщений](./../../../kafka/doc/rus/FUNCTION.MD#Публикация-сообщений)
+- [Selenium](./../../../selenium/doc/rus/README.MD):
+  - [Настройки](./../../../selenium/doc/rus/SETTINGS.MD#PROXIED_TRAFFIC_BODY_TRANSFORMER)
+  - [Mатчеры. Тело запроса и ответа](./../../../selenium/doc/rus/HAMCREST.MD#Тело-запроса-и-ответа)
 
 [к списку документов](README.MD#Оглавление)
