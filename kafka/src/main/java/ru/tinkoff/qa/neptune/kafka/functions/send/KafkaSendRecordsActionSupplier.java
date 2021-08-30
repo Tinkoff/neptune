@@ -53,7 +53,7 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
      * @param toSend is a object to be serialized and send to the topic
      * @return an instance of {@link KafkaSendRecordsActionSupplier.Mapped}
      */
-    public static Mapped serializedMessage(Object toSend) {
+    public static Mapped kafkaSerializedMessage(Object toSend) {
         return new Mapped(toSend);
     }
 
@@ -63,7 +63,7 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
      * @param message is a message to send
      * @return an instance of {@link KafkaSendRecordsActionSupplier.StringMessage}
      */
-    public static StringMessage textMessage(String message) {
+    public static StringMessage kafkaTextMessage(String message) {
         return new StringMessage(message);
     }
 

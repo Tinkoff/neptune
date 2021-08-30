@@ -80,7 +80,7 @@ public abstract class RabbitMqPublishSupplier<T extends RabbitMqPublishSupplier<
      * @param toSerialize is an object to be serialized into string message
      * @return a new instance of {@link RabbitMqPublishSupplier}
      */
-    public static RabbitMqPublishSupplier.Mapped serializedMessage(Object toSerialize) {
+    public static RabbitMqPublishSupplier.Mapped rabbitSerializedMessage(Object toSerialize) {
         return new Mapped(toSerialize);
     }
 
@@ -91,7 +91,7 @@ public abstract class RabbitMqPublishSupplier<T extends RabbitMqPublishSupplier<
      * @param charset   is a required charset
      * @return new instance of {@link RabbitMqPublishSupplier}
      */
-    public static RabbitMqPublishSupplier.StringMessage textMessage(String toPublish, Charset charset) {
+    public static RabbitMqPublishSupplier.StringMessage rabbitTextMessage(String toPublish, Charset charset) {
         return new StringMessage(toPublish, charset);
     }
 
@@ -101,8 +101,8 @@ public abstract class RabbitMqPublishSupplier<T extends RabbitMqPublishSupplier<
      * @param toPublish is a text to publish
      * @return new instance of {@link RabbitMqPublishSupplier}
      */
-    public static RabbitMqPublishSupplier.StringMessage textMessage(String toPublish) {
-        return textMessage(toPublish, UTF_8);
+    public static RabbitMqPublishSupplier.StringMessage rabbitTextMessage(String toPublish) {
+        return rabbitTextMessage(toPublish, UTF_8);
     }
 
     @Override

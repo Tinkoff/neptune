@@ -14,8 +14,8 @@ import java.util.List;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.serializedMessage;
-import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.textMessage;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.kafkaSerializedMessage;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.kafkaTextMessage;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaCallbackProperty.KAFKA_CALLBACK;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicForSendProperty.DEFAULT_TOPIC_FOR_SEND;
 
@@ -33,7 +33,7 @@ public class SendMessageTest extends KafkaBaseTest {
 
     @Test(description = "check basic sending of a message with a topic and an object")
     public void checkBaseMessageSending() {
-        kafka.send(serializedMessage(draftDto).topic("testTopic"));
+        kafka.send(kafkaSerializedMessage(draftDto).topic("testTopic"));
 
         verify(kafka.getProducer(), times(1))
                 .send(new ProducerRecord<>("testTopic",
@@ -46,7 +46,7 @@ public class SendMessageTest extends KafkaBaseTest {
 
     @Test(description = "check string message")
     public void checkStringSending() {
-        kafka.send(textMessage("I'm a String!").topic("testTopic"));
+        kafka.send(kafkaTextMessage("I'm a String!").topic("testTopic"));
 
         verify(kafka.getProducer(), times(1))
                 .send(new ProducerRecord<>("testTopic",
@@ -59,7 +59,7 @@ public class SendMessageTest extends KafkaBaseTest {
 
     @Test(description = "check message sending with no-default DataTransformer")
     public void checkMessageSendingWithNoDefaultDataTransformer() {
-        kafka.send(serializedMessage(draftDto)
+        kafka.send(kafkaSerializedMessage(draftDto)
                 .topic("testTopic")
                 .dataTransformer(new CustomMapper()));
 
@@ -74,7 +74,7 @@ public class SendMessageTest extends KafkaBaseTest {
 
     @Test(description = "check message sending with callBack")
     public void checkMessageSendingWithCallBack() {
-        kafka.send(serializedMessage(draftDto)
+        kafka.send(kafkaSerializedMessage(draftDto)
                 .topic("testTopic")
                 .callback(customCallBack));
 
@@ -90,7 +90,7 @@ public class SendMessageTest extends KafkaBaseTest {
 
     @Test(description = "check message sending with parameterForSend")
     public void checkMessageSendingWithParametersForSend() {
-        kafka.send(serializedMessage(draftDto)
+        kafka.send(kafkaSerializedMessage(draftDto)
                 .topic("testTopic")
                 .partition(1)
                 .timestamp(10L));
@@ -107,7 +107,7 @@ public class SendMessageTest extends KafkaBaseTest {
 
     @Test(description = "check message sending with callBack and parameters")
     public void checkMessageSendingWithParametersAndCallBack() {
-        kafka.send(serializedMessage(draftDto)
+        kafka.send(kafkaSerializedMessage(draftDto)
                 .topic("testTopic")
                 .partition(1)
                 .timestamp(10L)
@@ -126,7 +126,7 @@ public class SendMessageTest extends KafkaBaseTest {
 
     @Test(description = "check message sending with parameters and custom DataTransformer")
     public void checkMessageSendingWithParametersAndDataTransformer() {
-        kafka.send(serializedMessage(draftDto)
+        kafka.send(kafkaSerializedMessage(draftDto)
                 .topic("testTopic")
                 .partition(1)
                 .timestamp(10L)
@@ -144,7 +144,7 @@ public class SendMessageTest extends KafkaBaseTest {
 
     @Test(description = "check message sending with parameters, custom DataTransformer and CallBack")
     public void checkMessageSendingWithParametersAndDataTransformerAndCallback() {
-        kafka.send(serializedMessage(draftDto)
+        kafka.send(kafkaSerializedMessage(draftDto)
                 .topic("testTopic")
                 .partition(1)
                 .timestamp(10L)
@@ -165,7 +165,7 @@ public class SendMessageTest extends KafkaBaseTest {
     public void checkDefaultTopic() {
         DEFAULT_TOPIC_FOR_SEND.accept("default_Topic");
 
-        kafka.send(serializedMessage(draftDto)
+        kafka.send(kafkaSerializedMessage(draftDto)
                 .partition(1)
                 .timestamp(10L)
                 .dataTransformer(new CustomMapper()));
@@ -183,7 +183,7 @@ public class SendMessageTest extends KafkaBaseTest {
     public void checkSendingRawString() {
         DEFAULT_TOPIC_FOR_SEND.accept("default_Topic");
 
-        kafka.send(textMessage("I'm a String!")
+        kafka.send(kafkaTextMessage("I'm a String!")
                 .partition(1)
                 .timestamp(10L));
 
@@ -198,7 +198,7 @@ public class SendMessageTest extends KafkaBaseTest {
 
     @Test(description = "check basic sending of a message with a topic and an object")
     public void checkSendingWithHeaderAndKey() {
-        kafka.send(serializedMessage(draftDto)
+        kafka.send(kafkaSerializedMessage(draftDto)
                 .topic("testTopic")
                 .key("Some key")
                 .header("Header key", "Value1")
@@ -217,7 +217,7 @@ public class SendMessageTest extends KafkaBaseTest {
     public void checkSendingWithDefaultCallBack() {
         KAFKA_CALLBACK.accept(DefaultCallBackSupplier.class);
 
-        kafka.send(textMessage("I'm a String!")
+        kafka.send(kafkaTextMessage("I'm a String!")
                 .topic("testTopic"));
 
         verify(kafka.getProducer(), times(1))
@@ -232,7 +232,7 @@ public class SendMessageTest extends KafkaBaseTest {
 
     @Test()
     public void checkSendingWithKey() {
-        kafka.send(serializedMessage(draftDto)
+        kafka.send(kafkaSerializedMessage(draftDto)
                 .topic("testTopic")
                 .key(draftDto)
                 .header("Header key", "Value1")
@@ -249,7 +249,7 @@ public class SendMessageTest extends KafkaBaseTest {
 
     @Test()
     public void checkSendingWithKeyAndKeyTransformer() {
-        kafka.send(serializedMessage(draftDto)
+        kafka.send(kafkaSerializedMessage(draftDto)
                 .topic("testTopic")
                 .key(draftDto, new CustomMapper())
                 .header("Header key", "Value1")

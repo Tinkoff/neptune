@@ -17,8 +17,8 @@ import java.util.Map;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static ru.tinkoff.qa.neptune.rabbit.mq.function.publish.RabbitMqPublishSupplier.serializedMessage;
-import static ru.tinkoff.qa.neptune.rabbit.mq.function.publish.RabbitMqPublishSupplier.textMessage;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.publish.RabbitMqPublishSupplier.rabbitSerializedMessage;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.publish.RabbitMqPublishSupplier.rabbitTextMessage;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_EXCHANGE_NAME;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_ROUTING_KEY_NAME;
 
@@ -41,7 +41,7 @@ public class PublishMessageTest extends BaseRabbitMqTest {
 
     @Test(description = "Check publish message with default mapper and no-parameters")
     public void publishTest1() throws IOException {
-        rabbitMqStepContext.publish(serializedMessage(
+        rabbitMqStepContext.publish(rabbitSerializedMessage(
                 new DraftDto().setName("test"))
                 .exchange("exchange1")
                 .routingKey("routingKey1"));
@@ -55,7 +55,7 @@ public class PublishMessageTest extends BaseRabbitMqTest {
 
     @Test(description = "Check publish message with custom mapper and no-parameters")
     public void publishTest2() throws IOException {
-        rabbitMqStepContext.publish(serializedMessage(new Object())
+        rabbitMqStepContext.publish(rabbitSerializedMessage(new Object())
                 .exchange("exchange2")
                 .routingKey("routingKey2")
                 .withDataTransformer(new CustomMapper()));
@@ -69,7 +69,7 @@ public class PublishMessageTest extends BaseRabbitMqTest {
 
     @Test(description = "Check publish message with default mapper and parameters")
     public void publishTest3() throws IOException {
-        rabbitMqStepContext.publish(serializedMessage(
+        rabbitMqStepContext.publish(rabbitSerializedMessage(
                 new DraftDto().setName("test"))
                 .exchange("exchange2")
                 .routingKey("routingKey2")
@@ -85,7 +85,7 @@ public class PublishMessageTest extends BaseRabbitMqTest {
 
     @Test(description = "Check publish message with default mapper and parameters")
     public void publishTest4() throws IOException {
-        rabbitMqStepContext.publish(serializedMessage(
+        rabbitMqStepContext.publish(rabbitSerializedMessage(
                 new DraftDto().setName("test"))
                 .exchange("exchange2")
                 .routingKey("routingKey2")
@@ -104,7 +104,7 @@ public class PublishMessageTest extends BaseRabbitMqTest {
     public void publishTest5() throws Exception {
         DEFAULT_EXCHANGE_NAME.accept("default_exchange");
 
-        rabbitMqStepContext.publish(textMessage("Hello world")
+        rabbitMqStepContext.publish(rabbitTextMessage("Hello world")
                 .toDefaultExchange());
 
         verify(channel, times(1))
@@ -120,7 +120,7 @@ public class PublishMessageTest extends BaseRabbitMqTest {
     public void publishTest6() throws Exception {
         DEFAULT_ROUTING_KEY_NAME.accept("default_routing_key");
 
-        rabbitMqStepContext.publish(textMessage("Hello world")
+        rabbitMqStepContext.publish(rabbitTextMessage("Hello world")
                 .useDefaultRoutingKey());
 
         verify(channel, times(1))
@@ -136,7 +136,7 @@ public class PublishMessageTest extends BaseRabbitMqTest {
     public void publishTest7() throws Exception {
         var timeStamp = new Date();
 
-        rabbitMqStepContext.publish(textMessage("Hello world")
+        rabbitMqStepContext.publish(rabbitTextMessage("Hello world")
                 .exchange("exchange1")
                 .routingKey("routing_key1")
                 .header("header1", "value1")
