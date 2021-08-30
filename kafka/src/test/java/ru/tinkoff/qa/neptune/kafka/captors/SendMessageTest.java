@@ -12,7 +12,7 @@ import static ru.tinkoff.qa.neptune.kafka.captors.TestStringInjector.CAUGHT_MESS
 public class SendMessageTest extends BaseCaptorTest {
     @Test
     public void test() {
-        kafka.send(KafkaSendRecordsActionSupplier.serializedMessage(new DraftDto().setName("test")).topic("Test"));
+        kafka.send(KafkaSendRecordsActionSupplier.kafkaSerializedMessage(new DraftDto().setName("test")).topic("Test"));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Kafka message", "{\"name\":\"test\"}")));
     }

@@ -630,7 +630,7 @@ public class MyTest {
 
 ```java
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.serializedMessage;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.kafkaSerializedMessage;
 
 public class MyTest {
 
@@ -638,7 +638,7 @@ public class MyTest {
   public void myTest() {
     //Выполняем отправку сообщения
     //сериализатор берется дефолтный из KAFKA_DEFAULT_DATA_TRANSFORMER
-    kafka.send(serializedMessage(new SomeObject()) //new SomeObject() - объект, который нужно сериализовать и отправить в kafka
+    kafka.send(kafkaSerializedMessage(new SomeObject()) //new SomeObject() - объект, который нужно сериализовать и отправить в kafka
             .topic("testTopic") //топик для публикации сообщения
             .partition(1) // значение partition
             .timestamp(10L) // значение timestamp
@@ -662,42 +662,42 @@ public class MyTest {
 
 ```java
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.serializedMessage;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.kafkaSerializedMessage;
 
 public class MyTest {
 
   @Test
   public void myTest() {
     //Если не указывать топик для отправки сообщения, то он возьмет дефолтное значение из DEFAULT_TOPIC_FOR_SEND
-    kafka.send(serializedMessage(new SomeObject()));
+    kafka.send(kafkaSerializedMessage(new SomeObject()));
   }
 }
 ```
 
 ```java
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.serializedMessage;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.kafkaSerializedMessage;
 
 public class MyTest {
 
   @Test
   public void myTest() {
     //Если настройка KAFKA_CALLBACK имеет непустое значение, то сообщение будет автоматом отправлено с данным значением
-    kafka.send(serializedMessage(new SomeObject()));
+    kafka.send(kafkaSerializedMessage(new SomeObject()));
   }
 }
 ```
 
 ```java
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.serializedMessage;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.kafkaSerializedMessage;
 
 public class MyTest {
 
   @Test
   public void myTest() {
     //Ключ можно отправлять 'сырой' строкой
-    kafka.send(serializedMessage(new SomeObject())
+    kafka.send(kafkaSerializedMessage(new SomeObject())
             .key("SomeString"));
   }
 }
@@ -705,14 +705,14 @@ public class MyTest {
 
 ```java
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.serializedMessage;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.kafkaSerializedMessage;
 
 public class MyTest {
 
   @Test
   public void myTest() {
     //В качестве ключа можно отправлять объект, который будет сериализован с помощью DataTransformer из KAFKA_KEY_TRANSFORMER.get()
-    kafka.send(serializedMessage(new SomeObject())
+    kafka.send(kafkaSerializedMessage(new SomeObject())
             .key(draftDto));
   }
 }
@@ -720,14 +720,14 @@ public class MyTest {
 
 ```java
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.serializedMessage;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.kafkaSerializedMessage;
 
 public class MyTest {
 
   @Test
   public void myTest() {
     //В качестве ключа можно отправлять объект и объект DataTransformer, с помощью которого объект будет сериализован
-    kafka.send(serializedMessage(new SomeObject())
+    kafka.send(kafkaSerializedMessage(new SomeObject())
             .key(draftDto, new MyDataTransformer()));
   }
 }
@@ -765,7 +765,7 @@ public class MyDataTransformer implements DataTransformer {
 
 ```java
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.serializedMessage;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.kafkaSerializedMessage;
 
 public class MyTest {
 
@@ -773,25 +773,25 @@ public class MyTest {
   public void myTest() {
     //Выполняем отправку сообщения
     //сериализатор берется дефолтный из KAFKA_DEFAULT_DATA_TRANSFORMER
-    kafka.send(serializedMessage(new SomeObject()) //new SomeObject() - объект, который нужно сериализовать и отправить в kafka
+    kafka.send(kafkaSerializedMessage(new SomeObject()) //new SomeObject() - объект, который нужно сериализовать и отправить в kafka
             .dataTransformer(new MyDataTransformer()) // устанавливаем кастомный DataTransformer
     );
   }
 }
 ```
 
-Так же Neptune поддерживает отправку обычных строк, которые не нужно сериализовать
+Так же Neptune поддерживает отправку обычных строк, которые не нужно сериализовать§
 
 ```java
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.textMessage;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.kafkaTextMessage;
 
 public class MyTest {
 
   @Test
   public void myTest() {
     //Выполняем отправку сообщения
-    kafka.send(textMessage("I'm a String!") //строка, которую нужно отправить в kafka
+    kafka.send(kafkaTextMessage("I'm a String!") //строка, которую нужно отправить в kafka
             .topic("testTopic") //топик для публикации сообщения
             .partition(1) // значение partition
             .timestamp(10L) // значение timestamp
@@ -810,14 +810,14 @@ public class MyTest {
 
 ```java
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.textMessage;
+import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.kafkaTextMessage;
 
 public class MyTest {
 
   @Test
   public void myTest() {
     //Если не указывать топик для отправки сообщения, то он возьмет дефолтное значение из DEFAULT_TOPIC_FOR_SEND
-    kafka.send(textMessage("I'm a String!"));
+    kafka.send(kafkaTextMessage("I'm a String!"));
   }
 }
 ```
