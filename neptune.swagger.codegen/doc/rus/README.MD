@@ -7,8 +7,6 @@
 
 ### Если сгенерированный код должен лежать в test
 
-  
-
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
