@@ -50,12 +50,11 @@ Module documentatation:
 - Integration of Neptune with Cucumber is under construction yet
 - [Integration of Neptune native http client of Java (since v11)](http.api/README.md)
 - [Integration of Neptune with Retrofit2](retrofit2/README.md)
-- [Integration of Neptune with rabbitmq](rabbit.mq/README.MD)  
+- [Integration of Neptune with Rabbit MQ](rabbit.mq/README.MD)  
+- [Integration of Neptune with Kafka](kafka/README.md)
 - [Integration of Neptune with Swagger 3.x](neptune.swagger.codegen/README.md)
 - [Integration of Neptune with Selenium WebDriver API](selenium/README.md)
 - Integration of Neptune with ORMs is under construction yet
-- Integration of Neptune with Kafka is under construction yet
-- Integration of Neptune with Rabbit is under construction yet
 
 [Overview of all packages](https://tinkoffcreditsystems.github.io/neptune/overview-summary.html)
 
