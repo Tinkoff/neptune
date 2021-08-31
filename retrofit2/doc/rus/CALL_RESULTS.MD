@@ -158,7 +158,7 @@ public class MyTest {
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
-[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/retrofit2/criteria/ResponseCriteria.html)
+[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/retrofit2/ru/tinkoff/qa/neptune/retrofit2/criteria/ResponseCriteria.html)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -229,6 +229,8 @@ public class MyTest {
                         .collect(toList()))
                 //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
                 .responseCriteria(statusCode(200))
+                //можно указать критерий тела ожидаемого ответа
+                .callBodyCriteria("Количество элементов десериализованного тела ответа == 2", dtoObjects -> dtoObjects.size() == 2)
                 //можно указать критерий, которому должен соответствовать полученный объект
                 .criteria("Количество элементов == 2", r -> r.size() == 2)
                 //можно указать время на получение ожидаемого результата = 10 секунд
@@ -314,6 +316,8 @@ public class MyTest {
                         .collect(toList()))
                 //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
                 .responseCriteria(statusCode(200))
+                //можно указать критерий тела ожидаемого ответа
+                .callBodyCriteria("Количество элементов десериализованного тела ответа == 2", dtoObjects -> dtoObjects.size() == 2)
                 //можно указать критерий, которому должен соответствовать полученный объект
                 .criteria("Количество элементов == 2", r -> r.size() == 2)
                 //можно указать время на получение ожидаемого результата = 10 секунд
@@ -336,7 +340,7 @@ public class MyTest {
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
-[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/retrofit2/criteria/ResponseCriteria.html)
+[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/retrofit2/ru/tinkoff/qa/neptune/retrofit2/criteria/ResponseCriteria.html)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -412,6 +416,8 @@ public class MyTest {
                         .collect(toList()))
                 //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
                 .responseCriteria(statusCode(200))
+                //можно указать критерий тела ожидаемого ответа
+                .callBodyCriteria("Количество элементов десериализованного тела ответа == 2", dtoObjects -> dtoObjects.size() == 2)
                 //можно указать критерий, которому должен соответствовать каждый элемент результирующей коллекции
                 .criteria("Строковое значение объекта начинается на 'a'",
                         o -> String.valueOf(o).startsWith("a"))
@@ -503,6 +509,8 @@ public class MyTest {
                     .collect(toList()))
             //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
             .responseCriteria(statusCode(200))
+            //можно указать критерий тела ожидаемого ответа
+            .callBodyCriteria("Количество элементов десериализованного тела ответа == 2", dtoObjects -> dtoObjects.size() == 2)
             //можно указать критерий, которому должен соответствовать каждый элемент результирующей коллекции
             .criteria("Строковое значение объекта начинается на 'a'",
                     o -> String.valueOf(o).startsWith("a"))
@@ -525,7 +533,7 @@ public class MyTest {
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
-[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/retrofit2/criteria/ResponseCriteria.html)
+[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/retrofit2/ru/tinkoff/qa/neptune/retrofit2/criteria/ResponseCriteria.html)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -598,6 +606,8 @@ public class MyTest {
                         .toArray())
                 //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
                 .responseCriteria(statusCode(200))
+                //можно указать критерий тела ожидаемого ответа
+                .callBodyCriteria("Количество элементов десериализованного тела ответа == 2", dtoObjects -> dtoObjects.size() == 2)
                 //можно указать критерий, которому должен соответствовать каждый элемент результирующего массива
                 .criteria("Строковое значение объекта начинается на 'a'",
                         o -> String.valueOf(o).startsWith("a"))
@@ -686,6 +696,8 @@ public class MyTest {
                     .toArray())
             //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
             .responseCriteria(statusCode(200))
+            //можно указать критерий тела ожидаемого ответа
+            .callBodyCriteria("Количество элементов десериализованного тела ответа == 2", dtoObjects -> dtoObjects.size() == 2)
             //можно указать критерий, которому должен соответствовать каждый элемент результирующего массива
             .criteria("Строковое значение объекта начинается на 'a'",
                     o -> String.valueOf(o).startsWith("a"))
@@ -708,7 +720,7 @@ public class MyTest {
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
-[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/retrofit2/criteria/ResponseCriteria.html)
+[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/retrofit2/ru/tinkoff/qa/neptune/retrofit2/criteria/ResponseCriteria.html)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -783,6 +795,8 @@ public class MyTest {
                         .collect(toList()))
                 //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
                 .responseCriteria(statusCode(200))
+                //можно указать критерий тела ожидаемого ответа
+                .callBodyCriteria("Количество элементов десериализованного тела ответа == 2", dtoObjects -> dtoObjects.size() == 2)
                 //можно указать критерий, которому должен соответствовать результирующий элемент из коллекции
                 .criteria("Строковое значение объекта начинается на 'a'",
                         o -> String.valueOf(o).startsWith("a"))
@@ -873,6 +887,8 @@ public class MyTest {
                     .collect(toList()))
             //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
             .responseCriteria(statusCode(200))
+            //можно указать критерий тела ожидаемого ответа
+            .callBodyCriteria("Количество элементов десериализованного тела ответа == 2", dtoObjects -> dtoObjects.size() == 2)
             //можно указать критерий, которому должен соответствовать результирующий элемент из коллекции
             .criteria("Строковое значение объекта начинается на 'a'",
                     o -> String.valueOf(o).startsWith("a"))
@@ -896,7 +912,7 @@ public class MyTest {
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
-[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/retrofit2/criteria/ResponseCriteria.html)
+[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/retrofit2/ru/tinkoff/qa/neptune/retrofit2/criteria/ResponseCriteria.html)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -970,6 +986,8 @@ public class MyTest {
                         .toArray())
                 //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
                 .responseCriteria(statusCode(200))
+                //можно указать критерий тела ожидаемого ответа
+                .callBodyCriteria("Количество элементов десериализованного тела ответа == 2", dtoObjects -> dtoObjects.size() == 2)
                 //можно указать критерий, которому должен соответствовать результирующий элемент массива
                 .criteria("Строковое значение объекта начинается на 'a'",
                         o -> String.valueOf(o).startsWith("a"))
@@ -1059,6 +1077,8 @@ public class MyTest {
                     .toArray())
             //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
             .responseCriteria(statusCode(200))
+            //можно указать критерий тела ожидаемого ответа
+            .callBodyCriteria("Количество элементов десериализованного тела ответа == 2", dtoObjects -> dtoObjects.size() == 2)
             //можно указать критерий, которому должен соответствовать результирующий элемент массива
             .criteria("Строковое значение объекта начинается на 'a'",
                     o -> String.valueOf(o).startsWith("a"))
