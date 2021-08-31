@@ -14,6 +14,9 @@
 - [RABBIT_MQ_USERNAME](#RABBIT_MQ_USERNAME)
 - [RABBIT_MQ_DEFAULT_DATA_TRANSFORMER](#RABBIT_MQ_DEFAULT_DATA_TRANSFORMER)
 - [RABBIT_MQ_CLUSTER](#RABBIT_MQ_CLUSTER)
+- [RABBIT_MQ_DEFAULT_EXCHANGE_NAME](#rabbit_mq_default_exchange_name)
+- [RABBIT_MQ_DEFAULT_QUEUE_NAME](#rabbit_mq_default_queue_name)
+- [RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME](#rabbit_mq_default_routing_key_name)
 
 ## RABBIT_AMQP_PROPERTY
 
@@ -39,7 +42,7 @@ RABBIT_AMQP_PROPERTY=org.my.pack.MyAMQPSupplier
 ```java
 import java.net.*;
 
-import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RABBIT_AMQP_PROPERTY;
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqAMQPProperty.RABBIT_AMQP_PROPERTY;
 
 public class SomeClass {
 
@@ -54,7 +57,7 @@ public class SomeClass {
 
 ## RABBIT_MQ_PASSWORD
 
-Настройка, в которой указывается значение пароля для rabbitMq
+Настройка, в которой указывается значение пароля
 
 ```java
 import java.net.*;
@@ -79,7 +82,7 @@ RABBIT_MQ_PASSWORD=guest
 
 ## RABBIT_MQ_USERNAME
 
-Настройка, в которой указывается значение логина для rabbitMq
+Настройка, в которой указывается значение логина
 
 ```java
 import java.net.*;
@@ -179,6 +182,81 @@ public class SomeClass {
 ```properties
 #Значение свойства указывается так
 RABBIT_MQ_CLUSTER_PROPERTY=host:port,host:port
+```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+## RABBIT_MQ_DEFAULT_EXCHANGE_NAME
+
+Настройка, в которой указывается имя часто используемого exchange
+
+```java
+import java.net.*;
+
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_EXCHANGE_NAME;
+
+public class SomeClass {
+
+    public void someVoid() {
+        //пример доступа до значения свойства
+        String exchangeName = DEFAULT_EXCHANGE_NAME.get();
+    }
+}
+```
+
+```properties
+#Значение свойства указывается так
+RABBIT_MQ_DEFAULT_EXCHANGE_NAME=exchange.name
+```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+## RABBIT_MQ_DEFAULT_QUEUE_NAME
+
+Настройка, в которой указывается имя часто используемой очереди
+
+```java
+import java.net.*;
+
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
+
+public class SomeClass {
+
+    public void someVoid() {
+        //пример доступа до значения свойства
+        String queueName = DEFAULT_QUEUE_NAME.get();
+    }
+}
+```
+
+```properties
+#Значение свойства указывается так
+RABBIT_MQ_DEFAULT_QUEUE_NAME=queue_name
+```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+## RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME
+
+Настройка, в которой указывается имя часто используемого ключа маршрутизации
+
+```java
+import java.net.*;
+
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_ROUTING_KEY_NAME;
+
+public class SomeClass {
+
+    public void someVoid() {
+        //пример доступа до значения свойства
+        String routingKey = DEFAULT_ROUTING_KEY_NAME.get();
+    }
+}
+```
+
+```properties
+#Значение свойства указывается так
+RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME=routing_key_name
 ```
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
