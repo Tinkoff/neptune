@@ -1,4 +1,4 @@
-Integration of [Neptune Http](./../http.api/doc/rus/README.MD) with [Swagger 3.x](https://swagger.io/)
+Integration of [Neptune Http](./../http.api/README.md) with [Swagger 3.x](https://swagger.io/)
 
 [Краткая документация на русском](./doc/rus/README.MD)
 
