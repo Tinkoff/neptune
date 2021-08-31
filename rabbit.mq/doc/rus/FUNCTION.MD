@@ -31,35 +31,57 @@
 
 ```java
 import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.binding.ExchangesBindUnbindParameters.*;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        //Выполняем связывание exchange к exchange без дополнительных аргументов
-        //destination - имя exchange, к которому сообщения передаются через привязку
-        //source - имя exchange, из которого сообщения проходят через привязку
-        //routingKey - ключ маршрутизации, используемый для привязки
-        rabbitMq().exchangeBind("destination", "source", "routingKey");
+        rabbitMq().bind(exchanges(
+                "source", //указываются source и destination
+                "destination")
+                .withRoutingKey("routingKey") //можно указать ключ маршрутизации 
+                .argument("key", "value") // можно указать набор дополнительных 
+                .argument("key2", "value2")); //параметров
     }
 }
 ```
 
+Если в качестве ключа маршрутизации должно быть использовано значение свойства / переменной окружения 
+[RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME](./SETTINGS.MD#RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME), то 
+
 ```java
 import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
-import static ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArguments.arguments;
-
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.binding.ExchangesBindUnbindParameters.*;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        //Выполняем связывание exchange к exchange c дополнительными аргументами
-        //destination - имя exchange, к которому сообщения передаются через привязку
-        //source - имя exchange, из которого сообщения проходят через привязку
-        //routingKey - ключ маршрутизации, используемый для привязки
-        //arguments - другие свойства (параметры привязки)
-        rabbitMq().exchangeBind("destination", "source", "routingKey", arguments().setArgument("key", "value"));
+        rabbitMq().bind(exchanges(
+                "source",
+                "destination")
+                //в качестве ключа маршрутизации используется
+                .withDefaultRoutingKey()); //значение RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME
+    }
+}
+```
+
+Можно использовать значение свойства / переменной окружения [RABBIT_MQ_DEFAULT_EXCHANGE_NAME](./SETTINGS.MD#rabbit_mq_default_exchange_name)
+в качестве `source` или `destination`.
+
+```java
+import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.binding.ExchangesBindUnbindParameters.*;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        //в качестве source используется значение RABBIT_MQ_DEFAULT_EXCHANGE_NAME
+        rabbitMq().bind(destinationExchange("destination"))
+                //в качестве destination используется значение RABBIT_MQ_DEFAULT_EXCHANGE_NAME
+                .bind(sourceExchange("source"));
     }
 }
 ```
@@ -67,36 +89,57 @@ public class MyTest {
 ### queue к exchange
 
 ```java
-import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.binding.QueueBindUnbindParameters.*;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        //Выполняем связывание queue к exchange без дополнительных аргументов
-        //queue - имя очереди
-        //exchange - имя exchange
-        //routingKey - ключ маршрутизации, используемый для привязки
-        rabbitMq().queueBind("queue", "exchange", "routingKey");
+        rabbitMq().bind(queueAndExchange(
+                "queue", //очередь
+                "exchange") // exchange
+                .withRoutingKey("routingKey") //можно указать ключ маршрутизации 
+                .argument("testKey", "testValue") // можно указать набор дополнительных 
+                .argument("testKey", "testValue")); //параметров
     }
 }
 ```
 
+Если в качестве ключа маршрутизации должно быть использовано значение свойства / переменной окружения
+[RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME](./SETTINGS.MD#RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME), то
+
 ```java
 import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
-import static ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArguments.arguments;
-
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.binding.QueueBindUnbindParameters.*;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        //Выполняем связывание queue к exchange c дополнительными аргументами
-        //queue - имя очереди
-        //exchange - имя exchange
-        //routingKey - ключ маршрутизации, используемый для привязки
-        //arguments - другие свойства (параметры привязки)
-        rabbitMq().queueBind("queue", "exchange", "routingKey", arguments().setArgument("key", "value"));
+        rabbitMq().bind(queueAndExchange(
+                "queue", 
+                "exchange") 
+                //в качестве ключа маршрутизации используется
+                .withDefaultRoutingKey()); //значение RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME
+    }
+}
+```
+
+Можно использовать значение свойств / переменных окружения [RABBIT_MQ_DEFAULT_EXCHANGE_NAME](./SETTINGS.MD#rabbit_mq_default_exchange_name)
+и [RABBIT_MQ_DEFAULT_QUEUE_NAME](./SETTINGS.MD#RABBIT_MQ_DEFAULT_QUEUE_NAME).
+
+```java
+import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.binding.QueueBindUnbindParameters.*;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        //в качестве exchange используется значение RABBIT_MQ_DEFAULT_EXCHANGE_NAME
+        rabbitMq().bind(queueAndDefaultExchange("queue")
+                //в качестве queue используется значение RABBIT_MQ_DEFAULT_QUEUE_NAME
+                .defaultQueueAndExchange("exchange"));
     }
 }
 ```
@@ -109,75 +152,39 @@ public class MyTest {
 
 ```java
 import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.binding.ExchangesBindUnbindParameters.*;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        //Отвязывание exchange от exchange без дополнительных аргументов
-        //destination - имя exchange, к которому сообщения передаются через привязку
-        //source - имя exchange, из которого сообщения проходят через привязку
-        //routingKey - ключ маршрутизации, используемый для привязки
-        rabbitMq().exchangeUnbind("destination", "source", "routingKey");
+        rabbitMq().unbind(exchanges(/* параметры */)
+                /*дополнительные параметры*/);
     }
 }
 ```
 
-```java
-import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
-import static ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArguments.arguments;
-
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем отвязывание exchange от exchange c  дополнительными аргументами
-        //destination - имя exchange, к которому сообщения передаются через привязку
-        //source - имя exchange, из которого сообщения проходят через привязку
-        //routingKey - ключ маршрутизации, используемый для привязки
-        //arguments - другие свойства (параметры привязки)
-        rabbitMq().exchangeUnbind("destination", "source", "routingKey", arguments().setArgument("key", "value"));
-    }
-}
-```
+Варианты вызова статических методов `ru.tinkoff.qa.neptune.rabbit.mq.function.binding.ExchangesBindUnbindParameters.*` 
+описаны [выше](#exchange-к-exchange) 
 
 ### queue от exchange
 
 ```java
 import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.binding.QueueBindUnbindParameters.*;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        //Выполняем отвязывание queue от exchange без дополнительных аргументов
-        //queue - имя очереди
-        //exchange - имя exchange
-        //routingKey - ключ маршрутизации, используемый для привязки
-        rabbitMq().queueUnbind("queue", "exchange", "routingKey");
+        rabbitMq().unbind(queueAndExchange(/* параметры */)
+                /*дополнительные параметры*/);
     }
 }
 ```
 
-```java
-import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
-import static ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArguments.arguments;
-
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем отвязывание queue от exchange c дополнительными аргументами
-        //queue - имя очереди
-        //exchange - имя exchange
-        //routingKey - ключ маршрутизации, используемый для привязки
-        //arguments - другие свойства (параметры привязки)
-        rabbitMq().queueUnbind("queue", "exchange", "routingKey", arguments().setArgument("key", "value"));
-    }
-}
-```
+Варианты вызова статических методов `ru.tinkoff.qa.neptune.rabbit.mq.function.binding.QueueBindUnbindParameters.`
+описаны [выше](#queue-к-exchange)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
