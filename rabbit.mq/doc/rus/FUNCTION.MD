@@ -125,7 +125,7 @@ public class MyTest {
 }
 ```
 
-Можно использовать значение свойств / переменных окружения [RABBIT_MQ_DEFAULT_EXCHANGE_NAME](./SETTINGS.MD#rabbit_mq_default_exchange_name)
+Можно использовать значения свойств / переменных окружения [RABBIT_MQ_DEFAULT_EXCHANGE_NAME](./SETTINGS.MD#rabbit_mq_default_exchange_name)
 и [RABBIT_MQ_DEFAULT_QUEUE_NAME](./SETTINGS.MD#RABBIT_MQ_DEFAULT_QUEUE_NAME).
 
 ```java
@@ -194,126 +194,118 @@ public class MyTest {
 
 ```java
 import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
-import static ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArguments.arguments;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.declare.DeclareExchangeParameters.*;
 
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        //Выполняем пассивное объявление exchange
-        //exchange - имя exchange
-        rabbitMq().exchangeDeclare("exchange");
+        rabbitMq().declare(newExchange("exchange") //название 
+                .type("type") //тип можно указать
+                .durable() //можно указать
+                .autoDelete() //можно указать
+                .internal() //можно указать
+                .argument("key", "value") // можно указать набор дополнительных 
+                .argument("key2", "value2")); //параметров
     }
 }
 ```
+
+Можно использовать значение свойства / переменной окружения [RABBIT_MQ_DEFAULT_EXCHANGE_NAME](./SETTINGS.MD#rabbit_mq_default_exchange_name)
 
 ```java
 import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
-import static ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArguments.arguments;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.declare.DeclareExchangeParameters.*;
 
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        //Выполняем объявление exchange
-        //exchange - имя exchange
-        //type - тип обмена
-        rabbitMq().exchangeDeclare("exchange", "type");
+        //в качестве имени нового exchange используется 
+        // значение RABBIT_MQ_DEFAULT_EXCHANGE_NAME
+        rabbitMq().declare(newExchange()); 
     }
 }
 ```
+
+Пассивное объявление exchange
 
 ```java
 import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
-import static ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArguments.arguments;
-import static ru.tinkoff.qa.neptune.rabbit.mq.function.declare.exchange.ParametersForDeclareExchange.exchangeParams;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.declare.DeclareExchangeParameters.*;
+
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        //Выполняем объявление exchange
-        //exchange - имя exchange
-        //type - тип обмена
-        //exchangeParams - дополнительные параметры при объявлении
-        //          durable - true, если мы объявляем долговременный exchange 
-        //                      (exchange выдержит перезапуск сервера)
-        //          autoDelete - true, если сервер должен удалить exchange, 
-        //                      когда он больше не используется
-        //          internal - true, если exchange является внутренним, 
-        //                      т.е. не может быть напрямую опубликован клиентом.
-        //          arguments - другие свойства (аргументы конструкции) для exchange
-        rabbitMq().exchangeDeclare(
-                "exchange",
-                "type",
-                exchangeParams()
-                        .autoDelete()
-                        .durable()
-                        .internal()
-                        .argument("name", "value"));
+        rabbitMq().declare(newExchange("exchange")
+                .passive() 
+                /*.type("type") //игнорируется
+                .durable() //игнорируется
+                .autoDelete() //игнорируется
+                .internal() //игнорируется
+                .argument("key", "value") //игнорируется
+                .argument("key2", "value2")*/); //игнорируется
     }
 }
 ```
+
 
 ### Объявление queue
 
 ```java
 
 import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.declare.DeclareQueueParameters.*;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        //Выполняем объявление queue, которая будет названа сервером, exclusive, autodelete, non-durable;
-        rabbitMq().queueDeclare();
+        rabbitMq().declare(newQueue("queue") //название 
+                .exclusive() //можно указать
+                .autoDelete() //можно указать
+                .durable() //можно указать
+                .argument("name", "value")// можно указать набор дополнительных 
+                .argument("name2", "value2")); //параметров
     }
 }
 ```
 
+Можно использовать значение свойства / переменной окружения [RABBIT_MQ_DEFAULT_QUEUE_NAME](./SETTINGS.MD#RABBIT_MQ_DEFAULT_QUEUE_NAME).
+
 ```java
 
 import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.declare.DeclareQueueParameters.*;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        //Выполняем пассивное обьявление очереди
-        rabbitMq().queueDeclare("queue");
+        //в качестве имени новой очереди используется 
+        // значение RABBIT_MQ_DEFAULT_QUEUE_NAME
+        rabbitMq().declare(newQueue());
     }
 }
 ```
 
+Создание новой очереди самим сервером без передачи параметров
+
 ```java
 
 import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
-import static ru.tinkoff.qa.neptune.rabbit.mq.function.declare.queue.ParametersForDeclareQueue.queueParams;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.declare.ServerNamedQueueSequentialGetSupplier.*;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        //Выполняем обьявление очереди
-        //      queue - имя очереди   
-        //      queueParams - дополнительные аргументы при объявлении   
-        //              durable -  true, если мы объявляем долговременную 
-        //                          очередь (очередь выдержит перезапуск сервера)
-        //              exclusive - true, если мы объявляем эксклюзивную 
-        //                          очередь (ограниченную этим соединением)  
-        //              autoDelete - true, если мы объявляем очередь автоудаления 
-        //                          (сервер удалит ее, когда она больше не используется)  
-        //              arguments - другие свойства (аргументы конструкции) для очереди  
-        rabbitMq().queueDeclare(
-                "queue",
-                queueParams()
-                        .durable()
-                        .exclusive()
-                        .autoDelete()
-                        .argument("name1", new Object())
-                        .argument("name2", new Object()));
+      //возвращается имя новой очереди  
+      String queue = rabbitMq().declare(newQueueServerNamed());
     }
 }
 ```
