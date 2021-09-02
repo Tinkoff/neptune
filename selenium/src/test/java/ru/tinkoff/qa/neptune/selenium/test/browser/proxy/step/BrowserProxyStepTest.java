@@ -7,6 +7,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.selenium.SeleniumParameterProvider;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.RequestHasUrl;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeSettingsSupplierForProxy;
 
@@ -19,10 +20,10 @@ import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsEachItemMatcher.eachOfIterable;
 import static ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyGetStepSupplier.proxiedRequests;
 import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.RequestHasMethod.requestHasMethod;
-import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.RequestHasUrl.requestHasUrl;
 import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.ResponseHasStatusCode.responseHasStatusCode;
 import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CHROME;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.USE_BROWSER_PROXY;
@@ -46,7 +47,7 @@ public class BrowserProxyStepTest {
         PROPERTIES_TO_SET_BEFORE.forEach(System::setProperty);
 
         seleniumSteps = new SeleniumStepContext((SupportedWebDrivers)
-                new SeleniumParameterProvider().provide().getParameterValues()[0]);
+                new SeleniumParameterProvider().provide()[0]);
     }
 
     @Test
@@ -72,11 +73,10 @@ public class BrowserProxyStepTest {
 
         assertThat("Proxy with filter captured only one request", requests, hasSize(greaterThanOrEqualTo(1)));
         assertThat("Captured entries have GET HTTP, status code 200 and same url", requests,
-                allOf(
-                        everyItem(requestHasMethod(GET)),
-                        everyItem(responseHasStatusCode(200)),
-                        everyItem(requestHasUrl(containsString("https://www.google.com")))
-                ));
+                eachOfIterable(requestHasMethod(GET),
+                        responseHasStatusCode(200),
+                        RequestHasUrl.requestHasStringUrl(containsString("https://www.google.com")))
+        );
     }
 
     @AfterMethod(alwaysRun = true)

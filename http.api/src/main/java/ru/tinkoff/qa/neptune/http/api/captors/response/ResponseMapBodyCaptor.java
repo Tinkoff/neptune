@@ -1,18 +1,23 @@
 package ru.tinkoff.qa.neptune.http.api.captors.response;
 
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.UseInjectors;
+import ru.tinkoff.qa.neptune.core.api.event.firing.captors.CapturedStringInjector;
 import ru.tinkoff.qa.neptune.core.api.event.firing.collections.MapCaptor;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import java.util.Map;
 
+@UseInjectors(CapturedStringInjector.class)
 @SuppressWarnings("rawtypes")
-public final class ResponseMapBodyCaptor extends MapCaptor implements BaseResponseObjectBodyCaptor<Map> {
+@Description("Response Body. Map")
+public final class ResponseMapBodyCaptor extends AbstractResponseBodyObjectCaptor<Map, StringBuilder> {
 
     public ResponseMapBodyCaptor() {
-        super("Response Body. Map");
+        super(Map.class);
     }
 
     @Override
-    public Map<?, ?> getCaptured(Object toBeCaptured) {
-        return (Map<?, ?>) getCaptured(toBeCaptured, Map.class);
+    public StringBuilder getData(Map caught) {
+        return new MapCaptor().getData(caught);
     }
 }

@@ -1,15 +1,17 @@
 package ru.tinkoff.qa.neptune.http.api.captors.request;
 
-import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.http.api.request.body.MultiPartBody;
+import ru.tinkoff.qa.neptune.http.api.request.body.RequestBody;
 import ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart;
 
 import static java.util.List.of;
 
-public class MultiPartRequestBodyCaptor extends Captor<MultiPartBody, BodyPart[]> implements BaseRequestBodyCaptor {
+@Description("Multipart request body. Part:")
+public class MultiPartRequestBodyCaptor extends AbstractRequestBodyCaptor<MultiPartBody, BodyPart[]> {
 
     public MultiPartRequestBodyCaptor() {
-        super("Multipart request body. Part: ", of(new BodyPartCapturedDataInjector()));
+        super(of(new BodyPartCapturedDataInjector()), of(MultiPartBody.class));
     }
 
     @Override
@@ -18,7 +20,7 @@ public class MultiPartRequestBodyCaptor extends Captor<MultiPartBody, BodyPart[]
     }
 
     @Override
-    public MultiPartBody getCaptured(Object toBeCaptured) {
-        return (MultiPartBody) getCaptured(toBeCaptured, of(MultiPartBody.class));
+    MultiPartBody convertTo(RequestBody<?> requestBody) {
+        return (MultiPartBody) requestBody;
     }
 }

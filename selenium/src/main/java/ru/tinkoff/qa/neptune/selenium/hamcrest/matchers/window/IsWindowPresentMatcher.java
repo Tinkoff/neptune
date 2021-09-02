@@ -1,13 +1,15 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.window;
 
+import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
-import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
-import org.hamcrest.Description;
+import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.WindowIsNotPresentMismatch;
 
-public final class IsWindowPresentMatcher extends TypeSafeDiagnosingMatcher<Window> {
+@Description("is currently present")
+public final class IsWindowPresentMatcher extends NeptuneFeatureMatcher<Window> {
 
     private IsWindowPresentMatcher() {
-        super();
+        super(true);
     }
 
     /**
@@ -20,15 +22,11 @@ public final class IsWindowPresentMatcher extends TypeSafeDiagnosingMatcher<Wind
     }
 
     @Override
-    protected boolean matchesSafely(Window item, Description mismatchDescription) {
-        boolean result = item.isPresent();
+    protected boolean featureMatches(Window toMatch) {
+        var result = toMatch.isPresent();
         if (!result) {
-            mismatchDescription.appendText("window/tab is not present currently");
+            appendMismatchDescription(new WindowIsNotPresentMismatch());
         }
         return result;
-    }
-
-    public String toString() {
-        return "window/tab is currently present";
     }
 }

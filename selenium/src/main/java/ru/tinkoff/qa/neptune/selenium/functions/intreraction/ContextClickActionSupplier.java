@@ -1,19 +1,23 @@
 package ru.tinkoff.qa.neptune.selenium.functions.intreraction;
 
 import org.openqa.selenium.interactions.Actions;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Builds an action that performs the context clicking.
  */
+@Description("Context click")
 abstract class ContextClickActionSupplier extends InteractiveAction {
 
     ContextClickActionSupplier() {
-        super("Context click");
+        super();
     }
 
+    @MaxDepthOfReporting(0)
     static final class ContextClickSimpleActionSupplier extends ContextClickActionSupplier {
         @Override
         void addAction(Actions value) {
@@ -21,9 +25,11 @@ abstract class ContextClickActionSupplier extends InteractiveAction {
         }
     }
 
+    @Description("Context click on {target}")
+    @MaxDepthOfReporting(0)
     static final class ContextClickOnElementActionSupplier extends ContextClickActionSupplier {
 
-        @StepParameter("Element to perform the context clicking on")
+        @DescriptionFragment("target")
         private final Object e;
 
         ContextClickOnElementActionSupplier(Object e) {

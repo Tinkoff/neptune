@@ -2,16 +2,40 @@
 
 [Подробнее о механизме настроек](./../../../core.api/doc/rus/SETTINGS.MD).
 
-Описанный ниже набор настроек/свойств дополняет [базовый набор настроек/свойств](./../../../core.api/doc/rus/SETTINGS.MD#Основной-набор-настроек/свойств), 
+Описанный ниже набор настроек/свойств дополняет [базовый набор настроек/свойств](./../../../core.api/doc/rus/SETTINGS.MD#Основной-набор-настроексвойств), 
 которые могут быть включены в `neptune.global.properties` или в `neptune.properties`, или использованы в качестве 
 свойств/переменных окружения в той среде, в которой запускаются тесты:
+
+## Оглавление
+- [Запуск WebDriver'а](#Запуск-WebDriverа)
+  - [WEB_DRIVER_TO_LAUNCH](#web_driver_to_launch)
+  - [Настройки Capabilities](#Настройки-capabilities)
+    - [WEB_DRIVER_CAPABILITY_BROWSER_NAME](#web_driver_capability_browser_name)
+    - [WEB_DRIVER_CAPABILITY_PLATFORM_NAME](#web_driver_capability_platform_name)
+    - [WEB_DRIVER_CAPABILITY_SUPPORTS_JAVASCRIPT](#web_driver_capability_supports_javascript)
+    - [WEB_DRIVER_CAPABILITY_BROWSER_VERSION](#web_driver_capability_browser_version)
+- [Параметры сессии](#Параметры-сессии)
+  - [FIND_ONLY_VISIBLE_ELEMENTS](#find_only_visible_elements)
+  - [Проксирование трафика браузера](#Проксирование-трафика-браузера)
+    - [USE_BROWSER_PROXY](#use_browser_proxy)
+    - [PROXY_URL_PROPERTY](#proxy_url_property)    
+  - [KEEP_WEB_DRIVER_SESSION_OPENED](#keep_web_driver_session_opened)
+  - [FORCE_WINDOW_MAXIMIZING_ON_START](#force_window_maximizing_on_start)
+- [BASE_WEB_DRIVER_URL](#base_web_driver_url)
+- [REMOTE_WEB_DRIVER_URL](#remote_web_driver_url)
+- [Время ожидания по умолчанию](#Время-ожидания-по-умолчанию)
+  - [Ожидание элемента(ов)](#Ожидание-элементаов)
+  - [Ожидание фрейма](#Ожидание-фрейма)
+  - [Ожидание окна](#Ожидание-окна)
+  - [Ожидание алерта](#Ожидание-алерта)
+  - [Ожидание загрузки страницы](#Ожидание-загрузки-страницы)
+- [WEB_DRIVER_CREDENTIALS](#web_driver_credentials)
+- [WEB_DRIVER_DEFAULT_AUTO_SCROLLER](#web_driver_default_auto_scroller)
+- [PROXIED_TRAFFIC_BODY_TRANSFORMER](#PROXIED_TRAFFIC_BODY_TRANSFORMER)
 
 ## Запуск WebDriver'а
 
 ### WEB_DRIVER_TO_LAUNCH
-
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
 
 Настройка указывает класс того WebDriver'а, который должен быть использован в тестах.
 Доступные значения (объекты перечисления `ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers`):
@@ -50,12 +74,13 @@ public class SomeClass {
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-объектов-перечислений)
 
-</details>
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ### Настройки Capabilities
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 [Важная информация](#web_driver_to_launch)
 
@@ -160,9 +185,15 @@ public class SomeClass {
 не противоречили друг другу.
 
 Так же можно указать некоторые параметры `Capabilities`, не прибегая к описанному выше механизму. Данные параметры могут 
-быть использованы независимо от используемого типа WebDriver'а. Список настроек ниже:
+быть использованы независимо от используемого типа WebDriver'а.
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 #### WEB_DRIVER_CAPABILITY_BROWSER_NAME
+
+
+  
 
 Указывает значение `browserName` для тех случаев, когда `WEB_DRIVER_TO_LAUNCH=REMOTE_DRIVER`. Во всех остальных случаях
 настройка/свойство игнорируется.
@@ -185,8 +216,13 @@ public class SomeClass {
     }
 }
 ```
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 #### WEB_DRIVER_CAPABILITY_PLATFORM_NAME
+
+
+  
 
 Указывает значение `platformName`. Значение должно соответствовать одному из элементов перечисления `org.openqa.selenium.Platform`, 
 либо строковому представлению одного из элементов перечисления `org.openqa.selenium.Platform`.
@@ -213,8 +249,13 @@ public class SomeClass {
     }
 }
 ```
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 #### WEB_DRIVER_CAPABILITY_SUPPORTS_JAVASCRIPT
+
+
+  
 
 Указывает значение `javascriptEnabled`. Доступные значения - `true` или `false`.
 
@@ -238,6 +279,9 @@ public class SomeClass {
 
 Значение по умолчанию - `true`
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+
 #### WEB_DRIVER_CAPABILITY_BROWSER_VERSION
 
 Указывает значение `browserVersion`.
@@ -259,15 +303,11 @@ public class SomeClass {
     }
 }
 ```
-
-</details>
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## Параметры сессии
 
 ### FIND_ONLY_VISIBLE_ELEMENTS
-
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
 
 Настройка указывает на необходимость работать только с видимыми элементами страницы. Доступные значения - `true` (рекомендуемое 
 для большинства случаев) или `false`. Если значение `true`, то работа будет выполняться только с видимыми на странице элементами,
@@ -299,14 +339,16 @@ public class SomeClass {
 
 [О поиске элементов страницы](./ELEMENTS_SEARCHING.MD)
 
-</details>
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+
 
 ### Проксирование трафика браузера
 
 #### USE_BROWSER_PROXY
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Настройка указывает на необходимость использовать локальный автоматически запущенный прокси-сервер для отслеживания 
 трафика браузера. Доступные значения - `true` или `false`. Если значение `true`, то будет происходить запись трафика, 
@@ -337,12 +379,13 @@ public class SomeClass {
 
 [О работе с записанным трафиком](./BROWSER_PROXY.MD)
 
-</details>
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 #### PROXY_URL_PROPERTY
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Http-адрес удаленного прокси-сервера, через который должен идти трафик браузера. Данная настройка опциональна и имеет смысл, 
 если [USE_BROWSER_PROXY](#use_browser_proxy)=`true` и через [настройки Capabilities](#Настройки-Capabilities) не передается
@@ -372,12 +415,9 @@ public class SomeClass {
 
 [О работе с записанным трафиком](./BROWSER_PROXY.MD)
 
-</details>
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ### KEEP_WEB_DRIVER_SESSION_OPENED
-
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
 
 Настройка указывает на необходимость сохранять открытой сессию WebDriver'а настолько долго, насколько это возможно. Доступные 
 значения - `true` или `false`. Если значение `true`, то ранее созданная сессия WebDriver'а будет держаться открытой и 
@@ -387,7 +427,7 @@ public class SomeClass {
   
   Подробная статья описывающая [остановку/завершение контекста](./../../../core.api/doc/rus/REFRESHING_STOPPING.MD#Сброс/Остановка).
   
-  Статья [про контексты](./../../../core.api/doc/rus/IDEA.MD#Контекст)
+  Статья [про контексты](./../../../core.api/doc/rus/STEPS.MD#Контекст)
 - по причинам, не зависящим от Neptune. Например, завершение/обрыв сессии на стороне Selenium Grid или Selenoid
 
 Если значение `false`, то созданная сессия WebDriver'а будет завершаться каждый раз в момент [обновления контекста](./../../../core.api/doc/rus/REFRESHING_STOPPING.MD#Обновление).
@@ -417,12 +457,13 @@ public class SomeClass {
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-Boolean)
 
-</details>
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ### FORCE_WINDOW_MAXIMIZING_ON_START
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Настройка указывает на необходимость развората окна браузера на весь монитор при старте новой сессии WebDriver'а. Доступные 
 значения - `true` или `false`. Если значение `true`, то при старте новой сессии WebDriver'а окно браузера будет развернуто 
@@ -450,12 +491,10 @@ public class SomeClass {
 Если свойство не заполнено, то значение по умолчанию `false`.
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-Boolean)
-</details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## BASE_WEB_DRIVER_URL
-
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
 
 Настройка указывает URL стартовой страницы приложения/корневой URL, по которому приложение доступно для открытия в браузере, 
 обычно в формате `схема или протокол`://`хост:порт если есть/фрагмент/пути/если/надо`.
@@ -486,12 +525,14 @@ public class SomeClass {
 [О навигации](./NAVIGATION.MD)
 
 [Об управлении контентом](./CONTENT_MANAGEMENT.MD)
-</details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ## REMOTE_WEB_DRIVER_URL
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 [Важная информация](#web_driver_to_launch)
 
@@ -527,14 +568,16 @@ public class SomeClass {
 [Selenium Grid](https://www.selenium.dev/documentation/en/grid/)
 
 [Selenoid](https://aerokube.com/selenoid/)
-</details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ## Время ожидания по умолчанию
 
 ### Ожидание элемента(ов)
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Свойства `WAITING_FOR_ELEMENTS_TIME_UNIT` и `WAITING_FOR_ELEMENTS_TIME` определяют время ожидания появления элементов страницы 
 по умолчанию. Для свойства `WAITING_FOR_ELEMENTS_TIME_UNIT` следует указать значение, соответствующее одному из элементов 
@@ -567,12 +610,14 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-величины-продолжительности)
 
 [Поиск элементов страницы](./ELEMENTS_SEARCHING.MD)
-</details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ### Ожидание фрейма
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Свойства `WAITING_FOR_FRAME_SWITCHING_TIME_UNIT` и `WAITING_FOR_FRAME_SWITCHING_TIME` определяют время ожидания появления 
 фрейма/возможности переключиться во фрейм. Для свойства `WAITING_FOR_FRAME_SWITCHING_TIME_UNIT` следует указать значение, 
@@ -608,12 +653,14 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-величины-продолжительности)
 
 [Фреймы](./FRAMES.MD)
-</details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ### Ожидание окна
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Свойства `WAITING_FOR_WINDOWS_TIME_UNIT` и `WAITING_FOR_WINDOWS_TIME` определяют время ожидания появления окна/вкладки браузера. 
 Для свойства `WAITING_FOR_WINDOWS_TIME_UNIT` следует указать значение, соответствующее одному из элементов перечисления 
@@ -648,12 +695,14 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-величины-продолжительности)
 
 [Окна/Вкладки](./WINDOWS.MD)
-</details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ### Ожидание алерта
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Свойства `WAITING_FOR_ALERTS_TIME_UNIT` и `WAITING_FOR_ALERTS_TIME` определяют время ожидания появления алерта.
 Для свойства `WAITING_FOR_ALERTS_TIME_UNIT` следует указать значение, соответствующее одному из элементов перечисления
@@ -687,12 +736,14 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-величины-продолжительности)
 
 [Алерты](./ALERTS.MD)
-</details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ### Ожидание загрузки страницы
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Свойства `WAITING_FOR_PAGE_LOADED_TIME_UNIT` и `WAITING_FOR_PAGE_LOADED_TIME` определяют время ожидания полной загрузки 
 страницы. Для свойства `WAITING_FOR_PAGE_LOADED_TIME_UNIT` следует указать значение, соответствующее одному из элементов 
@@ -724,12 +775,11 @@ public class SomeClass {
 Время ожидания полной загрузки страницы по умолчанию = 1 минуте.
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-величины-продолжительности)
-</details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## WEB_DRIVER_CREDENTIALS
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
 
 Настройка предоставляет объект `ru.tinkoff.qa.neptune.selenium.authentication.BrowserCredentials`, который выполняет логин/аутентификацию 
 в приложении через браузер.
@@ -780,12 +830,11 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
 
 [Про логин/аутентификацию в браузере](./LOGIN_IN_BROWSER.MD)
-</details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ## WEB_DRIVER_DEFAULT_AUTO_SCROLLER
-
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
 
 Настройка предоставляет объект `ru.tinkoff.qa.neptune.selenium.auto.scrolling.AutoScroller`, который выполняет автоскроллирование/
 автоматический фокус на нужном элементе.
@@ -836,4 +885,58 @@ public class SomeClass {
 
 [Про авто-скроллирование](./AUTO_SCROLLING.MD)
 
-</details>
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+## PROXIED_TRAFFIC_BODY_TRANSFORMER
+
+Основная статья: [Сериализация и десериализация](./../../../core.api/doc/rus/SERIALIZATION_DESERIALIZATION.MD)
+Используется: [Mатчеры. Тело запроса и ответа](HAMCREST.MD#Тело-запроса-и-ответа)
+
+```java
+import org.my.pack;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
+
+//Описываем сериализацию и десериализацию для текущего проекта
+public class MyDataTransformer implements DataTransformer {
+
+
+    @Override
+    public <T> T deserialize(String message, Class<T> cls) {
+        //тут описываем механизм десериализации
+    }
+
+    @Override
+    public <T> T deserialize(String string, TypeReference<T> type) {
+        //тут описываем механизм десериализации
+    }
+
+    @Override
+    public String serialize(Object obj) {
+        //тут описываем механизм сериализации
+    }
+}
+```
+
+```properties
+#Значение свойства указывается так
+PROXIED_TRAFFIC_BODY_TRANSFORMER=org.my.pack.MyDataTransformer
+```
+
+```java
+import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
+
+import static ru.tinkoff.qa.neptune.selenium.properties.
+        ProxiedTrafficBodyTransformer.PROXIED_TRAFFIC_BODY_TRANSFORMER;
+
+public class SomeClass {
+
+    public void someVoid() {
+        //пример доступа до значения свойства
+        DataTransformer transformer = PROXIED_TRAFFIC_BODY_TRANSFORMER.get();
+    }
+}
+```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)

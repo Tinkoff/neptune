@@ -1,5 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.steps.conditions;
 
+import ru.tinkoff.qa.neptune.core.api.steps.ExceptionSupplier;
+
 import javax.annotation.Nullable;
 import java.time.Duration;
 import java.util.Collection;
@@ -69,13 +71,6 @@ final class ToGetConditionalHelper {
 
     private static boolean toBeIgnored(Throwable throwable, Collection<Class<? extends Throwable>> toIgnore) {
         var cls = throwable.getClass();
-        if (RuntimeException.class.equals(cls)) {
-            var cause = throwable.getCause();
-            return ofNullable(cause)
-                    .map(throwable1 -> toBeIgnored(throwable1, toIgnore))
-                    .orElse(false);
-        }
-
         return toIgnore
                 .stream()
                 .anyMatch(aClass -> aClass.isAssignableFrom(cls));
@@ -88,19 +83,23 @@ final class ToGetConditionalHelper {
                                                     @Nullable Supplier<? extends RuntimeException> exceptionOnTimeOut,
                                                     Collection<Class<? extends Throwable>> toIgnore) {
         var timeOut = ofNullable(waitingTime).orElseGet(() -> ofMillis(0));
-        var sleeping = ofNullable(sleepingTime).orElseGet(() -> ofMillis(50));
+        var sleeping = ofNullable(sleepingTime).orElseGet(() -> ofMillis(10));
 
         return t -> {
+            Throwable lastCaught = null;
             var currentMillis = currentTimeMillis();
-            var endMillis = currentMillis + timeOut.toMillis() + 100;
+            var endMillis = currentMillis + timeOut.toMillis();
             F f = null;
             var suitable = false;
-            while (currentTimeMillis() < endMillis && !(suitable)) {
+            while (currentMillis <= endMillis && !(suitable)) {
+                lastCaught = null;
                 try {
                     f = originalFunction.apply(t);
                 } catch (Throwable throwable) {
                     if (toBeIgnored(throwable, toIgnore)) {
                         f = null;
+                        lastCaught = throwable;
+                        throwable.printStackTrace();
                     } else {
                         throw throwable;
                     }
@@ -113,15 +112,21 @@ final class ToGetConditionalHelper {
                     currentThread().interrupt();
                     throw new RuntimeException(e);
                 }
+                currentMillis = currentTimeMillis();
             }
 
             if (suitable) {
                 return f;
             }
 
-            return (F) ofNullable(exceptionOnTimeOut).map(exceptionSupplier1 -> {
-                throw exceptionSupplier1.get();
-            }).orElse(f);
+            if (exceptionOnTimeOut != null) {
+                if (exceptionOnTimeOut instanceof ExceptionSupplier) {
+                    ((ExceptionSupplier) exceptionOnTimeOut).setCause(lastCaught);
+                }
+                throw exceptionOnTimeOut.get();
+            } else {
+                return f;
+            }
         };
     }
 }

@@ -1,19 +1,28 @@
 package ru.tinkoff.qa.neptune.core.api.event.firing.captors;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
-import ru.tinkoff.qa.neptune.core.api.utils.SPIUtil;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.UseInjectors;
 
 import java.io.File;
 import java.util.List;
 
+@UseInjectors(CapturedFileInjector.class)
 public abstract class FileCaptor<T> extends Captor<T, File> {
 
-    public FileCaptor(String message, List<CapturedFileInjector> injectors) {
+    protected FileCaptor(String message, List<CapturedFileInjector> injectors) {
         super(message, injectors);
     }
 
-    public FileCaptor(String message) {
-        this(message, SPIUtil.loadSPI(CapturedFileInjector.class));
+    protected FileCaptor(String message) {
+        super(message);
+    }
+
+    public FileCaptor(List<CapturedFileInjector> injectors) {
+        super(injectors);
+    }
+
+    public FileCaptor() {
+        super();
     }
 
     @Override

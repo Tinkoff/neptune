@@ -1,34 +1,39 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.active.element;
 
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
+import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
-@MakeImageCapturesOnFinishing
-@MakeFileCapturesOnFinishing
+@CaptureOnFailure(by = WebDriverImageCaptor.class)
+@CaptureOnSuccess(by = WebElementImageCaptor.class)
+@Description("Active/Focused web element")
+@MaxDepthOfReporting(1)
+@ThrowWhenNoData(toThrow = NoSuchElementException.class)
 public final class GetActiveElementSupplier extends SequentialGetStepSupplier
-        .GetObjectChainedStepSupplier<SeleniumStepContext, WebElement, WebDriver, GetActiveElementSupplier>
+        .GetSimpleStepSupplier<SeleniumStepContext, WebElement, GetActiveElementSupplier>
         implements TargetLocatorSupplier<WebElement> {
 
     private GetActiveElementSupplier() {
-        super("Active element", webDriver -> {
+        super(currentContent().andThen(webDriver -> {
             try {
                 return webDriver.switchTo().activeElement();
-            }
-            catch (WebDriverException e) {
+            } catch (WebDriverException e) {
                 return null;
             }
-        });
-        throwOnEmptyResult(() ->
-                new NoSuchElementException("It was impossible to detect the active element for some reason"));
+        }));
+        throwOnNoResult();
     }
 
 
@@ -48,6 +53,6 @@ public final class GetActiveElementSupplier extends SequentialGetStepSupplier
      * performs the switching to the active element and returns it.
      */
     public static GetActiveElementSupplier activeElement() {
-        return new GetActiveElementSupplier().from(currentContent());
+        return new GetActiveElementSupplier();
     }
 }

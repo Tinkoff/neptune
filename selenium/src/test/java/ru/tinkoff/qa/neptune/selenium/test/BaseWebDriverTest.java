@@ -11,7 +11,6 @@ import ru.tinkoff.qa.neptune.selenium.WrappedWebDriver;
 
 import java.time.Duration;
 
-import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -21,7 +20,6 @@ public abstract class BaseWebDriverTest {
 
     protected static final Duration FIVE_SECONDS = ofSeconds(5);
     protected static final Duration ONE_SECOND = ofSeconds(1);
-    protected static final Duration HALF_SECOND = ofMillis(500);
 
     @Mock
     protected WrappedWebDriver wrappedWebDriver;

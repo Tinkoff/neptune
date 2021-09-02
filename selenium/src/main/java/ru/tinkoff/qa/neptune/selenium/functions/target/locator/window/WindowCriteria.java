@@ -1,6 +1,8 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.window;
 
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import java.net.URL;
 import java.util.Objects;
@@ -10,8 +12,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
-import static java.util.regex.Pattern.compile;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.checkByStringContainingOrRegExp;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 
 public final class WindowCriteria {
@@ -26,9 +28,10 @@ public final class WindowCriteria {
      * @param title expected title of a window.
      * @return criteria.
      */
-    public static Criteria<Window> title(String title) {
+    @Description("title '{title}'")
+    public static Criteria<Window> title(@DescriptionFragment("title") String title) {
         checkArgument(isNotBlank(title), "Title should be defined");
-        return condition(format("title '%s'", title), window -> Objects.equals(title, window.getTitle()));
+        return condition(window -> Objects.equals(title, window.getTitle()));
     }
 
     /**
@@ -38,26 +41,10 @@ public final class WindowCriteria {
      *                   It is possible to pass reg exp pattern that title of a window should fit.
      * @return criteria.
      */
-    public static Criteria<Window> titleMatches(String expression) {
+    @Description("title contains '{expression}' or meets regExp pattern '{expression}'")
+    public static Criteria<Window> titleMatches(@DescriptionFragment("expression") String expression) {
         checkArgument(isNotBlank(expression), "Title expression should be defined");
-
-        return condition(format("title contains '%s' or meets regExp pattern '%s'", expression, expression),
-                window -> {
-                    var title = valueOf(window.getTitle());
-
-                    if (title.contains(expression)) {
-                        return true;
-                    }
-
-                    try {
-                        var pattern = compile(expression);
-                        var m = pattern.matcher(title);
-                        return m.matches() || m.find();
-                    } catch (Throwable t) {
-                        t.printStackTrace();
-                        return false;
-                    }
-                });
+        return condition(window -> checkByStringContainingOrRegExp(expression).test(window.getTitle()));
     }
 
     /**
@@ -66,9 +53,10 @@ public final class WindowCriteria {
      * @param url expected url of the page loaded in a window.
      * @return criteria.
      */
-    public static Criteria<Window> pageAt(String url) {
+    @Description("url '{url}'")
+    public static Criteria<Window> pageAt(@DescriptionFragment("url") String url) {
         checkArgument(isNotBlank(url), "Expected url should be defined");
-        return condition(format("url '%s'", url), window -> url.equals(window.getCurrentUrl()));
+        return condition(window -> url.equals(window.getCurrentUrl()));
     }
 
     /**
@@ -89,29 +77,18 @@ public final class WindowCriteria {
      *                   It is possible to pass reg exp pattern that url should fit.
      * @return criteria.
      */
-    public static Criteria<Window> urlMatches(String expression) {
+    @Description("url contains '{expression}' or meets regExp pattern '{expression}'")
+    public static Criteria<Window> urlMatches(@DescriptionFragment("expression") String expression) {
         checkArgument(isNotBlank(expression), "URL expression should be defined");
-
-        return condition(format("url contains '%s' or meets regExp pattern '%s'", expression, expression), window -> {
-            var url = valueOf(window.getCurrentUrl());
-            if (url.contains(expression)) {
-                return true;
-            }
-
-            try {
-                var pattern = compile(expression);
-                var m = pattern.matcher(url);
-                return m.matches() || m.find();
-            } catch (Throwable t) {
-                t.printStackTrace();
-                return false;
-            }
-        });
+        return condition(window -> checkByStringContainingOrRegExp(expression).test(window.getCurrentUrl()));
     }
 
-    private static Criteria<Window> urlPartStringCriteria(String description, String expected, Function<URL, String> getPart) {
+    @Description("url {description} is '{expected}'")
+    private static Criteria<Window> urlPartStringCriteria(@DescriptionFragment("description") String description,
+                                                          @DescriptionFragment("expected") String expected,
+                                                          Function<URL, String> getPart) {
         checkArgument(isNotBlank(expected), format("Expected url %s should not be defined as a blank/null string", description));
-        return condition(format("url %s is '%s'", description, expected), window -> {
+        return condition(window -> {
             try {
                 return Objects.equals(getPart.apply(new URL(valueOf(window.getCurrentUrl()))), expected);
             } catch (Throwable t) {
@@ -120,28 +97,12 @@ public final class WindowCriteria {
         });
     }
 
-    private static Criteria<Window> urlPartRegExpCriteria(String description, String expression, Function<URL, String> getPart) {
+    @Description("url {description} contains '{expression}' or meets regExp pattern '{expression}'")
+    private static Criteria<Window> urlPartRegExpCriteria(@DescriptionFragment("description") String description,
+                                                          @DescriptionFragment("expression") String expression,
+                                                          Function<URL, String> getPart) {
         checkArgument(isNotBlank(expression), format("expression of url %s should not be defined as a blank/null string", description));
-        return condition(format("url %s contains '%s' or meets regExp pattern '%s'", description, expression, expression), window -> {
-            try {
-                var part = getPart.apply(new URL(valueOf(window.getCurrentUrl())));
-
-                if (part.contains(expression)) {
-                    return true;
-                }
-
-                try {
-                    var pattern = compile(expression);
-                    var m = pattern.matcher(part);
-                    return m.matches() || m.find();
-                } catch (Throwable t) {
-                    t.printStackTrace();
-                    return false;
-                }
-            } catch (Throwable t) {
-                throw new RuntimeException(t);
-            }
-        });
+        return condition(window -> checkByStringContainingOrRegExp(expression).test(window.getCurrentUrl()));
     }
 
     /**
@@ -276,9 +237,10 @@ public final class WindowCriteria {
      * @param port is a port value
      * @return criteria.
      */
-    public static Criteria<Window> urlPort(int port) {
+    @Description("url port is '{port}'")
+    public static Criteria<Window> urlPort(@DescriptionFragment("port") int port) {
         checkArgument(port > 0, "Port value should be greater than 0");
-        return condition(format("url port is '%s'", port), window -> {
+        return condition(window -> {
             try {
                 return new URL(valueOf(window.getCurrentUrl())).getPort() == port;
             } catch (Throwable t) {

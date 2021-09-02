@@ -5,10 +5,10 @@ import ru.tinkoff.qa.neptune.data.base.api.IdSetter;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.api.queries.KeepResultPersistent;
 import ru.tinkoff.qa.neptune.data.base.api.queries.Query;
-import ru.tinkoff.qa.neptune.data.base.api.result.ListOfPersistentObjects;
 
 import javax.jdo.JDOQLTypedQuery;
 import javax.jdo.query.PersistableExpression;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Optional.ofNullable;
@@ -51,13 +51,13 @@ public final class JDOQLQuery<T extends PersistableObject, Q extends Persistable
                 .orElseGet(() -> new ReadableJDOQuery<>(jdoPersistenceManager, tClass));
         var list = query.executeList();
 
-        ListOfPersistentObjects<T> toReturn;
+        List<T> toReturn;
         if (!keepResultPersistent.toKeepOnPersistent()) {
-            toReturn = new ListOfPersistentObjects<>(jdoPersistenceManager.detachCopyAll(list)) {
+            toReturn = new ArrayList<>(jdoPersistenceManager.detachCopyAll(list)) {
             };
             setRealIds(list, toReturn);
         } else {
-            toReturn = new ListOfPersistentObjects<>(list) {
+            toReturn = new ArrayList<>(list) {
             };
             keepResultPersistent.setToKeepOnPersistent(false);
         }

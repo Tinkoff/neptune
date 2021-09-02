@@ -1,10 +1,23 @@
 # Работа с cookies
 
-О принципах работы шагов, которые возвращают результат, можно
-прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Шаги,-которые-возвращают-результат).
+- О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст). 
+  Объект [контекста для работы с http протоколом](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/HttpStepContext.html)
+  в примерах ниже вызывается статическим методом `ru.tinkoff.qa.neptune.http.api.HttpStepContext#http`
 
-О принципах работы шагов, которые выполняют действие, можно
-прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Шаги,-которые-выполняют-действие).
+- О принципах работы шагов, которые возвращают результат, можно
+прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги-которые-возвращают-результат).
+
+- О принципах работы шагов, которые выполняют действие, можно
+прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги-которые-выполняют-действие).
+
+- О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
+
+- [Критерии для http cookie](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/cookies/CommonHttpCookieCriteria.html)
+
+## Оглавление
+  * [Добавление http-cookie](#Добавление-http-cookie)
+  * [Получение http-cookie](#Получение-http-cookie)
+  * [Удаление http-cookie](#Удаление-http-cookie)
 
 ## Добавление http-cookie
 
@@ -47,6 +60,7 @@ public class CookieTest {
 }
 ```
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## Получение http-cookie
 
@@ -88,6 +102,7 @@ public class CookieTest {
 }
 ```
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## Удаление http-cookie
 
@@ -139,3 +154,5 @@ public class CookieTest {
     }
 }
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)

@@ -1,22 +1,30 @@
 package ru.tinkoff.qa.neptune.selenium.content.management;
 
-import org.openqa.selenium.WebDriver;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.GetFrameSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.function.Supplier;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.currentWindow;
+import static ru.tinkoff.qa.neptune.selenium.functions.navigation.ToUrl.toUrl;
+import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.SwitchActionSupplier.to;
+import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.content.DefaultContentSupplier.defaultContent;
 
-public final class ContentManagementCommand extends SequentialActionSupplier<WebDriver, WebDriver, ContentManagementCommand> {
+@Description("Change active browser content")
+@MaxDepthOfReporting(0)
+@CaptureOnFailure(by = WebDriverImageCaptor.class)
+@CaptureOnSuccess(by = WebDriverImageCaptor.class)
+public final class ContentManagementCommand extends SequentialActionSupplier<SeleniumStepContext, SeleniumStepContext, ContentManagementCommand> {
 
     private static final ThreadLocal<ContentManagementCommand> CURRENT_COMMAND = new ThreadLocal<>();
 
@@ -30,20 +38,8 @@ public final class ContentManagementCommand extends SequentialActionSupplier<Web
     private boolean addFrameParams;
 
     ContentManagementCommand() {
-        super("Change active browser content");
-        performOn(driver -> driver);
-    }
-
-    private static <T extends SequentialGetStepSupplier<?, ?, WebDriver, ?, ?>> T
-    setDriver(T setTo, WebDriver driver) {
-        try {
-            var m = SequentialGetStepSupplier.class.getDeclaredMethod("from", Object.class);
-            m.setAccessible(true);
-            m.invoke(setTo, driver);
-            return setTo;
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
+        super();
+        performOn(context -> context);
     }
 
     public static ContentManagementCommand getCurrentCommand() {
@@ -57,17 +53,13 @@ public final class ContentManagementCommand extends SequentialActionSupplier<Web
     }
 
     @Override
-    protected void performActionOn(WebDriver value) {
-        var window = ofNullable(getWindowSupplier)
-                .map(w -> inBrowser().get(setDriver(w, value)))
-                .orElse(null);
-
-        ofNullable(window).ifPresent(w -> inBrowser().switchTo(w));
-        ofNullable(navigateTo).ifPresent(s -> inBrowser().navigateTo(s.get(), setDriver(currentWindow(), value)));
+    protected void howToPerform(SeleniumStepContext value) {
+        ofNullable(getWindowSupplier).ifPresent(w -> to(w).get().performAction(value));
+        ofNullable(navigateTo).ifPresent(s -> toUrl(s.get()).get().performAction(value));
 
         ofNullable(getFrameSuppliers).ifPresent(ss -> {
-            value.switchTo().defaultContent();
-            ss.forEach(s -> inBrowser().switchTo(setDriver(s, value)));
+            to(defaultContent()).get().performAction(value);
+            ss.forEach(s -> to(s).get().performAction(value));
         });
 
         isExecuted = true;

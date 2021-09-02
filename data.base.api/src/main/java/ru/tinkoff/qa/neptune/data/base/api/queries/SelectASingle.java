@@ -1,14 +1,17 @@
 package ru.tinkoff.qa.neptune.data.base.api.queries;
 
 import org.datanucleus.api.jdo.JDOPersistenceManager;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.NothingIsSelectedException;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
+import ru.tinkoff.qa.neptune.data.base.api.captors.DBCaptor;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.queries.ids.Id;
 import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters;
@@ -18,12 +21,7 @@ import javax.jdo.query.PersistableExpression;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.data.base.api.PersistableObject.getTable;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.SLEEPING_TIME;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.WAITING_FOR_SELECTION_RESULT_TIME;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByConnectionSupplierClass.getConnectionBySupplierClass;
@@ -38,12 +36,12 @@ import static ru.tinkoff.qa.neptune.data.base.api.queries.sql.SqlQuery.bySql;
  *
  * @param <T> is a type of retrieved value
  */
-@MakeFileCapturesOnFinishing
-@MakeStringCapturesOnFinishing
-@SequentialGetStepSupplier.DefaultParameterNames(
-        timeOut = "Time to get selected object",
-        criteria = "Object criteria"
-)
+@CaptureOnSuccess(by = DBCaptor.class)
+@SequentialGetStepSupplier.DefineGetImperativeParameterName("Select from data base:")
+@SequentialGetStepSupplier.DefineTimeOutParameterName("Time to select object")
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Record criteria")
+@MaxDepthOfReporting(0)
+@ThrowWhenNoData(toThrow = NothingIsSelectedException.class, startDescription = "Not selected:")
 public class SelectASingle<T> extends SequentialGetStepSupplier
         .GetObjectFromIterableChainedStepSupplier<DataBaseStepContext, T, JDOPersistenceManager, SelectASingle<T>> {
 
@@ -52,8 +50,8 @@ public class SelectASingle<T> extends SequentialGetStepSupplier
     @StepParameter("By query")
     Query<T, ? extends List<T>> query;
 
-    private SelectASingle(String description, KeepResultPersistent resultPersistent, Query<T, ? extends List<T>> selectBy) {
-        super(description, selectBy::execute);
+    private SelectASingle(KeepResultPersistent resultPersistent, Query<T, ? extends List<T>> selectBy) {
+        super(selectBy::execute);
         this.resultPersistent = resultPersistent;
         this.query = selectBy;
         timeOut(WAITING_FOR_SELECTION_RESULT_TIME.get());
@@ -69,11 +67,14 @@ public class SelectASingle<T> extends SequentialGetStepSupplier
      * @param <Q>      is a type of {@link PersistableExpression} that represents {@code T} in query
      * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle}
      */
-    public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectASingle<R> oneOf(Class<R> toSelect,
-                                                                                                           JDOQLQueryParameters<R, Q> params) {
+    @Description("one record of '{of}'")
+    public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectASingle<R> oneOf(
+            @DescriptionFragment(
+                    value = "of",
+                    makeReadableBy = TableNameGetter.class) Class<R> toSelect,
+            JDOQLQueryParameters<R, Q> params) {
         var resultPersistent = new KeepResultPersistent();
-        return new SelectASingle<>(format("One of '%s' from data store", getTable(toSelect)),
-                resultPersistent,
+        return new SelectASingle<>(resultPersistent,
                 byJDOQLQuery(toSelect, params, resultPersistent))
                 .from(getConnectionByClass(toSelect));
     }
@@ -87,12 +88,36 @@ public class SelectASingle<T> extends SequentialGetStepSupplier
      * @param <Q>          is a type of {@link PersistableExpression} that represents {@code T} in query
      * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle}
      */
-    public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectASingle<List<Object>> row(Class<R> toSelectFrom,
-                                                                                                                    JDOQLResultQueryParams<R, Q> params) {
-        return new SelectASingle<>(format("One row of data from data store. The row is formed by a record of '%s'", getTable(toSelectFrom)),
-                null,
+    @Description("the row of raw data from '{of}'")
+    public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectASingle<List<Object>> row(
+            @DescriptionFragment(
+                    value = "of",
+                    makeReadableBy = TableNameGetter.class) Class<R> toSelectFrom,
+            JDOQLResultQueryParams<R, Q> params) {
+        return new SelectASingle<>(null,
                 byJDOQLResultQuery(toSelectFrom, params))
                 .from(getConnectionByClass(toSelectFrom));
+    }
+
+    /**
+     * Retrieves a single {@link PersistableObject} selected by known id.
+     *
+     * @param toSelect is a class of resulted {@link PersistableObject} to be returned
+     * @param id       is a wrapper of known id used to find the desired object
+     * @param <R>      is a type of resulted {@link PersistableObject} to be returned
+     * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle}
+     */
+    @Description("one record of '{of}' by id {id}")
+    public static <R extends PersistableObject> SelectASingle<R> oneOf(
+            @DescriptionFragment(
+                    value = "of",
+                    makeReadableBy = TableNameGetter.class) Class<R> toSelect,
+            @DescriptionFragment(
+                    value = "id") Id id) {
+        var resultPersistent = new KeepResultPersistent();
+        return new SelectASingle<>(resultPersistent,
+                id.build(toSelect, resultPersistent))
+                .from(getConnectionByClass(toSelect));
     }
 
     /**
@@ -104,22 +129,6 @@ public class SelectASingle<T> extends SequentialGetStepSupplier
      */
     public static <R extends PersistableObject> SelectASingle<R> oneOf(Class<R> toSelect) {
         return oneOf(toSelect, (JDOQLQueryParameters<R, ?>) null);
-    }
-
-    /**
-     * Retrieves a single {@link PersistableObject} selected by known id.
-     *
-     * @param toSelect is a class of resulted {@link PersistableObject} to be returned
-     * @param id       is a wrapper of known id used to find the desired object
-     * @param <R>      is a type of resulted {@link PersistableObject} to be returned
-     * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle}
-     */
-    public static <R extends PersistableObject> SelectASingle<R> oneOf(Class<R> toSelect, Id id) {
-        var resultPersistent = new KeepResultPersistent();
-        return new SelectASingle<>(format("One of '%s' from data store", getTable(toSelect)),
-                resultPersistent,
-                id.build(toSelect, resultPersistent))
-                .from(getConnectionByClass(toSelect));
     }
 
     /**
@@ -136,12 +145,15 @@ public class SelectASingle<T> extends SequentialGetStepSupplier
      * @param <R>        is a type of resulted {@link PersistableObject} to be returned
      * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle}
      */
-    public static <R extends PersistableObject> SelectASingle<R> oneOf(Class<R> toSelect,
-                                                                       String sql,
-                                                                       Object... parameters) {
+    @Description("one record of '{of}'")
+    public static <R extends PersistableObject> SelectASingle<R> oneOf(
+            @DescriptionFragment(
+                    value = "of",
+                    makeReadableBy = TableNameGetter.class) Class<R> toSelect,
+            String sql,
+            Object... parameters) {
         var resultPersistent = new KeepResultPersistent();
-        return new SelectASingle<>(format("One of '%s' from data store", getTable(toSelect)),
-                resultPersistent,
+        return new SelectASingle<>(resultPersistent,
                 bySql(toSelect, sql, resultPersistent, parameters))
                 .from(getConnectionByClass(toSelect));
     }
@@ -160,12 +172,15 @@ public class SelectASingle<T> extends SequentialGetStepSupplier
      * @param <R>        is a type of resulted {@link PersistableObject} to be returned
      * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle}
      */
-    public static <R extends PersistableObject> SelectASingle<R> oneOf(Class<R> toSelect,
-                                                                       String sql,
-                                                                       Map<String, ?> parameters) {
+    @Description("one record of '{of}'")
+    public static <R extends PersistableObject> SelectASingle<R> oneOf(
+            @DescriptionFragment(
+                    value = "of",
+                    makeReadableBy = TableNameGetter.class) Class<R> toSelect,
+            String sql,
+            Map<String, ?> parameters) {
         var resultPersistent = new KeepResultPersistent();
-        return new SelectASingle<>(format("One of '%s' from data store", getTable(toSelect)),
-                resultPersistent,
+        return new SelectASingle<>(resultPersistent,
                 bySql(toSelect, sql, resultPersistent, parameters))
                 .from(getConnectionByClass(toSelect));
     }
@@ -183,11 +198,14 @@ public class SelectASingle<T> extends SequentialGetStepSupplier
      * @param <R>        is a type of {@link DBConnectionSupplier}
      * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle}
      */
-    public static <R extends DBConnectionSupplier> SelectASingle<List<Object>> row(String sql,
-                                                                                   Class<R> connection,
-                                                                                   Object... parameters) {
-        return new SelectASingle<>("One row of raw data from data store",
-                null,
+    @Description("the row of raw data from '{of}'")
+    public static <R extends DBConnectionSupplier> SelectASingle<List<Object>> row(
+            String sql,
+            @DescriptionFragment(
+                    value = "of",
+                    makeReadableBy = TableNameGetter.class) Class<R> connection,
+            Object... parameters) {
+        return new SelectASingle<>(null,
                 bySql(sql, parameters))
                 .from(getConnectionBySupplierClass(connection));
     }
@@ -205,11 +223,14 @@ public class SelectASingle<T> extends SequentialGetStepSupplier
      * @param <R>        is a type of {@link DBConnectionSupplier}
      * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle}
      */
-    public static <R extends DBConnectionSupplier> SelectASingle<List<Object>> row(String sql,
-                                                                                   Class<R> connection,
-                                                                                   Map<String, ?> parameters) {
-        return new SelectASingle<>("One row of raw data from data store",
-                null,
+    @Description("the row of raw data from '{of}'")
+    public static <R extends DBConnectionSupplier> SelectASingle<List<Object>> row(
+            String sql,
+            @DescriptionFragment(
+                    value = "of",
+                    makeReadableBy = TableNameGetter.class) Class<R> connection,
+            Map<String, ?> parameters) {
+        return new SelectASingle<>(null,
                 bySql(sql, parameters))
                 .from(getConnectionBySupplierClass(connection));
     }
@@ -222,27 +243,6 @@ public class SelectASingle<T> extends SequentialGetStepSupplier
     @Override
     public SelectASingle<T> pollingInterval(Duration pollingTime) {
         return super.pollingInterval(pollingTime);
-    }
-
-    @Override
-    public SelectASingle<T> criteria(Criteria<? super T> criteria) {
-        return super.criteria(criteria);
-    }
-
-    @Override
-    public SelectASingle<T> criteria(String conditionDescription, Predicate<? super T> condition) {
-        return super.criteria(conditionDescription, condition);
-    }
-
-    /**
-     * To throw {@link NothingIsSelectedException} when the selecting retrieves no value.
-     *
-     * @param errorText as a text of the thrown exception
-     * @return self reference
-     */
-    public SelectASingle<T> throwWhenResultEmpty(String errorText) {
-        checkArgument(isNotBlank(errorText), "Please define not blank exception text");
-        return super.throwOnEmptyResult(() -> new NothingIsSelectedException(errorText));
     }
 
     KeepResultPersistent getResultPersistent() {

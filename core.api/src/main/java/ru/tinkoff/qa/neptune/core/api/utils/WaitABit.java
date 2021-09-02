@@ -9,6 +9,7 @@ import static java.util.Objects.nonNull;
 /**
  * This class is designed to suspend thread execution for sometime instead of {@link Thread#sleep(long)}
  */
+@Deprecated(since = "0.18.0-ALPHA", forRemoval = true)
 public final class WaitABit {
 
     private WaitABit() {
@@ -19,6 +20,7 @@ public final class WaitABit {
      * This method suspends thread execution for a time defined in milliseconds.
      * @param millis is a time of thread suspending
      */
+    @Deprecated(since = "0.18.0-ALPHA", forRemoval = true)
     public static void waitABit(long millis) {
         try {
             sleep(millis);
@@ -30,6 +32,7 @@ public final class WaitABit {
      * This method suspends thread execution for a time defined as a duration value.
      * @param duration is a time of thread suspending
      */
+    @Deprecated(since = "0.18.0-ALPHA", forRemoval = true)
     public static void waitABit(Duration duration) {
         checkArgument(nonNull(duration), "Duration value should differ from null");
         waitABit(duration.toMillis());

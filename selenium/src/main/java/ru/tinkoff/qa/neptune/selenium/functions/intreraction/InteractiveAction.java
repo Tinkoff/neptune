@@ -4,12 +4,16 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
+import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
 import java.time.Duration;
@@ -20,24 +24,24 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentF
 /**
  * This class is designed to build an interactive action performed on a page.
  */
-@MakeImageCapturesOnFinishing
-@MakeFileCapturesOnFinishing
+@CaptureOnFailure(by = WebDriverImageCaptor.class)
+@CaptureOnSuccess(by = WebDriverImageCaptor.class)
 public abstract class InteractiveAction extends SequentialActionSupplier<SeleniumStepContext, Actions, InteractiveAction> {
 
     private WebDriver driver;
 
     @StepParameter(doNotReportNullValues = true,
             value = "Pause before",
-            makeReadableBy = PauseDurationParameterValueGetter.class)
+            makeReadableBy = ParameterValueGetter.DurationParameterValueGetter.class)
     private Duration pauseBefore;
 
     @StepParameter(doNotReportNullValues = true,
             value = "Pause after",
-            makeReadableBy = PauseDurationParameterValueGetter.class)
+            makeReadableBy = ParameterValueGetter.DurationParameterValueGetter.class)
     private Duration pauseAfter;
 
-    InteractiveAction(String description) {
-        super(description);
+    InteractiveAction() {
+        super();
         performOn(currentContent().andThen(webDriver -> {
             try {
                 return new Actions(webDriver);
@@ -311,7 +315,10 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      *                the element.
      * @return an instance of {@link InteractiveAction}
      */
-    public static InteractiveAction moveToElement(WebElement target, int xOffset, int yOffset) {
+    @Description("Move mouse to {target} with offset [x={x}, y={y}]")
+    public static InteractiveAction moveToElement(@DescriptionFragment("target") WebElement target,
+                                                  @DescriptionFragment("x") int xOffset,
+                                                  @DescriptionFragment("y") int yOffset) {
         return new MoveToElementActionSupplier(target, xOffset, yOffset);
     }
 
@@ -321,7 +328,8 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target element to move to.
      * @return an instance of {@link InteractiveAction}
      */
-    public static InteractiveAction moveToElement(WebElement target) {
+    @Description("Move mouse to {target}")
+    public static InteractiveAction moveToElement(@DescriptionFragment("target") WebElement target) {
         return new MoveToElementActionSupplier(target, null, null);
     }
 
@@ -335,7 +343,10 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      *                the element.
      * @return an instance of {@link InteractiveAction}
      */
-    public static InteractiveAction moveToElement(Widget target, int xOffset, int yOffset) {
+    @Description("Move mouse to {target} with offset [x={x}, y={y}]")
+    public static InteractiveAction moveToElement(@DescriptionFragment("target") Widget target,
+                                                  @DescriptionFragment("x") int xOffset,
+                                                  @DescriptionFragment("y") int yOffset) {
         return new MoveToElementActionSupplier(target, xOffset, yOffset);
     }
 
@@ -345,7 +356,8 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target element to move to.
      * @return an instance of {@link InteractiveAction}
      */
-    public static InteractiveAction moveToElement(Widget target) {
+    @Description("Move mouse to {target}")
+    public static InteractiveAction moveToElement(@DescriptionFragment("target") Widget target) {
         return new MoveToElementActionSupplier(target, null, null);
     }
 
@@ -359,7 +371,10 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      *                  the element.
      * @return an instance of {@link InteractiveAction}
      */
-    public static InteractiveAction moveToElement(SearchSupplier<?> howToFind, int xOffset, int yOffset) {
+    @Description("Move mouse to {target} with offset [x={x}, y={y}]")
+    public static InteractiveAction moveToElement(@DescriptionFragment("target") SearchSupplier<?> howToFind,
+                                                  @DescriptionFragment("x") int xOffset,
+                                                  @DescriptionFragment("y") int yOffset) {
         return new MoveToElementActionSupplier(howToFind, xOffset, yOffset);
     }
 
@@ -369,7 +384,8 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param howToFind is description of the element to be found
      * @return an instance of {@link InteractiveAction}
      */
-    public static InteractiveAction moveToElement(SearchSupplier<?> howToFind) {
+    @Description("Move mouse to {target}")
+    public static InteractiveAction moveToElement(@DescriptionFragment("target") SearchSupplier<?> howToFind) {
         return new MoveToElementActionSupplier(howToFind, null, null);
     }
 
@@ -572,7 +588,8 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target element to move to and release the mouse at.
      * @return an instance of {@link InteractiveAction}
      */
-    public static InteractiveAction dragAndDrop(SearchSupplier<?> source, Widget target) {
+    public static InteractiveAction dragAndDrop(SearchSupplier<?> source,
+                                                Widget target) {
         return new DragAndDropActionSupplier(source, target);
     }
 
@@ -608,8 +625,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target is description of the element to move to and release the mouse at.
      * @return an instance of {@link InteractiveAction}
      */
-    public static InteractiveAction dragAndDrop(SearchSupplier<?> source,
-                                                SearchSupplier<?> target) {
+    public static InteractiveAction dragAndDrop(SearchSupplier<?> source, SearchSupplier<?> target) {
         return new DragAndDropActionSupplier(source, target);
     }
 
@@ -651,7 +667,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
     }
 
     @Override
-    protected void performActionOn(Actions value) {
+    protected void howToPerform(Actions value) {
         ofNullable(pauseBefore).ifPresent(value::pause);
         addAction(value);
         ofNullable(pauseAfter).ifPresent(value::pause);

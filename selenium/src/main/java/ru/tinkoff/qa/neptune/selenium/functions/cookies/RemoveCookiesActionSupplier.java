@@ -2,9 +2,12 @@ package ru.tinkoff.qa.neptune.selenium.functions.cookies;
 
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import java.time.Duration;
@@ -21,11 +24,12 @@ import static ru.tinkoff.qa.neptune.selenium.functions.cookies.GetSeleniumCookie
 /**
  * This class is designed to build an action that removes cookies from browser's "cookie jar".
  */
+@Description("Remove cookies")
 public abstract class RemoveCookiesActionSupplier<T>
         extends SequentialActionSupplier<SeleniumStepContext, T, RemoveCookiesActionSupplier<T>> {
 
-    private RemoveCookiesActionSupplier(String description) {
-        super(description);
+    private RemoveCookiesActionSupplier() {
+        super();
     }
 
     /**
@@ -33,6 +37,7 @@ public abstract class RemoveCookiesActionSupplier<T>
      *
      * @return instance of {@link RemoveCookiesActionSupplier}
      */
+    @Description("Remove all cookies")
     public static RemoveCookiesActionSupplier<WebDriver> deleteCookies() {
         return new RemoveAllCookiesActionSupplier();
     }
@@ -65,16 +70,17 @@ public abstract class RemoveCookiesActionSupplier<T>
     /**
      * This class is designed to build an action that cleans browser's "cookie jar".
      */
+    @MaxDepthOfReporting(0)
     private static final class RemoveAllCookiesActionSupplier
             extends RemoveCookiesActionSupplier<WebDriver> {
 
         private RemoveAllCookiesActionSupplier() {
-            super("Delete all the cookies from browser's cookie jar");
+            super();
             performOn(currentContent());
         }
 
         @Override
-        protected void performActionOn(WebDriver value) {
+        protected void howToPerform(WebDriver value) {
             value.manage().deleteAllCookies();
         }
     }
@@ -84,33 +90,30 @@ public abstract class RemoveCookiesActionSupplier<T>
      * These cookies are expected to be found by criteria. It is possible to define time of the waiting
      * for expected cookies are present.
      */
+    @MaxDepthOfReporting(0)
+    @IncludeParamsOfInnerGetterStep
     private static final class RemoveFoundCookies extends RemoveCookiesActionSupplier<Set<Cookie>> {
 
-        private final GetSeleniumCookieSupplier getCookies;
         private WebDriver driver;
 
         @SafeVarargs
         private RemoveFoundCookies(Duration timeToFindCookies, Criteria<Cookie>... toBeRemoved) {
-            super("Remove cookies");
+            super();
             checkArgument(nonNull(toBeRemoved) && toBeRemoved.length > 0,
                     "It is necessary to define at least one criteria to find cookies for removal");
             var getCookies = cookies();
             stream(toBeRemoved).forEach(getCookies::criteria);
             ofNullable(timeToFindCookies).ifPresent(getCookies::timeOut);
-            this.getCookies = getCookies;
-
-            performOn(seleniumStepContext -> {
-                var driver = seleniumStepContext.getWrappedDriver();
-                try {
-                    return seleniumStepContext.get(this.getCookies);
-                } finally {
-                    this.driver = driver;
-                }
-            });
+            performOn(getCookies.from(currentContent()));
         }
 
         @Override
-        protected void performActionOn(Set<Cookie> value) {
+        protected void onStart(SeleniumStepContext seleniumStepContext) {
+            driver = seleniumStepContext.getWrappedDriver();
+        }
+
+        @Override
+        protected void howToPerform(Set<Cookie> value) {
             var options = driver.manage();
             value.forEach(options::deleteCookie);
         }
@@ -119,13 +122,14 @@ public abstract class RemoveCookiesActionSupplier<T>
     /**
      * This class is designed to build an action that cleans browser's "cookie jar" of defined cookies.
      */
+    @MaxDepthOfReporting(0)
     private static final class RemoveDefinedCookies extends RemoveCookiesActionSupplier<WebDriver> {
 
         @StepParameter("Cookies for removal")
         private final Collection<Cookie> cookies;
 
         private RemoveDefinedCookies(Collection<Cookie> toBeRemoved) {
-            super("Remove cookies");
+            super();
             checkArgument(nonNull(toBeRemoved) && toBeRemoved.size() > 0,
                     "It is necessary to define at least one cookie for removal");
             cookies = toBeRemoved;
@@ -133,7 +137,7 @@ public abstract class RemoveCookiesActionSupplier<T>
         }
 
         @Override
-        protected void performActionOn(WebDriver value) {
+        protected void howToPerform(WebDriver value) {
             var options = value.manage();
             cookies.forEach(options::deleteCookie);
         }

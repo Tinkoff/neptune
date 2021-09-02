@@ -5,18 +5,13 @@ import com.google.gson.GsonBuilder;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.FileCaptor;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.UUID;
 
 import static java.io.File.createTempFile;
 import static java.nio.charset.Charset.defaultCharset;
 import static org.apache.commons.io.FileUtils.writeStringToFile;
 
-abstract class DBCaptor<T> extends FileCaptor<T> {
-
-    public DBCaptor(String message) {
-        super(message);
-    }
+public abstract class DBCaptor<T> extends FileCaptor<T> {
 
     @Override
     public File getData(T caught) {

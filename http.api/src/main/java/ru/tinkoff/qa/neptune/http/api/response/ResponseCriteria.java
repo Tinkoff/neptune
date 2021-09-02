@@ -1,11 +1,14 @@
 package ru.tinkoff.qa.neptune.http.api.response;
 
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.http.HttpResponse;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -16,8 +19,8 @@ import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static java.net.URI.create;
 import static java.util.Objects.nonNull;
-import static java.util.regex.Pattern.compile;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.checkByStringContainingOrRegExp;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 
 public final class ResponseCriteria {
@@ -33,8 +36,9 @@ public final class ResponseCriteria {
      * @param <T>  is a type of response body
      * @return criteria.
      */
-    public static <T> Criteria<HttpResponse<T>> statusCode(int code) {
-        return condition(format("status code is %s", code), r -> r.statusCode() == code);
+    @Description("status code is {code}")
+    public static <T> Criteria<HttpResponse<T>> statusCode(@DescriptionFragment("code") int code) {
+        return condition(r -> r.statusCode() == code);
     }
 
     /**
@@ -83,9 +87,10 @@ public final class ResponseCriteria {
      * @param <T> is a type of response body
      * @return criteria.
      */
-    public static <T> Criteria<HttpResponse<T>> responseURI(URI uri) {
+    @Description("response URI is {uri}")
+    public static <T> Criteria<HttpResponse<T>> responseURI(@DescriptionFragment("uri") URI uri) {
         checkNotNull(uri, "Expected URI should not be defined as a null value");
-        return condition(format("response URI is %s", uri), r -> uri.equals(r.uri()));
+        return condition(r -> uri.equals(r.uri()));
     }
 
     /**
@@ -96,29 +101,18 @@ public final class ResponseCriteria {
      * @param <T>        is a type of response body
      * @return criteria.
      */
-    public static <T> Criteria<HttpResponse<T>> uriMatches(String expression) {
+    @Description("response URI contains '{expression}' or meets regExp pattern '{expression}'")
+    public static <T> Criteria<HttpResponse<T>> uriMatches(@DescriptionFragment("expression") String expression) {
         checkArgument(isNotBlank(expression), "Http response URI expression should be defined");
-
-        return condition(format("response URI contains '%s' or meets regExp pattern '%s'", expression, expression), r -> {
-            var uri = valueOf(r.uri());
-            if (uri.contains(expression)) {
-                return true;
-            }
-
-            try {
-                var pattern = compile(expression);
-                var m = pattern.matcher(uri);
-                return m.matches() || m.find();
-            } catch (Throwable t) {
-                t.printStackTrace();
-                return false;
-            }
-        });
+        return condition(r -> checkByStringContainingOrRegExp(expression).test(valueOf(r.uri())));
     }
 
-    private static <T> Criteria<HttpResponse<T>> uriPartStringCriteria(String description, String expected, Function<URI, String> getPart) {
+    @Description("Response URI {description} is '{expected}'")
+    private static <T> Criteria<HttpResponse<T>> uriPartStringCriteria(@DescriptionFragment("description") String description,
+                                                                       @DescriptionFragment("expected") String expected,
+                                                                       Function<URI, String> getPart) {
         checkArgument(isNotBlank(expected), format("Expected URI %s should not be defined as a blank/null string", description));
-        return condition(format("Response URI %s is '%s'", description, expected), r -> {
+        return condition(r -> {
             try {
                 return Objects.equals(getPart.apply(r.uri()), expected);
             } catch (Throwable t) {
@@ -127,28 +121,12 @@ public final class ResponseCriteria {
         });
     }
 
-    private static <T> Criteria<HttpResponse<T>> uriPartRegExpCriteria(String description, String expression, Function<URI, String> getPart) {
+    @Description("Response URI {description} contains '{expression}' or meets regExp pattern '{expression}'")
+    private static <T> Criteria<HttpResponse<T>> uriPartRegExpCriteria(@DescriptionFragment("description") String description,
+                                                                       @DescriptionFragment("expression") String expression,
+                                                                       Function<URI, String> getPart) {
         checkArgument(isNotBlank(expression), format("expression of URI %s should not be defined as a blank/null string", description));
-        return condition(format("Response URI %s contains '%s' or meets regExp pattern '%s'", description, expression, expression), r -> {
-            try {
-                var part = getPart.apply(r.uri());
-
-                if (part.contains(expression)) {
-                    return true;
-                }
-
-                try {
-                    var pattern = compile(expression);
-                    var m = pattern.matcher(part);
-                    return m.matches() || m.find();
-                } catch (Throwable t) {
-                    t.printStackTrace();
-                    return false;
-                }
-            } catch (Throwable t) {
-                throw new RuntimeException(t);
-            }
-        });
+        return condition(r -> checkByStringContainingOrRegExp(expression).test(getPart.apply(r.uri())));
     }
 
 
@@ -274,14 +252,62 @@ public final class ResponseCriteria {
      * @param <T>  is a type of response body
      * @return criteria.
      */
-    public static <T> Criteria<HttpResponse<T>> responseURIPort(int port) {
+    @Description("Response URI port is '{port}'")
+    public static <T> Criteria<HttpResponse<T>> responseURIPort(@DescriptionFragment("port") int port) {
         checkArgument(port > 0, "Port value should be greater than 0");
-        return condition(format("Response URI port is '%s'", port), r -> {
+        return condition(r -> {
             try {
                 return r.uri().getPort() == port;
             } catch (Throwable t) {
                 throw new RuntimeException(t);
             }
         });
+    }
+
+    /**
+     * Checks header of response. It is expected that response has defined header with value that contains
+     * defined string.
+     *
+     * @param name  is the name of header response is supposed to have
+     * @param value is the value of header response is supposed to have
+     * @param <T>   is a type of response body
+     * @return criteria
+     */
+    @Description("response has header '{name}' with value '{value}'")
+    public static <T> Criteria<HttpResponse<T>> headerValue(@DescriptionFragment("name") String name,
+                                                            @DescriptionFragment("value") String value) {
+        checkArgument(isNotBlank(name), "Response header name should be defined");
+        checkArgument(isNotBlank(value), "Response header value should be defined");
+
+        return condition(r -> r.headers().map()
+                .entrySet()
+                .stream()
+                .filter(e -> Objects.equals(e.getKey(), name))
+                .map(Map.Entry::getValue)
+                .anyMatch(strings -> strings.contains(value)));
+    }
+
+    /**
+     * Checks header of response. It is expected that response has defined header with value that
+     * contains string with defined substring / regex.
+     *
+     * @param name            is the name of header response is supposed to have
+     * @param valueExpression is the substring the header value is supposed to have or
+     *                        the RegExp the header value is predicted to match
+     * @param <T>             is a type of response body
+     * @return criteria
+     */
+    @Description("response has header '{name}' with value contains/matches RegExp pattern '{valueExpression}'")
+    public static <T> Criteria<HttpResponse<T>> headerValueMatches(@DescriptionFragment("name") String name,
+                                                                   @DescriptionFragment("valueExpression") String valueExpression) {
+        checkArgument(isNotBlank(name), "Response header name should be defined");
+        checkArgument(isNotBlank(valueExpression), "Response header value substring/RegExp should be defined");
+
+        return condition(r -> r.headers().map()
+                .entrySet()
+                .stream()
+                .filter(e -> Objects.equals(e.getKey(), name))
+                .map(Map.Entry::getValue)
+                .anyMatch(strings -> strings.stream().anyMatch(checkByStringContainingOrRegExp(valueExpression))));
     }
 }

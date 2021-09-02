@@ -18,11 +18,9 @@ public class WebDriverCaptorTest extends BaseCaptorTest {
     @Test
     public void clickOnElementPositiveTest() {
         seleniumSteps.click(webElement(tagName(BUTTON_TAG)));
-        assertThat(INJECTED.size(), is(2));
+        assertThat(INJECTED.size(), is(1));
         assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
-                equalTo("Screenshot taken from the element")));
-        assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
-                equalTo("Browser screenshot")));
+                equalTo("Screenshot taken after action on web element/widget")));
     }
 
     @Test
@@ -33,19 +31,17 @@ public class WebDriverCaptorTest extends BaseCaptorTest {
         } catch (NoSuchElementException ignored) {
 
         }
-        assertThat(INJECTED.size(), is(2));
-        assertThat(INJECTED.keySet(), contains(isA(BufferedImage.class), isA(BufferedImage.class)));
-        assertThat(INJECTED.values(), contains("Browser screenshot", "Browser screenshot"));
+        assertThat(INJECTED.size(), is(1));
+        assertThat(INJECTED.keySet(), contains(isA(BufferedImage.class)));
+        assertThat(INJECTED.values(), contains("Browser screenshot"));
     }
 
     @Test
     public void clickOnWidgetPositiveTest() {
         seleniumSteps.click(link());
-        assertThat(INJECTED.size(), is(2));
+        assertThat(INJECTED.size(), is(1));
         assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
-                equalTo("Screenshot taken from the element")));
-        assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
-                equalTo("Browser screenshot")));
+                equalTo("Screenshot taken after action on web element/widget")));
     }
 
     @Test
@@ -56,19 +52,17 @@ public class WebDriverCaptorTest extends BaseCaptorTest {
         } catch (NoSuchElementException ignored) {
 
         }
-        assertThat(INJECTED.size(), is(2));
-        assertThat(INJECTED.keySet(), contains(isA(BufferedImage.class), isA(BufferedImage.class)));
-        assertThat(INJECTED.values(), contains("Browser screenshot", "Browser screenshot"));
+        assertThat(INJECTED.size(), is(1));
+        assertThat(INJECTED.keySet(), contains(isA(BufferedImage.class)));
+        assertThat(INJECTED.values(), contains("Browser screenshot"));
     }
 
     @Test
     public void editWidgetPositiveTest() {
         seleniumSteps.edit(flag(), true);
-        assertThat(INJECTED.size(), is(2));
+        assertThat(INJECTED.size(), is(1));
         assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
-                equalTo("Screenshot taken from the element")));
-        assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
-                equalTo("Browser screenshot")));
+                equalTo("Screenshot taken after action on web element/widget")));
     }
 
     @Test
@@ -78,8 +72,8 @@ public class WebDriverCaptorTest extends BaseCaptorTest {
         } catch (NoSuchElementException ignored) {
 
         }
-        assertThat(INJECTED.size(), is(2));
-        assertThat(INJECTED.keySet(), contains(isA(BufferedImage.class), isA(BufferedImage.class)));
-        assertThat(INJECTED.values(), contains("Browser screenshot", "Browser screenshot"));
+        assertThat(INJECTED.size(), is(1));
+        assertThat(INJECTED.keySet(), contains(isA(BufferedImage.class)));
+        assertThat(INJECTED.values(), contains("Browser screenshot"));
     }
 }

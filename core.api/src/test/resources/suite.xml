@@ -1,10 +1,26 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
 <suite name="Core test suite">
+
+    <test name="Localization test">
+        <classes>
+            <class name="ru.tinkoff.qa.neptune.core.api.localization.BasicLocalizationTest"/>
+            <class name="ru.tinkoff.qa.neptune.core.api.localization.TranslateByResourceBundleTest"/>
+            <class name="ru.tinkoff.qa.neptune.core.api.localization.OtherLocalisationEngineTest"/>
+        </classes>
+    </test>
+
     <test name="Concurrency tests">
         <packages>
             <package name="ru.tinkoff.qa.neptune.core.api.concurrency.*"/>
         </packages>
     </test>
+
+    <test name="Hook test">
+        <packages>
+            <package name="ru.tinkoff.qa.neptune.core.api.hooks.*"/>
+        </packages>
+    </test>
+
     <test name="Property tests" group-by-instances="true">
         <classes>
             <class name="ru.tinkoff.qa.neptune.core.api.properties.EmptyPropertiesReadingTest"/>
@@ -12,11 +28,17 @@
             <class name="ru.tinkoff.qa.neptune.core.api.properties.FilePropertyReadingTest"/>
             <class name="ru.tinkoff.qa.neptune.core.api.properties.MixedFileEnvPropertyReadingTest"/>
             <class name="ru.tinkoff.qa.neptune.core.api.properties.MixedGlobalLocalPropertyReadingTest"/>
+            <class name="ru.tinkoff.qa.neptune.core.api.properties.PropertyWithDefaultValueTest"/>
         </classes>
     </test>
     <test name="Step tests">
         <packages>
             <package name="ru.tinkoff.qa.neptune.core.api.steps.*"/>
+        </packages>
+    </test>
+    <test name="Matcher tests">
+        <packages>
+            <package name="ru.tinkoff.qa.neptune.core.api.hamcrest.*"/>
         </packages>
     </test>
 </suite>

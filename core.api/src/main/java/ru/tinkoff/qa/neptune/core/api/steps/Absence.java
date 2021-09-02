@@ -1,68 +1,59 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import com.google.common.collect.Iterables;
+import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import java.lang.reflect.Array;
 import java.time.Duration;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.time.Duration.ofMillis;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.fireReturnedValue;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess.CaptureOnSuccessReader.readCaptorsOnSuccess;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
-import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
-@SequentialGetStepSupplier.DefaultParameterNames(timeOut = "Time of the waiting for absence")
 @SuppressWarnings("unchecked")
-public final class Absence<T extends Context<?>> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Absence<T>> {
+@SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for absence")
+@SequentialGetStepSupplier.DefineResultDescriptionParameterName("Is absent")
+@IncludeParamsOfInnerGetterStep
+@MaxDepthOfReporting(0)
+@SequentialGetStepSupplier.DefineGetImperativeParameterName("Wait for:")
+@ThrowWhenNoData(toThrow = StillPresentException.class, startDescription = "Still present:")
+public final class Absence<T> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Absence<T>> {
 
-    private Object received;
+    private final Set<Captor<Object, Object>> successCaptors = new HashSet<>();
+    private Object lastCaught;
 
-    private Absence(Function<T, ?> toBeAbsent) {
-        super("Absence of " + (isLoggable(toBeAbsent) ? toBeAbsent.toString() : "<not described value>"),
-                o -> ofNullable(o)
-                        .map(o1 -> {
-                            Class<?> clazz = o1.getClass();
-                            if (Boolean.class.isAssignableFrom(clazz)) {
-                                return (Boolean) o;
-                            }
-                            return false;
-                        })
-                        .orElse(false));
-
-        StepFunction<T, ?> expectedToBeAbsent;
-        if (StepFunction.class.isAssignableFrom(toBeAbsent.getClass())) {
-            expectedToBeAbsent = ((StepFunction<T, ?>) toBeAbsent);
-        } else {
-            expectedToBeAbsent = new StepFunction<>(isLoggable(toBeAbsent) ?
-                    toBeAbsent.toString() :
-                    "<not described value>",
-                    toBeAbsent);
-        }
-        from(expectedToBeAbsent.turnReportingOff()
-                .addIgnored(Throwable.class));
+    private Absence() {
+        super(o -> ofNullable(o)
+                .map(o1 -> {
+                    Class<?> clazz = o1.getClass();
+                    if (Boolean.class.isAssignableFrom(clazz)) {
+                        return (Boolean) o;
+                    }
+                    return false;
+                })
+                .orElse(false));
     }
 
-    private Absence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBeAbsent) {
-        this(toBeAbsent.clone().timeOut(ofMillis(0))
+    private Absence(SequentialGetStepSupplier<?, ?, ?, ?, ?> toBeAbsent) {
+        this();
+        from(turnReportingOff(toBeAbsent.clone().timeOut(ofMillis(0))
                 .pollingInterval(ofMillis(0))
-                .get());
-    }
+                .addIgnored(Throwable.class)));
 
-    /**
-     * Creates an instance of {@link Absence}.
-     *
-     * @param function that should return something. If the result of {@link Function#apply(Object)} is {@code null},
-     *                 it is an empty iterable/array or it is {@link Boolean} {@code false} then this is considered absent.
-     * @param <T>      is a type of {@link Context}
-     * @return an instance of {@link Absence}.
-     */
-    public static <T extends Context<?>> Absence<T> absence(Function<T, ?> function) {
-        checkArgument(nonNull(function), "Function should not be a null-value");
-        return new Absence<>(function);
+        readCaptorsOnSuccess(toBeAbsent.getClass(), successCaptors);
     }
 
     /**
@@ -73,67 +64,71 @@ public final class Absence<T extends Context<?>> extends SequentialGetStepSuppli
      * @param <T>        is a type of {@link Context}
      * @return an instance of {@link Absence}.
      */
-    public static <T extends Context<?>> Absence<T> absence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBeAbsent) {
+    @Description("Absence of {toBeAbsent}")
+    public static <T> Absence<T> absence(@DescriptionFragment("toBeAbsent") SequentialGetStepSupplier<T, ?, ?, ?, ?> toBeAbsent) {
         checkArgument(nonNull(toBeAbsent), "Supplier of a function should not be a null-value");
         return new Absence<>(toBeAbsent);
+    }
+
+    public Absence<T> throwOnNoResult() {
+        this.exceptionSupplier = new ExceptionSupplierForAbsenceAndPresence(this);
+        return this;
     }
 
     protected Function<T, Object> preparePreFunction() {
         var preFunction = super.preparePreFunction();
 
-        var getAbsence = new Function<T, Object>() {
-            @Override
-            public Object apply(T t) {
-                received = null;
-                var result = preFunction.apply(t);
-                received = result;
+        var resulted = getSingle((Function<T, Object>) t -> {
+            lastCaught = null;
 
-                if (result == null) {
+            Object result;
+            try {
+                result = preFunction.apply(t);
+            } catch (Throwable thrown) {
+                return true;
+            }
+
+            if (result == null) {
+                return true;
+            }
+
+            Class<?> clazz = result.getClass();
+
+            if (Boolean.class.isAssignableFrom(clazz)) {
+                if (result.equals(false)) {
                     return true;
                 }
-
-                Class<?> clazz = result.getClass();
-
-                if (Boolean.class.isAssignableFrom(clazz)) {
-                    if (result.equals(false)) {
-                        return true;
-                    }
-                }
-
-                if (Iterable.class.isAssignableFrom(clazz)) {
-                    if (Iterables.size((Iterable<?>) result) == 0) {
-                        return true;
-                    }
-                }
-
-                if (clazz.isArray()) {
-                    if (Array.getLength(result) == 0) {
-                        return true;
-                    }
-                }
-
-                return null;
             }
-        };
 
-        var resulted = getSingle(getAbsence, timeToGet);
-        return ((Function<Object, Object>) o -> ofNullable(o).orElseGet(() -> {
-            fireReturnedValue(received);
-            return false;
-        })).compose(resulted);
+            if (Iterable.class.isAssignableFrom(clazz)) {
+                if (Iterables.size((Iterable<?>) result) == 0) {
+                    return true;
+                }
+            }
+
+            if (clazz.isArray()) {
+                if (Array.getLength(result) == 0) {
+                    return true;
+                }
+            }
+
+            lastCaught = result;
+            return null;
+        }, timeToGet);
+        return ((Function<Object, Object>) o -> ofNullable(o).orElse(false)).compose(resulted);
     }
 
-    protected Function<Object, Boolean> getEndFunction() {
-        return o -> {
-            var result = super.getEndFunction().apply(o);
-            if (!result) {
-                ofNullable(exceptionSupplier).ifPresent(supplier -> {
-                    throw supplier.get();
-                });
-                return false;
+    @Override
+    protected void onSuccess(Boolean result) {
+        if (!result) {
+            if (lastCaught != null) {
+                catchValue(lastCaught, successCaptors);
             }
-            return true;
-        };
+
+            ofNullable(exceptionSupplier).ifPresent(supplier -> {
+                throw supplier.get();
+            });
+        }
     }
 
     /**
@@ -150,15 +145,5 @@ public final class Absence<T extends Context<?>> extends SequentialGetStepSuppli
     @Override
     public Absence<T> timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
-    }
-
-    /**
-     * This method defines an exception to be thrown when value to be absent is here still.
-     *
-     * @param exceptionMessage is a message of {@link IllegalStateException} to be thrown when value to be absent is still here.
-     * @return self-reference
-     */
-    public Absence<T> throwIfPresent(String exceptionMessage) {
-        return throwOnEmptyResult(() -> new IllegalStateException(exceptionMessage));
     }
 }

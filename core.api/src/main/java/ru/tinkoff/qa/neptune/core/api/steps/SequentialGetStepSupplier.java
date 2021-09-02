@@ -1,15 +1,13 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.CaptorFilterByProducedType;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakesCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.captors.FileCaptor;
-import ru.tinkoff.qa.neptune.core.api.event.firing.captors.ImageCaptor;
-import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.AdditionalMetadata;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.time.Duration;
@@ -23,12 +21,20 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.valueOf;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static java.util.List.of;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
-import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.AND;
-import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
-import static ru.tinkoff.qa.neptune.core.api.steps.StepFunction.toGet;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure.CaptureOnFailureReader.readCaptorsOnFailure;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess.CaptureOnSuccessReader.readCaptorsOnSuccess;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting.MaxDepthOfReportingReader.getMaxDepth;
+import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchFailureEvent;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchSuccessEvent;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
+import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultGetParameterReader.*;
+import static ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter.StepParameterCreator.createStepParameter;
+import static ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData.ThrowWhenNoDataReader.getDeclaredBy;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromArray.getFromArray;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
@@ -37,7 +43,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSubIterable.g
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 /**
- * This class is designed to build and supply chained functions to get desired value.
+ * This class is designed to build and to supply sequential functions to get desired value.
  * There are protected methods to be overridden/re-used as public when it is necessary.
  *
  * @param <T>    is a type of an input value
@@ -47,87 +53,119 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
  * @param <THIS> this is the self-type. It is used for the method chaining.
  */
 @SuppressWarnings("unchecked")
-@SequentialGetStepSupplier.DefaultParameterNames
+@SequentialGetStepSupplier.DefineGetImperativeParameterName
+@SequentialGetStepSupplier.DefineResultDescriptionParameterName
+@ThrowWhenNoData
 public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends SequentialGetStepSupplier<T, R, M, P, THIS>> implements Cloneable,
-        Supplier<Function<T, R>>, MakesCapturesOnFinishing<THIS>, StepParameterPojo {
+        Supplier<Function<T, R>>, StepParameterPojo {
 
-    private final String description;
+    private String description;
+    protected boolean toReport = true;
 
     final Set<Class<? extends Throwable>> ignored = new HashSet<>();
-
-    private final List<CaptorFilterByProducedType> captorFilters = new ArrayList<>();
-
     final List<Criteria<P>> conditions = new ArrayList<>();
-
     private Criteria<P> condition;
-
-    Object from;
+    private Object from;
 
     Duration timeToGet;
-
     Duration sleepingTime;
+    ExceptionSupplier exceptionSupplier;
 
-    Supplier<? extends RuntimeException> exceptionSupplier;
+    protected SequentialGetStepSupplier() {
+        super();
+    }
 
-    protected SequentialGetStepSupplier(String description) {
+    public static <T extends SequentialGetStepSupplier<?, ?, ?, ?, ?>> T turnReportingOff(T t) {
+        return (T) t.turnReportingOff();
+    }
+
+    @SuppressWarnings("unused")
+    protected THIS setDescription(String description) {
         this.description = description;
-        MakesCapturesOnFinishing.makeCaptureSettings(this);
+        return (THIS) this;
     }
 
     @Override
     public Map<String, String> getParameters() {
-        var result = new LinkedHashMap<>(StepParameterPojo.super.getParameters());
+        var result = new LinkedHashMap<String, String>();
+        fillCustomParameters(result);
+
         var cls = (Class<?>) this.getClass();
+        fillCriteriaParameters(result);
+        fillTimeParameters(result);
 
-        var defaultParameters = ofNullable(cls.getAnnotation(SequentialGetStepSupplier.DefaultParameterNames.class))
-                .orElseGet(() -> {
-                    SequentialGetStepSupplier.DefaultParameterNames parameterNames = null;
-                    var clazz = cls;
-                    while (parameterNames == null) {
-                        clazz = clazz.getSuperclass();
-                        parameterNames = clazz.getAnnotation(SequentialGetStepSupplier.DefaultParameterNames.class);
-                    }
-                    return parameterNames;
-                });
-
-        int i = 0;
-        for (var c : conditions) {
-            var name = i == 0 ? defaultParameters.criteria() : defaultParameters.criteria() + " " + (i + 1);
-            result.put(name, c.toString());
-            i++;
-        }
-
-        ofNullable(timeToGet).ifPresent(duration -> {
-            if (duration.toMillis() > 0) {
-                result.put(defaultParameters.timeOut(), formatDurationHMS(duration.toMillis()));
-            }
-        });
-        ofNullable(sleepingTime).ifPresent(duration -> {
-            if (duration.toMillis() > 0) {
-                result.put(defaultParameters.pollingTime(), formatDurationHMS(duration.toMillis()));
+        ofNullable(getFromMetadata(cls, true)).ifPresent(metaData -> {
+            if (isLoggable(from) && nonNull(from)) {
+                result.put(translate(metaData), valueOf(from));
             }
         });
 
-        if (isLoggable(from) && nonNull(from)) {
-            var fromCls = from.getClass();
-            if (Function.class.isAssignableFrom(fromCls) || SequentialGetStepSupplier.class.isAssignableFrom(fromCls)) {
-                result.put(defaultParameters.from(), from + " (is calculated while the step is executed)");
-            } else {
-                result.put(defaultParameters.from(), valueOf(from));
-            }
+        if ((from instanceof SequentialGetStepSupplier<?, ?, ?, ?, ?>)
+                && this.getClass().getAnnotation(IncludeParamsOfInnerGetterStep.class) != null) {
+            var get = (SequentialGetStepSupplier<?, ?, ?, ?, ?>) from;
+            get.fillCustomParameters(result);
+            get.fillCriteriaParameters(result);
+            get.fillTimeParameters(result);
         }
 
         return result;
     }
 
     /**
+     * Means that the starting/ending/result of the build-step won't be reported
+     *
+     * @return self-reference
+     */
+    THIS turnReportingOff() {
+        toReport = false;
+        return (THIS) this;
+    }
+
+    void fillCustomParameters(Map<String, String> parameters) {
+        parameters.putAll(StepParameterPojo.super.getParameters());
+    }
+
+    void fillCriteriaParameters(Map<String, String> parameters) {
+        var cls = (Class<?>) this.getClass();
+
+        ofNullable(getCriteriaMetadata(cls, true)).ifPresent(metaData -> {
+            int i = 0;
+            for (var c : conditions) {
+                var criteria = i == 0 ? translate(metaData) : translate(metaData) + " " + (i + 1);
+                parameters.put(criteria, c.toString());
+                i++;
+            }
+        });
+    }
+
+    void fillTimeParameters(Map<String, String> parameters) {
+        var cls = (Class<?>) this.getClass();
+
+        ofNullable(getTimeOutMetadata(cls, true)).ifPresent(metaData ->
+                ofNullable(timeToGet).ifPresent(duration -> {
+                    if (duration.toMillis() > 0) {
+                        parameters.put(translate(metaData), formatDurationHMS(duration.toMillis()));
+                    }
+                }));
+
+        ofNullable(getPollingTimeMetadata(cls, true)).ifPresent(metaData ->
+                ofNullable(sleepingTime).ifPresent(duration -> {
+                    if (duration.toMillis() > 0) {
+                        parameters.put(translate(metaData), formatDurationHMS(duration.toMillis()));
+                    }
+                }));
+    }
+
+    /**
      * Sometimes it is necessary to get a value that suits some criteria.
      * This method adds the criteria to filter values.
-     * When this method and/or {@link #criteria(String, Predicate)} are invoked previously then it joins conditions with 'AND'.
+     * When this methods and/or {@link #criteria(String, Predicate)},
+     * {@link #criteriaOr(Criteria[])}, {@link #criteriaOnlyOne(Criteria[])},
+     * {@link #criteriaNot(Criteria[])} are invoked previously then it joins conditions with 'AND'.
      *
      * @param criteria is the criteria to get required value
      */
-    protected THIS criteria(Criteria<? super P> criteria) {
+    THIS criteria(Criteria<? super P> criteria) {
         conditions.add((Criteria<P>) criteria);
         condition = AND(conditions);
         return (THIS) this;
@@ -136,13 +174,56 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     /**
      * Sometimes it is necessary to get a value that suits some criteria.
      * This method adds the criteria to filter values.
-     * When this method and/or {@link #criteria(Criteria)} are invoked previously then it joins conditions with 'AND'.
+     * When this method and/or {@link #criteria(Criteria)},
+     * {@link #criteriaOr(Criteria[])}, {@link #criteriaOnlyOne(Criteria[])},
+     * {@link #criteriaNot(Criteria[])} are invoked previously then it joins conditions with 'AND'.
      *
      * @param description is a description of the criteria
      * @param predicate   is the the criteria
      */
-    protected THIS criteria(String description, Predicate<? super P> predicate) {
+    THIS criteria(String description, Predicate<? super P> predicate) {
         return criteria(condition(description, predicate));
+    }
+
+    /**
+     * Sometimes it is necessary to get a value that suits some composite criteria which
+     * unites multiple simple criteria in one OR-expression
+     * This method adds the criteria to filter values.
+     * When this method and/or {@link #criteria(Criteria)},
+     * {@link #criteria(String, Predicate)}, {@link #criteriaOnlyOne(Criteria[])},
+     * {@link #criteriaNot(Criteria[])} are invoked previously then it joins conditions with 'AND'.
+     *
+     * @param criteria to unite in OR-expression
+     */
+    THIS criteriaOr(Criteria<? super P>... criteria) {
+        return criteria(OR(criteria));
+    }
+
+    /**
+     * Sometimes it is necessary to get a value that suits some composite criteria which
+     * unites multiple simple criteria in one XOR-expression
+     * This method adds the criteria to filter values.
+     * When this method and/or {@link #criteria(Criteria)},
+     * {@link #criteriaOr(Criteria[])}, {@link #criteria(String, Predicate)},
+     * {@link #criteriaNot(Criteria[])} are invoked previously then it joins conditions with 'AND'.
+     *
+     * @param criteria to unite in XOR-expression
+     */
+    THIS criteriaOnlyOne(Criteria<? super P>... criteria) {
+        return criteria(ONLY_ONE(criteria));
+    }
+
+    /**
+     * Sometimes it is necessary to get a value that suits some inverted criteria.
+     * This method adds the criteria to filter values.
+     * When this method and/or {@link #criteria(Criteria)},
+     * {@link #criteriaOr(Criteria[])} (Criteria)}, {@link #criteria(String, Predicate)},
+     * {@link #criteriaOnlyOne{Criteria[])} are invoked previously then it joins conditions with 'AND'.
+     *
+     * @param criteria one or more criteria to be inverted
+     */
+    THIS criteriaNot(Criteria<? super P>... criteria) {
+        return criteria(NOT(criteria));
     }
 
     /**
@@ -174,14 +255,13 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     }
 
     /**
-     * This method defines an exception to be thrown when no valuable result is returned.
+     * This method says that it is necessary to throw an exception and to fail a test when
+     * no valuable data is returned.
      *
-     * @param exceptionSupplier is a supplier of exception to be thrown when invocation of {@link Function#apply(Object)}
-     *                          doesn't return any valuable result. {@link Function#apply(Object)} is invoked on the resulted function
      * @return self-reference
      */
-    protected THIS throwOnEmptyResult(Supplier<? extends RuntimeException> exceptionSupplier) {
-        this.exceptionSupplier = exceptionSupplier;
+    public THIS throwOnNoResult() {
+        this.exceptionSupplier = new ExceptionSupplier(this);
         return (THIS) this;
     }
 
@@ -223,124 +303,101 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         return (THIS) this;
     }
 
-    public THIS addIgnored(Collection<Class<? extends Throwable>> toBeIgnored) {
+    protected THIS addIgnored(Collection<Class<? extends Throwable>> toBeIgnored) {
         ignored.addAll(toBeIgnored);
         return (THIS) this;
     }
 
-    public THIS addIgnored(Class<? extends Throwable> toBeIgnored) {
+    protected THIS addIgnored(Class<? extends Throwable> toBeIgnored) {
         ignored.add(toBeIgnored);
         return (THIS) this;
     }
 
     /**
-     * Marks that it is needed to produce a {@link java.awt.image.BufferedImage} after invocation of
-     * {@link java.util.function.Function#apply(Object)} on built resulted {@link java.util.function.Function}.
-     * This image is produced by {@link Captor#getData(java.lang.Object)}
+     * Some additional action on start of the getting step-function
      *
-     * <p>NOTE 1</p>
-     * This image is produced if there is any subclass of {@link ImageCaptor}
-     * or {@link Captor} that may produce a {@link java.awt.image.BufferedImage}.
-     *
-     * <p>NOTE 2</p>
-     * A subclass of {@link ImageCaptor} or
-     * {@link Captor} should be able to handle resulted values {@code R}
-     * on success or input values {@code T} on failure.
-     *
-     * @return self-reference
+     * @param m is a mediator value is used to get the required result
      */
-    @Override
-    public THIS makeImageCaptureOnFinish() {
-        captorFilters.add(new CaptorFilterByProducedType(BufferedImage.class));
-        return (THIS) this;
+    protected void onStart(M m) {
     }
 
     /**
-     * Marks that it is needed to produce a {@link java.io.File} after invocation of
-     * {@link java.util.function.Function#apply(Object)} on built resulted {@link java.util.function.Function}.
-     * This image is produced by {@link Captor#getData(java.lang.Object)}
+     * Some additional action if the step is successful
      *
-     * <p>NOTE 1</p>
-     * This file is produced if there is any subclass of {@link FileCaptor}
-     * or {@link Captor} that may produce a {@link java.io.File}.
-     *
-     * <p>NOTE 2</p>
-     * A subclass of {@link FileCaptor} or
-     * {@link Captor} should be able to handle resulted values {@code R}
-     * on success or input values {@code T} on failure.
-     *
-     * @return self-reference
+     * @param r is a result value
      */
-    @Override
-    public THIS makeFileCaptureOnFinish() {
-        captorFilters.add(new CaptorFilterByProducedType(File.class));
-        return (THIS) this;
+    protected void onSuccess(R r) {
     }
 
     /**
-     * Marks that it is needed to produce a {@link java.lang.StringBuilder} after invocation of
-     * {@link java.util.function.Function#apply(Object)} on built resulted {@link java.util.function.Function}.
-     * This image is produced by {@link Captor#getData(java.lang.Object)}
+     * Some additional action if the step is failed
      *
-     * <p>NOTE 1</p>
-     * This string builder is produced if there is any subclass of {@link StringCaptor}
-     * or {@link Captor} that may produce a {@link java.lang.StringBuilder}.
-     *
-     * <p>NOTE 2</p>
-     * A subclass of {@link StringCaptor} or
-     * {@link Captor} should be able to handle resulted values {@code R}
-     * on success or input values {@code T} on failure.
-     *
-     * @return self-reference
+     * @param m         is a mediator value is used to get the required result
+     * @param throwable is a thrown exception/error
      */
-    @Override
-    public THIS makeStringCaptureOnFinish() {
-        captorFilters.add(new CaptorFilterByProducedType(StringBuilder.class));
-        return (THIS) this;
+    protected void onFailure(M m, Throwable throwable) {
     }
 
     /**
-     * Marks that it is needed to produce some value after invocation of
-     * {@link java.util.function.Function#apply(Object)} on built resulted {@link java.util.function.Function}.
-     * This image is produced by {@link Captor#getData(java.lang.Object)}
+     * Returns additional parameters calculated during step execution
      *
-     * <p>NOTE 1</p>
-     * This value is produced if there is any subclass of {@link Captor} that
-     * may produce  a value of type defined by {@param typeOfCapture}.
-     *
-     * <p>NOTE 2</p>
-     * A subclass of {@link Captor} should be able to handle resulted values {@code R}
-     * on success or input values {@code T} on failure.
-     *
-     * @param typeOfCapture is a type of a value to produce after the invocation of {@link java.util.function.Function#apply(Object)}
-     *                      on the built function is finished.
-     * @return self-reference
+     * @return additional parameters calculated during step execution
      */
-    @Override
-    public THIS onFinishMakeCaptureOfType(Class<?> typeOfCapture) {
-        captorFilters.add(new CaptorFilterByProducedType(typeOfCapture));
-        return (THIS) this;
+    protected Map<String, String> additionalParameters() {
+        return Map.of();
     }
 
     @Override
     public Function<T, R> get() {
         checkArgument(nonNull(from), "FROM-object is not defined");
         var composeWith = preparePreFunction();
-        var endFunction = getEndFunction();
+        var endFunction = new Function<M, R>() {
+            @Override
+            public R apply(M m) {
+                try {
+                    onStart(m);
+                    var result = getEndFunction().apply(m);
+                    onSuccess(result);
+                    return result;
+                } catch (Throwable t) {
+                    onFailure(m, t);
+                    throw t;
+                }
+            }
+        };
         checkNotNull(endFunction);
 
-        StepFunction<T, R> toBeReturned;
-        if (StepFunction.class.isAssignableFrom(composeWith.getClass())) {
-            var endFunctionStep = toGet(description, endFunction);
-            endFunctionStep.addCaptorFilters(captorFilters);
-            toBeReturned = endFunctionStep.compose(composeWith);
-            endFunctionStep.setParameters(getParameters());
-        } else {
-            toBeReturned = toGet(description, endFunction.compose(composeWith));
+        var params = getParameters();
+        var resultDescription = translate(getResultMetadata(this.getClass(), true));
+        var description = translate(translate(getImperativeMetadata(this.getClass(), true)) + " " + this.description).trim();
+
+        var toBeReturned = new Get<>(description, endFunction)
+                .setResultDescription(resultDescription)
+                .setParameters(params)
+                .setMaxDepth(getMaxDepth(this.getClass()))
+                .compose(composeWith);
+
+        if (toReport && catchSuccessEvent()) {
+            var successCaptors = new ArrayList<Captor<Object, Object>>();
+            readCaptorsOnSuccess(this.getClass(), successCaptors);
+            toBeReturned
+                    .addOnSuccessAdditional(of(FieldValueCaptureMaker.onSuccess(this)))
+                    .addSuccessCaptors(successCaptors);
         }
 
-        toBeReturned.addCaptorFilters(captorFilters);
-        return toBeReturned.setParameters(getParameters());
+        if (toReport && catchFailureEvent()) {
+            var failureCaptors = new ArrayList<Captor<Object, Object>>();
+            readCaptorsOnFailure(this.getClass(), failureCaptors);
+            toBeReturned
+                    .addOnFailureAdditional(of(FieldValueCaptureMaker.onFailure(this)))
+                    .addFailureCaptors(failureCaptors);
+        }
+
+        if (!toReport) {
+            toBeReturned.turnReportingOff();
+        }
+
+        return toBeReturned.setAdditionalParams(this::additionalParameters);
     }
 
     protected Function<T, M> preparePreFunction() {
@@ -358,6 +415,16 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     @Override
     public String toString() {
+        return getDescription();
+    }
+
+    /**
+     * The method {@link #toString()} is possible to be overridden. This method is for such cases when it is necessary to
+     * have access to step description.
+     *
+     * @return step description.
+     */
+    protected String getDescription() {
         return description;
     }
 
@@ -372,8 +439,41 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     protected abstract Function<M, R> getEndFunction();
 
-    protected Criteria<P> getCriteria() {
+    Criteria<P> getCriteria() {
         return condition;
+    }
+
+    protected final Object getFrom() {
+        return from;
+    }
+
+    public static class GetSimpleStepSupplier<T, R, THIS extends GetSimpleStepSupplier<T, R, THIS>>
+            extends SequentialGetStepSupplier<T, R, T, R, THIS> {
+
+        private final Function<T, R> originalFunction;
+
+        protected GetSimpleStepSupplier(Function<T, R> originalFunction) {
+            super();
+            this.originalFunction = originalFunction;
+            from(t -> t);
+        }
+
+        @Override
+        protected Function<T, R> getEndFunction() {
+            return ofNullable(timeToGet)
+                    .map(wait -> ofNullable(sleepingTime)
+                            .map(sleep -> ofNullable(exceptionSupplier)
+                                    .map(supplier -> getSingle(originalFunction, wait, sleep, supplier, ignored.toArray(new Class[]{})))
+                                    .orElseGet(() -> getSingle(originalFunction, wait, sleep, ignored.toArray(new Class[]{}))))
+
+                            .orElseGet(() -> ofNullable(exceptionSupplier)
+                                    .map(supplier -> getSingle(originalFunction, wait, supplier, ignored.toArray(new Class[]{})))
+                                    .orElseGet(() -> getSingle(originalFunction, wait, ignored.toArray(new Class[]{})))))
+
+                    .orElseGet(() -> ofNullable(exceptionSupplier)
+                            .map(supplier -> getSingle(originalFunction, supplier, ignored.toArray(new Class[]{})))
+                            .orElse(getSingle(originalFunction, ignored.toArray(new Class[]{}))));
+        }
     }
 
     private static abstract class PrivateGetObjectStepSupplier<T, R, M, THIS extends PrivateGetObjectStepSupplier<T, R, M, THIS>>
@@ -381,9 +481,34 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
         private final Function<M, R> originalFunction;
 
-        PrivateGetObjectStepSupplier(String description, Function<M, R> originalFunction) {
-            super(description);
+        PrivateGetObjectStepSupplier(Function<M, R> originalFunction) {
+            super();
             this.originalFunction = originalFunction;
+        }
+
+        @Override
+        public THIS criteria(Criteria<? super R> criteria) {
+            return super.criteria(criteria);
+        }
+
+        @Override
+        public THIS criteria(String description, Predicate<? super R> predicate) {
+            return super.criteria(description, predicate);
+        }
+
+        @Override
+        public THIS criteriaOr(Criteria<? super R>... criteria) {
+            return super.criteriaOr(criteria);
+        }
+
+        @Override
+        public THIS criteriaOnlyOne(Criteria<? super R>... criteria) {
+            return super.criteriaOnlyOne(criteria);
+        }
+
+        @Override
+        public THIS criteriaNot(Criteria<? super R>... criteria) {
+            return super.criteriaNot(criteria);
         }
 
         @Override
@@ -429,8 +554,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public static abstract class GetObjectStepSupplier<T, R, THIS extends GetObjectStepSupplier<T, R, THIS>>
             extends PrivateGetObjectStepSupplier<T, R, T, THIS> {
 
-        protected GetObjectStepSupplier(String description, Function<T, R> originalFunction) {
-            super(description, originalFunction);
+        protected GetObjectStepSupplier(Function<T, R> originalFunction) {
+            super(originalFunction);
             from(t -> t);
         }
     }
@@ -446,8 +571,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public static abstract class GetObjectChainedStepSupplier<T, R, M, THIS extends GetObjectChainedStepSupplier<T, R, M, THIS>>
             extends PrivateGetObjectStepSupplier<T, R, M, THIS> {
 
-        protected GetObjectChainedStepSupplier(String description, Function<M, R> originalFunction) {
-            super(description, originalFunction);
+        protected GetObjectChainedStepSupplier(Function<M, R> originalFunction) {
+            super(originalFunction);
         }
 
         @Override
@@ -471,9 +596,34 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
         private final Function<M, ? extends Iterable<R>> originalFunction;
 
-        protected <S extends Iterable<R>> PrivateGetObjectFromIterableStepSupplier(String description, Function<M, S> originalFunction) {
-            super(description);
+        protected <S extends Iterable<R>> PrivateGetObjectFromIterableStepSupplier(Function<M, S> originalFunction) {
+            super();
             this.originalFunction = originalFunction;
+        }
+
+        @Override
+        public THIS criteria(Criteria<? super R> criteria) {
+            return super.criteria(criteria);
+        }
+
+        @Override
+        public THIS criteria(String description, Predicate<? super R> predicate) {
+            return super.criteria(description, predicate);
+        }
+
+        @Override
+        public THIS criteriaOr(Criteria<? super R>... criteria) {
+            return super.criteriaOr(criteria);
+        }
+
+        @Override
+        public THIS criteriaOnlyOne(Criteria<? super R>... criteria) {
+            return super.criteriaOnlyOne(criteria);
+        }
+
+        @Override
+        public THIS criteriaNot(Criteria<? super R>... criteria) {
+            return super.criteriaNot(criteria);
         }
 
         @Override
@@ -519,8 +669,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public static abstract class GetObjectFromIterableStepSupplier<T, R, THIS extends GetObjectFromIterableStepSupplier<T, R, THIS>>
             extends PrivateGetObjectFromIterableStepSupplier<T, R, T, THIS> {
 
-        protected <S extends Iterable<R>> GetObjectFromIterableStepSupplier(String description, Function<T, S> originalFunction) {
-            super(description, originalFunction);
+        protected <S extends Iterable<R>> GetObjectFromIterableStepSupplier(Function<T, S> originalFunction) {
+            super(originalFunction);
             from(t -> t);
         }
     }
@@ -536,8 +686,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public static abstract class GetObjectFromIterableChainedStepSupplier<T, R, M, THIS extends GetObjectFromIterableChainedStepSupplier<T, R, M, THIS>>
             extends PrivateGetObjectFromIterableStepSupplier<T, R, M, THIS> {
 
-        protected <S extends Iterable<R>> GetObjectFromIterableChainedStepSupplier(String description, Function<M, S> originalFunction) {
-            super(description, originalFunction);
+        protected <S extends Iterable<R>> GetObjectFromIterableChainedStepSupplier(Function<M, S> originalFunction) {
+            super(originalFunction);
         }
 
         @Override
@@ -561,9 +711,34 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
         private final Function<M, R[]> originalFunction;
 
-        PrivateGetObjectFromArrayStepSupplier(String description, Function<M, R[]> originalFunction) {
-            super(description);
+        PrivateGetObjectFromArrayStepSupplier(Function<M, R[]> originalFunction) {
+            super();
             this.originalFunction = originalFunction;
+        }
+
+        @Override
+        public THIS criteria(Criteria<? super R> criteria) {
+            return super.criteria(criteria);
+        }
+
+        @Override
+        public THIS criteria(String description, Predicate<? super R> predicate) {
+            return super.criteria(description, predicate);
+        }
+
+        @Override
+        public THIS criteriaOr(Criteria<? super R>... criteria) {
+            return super.criteriaOr(criteria);
+        }
+
+        @Override
+        public THIS criteriaOnlyOne(Criteria<? super R>... criteria) {
+            return super.criteriaOnlyOne(criteria);
+        }
+
+        @Override
+        public THIS criteriaNot(Criteria<? super R>... criteria) {
+            return super.criteriaNot(criteria);
         }
 
         @Override
@@ -609,8 +784,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public static abstract class GetObjectFromArrayStepSupplier<T, R, THIS extends GetObjectFromArrayStepSupplier<T, R, THIS>>
             extends PrivateGetObjectFromArrayStepSupplier<T, R, T, THIS> {
 
-        protected GetObjectFromArrayStepSupplier(String description, Function<T, R[]> originalFunction) {
-            super(description, originalFunction);
+        protected GetObjectFromArrayStepSupplier(Function<T, R[]> originalFunction) {
+            super(originalFunction);
             from(t -> t);
         }
     }
@@ -626,8 +801,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public static abstract class GetObjectFromArrayChainedStepSupplier<T, R, M, THIS extends GetObjectFromArrayChainedStepSupplier<T, R, M, THIS>>
             extends PrivateGetObjectFromArrayStepSupplier<T, R, M, THIS> {
 
-        protected GetObjectFromArrayChainedStepSupplier(String description, Function<M, R[]> originalFunction) {
-            super(description, originalFunction);
+        protected GetObjectFromArrayChainedStepSupplier(Function<M, R[]> originalFunction) {
+            super(originalFunction);
         }
 
         @Override
@@ -651,9 +826,34 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
         private final Function<M, S> originalFunction;
 
-        PrivateGetIterableStepSupplier(String description, Function<M, S> originalFunction) {
-            super(description);
+        PrivateGetIterableStepSupplier(Function<M, S> originalFunction) {
+            super();
             this.originalFunction = originalFunction;
+        }
+
+        @Override
+        public THIS criteria(Criteria<? super R> criteria) {
+            return super.criteria(criteria);
+        }
+
+        @Override
+        public THIS criteria(String description, Predicate<? super R> predicate) {
+            return super.criteria(description, predicate);
+        }
+
+        @Override
+        public THIS criteriaOr(Criteria<? super R>... criteria) {
+            return super.criteriaOr(criteria);
+        }
+
+        @Override
+        public THIS criteriaOnlyOne(Criteria<? super R>... criteria) {
+            return super.criteriaOnlyOne(criteria);
+        }
+
+        @Override
+        public THIS criteriaNot(Criteria<? super R>... criteria) {
+            return super.criteriaNot(criteria);
         }
 
         @Override
@@ -700,8 +900,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public static abstract class GetIterableStepSupplier<T, S extends Iterable<R>, R, THIS extends GetIterableStepSupplier<T, S, R, THIS>>
             extends PrivateGetIterableStepSupplier<T, S, T, R, THIS> {
 
-        protected GetIterableStepSupplier(String description, Function<T, S> originalFunction) {
-            super(description, originalFunction);
+        protected GetIterableStepSupplier(Function<T, S> originalFunction) {
+            super(originalFunction);
             from(t -> t);
         }
     }
@@ -718,8 +918,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public static abstract class GetIterableChainedStepSupplier<T, S extends Iterable<R>, M, R, THIS extends GetIterableChainedStepSupplier<T, S, M, R, THIS>>
             extends PrivateGetIterableStepSupplier<T, S, M, R, THIS> {
 
-        protected GetIterableChainedStepSupplier(String description, Function<M, S> originalFunction) {
-            super(description, originalFunction);
+        protected GetIterableChainedStepSupplier(Function<M, S> originalFunction) {
+            super(originalFunction);
         }
 
         @Override
@@ -738,14 +938,39 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
     }
 
-    private static class PrivateGetArrayStepSupplier<T, M, R, THIS extends PrivateGetArrayStepSupplier<T, M, R, THIS>>
+    private static class PrivateGetArrayStepSupplier<T, R, M, THIS extends PrivateGetArrayStepSupplier<T, R, M, THIS>>
             extends SequentialGetStepSupplier<T, R[], M, R, THIS> {
 
         private final Function<M, R[]> originalFunction;
 
-        PrivateGetArrayStepSupplier(String description, Function<M, R[]> originalFunction) {
-            super(description);
+        PrivateGetArrayStepSupplier(Function<M, R[]> originalFunction) {
+            super();
             this.originalFunction = originalFunction;
+        }
+
+        @Override
+        public THIS criteria(Criteria<? super R> criteria) {
+            return super.criteria(criteria);
+        }
+
+        @Override
+        public THIS criteria(String description, Predicate<? super R> predicate) {
+            return super.criteria(description, predicate);
+        }
+
+        @Override
+        public THIS criteriaOr(Criteria<? super R>... criteria) {
+            return super.criteriaOr(criteria);
+        }
+
+        @Override
+        public THIS criteriaOnlyOne(Criteria<? super R>... criteria) {
+            return super.criteriaOnlyOne(criteria);
+        }
+
+        @Override
+        public THIS criteriaNot(Criteria<? super R>... criteria) {
+            return super.criteriaNot(criteria);
         }
 
         @Override
@@ -789,11 +1014,10 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
     public static abstract class GetArrayStepSupplier<T, R, THIS extends GetArrayStepSupplier<T, R, THIS>>
-            extends PrivateGetArrayStepSupplier<T, T, R, THIS> {
+            extends PrivateGetArrayStepSupplier<T, R, T, THIS> {
 
-
-        protected GetArrayStepSupplier(String description, Function<T, R[]> originalFunction) {
-            super(description, originalFunction);
+        protected GetArrayStepSupplier(Function<T, R[]> originalFunction) {
+            super(originalFunction);
             from(t -> t);
         }
     }
@@ -806,11 +1030,11 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <R>    is a type of an an item from resulted array
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetArrayChainedStepSupplier<T, M, R, THIS extends GetArrayChainedStepSupplier<T, M, R, THIS>>
-            extends PrivateGetArrayStepSupplier<T, M, R, THIS> {
+    public static abstract class GetArrayChainedStepSupplier<T, R, M, THIS extends GetArrayChainedStepSupplier<T, R, M, THIS>>
+            extends PrivateGetArrayStepSupplier<T, R, M, THIS> {
 
-        protected GetArrayChainedStepSupplier(String description, Function<M, R[]> originalFunction) {
-            super(description, originalFunction);
+        protected GetArrayChainedStepSupplier(Function<M, R[]> originalFunction) {
+            super(originalFunction);
         }
 
         @Override
@@ -829,39 +1053,44 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
     }
 
-    /**
-     * This annotation is designed to mark subclasses of {@link SequentialGetStepSupplier}. It is
-     * used for the reading of timeouts, polling intervals, {@code from}-values, criteria and for the
-     * forming of parameters of a resulted step-function.
-     *
-     * @see SequentialGetStepSupplier#timeOut(Duration)
-     * @see SequentialGetStepSupplier#pollingInterval(Duration)
-     * @see SequentialGetStepSupplier#criteria(Criteria)
-     * @see SequentialGetStepSupplier#criteria(String, Predicate)
-     * @see SequentialGetStepSupplier#from(Object)
-     * @see SequentialGetStepSupplier#from(SequentialGetStepSupplier)
-     * @see SequentialGetStepSupplier#from(Function)
-     */
     @Retention(RUNTIME)
     @Target({TYPE})
-    public @interface DefaultParameterNames {
+    public @interface DefineGetImperativeParameterName {
+        /**
+         * Defines name of imperative of a step
+         *
+         * @return imperative of a step
+         */
+        String value() default "Get:";
+    }
 
+    @Retention(RUNTIME)
+    @Target({TYPE})
+    public @interface DefineTimeOutParameterName {
         /**
          * Defines name of the timeout-parameter
          *
          * @return Defined name of the timeout-parameter
          * @see SequentialGetStepSupplier#timeOut(Duration)
          */
-        String timeOut() default "Timeout/time for retrying";
+        String value() default "Timeout/time for retrying";
+    }
 
+    @Retention(RUNTIME)
+    @Target({TYPE})
+    public @interface DefinePollingTimeParameterName {
         /**
          * Defines name of the polling/sleeping time-parameter
          *
          * @return Defined name of the polling/sleeping time-parameter
          * @see SequentialGetStepSupplier#pollingInterval(Duration)
          */
-        String pollingTime() default "Polling time";
+        String value() default "Polling time";
+    }
 
+    @Retention(RUNTIME)
+    @Target({TYPE})
+    public @interface DefineCriteriaParameterName {
         /**
          * Defines name of the criteria-parameter
          *
@@ -869,8 +1098,12 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
          * @see SequentialGetStepSupplier#criteria(Criteria)
          * @see SequentialGetStepSupplier#criteria(String, Predicate)
          */
-        String criteria() default "Criteria";
+        String value() default "Criteria";
+    }
 
+    @Retention(RUNTIME)
+    @Target({TYPE})
+    public @interface DefineFromParameterName {
         /**
          * Defines name of the from-parameter
          *
@@ -879,6 +1112,97 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
          * @see SequentialGetStepSupplier#from(SequentialGetStepSupplier)
          * @see SequentialGetStepSupplier#from(Function)
          */
-        String from() default "Get from";
+        String value() default "Get from";
+    }
+
+    @Retention(RUNTIME)
+    @Target({TYPE})
+    public @interface DefineResultDescriptionParameterName {
+        /**
+         * Defines name of the parameter that describes a returned value
+         */
+        String value() default "Result";
+    }
+
+    public static final class DefaultGetParameterReader {
+
+        private DefaultGetParameterReader() {
+            super();
+        }
+
+        public static AdditionalMetadata<StepParameter> getFromMetadata(Class<?> toRead, boolean useInheritance) {
+            return readAnnotation(toRead, DefineFromParameterName.class, "from", useInheritance);
+        }
+
+        public static AdditionalMetadata<StepParameter> getPollingTimeMetadata(Class<?> toRead, boolean useInheritance) {
+            return readAnnotation(toRead, DefinePollingTimeParameterName.class, "pollingTime", useInheritance);
+        }
+
+        public static AdditionalMetadata<StepParameter> getTimeOutMetadata(Class<?> toRead, boolean useInheritance) {
+            return readAnnotation(toRead, DefineTimeOutParameterName.class, "timeOut", useInheritance);
+        }
+
+        public static AdditionalMetadata<StepParameter> getCriteriaMetadata(Class<?> toRead, boolean useInheritance) {
+            return readAnnotation(toRead, DefineCriteriaParameterName.class, "criteria", useInheritance);
+        }
+
+        public static AdditionalMetadata<StepParameter> getImperativeMetadata(Class<?> toRead, boolean useInheritance) {
+            return readAnnotation(toRead, DefineGetImperativeParameterName.class, "imperative", useInheritance);
+        }
+
+        public static AdditionalMetadata<StepParameter> getResultMetadata(Class<?> toRead, boolean useInheritance) {
+            return readAnnotation(toRead, DefineResultDescriptionParameterName.class, "resultDescription", useInheritance);
+        }
+
+        public static AdditionalMetadata<StepParameter> getExceptionMessageStartMetadata(Class<?> toRead, boolean useInheritance) {
+            var declaredBy = getDeclaredBy(toRead, useInheritance);
+            if (declaredBy == null) {
+                return null;
+            }
+
+            return new AdditionalMetadata<>(declaredBy, "errorMessageStartingOnEmptyResult", StepParameter.class, () -> {
+                try {
+                    return createStepParameter(declaredBy.getAnnotation(ThrowWhenNoData.class).startDescription());
+                } catch (Exception t) {
+                    throw new RuntimeException(t);
+                }
+            });
+        }
+
+        private static AdditionalMetadata<StepParameter> readAnnotation(Class<?> toRead, Class<? extends Annotation> annotationClass,
+                                                                        String name, boolean useInheritance) {
+            if (!SequentialGetStepSupplier.class.isAssignableFrom(toRead)) {
+                return null;
+            }
+
+            var cls = toRead;
+            while (!cls.equals(Object.class)) {
+                var annotation = cls.getAnnotation(annotationClass);
+                if (annotation != null) {
+                    try {
+                        var valueMethod = annotation.annotationType().getMethod("value");
+                        valueMethod.setAccessible(true);
+                        return new AdditionalMetadata<>(cls, name, StepParameter.class, () -> {
+                            try {
+                                return createStepParameter((String) valueMethod.invoke(annotation));
+                            } catch (Exception t) {
+                                throw new RuntimeException(t);
+                            }
+                        });
+                    } catch (NoSuchMethodException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                if (useInheritance) {
+                    cls = cls.getSuperclass();
+                } else {
+                    return null;
+                }
+            }
+
+            return null;
+        }
+
     }
 }

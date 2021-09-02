@@ -2,13 +2,34 @@
 
 [Подробнее о механизме настроек](./../../../core.api/doc/rus/SETTINGS.MD).
 
-Описанный ниже набор настроек/свойств дополняет [базовый набор настроек/свойств](./../../../core.api/doc/rus/SETTINGS.MD#Основной-набор-настроек/свойств),
+Описанный ниже набор настроек/свойств дополняет [базовый набор настроек/свойств](./../../../core.api/doc/rus/SETTINGS.MD#Основной-набор-настроексвойств),
 которые могут быть включены в `neptune.global.properties` или в `neptune.properties`, или использованы в качестве
-свойств/переменных окружения в той среде, в которой запускаются тесты:
+свойств/переменных окружения/среды в той среде, в которой запускаются тесты.
+
+## Оглавление
+   - [DEFAULT_HTTP_AUTHENTICATOR](#DEFAULT_HTTP_AUTHENTICATOR)
+   - [DEFAULT_HTTP_COOKIE_HANDLER](#DEFAULT_HTTP_COOKIE_HANDLER)
+   - [DEFAULT_HTTP_EXECUTOR](#DEFAULT_HTTP_EXECUTOR)
+   - [DEFAULT_HTTP_PRIORITY](#DEFAULT_HTTP_PRIORITY)
+   - [DEFAULT_HTTP_PROTOCOL_VERSION](#DEFAULT_HTTP_PROTOCOL_VERSION)
+   - [DEFAULT_HTTP_PROXY_SELECTOR](#DEFAULT_HTTP_PROXY_SELECTOR)
+   - [DEFAULT_HTTP_REDIRECT_POLICY](#DEFAULT_HTTP_REDIRECT_POLICY)
+   - [DEFAULT_HTTP_SSL_CONTEXT](#DEFAULT_HTTP_SSL_CONTEXT)
+   - [DEFAULT_HTTP_SSL_PARAMETERS](#DEFAULT_HTTP_SSL_PARAMETERS)
+   - [Время подключения http клиента к сервису по умолчанию](#Время-подключения-http-клиента-к-сервису-по-умолчанию)
+   - [Сериализация и десериализация тел http запросов и ответов](#Сериализация-и-десериализация-тел-http-запросов-и-ответов)
+     - [JSON DEFAULT_JSON_MAPPER](#JSON-DEFAULT_JSON_MAPPER)
+     - [XML DEFAULT_JSON_MAPPER](#XML-DEFAULT_XML_MAPPER)
+   - [END_POINT_OF_TARGET_API](#END_POINT_OF_TARGET_API)
+   - [Формат даты по умолчанию](#Формат-даты-по-умолчанию)
+     - [API_DATE_FORMAT](#API_DATE_FORMAT)
+     - [API_DATE_FORMAT_SYMBOLS](#API_DATE_FORMAT_SYMBOLS)
+     - [API_DATE_FORMAT_TIME_ZONE](#API_DATE_FORMAT_TIME_ZONE)
+   - [Http лог](#Http-лог)    
 
 ## DEFAULT_HTTP_AUTHENTICATOR
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Настройка предоставляет объект `java.net.Authenticator`, подготовленный нужным образом, и который используется http клиентом по умолчанию.
 
@@ -53,11 +74,13 @@ public class SomeClass {
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
 
-</details>
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+
 
 ## DEFAULT_HTTP_COOKIE_HANDLER
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Настройка предоставляет объект `java.net.CookieManager`, подготовленный нужным образом, и который используется http клиентом по умолчанию.
 
@@ -105,11 +128,13 @@ public class SomeClass {
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
 
-</details>
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+
 
 ## DEFAULT_HTTP_EXECUTOR
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Настройка предоставляет объект `java.util.concurrent.Executor`, подготовленный нужным образом, и который используется http клиентом по умолчанию.
 
@@ -153,11 +178,13 @@ public class SomeClass {
 ```
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
-</details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ## DEFAULT_HTTP_PRIORITY
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Настройка определяет приоритет запросов, отправляемых http-клиентом. Актуально для HTTP 2.0. Значение должно быть в диапазоне 
 от 1 до 256 (включительно).
@@ -184,14 +211,15 @@ public class SomeClass {
 ```
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-чисел)
-</details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ## DEFAULT_HTTP_PROTOCOL_VERSION
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Настройка указывает версию http-протокола. Доступные значения - `HTTP_1_1` и `HTTP_2` - объекты перечисления `java.net.http.HttpClient.Version`.
-
 
 Пример настройки:
 
@@ -216,11 +244,13 @@ public class SomeClass {
 ```
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-объектов-перечислений)
-</details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ## DEFAULT_HTTP_PROXY_SELECTOR
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Настройка предоставляет объект `java.net.ProxySelector`, подготовленный нужным образом, и который используется http клиентом по умолчанию.
 
@@ -264,11 +294,13 @@ public class SomeClass {
 ```
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
-</details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ## DEFAULT_HTTP_REDIRECT_POLICY
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Настройка политики перенаправления http-запросов по умолчанию. Доступные значения - `NEVER`, `ALWAYS` и `NORMAL` - объекты перечисления `java.net.http.HttpClient.Redirect`.
 
@@ -296,11 +328,13 @@ public class SomeClass {
 ```
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-объектов-перечислений)
-</details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ## DEFAULT_HTTP_SSL_CONTEXT
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Настройка предоставляет объект `javax.net.ssl.SSLContext`, подготовленный нужным образом, и который используется http клиентом по умолчанию.
 
@@ -347,11 +381,13 @@ public class SomeClass {
 Данный поставщик возвращает объекты `javax.net.ssl.SSLContext`, которые принимают любые сертификаты.
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
-</details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ## DEFAULT_HTTP_SSL_PARAMETERS
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Настройка предоставляет объект `javax.net.ssl.SSLParameters`, подготовленный нужным образом, и который используется http клиентом по умолчанию.
 
@@ -395,11 +431,13 @@ public class SomeClass {
 ```
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
-</details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ## Время подключения http клиента к сервису по умолчанию
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Свойства `DEFAULT_HTTP_CONNECTION_TIME_UNIT` и `DEFAULT_HTTP_CONNECTION_TIME` определяют время подключения http-клиента к сервису по умолчанию.
 Для свойства `DEFAULT_HTTP_CONNECTION_TIME_UNIT` следует указать значение, соответствующее одному из элементов перечисления `java.time.temporal.ChronoUnit`,
@@ -428,13 +466,15 @@ public class SomeClass {
 ```
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-величины-продолжительности)
-</details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ## Сериализация и десериализация тел http запросов и ответов
 
 ### JSON DEFAULT_JSON_MAPPER
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Настройка предоставляет объект `com.fasterxml.jackson.databind.ObjectMapper`, подготовленный нужным образом. Этот объект будет 
 использован по умолчанию для десериализации JSON-тел ответов сервисов на http-запросы и сериализации тел http-запросов в JSON.
@@ -482,11 +522,13 @@ public class SomeClass {
 ```
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
-</details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ### XML DEFAULT_XML_MAPPER
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Настройка предоставляет объект `com.fasterxml.jackson.dataformat.xml.XmlMapper`, подготовленный нужным образом. Этот объект будет
 использован по умолчанию для десериализации XML-тел ответов сервисов на http-запросы и сериализации тел http-запросов в XML.
@@ -534,11 +576,13 @@ public class SomeClass {
 ```
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
-</details>
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## END_POINT_OF_TARGET_API
-<details>
-    <summary>Нажми, чтобы прочесть</summary>
 
 Настройка указывает URL сервисов по умолчанию. Это корневой адрес приложения/приложений, обычно в формате `схема или протокол`://`хост:порт если есть/фрагмент/пути/если/надо`.
 
@@ -566,17 +610,141 @@ public class SomeClass {
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов-URL)
 
-Пользователь может самостоятельно создавать аналогичные типизированные свойства и привязывать их к сервисам, чей корневой URL
-отличается от дефолтного. Об этих нюансах подробно в [Дефолтный корневой URL](./MAPPING.MD#Дефолтный-корневой-URL) и в [Недефолтные корневые URL](./MAPPING.MD#Недефолтные-корневые-URL)
+Пользователь может самостоятельно создавать аналогичные типизированные свойства и привязывать их к сервисам, чей
+корневой URL отличается от дефолтного. Об этих нюансах подробно
+в [Дефолтный корневой URL](./MAPPING.MD#Дефолтный-корневой-URL) и
+в [Недефолтные корневые URL](./MAPPING.MD#Недефолтные-корневые-URL)
 
-</details>
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+
+
+## Формат даты по умолчанию
+
+Для того чтобы настроить формат сериализации и десериализации дат, которые используются в качестве значений
+query-параметров, фрагментов путей, значений заголовков и тел http-запросов, можно использовать перечисленные ниже
+свойства/переменные окружения/среды. В основном, это актуально при [мэппинге http-сервисов](./MAPPING.MD)
+
+### API_DATE_FORMAT
+
+Указывает сам формат дат.
+
+Пример настройки:
+
+```properties
+#Значение свойства указывается так
+API_DATE_FORMAT=yyyy-MM-dd'T'HH:mm:ss
+```
+
+```java
+import java.text.SimpleDateFormat;
+
+import static ru.tinkoff.qa.neptune.http.api.properties.date.format
+        .ApiDateFormatProperty.API_DATE_FORMAT_PROPERTY;
+
+public class SomeClass {
+    
+    public void someVoid() {
+        //пример доступа до значения свойства
+        SimpleDateFormat format = API_DATE_FORMAT_PROPERTY.get();
+    }
+}
+```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+
+### API_DATE_FORMAT_SYMBOLS
+
+
+Можно дополнить формат, указанный в переменной окружения/свойстве `API_DATE_FORMAT`, использованием объекта класса
+`java.text.DateFormatSymbols`.
+
+Пример настройки:
+
+```java
+package org.my.pack;
+
+import java.text.DateFormatSymbols;
+import java.util.function.Supplier;
+
+//Создаем поставщика, который будет поставлять объекты класса java.text.DateFormatSymbols
+public class MySslContextSupplier implements Supplier<DateFormatSymbols> {
+
+    @Override
+    public DateFormatSymbols get() {
+        //Тут создается объект
+    }
+}
+```
+
+```properties
+#Значение свойства указывается так
+API_DATE_FORMAT_SYMBOLS=org.my.pack.MySslContextSupplier
+```
+
+```java
+import java.text.DateFormatSymbols;
+
+import static ru.tinkoff.qa.neptune.http.api.properties.date.format
+        .ApiDateFormatSymbolsProperty.API_DATE_FORMAT_SYMBOLS_PROPERTY;
+
+public class SomeClass {
+
+    public void someVoid() {
+        //пример доступа до значения свойства
+        DateFormatSymbols symbols = API_DATE_FORMAT_SYMBOLS_PROPERTY.get();
+    }
+}
+```
+
+[Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+
+### API_DATE_FORMAT_TIME_ZONE
+
+
+    
+
+Можно дополнить формат, указанный в переменной окружения/свойстве `API_DATE_FORMAT`, значением тайм-зоны.
+
+Пример настройки:
+
+```properties
+#Значение свойства указывается так
+API_DATE_FORMAT_TIME_ZONE=Europe/Moscow
+```
+
+```java
+import java.util.TimeZone;
+
+import static ru.tinkoff.qa.neptune.http.api.properties.date.format
+        .ApiTimeZoneProperty.API_TIME_ZONE_PROPERTY;
+
+public class SomeClass {
+    
+    public void someVoid() {
+        //пример доступа до значения свойства
+        TimeZone timeZone = API_TIME_ZONE_PROPERTY.get();
+    }
+}
+```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## Http лог
-<details>
-    <summary>Нажми, чтобы прочесть</summary>
 
-Neptune не имеет на поддержке такого свойства. `jdk.httpclient.HttpClient.log` - это стандартное свойство/настройка Java начиная с 11 версии.
-Но его точно так же можно указать в `neptune.global.properties` или в `neptune.properties`.
+
+    
+
+Neptune не имеет на поддержке таких свойств/переменных окружения. `jdk.httpclient.HttpClient.log` - это стандартное
+свойство/настройка Java начиная с 11 версии. Но его точно так же можно указать в `neptune.global.properties` или
+в `neptune.properties`.
 
 ```properties
 #Логирование всех событий
@@ -586,4 +754,4 @@ jdk.httpclient.HttpClient.log=all
 Включенный лог будет выводиться на консоль, а так же попадет в виде приложенных файлов в отчет о прохождении тестов, если выполнена 
 [соответствующая настройка](./../../../core.api/doc/rus/EVENTS.MD#Когда-следует-создавать-аттачи-в-отчете-о-прохождении)
 
-</details>
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)

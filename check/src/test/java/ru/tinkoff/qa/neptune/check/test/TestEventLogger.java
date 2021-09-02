@@ -25,13 +25,18 @@ public class TestEventLogger implements EventLogger {
     }
 
     @Override
-    public void fireReturnedValue(Object returned) {
-        var msg = format("%s has been returned", returned);
+    public void fireReturnedValue(String resultDescription, Object returned) {
+        var msg = format("%s: %s has been returned", resultDescription, returned);
         MESSAGES.add(msg);
     }
 
     @Override
     public void fireEventFinishing() {
         MESSAGES.add("Event finished");
+    }
+
+    @Override
+    public void addParameters(Map<String, String> parameters) {
+
     }
 }

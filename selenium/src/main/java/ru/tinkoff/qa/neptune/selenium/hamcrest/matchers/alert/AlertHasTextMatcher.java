@@ -1,20 +1,24 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.alert;
 
-import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.openqa.selenium.Alert;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static org.hamcrest.Matchers.equalTo;
 
-public final class AlertHasTextMatcher extends TypeSafeDiagnosingMatcher<Alert> {
+@Description("alert text {textMatcher}")
+public final class AlertHasTextMatcher extends NeptuneFeatureMatcher<Alert> {
 
+    @DescriptionFragment(value = "textMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
     private final Matcher<String> textMatcher;
 
     private AlertHasTextMatcher(Matcher<String> textMatcher) {
+        super(true);
         checkArgument(nonNull(textMatcher), "Criteria for the matching of a text should be defined");
         this.textMatcher = textMatcher;
     }
@@ -40,18 +44,13 @@ public final class AlertHasTextMatcher extends TypeSafeDiagnosingMatcher<Alert> 
     }
 
     @Override
-    protected boolean matchesSafely(Alert item, Description mismatchDescription) {
-        var text = item.getText();
+    protected boolean featureMatches(Alert toMatch) {
+        var text = toMatch.getText();
         var result = textMatcher.matches(text);
 
         if (!result) {
-            textMatcher.describeMismatch(text, mismatchDescription);
+            appendMismatchDescription(textMatcher, text);
         }
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return format("text of the alert %s", textMatcher.toString());
     }
 }

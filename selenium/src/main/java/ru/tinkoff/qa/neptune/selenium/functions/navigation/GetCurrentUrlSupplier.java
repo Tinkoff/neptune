@@ -1,20 +1,24 @@
 package ru.tinkoff.qa.neptune.selenium.functions.navigation;
 
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.currentWindow;
 
-@SequentialGetStepSupplier.DefaultParameterNames(
-        from = "Window/tab to get URL string value from"
-)
+@Description("URL of the page")
+@SequentialGetStepSupplier.DefineFromParameterName("Window/tab to get URL from")
+@MaxDepthOfReporting(0)
+@IncludeParamsOfInnerGetterStep
 public final class GetCurrentUrlSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, String, Window, GetCurrentUrlSupplier> {
 
     private GetCurrentUrlSupplier() {
-        super("URL of the loaded page", Window::getCurrentUrl);
+        super(Window::getCurrentUrl);
     }
 
     /**

@@ -1,18 +1,21 @@
 package ru.tinkoff.qa.neptune.http.api.test;
 
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasQueryStringMatcher;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.lang.String.format;
-import static java.net.http.HttpClient.Version.HTTP_1_1;
+import static java.net.http.HttpClient.Version.HTTP_2;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasHostMatcher.uriHasHost;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPathMatcher.uriHasPath;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPortMatcher.uriHasPort;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryMatcher.uriHasQuery;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasSchemeMatcher.uriHasScheme;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.all.AllCriteriaMatcher.all;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.not.NotMatcher.notOf;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableInOrder;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasHostMatcher.uriHasHost;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasPathMatcher.uriHasPath;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasPortMatcher.uriHasPort;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.resource.locator.HasSchemeMatcher.uriHasScheme;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasBody.hasBody;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasHeaders.hasHeader;
@@ -41,10 +44,9 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                 .willReturn(aResponse().withBody("SUCCESS")));
 
         assertThat(http().responseOf(POST(REQUEST_URI + "/header2.html", "Request body")),
-                allOf(
-                        hasHeader("matched-stub-id", not(emptyIterable())),
-                        hasHeader("transfer-encoding", contains("chunked")),
-                        hasHeader("vary", contains("Accept-Encoding, User-Agent"))
+                all(
+                        hasHeader("matched-stub-id", notOf(emptyIterable())),
+                        hasHeader("vary", iterableInOrder("Accept-Encoding, User-Agent"))
                 ));
     }
 
@@ -67,7 +69,7 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                         uriHasHost("127.0.0.1"),
                         uriHasPort(8089),
                         uriHasPath("/uri.html"),
-                        uriHasQuery(nullValue())
+                        HasQueryStringMatcher.uriHasQueryString(nullValue())
                 )));
     }
 
@@ -77,7 +79,7 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                 .willReturn(aResponse().withBody("SUCCESS")));
 
         assertThat(http().responseOf(GET(format("%s/version.html", REQUEST_URI))),
-                hasVersion(HTTP_1_1));
+                hasVersion(HTTP_2));
     }
 
 

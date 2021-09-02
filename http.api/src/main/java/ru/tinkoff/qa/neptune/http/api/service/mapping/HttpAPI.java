@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping;
 
+import ru.tinkoff.qa.neptune.core.api.binding.Bind;
 import ru.tinkoff.qa.neptune.core.api.properties.url.URLValuePropertySupplier;
 import ru.tinkoff.qa.neptune.http.api.properties.end.point.DefaultEndPointOfTargetAPIProperty;
 import ru.tinkoff.qa.neptune.http.api.request.RequestTuner;
@@ -22,7 +23,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.ClassLoader.getSystemClassLoader;
 import static java.lang.reflect.Proxy.newProxyInstance;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.APIUses.UsedByAPIReader.getDefaultURLProperty;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpServiceBindReader.getDefaultURLProperty;
 
 
 /**
@@ -134,7 +135,7 @@ public interface HttpAPI<T extends HttpAPI<T>> {
 
     /**
      * Creates an instance of an interface that extends {@link HttpAPI}. It uses a value defined by
-     * the property which is bound by {@link APIUses} to the class. When there is no such property
+     * the property which is bound by {@link Bind} to the class. When there is no such property
      * then it uses
      * {@link DefaultEndPointOfTargetAPIProperty#DEFAULT_END_POINT_OF_TARGET_API_PROPERTY} as root URI.
      *

@@ -1,25 +1,43 @@
 package ru.tinkoff.qa.neptune.selenium.functions.expand;
 
 import org.openqa.selenium.SearchContext;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Expandable;
+import ru.tinkoff.qa.neptune.selenium.captors.ImageCaptorAfterActionOnElement;
+import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
+import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
-import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
-
-@MakeImageCapturesOnFinishing
-@MakeFileCapturesOnFinishing
-@SequentialActionSupplier.DefaultParameterNames(
-        performOn = "Element to collapse"
-)
+@CaptureOnSuccess(by = ImageCaptorAfterActionOnElement.class)
+@CaptureOnFailure(by = {WebElementImageCaptor.class, WebDriverImageCaptor.class})
+@Description("Collapse {toCollapse}")
+@MaxDepthOfReporting(0)
+@IncludeParamsOfInnerGetterStep
 public final class CollapseActionSupplier extends
-        SequentialActionSupplier<SeleniumStepContext, Expandable, CollapseActionSupplier> {
+        SequentialActionSupplier<Object, Expandable, CollapseActionSupplier> {
 
-    private CollapseActionSupplier(String description) {
-        super(description);
+    @DescriptionFragment("toCollapse")
+    final Object toCollapse;
+
+    private CollapseActionSupplier(Object toCollapse) {
+        super();
+        this.toCollapse = toCollapse;
+    }
+
+    private <R extends SearchContext & Expandable> CollapseActionSupplier(R toCollapse) {
+        this((Object) toCollapse);
+        performOn(toCollapse);
+    }
+
+    private <R extends SearchContext & Expandable> CollapseActionSupplier(SearchSupplier<R> toCollapse) {
+        this((Object) toCollapse);
+        performOn(toCollapse);
     }
 
     /**
@@ -29,10 +47,8 @@ public final class CollapseActionSupplier extends
      * @param <R> is the type of the expandable/collapsable element
      * @return built collapse action
      */
-    public static <R extends SearchContext & Expandable> CollapseActionSupplier collapse(
-            SearchSupplier<R> of) {
-        return new CollapseActionSupplier("Collapse element " + of)
-                .performOn(of.get().compose(currentContent()));
+    public static <R extends SearchContext & Expandable> CollapseActionSupplier collapse(SearchSupplier<R> of) {
+        return new CollapseActionSupplier(of);
     }
 
     /**
@@ -43,12 +59,11 @@ public final class CollapseActionSupplier extends
      * @return built collapse action
      */
     public static <R extends SearchContext & Expandable> CollapseActionSupplier collapse(R of) {
-        return new CollapseActionSupplier("Collapse element " + of)
-                .performOn(of);
+        return new CollapseActionSupplier(of);
     }
 
     @Override
-    protected void performActionOn(Expandable value) {
+    protected void howToPerform(Expandable value) {
         if (value.isExpanded()) {
             value.collapse();
         }

@@ -1,5 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.steps.parameters;
 
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -7,7 +9,8 @@ import static java.lang.String.valueOf;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter.ParameterValueReader.getParameterForStep;
+import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
+import static ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter.ParameterValueReader.getParameterForStep;
 
 /**
  * A POJO that wraps parameters of steps
@@ -36,10 +39,10 @@ public interface StepParameterPojo {
 
                             if (param != null) {
                                 ofNullable(value).ifPresentOrElse(
-                                        o -> result.put(param.value(), getParameterForStep(value, param)),
+                                        o -> result.put(translate(field), getParameterForStep(value, param.makeReadableBy())),
                                         () -> {
                                             if (!param.doNotReportNullValues()) {
-                                                result.put(param.value(), valueOf((Object) null));
+                                                result.put(translate(field), valueOf((Object) null));
                                             }
                                         });
                             } else {

@@ -16,6 +16,21 @@
 
 Ниже описание варианта решения, который предоставляет Neptune.
 
+## Оглавление
+* [Мэппинг](#Мэппинг)
+  + [Методы](#Методы)
+  + [Заголовки](#Заголовки)
+  + [Путь](#Путь)
+  + [Запрос](#Запрос)
+  + [Тело](#Тело)
+  + [Мэппинг Dto](#Мэппинг-Dto)
+* [Инициализация объектов моделей сервисов в клиентском коде и их использование](#Инициализация-объектов-моделей-сервисов-в-клиентском-коде-и-их-использование)
+  + [Дефолтный корневой URL](#Дефолтный-корневой-URL)
+  + [Недефолтные корневые URL](#Недефолтные-корневые-URL)
+* [Внедрение зависимостей](#Внедрение-зависимостей)
+* [Интеграция мэппинга со Swagger 3.x.](#интеграция-мэппинга-со-swagger-3x)
+
+
 ## Мэппинг
 
 HTTP API описывается как расширение интерфейса `ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI`, которое
@@ -67,8 +82,8 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
 ### Методы
 
-<details>
-    <summary>Нажми, чтобы прочесть</summary>
+
+    
 
 Каждый объявленный метод, не имеющий модификатор `default`, должен моделировать метод http-протокола и его вызов.
 Методы, имеющие модификаторы `default`, выполняют вызов соответствующих методов с расширенной сигнатурой, используя
@@ -129,12 +144,13 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 }
 ```
 
-</details>
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ### Заголовки
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Если метод имеет постоянные заголовки (например Content-Type), то
 
@@ -214,12 +230,13 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 }
 ```
 
-</details>
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ### Путь
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
@@ -382,12 +399,13 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 }
 ```
 
-</details>
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ### Запрос
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
@@ -535,7 +553,8 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 специально для таких случаев. Но пока есть сложности, связанные с представлением объектов разной вложенности для разного
 рода back-end'ов. В данный момент использовать этот стиль не рекомендуется, _это тема для доработки/разработки фичи._
 
-</details>
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ### Тело
 
@@ -543,8 +562,8 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 Мэппинг поддерживает все описанные форматы, кроме пользовательских.
 Задача: [#211](https://github.com/TinkoffCreditSystems/neptune/issues/211)
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 Любое тело запроса, кроме `multipart/form-data` можно представить в модели следующим образом
 
@@ -800,7 +819,8 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 }
 ```
 
-</details>
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ### Мэппинг Dto
 
@@ -816,8 +836,8 @@ DTO - Data Transferring Object, т.е. объекты, которые модел
 
 Пример ниже
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+
+  
 
 ```java
 import com.fasterxml.jackson.annotation.*;
@@ -871,7 +891,7 @@ public class SomeDto extends MappedObject {
 }
 ```
 
-</details>
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## Инициализация объектов моделей сервисов в клиентском коде и их использование
 
@@ -879,6 +899,7 @@ public class SomeDto extends MappedObject {
 
 - [Отправка настроенного http-запроса на примере GET](./REQUEST_RESPONSE.MD#Отправка-настроенного-http-запроса-на-примере-GET)
 - [Получение данных тела ответа на http запрос](./REQUEST_RESPONSE.MD#Получение-данных-тела-ответа-на-http-запрос)
+- [Связывание классов](./../../../core.api/doc/rus/CLASS_BINDING.MD)
 
 Предположим, мы описали API нескольких сервисов. Пусть они выглядят так (для наглядности).
 
@@ -926,8 +947,6 @@ public interface ServiceAPI2 extends HttpAPI<ServiceAPI2> {
 Ниже примеры того, как создавать объекты классов, моделирующих API тестируемых back-end'ов, и использовать их в
 клиентском коде / коде тестов.
 
-<details>
-    <summary>Нажми, чтобы прочесть</summary>
 
 ```java
 import java.net.URI;
@@ -1082,11 +1101,11 @@ import org.my.pack.*;
 
 import ru.tinkoff.qa.neptune.http.api.request.RequestSettings;
 import ru.tinkoff.qa.neptune.http.api.request.RequestTuner;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.APIUses;
+import ru.tinkoff.qa.neptune.core.api.binding.Bind;
 
-@APIUses(usedBy = ServiceAPI1.class) //жесткая привязка к определенному классу
+@Bind(to = ServiceAPI1.class) //жесткая привязка к определенному классу
 //если что-то похожее нужно для еще одного сервиса то
-//@APIUses(usedBy = SomeAPI.class)
+//@Bind(to = SomeAPI.class)
 public class RequestTuner1 implements RequestTuner {
     //на реализации фокусироваться не будем
 }
@@ -1097,14 +1116,14 @@ import org.my.pack.*;
 
 import ru.tinkoff.qa.neptune.http.api.request.RequestSettings;
 import ru.tinkoff.qa.neptune.http.api.request.RequestTuner;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.APIUses;
+import ru.tinkoff.qa.neptune.core.api.binding.Bind;
 
 import static java.net.http.HttpClient.Version.HTTP_2;
 
 //Еще один вариант привязки, чем-то напоминает wildcard
-@APIUses(usedBy = HttpAPI.class, //указывается обобщенный интерфейс, моделирующий API сервисов
-        isUsedBySubclasses = true, //указываем, что применимо для интерфейсов-наследников
-        exclude = ServiceAPI1.class) //кроме перечисленных, имеет смысл если isUsedBySubclasses = true
+@Bind(to = HttpAPI.class, //указывается обобщенный интерфейс, моделирующий API сервисов
+        withSubclasses = true, //указываем, что применимо для интерфейсов-наследников
+        exclude = ServiceAPI1.class) //кроме перечисленных, имеет смысл если withSubclasses = true
 public class RequestTuner2 implements RequestTuner {
     //на реализации фокусироваться не будем
 }
@@ -1143,12 +1162,9 @@ public class MyTest {
 }
 ```
 
-</details>
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ### Дефолтный корневой URL
-
-<details>
-    <summary>Нажми, чтобы прочесть</summary>
 
 То что надо прочитать о [END_POINT_OF_TARGET_API](SETTINGS.MD#end_point_of_target_api). Предположим, что все сервисы
 работают на одном и том же хосте+порте, и это отражено в свойстве `END_POINT_OF_TARGET_API`
@@ -1186,23 +1202,21 @@ public class MyTest {
 }
 ```
 
-</details>
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 
 ### Недефолтные корневые URL
 
-<details>
-    <summary>Нажми, чтобы прочесть</summary>
 
 А что если `ServiceAPI1` и `ServiceAPI2` всегда на разных хостах/портах?
 
 Необходимо прочитать:
 
-- [Механизм работы со свойствами/переменными окружения](./../../../core.api/doc/rus/SETTINGS.MD) - полезно в целом
+- [Механизм работы со свойствами/переменными окружения / среды](./../../../core.api/doc/rus/SETTINGS.MD) - полезно в целом
 - [Свойства для создания и возврата объектов URL](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов-URL)
-    - полезно прочитать в частности
+- [Связывание классов](./../../../core.api/doc/rus/CLASS_BINDING.MD)
 
-Добавим возможность указывать/читать свойства/переменные окружения, и при чтении представлять их значения в виде
-URL/URI.
+Добавим возможность указывать/читать свойства/переменные окружения для специфических адресов хостов.
 
 ```java
 import ru.tinkoff.qa.neptune.core.api.properties.PropertyDefaultValue;
@@ -1256,22 +1270,22 @@ public class MyTest {
 import ru.tinkoff.qa.neptune.core.api.properties.PropertyDefaultValue;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
 import ru.tinkoff.qa.neptune.core.api.properties.url.URLValuePropertySupplier;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.APIUses;
+import ru.tinkoff.qa.neptune.core.api.binding.Bind;
 
 public enum ServiceRoot implements URLValuePropertySupplier {
     @PropertyDefaultValue("http://host1:1111") //Корневой URI/URL, используемый на дефлтном окружении/при отладке
     @PropertyName("ROOT_OF_SERVICE1") //Название свойства/переменной окружения
-    @APIUses(usedBy = ServiceAPI1.class) //жесткая привязка к определенному классу
+    @Bind(to = ServiceAPI1.class) //жесткая привязка к определенному классу
     //если что-то похожее нужно для еще одного сервиса то
-    //@APIUses(usedBy = SomeAPI.class)
+    //@Bind(to = SomeAPI.class)
     SERVICE1,
 
     @PropertyDefaultValue("http://host2:2222") //Корневой URI/URL, используемый на дефлтном окружении/при отладке
     @PropertyName("ROOT_OF_SERVICE2") //Название свойства/переменной окружения
     //Еще один вариант привязки, чем-то напоминает wildcard
-    @APIUses(usedBy = HttpAPI.class, //указывается обобщенный интерфейс, моделирующий API сервисов
-            isUsedBySubclasses = true, //указываем, что применимо для интерфейсов-наследников
-            exclude = ServiceAPI1.class) //кроме перечисленных, имеет смысл если isUsedBySubclasses = true
+    @Bind(to = HttpAPI.class, //указывается обобщенный интерфейс, моделирующий API сервисов
+            withSubclasses = true, //указываем, что применимо для интерфейсов-наследников
+            exclude = ServiceAPI1.class) //кроме перечисленных, имеет смысл если withSubclasses = true
     SERVICE2
 }
 ```
@@ -1305,13 +1319,16 @@ public class MyTest {
 }
 ```
 
-</details>
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## Внедрение зависимостей
 
 Основная статья - [внедрения зависимостей](./../../../core.api/doc/rus/DEPENDENCY_INJECTION.MD).
 
-Модули, интегрирующие Neptune c фреймворком тестирования, имеют возможности использования механизмов внедрения
+Модули, интегрирующие Neptune c различными фреймворками тестирования, имеют возможности использования механизмов внедрения
 зависимостей:
 
 - [Testng](./../../../testng.integration/doc/rus/README.MD)  
@@ -1321,8 +1338,6 @@ public class MyTest {
 Интеграция Neptune и нативного http-клиента Java имеет свой механизм внедрения зависимостей, позволяющий
 инициализировать объекты классов, моделирующих http API тестируемых приложений.
 
-<details>
-    <summary>Нажми, чтобы прочесть</summary>
 
 ```java
 import java.net.http.HttpResponse;
@@ -1341,7 +1356,7 @@ public class MyTest {
     //Если есть необходимость использовать RequestTuner для какого либо/всех приложений - 
     //реализовать и выполнить привязку к моделирующим классам.
     private ServiceAPI1 service1;
-    private ServiceAPI2 service1;
+    private ServiceAPI2 service2;
 
     @Test
     public void myTest() {
@@ -1358,7 +1373,9 @@ public class MyTest {
 
 Все необходимое описано в данном документе.
 
-</details>
+
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## Интеграция мэппинга со Swagger 3.x.
 
@@ -1366,3 +1383,5 @@ public class MyTest {
 совсем не нужно выполнять ручную работу для того, чтобы клиентский код мог взаимодействовать с ними/тестировать их.
 Существует
 [интеграция](./../../../neptune.swagger.codegen/doc/rus/README.MD), позволяющая создавать описанные выше модели автоматически.
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)

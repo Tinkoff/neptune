@@ -17,6 +17,9 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.WindowCriteria.titleMatches;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.WindowCriteria.urlMatches;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.window.WindowHasPositionMatcher.windowHasPosition;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.window.WindowHasSizeMatcher.windowHasSize;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.window.WindowHasTitleMatcher.windowHasTitle;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUnitProperties.WAITING_WINDOW_TIME_UNIT;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeValueProperties.WAITING_WINDOW_TIME_VALUE;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.InitialPositions.*;
@@ -43,7 +46,7 @@ public class WindowTest extends BaseWebDriverTest {
         assertThat(firstWindow.getPosition(), is(POSITION_1.getPosition()));
         assertThat(firstWindow.getSize(), is(SIZE1.getSize()));
         assertThat(firstWindow.isPresent(), is(true));
-        assertThat(firstWindow.toString(), is("Window[url https://www.google.com title Google]"));
+        assertThat(firstWindow.toString(), is("[Google: https://www.google.com]"));
         assertThat(wrappedWebDriver.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
     }
 
@@ -55,7 +58,7 @@ public class WindowTest extends BaseWebDriverTest {
         assertThat(foundWindow.getPosition(), is(POSITION_2.getPosition()));
         assertThat(foundWindow.getSize(), is(SIZE2.getSize()));
         assertThat(foundWindow.isPresent(), is(true));
-        assertThat(foundWindow.toString(), is("Window[url https://www.facebook.com title Facebook]"));
+        assertThat(foundWindow.toString(), is("[Facebook: https://www.facebook.com]"));
         assertThat(wrappedWebDriver.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
     }
 
@@ -69,7 +72,7 @@ public class WindowTest extends BaseWebDriverTest {
         assertThat(foundWindow.getPosition(), is(POSITION_3.getPosition()));
         assertThat(foundWindow.getSize(), is(SIZE3.getSize()));
         assertThat(foundWindow.isPresent(), is(true));
-        assertThat(foundWindow.toString(), is("Window[url https://github.com title Github Inc]"));
+        assertThat(foundWindow.toString(), is("[Github Inc: https://github.com]"));
         assertThat(wrappedWebDriver.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
     }
 
@@ -83,7 +86,7 @@ public class WindowTest extends BaseWebDriverTest {
         assertThat(foundWindow.getPosition(), is(POSITION_3.getPosition()));
         assertThat(foundWindow.getSize(), is(SIZE3.getSize()));
         assertThat(foundWindow.isPresent(), is(true));
-        assertThat(foundWindow.toString(), is("Window[url https://github.com title Github Inc]"));
+        assertThat(foundWindow.toString(), is("[Github Inc: https://github.com]"));
         assertThat(wrappedWebDriver.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
     }
 
@@ -98,7 +101,7 @@ public class WindowTest extends BaseWebDriverTest {
         } finally {
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
-            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThan(HALF_SECOND.toMillis()));
+            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThan(100L));
             assertThat(wrappedWebDriver.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
         }
         fail("Exception was expected");
@@ -118,7 +121,7 @@ public class WindowTest extends BaseWebDriverTest {
             removeProperty(WAITING_WINDOW_TIME_UNIT.getName());
             removeProperty(WAITING_WINDOW_TIME_VALUE.getName());
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
-            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThan(HALF_SECOND.toMillis()));
+            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThan(100L));
             assertThat(wrappedWebDriver.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
         }
         fail("Exception was expected");
@@ -227,12 +230,17 @@ public class WindowTest extends BaseWebDriverTest {
 
         assertThat(seleniumSteps.get(currentWindow()).getCurrentUrl(), is(GOOGLE.getUrl()));
         assertThat(seleniumSteps.get(currentWindow()).getTitle(), is(GOOGLE.getTitle()));
+
+        assertThat(window2, windowHasTitle(GOOGLE.getTitle()));
     }
 
     @Test
     public void sizeOfWindowBySearchingTest() {
         seleniumSteps.changeWindowSize(window(1), 1001, 1002);
         assertThat(seleniumSteps.sizeOf(window(1)), equalTo(new Dimension(1001, 1002)));
+
+        assertThat(seleniumSteps.get(window(1)),
+                windowHasSize(1001, 1002));
     }
 
     @Test
@@ -263,6 +271,8 @@ public class WindowTest extends BaseWebDriverTest {
         seleniumSteps.changeWindowPosition(window, 1001, 1002);
         assertThat(window.getPosition(), equalTo(new Point(1001, 1002)));
         assertThat(seleniumSteps.positionOf(window(2)), equalTo(new Point(1001, 1002)));
+
+        assertThat(seleniumSteps.get(window(2)), windowHasPosition(1001, 1002));
     }
 
     @Test

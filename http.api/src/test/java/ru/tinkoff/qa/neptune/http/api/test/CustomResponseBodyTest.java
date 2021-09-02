@@ -13,6 +13,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.*;
+import static org.testng.Assert.fail;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasBody.hasBody;
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
@@ -106,10 +107,12 @@ public class CustomResponseBodyTest extends BaseHttpTest {
                 hasBody(matcher));
     }
 
-    @Test(dataProvider = "data2")
+    @Test(dataProvider = "data2", expectedExceptions = RuntimeException.class)
     public <T> void negativeTest(String urlPath,
                                  HttpResponse.BodyHandler<T> handler) {
         assertThat(http().responseOf(GET(REQUEST_URI + urlPath), handler),
                 hasBody(nullValue()));
+
+        fail("Exception was expected");
     }
 }

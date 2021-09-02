@@ -1,22 +1,22 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
 import org.openqa.selenium.*;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
+import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
+import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
 
 import java.time.Duration;
 import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
-import static java.lang.String.format;
-import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.OR;
-import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindWebElements.webElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindWidgets.widgets;
@@ -24,37 +24,28 @@ import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FI
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
 
 @SuppressWarnings({"unused"})
-@MakeImageCapturesOnFinishing
-@MakeFileCapturesOnFinishing
-@SequentialGetStepSupplier.DefaultParameterNames(
-        timeOut = "Time of the waiting for the element",
-        from = "Parent element",
-        criteria = "Element criteria"
-)
+@SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for the element")
+@SequentialGetStepSupplier.DefineFromParameterName("Parent element")
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Element criteria")
+@SequentialGetStepSupplier.DefineGetImperativeParameterName(value = "Find:")
+@SequentialGetStepSupplier.DefineResultDescriptionParameterName("Found element")
+@MaxDepthOfReporting(0)
+@CaptureOnSuccess(by = WebElementImageCaptor.class)
+@CaptureOnFailure(by = {WebDriverImageCaptor.class, WebElementImageCaptor.class})
+@ThrowWhenNoData(toThrow = NoSuchElementException.class, startDescription = "Not found:")
 public final class SearchSupplier<R extends SearchContext>
-        extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<SearchContext, R, SearchContext, SearchSupplier<R>> {
+        extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<Object, R, SearchContext, SearchSupplier<R>> {
 
-    private <S extends Iterable<R>> SearchSupplier(String description, Function<SearchContext, S> originalFunction) {
-        super(description, originalFunction);
-        from(searchContext -> searchContext);
+    private <S extends Iterable<R>> SearchSupplier(Function<SearchContext, S> originalFunction) {
+        super(originalFunction);
+        from(new SearchingInitialFunction());
         timeOut(ELEMENT_WAITING_DURATION.get());
         addIgnored(StaleElementReferenceException.class);
         if (FIND_ONLY_VISIBLE_ELEMENTS.get()) {
             criteria(visible());
         }
-        throwOnEmptyResult(noSuchElementException(this));
+        throwOnNoResult();
     }
-
-    private static Supplier<NoSuchElementException> noSuchElementException(SearchSupplier<?> supplier) {
-        return () -> {
-            var description = format("Nothing was found. Attempt to get %s", supplier.toString());
-            var exceptionText = ofNullable(supplier.getCriteria())
-                    .map(c -> format("%s. Criteria: %s", description, c.toString()))
-                    .orElse(description);
-            return new NoSuchElementException(exceptionText);
-        };
-    }
-
 
     /**
      * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
@@ -64,9 +55,10 @@ public final class SearchSupplier<R extends SearchContext>
      * @param by locator strategy to find an element
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<WebElement> webElement(By by) {
+    @Description("Web element located '{by}'")
+    public static SearchSupplier<WebElement> webElement(@DescriptionFragment("by") By by) {
         var webElements = webElements(by);
-        return new SearchSupplier<>(format("Web element located %s", by), webElements);
+        return new SearchSupplier<>(webElements);
     }
 
     /**
@@ -78,10 +70,12 @@ public final class SearchSupplier<R extends SearchContext>
      * @param text that the desired element should have
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<WebElement> webElement(By by, String text) {
+    @Description("Web element located '{by}' with text '{text}'")
+    public static SearchSupplier<WebElement> webElement(@DescriptionFragment("by") By by,
+                                                        @DescriptionFragment("text") String text) {
         var shouldHaveText = text(text);
         var webElements = webElements(by);
-        var search = new SearchSupplier<>(format("Web element located %s", by), webElements);
+        var search = new SearchSupplier<>(webElements);
         return search.criteria(shouldHaveText);
     }
 
@@ -91,14 +85,20 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some {@link Widget} found from the input value.
      *
      * @param tClass      is a class of an object to be returned
-     * @param textOrLabel text which is used to find a widget by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find a widget by full text matching. Also texts of labels
      *                    are used to find a widget.
      * @param <T>         the type of widget that should be found
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
      */
-    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, String textOrLabel) {
-        return new SearchSupplier<>(format("%s '%s'", getWidgetName(tClass), textOrLabel), widgets(tClass))
+    @Description("{widgetClass} '{textOrLabel}'")
+    public static <T extends Widget> SearchSupplier<T> widget(
+            @DescriptionFragment(
+                    value = "widgetClass",
+                    makeReadableBy = WidgetDescriptionValueGetter.class)
+                    Class<T> tClass,
+            @DescriptionFragment("textOrLabel") String textOrLabel) {
+        return new SearchSupplier<>(widgets(tClass))
                 .criteria(OR(
                         text(textOrLabel),
                         labeled(textOrLabel)
@@ -114,9 +114,13 @@ public final class SearchSupplier<R extends SearchContext>
      * @param <T>    the type of widget to find
      * @return an instance of {@link SearchSupplier}
      */
-    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass) {
+    @Description("{tClass}")
+    public static <T extends Widget> SearchSupplier<T> widget(
+            @DescriptionFragment(
+                    value = "tClass",
+                    makeReadableBy = WidgetDescriptionValueGetter.class) Class<T> tClass) {
         var widgets = widgets(tClass);
-        return new SearchSupplier<>(getWidgetName(tClass), widgets);
+        return new SearchSupplier<>(widgets);
     }
 
     /**
@@ -135,7 +139,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some button.
      *
-     * @param textOrLabel text which is used to find a button by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find a button by full text matching. Also texts of labels
      *                    are used to find a button.
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -160,7 +164,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some flag.
      *
-     * @param textOrLabel text which is used to find a flag by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find a flag by full text matching. Also texts of labels
      *                    are used to find a flag.
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -185,7 +189,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some check box.
      *
-     * @param textOrLabel text which is used to find a checkbox by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find a checkbox by full text matching. Also texts of labels
      *                    are used to find a checkbox.
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -210,7 +214,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some radio button.
      *
-     * @param textOrLabel text which is used to find a radio-button by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find a radio-button by full text matching. Also texts of labels
      *                    are used to find a radio-button.
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -236,7 +240,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some toggle.
      *
-     * @param textOrLabel text which is used to find a toggle by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find a toggle by full text matching. Also texts of labels
      *                    are used to find a toggle.
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -262,7 +266,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some link.
      *
-     * @param textOrLabel text which is used to find a link by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find a link by full text matching. Also texts of labels
      *                    are used to find a link.
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -287,7 +291,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some select.
      *
-     * @param textOrLabel text which is used to find a select by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find a select by full text matching. Also texts of labels
      *                    are used to find a select.
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -313,7 +317,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some multi-select.
      *
-     * @param textOrLabel text which is used to find a multi-select by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find a multi-select by full text matching. Also texts of labels
      *                    are used to find a multi-select.
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -339,7 +343,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some tab.
      *
-     * @param textOrLabel text which is used to find a tab by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find a tab by full text matching. Also texts of labels
      *                    are used to find a tab.
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -364,7 +368,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some text field.
      *
-     * @param textOrLabel text which is used to find a text field by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find a text field by full text matching. Also texts of labels
      *                    are used to find a text field.
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -390,7 +394,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some calendar.
      *
-     * @param textOrLabel text which is used to find a calendar by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find a calendar by full text matching. Also texts of labels
      *                    are used to find a calendar.
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -416,7 +420,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some calendar range.
      *
-     * @param textOrLabel text which is used to find a calendar range by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find a calendar range by full text matching. Also texts of labels
      *                    are used to find a calendar range.
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -431,7 +435,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some table.
      *
-     * @param textOrLabel text which is used to find a table by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find a table by full text matching. Also texts of labels
      *                    are used to find a table.
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -467,7 +471,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some table row.
      *
-     * @param textOrLabel text which is used to find a table row by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find a table row by full text matching. Also texts of labels
      *                    are used to find a table row.
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -492,7 +496,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some table header.
      *
-     * @param textOrLabel text which is used to find a table header by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find a table header by full text matching. Also texts of labels
      *                    are used to find a table header.
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -517,7 +521,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some table footer.
      *
-     * @param textOrLabel text which is used to find a table footer by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find a table footer by full text matching. Also texts of labels
      *                    are used to find a table footer.
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -542,7 +546,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some table cell.
      *
-     * @param textOrLabel text which is used to find a table cell by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find a table cell by full text matching. Also texts of labels
      *                    are used to find a table cell.
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -567,11 +571,12 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some text element.
      *
-     * @param text text which is used to find a text element by full element text matching.
+     * @param textOrLabel text which is used to find a text element by full text matching. Also texts of labels
+     *                    are used to find a text element.
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<TextElement> textElement(String text) {
-        return widget(TextElement.class, text);
+    public static SearchSupplier<TextElement> textElement(String textOrLabel) {
+        return widget(TextElement.class, textOrLabel);
     }
 
     /**
@@ -590,7 +595,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some form.
      *
-     * @param textOrLabel text which is used to find a form by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find a form by full text matching. Also texts of labels
      *                    are used to find a form.
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -615,7 +620,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some grouping element.
      *
-     * @param textOrLabel text which is used to find a form by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find a form by full text matching. Also texts of labels
      *                    are used to find a grouping element.
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -640,7 +645,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some image element.
      *
-     * @param textOrLabel text which is used to find a form by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find a form by full text matching. Also texts of labels
      *                    are used to find an image element.
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -671,32 +676,9 @@ public final class SearchSupplier<R extends SearchContext>
         return super.from(from);
     }
 
-    /**
-     * Constructs the chained searching from result of some function applying. This function should take some
-     * {@link SearchContext} as the input parameter and return some found instance of {@link SearchContext}.
-     *
-     * @param from is a function that takes some {@link SearchContext} as the input parameter and returns some
-     *             found instance of {@link SearchContext}.
-     * @param <Q>  is a type of the parent element.
-     * @return self-reference
-     */
-    public <Q extends SearchContext> SearchSupplier<R> foundFrom(Function<SearchContext, Q> from) {
-        return super.from(from);
-    }
-
     @Override
     public SearchSupplier<R> timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
-    }
-
-    @Override
-    public SearchSupplier<R> criteria(Criteria<? super R> condition) {
-        return super.criteria(condition);
-    }
-
-    @Override
-    public SearchSupplier<R> criteria(String description, Predicate<? super R> condition) {
-        return super.criteria(description, condition);
     }
 
     @Override

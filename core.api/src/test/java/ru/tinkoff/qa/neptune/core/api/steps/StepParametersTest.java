@@ -3,71 +3,71 @@ package ru.tinkoff.qa.neptune.core.api.steps;
 import org.hamcrest.Matcher;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterWrapper;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 
 import java.time.Duration;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
+import static java.util.Arrays.stream;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.XOR;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.ONLY_ONE;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.StepParametersTest.TestActionStepSupplier.getTestActionStepSupplier;
+import static ru.tinkoff.qa.neptune.core.api.steps.StepParametersTest.TestActionStepSupplier2.getTestActionStepSupplier2;
+import static ru.tinkoff.qa.neptune.core.api.steps.StepParametersTest.TestGetStepSupplier.getTestGetStepSupplier;
+import static ru.tinkoff.qa.neptune.core.api.steps.StepParametersTest.TestGetStepSupplier2.getTestGetStepSupplier2;
 
 public class StepParametersTest {
 
     @DataProvider
     public static Object[][] data1() {
         return new Object[][]{
-                {new TestGetStepSupplier()},
-                {new TestGetStepSupplier2()}
+                {new TestGetStepSupplier(), hasEntry(equalTo("Parameter 1"), equalTo("null"))},
+                {new TestGetStepSupplier2(), hasEntry(equalTo("Parameter 11"), equalTo("null"))}
         };
     }
 
     @DataProvider
     public static Object[][] data2() {
         return new Object[][]{
-                {new TestGetStepSupplier().from(new TestGetStepSupplier()),
-                        6,
+                {getTestGetStepSupplier().from(getTestGetStepSupplier2()),
                         "Criteria",
                         "Timeout/time for retrying",
                         "Polling time",
-                        hasEntry(equalTo("Get from"), equalTo("Test Step (is calculated while the step is executed)"))},
+                        hasEntry(equalTo("Get from"), anything())},
 
-                {new TestGetStepSupplier2().from(new TestGetStepSupplier()),
-                        6,
+                {getTestGetStepSupplier2().from(getTestGetStepSupplier()),
                         "Custom criteria",
                         "Custom Time out",
                         "Custom sleeping",
-                        hasEntry(equalTo("Custom from"), equalTo("Test Step (is calculated while the step is executed)"))},
+                        hasEntry(equalTo("Custom from"), anything())},
 
-                {new TestGetStepSupplier().from(o -> null),
-                        5,
+                {getTestGetStepSupplier().from(o -> null),
                         "Criteria",
                         "Timeout/time for retrying",
                         "Polling time",
                         not(hasEntry(equalTo("Get from"), anything()))},
 
-                {new TestGetStepSupplier2().from(o -> null),
-                        5,
+                {getTestGetStepSupplier2().from(o -> null),
                         "Custom criteria",
                         "Custom Time out",
                         "Custom sleeping",
                         not(hasEntry(equalTo("Custom from"), anything()))},
 
-                {new TestGetStepSupplier().from(5),
-                        6,
+                {getTestGetStepSupplier().from(5),
                         "Criteria",
                         "Timeout/time for retrying",
                         "Polling time",
                         hasEntry(equalTo("Get from"), equalTo("5"))},
 
-                {new TestGetStepSupplier2().from(5),
-                        6,
+                {getTestGetStepSupplier2().from(5),
                         "Custom criteria",
                         "Custom Time out",
                         "Custom sleeping",
@@ -86,42 +86,103 @@ public class StepParametersTest {
     @DataProvider
     public static Object[][] data4() {
         return new Object[][]{
-                {new TestActionStepSupplier().performOn(new TestGetStepSupplier().from(new Object())),
-                        2,
-                        hasEntry(equalTo("Perform action on"), equalTo("Test Step (is calculated while the step is executed)"))},
-                {new TestActionStepSupplier2().performOn(new TestGetStepSupplier().from(new Object())),
-                        2,
-                        hasEntry(equalTo("Perform on custom"), equalTo("Test Step (is calculated while the step is executed)"))},
-                {new TestActionStepSupplier().performOn(o -> null),
-                        1,
+                {getTestActionStepSupplier().performOn(getTestGetStepSupplier().from(new Object())),
+                        hasEntry(equalTo("Perform action on"), anything())},
+                {getTestActionStepSupplier2().performOn(getTestGetStepSupplier().from(new Object())),
+                        hasEntry(equalTo("Perform on custom"), anything())},
+                {getTestActionStepSupplier().performOn(o -> null),
                         not(hasEntry(equalTo("Perform action on"), anything()))},
 
-                {new TestActionStepSupplier2().performOn(o -> null),
-                        1,
+                {getTestActionStepSupplier2().performOn(o -> null),
                         not(hasEntry(equalTo("Perform on custom"), anything()))},
 
-                {new TestActionStepSupplier().performOn(5),
-                        2,
+                {getTestActionStepSupplier().performOn(5),
                         hasEntry(equalTo("Perform action on"), equalTo("5"))},
 
-                {new TestActionStepSupplier2().performOn(5),
-                        2,
+                {getTestActionStepSupplier2().performOn(5),
                         hasEntry(equalTo("Perform on custom"), equalTo("5"))},
+        };
+    }
+
+    @DataProvider
+    public static Object[][] data5() {
+        return new Object[][]{
+                {getTestGetStepSupplier().from(getTestGetStepSupplier2()
+                        .setParam1(true)
+                        .setParam2("Some string")
+                        .timeOut(ofSeconds(5))
+                        .pollingInterval(ofMillis(500))
+                        .criteria("Some criteria 1", o -> true)
+                        .criteria(ONLY_ONE(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)))),
+                        hasKey("Custom criteria"),
+                        hasKey("Custom criteria 2"),
+                        hasKey("Custom Time out"),
+                        hasKey("Custom sleeping"),
+                        hasKey("Parameter 11"),
+                        hasKey("Parameter 21")},
+
+                {getTestGetStepSupplier2().from(getTestGetStepSupplier()
+                        .setParam1(true)
+                        .setParam2("Some string")
+                        .timeOut(ofSeconds(5))
+                        .pollingInterval(ofMillis(500))
+                        .criteria("Some criteria 1", o -> true)
+                        .criteria(ONLY_ONE(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)))),
+                        anything(),
+                        not(hasKey("Criteria")),
+                        not(hasKey("Criteria 2")),
+                        not(hasKey("Timeout/time for retrying")),
+                        not(hasKey("Polling time")),
+                        not(hasKey("Parameter 1")),
+                        not(hasKey("Parameter 2"))},
+        };
+    }
+
+    @DataProvider
+    public static Object[][] data6() {
+        return new Object[][]{
+                {getTestActionStepSupplier().performOn(getTestGetStepSupplier2()
+                        .setParam1(true)
+                        .setParam2("Some string")
+                        .timeOut(ofSeconds(5))
+                        .pollingInterval(ofMillis(500))
+                        .criteria("Some criteria 1", o -> true)
+                        .criteria(ONLY_ONE(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)))),
+                        hasKey("Custom criteria"),
+                        hasKey("Custom criteria 2"),
+                        hasKey("Custom Time out"),
+                        hasKey("Custom sleeping"),
+                        hasKey("Parameter 11"),
+                        hasKey("Parameter 21")},
+
+                {getTestActionStepSupplier2().performOn(getTestGetStepSupplier()
+                        .setParam1(true)
+                        .setParam2("Some string")
+                        .timeOut(ofSeconds(5))
+                        .pollingInterval(ofMillis(500))
+                        .criteria("Some criteria 1", o -> true)
+                        .criteria(ONLY_ONE(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)))),
+                        anything(),
+                        not(hasKey("Criteria")),
+                        not(hasKey("Criteria 2")),
+                        not(hasKey("Timeout/time for retrying")),
+                        not(hasKey("Polling time")),
+                        not(hasKey("Parameter 1")),
+                        not(hasKey("Parameter 2"))},
         };
     }
 
     @Test(description = "When SequentialGetStepSupplier has no parameters",
             dataProvider = "data1")
-    public void test1(SequentialGetStepSupplier<?, ?, ?, ?, ?> s) {
+    public void test1(SequentialGetStepSupplier<?, ?, ?, ?, ?> s, Matcher<Map<?, ?>> matcher) {
         var p = s.getParameters();
         assertThat(p, aMapWithSize(1));
-        assertThat(p, hasEntry(equalTo("Parameter 1"), equalTo("null")));
+        assertThat(p, matcher);
     }
 
     @Test(description = "SequentialGetStepSupplier has reserved parameters",
             dataProvider = "data2")
     public void test2(SequentialGetStepSupplier<?, ?, ?, ?, ?> s,
-                      int count,
                       String criteriaName,
                       String timeName,
                       String sleepName,
@@ -129,16 +190,14 @@ public class StepParametersTest {
         var p = s.timeOut(ofSeconds(5))
                 .pollingInterval(ofMillis(500))
                 .criteria("Some criteria 1", o -> true)
-                .criteria(XOR(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)))
+                .criteria(ONLY_ONE(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)))
                 .getParameters();
-        assertThat(p, aMapWithSize(count));
-        assertThat(p, hasEntry(equalTo("Parameter 1"), equalTo("null")));
         assertThat(p, hasEntry(equalTo(criteriaName), equalTo("Some criteria 1")));
         assertThat(p, hasEntry(equalTo(criteriaName + " 2"), equalTo("(Some criteria 2) xor (Some criteria 3)")));
         assertThat(p, hasEntry(equalTo(timeName), equalTo("00:00:05.000")));
         assertThat(p, hasEntry(equalTo(sleepName), equalTo("00:00:00.500")));
         assertThat(p, entryMatcher);
-        assertThat(p.keySet(), containsInRelativeOrder("Parameter 1", criteriaName, criteriaName + " 2", timeName, sleepName));
+        assertThat(p.keySet(), containsInRelativeOrder(criteriaName, criteriaName + " 2", timeName, sleepName));
     }
 
     @Test(description = "SequentialGetStepSupplier has extra parameters")
@@ -164,7 +223,6 @@ public class StepParametersTest {
 
     @Test(description = "SequentialGetStepSupplier has all parameters", dataProvider = "data2")
     public void test4(SequentialGetStepSupplier<?, ?, ?, ?, ?> s,
-                      int count,
                       String criteriaName,
                       String timeName,
                       String sleepName,
@@ -172,7 +230,7 @@ public class StepParametersTest {
         s.timeOut(ofSeconds(5))
                 .pollingInterval(ofMillis(500))
                 .criteria("Some criteria 1", o -> true)
-                .criteria(XOR(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)));
+                .criteria(ONLY_ONE(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)));
 
         if (s instanceof TestGetStepSupplier) {
             ((TestGetStepSupplier) s).setParam1(true)
@@ -199,22 +257,21 @@ public class StepParametersTest {
         }
 
         var p = s.getParameters();
-        assertThat(p, aMapWithSize(count + 3));
         assertThat(p, hasEntry(equalTo(criteriaName), equalTo("Some criteria 1")));
         assertThat(p, hasEntry(equalTo(criteriaName + " 2"), equalTo("(Some criteria 2) xor (Some criteria 3)")));
         assertThat(p, hasEntry(equalTo(timeName), equalTo("00:00:05.000")));
         assertThat(p, hasEntry(equalTo(sleepName), equalTo("00:00:00.500")));
         assertThat(p, entryMatcher);
-        assertThat(p, hasEntry(equalTo("Parameter 1"), equalTo("true")));
+        assertThat(p, hasEntry(containsString("Parameter 1"), equalTo("true")));
         assertThat(p, hasEntry(equalTo("Pojo Parameter 1"), equalTo("true")));
         assertThat(p, hasEntry(equalTo("Pojo Parameter 2"), equalTo("ABC")));
-        assertThat(p, hasEntry(equalTo("Parameter 2"), equalTo("ABC")));
+        assertThat(p, hasEntry(containsString("Parameter 2"), equalTo("ABC")));
 
-        assertThat(p.keySet(), containsInRelativeOrder("Parameter 1",
-                "Pojo Parameter 1",
-                "Pojo Parameter 2",
-                "Parameter 2",
-                criteriaName, criteriaName + " 2", timeName, sleepName));
+        assertThat(p.keySet(), containsInRelativeOrder(containsString("Parameter 1"),
+                equalTo("Pojo Parameter 1"),
+                equalTo("Pojo Parameter 2"),
+                containsString("Parameter 2"),
+                equalTo(criteriaName), equalTo(criteriaName + " 2"), equalTo(timeName), equalTo(sleepName)));
     }
 
     @Test(description = "When SequentialActionSupplier has no parameters",
@@ -222,19 +279,17 @@ public class StepParametersTest {
     public void test5(SequentialActionSupplier<?, ?, ?> s) {
         var p = s.getParameters();
         assertThat(p, aMapWithSize(1));
-        assertThat(p, hasEntry(equalTo("Parameter 1"), equalTo("null")));
+        assertThat(p, hasEntry(equalTo("Action Parameter 1"), equalTo("null")));
     }
 
     @Test(description = "SequentialActionSupplier has reserved parameters",
             dataProvider = "data4")
     public void test6(SequentialActionSupplier<?, ?, ?> s,
-                      int count,
                       Matcher<Map<?, ?>> entryMatcher) {
         var p = s.getParameters();
-        assertThat(p, aMapWithSize(count));
-        assertThat(p, hasEntry(equalTo("Parameter 1"), equalTo("null")));
+        assertThat(p, hasEntry(equalTo("Action Parameter 1"), equalTo("null")));
         assertThat(p, entryMatcher);
-        assertThat(p.keySet(), containsInRelativeOrder("Parameter 1"));
+        assertThat(p.keySet(), containsInRelativeOrder("Action Parameter 1"));
     }
 
     @Test(description = "SequentialActionSupplier has extra parameters")
@@ -251,17 +306,16 @@ public class StepParametersTest {
                 .getParameters();
 
         assertThat(p, aMapWithSize(4));
-        assertThat(p, hasEntry(equalTo("Parameter 1"), equalTo("true")));
+        assertThat(p, hasEntry(equalTo("Action Parameter 1"), equalTo("true")));
         assertThat(p, hasEntry(equalTo("Pojo Parameter 1"), equalTo("true")));
         assertThat(p, hasEntry(equalTo("Pojo Parameter 2"), equalTo("ABC")));
-        assertThat(p, hasEntry(equalTo("Parameter 2"), equalTo("ABC")));
-        assertThat(p.keySet(), containsInRelativeOrder("Parameter 1", "Pojo Parameter 1", "Pojo Parameter 2", "Parameter 2"));
+        assertThat(p, hasEntry(equalTo("Action Parameter 2"), equalTo("ABC")));
+        assertThat(p.keySet(), containsInRelativeOrder("Action Parameter 1", "Pojo Parameter 1", "Pojo Parameter 2", "Action Parameter 2"));
     }
 
 
     @Test(description = "SequentialGetStepSupplier has all parameters", dataProvider = "data4")
     public void test8(SequentialActionSupplier<?, ?, ?> s,
-                      int count,
                       Matcher<Map<?, ?>> entryMatcher) {
 
         if (s instanceof TestActionStepSupplier) {
@@ -289,20 +343,40 @@ public class StepParametersTest {
         }
 
         var p = s.getParameters();
-        assertThat(p, aMapWithSize(count + 3));
         assertThat(p, entryMatcher);
-        assertThat(p, hasEntry(equalTo("Parameter 1"), equalTo("true")));
+        assertThat(p, hasEntry(equalTo("Action Parameter 1"), equalTo("true")));
         assertThat(p, hasEntry(equalTo("Pojo Parameter 1"), equalTo("true")));
         assertThat(p, hasEntry(equalTo("Pojo Parameter 2"), equalTo("ABC")));
-        assertThat(p, hasEntry(equalTo("Parameter 2"), equalTo("ABC")));
+        assertThat(p, hasEntry(equalTo("Action Parameter 2"), equalTo("ABC")));
 
-        assertThat(p.keySet(), containsInRelativeOrder("Parameter 1",
+        assertThat(p.keySet(), containsInRelativeOrder("Action Parameter 1",
                 "Pojo Parameter 1",
                 "Pojo Parameter 2",
-                "Parameter 2"));
+                "Action Parameter 2"));
     }
 
-    private static class TestGetStepSupplier extends SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier<Object, Object, Object, TestGetStepSupplier> {
+    @SafeVarargs
+    @Test(description = "Test of parameter including. SequentialGetStepSupplier", dataProvider = "data5")
+    public final void test9(SequentialGetStepSupplier<?, ?, ?, ?, ?> supplier, Matcher<Map<String, ?>>... matchers) {
+        var params = supplier.getParameters();
+
+        stream(matchers).forEach(matcher -> assertThat(params, matcher));
+    }
+
+    @SafeVarargs
+    @Test(description = "Test of parameter including. SequentialGetStepSupplier", dataProvider = "data6")
+    public final void test6(SequentialActionSupplier<?, ?, ?> supplier, Matcher<Map<String, ?>>... matchers) {
+        var params = supplier.getParameters();
+
+        stream(matchers).forEach(matcher -> assertThat(params, matcher));
+    }
+
+    @SequentialGetStepSupplier.DefineCriteriaParameterName
+    @SequentialGetStepSupplier.DefinePollingTimeParameterName
+    @SequentialGetStepSupplier.DefineTimeOutParameterName
+    @SequentialGetStepSupplier.DefineFromParameterName
+    @IncludeParamsOfInnerGetterStep
+    static class TestGetStepSupplier extends SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier<Object, Object, Object, TestGetStepSupplier> {
 
         @StepParameter("Parameter 1")
         private Boolean param1;
@@ -312,7 +386,12 @@ public class StepParametersTest {
         private Integer param3;
 
         protected TestGetStepSupplier() {
-            super("Test Step", o -> new Object[]{});
+            super(o -> new Object[]{});
+        }
+
+        @Description("getTestGetStepSupplier")
+        public static TestGetStepSupplier getTestGetStepSupplier() {
+            return new TestGetStepSupplier();
         }
 
         @Override
@@ -328,16 +407,6 @@ public class StepParametersTest {
         @Override
         protected TestGetStepSupplier from(SequentialGetStepSupplier<Object, ?, ?, ?, ?> from) {
             return super.from(from);
-        }
-
-        @Override
-        protected TestGetStepSupplier criteria(Criteria<? super Object> criteria) {
-            return super.criteria(criteria);
-        }
-
-        @Override
-        protected TestGetStepSupplier criteria(String description, Predicate<? super Object> predicate) {
-            return super.criteria(description, predicate);
         }
 
         @Override
@@ -387,23 +456,27 @@ public class StepParametersTest {
         }
     }
 
-    @SequentialGetStepSupplier.DefaultParameterNames(timeOut = "Custom Time out",
-            criteria = "Custom criteria",
-            pollingTime = "Custom sleeping",
-            from = "Custom from"
-    )
-    private static class TestGetStepSupplier2 extends SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier<Object, Object, Object, TestGetStepSupplier2> {
+    @SequentialGetStepSupplier.DefineTimeOutParameterName("Custom Time out")
+    @SequentialGetStepSupplier.DefineCriteriaParameterName("Custom criteria")
+    @SequentialGetStepSupplier.DefinePollingTimeParameterName("Custom sleeping")
+    @SequentialGetStepSupplier.DefineFromParameterName("Custom from")
+    @Description("getTestGetStepSupplier2")
+    static class TestGetStepSupplier2 extends SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier<Object, Object, Object, TestGetStepSupplier2> {
 
-        @StepParameter("Parameter 1")
+        @StepParameter("Parameter 11")
         private Boolean param1;
         private ParamObj paramObj;
-        @StepParameter(value = "Parameter 2", doNotReportNullValues = true)
+        @StepParameter(value = "Parameter 21", doNotReportNullValues = true)
         private String param2;
         private Integer param3;
 
 
         protected TestGetStepSupplier2() {
-            super("Test Step", o -> new Object[]{});
+            super(o -> new Object[]{});
+        }
+
+        public static TestGetStepSupplier2 getTestGetStepSupplier2() {
+            return new TestGetStepSupplier2();
         }
 
         @Override
@@ -419,16 +492,6 @@ public class StepParametersTest {
         @Override
         protected TestGetStepSupplier2 from(SequentialGetStepSupplier<Object, ?, ?, ?, ?> from) {
             return super.from(from);
-        }
-
-        @Override
-        protected TestGetStepSupplier2 criteria(Criteria<? super Object> criteria) {
-            return super.criteria(criteria);
-        }
-
-        @Override
-        protected TestGetStepSupplier2 criteria(String description, Predicate<? super Object> predicate) {
-            return super.criteria(description, predicate);
         }
 
         @Override
@@ -478,17 +541,24 @@ public class StepParametersTest {
         }
     }
 
-    private static class TestActionStepSupplier extends SequentialActionSupplier<Object, Object, TestActionStepSupplier> {
+    @Description("Test action")
+    @SequentialActionSupplier.DefinePerformOnParameterName
+    @IncludeParamsOfInnerGetterStep
+    static class TestActionStepSupplier extends SequentialActionSupplier<Object, Object, TestActionStepSupplier> {
 
-        @StepParameter("Parameter 1")
+        @StepParameter("Action Parameter 1")
         private Boolean param1;
         private ParamObj paramObj;
-        @StepParameter(value = "Parameter 2", doNotReportNullValues = true)
+        @StepParameter(value = "Action Parameter 2", doNotReportNullValues = true)
         private String param2;
         private Integer param3;
 
         protected TestActionStepSupplier() {
-            super("Test action");
+            super();
+        }
+
+        public static TestActionStepSupplier getTestActionStepSupplier() {
+            return new TestActionStepSupplier();
         }
 
         @Override
@@ -507,7 +577,7 @@ public class StepParametersTest {
         }
 
         @Override
-        protected void performActionOn(Object value) {
+        protected void howToPerform(Object value) {
         }
 
         public TestActionStepSupplier setParam1(Boolean param1) {
@@ -543,18 +613,23 @@ public class StepParametersTest {
         }
     }
 
-    @SequentialActionSupplier.DefaultParameterNames(performOn = "Perform on custom")
-    private static class TestActionStepSupplier2 extends SequentialActionSupplier<Object, Object, TestActionStepSupplier2> {
+    @SequentialActionSupplier.DefinePerformOnParameterName("Perform on custom")
+    @Description("TestActionStepSupplier2")
+    static class TestActionStepSupplier2 extends SequentialActionSupplier<Object, Object, TestActionStepSupplier2> {
 
-        @StepParameter("Parameter 1")
+        @StepParameter("Action Parameter 1")
         private Boolean param1;
         private ParamObj paramObj;
-        @StepParameter(value = "Parameter 2", doNotReportNullValues = true)
+        @StepParameter(value = "Action Parameter 2", doNotReportNullValues = true)
         private String param2;
         private Integer param3;
 
         protected TestActionStepSupplier2() {
-            super("Test action");
+            super();
+        }
+
+        public static TestActionStepSupplier2 getTestActionStepSupplier2() {
+            return new TestActionStepSupplier2();
         }
 
         @Override
@@ -573,7 +648,7 @@ public class StepParametersTest {
         }
 
         @Override
-        protected void performActionOn(Object value) {
+        protected void howToPerform(Object value) {
         }
 
         public TestActionStepSupplier2 setParam1(Boolean param1) {
@@ -609,7 +684,7 @@ public class StepParametersTest {
         }
     }
 
-    private static class ParamObj extends StepParameterWrapper {
+    private static class ParamObj implements StepParameterPojo {
 
         @StepParameter("Pojo Parameter 1")
         private Boolean param1;

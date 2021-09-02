@@ -1,23 +1,28 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements;
 
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasTextContent;
-import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
+import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static org.hamcrest.Matchers.*;
 
-public final class HasTextMatcher<T extends SearchContext> extends TypeSafeDiagnosingMatcher<T> {
+@Description("text: {matcher}")
+public final class HasTextMatcher extends NeptuneFeatureMatcher<SearchContext> {
 
+    @DescriptionFragment(value = "matcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
     private final Matcher<String> matcher;
 
     private HasTextMatcher(Matcher<String> matcher) {
+        super(true, WebElement.class, Widget.class);
         checkArgument(nonNull(matcher), "Criteria to match text of the element should be defined");
         this.matcher = matcher;
     }
@@ -27,12 +32,10 @@ public final class HasTextMatcher<T extends SearchContext> extends TypeSafeDiagn
      * It should be {@link WebElement} or some implementor of {@link WrapsElement}. Otherwise the matching returns {@code false}
      *
      * @param value criteria to check text
-     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
-     *           {@link SearchContext} and {@link WrapsElement}.
      * @return instance of {@link HasTextMatcher}
      */
-    public static <T extends SearchContext> HasTextMatcher<T> hasText(Matcher<String> value) {
-        return new HasTextMatcher<>(value);
+    public static Matcher<SearchContext> hasText(Matcher<String> value) {
+        return new HasTextMatcher(value);
     }
 
     /**
@@ -42,11 +45,9 @@ public final class HasTextMatcher<T extends SearchContext> extends TypeSafeDiagn
      * defined value.
      *
      * @param value is expected to be equal to text of the element.
-     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
-     *           {@link SearchContext} and {@link WrapsElement}.
      * @return instance of {@link HasTextMatcher}
      */
-    public static <T extends SearchContext> HasTextMatcher<T> hasText(String value) {
+    public static Matcher<SearchContext> hasText(String value) {
         return hasText(equalTo(value));
     }
 
@@ -55,49 +56,27 @@ public final class HasTextMatcher<T extends SearchContext> extends TypeSafeDiagn
      * It should be {@link WebElement} or some implementor of {@link WrapsElement}.
      * Otherwise the matching returns {@code false}. It is expected that text is not null or empty value.
      *
-     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
-     *           {@link SearchContext} and {@link WrapsElement}.
      * @return instance of {@link HasTextMatcher}
      */
-    public static <T extends SearchContext> HasTextMatcher<T> hasText() {
+    public static Matcher<SearchContext> hasText() {
         return hasText(not(emptyOrNullString()));
     }
 
     @Override
-    protected boolean matchesSafely(T item, Description mismatchDescription) {
+    protected boolean featureMatches(SearchContext toMatch) {
         boolean result;
-        var clazz = item.getClass();
+        var clazz = toMatch.getClass();
         String text;
 
         if (WebElement.class.isAssignableFrom(clazz)) {
-            result = matcher.matches(text = ((WebElement) item).getText());
-        } else if (HasTextContent.class.isAssignableFrom(clazz)) {
-            result = matcher.matches(text = ((HasTextContent) item).getText());
-        } else if (WrapsElement.class.isAssignableFrom(clazz)) {
-            var e = ((WrapsElement) item).getWrappedElement();
-            if (e == null) {
-                mismatchDescription.appendText(format("Wrapped element is null. It is not possible to get text from the instance of %s.",
-                        clazz.getName()));
-                return false;
-            }
-            result = matcher.matches(text = e.getText());
+            result = matcher.matches(text = ((WebElement) toMatch).getText());
         } else {
-            mismatchDescription.appendText(format("It is not possible to get text from the instance of %s because " +
-                            "it does not implement %s, %s or %s",
-                    clazz.getName(),
-                    WebElement.class.getName(),
-                    HasTextContent.class.getName(),
-                    WrapsElement.class.getName()));
-            return false;
+            result = matcher.matches(text = ((HasTextContent) toMatch).getText());
         }
 
         if (!result) {
-            matcher.describeMismatch(text, mismatchDescription);
+            appendMismatchDescription(matcher, text);
         }
         return result;
-    }
-
-    public String toString() {
-        return format("has text %s", matcher.toString());
     }
 }

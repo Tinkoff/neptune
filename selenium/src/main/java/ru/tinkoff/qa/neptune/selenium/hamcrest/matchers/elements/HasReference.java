@@ -1,23 +1,26 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements;
 
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Link;
-import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
 
 import java.net.URL;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
-import static java.lang.System.lineSeparator;
 import static java.util.Objects.nonNull;
 import static org.hamcrest.Matchers.equalTo;
 
-public final class HasReference extends TypeSafeDiagnosingMatcher<Link> {
+@Description("reference: {refMatcher}")
+public final class HasReference extends NeptuneFeatureMatcher<Link> {
 
+    @DescriptionFragment(value = "refMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
     private final Matcher<? super String> refMatcher;
 
     private HasReference(Matcher<? super String> refMatcher) {
+        super(true);
         checkArgument(nonNull(refMatcher), "Criteria to match reference should be defined");
         this.refMatcher = refMatcher;
     }
@@ -29,7 +32,7 @@ public final class HasReference extends TypeSafeDiagnosingMatcher<Link> {
      * @param expected is expected value of the reference
      * @return an instance of {@link HasReference}
      */
-    public static HasReference hasReference(String expected) {
+    public static Matcher<Link> hasReference(String expected) {
         checkArgument(nonNull(expected), "Expected value of the reference should be defined");
         return new HasReference(equalTo(expected));
     }
@@ -41,7 +44,7 @@ public final class HasReference extends TypeSafeDiagnosingMatcher<Link> {
      * @param expected is expected value of the reference
      * @return an instance of {@link HasReference}
      */
-    public static HasReference hasReference(URL expected) {
+    public static Matcher<Link> hasReference(URL expected) {
         checkArgument(nonNull(expected), "Expected value of the reference should be defined");
         return hasReference(expected.toString());
     }
@@ -53,25 +56,19 @@ public final class HasReference extends TypeSafeDiagnosingMatcher<Link> {
      * @param refMatcher is a criteria to check the reference
      * @return an instance of {@link HasReference}
      */
-    public static HasReference hasReference(Matcher<? super String> refMatcher) {
+    public static Matcher<Link> hasReference(Matcher<? super String> refMatcher) {
         return new HasReference(refMatcher);
     }
 
     @Override
-    protected boolean matchesSafely(Link item, Description mismatchDescription) {
-        var reference = item.getReference();
+    protected boolean featureMatches(Link toMatch) {
+        var reference = toMatch.getReference();
         var result = refMatcher.matches(reference);
 
         if (!result) {
-            mismatchDescription.appendText(format("It was expected that %s %s%s", item, toString(), lineSeparator()));
-            refMatcher.describeMismatch(reference, mismatchDescription);
+            appendMismatchDescription(refMatcher, reference);
         }
 
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return format("has reference '%s'", refMatcher);
     }
 }

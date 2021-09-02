@@ -42,7 +42,7 @@ public class FrameTest extends BaseWebDriverTest {
         Frame frame1 = seleniumSteps.get(frame(index1.getIndex()));
         setEndBenchMark();
 
-        assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
+        assertThat(getTimeDifference(), lessThanOrEqualTo(100L));
         assertThat(frame1.toString(), is(format("frame %s", index1.getIndex())));
         assertThat(((MockWebDriver) wrappedWebDriver.getWrappedDriver()).isSwitchedToParentFrame(), is(true));
 
@@ -72,7 +72,7 @@ public class FrameTest extends BaseWebDriverTest {
         setEndBenchMark();
 
         assertThat(((MockWebDriver) seleniumSteps.switchTo(frame1).getWrappedDriver()).getCurrentFrame(), is(index1.getIndex()));
-        assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
+        assertThat(getTimeDifference(), lessThanOrEqualTo(100L));
     }
 
     @Test
@@ -86,7 +86,7 @@ public class FrameTest extends BaseWebDriverTest {
             setEndBenchMark();
 
             assertThat(((MockWebDriver) seleniumSteps.switchTo(frame1).getWrappedDriver()).getCurrentFrame(), is(index1.getIndex()));
-            assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
+            assertThat(getTimeDifference(), lessThanOrEqualTo(100L));
         } finally {
             removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName());
             removeProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getName());
@@ -99,13 +99,10 @@ public class FrameTest extends BaseWebDriverTest {
             setStartBenchMark();
             seleniumSteps.get(frame(100)
                     .timeOut(FIVE_SECONDS));
-        } catch (Exception e) {
-            assertThat(e.getMessage(), containsString("Can't find/switch to the frame by index 100"));
-            throw e;
         } finally {
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
-            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
+            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThanOrEqualTo(100L));
         }
     }
 
@@ -116,15 +113,12 @@ public class FrameTest extends BaseWebDriverTest {
         try {
             setStartBenchMark();
             seleniumSteps.get(frame(100));
-        } catch (Exception e) {
-            assertThat(e.getMessage(), containsString("Can't find/switch to the frame by index 100"));
-            throw e;
         } finally {
             setEndBenchMark();
             removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName());
             removeProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getName());
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
-            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
+            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThanOrEqualTo(100L));
         }
     }
 
@@ -137,7 +131,7 @@ public class FrameTest extends BaseWebDriverTest {
         Frame frame1 = seleniumSteps.get(frame(name1.getNameOrId()));
         setEndBenchMark();
 
-        assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
+        assertThat(getTimeDifference(), lessThanOrEqualTo(100L));
         assertThat(frame1.toString(), is(format("frame %s", name1.getNameOrId())));
         assertThat(((MockWebDriver) wrappedWebDriver.getWrappedDriver()).isSwitchedToParentFrame(), is(true));
 
@@ -169,7 +163,7 @@ public class FrameTest extends BaseWebDriverTest {
         setEndBenchMark();
 
         assertThat(((MockWebDriver) seleniumSteps.switchTo(frame1).getWrappedDriver()).getCurrentFrame(), is(name1.getNameOrId()));
-        assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
+        assertThat(getTimeDifference(), lessThanOrEqualTo(100L));
     }
 
     @Test
@@ -183,7 +177,7 @@ public class FrameTest extends BaseWebDriverTest {
             setEndBenchMark();
 
             assertThat(((MockWebDriver) seleniumSteps.switchTo(frame1).getWrappedDriver()).getCurrentFrame(), is(name1.getNameOrId()));
-            assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
+            assertThat(getTimeDifference(), lessThanOrEqualTo(100L));
         } finally {
             removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName());
             removeProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getName());
@@ -195,13 +189,10 @@ public class FrameTest extends BaseWebDriverTest {
         try {
             setStartBenchMark();
             seleniumSteps.get(frame("some name").timeOut(FIVE_SECONDS));
-        } catch (Exception e) {
-            assertThat(e.getMessage(), containsString("Can't find/switch to the frame by name or id some name"));
-            throw e;
         } finally {
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
-            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
+            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThanOrEqualTo(100L));
         }
     }
 
@@ -212,15 +203,12 @@ public class FrameTest extends BaseWebDriverTest {
         try {
             setStartBenchMark();
             seleniumSteps.get(frame("some name"));
-        } catch (Exception e) {
-            assertThat(e.getMessage(), containsString("Can't find/switch to the frame by name or id some name"));
-            throw e;
         } finally {
             setEndBenchMark();
             removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName());
             removeProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getName());
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
-            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
+            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThanOrEqualTo(100L));
         }
     }
 
@@ -230,7 +218,7 @@ public class FrameTest extends BaseWebDriverTest {
         Frame frame1 = seleniumSteps.get(frame(tagName("valid_frame1")));
         setEndBenchMark();
 
-        assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
+        assertThat(getTimeDifference(), lessThanOrEqualTo(100L));
         assertThat(((MockWebDriver) wrappedWebDriver.getWrappedDriver()).isSwitchedToParentFrame(), is(true));
 
         ((MockWebDriver) wrappedWebDriver.getWrappedDriver()).setSwitchedToParentFrame(false);
@@ -257,7 +245,7 @@ public class FrameTest extends BaseWebDriverTest {
         setEndBenchMark();
 
         assertThat(((MockWebDriver) seleniumSteps.switchTo(frame1).getWrappedDriver()).getCurrentFrame(), is(FRAME_ELEMENT_VALID1));
-        assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
+        assertThat(getTimeDifference(), lessThanOrEqualTo(100L));
     }
 
     @Test
@@ -270,7 +258,7 @@ public class FrameTest extends BaseWebDriverTest {
             setEndBenchMark();
 
             assertThat(((MockWebDriver) seleniumSteps.switchTo(frame1).getWrappedDriver()).getCurrentFrame(), is(FRAME_ELEMENT_VALID1));
-            assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
+            assertThat(getTimeDifference(), lessThanOrEqualTo(100L));
         } finally {
             removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName());
             removeProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getName());
@@ -283,13 +271,10 @@ public class FrameTest extends BaseWebDriverTest {
             setStartBenchMark();
             seleniumSteps.get(frame(tagName("invalid_frame"))
                     .timeOut(FIVE_SECONDS));
-        } catch (Exception e) {
-            assertThat(e.getMessage(), containsString("Can't find/switch to the frame By.tagName: invalid_frame"));
-            throw e;
         } finally {
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
-            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
+            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThanOrEqualTo(100L));
         }
     }
 
@@ -300,15 +285,12 @@ public class FrameTest extends BaseWebDriverTest {
         try {
             setStartBenchMark();
             seleniumSteps.get(frame(tagName("not_existing_frame")));
-        } catch (Exception e) {
-            assertThat(e.getMessage(), containsString("Can't find/switch to the frame By.tagName: not_existing_frame"));
-            throw e;
         } finally {
             setEndBenchMark();
             removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName());
             removeProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getName());
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
-            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
+            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThanOrEqualTo(100L));
         }
     }
 }

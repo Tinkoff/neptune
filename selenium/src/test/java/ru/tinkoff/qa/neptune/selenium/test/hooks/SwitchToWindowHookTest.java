@@ -61,7 +61,7 @@ public class SwitchToWindowHookTest extends BaseWebDriverTest {
 
         hook.executeMethodHook(m, o, new Random().nextBoolean());
         var command = getCurrentCommand();
-        command.get().accept(wrappedWebDriver.getWrappedDriver());
+        command.get().performAction(seleniumSteps);
         assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getMockHandle(), equalTo(expected));
     }
 
@@ -73,11 +73,11 @@ public class SwitchToWindowHookTest extends BaseWebDriverTest {
         var command = getCurrentCommand();
         try {
             setStartBenchMark();
-            command.get().accept(wrappedWebDriver.getWrappedDriver());
+            command.get().performAction(seleniumSteps);
         } catch (Exception e) {
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
-            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThan(HALF_SECOND.toMillis()));
+            assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThan(100L));
             throw e;
         }
         fail("Exception was expected");

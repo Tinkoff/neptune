@@ -1,10 +1,33 @@
+plugins {
+    id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
+}
+
 dependencies {
     compile project(':core.api')
+
+    inpath(project(":core.api")) {
+        transitive = false
+    }
 }
 
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
     from javadoc
+}
+
+task generateBundle(type: JavaExec)  {
+    classpath sourceSets.main.runtimeClasspath
+    main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
+    args "ru_RU",
+            "$projectDir/src/main/resources",
+            "false",
+            "check"
+}
+
+processResources {
+    doLast {
+        generateBundle.exec()
+    }
 }
 
 task sourcesJar(type: Jar) {

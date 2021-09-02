@@ -2,27 +2,25 @@ package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy;
 
 import com.browserup.harreader.model.HarEntry;
 import com.browserup.harreader.model.HarQueryParam;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.HarRecordQueryParam;
 
-import java.util.List;
+import java.util.Map;
 
-import static java.lang.String.format;
+import static java.util.stream.Collectors.toMap;
 import static org.hamcrest.Matchers.anything;
-import static org.hamcrest.Matchers.hasItem;
-import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.HasHarQueryParam.hasHarQueryParam;
+import static org.hamcrest.Matchers.equalTo;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.all.AllCriteriaMatcher.all;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFeatureMatcher.KEY_MATCHER_MASK;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFeatureMatcher.VALUE_MATCHER_MASK;
 
-public final class RequestHasQueries extends TypeSafeDiagnosingMatcher<HarEntry> {
+@Description("recorded request has query parameter [{" + KEY_MATCHER_MASK + "}] {" + VALUE_MATCHER_MASK + "}")
+public final class RequestHasQueries extends MappedDiagnosticFeatureMatcher<HarEntry, String, String> {
 
-    private final Matcher<? super List<HarQueryParam>> queryMatcher;
-
-    private RequestHasQueries(Matcher<? super List<HarQueryParam>> queryMatcher) {
-        this.queryMatcher = queryMatcher;
-    }
-
-    private static RequestHasQueries requestHasQueries(Matcher<? super List<HarQueryParam>> queryMatcher) {
-        return new RequestHasQueries(queryMatcher);
+    private RequestHasQueries(Matcher<? super String> nameMatcher, Matcher<? super String> valueMatcher) {
+        super(true, nameMatcher, valueMatcher);
     }
 
     /**
@@ -30,10 +28,10 @@ public final class RequestHasQueries extends TypeSafeDiagnosingMatcher<HarEntry>
      *
      * @param name  is the expected query parameter name
      * @param value is the expected query parameter value
-     * @return a new instance of {@link RequestHasQueries}
+     * @return a new Matcher
      */
-    public static RequestHasQueries requestHasQuery(String name, String value) {
-        return new RequestHasQueries(hasItem(hasHarQueryParam(name, value)));
+    public static Matcher<HarEntry> requestHasQueryParameter(String name, String value) {
+        return requestHasQueryParameter(equalTo(name), value);
     }
 
     /**
@@ -41,10 +39,10 @@ public final class RequestHasQueries extends TypeSafeDiagnosingMatcher<HarEntry>
      *
      * @param nameMatcher criteria that describes query parameter name
      * @param value       is the expected query parameter value
-     * @return a new instance of {@link RequestHasQueries}
+     * @return a new Matcher
      */
-    public static RequestHasQueries requestHasQuery(Matcher<? super String> nameMatcher, String value) {
-        return new RequestHasQueries(hasItem(hasHarQueryParam(nameMatcher, value)));
+    public static Matcher<HarEntry> requestHasQueryParameter(Matcher<? super String> nameMatcher, String value) {
+        return requestHasQueryParameter(nameMatcher, equalTo(value));
     }
 
     /**
@@ -52,10 +50,35 @@ public final class RequestHasQueries extends TypeSafeDiagnosingMatcher<HarEntry>
      *
      * @param name         is the expected query parameter name
      * @param valueMatcher criteria that describes query parameter value
-     * @return a new instance of {@link RequestHasQueries}
+     * @return a new Matcher
      */
-    public static RequestHasQueries requestHasQuery(String name, Matcher<? super String> valueMatcher) {
-        return new RequestHasQueries(hasItem(hasHarQueryParam(name, valueMatcher)));
+    @SuppressWarnings("unchecked")
+    public static Matcher<HarEntry> requestHasQueryParameter(String name, Matcher<? super String> valueMatcher) {
+        return requestHasQueryParameter(name, new Matcher[]{valueMatcher});
+    }
+
+    /**
+     * Creates matcher that checks query parameters of the request.
+     *
+     * @param name          is the expected query parameter name
+     * @param valueMatchers criteria that describes query parameter value
+     * @return a new Matcher
+     */
+    @SafeVarargs
+    public static Matcher<HarEntry> requestHasQueryParameter(String name, Matcher<? super String>... valueMatchers) {
+        return requestHasQueryParameter(equalTo(name), valueMatchers);
+    }
+
+    /**
+     * Creates matcher that checks query parameters of the request.
+     *
+     * @param nameMatcher   criteria that describes query parameter name
+     * @param valueMatchers criteria that describes query parameter value
+     * @return a new Matcher
+     */
+    @SafeVarargs
+    public static Matcher<HarEntry> requestHasQueryParameter(Matcher<? super String> nameMatcher, Matcher<? super String>... valueMatchers) {
+        return new RequestHasQueries(nameMatcher, all(valueMatchers));
     }
 
     /**
@@ -63,71 +86,81 @@ public final class RequestHasQueries extends TypeSafeDiagnosingMatcher<HarEntry>
      *
      * @param nameMatcher  criteria that describes query parameter name
      * @param valueMatcher criteria that describes query parameter value
-     * @return a new instance of {@link RequestHasQueries}
+     * @return a new Matcher
      */
-    public static RequestHasQueries requestHasQuery(Matcher<? super String> nameMatcher, Matcher<? super String> valueMatcher) {
-        return new RequestHasQueries(hasItem(hasHarQueryParam(nameMatcher, valueMatcher)));
+    @SuppressWarnings("unchecked")
+    public static Matcher<HarEntry> requestHasQueryParameter(Matcher<? super String> nameMatcher, Matcher<? super String> valueMatcher) {
+        return requestHasQueryParameter(nameMatcher, new Matcher[]{valueMatcher});
     }
+
 
     /**
      * Creates matcher that checks query parameters of the request.
      *
      * @param nameMatcher criteria that describes query parameter name
-     * @return a new instance of {@link RequestHasQueries}
+     * @return a new Matcher
      */
-    public static RequestHasQueries requestHasQueryName(Matcher<? super String> nameMatcher) {
-        return new RequestHasQueries(hasItem(hasHarQueryParam(nameMatcher, anything())));
+    public static Matcher<HarEntry> requestHasQueryParameterName(Matcher<? super String> nameMatcher) {
+        return requestHasQueryParameter(nameMatcher, anything());
     }
 
     /**
      * Creates matcher that checks query parameters of the request.
      *
      * @param name is the expected query parameter name
-     * @return a new instance of {@link RequestHasQueries}
+     * @return a new Matcher
      */
-    public static RequestHasQueries requestHasQueryName(String name) {
-        return new RequestHasQueries(hasItem(hasHarQueryParam(name, anything())));
+    public static Matcher<HarEntry> requestHasQueryParameterName(String name) {
+        return requestHasQueryParameterName(equalTo(name));
+    }
+
+    /**
+     * Creates matcher that checks query parameters of the request.
+     *
+     * @param valueMatchers criteria that describes query parameter value
+     * @return a new Matcher
+     */
+    @SafeVarargs
+    public static Matcher<HarEntry> requestHasQueryParameterValue(Matcher<? super String>... valueMatchers) {
+        return requestHasQueryParameter(anything(), valueMatchers);
     }
 
     /**
      * Creates matcher that checks query parameters of the request.
      *
      * @param valueMatcher criteria that describes query parameter value
-     * @return a new instance of {@link RequestHasQueries}
+     * @return a new Matcher
      */
-    public static RequestHasQueries requestHasQueryValue(Matcher<? super String> valueMatcher) {
-        return new RequestHasQueries(hasItem(hasHarQueryParam(anything(), valueMatcher)));
+    @SuppressWarnings("unchecked")
+    public static Matcher<HarEntry> requestHasQueryParameterValue(Matcher<? super String> valueMatcher) {
+        return requestHasQueryParameterValue(new Matcher[]{valueMatcher});
     }
 
     /**
      * Creates matcher that checks query parameters of the request.
      *
      * @param value is the expected query parameter value
-     * @return a new instance of {@link RequestHasQueries}
+     * @return a new Matcher
      */
-    public static RequestHasQueries requestHasQueryValue(String value) {
-        return new RequestHasQueries(hasItem(hasHarQueryParam(anything(), value)));
+    public static Matcher<HarEntry> requestHasQueryParameterValue(String value) {
+        return requestHasQueryParameterValue(equalTo(value));
     }
 
     @Override
-    protected boolean matchesSafely(HarEntry item, Description mismatchDescription) {
-        if (item == null) {
-            mismatchDescription.appendText("Proxied entry is null");
-            return false;
-        }
-
-        var requestQueryParams = item.getRequest().getQueryString();
-        var result = queryMatcher.matches(requestQueryParams);
-
-        if (!result) {
-            queryMatcher.describeMismatch(requestQueryParams, mismatchDescription);
-        }
-
-        return result;
+    protected Map<String, String> getMap(HarEntry harEntry) {
+        return harEntry
+                .getRequest()
+                .getQueryString()
+                .stream().collect(toMap(HarQueryParam::getName, HarQueryParam::getValue));
     }
 
     @Override
-    public String toString() {
-        return format("request has query parameters %s", queryMatcher);
+    protected String getDescriptionOnKeyAbsence() {
+        return new HarRecordQueryParam(null).toString();
+    }
+
+    @Override
+    protected String getDescriptionOnValueMismatch(String s) {
+        return new HarRecordQueryParam(s).toString();
     }
 }

@@ -65,12 +65,12 @@ public class AllureEventLogger implements EventLogger {
         var bos = new ByteArrayOutputStream();
         var ps = new PrintStream(bos, true, UTF_8);
         throwable.printStackTrace(ps);
-        String data = new String(bos.toByteArray(), UTF_8);
+        String data = bos.toString(UTF_8);
         addAttachment("Thrown exception:", data);
     }
 
     @Override
-    public void fireReturnedValue(Object returned) {
+    public void fireReturnedValue(String resultDescription, Object returned) {
         if (stepUIIDs.size() == 0) {
             return;
         }
@@ -79,7 +79,7 @@ public class AllureEventLogger implements EventLogger {
         allureLifecycle.updateStep(uuid, s -> s.setStatus(PASSED)
                 .getParameters()
                 .add(new Parameter()
-                        .setName("RETURNED VALUE")
+                        .setName(resultDescription)
                         .setValue(stringValueOfObjectOrArray(returned))));
         results.put(uuid, PASSED);
     }
@@ -98,5 +98,24 @@ public class AllureEventLogger implements EventLogger {
         });
         allureLifecycle.stopStep(uuid);
         stepUIIDs.removeLast();
+    }
+
+    @Override
+    public void addParameters(Map<String, String> parameters) {
+        if (stepUIIDs.size() == 0) {
+            return;
+        }
+
+        var uuid = stepUIIDs.getLast();
+        allureLifecycle.updateStep(uuid, stepResult -> {
+            var params = stepResult.getParameters();
+            params.addAll(parameters
+                    .entrySet()
+                    .stream()
+                    .map(e -> new Parameter().setName(e.getKey()).setValue(e.getValue()))
+                    .collect(toList()));
+            stepResult.setParameters(params);
+        });
+
     }
 }

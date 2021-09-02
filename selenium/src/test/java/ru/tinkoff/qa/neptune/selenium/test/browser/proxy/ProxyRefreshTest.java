@@ -1,7 +1,10 @@
 package ru.tinkoff.qa.neptune.selenium.test.browser.proxy;
 
 import org.openqa.selenium.WebDriver;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.selenium.SeleniumParameterProvider;
 import ru.tinkoff.qa.neptune.selenium.WrappedWebDriver;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
@@ -14,6 +17,7 @@ import static java.util.Map.ofEntries;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
+import static ru.tinkoff.qa.neptune.selenium.BrowserProxy.getCurrentProxy;
 import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CHROME;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.USE_BROWSER_PROXY;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
@@ -27,7 +31,7 @@ public class ProxyRefreshTest {
                     entry(USE_BROWSER_PROXY.getName(), "true"));
 
     private final WrappedWebDriver wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
-            new SeleniumParameterProvider().provide().getParameterValues()[0]);
+            new SeleniumParameterProvider().provide()[0]);
 
     @BeforeClass
     public void setUp() {
@@ -46,7 +50,7 @@ public class ProxyRefreshTest {
         driver.get("https://google.com");
 
         assertThat("HAR entries list",
-                wrappedWebDriver.getProxy().getHar().getLog().getEntries(),
+                getCurrentProxy().getHar().getLog().getEntries(),
                 hasSize(greaterThan(0)));
     }
 

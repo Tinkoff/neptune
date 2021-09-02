@@ -14,9 +14,14 @@ import ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultXmlObjectMapper;
 import java.util.Objects;
 
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.http.api.properties.date.format.ApiDateFormatProperty.API_DATE_FORMAT_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultJsonObjectMapper.DEFAULT_JSON_OBJECT_MAPPER;
 import static ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultXmlObjectMapper.DEFAULT_XML_OBJECT_MAPPER;
 
+/**
+ * This is deprecated in favour of usage of {@link ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer}
+ */
+@Deprecated
 /**
  * Default mappers of serialized/deserialized http request/response bodies.
  *
@@ -34,6 +39,7 @@ public enum DefaultMapper {
             addModuleIfNecessary(m, ParameterNamesModule.class, new ParameterNamesModule());
             addModuleIfNecessary(m, Jdk8Module.class, new Jdk8Module());
             addModuleIfNecessary(m, JavaTimeModule.class, new JavaTimeModule());
+            ofNullable(API_DATE_FORMAT_PROPERTY.get()).ifPresent(m::setDateFormat);
             return m;
         }
     },
@@ -50,6 +56,9 @@ public enum DefaultMapper {
             addModuleIfNecessary(m, ParameterNamesModule.class, new ParameterNamesModule());
             addModuleIfNecessary(m, Jdk8Module.class, new Jdk8Module());
             addModuleIfNecessary(m, JavaTimeModule.class, new JavaTimeModule());
+            if (m.getDateFormat() == null) {
+                ofNullable(API_DATE_FORMAT_PROPERTY.get()).ifPresent(m::setDateFormat);
+            }
             return m;
         }
     };

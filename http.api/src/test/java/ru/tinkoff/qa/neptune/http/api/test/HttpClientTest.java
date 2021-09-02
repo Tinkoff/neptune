@@ -40,6 +40,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+import static ru.tinkoff.qa.neptune.http.api.cookies.CommonHttpCookieCriteria.httpCookieValue;
 import static ru.tinkoff.qa.neptune.http.api.properties.authentification.DefaultHttpAuthenticatorProperty.DEFAULT_HTTP_AUTHENTICATOR_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.cookies.DefaultHttpCookieManagerProperty.DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.executor.DefaultHttpExecutorProperty.DEFAULT_HTTP_EXECUTOR_PROPERTY;
@@ -122,7 +123,7 @@ public class HttpClientTest extends BaseHttpTest {
         setProperty(DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY.getName(), TestSslParametersSupplier.class.getName());
 
         try {
-            var newContext = new HttpStepContext((HttpClient.Builder) new HttpStepsParameterProvider().provide().getParameterValues()[0]);
+            var newContext = new HttpStepContext((HttpClient.Builder) new HttpStepsParameterProvider().provide()[0]);
             var client = newContext.getCurrentClient();
 
             assertThat(client.authenticator().orElse(null), equalTo(DEFAULT_AUTHENTICATOR));
@@ -165,6 +166,16 @@ public class HttpClientTest extends BaseHttpTest {
 
         http().addCookies(httpCookie);
         http().removeCookies();
+        assertThat(http().getCookies(), emptyIterable());
+    }
+
+    @Test
+    public void clearCookiesTest2() {
+        var httpCookie = new HttpCookie("TestSetUpCookieName",
+                "TestSetUpCookieValue");
+
+        http().addCookies(httpCookie);
+        http().removeCookies(httpCookieValue("TestSetUpCookieValue"));
         assertThat(http().getCookies(), emptyIterable());
     }
 

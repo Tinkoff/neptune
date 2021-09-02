@@ -5,7 +5,8 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
-import ru.tinkoff.qa.neptune.core.api.steps.StepFunction;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.selenium.api.widget.*;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Tab;
 
@@ -24,12 +25,11 @@ import static java.time.Duration.ofMillis;
 import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.NOT;
-import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
+import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.turnReportingOff;
 
 public final class CommonElementCriteria {
 
@@ -43,8 +43,9 @@ public final class CommonElementCriteria {
      * @param <T> is a type of element/widget to be visible
      * @return criteria that checks/filters an element/widget
      */
+    @Description("visible")
     public static <T extends SearchContext> Criteria<T> visible() {
-        return condition("visible", t -> {
+        return condition(t -> {
             var tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
                 return ((WebElement) t).isDisplayed();
@@ -70,8 +71,9 @@ public final class CommonElementCriteria {
      * @param <T> is a type of element/widget to be enabled
      * @return criteria that checks/filters an element/widget
      */
+    @Description("enabled")
     public static <T extends SearchContext> Criteria<T> enabled() {
-        return condition("enabled", t -> {
+        return condition(t -> {
             var tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
                 return ((WebElement) t).isEnabled();
@@ -98,10 +100,11 @@ public final class CommonElementCriteria {
      * @param <T>  is a type of element/widget
      * @return criteria that checks/filters an element/widget
      */
-    static <T extends SearchContext> Criteria<T> text(String text) {
+    @Description("has text {text}")
+    static <T extends SearchContext> Criteria<T> text(@DescriptionFragment("text") String text) {
         checkArgument(isNotBlank(text), "Text should be defined");
 
-        return condition(format("has text '%s'", text), t -> {
+        return condition(t -> {
             var clazz = t.getClass();
 
             if (WebElement.class.isAssignableFrom(clazz)) {
@@ -136,9 +139,10 @@ public final class CommonElementCriteria {
                 .collect(toList());
     }
 
-    static <T extends Widget> Criteria<T> labeled(String label) {
+    @Description("has label {label}")
+    static <T extends Widget> Criteria<T> labeled(@DescriptionFragment("label") String label) {
         checkNotNull(label);
-        return condition(format("has label '%s'", label), t -> {
+        return condition(t -> {
             Class<?> cls = t.getClass();
             var labels = new ArrayList<String>();
 
@@ -176,10 +180,11 @@ public final class CommonElementCriteria {
      * @param <T>        is a type of element/widget
      * @return criteria that checks/filters an element/widget
      */
-    public static <T extends SearchContext> Criteria<T> textMatches(String expression) {
+    @Description("has text that contains '{expression}' or fits regExp pattern '{expression}'")
+    public static <T extends SearchContext> Criteria<T> textMatches(@DescriptionFragment("expression") String expression) {
         checkArgument(isNotBlank(expression), "Substring/RegEx pattern should be defined");
 
-        return condition(format("has text that contains '%s' or fits regExp pattern '%s'", expression, expression), t -> {
+        return condition(t -> {
             var clazz = t.getClass();
             String elementText = null;
 
@@ -194,20 +199,7 @@ public final class CommonElementCriteria {
             }
 
             return ofNullable(elementText)
-                    .map(s -> {
-                        if (s.contains(expression)) {
-                            return true;
-                        }
-
-                        try {
-                            var p = compile(expression);
-                            var mather = p.matcher(s);
-                            return mather.matches();
-                        } catch (Throwable thrown) {
-                            thrown.printStackTrace();
-                            return false;
-                        }
-                    })
+                    .map(s -> checkByStringContainingOrRegExp(expression).test(s))
                     .orElse(false);
         });
     }
@@ -220,7 +212,9 @@ public final class CommonElementCriteria {
      * @param attrValue desired value of the attribute
      * @return criteria that checks/filters an element/widget
      */
-    public static <T extends SearchContext> Criteria<T> attr(String attribute, String attrValue) {
+    @Description("has attribute '{attribute}=\"{attrValue}\"'")
+    public static <T extends SearchContext> Criteria<T> attr(@DescriptionFragment("attribute") String attribute,
+                                                             @DescriptionFragment("attrValue") String attrValue) {
         checkArgument(!isBlank(attribute), "Attribute name should be defined");
         checkArgument(!isBlank(attrValue), "Attribute value should be defined");
 
@@ -255,12 +249,13 @@ public final class CommonElementCriteria {
      *                   It is possible to pass reg exp pattern that attr value of an element should fit.
      * @return criteria that checks/filters an element/widget
      */
-    public static <T extends SearchContext> Criteria<T> attrMatches(String attribute, String expression) {
+    @Description("has attribute '{attribute}' that contains '{expression}' or fits regExp pattern '{expression}'")
+    public static <T extends SearchContext> Criteria<T> attrMatches(@DescriptionFragment("attribute") String attribute,
+                                                                    @DescriptionFragment("expression") String expression) {
         checkArgument(!isBlank(attribute), "Attribute name should be defined");
         checkArgument(!isBlank(expression), "Substring/RegEx pattern should be defined");
 
-        return condition(format("has attribute '%s' that contains '%s' or " +
-                "fits regExp pattern '%s'", attribute, expression, expression), t -> {
+        return condition(t -> {
             var tClass = t.getClass();
             String attrVal = null;
 
@@ -279,20 +274,7 @@ public final class CommonElementCriteria {
             }
 
             return ofNullable(attrVal)
-                    .map(s -> {
-                        if (s.contains(expression)) {
-                            return true;
-                        }
-
-                        try {
-                            var p = compile(expression);
-                            var mather = p.matcher(s);
-                            return mather.matches();
-                        } catch (Throwable thrown) {
-                            thrown.printStackTrace();
-                            return false;
-                        }
-                    })
+                    .map(s -> checkByStringContainingOrRegExp(expression).test(s))
                     .orElse(false);
         });
     }
@@ -305,7 +287,9 @@ public final class CommonElementCriteria {
      * @param cssValue    desired value of the css property
      * @return criteria that checks/filters an element/widget
      */
-    public static <T extends SearchContext> Criteria<T> css(String cssProperty, String cssValue) {
+    @Description("has css property '{cssProperty}=\"{cssValue}\"'")
+    public static <T extends SearchContext> Criteria<T> css(@DescriptionFragment("cssProperty") String cssProperty,
+                                                            @DescriptionFragment("cssValue") String cssValue) {
         checkArgument(!isBlank(cssProperty), "Css property should be defined");
         checkArgument(!isBlank(cssValue), "Css value should be defined");
 
@@ -340,12 +324,13 @@ public final class CommonElementCriteria {
      *                    It is possible to pass reg exp pattern that css value of an element should fit.
      * @return criteria that checks/filters an element/widget
      */
-    public static <T extends SearchContext> Criteria<T> cssMatches(String cssProperty, String expression) {
+    @Description("has css property '{cssProperty}' that contains '{expression}' or fits regExp pattern '{expression}'")
+    public static <T extends SearchContext> Criteria<T> cssMatches(@DescriptionFragment("cssProperty") String cssProperty,
+                                                                   @DescriptionFragment("expression") String expression) {
         checkArgument(!isBlank(cssProperty), "Css property should be defined");
         checkArgument(!isBlank(expression), "Substring/RegEx pattern should be defined");
 
-        return condition(format("has css property '%s' that contains '%s' or " +
-                "fits regExp pattern '%s'", cssProperty, expression, expression), t -> {
+        return condition(format(cssProperty, expression, expression), t -> {
             Class<?> tClass = t.getClass();
             String val = null;
 
@@ -364,20 +349,7 @@ public final class CommonElementCriteria {
             }
 
             return ofNullable(val)
-                    .map(s -> {
-                        if (s.contains(expression)) {
-                            return true;
-                        }
-
-                        try {
-                            var p = compile(expression);
-                            var mather = p.matcher(s);
-                            return mather.matches();
-                        } catch (Throwable thrown) {
-                            thrown.printStackTrace();
-                            return false;
-                        }
-                    })
+                    .map(s -> checkByStringContainingOrRegExp(expression).test(s))
                     .orElse(false);
         });
     }
@@ -392,11 +364,11 @@ public final class CommonElementCriteria {
      *                  {@code howToFind} then it is ignored here.
      * @return criteria that checks/filters an element/widget
      */
-    public static <T extends SearchContext> Criteria<T> nested(MultipleSearchSupplier<?> howToFind) {
+    @Description("has nested {howToFind}")
+    public static <T extends SearchContext> Criteria<T> nested(@DescriptionFragment("howToFind") MultipleSearchSupplier<?> howToFind) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
-        var func = howToFind.clone().timeOut(ofMillis(0)).get();
-        ((StepFunction<?, ?>) func).turnReportingOff();
-        return condition(format("has nested %s", howToFind), t -> func.apply(t).size() > 0);
+        var func = turnReportingOff(howToFind.clone().timeOut(ofMillis(0))).get();
+        return condition(t -> func.apply(t).size() > 0);
     }
 
     /**
@@ -410,13 +382,13 @@ public final class CommonElementCriteria {
      * @param expected  is the count of expected nested elements
      * @return criteria that checks/filters an element/widget
      */
-    public static <T extends SearchContext> Criteria<T> nested(MultipleSearchSupplier<?> howToFind, int expected) {
+    @Description("has {expected} nested {howToFind}")
+    public static <T extends SearchContext> Criteria<T> nested(@DescriptionFragment("howToFind") MultipleSearchSupplier<?> howToFind,
+                                                               @DescriptionFragment("expected") int expected) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
         checkArgument(expected >= 0, "Count of expected nested elements can't be a negative or zero value.");
-        var func = howToFind.clone().timeOut(ofMillis(0)).get();
-        ((StepFunction<?, ?>) func).turnReportingOff();
-        return condition(format("has %s nested %s", expected, howToFind),
-                t -> func.apply(t).size() == expected);
+        var func = turnReportingOff(howToFind.clone().timeOut(ofMillis(0))).get();
+        return condition(t -> func.apply(t).size() == expected);
     }
 
     /**
@@ -429,12 +401,11 @@ public final class CommonElementCriteria {
      *                  {@code howToFind} then it is ignored here.
      * @return criteria that checks/filters an element/widget
      */
-    @SuppressWarnings("unchecked")
-    public static <T extends SearchContext> Criteria<T> nested(SearchSupplier<?> howToFind) {
+    @Description("has nested {howToFind}")
+    public static <T extends SearchContext> Criteria<T> nested(@DescriptionFragment("howToFind") SearchSupplier<?> howToFind) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
-        var func = (StepFunction<SearchContext, ? extends SearchContext>) howToFind.clone().timeOut(ofMillis(0)).get();
-        func.turnReportingOff();
-        return condition(format("has nested %s", howToFind), t -> {
+        var func = turnReportingOff(howToFind.clone().timeOut(ofMillis(0))).get();
+        return condition(t -> {
             try {
                 return func.apply(t) != null;
             } catch (NoSuchElementException e) {
@@ -462,8 +433,9 @@ public final class CommonElementCriteria {
      * @param <T>   is a type of element/widget
      * @return criteria that checks/filters an element/widget
      */
-    public static <R, T extends SearchContext & HasValue<R>> Criteria<T> valueIs(R value) {
-        return condition(format("has value '%s'", value), t -> Objects.equals(value, t.getValue()));
+    @Description("has value '{value}'")
+    public static <R, T extends SearchContext & HasValue<R>> Criteria<T> valueIs(@DescriptionFragment("value") R value) {
+        return condition(t -> Objects.equals(value, t.getValue()));
     }
 
     /**
@@ -472,7 +444,8 @@ public final class CommonElementCriteria {
      * @param <T> is a type of a {@link Tab}
      * @return criteria that checks/filters an element/widget
      */
+    @Description("is active tab")
     public static <T extends Tab> Criteria<T> isActive() {
-        return condition("is active tab", Tab::isActive);
+        return condition(Tab::isActive);
     }
 }

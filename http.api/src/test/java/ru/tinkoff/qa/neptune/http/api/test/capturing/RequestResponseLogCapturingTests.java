@@ -4,7 +4,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.testng.annotations.*;
 import ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents;
-import ru.tinkoff.qa.neptune.http.api.response.DesiredDataHasNotBeenReceivedException;
+import ru.tinkoff.qa.neptune.http.api.response.ExpectedHttpResponseHasNotBeenReceivedException;
 import ru.tinkoff.qa.neptune.http.api.test.BaseHttpTest;
 
 import java.lang.reflect.Method;
@@ -15,7 +15,6 @@ import java.util.Random;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.http.Fault.MALFORMED_RESPONSE_CHUNK;
 import static java.lang.System.getProperties;
-import static java.lang.System.lineSeparator;
 import static java.net.URI.create;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static java.time.Duration.ofSeconds;
@@ -37,7 +36,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
 
     private static final URI CORRECT_URI = create(REQUEST_URI + "/success.html");
     private static final URI INCORRECT_URI = create(REQUEST_URI + "/failure.html");
-    private static final String LINE_SEPARATOR = lineSeparator();
+    private static final String LINE_SEPARATOR = "\r\n";
 
     @BeforeClass
     public void beforeClass() {
@@ -165,7 +164,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         assertThat(getLog(), matcher);
     }
 
-    @Test(dataProvider = "data3", expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
+    @Test(dataProvider = "data3", expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
     public void test5(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
@@ -173,7 +172,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
             http().bodyData(asIs(GET(CORRECT_URI), ofString())
                     .responseCriteria(bodyMatches("equals FAILURE", "FAILURE"::equals))
                     .retryTimeOut(ofSeconds(5))
-                    .throwIfNoDesiredDataReceived("Test exception"));
+                    .throwOnNoResult());
         } catch (Throwable t) {
             assertThat(getLog(), matcher);
             throw t;
@@ -181,7 +180,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         fail("Exception was expected");
     }
 
-    @Test(dataProvider = "data3", expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
+    @Test(dataProvider = "data3", expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
     public void test6(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
@@ -189,7 +188,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
             http().bodyData(asIs(GET(CORRECT_URI), ofString())
                     .retryTimeOut(ofSeconds(5))
                     .responseCriteria(statusCode(404))
-                    .throwIfNoDesiredDataReceived("Test exception"));
+                    .throwOnNoResult());
         } catch (Throwable t) {
             assertThat(getLog(), matcher);
             throw t;
@@ -202,8 +201,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
         http().bodyData(asIs(GET(INCORRECT_URI).timeout(ofSeconds(1)),
-                ofString())
-                .addIgnored(Throwable.class));
+                ofString()));
 
         assertThat(getLog(), matcher);
     }
@@ -216,21 +214,19 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
                 GET(CORRECT_URI),
                 ofString(),
                 Integer::parseInt)
-                .retryTimeOut(ofSeconds(5))
-                .addIgnored(Throwable.class));
+                .retryTimeOut(ofSeconds(5)));
 
         assertThat(getLog(), matcher);
     }
 
-    @Test(dataProvider = "data3", expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
+    @Test(dataProvider = "data3", expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
     public void test9(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
         try {
             http().bodyData(asObject("Number value", GET(CORRECT_URI), ofString(), Integer::parseInt)
                     .retryTimeOut(ofSeconds(5))
-                    .addIgnored(Throwable.class)
-                    .throwIfNoDesiredDataReceived("Test exception"));
+                    .throwOnNoResult());
         } catch (Throwable t) {
             assertThat(getLog(), matcher);
             throw t;
@@ -239,14 +235,13 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         fail("Exception was expected");
     }
 
-    @Test(dataProvider = "data2", expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
+    @Test(dataProvider = "data2", expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
     public void test10(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
         try {
             http().bodyData(asIs(GET(INCORRECT_URI).timeout(ofSeconds(1)), ofString())
-                    .addIgnored(Throwable.class)
                     .retryTimeOut(ofSeconds(5))
-                    .throwIfNoDesiredDataReceived("Test exception"));
+                    .throwOnNoResult());
         } catch (Throwable t) {
             assertThat(getLog(), matcher);
             throw t;

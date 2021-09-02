@@ -2,19 +2,24 @@ package ru.tinkoff.qa.neptune.selenium.functions.java.script;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import org.openqa.selenium.WebDriverException;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
+import ru.tinkoff.qa.neptune.core.api.event.firing.collections.ArrayCaptor;
+import ru.tinkoff.qa.neptune.core.api.event.firing.collections.CollectionCaptor;
+import ru.tinkoff.qa.neptune.core.api.event.firing.collections.MapCaptor;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+import ru.tinkoff.qa.neptune.selenium.captors.ListOfWebElementImageCaptor;
+import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
 
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -22,12 +27,12 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
-@MakeImageCapturesOnFinishing
-@MakeStringCapturesOnFinishing
-@SequentialGetStepSupplier.DefaultParameterNames(
-        timeOut = "Time to get the expected result",
-        criteria = "Criteria for evaluated result"
-)
+@CaptureOnSuccess(by = {WebElementImageCaptor.class, ListOfWebElementImageCaptor.class,
+        CollectionCaptor.class, MapCaptor.class, ArrayCaptor.class})
+@SequentialGetStepSupplier.DefineTimeOutParameterName("Time to get the expected result")
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria for evaluated result")
+@MaxDepthOfReporting(0)
+@ThrowWhenNoData(toThrow = WebDriverException.class, startDescription = "No result:")
 public final class GetJavaScriptResultSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, Object, WebDriver, GetJavaScriptResultSupplier> {
 
@@ -37,11 +42,10 @@ public final class GetJavaScriptResultSupplier extends SequentialGetStepSupplier
     @StepParameter("Script arguments")
     private final Collection<?> args;
 
-    private GetJavaScriptResultSupplier(String description,
-                                        Function<WebDriver, Object> originalFunction,
+    private GetJavaScriptResultSupplier(Function<WebDriver, Object> originalFunction,
                                         String script,
                                         Collection<?> args) {
-        super(description, originalFunction);
+        super(originalFunction);
         checkArgument(isNotBlank(script), "Script should be defined as not null/empty string");
         this.script = script;
         checkNotNull(args, "Parameters value should not be null");
@@ -89,9 +93,9 @@ public final class GetJavaScriptResultSupplier extends SequentialGetStepSupplier
      * @param arguments to be used by script evaluation
      * @return the function which evaluates java script and returns the result as it is.
      */
+    @Description("Evaluation of java script")
     public static GetJavaScriptResultSupplier javaScript(String script, Object... arguments) {
-        return new GetJavaScriptResultSupplier("Evaluation of java script",
-                webDriver -> ((JavascriptExecutor) webDriver).executeScript(script, arguments),
+        return new GetJavaScriptResultSupplier(webDriver -> ((JavascriptExecutor) webDriver).executeScript(script, arguments),
                 script,
                 ofNullable(arguments).map(Arrays::asList).orElse(null))
                 .from(currentContent());
@@ -181,22 +185,13 @@ public final class GetJavaScriptResultSupplier extends SequentialGetStepSupplier
      * @param arguments to be used by script evaluation
      * @return the function which evaluates java script and returns the result as it is.
      */
+    @Description("Evaluation of asynchronous java script")
     public static GetJavaScriptResultSupplier asynchronousJavaScript(String script,
                                                                      Object... arguments) {
-        return new GetJavaScriptResultSupplier("Evaluation of asynchronous java script",
-                webDriver -> ((JavascriptExecutor) webDriver).executeAsyncScript(script, arguments),
+        return new GetJavaScriptResultSupplier(webDriver -> ((JavascriptExecutor) webDriver).executeAsyncScript(script, arguments),
                 script,
                 ofNullable(arguments).map(Arrays::asList).orElse(null))
                 .from(currentContent());
-    }
-
-    @Override
-    public GetJavaScriptResultSupplier criteria(Criteria<? super Object> condition) {
-        return super.criteria(condition);
-    }
-
-    public GetJavaScriptResultSupplier criteria(String conditionDescription, Predicate<? super Object> condition) {
-        return super.criteria(conditionDescription, condition);
     }
 
     @Override
@@ -207,10 +202,5 @@ public final class GetJavaScriptResultSupplier extends SequentialGetStepSupplier
     @Override
     public GetJavaScriptResultSupplier pollingInterval(Duration pollingTime) {
         return super.pollingInterval(pollingTime);
-    }
-
-    @Override
-    public GetJavaScriptResultSupplier throwOnEmptyResult(Supplier<? extends RuntimeException> exceptionSupplier) {
-        return super.throwOnEmptyResult(exceptionSupplier);
     }
 }

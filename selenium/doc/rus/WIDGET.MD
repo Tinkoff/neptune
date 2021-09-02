@@ -14,6 +14,11 @@
 Neptune предлагает свой вариант реализации этого шаблона проектирования, который сводится к типизации элементов на
 странице, описанию их специфического поведения.
 
+## Оглавление
+  - [Задача](#Задача)
+  - [Создание виджета](#Создание-виджета)
+  - [Правила описания виджета](#Правила-описания-виджета)
+
 ## Задача
 
 Предположим, нужно написать тесты для следующей страницы
@@ -77,6 +82,8 @@ public class Tezzt {
 }
 ```
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 ## Создание виджета
 
 - Заголовок
@@ -86,11 +93,18 @@ import org.openqa.selenium.support.FindBy;
 
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasValue;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
+import ru.tinkoff.qa.neptune.selenium.api.widget.NameMultiple;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Priority;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 
 @Name("Заголовок") //Данная аннотация влияет но то, как будет представлено строковое 
 //значение данного объекта при вызове метода toString()
+//А так же она влияет на название шага, в котором происходит поиск виджета/действие над виджетом,
+//который будет выведен в лог/отчет
+@NameMultiple("Заголовки") //Данная аннотация влияет но то, как будет представлено строковое 
+//значение листа объектов данного класса при вызове метода toString()
+//А так же она влияет на название шага, в котором происходит поиск виджетов/действие над ними,
+//который будет выведен в лог/отчет
 @Priority(priority = 2) //С помощью данной аннотации можно управлять очередью
 //поиска однотипных элементов. 
 //Если у данного класса выше приоритет,
@@ -129,9 +143,11 @@ import ru.tinkoff.qa.neptune.selenium.api.widget.Editable;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasValue;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Label;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
+import ru.tinkoff.qa.neptune.selenium.api.widget.NameMultiple;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 
 @Name("Текстовое поле ввода")
+@NameMultiple("Текстовые поля ввода")
 @FindBy(xpath = ".//input[@type='text']")
 public class TextInput
         extends Widget
@@ -173,9 +189,11 @@ import org.openqa.selenium.support.FindBy;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Clickable;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Label;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
+import ru.tinkoff.qa.neptune.selenium.api.widget.NameMultiple;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 
 @Name("Кнопка")
+@NameMultiple("Кнопки")
 @FindBy(xpath = ".//input[@type='submit']")
 public class ButtonInput
         extends Widget
@@ -251,9 +269,11 @@ public interface HasOuterLabel extends SearchContext {
 import ru.tinkoff.qa.neptune.selenium.api.widget.Editable;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasValue;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
+import ru.tinkoff.qa.neptune.selenium.api.widget.NameMultiple;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 
 @Name("Текстовое поле ввода")
+@NameMultiple("Текстовые поля ввода")
 @FindBy(xpath = ".//input[@type='text']")
 public class TextInput
         extends Widget
@@ -287,10 +307,12 @@ public class TextInput
 import org.openqa.selenium.support.FindBy;
 
 import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
+import ru.tinkoff.qa.neptune.selenium.api.widget.NameMultiple;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Priority;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.TextElement;
 
 @Name("Заголовок")
+@NameMultiple("Заголовки")
 @Priority(priority = 2) //С помощью данной аннотации можно управлять очередью
 //поиска однотипных элементов.
 //Теперь среди тех, которые могут быть описаны обобщающим классом TextElement
@@ -307,9 +329,11 @@ public class Header extends TextElement{
   
 ```java
 import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
+import ru.tinkoff.qa.neptune.selenium.api.widget.NameMultiple;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.TextField;
     
 @Name("Текстовое поле ввода")
+@NameMultiple("Текстовые поля ввода")
 @FindBy(xpath = ".//input[@type='text']")
 public class TextInput extends TextField implements HasOuterLabel {
     
@@ -338,9 +362,11 @@ import org.openqa.selenium.support.FindBy;
 
 import ru.tinkoff.qa.neptune.selenium.api.widget.Label;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
+import ru.tinkoff.qa.neptune.selenium.api.widget.NameMultiple;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;
     
 @Name("Кнопка")
+@NameMultiple("Кнопки")
 @FindBy(xpath = ".//input[@type='submit']")
 public class ButtonInput extends Button {
     
@@ -381,6 +407,7 @@ public class Tezzt {
     }
 }
 ```
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## Правила описания виджета
 
@@ -422,3 +449,5 @@ public class Tezzt {
 - Виджеты, которые могут развертывать и свертывать вложенный контент, должны реализовывать
   интерфейс `ru.tinkoff.qa.neptune.selenium.api.widget.Expandable`. И тогда для них станут доступны действия
   вида `inBrowser().expand(..)` и `inBrowser().collapse(..)`
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)

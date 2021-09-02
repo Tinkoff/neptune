@@ -2,6 +2,7 @@ dependencies {
     compile project(':core.api')
     compile (group: 'io.qameta.allure', name: 'allure-java-commons', version: allureVersion) {
         exclude group: 'org.aspectj', module: 'aspectjrt'
+        exclude group: 'org.aspectj', module: 'aspectjweaver'
         exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
         exclude group: 'com.fasterxml.jackson.module', module: 'jackson-module-jaxb-annotations'
     }
@@ -32,7 +33,6 @@ uploadArchives {
                 packaging 'jar'
                 name 'allure.integration'
                 version version
-                description 'Java client for Appium Mobile Webdriver'
                 url 'https://github.com/TinkoffCreditSystems/neptune'
                 developers {
                     developer {

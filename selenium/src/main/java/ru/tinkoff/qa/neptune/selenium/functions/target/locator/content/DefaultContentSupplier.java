@@ -2,26 +2,31 @@ package ru.tinkoff.qa.neptune.selenium.functions.target.locator.content;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
+@Description("Default content")
+@MaxDepthOfReporting(0)
+@ThrowWhenNoData(toThrow = WebDriverException.class)
 public final class DefaultContentSupplier extends SequentialGetStepSupplier
-        .GetObjectChainedStepSupplier<SeleniumStepContext, WebDriver, WebDriver, DefaultContentSupplier>
+        .GetSimpleStepSupplier<SeleniumStepContext, WebDriver, DefaultContentSupplier>
         implements TargetLocatorSupplier<WebDriver> {
 
     private DefaultContentSupplier() {
-        super("Default content", driver -> {
+        super(currentContent().andThen(webDriver -> {
             try {
-                return driver.switchTo().defaultContent();
-            }
-            catch (WebDriverException e) {
+                return webDriver.switchTo().defaultContent();
+            } catch (WebDriverException e) {
                 return null;
             }
-        });
-        throwOnEmptyResult(() -> new WebDriverException("It was impossible to switch to default content for some reason"));
+        }));
+        throwOnNoResult();
     }
 
     /**
@@ -38,6 +43,6 @@ public final class DefaultContentSupplier extends SequentialGetStepSupplier
      * performs the switching to the default content and returns it.
      */
     public static DefaultContentSupplier defaultContent() {
-        return new DefaultContentSupplier().from(currentContent());
+        return new DefaultContentSupplier();
     }
 }

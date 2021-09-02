@@ -13,8 +13,7 @@ final class JSoupDocument implements Function<String, Document> {
         try {
             return parse(s);
         } catch (Throwable t) {
-            t.printStackTrace();
-            return null;
+            throw new RuntimeException(t);
         }
     }
 }

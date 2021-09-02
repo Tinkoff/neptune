@@ -1,50 +1,62 @@
 package ru.tinkoff.qa.neptune.core.api.event.firing;
 
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.CaptorFilterByProducedType;
-import ru.tinkoff.qa.neptune.core.api.utils.SPIUtil;
+import io.github.classgraph.ClassGraph;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import static java.lang.reflect.Modifier.isAbstract;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
-@SuppressWarnings("unchecked")
 public class StaticEventFiring {
-    private static final ThreadLocal<List<Captor>> LIST_THREAD_LOCAL_CAPTORS = new ThreadLocal<>();
+
     private static final ThreadLocal<List<EventLogger>> LIST_THREAD_LOCAL_EVENT_LOGGERS = new ThreadLocal<>();
+    private static final List<Class<? extends EventLogger>> LOGGERS = getEventLoggerClasses();
 
-    private static List<Captor> getCaptors() {
-        return ofNullable(LIST_THREAD_LOCAL_CAPTORS.get()).orElseGet(() -> {
-            var captors = SPIUtil.loadSPI(Captor.class);
-            LIST_THREAD_LOCAL_CAPTORS.set(captors);
-            return captors;
-        });
+    private static List<Class<? extends EventLogger>> getEventLoggerClasses() {
+        return new ClassGraph()
+                .enableAllInfo()
+                .scan().getClassesImplementing(EventLogger.class.getName())
+                .loadClasses(EventLogger.class)
+                .stream()
+                .filter(c -> !isAbstract(c.getModifiers()))
+                .collect(toUnmodifiableList());
     }
 
-    public static void addCaptors(List<Captor<?, ?>> captors) {
-        getCaptors().addAll(captors);
-    }
 
-    public static <T> void catchValue(T caught, Set<CaptorFilterByProducedType> captorFilters) {
+    public static <T> void catchValue(T caught, Collection<Captor<Object, Object>> captorList) {
         if (caught == null) {
             return;
         }
 
-        getCaptors().stream().filter(captor -> {
-            for (CaptorFilterByProducedType captorFilterByProducedType : captorFilters) {
-                if (captorFilterByProducedType.matches(captor)) {
-                    return true;
+        ofNullable(captorList).ifPresent(captors -> {
+            for (var captor : captors) {
+                var captured = captor.getCaptured(caught);
+                if (captured != null) {
+                    captor.capture(captured);
                 }
             }
-            return false;
-        }).forEach(captor -> ofNullable(captor.getCaptured(caught)).ifPresent(captor::capture));
+        });
     }
 
     private static List<EventLogger> initEventLoggersIfNecessary() {
         return ofNullable(LIST_THREAD_LOCAL_EVENT_LOGGERS.get())
                 .orElseGet(() -> {
-                    var loggers = SPIUtil.loadSPI(EventLogger.class);
+                    var loggers = LOGGERS
+                            .stream()
+                            .filter(c -> !isAbstract(c.getModifiers()))
+                            .map(c -> {
+                                try {
+                                    var constructor = c.getConstructor();
+                                    constructor.setAccessible(true);
+                                    return (EventLogger) constructor.newInstance();
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }).collect(toList());
                     LIST_THREAD_LOCAL_EVENT_LOGGERS.set(loggers);
                     return loggers;
                 });
@@ -60,12 +72,23 @@ public class StaticEventFiring {
                 eventLogger.fireThrownException(throwable));
     }
 
-    public static void fireReturnedValue(Object returned) {
+    public static void fireReturnedValue(String resultDescription, Object returned) {
         initEventLoggersIfNecessary().forEach(eventLogger ->
-                eventLogger.fireReturnedValue(returned));
+                eventLogger.fireReturnedValue(resultDescription, returned));
     }
 
     public static void fireEventFinishing() {
         initEventLoggersIfNecessary().forEach(EventLogger::fireEventFinishing);
+    }
+
+    public static void fireAdditionalParameters(Map<String, String> addParameters) {
+        if (addParameters == null) {
+            return;
+        }
+
+        if (addParameters.size() == 0) {
+            return;
+        }
+        initEventLoggersIfNecessary().forEach(eventLogger -> eventLogger.addParameters(addParameters));
     }
 }

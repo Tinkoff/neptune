@@ -1,8 +1,10 @@
 package ru.tinkoff.qa.neptune.http.api.hamcrest.response;
 
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeDiagnosingMatcher;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import java.net.http.HttpResponse;
 
@@ -12,11 +14,15 @@ import static org.hamcrest.Matchers.equalTo;
 /**
  * This matcher is for the checking of status code of a response.
  */
-public final class HasStatusCode extends TypeSafeDiagnosingMatcher<HttpResponse<?>> {
+@Description("status code {status}")
+public final class HasStatusCode extends NeptuneFeatureMatcher<HttpResponse<?>> {
 
+    @DescriptionFragment(value = "status",
+            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
     private final Matcher<? super Integer> statusMatcher;
 
     private HasStatusCode(Matcher<? super Integer> statusMatcher) {
+        super(true);
         checkNotNull(statusMatcher, "Matcher of a status is not defined");
         this.statusMatcher = statusMatcher;
     }
@@ -42,25 +48,14 @@ public final class HasStatusCode extends TypeSafeDiagnosingMatcher<HttpResponse<
     }
 
     @Override
-    protected boolean matchesSafely(HttpResponse<?> item, Description mismatchDescription) {
-        if (item == null) {
-            mismatchDescription.appendText("null-response");
-            return false;
-        }
-
-        var status = item.statusCode();
+    protected boolean featureMatches(HttpResponse<?> toMatch) {
+        var status = toMatch.statusCode();
         var result = statusMatcher.matches(status);
 
         if (!result) {
-            statusMatcher.describeMismatch(status, mismatchDescription);
+            appendMismatchDescription(statusMatcher, status);
         }
 
         return result;
-    }
-
-    @Override
-    public void describeTo(Description description) {
-        description.appendText("Response has status code ")
-                .appendDescriptionOf(statusMatcher);
     }
 }

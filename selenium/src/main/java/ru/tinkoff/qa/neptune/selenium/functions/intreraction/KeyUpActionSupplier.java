@@ -1,7 +1,9 @@
 package ru.tinkoff.qa.neptune.selenium.functions.intreraction;
 
 import org.openqa.selenium.interactions.Actions;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -10,15 +12,17 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 abstract class KeyUpActionSupplier extends InteractiveAction {
 
-    @StepParameter(value = "Modifier key", makeReadableBy = CharSequenceParameterValueGetter.class)
+    @DescriptionFragment(value = "key", makeReadableBy = CharSequenceParameterValueGetter.class)
     final CharSequence modifierKey;
 
     KeyUpActionSupplier(CharSequence modifierKey) {
-        super("Release modifier key");
+        super();
         checkNotNull(modifierKey);
         this.modifierKey = modifierKey;
     }
 
+    @Description("Release modifier key '{key}'")
+    @MaxDepthOfReporting(0)
     static final class KeyUpSimpleActionSupplier extends KeyUpActionSupplier {
 
         KeyUpSimpleActionSupplier(CharSequence modifierKey) {
@@ -31,9 +35,11 @@ abstract class KeyUpActionSupplier extends InteractiveAction {
         }
     }
 
+    @Description("Release modifier key '{key}' with focus on {target}")
+    @MaxDepthOfReporting(0)
     static final class KeyUpOnElementActionSupplier extends KeyUpActionSupplier {
 
-        @StepParameter("Element")
+        @DescriptionFragment("target")
         private final Object e;
 
         KeyUpOnElementActionSupplier(CharSequence modifierKey, Object e) {

@@ -16,10 +16,13 @@ import static java.time.Duration.ofMillis;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsItemsMatcher.iterableHasItem;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements.HasChildElementMatcher.hasChildElement;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements.HasChildElementsMatcher.hasChildElements;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUnitProperties.ELEMENT_WAITING_TIME_UNIT;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeValueProperties.ELEMENT_WAITING_TIME_VALUE;
@@ -57,7 +60,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
         setStartBenchMark();
         List<WebElement> webElements = seleniumSteps.find(webElements(tagName(TABLE)).timeOut(FIVE_SECONDS));
         setEndBenchMark();
-        assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
+        assertThat(getTimeDifference(), lessThan(150L));
         assertThat(webElements,
                 contains(equalTo(COMMON_LABELED_TABLE1),
                         equalTo(COMMON_LABELED_TABLE2),
@@ -77,7 +80,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
             setStartBenchMark();
             List<WebElement> webElements = seleniumSteps.find(webElements(tagName(TABLE)));
             setEndBenchMark();
-            assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
+            assertThat(getTimeDifference(), lessThan(150L));
             assertThat(webElements,
                     contains(equalTo(COMMON_LABELED_TABLE1),
                             equalTo(COMMON_LABELED_TABLE2),
@@ -106,7 +109,20 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
         try {
             List<WebElement> webElements = seleniumSteps.find(webElements(className(CUSTOM_BUTTON_CLASS))
                     .foundFrom(webElement(className(SPREAD_SHEET_CLASS))));
+
             assertThat(webElements, contains(equalTo(CUSTOM_LABELED_BUTTON1)));
+
+            assertThat(seleniumSteps.find(webElement(className(SPREAD_SHEET_CLASS))),
+                    hasChildElements(webElements(className(CUSTOM_BUTTON_CLASS)), iterableHasItem(CUSTOM_LABELED_BUTTON1)));
+
+            assertThat(seleniumSteps.find(webElement(className(SPREAD_SHEET_CLASS))),
+                    hasChildElements(webElements(className(CUSTOM_BUTTON_CLASS))));
+
+            assertThat(seleniumSteps.find(webElement(className(SPREAD_SHEET_CLASS))),
+                    hasChildElement(webElement(className(CUSTOM_BUTTON_CLASS)), equalTo(CUSTOM_LABELED_BUTTON1)));
+
+            assertThat(seleniumSteps.find(webElement(className(SPREAD_SHEET_CLASS))),
+                    hasChildElement(webElement(className(CUSTOM_BUTTON_CLASS))));
         } finally {
             removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getName());
         }
@@ -118,7 +134,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
         List<WebElement> webElements = seleniumSteps.find(webElements(className(CUSTOM_BUTTON_CLASS)).timeOut(FIVE_SECONDS)
                 .foundFrom(webElement(className(SPREAD_SHEET_CLASS)).timeOut(FIVE_SECONDS)));
         setEndBenchMark();
-        assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
+        assertThat(getTimeDifference(), lessThan(150L));
         assertThat(webElements, contains(equalTo(CUSTOM_LABELED_BUTTON1)));
     }
 
@@ -131,7 +147,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
             List<WebElement> webElements = seleniumSteps.find(webElements(className(CUSTOM_BUTTON_CLASS))
                     .foundFrom(webElement(className(SPREAD_SHEET_CLASS))));
             setEndBenchMark();
-            assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
+            assertThat(getTimeDifference(), lessThan(150L));
             assertThat(webElements, contains(equalTo(CUSTOM_LABELED_BUTTON1)));
         } finally {
             removeProperty(ELEMENT_WAITING_TIME_UNIT.getName());
@@ -168,7 +184,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
         List<WebElement> webElements = seleniumSteps.find(webElements(className(CUSTOM_BUTTON_CLASS)).timeOut(FIVE_SECONDS)
                 .foundFrom(spreadSheet));
         setEndBenchMark();
-        assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
+        assertThat(getTimeDifference(), lessThan(150L));
         assertThat(webElements, contains(equalTo(CUSTOM_LABELED_BUTTON1)));
     }
 
@@ -182,7 +198,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
             List<WebElement> webElements = seleniumSteps.find(webElements(className(CUSTOM_BUTTON_CLASS))
                     .foundFrom(spreadSheet));
             setEndBenchMark();
-            assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
+            assertThat(getTimeDifference(), lessThan(150L));
             assertThat(webElements, contains(equalTo(CUSTOM_LABELED_BUTTON1)));
         } finally {
             removeProperty(ELEMENT_WAITING_TIME_UNIT.getName());
@@ -356,7 +372,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
         List<WebElement> webElements = seleniumSteps.find(webElements(by).criteria(criteria));
         setEndBenchMark();
         assertThat(new BigDecimal(getTimeDifference()),
-                either(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(450)))
+                either(closeTo(new BigDecimal(150L), new BigDecimal(450)))
                         .or(closeTo(new BigDecimal(ONE_SECOND.toMillis()), new BigDecimal(200))));
         assertThat(webElements, matcher);
     }
@@ -370,7 +386,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
                 .criteria(criteria));
         setEndBenchMark();
         assertThat(new BigDecimal(getTimeDifference()),
-                either(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(450)))
+                either(closeTo(new BigDecimal(150L), new BigDecimal(450)))
                         .or(closeTo(new BigDecimal(ONE_SECOND.toMillis()), new BigDecimal(200))));
         assertThat(webElements, matcher);
     }
@@ -385,7 +401,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
             List<WebElement> webElements = seleniumSteps.find(webElements(by).criteria(criteria));
             setEndBenchMark();
             assertThat(new BigDecimal(getTimeDifference()),
-                    either(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(450)))
+                    either(closeTo(new BigDecimal(150L), new BigDecimal(450)))
                             .or(closeTo(new BigDecimal(ONE_SECOND.toMillis()), new BigDecimal(200))));
             assertThat(webElements, matcher);
         } finally {

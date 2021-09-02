@@ -2,16 +2,17 @@ package ru.tinkoff.qa.neptune.selenium.functions.cookies;
 
 import org.openqa.selenium.Cookie;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import java.util.Date;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
-import static java.util.regex.Pattern.compile;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.checkByStringContainingOrRegExp;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 
 /**
@@ -32,9 +33,10 @@ public final class CommonBrowserCookieCriteria {
      * @return criteria that checks/filters a browser cookie
      * @see Cookie#getName()
      */
-    public static Criteria<Cookie> cookieName(String name) {
+    @Description("has name '{name}'")
+    public static Criteria<Cookie> cookieName(@DescriptionFragment("name") String name) {
         checkArgument(isNotBlank(name), "Name should be defined");
-        return condition(format("has name '%s'", name), c -> Objects.equals(name, c.getName()));
+        return condition(c -> Objects.equals(name, c.getName()));
     }
 
     /**
@@ -45,25 +47,13 @@ public final class CommonBrowserCookieCriteria {
      * @return criteria that checks/filters a browser cookie
      * @see Cookie#getName()
      */
-    public static Criteria<Cookie> cookieNameMatches(String expression) {
+    @Description("has name that contains '{expression}' or fits regExp pattern '{expression}'")
+    public static Criteria<Cookie> cookieNameMatches(@DescriptionFragment("expression") String expression) {
         checkArgument(isNotBlank(expression), "Substring/RegEx pattern should be defined");
 
-        return condition(format("has name that contains '%s' or fits regExp pattern '%s'", expression, expression), c ->
+        return condition(c ->
                 ofNullable(c.getName())
-                        .map(s -> {
-                            if (s.contains(expression)) {
-                                return true;
-                            }
-
-                            try {
-                                var p = compile(expression);
-                                var mather = p.matcher(s);
-                                return mather.matches();
-                            } catch (Throwable thrown) {
-                                thrown.printStackTrace();
-                                return false;
-                            }
-                        })
+                        .map(s -> checkByStringContainingOrRegExp(expression).test(s))
                         .orElse(false));
     }
 
@@ -75,9 +65,10 @@ public final class CommonBrowserCookieCriteria {
      * @return criteria that checks/filters a browser cookie
      * @see Cookie#getValue()
      */
-    public static Criteria<Cookie> cookieValue(String value) {
+    @Description("has value '{value}'")
+    public static Criteria<Cookie> cookieValue(@DescriptionFragment("value") String value) {
         checkArgument(isNotBlank(value), "Value should be defined");
-        return condition(format("has value '%s'", value), c -> Objects.equals(value, c.getValue()));
+        return condition(c -> Objects.equals(value, c.getValue()));
     }
 
     /**
@@ -88,25 +79,13 @@ public final class CommonBrowserCookieCriteria {
      * @return criteria that checks/filters a browser cookie
      * @see Cookie#getValue()
      */
-    public static Criteria<Cookie> cookieValueMatches(String expression) {
+    @Description("has value that contains '{expression}' or fits regExp pattern '{expression}'")
+    public static Criteria<Cookie> cookieValueMatches(@DescriptionFragment("expression") String expression) {
         checkArgument(isNotBlank(expression), "Substring/RegEx pattern should be defined");
 
-        return condition(format("has value that contains '%s' or fits regExp pattern '%s'", expression, expression), c ->
+        return condition(c ->
                 ofNullable(c.getValue())
-                        .map(s -> {
-                            if (s.contains(expression)) {
-                                return true;
-                            }
-
-                            try {
-                                var p = compile(expression);
-                                var mather = p.matcher(s);
-                                return mather.matches();
-                            } catch (Throwable thrown) {
-                                thrown.printStackTrace();
-                                return false;
-                            }
-                        })
+                        .map(s -> checkByStringContainingOrRegExp(expression).test(s))
                         .orElse(false));
     }
 
@@ -118,9 +97,10 @@ public final class CommonBrowserCookieCriteria {
      * @return criteria that checks/filters a browser cookie
      * @see Cookie#getDomain()
      */
-    public static Criteria<Cookie> cookieDomain(String domain) {
+    @Description("has domain '{domain}'")
+    public static Criteria<Cookie> cookieDomain(@DescriptionFragment("domain") String domain) {
         checkArgument(isNotBlank(domain), "Domain should be defined");
-        return condition(format("has domain '%s'", domain), c -> Objects.equals(domain, c.getDomain()));
+        return condition(c -> Objects.equals(domain, c.getDomain()));
     }
 
     /**
@@ -131,25 +111,13 @@ public final class CommonBrowserCookieCriteria {
      * @return criteria that checks/filters a browser cookie
      * @see Cookie#getDomain()
      */
-    public static Criteria<Cookie> cookieDomainMatches(String expression) {
+    @Description("has domain that contains '{expression}' or fits regExp pattern '{expression}'")
+    public static Criteria<Cookie> cookieDomainMatches(@DescriptionFragment("expression") String expression) {
         checkArgument(isNotBlank(expression), "Substring/RegEx pattern should be defined");
 
-        return condition(format("has domain that contains '%s' or fits regExp pattern '%s'", expression, expression), c ->
+        return condition(c ->
                 ofNullable(c.getDomain())
-                        .map(s -> {
-                            if (s.contains(expression)) {
-                                return true;
-                            }
-
-                            try {
-                                var p = compile(expression);
-                                var mather = p.matcher(s);
-                                return mather.matches();
-                            } catch (Throwable thrown) {
-                                thrown.printStackTrace();
-                                return false;
-                            }
-                        })
+                        .map(s -> checkByStringContainingOrRegExp(expression).test(s))
                         .orElse(false));
     }
 
@@ -161,9 +129,10 @@ public final class CommonBrowserCookieCriteria {
      * @return criteria that checks/filters a browser cookie
      * @see Cookie#getPath()
      */
-    public static Criteria<Cookie> cookiePath(String path) {
+    @Description("has path '{path}'")
+    public static Criteria<Cookie> cookiePath(@DescriptionFragment("path") String path) {
         checkArgument(isNotBlank(path), "Path should be defined");
-        return condition(format("has path '%s'", path), c -> Objects.equals(path, c.getPath()));
+        return condition(c -> Objects.equals(path, c.getPath()));
     }
 
     /**
@@ -174,25 +143,13 @@ public final class CommonBrowserCookieCriteria {
      * @return criteria that checks/filters a browser cookie
      * @see Cookie#getPath()
      */
-    public static Criteria<Cookie> cookiePathMatches(String expression) {
+    @Description("has path that contains '{expression}' or fits regExp pattern '{expression}'")
+    public static Criteria<Cookie> cookiePathMatches(@DescriptionFragment("expression") String expression) {
         checkArgument(isNotBlank(expression), "Substring/RegEx pattern should be defined");
 
-        return condition(format("has path that contains '%s' or fits regExp pattern '%s'", expression, expression), c ->
+        return condition(c ->
                 ofNullable(c.getPath())
-                        .map(s -> {
-                            if (s.contains(expression)) {
-                                return true;
-                            }
-
-                            try {
-                                var p = compile(expression);
-                                var mather = p.matcher(s);
-                                return mather.matches();
-                            } catch (Throwable thrown) {
-                                thrown.printStackTrace();
-                                return false;
-                            }
-                        })
+                        .map(s -> checkByStringContainingOrRegExp(expression).test(s))
                         .orElse(false));
     }
 
@@ -208,8 +165,9 @@ public final class CommonBrowserCookieCriteria {
      * @see Cookie#isSecure()
      * @see Criteria#NOT(Criteria[])
      */
+    @Description("is secure")
     public static Criteria<Cookie> cookieIsSecure() {
-        return condition("is secure", Cookie::isSecure);
+        return condition(Cookie::isSecure);
     }
 
     /**
@@ -223,8 +181,9 @@ public final class CommonBrowserCookieCriteria {
      * @see Cookie#isHttpOnly()
      * @see Criteria#NOT(Criteria[])
      */
+    @Description("is http only")
     public static Criteria<Cookie> cookieIsHttpOnly() {
-        return condition("is http only", Cookie::isHttpOnly);
+        return condition(Cookie::isHttpOnly);
     }
 
 
@@ -235,9 +194,10 @@ public final class CommonBrowserCookieCriteria {
      * @return criteria that checks/filters a browser cookie
      * @see Cookie#getExpiry()
      */
-    public static Criteria<Cookie> cookieExpiry(Date dateExpiry) {
+    @Description("date expiry is {dateExpiry}")
+    public static Criteria<Cookie> cookieExpiry(@DescriptionFragment("dateExpiry") Date dateExpiry) {
         checkNotNull(dateExpiry);
-        return condition("date expiry is " + dateExpiry, c -> Objects.equals(c.getExpiry(), dateExpiry));
+        return condition(c -> Objects.equals(c.getExpiry(), dateExpiry));
     }
 
     /**
@@ -247,12 +207,12 @@ public final class CommonBrowserCookieCriteria {
      * @return criteria that checks/filters a browser cookie
      * @see Cookie#getExpiry()
      */
-    public static Criteria<Cookie> cookieExpiryBefore(Date before) {
+    @Description("date expiry is before {before}")
+    public static Criteria<Cookie> cookieExpiryBefore(@DescriptionFragment("before") Date before) {
         checkNotNull(before);
-        return condition("date expiry is before " + before,
-                c -> ofNullable(c.getExpiry())
-                        .map(date -> date.before(before))
-                        .orElse(false));
+        return condition(c -> ofNullable(c.getExpiry())
+                .map(date -> date.before(before))
+                .orElse(false));
     }
 
     /**
@@ -262,11 +222,11 @@ public final class CommonBrowserCookieCriteria {
      * @return criteria that checks/filters a browser cookie
      * @see Cookie#getExpiry()
      */
-    public static Criteria<Cookie> cookieExpiryAfter(Date after) {
+    @Description("date expiry is after {after}")
+    public static Criteria<Cookie> cookieExpiryAfter(@DescriptionFragment("after") Date after) {
         checkNotNull(after);
-        return condition("date expiry is after " + after,
-                c -> ofNullable(c.getExpiry())
-                        .map(date -> date.after(after))
-                        .orElse(false));
+        return condition(c -> ofNullable(c.getExpiry())
+                .map(date -> date.after(after))
+                .orElse(false));
     }
 }

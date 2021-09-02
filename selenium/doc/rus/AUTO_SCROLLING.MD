@@ -16,6 +16,10 @@
 
 Ниже вариант решения, который предлагает Neptune.
 
+## Оглавление
+- [AutoScroller](#autoscroller)
+- [Виджеты. Как реализовать индивидуальный механизм авто-скроллирования](#Виджеты-Как-реализовать-индивидуальный-механизм-авто-скроллирования)
+
 ## AutoScroller
 
 Ниже пример реализации логики скроллирования страницы до нужного элемента/фокусировки на нужном элементе
@@ -105,6 +109,8 @@ public class Tezzt {
 - `ru.tinkoff.qa.neptune.selenium.api.widget.HasSize.getSize`
 - `ru.tinkoff.qa.neptune.selenium.api.widget.HasValue.getValue`
 
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
 ## Виджеты. Как реализовать индивидуальный механизм авто-скроллирования
 
 Предположим, мы реализовали виджет со специфическим поведением
@@ -113,9 +119,11 @@ public class Tezzt {
 import org.openqa.selenium.support.FindBy;
 
 import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
+import ru.tinkoff.qa.neptune.selenium.api.widget.NameMultiple;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 
 @Name("Какой-то чудо-виджет")
+@NameMultiple("Какие-то чудо-виджеты")
 @FindBy(xpath = ".//some/path")
 public class SomeWidget
         extends Widget {
@@ -141,11 +149,13 @@ public class SomeWidget
 import org.openqa.selenium.support.FindBy;
 
 import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
+import ru.tinkoff.qa.neptune.selenium.api.widget.NameMultiple;
 import ru.tinkoff.qa.neptune.selenium.api.widget.NeedToScrollIntoView;
 import ru.tinkoff.qa.neptune.selenium.api.widget.ScrollsIntoView;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 
 @Name("Какой-то чудо-виджет")
+@NameMultiple("Какие-то чудо-виджеты")
 @FindBy(xpath = ".//some/path")
 public class SomeWidget
         extends Widget implements ScrollsIntoView { //Нужно использовать этот интерфейс
@@ -171,3 +181,4 @@ public class SomeWidget
     }
 }
 ```
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)

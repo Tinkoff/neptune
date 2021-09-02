@@ -4,8 +4,8 @@ import org.datanucleus.api.jdo.JDOPersistenceManager;
 import ru.tinkoff.qa.neptune.data.base.api.IdSetter;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.api.queries.KeepResultPersistent;
-import ru.tinkoff.qa.neptune.data.base.api.result.ListOfPersistentObjects;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -46,13 +46,13 @@ class SqlTypedQuery<T extends PersistableObject> extends SqlQuery<T, List<T>> im
         query.setClass(classOfRequestedValue);
         var list = query.executeList();
 
-        ListOfPersistentObjects<T> toReturn;
+        List<T> toReturn;
         if (!keepResultPersistent.toKeepOnPersistent()) {
-            toReturn = new ListOfPersistentObjects<T>(jdoPersistenceManager.detachCopyAll(list)) {
+            toReturn = new ArrayList<T>(jdoPersistenceManager.detachCopyAll(list)) {
             };
             setRealIds(list, toReturn);
         } else {
-            toReturn = new ListOfPersistentObjects<T>(list) {
+            toReturn = new ArrayList<T>(list) {
             };
         }
 
