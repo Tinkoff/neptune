@@ -318,28 +318,31 @@ public class MyTest {
 
 ```java
 import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.delete.ExchangeDeleteParameters.*;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        //Выполняем удаление exchange, независимо от того, используется он или нет
-        rabbitMq().exchangeDelete("exchange");
+        rabbitMq().delete(exchange("exchange2") //имя exchange
+                .ifUnused()); //if unused
     }
 }
 ```
 
+Можно использовать значение свойства / переменной окружения [RABBIT_MQ_DEFAULT_EXCHANGE_NAME](./SETTINGS.MD#rabbit_mq_default_exchange_name)
+
 ```java
 import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.delete.ExchangeDeleteParameters.*;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        //Выполняем удаление exchange
-        //exchange - название обмена
-        //ifUnused - true, чтобы указать, что exchange подлежит удалению только в том случае, если он не используется
-        rabbitMq().exchangeDelete("exchange", true);
+        //в качестве имени удаляемого exchange используется значение 
+        //RABBIT_MQ_DEFAULT_EXCHANGE_NAME
+        rabbitMq().delete(exchange());
     }
 }
 ```
@@ -348,29 +351,33 @@ public class MyTest {
 
 ```java
 import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.delete.QueueDeleteParameters.*;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        //Выполняем удаление очереди
-        rabbitMq().deleteQueue("queue");
+        rabbitMq().delete(queue(
+                "queue") //имя очереди
+                .ifUnused() //if unused
+                .ifEmpty()); //if empty
     }
 }
 ```
 
+Можно использовать значение свойства / переменной окружения [RABBIT_MQ_DEFAULT_QUEUE_NAME](./SETTINGS.MD#RABBIT_MQ_DEFAULT_QUEUE_NAME).
+
 ```java
 import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.delete.QueueDeleteParameters.*;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        //Выполняем удаление очереди
-        //queue – имя очереди
-        //ifUnused – true, если очередь должна быть удалена, только если она не используется
-        //ifEmpty – true, если очередь должна быть удалена, только если она пуста
-        rabbitMq().deleteQueue("queue", deleteParams().empty().unused());
+        //в качестве имени удаляемой очереди используется 
+        //значение RABBIT_MQ_DEFAULT_QUEUE_NAME
+        rabbitMq().delete(queue()); 
     }
 }
 ```
