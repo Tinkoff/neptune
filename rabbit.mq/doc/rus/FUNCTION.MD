@@ -18,11 +18,15 @@
   - [Удаление queue](#Удаление-queue)
 - [Получение сообщения](#Получение-сообщения)
   - [Получение данных сообщения как Java-объект](#Получение-данных-сообщения-как-Java-объект)
+    - [Получение сообщения в виде строки](#Получение-сообщения-в-виде-строки)
+    - [Получение объекта при помощи десериализации](#Получение-объекта-при-помощи-десериализации)  
   - [Получение данных сообщения как Iterable](#Получение-данных-сообщения-как-Iterable)
   - [Получение данных сообщения в виде массива](#Получение-данных-сообщения-в-виде-массива)
   - [Получение данных сообщения как Java-объект из Iterable](#Получение-данных-сообщения-как-Java-объект-из-Iterable)
   - [Получение данных сообщения как Java-объект из массива](#Получение-данных-сообщения-как-Java-объект-из-массива)
 - [Публикация сообщений](#Публикация-сообщений)
+  - [Публикация текстового сообщения](#Публикация-текстового-сообщения)
+  - [Публикация сериализованного объекта](#Публикация-сериализованного-объекта)
 - [Очистка очереди](#Очистка-очереди)
 
 ## Связывание
@@ -393,6 +397,72 @@ public class MyTest {
 
 ### Получение данных сообщения как Java-объект
 
+#### Получение сообщения в виде строки
+
+```java
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetSupplier.*;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        // Возвращает сообщение из очереди.
+        String result = rabbitMq().read(rabbitRawMessage("queue") //имя очереди
+                //можно указать, что auto acknowledge
+                .autoAck()
+                //можно указать время на получение ожидаемого результата = 5 секунд
+                .timeOut(ofSeconds(5))
+                //можно указать критерий, которому должен соответствовать текст сообщения
+                .criteria("String criteria", s -> /*описание критерия, которому должна соответствовать строка*/)
+                //можно указать, что должно быть выброшено исключение, если результат не был получен
+                .throwOnNoResult());
+    }
+}
+```
+
+Можно указать кодировку строки
+
+```java
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetSupplier.*;
+import static java.nio.charset.StandardCharsets.*;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        String result = rabbitMq().read(rabbitRawMessage("queue", UTF_8));
+    }
+}
+```
+
+Можно использовать значение свойства / переменной окружения [RABBIT_MQ_DEFAULT_QUEUE_NAME](./SETTINGS.MD#RABBIT_MQ_DEFAULT_QUEUE_NAME).
+
+```java
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetSupplier.*;
+import static java.nio.charset.StandardCharsets.*;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        //в качестве имени удаляемой очереди используется 
+        //значение RABBIT_MQ_DEFAULT_QUEUE_NAME
+        String result = rabbitMq().read(rabbitRawMessage());
+        String result2 = rabbitMq().read(rabbitRawMessage(UTF_8));
+    }
+}
+```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+#### Получение объекта при помощи десериализации
+
 В примерах ниже предполагается, что настройка / свойство / переменная окружения
 [RABBIT_MQ_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#RABBIT_MQ_DEFAULT_DATA_TRANSFORMER) перед началом выполнения имеет
 непустое значения
@@ -409,15 +479,15 @@ public class MyTest {
         // Возвращает десериализованное сообщение из очереди.
         ClassToDeserialize result = rabbitMq().read(rabbitBody(
                 "test_queue", //имя очереди
-                true, //true, если сервер должен считать сообщения подтвержденными после доставки; 
-                // false, если сервер должен ожидать явных подтверждений
                 ClassToDeserialize.class) //класс модели для десериализации
                 //можно указать критерий, которому должно соответствовать тело сообщения
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue"))
+                .criteria("Описание критерия", o -> o.getSomeField().equals("someValue"))
                 //можно указать время на получение ожидаемого результата = 5 секунд
                 .timeOut(ofSeconds(5))
                 //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
+                .throwOnNoResult()
+                //можно указать, что auto acknowledge
+                .autoAck());
     }
 }
 ```
@@ -436,15 +506,16 @@ public class MyTest {
         // Возвращает десериализованное сообщение из очереди.
         ClassToDeserialize<ParamClass> result = rabbitMq().read(rabbitBody(
                 "test_queue",
-                true,
                 new TypeReference<ClassToDeserialize<ParamClass>>() {
                 }) //тип объекта-модели для десериализации
                 //можно указать критерий, которому должно соответствовать тело сообщения
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue"))
+                .criteria("Описание критерия", o -> o.getSomeField().equals("someValue"))
                 //можно указать время на получение ожидаемого результата = 5 секунд
                 .timeOut(ofSeconds(5))
                 //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
+                .throwOnNoResult()
+                //можно указать, что auto acknowledge
+                .autoAck());
     }
 }
 ```
@@ -463,8 +534,6 @@ public class MyTest {
         Object result = rabbitMq().read(rabbitObject("Вычисляемый объект", //описываем 
                 // то, что нужно получить
                 "test_queue", //имя очереди
-                true, //true, если сервер должен считать сообщения подтвержденными после доставки; 
-                // false, если сервер должен ожидать явных подтверждений
                 ClassToDeserialize.class, //класс модели для десериализации
                 o -> {
                     return /*описываем то, как получаем или вычисляем нужный объект*/
@@ -474,7 +543,9 @@ public class MyTest {
                 //можно указать время на получение ожидаемого результата = 5 секунд
                 .timeOut(ofSeconds(5))
                 //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
+                .throwOnNoResult()
+                //можно указать, что auto acknowledge
+                .autoAck());
     }
 }
 ```
@@ -494,7 +565,6 @@ public class MyTest {
         // или вычисляемый с использованием данных этого сообщения.
         Object result = rabbitMq().read(rabbitObject("Вычисляемый объект",
                 "test_queue",
-                true,
                 new TypeReference<ClassToDeserialize<ParamClass>>() {
                 }, //тип объекта-модели для десериализации
                 o -> {
@@ -505,7 +575,29 @@ public class MyTest {
                 //можно указать время на получение ожидаемого результата = 5 секунд
                 .timeOut(ofSeconds(5))
                 //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
+                .throwOnNoResult()
+                //можно указать, что auto acknowledge
+                .autoAck());
+    }
+}
+```
+
+Можно использовать значение свойства / переменной окружения [RABBIT_MQ_DEFAULT_QUEUE_NAME](./SETTINGS.MD#RABBIT_MQ_DEFAULT_QUEUE_NAME).
+В этом случае в примерах выше не надо указывать имя очереди.
+
+```java
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetSupplier.rabbitBody;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        ClassToDeserialize result = rabbitMq().read(rabbitBody(
+                ClassToDeserialize.class) 
+                //указание других опциональных параметров
+                );
     }
 }
 ```
@@ -550,10 +642,9 @@ public class MyTest {
     public void myTest() {
         rabbitMq().read(rabbitBody(
                 "test_queue",
-                true,
                 ClassToDeserialize.class) //или ссылка на тип
-                /* +прочие параметры*/,
-                new MyDataTransformer());
+                /* +прочие параметры*/
+                .withDataTransformer(new MyDataTransformer()));
     }
 }
 ```
@@ -568,13 +659,12 @@ public class MyTest {
     public void myTest() {
         rabbitMq().read(rabbitObject("Вычисляемый объект",
                 "test_queue",
-                true,
                 ClassToDeserialize.class, //или ссылка на тип
                 o -> {
                     return /*описываем то, как получаем или вычисляем нужный объект*/
                 })
-                /* +прочие параметры*/,
-                new MyDataTransformer());
+                /* +прочие параметры*/
+                .withDataTransformer(new MyDataTransformer()));
     }
 }
 ```
@@ -601,16 +691,15 @@ public class MyTest {
         ListOfClassToDeserialize result = rabbitMq().read(rabbitIterable("Результирующий лист", //описываем то, 
                 // что нужно получить
                 "test_queue", //имя очереди
-                true, //true, если сервер должен считать сообщения подтвержденными после доставки; 
-                // false, если сервер должен ожидать явных подтверждений
                 ListOfClassToDeserialize.class) //класс, который реализует Iterable<ClassToDeserialize> 
                 // или Collection<ClassToDeserialize>
                 .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
                 // которому должен соответствовать каждый элемент результирующей коллекции
                 .timeOut(ofSeconds(5)) //можно указать время на получение 
                 // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
+                .throwOnNoResult() //можно указать, что должно быть выброшено исключение, 
+                // если результат не был получен
+                .autoAck()); //можно указать, что auto acknowledge
     }
 }
 ```
@@ -633,16 +722,15 @@ public class MyTest {
         List<ClassToDeserialize> result = rabbitMq().read(rabbitIterable("Результирующий лист", //описываем то, 
                 // что нужно получить
                 "test_queue", //имя очереди
-                true, //true, если сервер должен считать сообщения подтвержденными после доставки; 
-                // false, если сервер должен ожидать явных подтверждений
                 new TypeReference<List<ClassToDeserialize>>() {
                 }) //тип объекта-модели для десериализации
                 .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
                 // которому должен соответствовать каждый элемент результирующей коллекции
                 .timeOut(ofSeconds(5)) //можно указать время на получение 
                 // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
+                .throwOnNoResult() //можно указать, что должно быть выброшено исключение, 
+                // если результат не был получен
+                .autoAck()); //можно указать, что auto acknowledge
     }
 }
 ```
@@ -663,9 +751,7 @@ public class MyTest {
         // вычислений. Из коллекции вернется под-множество подходящих элементов.
         List<Object> result = rabbitMq().read(rabbitIterable("Результирующий лист", //описываем 
                 // то, что нужно получить
-                "test_queue", //имя очереди
-                true, //true, если сервер должен считать сообщения подтвержденными после доставки; 
-                // false, если сервер должен ожидать явных подтверждений
+                "test_queue", //имя очередий
                 ClassToDeserialize.class, //класс модели для десериализации
                 o -> {
                     return /*описываем то, как получаем или вычисляем List<Object>*/
@@ -674,8 +760,9 @@ public class MyTest {
                 // которому должен соответствовать каждый элемент результирующей коллекции
                 .timeOut(ofSeconds(5)) //можно указать время на получение 
                 // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
+                .throwOnNoResult() //можно указать, что должно быть выброшено исключение, 
+                // если результат не был получен
+                .autoAck()); //можно указать, что auto acknowledge
     }
 }
 ```
@@ -698,7 +785,6 @@ public class MyTest {
         // вычислений. Из коллекции вернется под-множество подходящих элементов.
         List<Object> result = rabbitMq().read(rabbitIterable("Результирующий лист",
                 "test_queue",
-                true,
                 new TypeReference<ClassToDeserialize<ParamClass>>() {
                 }, //тип объекта-модели для десериализации
                 o -> {
@@ -708,8 +794,30 @@ public class MyTest {
                 // которому должен соответствовать каждый элемент результирующей коллекции
                 .timeOut(ofSeconds(5)) //можно указать время на получение 
                 // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
+                .throwOnNoResult() //можно указать, что должно быть выброшено исключение, 
+                // если результат не был получен
+                .autoAck()); //можно указать, что auto acknowledge
+    }
+}
+```
+
+Можно использовать значение свойства / переменной окружения [RABBIT_MQ_DEFAULT_QUEUE_NAME](./SETTINGS.MD#RABBIT_MQ_DEFAULT_QUEUE_NAME).
+В этом случае в примерах выше не надо указывать имя очереди.
+
+```java
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetIterableSupplier.rabbitIterable;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        ClassToDeserialize result = rabbitMq().read(rabbitIterable("Результирующий лист", 
+                ListOfClassToDeserialize.class)//класс, который реализует Iterable<ClassToDeserialize> 
+                // или Collection<ClassToDeserialize>
+                //указание других опциональных параметров
+                );
     }
 }
 ```
@@ -754,11 +862,10 @@ public class MyTest {
     public void myTest() {
         rabbitMq().read(rabbitIterable("Результирующий лист",
                 "test_queue",
-                true,
-                ClassToDeserialize.class, //или ссылка на тип
+                ListOfClassToDeserialize.class, //или ссылка на тип
                 /* +прочие параметры*/)
-                /* +прочие параметры*/,
-                new MyDataTransformer());
+                /* +прочие параметры*/
+                .withDataTransformer(new MyDataTransformer()));
     }
 }
 ```
@@ -785,15 +892,14 @@ public class MyTest {
         ClassToDeserialize[] result = rabbitMq().read(rabbitArray("Результирующий массив", //описываем то, 
                 // что нужно получить
                 "test_queue", //имя очереди
-                true, //true, если сервер должен считать сообщения подтвержденными после доставки; 
-                // false, если сервер должен ожидать явных подтверждений
                 ClassToDeserialize[].class) //класс массива
                 .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
                 // которому должен соответствовать каждый элемент результирующего массива
                 .timeOut(ofSeconds(5)) //можно указать время на получение 
                 // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
+                .throwOnNoResult() //можно указать, что должно быть выброшено исключение, 
+                // если результат не был получен
+                .autoAck()); //можно указать, что auto acknowledge
     }
 }
 ```
@@ -814,16 +920,15 @@ public class MyTest {
         ClassToDeserialize<ParamClass>[] result = rabbitMq().read(rabbitArray("Результирующий массив", //описываем то, 
                 // что нужно получить
                 "test_queue", //имя очереди
-                true, //true, если сервер должен считать сообщения подтвержденными после доставки; 
-                // false, если сервер должен ожидать явных подтверждений
                 new TypeReference<ClassToDeserialize<ParamClass>[]>() {
                 }) //тип объекта-модели для десериализации
                 .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
                 // которому должен соответствовать каждый элемент результирующего массива
                 .timeOut(ofSeconds(5)) //можно указать время на получение 
                 // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
+                .throwOnNoResult()//можно указать, что должно быть выброшено исключение, 
+                // если результат не был получен
+                .autoAck()); //можно указать, что auto acknowledge
     }
 }
 ```
@@ -844,8 +949,6 @@ public class MyTest {
         Object[] result = rabbitMq().read(rabbitArray("Результирующий массив", //описываем 
                 // то, что нужно получить
                 "test_queue", //имя очереди
-                true, //true, если сервер должен считать сообщения подтвержденными после доставки; 
-                // false, если сервер должен ожидать явных подтверждений
                 ClassToDeserialize.class, //класс модели для десериализации
                 o -> {
                     return /*описываем то, как получаем или вычисляем Object[]*/
@@ -854,8 +957,9 @@ public class MyTest {
                 // которому должен соответствовать каждый элемент результирующего массива
                 .timeOut(ofSeconds(5)) //можно указать время на получение 
                 // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
+                .throwOnNoResult()//можно указать, что должно быть выброшено исключение, 
+                // если результат не был получен
+                .autoAck()); //можно указать, что auto acknowledge
     }
 }
 ```
@@ -876,7 +980,6 @@ public class MyTest {
         // вычислений. Из массива вернется под-массив подходящих элементов.
         Object[] result = rabbitMq().read(rabbitArray("Результирующий массив",
                 "test_queue",
-                true,
                 new TypeReference<ClassToDeserialize<ParamClass>>() {
                 }, //тип объекта-модели для десериализации
                 o -> {
@@ -886,8 +989,29 @@ public class MyTest {
                 // которому должен соответствовать каждый элемент результирующего массива
                 .timeOut(ofSeconds(5)) //можно указать время на получение 
                 // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
+                .throwOnNoResult()//можно указать, что должно быть выброшено исключение, 
+                // если результат не был получен
+                .autoAck()); //можно указать, что auto acknowledge
+    }
+}
+```
+
+Можно использовать значение свойства / переменной окружения [RABBIT_MQ_DEFAULT_QUEUE_NAME](./SETTINGS.MD#RABBIT_MQ_DEFAULT_QUEUE_NAME).
+В этом случае в примерах выше не надо указывать имя очереди.
+
+```java
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetArraySupplier.rabbitArray;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        ClassToDeserialize result = rabbitMq().read(rabbitArray("Результирующий массив",
+                ClassToDeserialize[].class)
+                //указание других опциональных параметров
+                );
     }
 }
 ```
@@ -932,11 +1056,10 @@ public class MyTest {
     public void myTest() {
         rabbitMq().read(rabbitArray("Результирующий массив",
                 "test_queue",
-                true,
-                ClassToDeserialize.class, //или ссылка на тип
+                ClassToDeserialize[].class, //или ссылка на тип
                 /* +прочие параметры*/)
-                /* +прочие параметры*/,
-                new MyDataTransformer());
+                /* +прочие параметры*/
+                .withDataTransformer(new MyDataTransformer()));
     }
 }
 ```
@@ -963,16 +1086,15 @@ public class MyTest {
         ClassToDeserialize result = rabbitMq().read(rabbitIterableItem("Нужный элемент листа", //описываем то, 
                 // что нужно получить
                 "test_queue", //имя очереди
-                true, //true, если сервер должен считать сообщения подтвержденными после доставки; 
-                // false, если сервер должен ожидать явных подтверждений
                 ListOfClassToDeserialize.class) //класс, который реализует Iterable<ClassToDeserialize> 
                 // или Collection<ClassToDeserialize>
                 .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
                 // которому должен соответствовать результирующий элемент из коллекции
                 .timeOut(ofSeconds(5)) //можно указать время на получение 
                 // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
+                .throwOnNoResult()//можно указать, что должно быть выброшено исключение, 
+                // если результат не был получен
+                .autoAck()); //можно указать, что auto acknowledge
     }
 }
 ```
@@ -992,15 +1114,15 @@ public class MyTest {
         //Из общего сообщения (Iterable/коллекции) вернется первый подходящий элемент.
         ClassToDeserialize result = rabbitMq().read(rabbitIterableItem("Нужный элемент листа",
                 "test_queue",
-                true,
                 new TypeReference<List<ClassToDeserialize>>() {
                 }) //тип объекта-модели для десериализации
                 .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
                 // которому должен соответствовать результирующий элемент из коллекции
                 .timeOut(ofSeconds(5)) //можно указать время на получение 
                 // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
+                .throwOnNoResult()//можно указать, что должно быть выброшено исключение, 
+                // если результат не был получен
+                .autoAck()); //можно указать, что auto acknowledge
     }
 }
 ```
@@ -1020,8 +1142,6 @@ public class MyTest {
         Object result = rabbitMq().read(rabbitIterableItem("Нужный элемент листа", //описываем 
                 // то, что нужно получить
                 "test_queue", //имя очереди
-                true, //true, если сервер должен считать сообщения подтвержденными после доставки; 
-                // false, если сервер должен ожидать явных подтверждений
                 ClassToDeserialize.class, //класс модели для десериализации
                 o -> {
                     return /*описываем то, как получаем или вычисляем List<Object>*/
@@ -1030,8 +1150,9 @@ public class MyTest {
                 // которому должен соответствовать результирующий элемент из коллекции
                 .timeOut(ofSeconds(5)) //можно указать время на получение 
                 // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
+                .throwOnNoResult()//можно указать, что должно быть выброшено исключение, 
+                // если результат не был получен
+                .autoAck()); //можно указать, что auto acknowledge
     }
 }
 ```
@@ -1052,7 +1173,6 @@ public class MyTest {
         // вычислений. Из коллекции вернется первый подходящий элемент.
         Object result = rabbitMq().read(rabbitIterableItem("Нужный элемент листа",
                 "test_queue",
-                true,
                 new TypeReference<ClassToDeserialize<ParamClass>>() {
                 }, //тип объекта-модели для десериализации
                 o -> {
@@ -1062,8 +1182,30 @@ public class MyTest {
                 // которому должен соответствовать результирующий элемент из коллекции
                 .timeOut(ofSeconds(5)) //можно указать время на получение 
                 // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
+                .throwOnNoResult()//можно указать, что должно быть выброшено исключение, 
+                // если результат не был получен
+                .autoAck()); //можно указать, что auto acknowledge
+    }
+}
+```
+
+Можно использовать значение свойства / переменной окружения [RABBIT_MQ_DEFAULT_QUEUE_NAME](./SETTINGS.MD#RABBIT_MQ_DEFAULT_QUEUE_NAME).
+В этом случае в примерах выше не надо указывать имя очереди.
+
+```java
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetIterableItemSupplier.rabbitIterableItem;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        ClassToDeserialize result = rabbitMq().read(rabbitIterableItem("Нужный элемент листа", 
+                ListOfClassToDeserialize.class) //класс, который реализует Iterable<ClassToDeserialize>
+                // или Collection<ClassToDeserialize>
+                //указание других опциональных параметров
+                );
     }
 }
 ```
@@ -1108,11 +1250,10 @@ public class MyTest {
     public void myTest() {
         rabbitMq().read(rabbitIterableItem("Нужный элемент листа",
                 "test_queue",
-                true,
-                ClassToDeserialize.class, //или ссылка на тип
+                ListOfClassToDeserialize.class, //или ссылка на тип
                 /* +прочие параметры*/)
-                /* +прочие параметры*/,
-                new MyDataTransformer());
+                /* +прочие параметры*/
+                .withDataTransformer(new MyDataTransformer()));
     }
 }
 ```
@@ -1139,15 +1280,14 @@ public class MyTest {
         ClassToDeserialize result = rabbitMq().read(rabbitArrayItem("Нужный элемент массива", //описываем то, 
                 // что нужно получить
                 "test_queue", //имя очереди
-                true, //true, если сервер должен считать сообщения подтвержденными после доставки; 
-                // false, если сервер должен ожидать явных подтверждений
                 ClassToDeserialize[].class) //класс массива
                 .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
                 // которому должен соответствовать результирующий элемент из массива
                 .timeOut(ofSeconds(5)) //можно указать время на получение 
                 // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
+                .throwOnNoResult()//можно указать, что должно быть выброшено исключение, 
+                // если результат не был получен
+                .autoAck()); //можно указать, что auto acknowledge
     }
 }
 ```
@@ -1167,15 +1307,15 @@ public class MyTest {
         //Из общего сообщения-массива вернется первый подходящий элемент.
         ClassToDeserialize<ParamClass> result = rabbitMq().read(rabbitArrayItem("Нужный элемент массива",
                 "test_queue",
-                true,
                 new TypeReference<ClassToDeserialize<ParamClass>[]>() {
                 }) //тип объекта-модели для десериализации
                 .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
                 // которому должен соответствовать результирующий элемент из массива
                 .timeOut(ofSeconds(5)) //можно указать время на получение 
                 // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
+                .throwOnNoResult()//можно указать, что должно быть выброшено исключение, 
+                // если результат не был получен
+                .autoAck()); //можно указать, что auto acknowledge
     }
 }
 ```
@@ -1195,8 +1335,6 @@ public class MyTest {
         Object result = rabbitMq().read(rabbitArrayItem("Нужный элемент массива", //описываем 
                 // то, что нужно получить
                 "test_queue", //имя очереди
-                true, //true, если сервер должен считать сообщения подтвержденными после доставки; 
-                // false, если сервер должен ожидать явных подтверждений
                 ClassToDeserialize.class, //класс модели для десериализации
                 o -> {
                     return /*описываем то, как получаем или вычисляем Object[]*/
@@ -1205,8 +1343,9 @@ public class MyTest {
                 // которому должен соответствовать результирующий элемент массива
                 .timeOut(ofSeconds(5)) //можно указать время на получение 
                 // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
+                .throwOnNoResult()//можно указать, что должно быть выброшено исключение, 
+                // если результат не был получен
+                .autoAck()); //можно указать, что auto acknowledge
     }
 }
 ```
@@ -1228,7 +1367,6 @@ public class MyTest {
         // Из массива вернется первый подходящий элемент.
         Object result = rabbitMq().read(rabbitArrayItem("Нужный элемент массива",
                 "test_queue",
-                true,
                 new TypeReference<ClassToDeserialize<ParamClass>>() {
                 }, //тип объекта-модели для десериализации
                 o -> {
@@ -1238,8 +1376,29 @@ public class MyTest {
                 // которому должен соответствовать результирующий элемент из массива
                 .timeOut(ofSeconds(5)) //можно указать время на получение 
                 // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-        // если результат не был получен
+                .throwOnNoResult()//можно указать, что должно быть выброшено исключение, 
+                // если результат не был получен
+                .autoAck()); //можно указать, что auto acknowledge
+    }
+}
+```
+
+Можно использовать значение свойства / переменной окружения [RABBIT_MQ_DEFAULT_QUEUE_NAME](./SETTINGS.MD#RABBIT_MQ_DEFAULT_QUEUE_NAME).
+В этом случае в примерах выше не надо указывать имя очереди.
+
+```java
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetIterableItemSupplier.rabbitArrayItem;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        ClassToDeserialize result = rabbitMq().read(rabbitArrayItem("Нужный элемент массива", 
+                ClassToDeserialize[].class)
+                //указание других опциональных параметров
+                );
     }
 }
 ```
@@ -1284,11 +1443,10 @@ public class MyTest {
     public void myTest() {
         rabbitMq().read(rabbitArrayItem("Нужный элемент массива",
                 "test_queue",
-                true,
-                ClassToDeserialize.class, //или ссылка на тип
+                ClassToDeserialize[].class, //или ссылка на тип
                 /* +прочие параметры*/)
-                /* +прочие параметры*/,
-                new MyDataTransformer());
+                /* +прочие параметры*/
+                .withDataTransformer(new MyDataTransformer()));
     }
 }
 ```
@@ -1297,55 +1455,89 @@ public class MyTest {
 
 ## Публикация сообщений
 
+### Публикация текстового сообщения
+
+```java
+import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.publish.RabbitMqPublishSupplier.rabbitTextMessage;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        rabbitMq().publish(rabbitTextMessage("Hello world") //публикуемый текст
+                .exchange("exchange1") //можно указать exchange, можно не указывать, тогда будет 
+                //использовано значение переменной окружения / свойства RABBIT_MQ_DEFAULT_EXCHANGE_NAME
+                .routingKey("routing_key1") //можно указать ключ маршрутизации, можно не указывать, тогда будет 
+                //использовано значение переменной окружения / свойства RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME
+                .immediate() //и при необходимости 
+                .mandatory() //можно указать набор дополнительных 
+                .header("header1", "value1") //параметров
+                .replyTo("ReplyTo")
+                .deliveryMode(1)
+                .priority(2)
+                .contentType("plain text")
+                .contentEncoding("UTF-8")
+                .correlationId("!@#4")
+                .expiration("1234567")
+                .messageId("hjhjkhjk")
+                .timestamp(timeStamp)
+                .userId("UserId")
+                .appId("AppId")
+                .clusterId("ClasterId"));
+    }
+}
+```
+
+[RABBIT_MQ_DEFAULT_EXCHANGE_NAME](./SETTINGS.MD#rabbit_mq_default_exchange_name)
+
+[RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME](./SETTINGS.MD#RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME)
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+### Публикация сериализованного объекта
+
 В примерах ниже предполагается, что настройка / свойство / переменная окружения
 [RABBIT_MQ_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#RABBIT_MQ_DEFAULT_DATA_TRANSFORMER) перед началом выполнения имеет
 непустое значения
 
 ```java
 import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.publish.RabbitMqPublishSupplier.rabbitSerializedMessage;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        //Выполняем отправку сообщения
-        //  Параметры:
-        //      exchange - обмен для публикации сообщения
-        //      routingKey - ключ маршрутизации
-        //      new SomeObject() - объект, который нужно сериализовать и отправить в rabbit
-        //Неявные параметры которые уходят:
-        //      mandatory со значением false
-        //      mmediate со значением false
-        rabbitMq().publishMessage("exchange",
-                "routingKey",
-                new SomeObject());
+        rabbitMq().publish(rabbitSerializedMessage(
+                new DraftDto().setName("test")) //объект, который надо превратить в сообщение 
+                // и опубликовать
+                .exchange("exchange1") //можно указать exchange, можно не указывать, тогда будет 
+                //использовано значение переменной окружения / свойства RABBIT_MQ_DEFAULT_EXCHANGE_NAME
+                .routingKey("routing_key1") //можно указать ключ маршрутизации, можно не указывать, тогда будет 
+                //использовано значение переменной окружения / свойства RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME
+                .immediate() //и при необходимости 
+                .mandatory() //можно указать набор дополнительных 
+                .header("header1", "value1") //параметров
+                .replyTo("ReplyTo")
+                .deliveryMode(1)
+                .priority(2)
+                .contentType("plain text")
+                .contentEncoding("UTF-8")
+                .correlationId("!@#4")
+                .expiration("1234567")
+                .messageId("hjhjkhjk")
+                .timestamp(timeStamp)
+                .userId("UserId")
+                .appId("AppId")
+                .clusterId("ClasterId"));
     }
 }
 ```
 
-```java
-import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
-import static ru.tinkoff.qa.neptune.rabbit.mq.function.publish.ParametersForPublish.parameters;
+[RABBIT_MQ_DEFAULT_EXCHANGE_NAME](./SETTINGS.MD#rabbit_mq_default_exchange_name)
 
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем отправку сообщения
-        //  Параметры:
-        //      exchange - обмен для публикации сообщения
-        //      routingKey - ключ маршрутизации
-        //      ParametersForPublish - объект, необходимый для изменения дефолтных значений mandatory и immediate
-        //                             в данном примере 'parameters().mandatory().immediate()' 
-        //                             сообщение отправится с mandatory = true и immediate = true
-        //      new SomeObject() - объект, который нужно сериализовать и отправить в rabbit
-        rabbitMq().publishMessage("exchange",
-                "routingKey",
-                parameters().mandatory().immediate(),
-                new SomeObject());
-    }
-}
-```
+[RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME](./SETTINGS.MD#RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME)
 
 Ниже примеры ситуаций, когда [сериализатор](./../../../core.api/doc/rus/SERIALIZATION_DESERIALIZATION.MD) нужно передать
 явно.
@@ -1378,55 +1570,16 @@ public class MyDataTransformer implements DataTransformer {
 ```
 
 ```java
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-
 import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.publish.RabbitMqPublishSupplier.rabbitSerializedMessage;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        //Выполняем отправку сообщения
-        //  Параметры:
-        //      exchange - обмен для публикации сообщения
-        //      routingKey - ключ маршрутизации
-        //      new SomeObject() - объект, который нужно сериализовать и отправить в rabbit
-        //      Неявные параметры которые уходят:
-        //         mandatory со значением false
-        //         mmediate со значением false
-        //  new MyDataTransformer() - переданный сериализатор
-        rabbitMq().publishMessage("exchange",
-                "routingKey",
-                new SomeObject(),
-                new MyDataTransformer());
-    }
-}
-```
-
-```java
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-
-import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
-import static ru.tinkoff.qa.neptune.rabbit.mq.function.publish.ParametersForPublish.parameters;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем отправку сообщения
-        //  Параметры:
-        //      exchange - обмен для публикации сообщения
-        //      routingKey - ключ маршрутизации
-        //      ParametersForPublish - объект, необходимый для изменения дефолтных значений mandatory и immediate
-        //                             в данном примере 'parameters().mandatory().immediate()' 
-        //                             сообщение отправится с mandatory = true и immediate = true
-        //      new SomeObject() - объект, который нужно сериализовать и отправить в rabbit
-        //      new MyDataTransformer() - переданный сериализатор
-        rabbitMq().publishMessage("exchange",
-                "routingKey",
-                parameters().mandatory().immediate(),
-                new SomeObject(),
-                new MyDataTransformer());
+        rabbitMq().publish(rabbitSerializedMessage(
+                new DraftDto().setName("test"))
+                .withDataTransformer(new MyDataTransformer()));
     }
 }
 ```
@@ -1444,6 +1597,21 @@ public class MyTest {
     public void myTest() {
         //Выполняем очищение содержимого очереди
         rabbitMq().purgeQueue("queue");
+    }
+}
+```
+
+Можно использовать значение свойства / переменной окружения [RABBIT_MQ_DEFAULT_QUEUE_NAME](./SETTINGS.MD#RABBIT_MQ_DEFAULT_QUEUE_NAME).
+В этом случае в примерах выше не надо указывать имя очереди.
+
+```java
+import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        rabbitMq().purgeQueue();
     }
 }
 ```
