@@ -17,7 +17,7 @@ Integration of Neptune with Selenium WebDriver API
 
 ```groovy
     dependencies {
-        testCompile group: 'ru.tinkoff.qa.neptune', name: 'selenium', version: LATEST_RELEASE_OR_BETA_VERSION    
+        testImplementation  group: 'ru.tinkoff.qa.neptune', name: 'selenium', version: LATEST_RELEASE_OR_BETA_VERSION    
     }
 ```
 

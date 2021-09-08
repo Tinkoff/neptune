@@ -17,7 +17,7 @@ Integration of Neptune with native http client of Java (since v11)
 
 ```groovy
     dependencies {
-        testCompile group: 'ru.tinkoff.qa.neptune', name: 'http.api', version: LATEST_RELEASE_OR_BETA_VERSION    
+        testImplementation  group: 'ru.tinkoff.qa.neptune', name: 'http.api', version: LATEST_RELEASE_OR_BETA_VERSION    
     }
 ```
 

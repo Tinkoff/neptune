@@ -17,7 +17,7 @@ Integration of Neptune with [Allure test reporting framework](https://docs.qamet
 
 ```groovy
     dependencies {
-        testCompile group: 'ru.tinkoff.qa.neptune', name: 'allure.integration', version: LATEST_RELEASE_OR_BETA_VERSION    
+        testImplementation  group: 'ru.tinkoff.qa.neptune', name: 'allure.integration', version: LATEST_RELEASE_OR_BETA_VERSION    
     }
 ```
 

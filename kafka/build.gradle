@@ -1,15 +1,15 @@
 plugins {
-    id "io.freefair.aspectj.post-compile-weaving" version "5.3.0"
+    id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
 }
 
 dependencies {
-    compile project(':core.api')
+    implementation project(':core.api')
 
     inpath(project(":core.api")) {
         transitive = false
     }
     implementation group: 'org.apache.kafka', name: 'kafka-clients', version: '2.8.0'
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.7.7'
+    testImplementation  group: 'org.mockito', name: 'mockito-core', version: '3.7.7'
     testImplementation 'org.mockito:mockito-inline:2.7.21'
 }
 
@@ -42,39 +42,44 @@ artifacts {
     archives jar, javadocJar, sourcesJar
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: 'https://nexus-new.tcsbank.ru/repository/mvn-bigops-qa') {
-                authentication(userName: mavenDeployLogin, password: mavenDeployPassword)
-            }
-
-
-            pom.project {
-                packaging 'jar'
-                name 'kafka'
-                version version
-                url 'https://github.com/TinkoffCreditSystems/neptune'
-                developers {
-                    developer {
-                        name 'Andrew Charykov'
-                        email 'a.s.charykov@yandex.ru'
-                        url 'https://github.com/AndrewCharykov'
-                        id 'AndrewCharykov'
-                    }
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            repositories {
+                maven {
+                    credentials(PasswordCredentials)
+                    url = 'https://nexus-new.tcsbank.ru/repository/mvn-bigops-qa'
                 }
+            }
+            pom {
+                packaging = 'jar'
+                name = 'kafka'
+                version = version
+                url = 'https://github.com/TinkoffCreditSystems/neptune'
                 licenses {
                     license {
-                        name 'Apache License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        distribution 'repo'
+                        name = 'Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution = 'repo'
+                    }
+                }
+                developers {
+                    developer {
+                        name = 'Andrew Charykov'
+                        email = 'a.s.charykov@yandex.ru'
+                        url = 'https://github.com/AndrewCharykov'
+                        id = 'AndrewCharykov'
+                    }
+                    developer {
+                        id = 'TikhomirovSergey'
+                        name = 'Sergey Tikhomirov'
+                        email = 'tichomirovsergey@gmail.com'
                     }
                 }
                 scm {
-                    url 'https://github.com/TinkoffCreditSystems/neptune'
-                    connection 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
-                    developerConnection 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
-                    tag 'HEAD'
+                    connection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
+                    url = 'https://github.com/TinkoffCreditSystems/neptune'
                 }
             }
         }

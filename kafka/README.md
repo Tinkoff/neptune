@@ -17,7 +17,7 @@ Integration of Neptune with [Apache Kafka](https://kafka.apache.org/).
 
 ```groovy
     dependencies {
-        testCompile group: 'ru.tinkoff.qa.neptune', name: 'kafka', version: LATEST_RELEASE_OR_BETA_VERSION    
+        testImplementation  group: 'ru.tinkoff.qa.neptune', name: 'kafka', version: LATEST_RELEASE_OR_BETA_VERSION    
     }
 ```
 

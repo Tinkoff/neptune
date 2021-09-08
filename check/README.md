@@ -17,7 +17,7 @@ Integration of Neptune with [Hamcrest matchers](http://hamcrest.org/JavaHamcrest
 
 ```groovy
     dependencies {
-        testCompile group: 'ru.tinkoff.qa.neptune', name: 'check', version: LATEST_RELEASE_OR_BETA_VERSION    
+        testImplementation  group: 'ru.tinkoff.qa.neptune', name: 'check', version: LATEST_RELEASE_OR_BETA_VERSION    
     }
 ```
 
