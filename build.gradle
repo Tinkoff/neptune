@@ -28,9 +28,7 @@ subprojects {
         hamcrestVersion = '2.2'
         seleniumVersion = '3.141.59'
         allureVersion = '2.14.0'
-        jacksonVersion = '2.12.4'
-        mavenDeployLogin = hasProperty('REPO_USER_NAME') ? REPO_USER_NAME : System.getenv('REPO_USER_NAME')
-        mavenDeployPassword = hasProperty('REPO_USER_PASSWORD') ? REPO_USER_PASSWORD : System.getenv('REPO_USER_PASSWORD')
+        jacksonVersion = '2.12.5'
         globalVersion = version
     }
 
