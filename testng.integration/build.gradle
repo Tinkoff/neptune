@@ -1,6 +1,6 @@
 dependencies {
-    compile project(':core.api')
-    compile group: 'org.testng', name: 'testng', version: testNGVersion
+    implementation project(':core.api')
+    implementation group: 'org.testng', name: 'testng', version: testNGVersion
 }
 
 task javadocJar(type: Jar) {
@@ -17,39 +17,38 @@ artifacts {
     archives jar, javadocJar, sourcesJar
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: 'https://nexus-new.tcsbank.ru/repository/mvn-bigops-qa') {
-                authentication(userName: mavenDeployLogin, password: mavenDeployPassword)
-            }
-
-
-            pom.project {
-                packaging 'jar'
-                name 'testng.integration'
-                version version
-                url 'https://github.com/TinkoffCreditSystems/neptune'
-                developers {
-                    developer {
-                        name 'Sergey Tikhomirov'
-                        email 'tichomirovsergey@gmail.com'
-                        url 'https://github.com/TikhomirovSergey'
-                        id 'TikhomirovSergey'
-                    }
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            repositories {
+                maven {
+                    credentials(PasswordCredentials)
+                    url = 'https://nexus-new.tcsbank.ru/repository/mvn-bigops-qa'
                 }
+            }
+            pom {
+                packaging = 'jar'
+                name = 'testng.integration'
+                version = version
+                url = 'https://github.com/TinkoffCreditSystems/neptune'
                 licenses {
                     license {
-                        name 'Apache License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        distribution 'repo'
+                        name = 'Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution = 'repo'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'TikhomirovSergey'
+                        name = 'Sergey Tikhomirov'
+                        email = 'tichomirovsergey@gmail.com'
                     }
                 }
                 scm {
-                    url 'https://github.com/TinkoffCreditSystems/neptune'
-                    connection 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
-                    developerConnection 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
-                    tag 'HEAD'
+                    connection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
+                    url = 'https://github.com/TinkoffCreditSystems/neptune'
                 }
             }
         }

@@ -17,7 +17,7 @@ Integration of Neptune with [Retrofit2](https://square.github.io/retrofit/).
 
 ```groovy
     dependencies {
-        testCompile group: 'ru.tinkoff.qa.neptune', name: 'retrofit2', version: LATEST_RELEASE_OR_BETA_VERSION    
+        testImplementation  group: 'ru.tinkoff.qa.neptune', name: 'retrofit2', version: LATEST_RELEASE_OR_BETA_VERSION    
     }
 ```
 

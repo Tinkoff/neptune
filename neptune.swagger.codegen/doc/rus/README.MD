@@ -185,7 +185,7 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'ru.tinkoff.qa.neptune', name: 'http.api', version: 'LATEST_RELEASE_OR_BETA_VERSION'
+    testImplementation  group: 'ru.tinkoff.qa.neptune', name: 'http.api', version: 'LATEST_RELEASE_OR_BETA_VERSION'
 }
 
 import io.swagger.codegen.v3.CodegenConfigLoader
@@ -265,7 +265,7 @@ repositories {
 }
 
 dependencies {
-    compile group: 'ru.tinkoff.qa.neptune', name: 'http.api', version: 'LATEST_RELEASE_OR_BETA_VERSION'
+    implementation group: 'ru.tinkoff.qa.neptune', name: 'http.api', version: 'LATEST_RELEASE_OR_BETA_VERSION'
 }
 
 import io.swagger.codegen.v3.CodegenConfigLoader

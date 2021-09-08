@@ -3,15 +3,15 @@ plugins {
 }
 
 dependencies {
-    compile project(':core.api')
+    implementation project(':core.api')
     inpath(project(":core.api")) {
         transitive = false
     }
-    compile group: 'org.jsoup', name: 'jsoup', version: '1.14.2'
-    compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-parameter-names', version: jacksonVersion
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: jacksonVersion
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion
-    testCompile group: 'com.github.tomakehurst', name: 'wiremock-jre8-standalone', version: '2.29.0'
+    implementation group: 'org.jsoup', name: 'jsoup', version: '1.14.2'
+    implementation group: 'com.fasterxml.jackson.module', name: 'jackson-module-parameter-names', version: jacksonVersion
+    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: jacksonVersion
+    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion
+    testImplementation  group: 'com.github.tomakehurst', name: 'wiremock-jre8-standalone', version: '2.29.0'
 }
 
 task javadocJar(type: Jar) {
@@ -42,39 +42,38 @@ processResources {
     }
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: 'https://nexus-new.tcsbank.ru/repository/mvn-bigops-qa') {
-                authentication(userName: mavenDeployLogin, password: mavenDeployPassword)
-            }
-
-
-            pom.project {
-                packaging 'jar'
-                name 'http.api'
-                version version
-                url 'https://github.com/TinkoffCreditSystems/neptune'
-                developers {
-                    developer {
-                        name 'Sergey Tikhomirov'
-                        email 'tichomirovsergey@gmail.com'
-                        url 'https://github.com/TikhomirovSergey'
-                        id 'TikhomirovSergey'
-                    }
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            repositories {
+                maven {
+                    credentials(PasswordCredentials)
+                    url = 'https://nexus-new.tcsbank.ru/repository/mvn-bigops-qa'
                 }
+            }
+            pom {
+                packaging = 'jar'
+                name = 'http.api'
+                version = version
+                url = 'https://github.com/TinkoffCreditSystems/neptune'
                 licenses {
                     license {
-                        name 'Apache License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        distribution 'repo'
+                        name = 'Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution = 'repo'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'TikhomirovSergey'
+                        name = 'Sergey Tikhomirov'
+                        email = 'tichomirovsergey@gmail.com'
                     }
                 }
                 scm {
-                    url 'https://github.com/TinkoffCreditSystems/neptune'
-                    connection 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
-                    developerConnection 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
-                    tag 'HEAD'
+                    connection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
+                    url = 'https://github.com/TinkoffCreditSystems/neptune'
                 }
             }
         }

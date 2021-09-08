@@ -17,7 +17,7 @@ Integration of Neptune with [rabbitmq](https://www.rabbitmq.com/).
 
 ```groovy
     dependencies {
-        testCompile group: 'ru.tinkoff.qa.neptune', name: 'rabbit.mq', version: LATEST_RELEASE_OR_BETA_VERSION    
+        testImplementation  group: 'ru.tinkoff.qa.neptune', name: 'rabbit.mq', version: LATEST_RELEASE_OR_BETA_VERSION    
     }
 ```
 
