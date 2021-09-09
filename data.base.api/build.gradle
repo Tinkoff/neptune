@@ -52,6 +52,8 @@ compileTestJava {
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            artifactId = 'data.base.api'
+            from components.java
             repositories {
                 maven {
                     credentials(PasswordCredentials)
@@ -87,18 +89,9 @@ publishing {
     }
 }
 
-task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives jar, javadocJar, sourcesJar
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 javadoc {
@@ -110,4 +103,9 @@ javadoc {
     options.addStringOption 'Xdoclint:none', '-quiet'
     options.memberLevel = JavadocMemberLevel.PROTECTED
     options.bottom = "Copyright &copy; 2021 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+    options.addBooleanOption('html5', true)
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
