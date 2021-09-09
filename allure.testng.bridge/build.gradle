@@ -7,10 +7,16 @@ dependencies {
     }
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
             artifactId = 'allure.testng.bridge'
+            from components.java
             repositories {
                 maven {
                     credentials(PasswordCredentials)
@@ -18,7 +24,7 @@ publishing {
                 }
             }
             pom {
-                packaging = 'pom'
+                packaging = 'jar'
                 name = 'allure.testng.bridge'
                 version = version
                 url = 'https://github.com/TinkoffCreditSystems/neptune'
