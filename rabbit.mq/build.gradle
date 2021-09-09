@@ -3,12 +3,12 @@ plugins {
 }
 
 dependencies {
-    implementation project(':core.api')
+    api project(':core.api')
 
     inpath(project(":core.api")) {
         transitive = false
     }
-    implementation group: 'com.rabbitmq', name: 'amqp-client', version: '5.13.1'
+    api group: 'com.rabbitmq', name: 'amqp-client', version: '5.13.1'
     testImplementation  group: 'org.mockito', name: 'mockito-core', version: '3.7.7'
     testImplementation 'org.mockito:mockito-inline:2.7.21'
 }

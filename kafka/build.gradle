@@ -3,12 +3,12 @@ plugins {
 }
 
 dependencies {
-    implementation project(':core.api')
+    api project(':core.api')
 
     inpath(project(":core.api")) {
         transitive = false
     }
-    implementation group: 'org.apache.kafka', name: 'kafka-clients', version: '2.8.0'
+    api group: 'org.apache.kafka', name: 'kafka-clients', version: '2.8.0'
     testImplementation  group: 'org.mockito', name: 'mockito-core', version: '3.7.7'
     testImplementation 'org.mockito:mockito-inline:2.7.21'
 }
