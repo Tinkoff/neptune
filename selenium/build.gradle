@@ -3,11 +3,11 @@ plugins {
 }
 
 dependencies {
-    implementation project(':core.api')
+    api project(':core.api')
     inpath(project(":core.api")) {
         transitive = false
     }
-    implementation (group: 'org.seleniumhq.selenium', name: 'selenium-java', version: seleniumVersion) {
+    api (group: 'org.seleniumhq.selenium', name: 'selenium-java', version: seleniumVersion) {
         exclude group: 'org.seleniumhq.selenium', module: 'htmlunit-driver'
         exclude group: 'com.google.guava', module: 'guava'
         exclude group: 'com.google.code.gson', module: 'gson'
@@ -27,7 +27,7 @@ dependencies {
     testImplementation  group: 'org.mockito', name: 'mockito-core', version: '3.7.7'
     implementation group: 'cglib', name: 'cglib', version: '3.3.0'
     implementation group: 'org.jsoup', name: 'jsoup', version: '1.14.2'
-    implementation group: 'com.browserup', name: 'browserup-proxy-core', version: '2.1.2'
+    api group: 'com.browserup', name: 'browserup-proxy-core', version: '2.1.2'
     implementation group: 'org.objenesis', name: 'objenesis', version: '3.2'
 }
 

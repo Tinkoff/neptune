@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation project(':core.api')
+    api project(':core.api')
 
     inpath(project(":core.api")) {
         transitive = false
