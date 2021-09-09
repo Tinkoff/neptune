@@ -60,8 +60,4 @@ javadoc {
     options.addBooleanOption('html5', true)
 }
 
-signing {
-    sign publishing.publications.mavenJava
-}
-
 

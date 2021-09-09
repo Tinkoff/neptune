@@ -80,7 +80,3 @@ javadoc {
     options.bottom = "Copyright &copy; 2021 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
     options.addBooleanOption('html5', true)
 }
-
-signing {
-    sign publishing.publications.mavenJava
-}
