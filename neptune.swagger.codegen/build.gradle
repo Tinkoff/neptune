@@ -3,23 +3,16 @@ dependencies {
     implementation group: 'io.swagger.codegen.v3', name: 'swagger-codegen-generators', version: '1.0.27'
 }
 
-task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives jar, javadocJar, sourcesJar
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            artifactId = 'neptune.swagger.codegen'
+            from components.java
             repositories {
                 maven {
                     credentials(PasswordCredentials)
@@ -64,6 +57,11 @@ javadoc {
     options.addStringOption 'Xdoclint:none', '-quiet'
     options.memberLevel = JavadocMemberLevel.PROTECTED
     options.bottom = "Copyright &copy; 2021 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+    options.addBooleanOption('html5', true)
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
 
 

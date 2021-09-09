@@ -9,6 +9,8 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'maven-publish'
     apply plugin: 'project-report'
+    apply plugin: 'java-library'
+    apply plugin: 'signing'
 
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11

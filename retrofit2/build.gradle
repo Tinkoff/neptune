@@ -22,16 +22,6 @@ test {
     useTestNG()
 }
 
-task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
 task generateBundle(type: JavaExec)  {
     classpath sourceSets.main.runtimeClasspath
     main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
@@ -47,13 +37,16 @@ processResources {
     }
 }
 
-artifacts {
-    archives jar, javadocJar, sourcesJar
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            artifactId = 'retrofit2'
+            from components.java
             repositories {
                 maven {
                     credentials(PasswordCredentials)
@@ -98,4 +91,9 @@ javadoc {
     options.addStringOption 'Xdoclint:none', '-quiet'
     options.memberLevel = JavadocMemberLevel.PROTECTED
     options.bottom = "Copyright &copy; 2021 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+    options.addBooleanOption('html5', true)
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
