@@ -1,10 +1,10 @@
 dependencies {
-    api project(":testng.integration")
+    api project(":jupiter.integration")
     api project(":allure.integration")
-    api (group: 'io.qameta.allure', name: 'allure-testng', version: allureVersion) {
+    api (group: 'io.qameta.allure', name: 'allure-junit5', version: allureVersion) {
         exclude group: 'org.aspectj', module: 'aspectjrt'
         exclude group: 'org.aspectj', module: 'aspectjweaver'
-        exclude group: 'org.testng', module: 'testng'
+        exclude group: 'org.junit.jupiter', module: 'junit-jupiter-api'
     }
 }
 
@@ -16,7 +16,7 @@ java {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = 'allure.testng.bridge'
+            artifactId = 'allure.jupiter.bridge'
             from components.java
             repositories {
                 maven {
@@ -26,7 +26,7 @@ publishing {
             }
             pom {
                 packaging = 'jar'
-                name = 'allure.testng.bridge'
+                name = 'allure.jupiter.bridge'
                 version = version
                 url = 'https://github.com/TinkoffCreditSystems/neptune'
                 licenses {
