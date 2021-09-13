@@ -37,7 +37,7 @@ public enum RefreshEachTimeBefore {
      * <p></p>
      * 1. {@link ContextRefreshable#refreshContext()} has not been invoked before some
      * {@link BeforeAll}/{@link BeforeEach}-method and any {@link Test} or {@link TestFactory} or
-     * {@link TestTemplate}method has not been invoked yet.
+     * {@link TestTemplate}-method has not been invoked yet.
      * <p></p>
      * 2. {@link ContextRefreshable#refreshContext()} has not been invoked before some
      * {@link BeforeEach}-method and any {@link Test} or {@link TestFactory} or {@link TestTemplate}-method
