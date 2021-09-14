@@ -11,4 +11,5 @@ include 'neptune.swagger.codegen'
 include 'rabbit.mq'
 include 'retrofit2'
 include 'kafka'
+include 'database.abstractions'
 
