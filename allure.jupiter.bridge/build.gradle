@@ -5,6 +5,7 @@ dependencies {
         exclude group: 'org.aspectj', module: 'aspectjrt'
         exclude group: 'org.aspectj', module: 'aspectjweaver'
         exclude group: 'org.junit.jupiter', module: 'junit-jupiter-api'
+        exclude group: 'org.junit.jupiter', module: 'junit-platform-launcher'
     }
 }
 

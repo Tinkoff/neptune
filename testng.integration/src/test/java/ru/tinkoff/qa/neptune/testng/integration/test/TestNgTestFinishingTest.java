@@ -1,7 +1,8 @@
 package ru.tinkoff.qa.neptune.testng.integration.test;
 
 import org.testng.TestNG;
-import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterGroups;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.testng.xml.XmlClass;
 import org.testng.xml.XmlSuite;
@@ -16,7 +17,8 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static ru.tinkoff.qa.neptune.core.api.concurrency.ObjectContainer.getAllObjects;
 import static ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore.*;
 import static ru.tinkoff.qa.neptune.testng.integration.properties.TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
@@ -50,81 +52,43 @@ public class TestNgTestFinishingTest {
         testNG.run();
     }
 
-    @Test
-    public void whenNoRefreshingStrategyIsDefined() {
+    @DataProvider
+    public static Object[][] data() {
+        return new Object[][]{
+                {null, 9},
+                {of(SUITE_STARTING), 1},
+                {of(TEST_STARTING), 1},
+                {of(CLASS_STARTING), 2},
+                {of(BEFORE_METHOD_STARTING), 9},
+                {of(METHOD_STARTING), 9},
+                {asList(RefreshEachTimeBefore.values()), 9}
+
+        };
+    }
+
+    @Test(dataProvider = "data", groups = "refresh")
+    public void refreshTest(List<RefreshEachTimeBefore> strategies, int expected) {
+        REFRESH_STRATEGY_PROPERTY.accept(strategies);
         runBeforeTheChecking();
-        assertThat(ContextClass2.getRefreshCount(), is(9));
+        assertThat(ContextClass2.getRefreshCount(), is(expected));
+    }
+
+    @AfterGroups(groups = "refresh")
+    public void afterRefreshTest() {
+        REFRESH_STRATEGY_PROPERTY.accept(null);
     }
 
     @Test
-    public void whenRefreshingStrategyIsBeforeSuite() {
-        REFRESH_STRATEGY_PROPERTY.accept(of(SUITE_STARTING));
-        try {
-            runBeforeTheChecking();
-            assertThat(ContextClass2.getRefreshCount(), is(1));
-        }
-        finally {
-            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getName());
-        }
-    }
-
-    @Test
-    public void whenRefreshingStrategyIsBeforeTest() {
-        REFRESH_STRATEGY_PROPERTY.accept(of(TEST_STARTING));
-        try {
-            runBeforeTheChecking();
-            assertThat(ContextClass2.getRefreshCount(), is(1));
-        }
-        finally {
-            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getName());
-        }
-    }
-
-    @Test
-    public void whenRefreshingStrategyIsBeforeClass() {
-        REFRESH_STRATEGY_PROPERTY.accept(of(CLASS_STARTING));
-        try {
-            runBeforeTheChecking();
-            assertThat(ContextClass2.getRefreshCount(), is(2));
-        }
-        finally {
-            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getName());
-        }
-    }
-
-    @Test
-    public void whenRefreshingStrategyIsBeforeMethod() {
-        REFRESH_STRATEGY_PROPERTY.accept(of(BEFORE_METHOD_STARTING));
-        try {
-            runBeforeTheChecking();
-            assertThat(ContextClass2.getRefreshCount(), is(9));
-        }
-        finally {
-            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getName());
-        }
-    }
-
-    @Test
-    public void whenRefreshingStrategyIsCombined() {
-        REFRESH_STRATEGY_PROPERTY.accept(asList(RefreshEachTimeBefore.values()));
-        try {
-            runBeforeTheChecking();
-            assertThat(ContextClass2.getRefreshCount(), is(9));
-        } finally {
-            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getName());
-        }
+    public void instanceCountTest() {
+        runBeforeTheChecking();
+        assertThat(getAllObjects(ContextClass2.class, objectContainer -> true), hasSize(6));
+        assertThat(getAllObjects(ContextClass1.class, objectContainer -> true), hasSize(6));
     }
 
     @Test
     public void hookTest() {
         TestHook.count = 0;
         runBeforeTheChecking();
-        assertThat(TestHook.count, greaterThan(0));
-    }
-
-    @AfterClass
-    public void afterClass() {
-        assertThat(getAllObjects(ContextClass2.class, objectContainer -> true), hasSize(6));
-        assertThat(getAllObjects(ContextClass1.class, objectContainer -> true), hasSize(6));
+        assertThat(TestHook.count, is(55));
     }
 }

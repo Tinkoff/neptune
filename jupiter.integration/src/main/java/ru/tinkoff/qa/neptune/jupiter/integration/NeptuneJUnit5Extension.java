@@ -14,37 +14,31 @@ import static ru.tinkoff.qa.neptune.core.api.hooks.ExecutionHook.getHooks;
 import static ru.tinkoff.qa.neptune.jupiter.integration.properties.Junit5RefreshStrategyProperty.*;
 
 
-public final class NeptuneJUnit5Extension implements BeforeAllCallback, TestInstancePostProcessor,
-        BeforeEachCallback, BeforeTestExecutionCallback, AfterTestExecutionCallback, InvocationInterceptor {
+public final class NeptuneJUnit5Extension implements TestInstancePostProcessor,
+        AfterTestExecutionCallback, InvocationInterceptor {
 
     private final List<ExecutionHook> hooks = getHooks();
-    private boolean isRefreshed;
+    private final ThreadLocal<Boolean> isRefreshed = new ThreadLocal<>();
+
+    private boolean isRefreshed() {
+        var refreshed = isRefreshed.get();
+        if (refreshed != null) {
+            return refreshed;
+        }
+
+        return false;
+    }
 
     @Override
     public void afterTestExecution(ExtensionContext context) {
-        isRefreshed = false;
+        isRefreshed.set(false);
     }
 
     private void refresh(boolean condition) {
-        if (!isRefreshed && condition) {
+        if (!isRefreshed() && condition) {
             REFRESHABLE_CONTEXTS.forEach(ContextRefreshable::refreshContext);
-            isRefreshed = true;
+            isRefreshed.set(true);
         }
-    }
-
-    @Override
-    public void beforeAll(ExtensionContext context) {
-        refresh(isBeforeAll());
-    }
-
-    @Override
-    public void beforeEach(ExtensionContext context) {
-        refresh(isBeforeEach());
-    }
-
-    @Override
-    public void beforeTestExecution(ExtensionContext context) {
-        refresh(isBeforeTest());
     }
 
     @Override
@@ -66,6 +60,7 @@ public final class NeptuneJUnit5Extension implements BeforeAllCallback, TestInst
     public void interceptBeforeAllMethod(InvocationInterceptor.Invocation<Void> invocation,
                                          ReflectiveInvocationContext<Method> invocationContext,
                                          ExtensionContext extensionContext) throws Throwable {
+        refresh(isBeforeAll());
         invokeHooksAndProceed(invocation, invocationContext, false);
     }
 
@@ -80,6 +75,7 @@ public final class NeptuneJUnit5Extension implements BeforeAllCallback, TestInst
     public void interceptBeforeEachMethod(InvocationInterceptor.Invocation<Void> invocation,
                                           ReflectiveInvocationContext<Method> invocationContext,
                                           ExtensionContext extensionContext) throws Throwable {
+        refresh(isBeforeEach());
         invokeHooksAndProceed(invocation, invocationContext, false);
     }
 
@@ -93,6 +89,7 @@ public final class NeptuneJUnit5Extension implements BeforeAllCallback, TestInst
     private <T> T interceptTest(Invocation<T> invocation,
                                 ReflectiveInvocationContext<Method> invocationContext,
                                 ExtensionContext extensionContext) throws Throwable {
+        refresh(isBeforeTest());
         var name = isNotBlank(extensionContext.getDisplayName()) ?
                 extensionContext.getDisplayName() :
                 invocationContext.getExecutable().getName();

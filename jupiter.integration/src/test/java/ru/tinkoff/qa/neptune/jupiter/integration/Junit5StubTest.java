@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import static java.lang.Thread.currentThread;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -14,22 +15,17 @@ public class Junit5StubTest extends BaseJunit5IntegrationTest {
 
     @BeforeAll
     public static void beforeAllStatic2() {
-        //does nothing
-    }
-
-    @Test
-    public static void staticTest() {
-        assertThat(true, is(true));
+        System.out.println("Static inheritor beforeAll in " + currentThread());
     }
 
     @BeforeAll
     public void beforeAllObject2() {
-        //does nothing
+        System.out.println("Object inheritor beforeAll in " + currentThread());
     }
 
     @BeforeEach
     public void beforeEach2() {
-        //does nothing
+        System.out.println("Object inheritor beforeEach in " + currentThread());
     }
 
     @Disabled

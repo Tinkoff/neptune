@@ -13,7 +13,7 @@ import static ru.tinkoff.qa.neptune.jupiter.integration.properties.RefreshEachTi
                 "It is possible to define multiple comma-separated value"},
         section = "JUnit properties")
 @PropertyName("JUNIT5_REFRESH_BEFORE")
-@PropertyDefaultValue("EACH_STARTING")
+@PropertyDefaultValue("TEST_STARTING")
 public final class Junit5RefreshStrategyProperty implements MultipleEnumPropertySuppler<RefreshEachTimeBefore> {
 
     public static final Junit5RefreshStrategyProperty REFRESH_STRATEGY_PROPERTY = new Junit5RefreshStrategyProperty();

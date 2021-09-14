@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 
+import static java.lang.Thread.currentThread;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 @TestInstance(PER_CLASS)
@@ -11,16 +12,16 @@ public class BaseJunit5IntegrationTest extends BaseJunit5Test {
 
     @BeforeAll
     public static void beforeAllStatic() {
-        //does nothing
+        System.out.println("Static base beforeAll in " + currentThread());
     }
 
     @BeforeAll
     public void beforeAllSObject() {
-        //does nothing
+        System.out.println("Object base beforeAll in " + currentThread());
     }
 
     @BeforeEach
     public void beforeEach() {
-        //does nothing
+        System.out.println("Object base beforeEach in " + currentThread());
     }
 }
