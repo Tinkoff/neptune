@@ -44,7 +44,7 @@ In case if you only need to add a test dependency:
 
 ```groovy
     dependencies {
-        testCompile group: 'ru.tinkoff.qa.neptune', name: 'core.api', version: LATEST_RELEASE_OR_BETA_VERSION    
+        testImplementation  group: 'ru.tinkoff.qa.neptune', name: 'core.api', version: LATEST_RELEASE_OR_BETA_VERSION    
     }
 ```
 

@@ -7,24 +7,15 @@ configurations {
 }
 
 dependencies {
-    compile group: 'org.objenesis', name: 'objenesis', version: '3.2'
-    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.13'
-    compile group: 'org.aspectj', name: 'aspectjrt', version: '1.9.6'
+    implementation group: 'org.objenesis', name: 'objenesis', version: '3.2'
+    implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.15'
+    api group: 'org.aspectj', name: 'aspectjrt', version: '1.9.6'
     agent group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.6'
 }
 
-task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives jar, javadocJar, sourcesJar
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 task generateBundle(type: JavaExec)  {
@@ -47,39 +38,40 @@ test {
     }
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: 'https://nexus-new.tcsbank.ru/repository/mvn-bigops-qa') {
-                authentication(userName: mavenDeployLogin, password: mavenDeployPassword)
-            }
-
-
-            pom.project {
-                packaging 'jar'
-                name 'core.api'
-                version version
-                url 'https://github.com/TinkoffCreditSystems/neptune'
-                developers {
-                    developer {
-                        name 'Sergey Tikhomirov'
-                        email 'tichomirovsergey@gmail.com'
-                        url 'https://github.com/TikhomirovSergey'
-                        id 'TikhomirovSergey'
-                    }
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'core.api'
+            from components.java
+            repositories {
+                maven {
+                    credentials(PasswordCredentials)
+                    url = 'https://nexus-new.tcsbank.ru/repository/mvn-bigops-qa'
                 }
+            }
+            pom {
+                packaging = 'jar'
+                name = 'core.api'
+                version = version
+                url = 'https://github.com/TinkoffCreditSystems/neptune'
                 licenses {
                     license {
-                        name 'Apache License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        distribution 'repo'
+                        name = 'Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution = 'repo'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'TikhomirovSergey'
+                        name = 'Sergey Tikhomirov'
+                        email = 'tichomirovsergey@gmail.com'
                     }
                 }
                 scm {
-                    url 'https://github.com/TinkoffCreditSystems/neptune'
-                    connection 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
-                    developerConnection 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
-                    tag 'HEAD'
+                    connection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
+                    url = 'https://github.com/TinkoffCreditSystems/neptune'
                 }
             }
         }
@@ -95,4 +87,5 @@ javadoc {
     options.addStringOption 'Xdoclint:none', '-quiet'
     options.memberLevel = JavadocMemberLevel.PROTECTED
     options.bottom = "Copyright &copy; 2021 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+    options.addBooleanOption('html5', true)
 }

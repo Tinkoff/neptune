@@ -17,7 +17,7 @@ This a bridge which connects [Neptune Integration with Testng](./../testng.integ
 
 ```groovy
     dependencies {
-        testCompile group: 'ru.tinkoff.qa.neptune', name: 'allure.testng.bridge', version: LATEST_RELEASE_OR_BETA_VERSION    
+        testImplementation  group: 'ru.tinkoff.qa.neptune', name: 'allure.testng.bridge', version: LATEST_RELEASE_OR_BETA_VERSION    
     }
 ```
 
