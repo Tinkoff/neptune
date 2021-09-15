@@ -25,4 +25,4 @@ Integration of Neptune with [Junit5](https://junit.org/junit5/docs/current/user-
 
 [Brief documentation in English](./doc/eng/README.MD)
 
-[API overview](https://tinkoffcreditsystems.github.io/neptune/testng.integration/index.html)
+[API overview](https://tinkoffcreditsystems.github.io/neptune/jupiter.integration/index.html)
