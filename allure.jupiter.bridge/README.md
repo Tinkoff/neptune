@@ -1,4 +1,4 @@
-This a bridge which connects [Neptune Integration with Junit5](./../jupiter.integration/doc) and [Neptune Integration with Allure Framework](./../allure.integration/doc) via [Allure JUnit5](https://docs.qameta.io/allure/#_junit_5).
+This a bridge which connects [Neptune Integration with Junit5](./../jupiter.integration/doc) and [Neptune Integration with Allure Framework](./../allure.integration/README.md) via [Allure JUnit5](https://docs.qameta.io/allure/#_junit_5).
 
 ## Maven
 
