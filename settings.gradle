@@ -11,4 +11,6 @@ include 'neptune.swagger.codegen'
 include 'rabbit.mq'
 include 'retrofit2'
 include 'kafka'
+include 'jupiter.integration'
+include 'allure.jupiter.bridge'
 

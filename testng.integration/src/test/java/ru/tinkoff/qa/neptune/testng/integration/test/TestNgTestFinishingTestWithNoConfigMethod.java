@@ -1,10 +1,13 @@
 package ru.tinkoff.qa.neptune.testng.integration.test;
 
 import org.testng.TestNG;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.testng.xml.XmlClass;
 import org.testng.xml.XmlSuite;
 import org.testng.xml.XmlTest;
+import ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,64 +45,29 @@ public class TestNgTestFinishingTestWithNoConfigMethod {
         testNG.run();
     }
 
-    @Test
-    public void whenNoRefreshingStrategyIsDefined() {
+    @DataProvider
+    public static Object[][] data() {
+        return new Object[][]{
+                {null, 3},
+                {of(SUITE_STARTING), 0},
+                {of(TEST_STARTING), 0},
+                {of(CLASS_STARTING), 0},
+                {of(BEFORE_METHOD_STARTING), 0},
+                {of(METHOD_STARTING), 3},
+                {asList(RefreshEachTimeBefore.values()), 3}
+
+        };
+    }
+
+    @Test(dataProvider = "data")
+    public void refreshTest(List<RefreshEachTimeBefore> strategies, int expected) {
+        REFRESH_STRATEGY_PROPERTY.accept(strategies);
         runBeforeTheChecking();
-        assertThat(ContextClass2.getRefreshCount(), is(3));
+        assertThat(ContextClass2.getRefreshCount(), is(expected));
     }
 
-    @Test
-    public void whenRefreshingStrategyIsBeforeSuite() {
-        REFRESH_STRATEGY_PROPERTY.accept(of(SUITE_STARTING));
-        try {
-            runBeforeTheChecking();
-            assertThat(ContextClass2.getRefreshCount(), is(0));
-        } finally {
-            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getName());
-        }
-    }
-
-    @Test
-    public void whenRefreshingStrategyIsBeforeTest() {
-        REFRESH_STRATEGY_PROPERTY.accept(of(TEST_STARTING));
-        try {
-            runBeforeTheChecking();
-            assertThat(ContextClass2.getRefreshCount(), is(0));
-        } finally {
-            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getName());
-        }
-    }
-
-    @Test
-    public void whenRefreshingStrategyIsBeforeClass() {
-        REFRESH_STRATEGY_PROPERTY.accept(of(CLASS_STARTING));
-        try {
-            runBeforeTheChecking();
-            assertThat(ContextClass2.getRefreshCount(), is(0));
-        } finally {
-            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getName());
-        }
-    }
-
-    @Test
-    public void whenRefreshingStrategyIsBeforeMethod() {
-        REFRESH_STRATEGY_PROPERTY.accept(of(BEFORE_METHOD_STARTING));
-        try {
-            runBeforeTheChecking();
-            assertThat(ContextClass2.getRefreshCount(), is(0));
-        } finally {
-            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getName());
-        }
-    }
-
-    @Test
-    public void whenRefreshingStrategyIsCombined() {
-        REFRESH_STRATEGY_PROPERTY.accept(asList(values()));
-        try {
-            runBeforeTheChecking();
-            assertThat(ContextClass2.getRefreshCount(), is(3));
-        } finally {
-            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getName());
-        }
+    @AfterMethod
+    public void afterRefreshTest() {
+        REFRESH_STRATEGY_PROPERTY.accept(null);
     }
 }

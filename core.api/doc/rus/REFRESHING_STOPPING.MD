@@ -34,7 +34,7 @@ public class MyTestContext extends Context<MyTestContext>
 Частота вызова такого обновления реализуются по-разному:
 
 - [TestNG](./../../../testng.integration/doc/rus/README.MD#Настройки)
-- _JUnit5 (будет описано после реализации)_ 
+- [JUnit5](./../../../jupiter.integration/doc/rus/README.MD#Настройки) 
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 

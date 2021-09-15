@@ -1,5 +1,5 @@
 ext {
-    globalVersion = '0.19.6-ALPHA'
+    globalVersion = '0.19.7-ALPHA'
 }
 
 subprojects {
@@ -29,7 +29,7 @@ subprojects {
         testNGVersion = '7.4.0'
         hamcrestVersion = '2.2'
         seleniumVersion = '3.141.59'
-        allureVersion = '2.14.0'
+        allureVersion = '2.15.0'
         jacksonVersion = '2.12.5'
         globalVersion = version
     }

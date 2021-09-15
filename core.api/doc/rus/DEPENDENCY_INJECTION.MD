@@ -38,6 +38,6 @@ public class MyDependencyInjector implements DependencyInjector {
 
 Данный механизм используют:
 - [TestNG](./../../../testng.integration/doc/rus/README.MD#Внедрение-зависимостей)
-- _JUnit5 (будет описано после реализации)_ 
+- [JUnit5](./../../../jupiter.integration/doc/rus/README.MD#Внедрение-зависимостей)
 
 [к списку документов](README.MD#Оглавление)

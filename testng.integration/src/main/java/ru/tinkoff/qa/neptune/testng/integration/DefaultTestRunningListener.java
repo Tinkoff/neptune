@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.testng.integration;
 
 import com.google.common.collect.Iterables;
-import io.github.classgraph.ClassGraph;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
 import org.testng.ITestResult;
@@ -9,7 +8,6 @@ import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.core.api.hooks.ExecutionHook;
-import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore;
 
 import java.lang.annotation.Annotation;
@@ -24,20 +22,13 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.testng.ITestResult.*;
+import static ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable.REFRESHABLE_CONTEXTS;
 import static ru.tinkoff.qa.neptune.core.api.hooks.ExecutionHook.getHooks;
 import static ru.tinkoff.qa.neptune.testng.integration.properties.TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
 
 public final class DefaultTestRunningListener implements IInvokedMethodListener {
 
     private final ThreadLocal<Method> previouslyRefreshed = new ThreadLocal<>();
-    private final List<Class<? extends Context>> REFRESHABLE_CONTEXTS = new ClassGraph()
-            .enableAllInfo()
-            .scan()
-            .getSubclasses(Context.class.getName())
-            .loadClasses(Context.class)
-            .stream()
-            .filter(ContextRefreshable.class::isAssignableFrom)
-            .collect(toList());
     private final List<ExecutionHook> hooks = getHooks();
 
     private static boolean isIgnored(Method method) {

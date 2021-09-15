@@ -1,12 +1,25 @@
 package ru.tinkoff.qa.neptune.core.api.cleaning;
 
+import io.github.classgraph.ClassGraph;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
+
+import java.util.List;
 
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 
 public interface ContextRefreshable {
+
+    List<Class<? extends Context>> REFRESHABLE_CONTEXTS = new ClassGraph()
+            .enableAllInfo()
+            .scan()
+            .getSubclasses(Context.class.getName())
+            .loadClasses(Context.class)
+            .stream()
+            .filter(ContextRefreshable.class::isAssignableFrom)
+            .collect(toList());
 
     /**
      * Performs the refreshing of a {@link Context} instance related to current thread.

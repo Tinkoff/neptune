@@ -1,10 +1,21 @@
 dependencies {
-    api project(":testng.integration")
-    api project(":allure.integration")
-    api (group: 'io.qameta.allure', name: 'allure-testng', version: allureVersion) {
-        exclude group: 'org.aspectj', module: 'aspectjrt'
-        exclude group: 'org.aspectj', module: 'aspectjweaver'
-        exclude group: 'org.testng', module: 'testng'
+    api project(':core.api')
+    api group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.8.0'
+    api group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.8.0'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.8.0'
+    testImplementation group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.8.0'
+    implementation group: 'org.junit.platform', name: 'junit-platform-suite-engine', version: '1.8.0'
+}
+
+task testJUnit(type: Test){
+    useJUnitPlatform {
+        includeTags 'Junit5'
+    }
+}
+
+task testTestNg(type: Test){
+    useTestNG {
+        suites 'src/test/resources/suite.xml'
     }
 }
 
@@ -16,7 +27,7 @@ java {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = 'allure.testng.bridge'
+            artifactId = 'jupiter.integration'
             from components.java
             repositories {
                 maven {
@@ -26,7 +37,7 @@ publishing {
             }
             pom {
                 packaging = 'jar'
-                name = 'allure.testng.bridge'
+                name = 'jupiter.integration'
                 version = version
                 url = 'https://github.com/TinkoffCreditSystems/neptune'
                 licenses {
@@ -51,4 +62,16 @@ publishing {
             }
         }
     }
+}
+
+javadoc {
+    destinationDir = file("${buildDir}/../../../neptune.documentation/javadocs/$project.name")
+
+    title = "Neptune JUnit5 Integration API. v$globalVersion"
+    options.author true
+    options.links 'http://download.oracle.com/javase/9/docs/api/'
+    options.addStringOption 'Xdoclint:none', '-quiet'
+    options.memberLevel = JavadocMemberLevel.PROTECTED
+    options.bottom = "Copyright &copy; 2021 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+    options.addBooleanOption('html5', true)
 }

@@ -1,6 +1,6 @@
-# Интеграция с TestNG
+# Интеграция с JUnit5
 
-Данный модуль предназначен для интеграции Neptune и [TestNG](https://testng.org/doc/)
+Данный модуль предназначен для интеграции Neptune и [JUnit5](https://junit.org/junit5/docs/current/user-guide/)
 
 ## Оглавление
 
@@ -10,13 +10,31 @@
 
 ## Пишем первый тест
 
-Класс, описывающий тест, должен наследоваться от `BaseTestNgTest`
+Класс, описывающий тест, должен наследоваться от `BaseJunit5Test`
 
 ```java
-import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.testng.integration.BaseTestNgTest;
+import org.junit.jupiter.api.Test;
+import ru.tinkoff.qa.neptune.jupiter.integration.BaseJunit5Test;
 
-public class MyTest extends BaseTestNgTest {
+public class MyTest extends BaseJunit5Test {
+    
+    @Test
+    public test() {
+      //some checks
+    }
+}
+```
+
+Так же можно просто использовать [механизм расширений](https://junit.org/junit5/docs/current/user-guide/#extensions)
+
+```java
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import ru.tinkoff.qa.neptune.jupiter.integration.BaseJunit5Test;
+import ru.tinkoff.qa.neptune.jupiter.integration.NeptuneJUnit5Extension;
+
+@ExtendWith(NeptuneJUnit5Extension.class)
+public class MyTest {
     
     @Test
     public test() {
@@ -36,156 +54,100 @@ public class MyTest extends BaseTestNgTest {
 свойств/переменных окружения в той среде, в которой запускаются тесты.
 
 Необходимо определиться, перед каким методами следует обновить контекст (перегрузить/перезапустить браузер, проверить соединение с базами данных, и если
-что-то отвалилось - создать новое, и т.п). Типы этих методов описываются перечислением `ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore`:
-- `SUITE_STARTING` перед методами, отмеченными `@BeforeSuite`
-- `TEST_STARTING` перед методами, отмеченными `@BeforeTest`
-- `CLASS_STARTING` перед методами, отмеченными `@BeforeClass`
-- `GROUP_STARTING` перед методами, отмеченными `@BeforeGroups`
-- `BEFORE_METHOD_STARTING` перед методами, отмеченными `@BeforeMethod`
-- `METHOD_STARTING` перед методами, отмеченными `@Test`
+что-то отвалилось - создать новое, и т.п). Типы этих методов описываются перечислением `ru.tinkoff.qa.neptune.jupiter.integration.properties.RefreshEachTimeBefore`:
+- `ALL_STARTING` перед методами, отмеченными `@BeforeAll`
+- `EACH_STARTING` перед методами, отмеченными `@BeforeEach`
+- `TEST_STARTING` перед методами, отмеченными `@Test`, `@TestFactory`, `@TestTemplate` или `@ParameterizedTest`
 
-Значение свойства/переменной окружения `TESTNG_REFRESH_BEFORE` должно быть равно одному из перечисленных выше элементов, или оно может включать в себя несколько 
+Значение свойства/переменной окружения `JUNIT5_REFRESH_BEFORE` должно быть равно одному из перечисленных выше элементов, или оно может включать в себя несколько 
 из перечисленных выше элементов (указывается как строка, в которой элементы разделены запятыми). Свойство и его значение должны быть указаны в `neptune.global.properties` 
 или в `neptune.properties`, или как свойство/переменная окружения и его значение в той среде, в которой запускаются тесты.
 
 ```properties
 # обновление происходит перед первым в очереди вызова (до ближайшего @Test-метода) методом
 # с аннотацией @BeforeClass
-TESTNG_REFRESH_BEFORE=CLASS_STARTING
+JUNIT5_REFRESH_BEFORE=ALL_STARTING
 ```
 
 ```properties
-# обновление происходит перед первым в очереди вызова (до ближайшего @Test-метода) методом
-# с аннотацией @BeforeClass или @BeforeMethod. Если перед @Test-методом методы с указанными аннотациями
+# обновление происходит перед первым в очереди вызова (до ближайшего тест-метода) методом
+# с аннотацией @BeforeAll или @BeforeEach. Если перед тест-методом методы с указанными аннотациями
 # не вызывались, то обновление произойдет непосредственно перед началом самого теста. 
 # Данный цикл будет выполняться для всех тестов в рамках класса.
-TESTNG_REFRESH_BEFORE=CLASS_STARTING,BEFORE_METHOD_STARTING,METHOD_STARTING
+JUNIT5_REFRESH_BEFORE=ALL_STARTING,EACH_STARTING,TEST_STARTING
 ```
 
-При этом учитывается иерархия методов TestNG. Порядок приведен ниже:
+При этом учитывается иерархия методов JUnit5. Порядок приведен ниже:
 
-1. `@BeforeSuite`
+1. `@BeforeAll`
 
-2. `@BeforeTest`
+2. `@BeforeEach`
 
-3. `@BeforeClass`
-
-4. `@BeforeGroups`
-
-5. `@BeforeMethod`
-
-6. `@Test`
+3. `@Test` / `@TestFactory` / `@TestTemplate` / `@ParameterizedTest`
 
 Предположим, мы имеем настройку
 ```properties
-TESTNG_REFRESH_BEFORE=SUITE_STARTING,TEST_STARTING,CLASS_STARTING,GROUP_STARTING,BEFORE_METHOD_STARTING,METHOD_STARTING
+JUNIT5_REFRESH_BEFORE=ALL_STARTING,EACH_STARTING,TEST_STARTING
 ```
 
-Предположим, у нас xml suite из одного класса. 
-
-```xml
-<suite name="Some suite">
-
-    <test name="Some test">
-        <classes>
-            <class name="org.my.pack.TezztClazz"/>
-        </classes>
-    </test>
-</suite>
-```
-
+Предположим, у нас есть набор тестов, который включает в себя класс, описанный ниже.
 Рассмотрим, в какой момент будет происходить обновление контекстов на примере этого класса.
 
 ```java
 package org.my.pack;
 
-public class TezztClazz extends BaseTestNgTest {
-
-    @BeforeSuite //Обновление используемых контекстов произойдет здесь
-    public /*static*/ void beforeSuite() {
-       //что происходит перед стартом всего набора тестов "Some suite"
-    }
+public class TezztClazz extends BaseJunit5Test {
 
     //Обновление используемых контекстов могло бы произойти здесь
-    @BeforeSuite //если бы не было метода выше
-    public /*static*/ void beforeSuite2() {
-      //что происходит перед стартом всего набора тестов "Some suite"
-    }
-
-    //Обновление используемых контекстов могло бы произойти здесь
-    @BeforeTest //если бы не было методов выше
-    public /*static*/ void beforeTest() {
-       //что происходит перед стартом всего набора тестов "Some test"
-    }
-   
-    //Обновление используемых контекстов могло бы произойти здесь
-    @BeforeTest //если бы не было методов выше
-    public /*static*/ void beforeTest2() {
-      //что происходит перед стартом всего набора тестов "Some test"
-    }    
-
-    //Обновление используемых контекстов могло бы произойти здесь
-    @BeforeClass //если бы не было методов выше
+    @BeforeAll //если бы не было методов выше
     public /*static*/ void beforeClass() {
        //что происходит перед стартом всего набора тестов класса TezztClazz
     }
 
     //Обновление используемых контекстов могло бы произойти здесь
-    @BeforeClass //если бы не было методов выше
+    @BeforeAll //если бы не было методов выше
     public /*static*/ void beforeClass2() {
       //что происходит перед стартом всего набора тестов класса TezztClazz
-    } 
-
-    //Обновление используемых контекстов могло бы произойти здесь
-    @BeforeGroups("someGroup1")  //если бы не было методов выше
-    public /*static*/ void beforeGroups() {
-       //что происходит перед стартом группы 'someGroup1' тестовых методов
     }
-
-    //Обновление используемых контекстов могло бы произойти здесь
-    @BeforeGroups("someGroup2") //если бы не было методов выше (не считая beforeGroups). 
-    public /*static*/ void beforeGroups2() {
-      //что происходит перед стартом группы 'someGroup2' тестовых методов
-    } 
     
     //Обновление используемых контекстов могло бы произойти здесь
-    @BeforeMethod  //если бы не было методов выше
+    @BeforeEach  //если бы не было методов выше
     public /*static*/ void beforeMethod() {
        //что происходит перед стартом каждого тестового метода
     }
 
     //Обновление используемых контекстов могло бы произойти здесь
-    @BeforeMethod   //если бы не было методов выше
+    @BeforeEach   //если бы не было методов выше
     public /*static*/ void beforeMethod2() {
       //что происходит перед стартом каждого тестового метода
     }
 
     //Если бы выше не было @Before*-методов
     //используемые контексты обновились бы перед этим методом
-    @Test(groups = {"someGroup1", "someGroup2"})
+    @Test
     public void test1() {
     
     }
 
     //Если бы выше не было @Before*-методов
     //используемые контексты обновились бы перед этим методом
-    @Test(groups = "someGroup1")
+    @TestFactory
     public void test2() {
         
     }
 
     //Если бы выше не было @Before*-методов
     //используемые контексты обновились бы перед этим методом
-    @Test(groups = {"someGroup1", "someGroup2"})
+    @TestTemplate
     public void test3() {
     
     }
 
     //Если бы выше не было @Before*-методов
     //используемые контексты обновились бы перед этим методом
-    @Test(groups = "someGroup2")
+    @ParameterizedTest
     public void test4() {
-        
+
     }
 
     //и т.д.
@@ -196,22 +158,13 @@ public class TezztClazz extends BaseTestNgTest {
 
 - Если все наборы тестов (xml suites) выполняются в один поток, то достаточно
 ```properties
-TESTNG_REFRESH_BEFORE=SUITE_STARTING,TEST_STARTING,CLASS_STARTING,GROUP_STARTING
-# или один из вариантов, по условиям и обстоятельствам
+JUNIT5_REFRESH_BEFORE=ALL_STARTING
 ```
 
-- Если среди наборов тестов (xml suites) есть те, в которых используется много-поточность на уровне тестов, классов или тест-инстансов, то 
-можно добавить
+- Если среди наборов тестов (xml suites) есть те, в которых используется много-поточность, то можно добавить
 ```properties
-TESTNG_REFRESH_BEFORE=TEST_STARTING,CLASS_STARTING,GROUP_STARTING
+JUNIT5_REFRESH_BEFORE=EACH_STARTING,TEST_STARTING
 # или один из вариантов, по условиям и обстоятельствам
-```
-
-- Если среди наборов тестов (xml suites) есть те, в которых используется много-поточность на уровне выполняемых методов, то 
-можно добавить
-```properties
-TESTNG_REFRESH_BEFORE=BEFORE_METHOD_STARTING,METHOD_STARTING
-# или один из вариантов, по условиям и обстоятельствам 
 ```
 
 [к оглавлению документа](#Оглавление)
@@ -219,7 +172,6 @@ TESTNG_REFRESH_BEFORE=BEFORE_METHOD_STARTING,METHOD_STARTING
 
 ## Внедрение зависимостей
 
-  
 
 Для инициализации полей, принадлежащих тестовому классу, вполне допустимо использовать методы, отмеченные аннотациями `@Before*`. Но что если из 
 раза в раз приходится инициализировать схожий набор полей одним и тем же способом? Один из выходов - наследование тестовых классов друг от друга.
@@ -229,14 +181,14 @@ TESTNG_REFRESH_BEFORE=BEFORE_METHOD_STARTING,METHOD_STARTING
 
 Представим ситуацию
 ```java
-import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.testng.integration.BaseTestNgTest;
+import org.junit.jupiter.api.Test;
+import ru.tinkoff.qa.neptune.jupiter.integration.BaseJunit5Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
-public class DependencyInjectionTest extends BaseTestNgTest {
+public class DependencyInjectionTest extends BaseJunit5Test {
 
     private int a; //во всех тестах поле 'a' должно быть равно 1
     private int b;  //во всех тестах поле 'b' должно быть равно 2
@@ -284,7 +236,7 @@ public class TestDependencyInjector implements DependencyInjector {
 
 И ничего больше делать не надо. Запускаем тест и видим
 
-![результат работы внедрения зависимостей](./DebugPicture.JPG)
+![результат работы внедрения зависимостей](./DebugPicture.png)
 
 ### Стоит иметь в виду
 
@@ -297,5 +249,3 @@ public class TestDependencyInjector implements DependencyInjector {
 [Объявление полей типов-моделей API](./../../../retrofit2/doc/rus/CALL_RESULTS.MD#Объявление-полей-типов-моделей-API)
 
 [к оглавлению документа](#Оглавление)
-
-
