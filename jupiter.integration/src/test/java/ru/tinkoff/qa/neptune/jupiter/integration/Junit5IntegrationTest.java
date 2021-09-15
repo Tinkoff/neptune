@@ -9,40 +9,46 @@ import ru.tinkoff.qa.neptune.jupiter.integration.properties.RefreshEachTimeBefor
 
 import java.util.List;
 
-import static java.util.Arrays.asList;
-import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 import static ru.tinkoff.qa.neptune.core.api.concurrency.ObjectContainer.getAllObjects;
 import static ru.tinkoff.qa.neptune.jupiter.integration.properties.Junit5RefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
-import static ru.tinkoff.qa.neptune.jupiter.integration.properties.RefreshEachTimeBefore.*;
 
-public class Junit5TestFinishingTest {
+public abstract class Junit5IntegrationTest {
 
-    @DataProvider
-    public static Object[][] data() {
-        return new Object[][]{
-                {null, 8},
-                {of(ALL_STARTING), 2},
-                {of(EACH_STARTING), 8},
-                {of(TEST_STARTING), 8},
-                {asList(RefreshEachTimeBefore.values()), 9}
+    private final Class<? extends BaseJunit5IntegrationTest> toRun;
+    private final Object[][] expectedRefreshInvocations;
+    private final int expectedContextCount;
+    private final int expectedHookInvocations;
 
-        };
+    public Junit5IntegrationTest(Class<? extends BaseJunit5IntegrationTest> toRun,
+                                 Object[][] expectedRefreshInvocations,
+                                 int expectedContextCount,
+                                 int expectedHookInvocations) {
+        this.toRun = toRun;
+        this.expectedRefreshInvocations = expectedRefreshInvocations;
+        this.expectedContextCount = expectedContextCount;
+
+        this.expectedHookInvocations = expectedHookInvocations;
     }
 
     private void runBeforeTheChecking() {
         ContextClass2.refreshCountToZero();
         var request = LauncherDiscoveryRequestBuilder.request()
-                .selectors(selectClass(Junit5Suite.class))
+                .selectors(selectClass(toRun))
                 .configurationParameter("junit.jupiter.execution.parallel.enabled", "true")
                 .configurationParameter("junit.jupiter.execution.parallel.mode.default", "same_thread")
                 .build();
         var launcher = LauncherFactory.create();
         launcher.discover(request);
         launcher.execute(request);
+    }
+
+    @DataProvider
+    public Object[][] data() {
+        return expectedRefreshInvocations;
     }
 
     @Test(dataProvider = "data", groups = "refresh")
@@ -58,16 +64,15 @@ public class Junit5TestFinishingTest {
     }
 
     @Test
-    public void instanceCountTest() {
-        runBeforeTheChecking();
-        assertThat(getAllObjects(ContextClass2.class, objectContainer -> true), hasSize(7));
-        assertThat(getAllObjects(ContextClass1.class, objectContainer -> true), hasSize(7));
-    }
-
-    @Test
     public void hookTest() {
         TestHook.count = 0;
         runBeforeTheChecking();
-        assertThat(TestHook.count, is(24));
+        assertThat(TestHook.count, is(expectedHookInvocations));
+    }
+
+    @Test(dependsOnMethods = {"refreshTest", "hookTest"})
+    public void instanceCountTest() {
+        assertThat(getAllObjects(ContextClass2.class, objectContainer -> true), hasSize(expectedContextCount));
+        assertThat(getAllObjects(ContextClass1.class, objectContainer -> true), hasSize(expectedContextCount));
     }
 }

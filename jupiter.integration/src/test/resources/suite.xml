@@ -1,0 +1,16 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="Integration test suite">
+
+    <test name="Test of instantiation and invocation">
+        <classes>
+            <class name="ru.tinkoff.qa.neptune.jupiter.integration.OneThreadIntegrationTest"/>
+            <class name="ru.tinkoff.qa.neptune.jupiter.integration.MultiThreadIntegrationTest"/>
+        </classes>
+    </test>
+
+    <test name="Test of instantiation and invocation when no fixture methods">
+        <classes>
+            <class name="ru.tinkoff.qa.neptune.jupiter.integration.Junit5TestFinishingTestWithNoFixtureMethod"/>
+        </classes>
+    </test>
+</suite>

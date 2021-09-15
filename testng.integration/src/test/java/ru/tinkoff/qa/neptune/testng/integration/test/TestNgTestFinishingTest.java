@@ -78,9 +78,8 @@ public class TestNgTestFinishingTest {
         REFRESH_STRATEGY_PROPERTY.accept(null);
     }
 
-    @Test
+    @Test(dependsOnMethods = {"refreshTest", "hookTest"})
     public void instanceCountTest() {
-        runBeforeTheChecking();
         assertThat(getAllObjects(ContextClass2.class, objectContainer -> true), hasSize(6));
         assertThat(getAllObjects(ContextClass1.class, objectContainer -> true), hasSize(6));
     }
