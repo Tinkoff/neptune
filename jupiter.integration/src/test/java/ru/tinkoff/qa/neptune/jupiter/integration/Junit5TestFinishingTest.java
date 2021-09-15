@@ -37,6 +37,8 @@ public class Junit5TestFinishingTest {
         ContextClass2.refreshCountToZero();
         var request = LauncherDiscoveryRequestBuilder.request()
                 .selectors(selectClass(Junit5Suite.class))
+                .configurationParameter("junit.jupiter.execution.parallel.enabled", "true")
+                .configurationParameter("junit.jupiter.execution.parallel.mode.default", "same_thread")
                 .build();
         var launcher = LauncherFactory.create();
         launcher.discover(request);
