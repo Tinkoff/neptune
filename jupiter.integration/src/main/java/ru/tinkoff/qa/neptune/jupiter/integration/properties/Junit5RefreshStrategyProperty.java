@@ -11,7 +11,7 @@ import static ru.tinkoff.qa.neptune.jupiter.integration.properties.RefreshEachTi
         "e.g. back to the base browser page, renew db/http connections etc.",
         "Available values: ALL_STARTING, EACH_STARTING, TEST_STARTING" +
                 "It is possible to define multiple comma-separated value"},
-        section = "JUnit properties")
+        section = "JUnit5 properties")
 @PropertyName("JUNIT5_REFRESH_BEFORE")
 @PropertyDefaultValue("TEST_STARTING")
 public final class Junit5RefreshStrategyProperty implements MultipleEnumPropertySuppler<RefreshEachTimeBefore> {
