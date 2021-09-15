@@ -99,6 +99,8 @@ ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.header
 ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.path
 ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query
 ru.tinkoff.qa.neptune.http.api.service.mapping.dependency.injection
+ru.tinkoff.qa.neptune.jupiter.integration
+ru.tinkoff.qa.neptune.jupiter.integration.properties
 ru.tinkoff.qa.neptune.kafka
 ru.tinkoff.qa.neptune.kafka.captors
 ru.tinkoff.qa.neptune.kafka.functions.poll
