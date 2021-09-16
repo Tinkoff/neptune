@@ -11,8 +11,7 @@
 Интеграции в фреймворками для запуска тестов, которые поддерживаю хуки:
 
 - [Testng](./../../../testng.integration/doc/rus/README.MD)
-- JUnit5. [Интеграция с JUnit 5 не реализована, задача на реализацию](https://github.com/TinkoffCreditSystems/neptune/issues/31)
-- Cucumber JVM. [Интеграция с Cucumber JVM не реализована, задача на реализацию](https://github.com/TinkoffCreditSystems/neptune/issues/32)
+- [JUnit5](./../../../jupiter.integration/doc/rus/README.MD)
 
 Как правило, приложения имеют множество форм. Чтобы на них попасть, надо выполнять навигацию по страницам, менять
 активное окно/вкладку браузера, переключаться в различные фреймы. Ниже, на примерах, разобраны задачи управления

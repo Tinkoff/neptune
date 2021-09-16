@@ -1300,8 +1300,11 @@ DEFAULT_LOCALIZATION_ENGINE=
 
 - [Neptune. Http](./../../../http.api/doc/rus/SETTINGS.MD)
 - [Neptune. Selenium WebDriver](./../../../selenium/doc/rus/SETTINGS.MD)
+- [Neptune. Kafka](./../../../kafka/doc/rus/SETTINGS.MD)
+- [Neptune. RabbitMQ](./../../../rabbit.mq/doc/rus/SETTINGS.MD)
+- [Neptune. Retrofit 2.0](./../../../retrofit2/doc/rus/SETTINGS.MD)
 - [Neptune. TestNG](./../../../testng.integration/doc/rus/README.MD#Настройки)
-- JUnit5 (будут предоставлены после реализации*)
+- [JUnit5](./../../../jupiter.integration/doc/rus/README.MD#Настройки)
 
 ### Освобождение ресурсов
 

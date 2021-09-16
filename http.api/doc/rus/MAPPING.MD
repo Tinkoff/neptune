@@ -1332,8 +1332,7 @@ public class MyTest {
 зависимостей:
 
 - [Testng](./../../../testng.integration/doc/rus/README.MD)  
-- JUnit5. [Интеграция с JUnit 5 не реализована, задача на реализацию](https://github.com/TinkoffCreditSystems/neptune/issues/31)
-- Cucumber JVM. [Интеграция с Cucumber JVM не реализована, задача на реализацию](https://github.com/TinkoffCreditSystems/neptune/issues/32)
+- [JUnit5](./../../../jupiter.integration/doc/rus/README.MD)
 
 Интеграция Neptune и нативного http-клиента Java имеет свой механизм внедрения зависимостей, позволяющий
 инициализировать объекты классов, моделирующих http API тестируемых приложений.

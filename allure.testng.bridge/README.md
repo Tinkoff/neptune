@@ -1,4 +1,4 @@
-This a bridge which connects [Neptune Integration with Testng](./../testng.integration/doc) and [Neptune Integration with Allure Framework](./../allure.integration/doc) via [Allure TestNG](https://docs.qameta.io/allure/#_testng).
+This a bridge which connects [Neptune Integration with Testng](./../testng.integration/README.md) and [Neptune Integration with Allure Framework](./../allure.integration/README.md) via [Allure TestNG](https://docs.qameta.io/allure/#_testng).
 
 ## Maven
 
