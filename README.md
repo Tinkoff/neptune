@@ -39,7 +39,7 @@ Test automation framework for automation of E2E/system/integrating testing.
 
 It is under the ALPHA testing by developers/QA engineers of [Tinkoff.ru](https://www.tinkoff.ru/software/) for a while. Built jar are not available outside. For now source code and documentation is available for overview.
 
-Module documentatation:
+Module documentation:
 
 - [Core module](core.api/README.md)
 - [Integration of Neptune with Hamcrest matchers](check/README.md)
@@ -50,7 +50,7 @@ Module documentatation:
 - [Integration of Neptune with Kafka](kafka/README.md)
 - [Integration of Neptune with Swagger 3.x](neptune.swagger.codegen/README.md)
 - [Integration of Neptune with Selenium WebDriver API](selenium/README.md)
-- Integration of Neptune with ORMs is under construction yet
+- [Neptune Database abstractions](database.abstractions/README.md)
 
 
 For test runners:
@@ -65,6 +65,6 @@ For test runners:
 
 [Change list](https://github.com/TinkoffCreditSystems/neptune/releases)
 
-Owners: [@TikhomirovSergey](https://github.com/ArisAgnew), [@ArisAgnew](https://github.com/ArisAgnew), [@AndrewCharykov](https://github.com/AndrewCharykov), [@Burnouttt](https://github.com/Burnouttt)
+Owners: [@TikhomirovSergey](https://github.com/TikhomirovSergey), [@ArisAgnew](https://github.com/ArisAgnew), [@AndrewCharykov](https://github.com/AndrewCharykov), [@Burnouttt](https://github.com/Burnouttt)
 
 First public BETA-versions are coming soon
