@@ -28,12 +28,6 @@ task generateBundle(type: JavaExec)  {
             "database.abstractions"
 }
 
-compileTestJava {
-    doLast {
-        enhanceJdoEntities.exec()
-    }
-}
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -82,7 +76,7 @@ java {
 javadoc {
     destinationDir = file("${buildDir}/../../../neptune.documentation/javadocs/$project.name")
 
-    title = "Neptune Database Abstractions. v$globalVersion"
+    title = "Neptune Database Abstractions v$globalVersion"
     options.author true
     options.links 'https://download.oracle.com/javase/9/docs/api/'
     options.addStringOption 'Xdoclint:none', '-quiet'
