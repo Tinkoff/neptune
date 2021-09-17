@@ -46,7 +46,7 @@ public final class UpdateAction<T> {
         return description;
     }
 
-    void performUpdate(List<T> toUpdate) {
+    public void performUpdate(List<T> toUpdate) {
         ofNullable(toUpdate).ifPresent(ts -> ts.forEach(updateAction));
     }
 }

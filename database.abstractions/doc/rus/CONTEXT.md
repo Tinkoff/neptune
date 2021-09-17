@@ -1,8 +1,7 @@
 # Абстрактный контекст
 
 Класс AbstractDatabaseStepContext содержит абстрактные базовые методы для осуществления
-CRUD-запросов в СУБД, а также вспомогательные методы для проверки наличия или отсутствия 
-объекта/записи/документа в базе данных.
+CRUD-запросов в СУБД.
 
 ```java
 public class HibernateDatabaseContext extends AbstractDatabaseStepContext<HibernateDatabaseContext> {
@@ -13,22 +12,22 @@ public class HibernateDatabaseContext extends AbstractDatabaseStepContext<Hibern
     }
 
     @Override
-    protected <R, Q extends SequentialGetStepSupplier<HibernateDatabaseContext, Q, ?, ?, ?> & InsertQuery<R>> R insert(Q query) {
+    protected <R, Q extends SequentialGetStepSupplier<HibernateDatabaseContext, R, ?, ?, ?> & InsertQuery<R>> R insert(Q query) {
         // реализация Create-запроса
     }
 
     @Override
-    protected <R, Q extends SequentialGetStepSupplier<HibernateDatabaseContext, Q, ?, ?, ?> & SelectQuery<R>> R select(Q query) {
+    protected <R, Q extends SequentialGetStepSupplier<HibernateDatabaseContext, R, ?, ?, ?> & SelectQuery<R>> R select(Q query) {
         // реализация Read-запроса
     }
 
     @Override
-    protected <R, Q extends SequentialGetStepSupplier<HibernateDatabaseContext, Q, ?, ?, ?> & SelectQuery<R>> R update(Q query, UpdateAction<R>... actions) {
+    protected <R, Q extends SequentialGetStepSupplier<HibernateDatabaseContext, R, ?, ?, ?> & SelectQuery<R>> R update(Q query, UpdateAction<R>... actions) {
         // реализация Update-запроса
     }
 
     @Override
-    protected <R, Q extends SequentialGetStepSupplier<HibernateDatabaseContext, Q, ?, ?, ?> & SelectQuery<R>> R delete(Q query) {
+    protected <R, Q extends SequentialGetStepSupplier<HibernateDatabaseContext, R, ?, ?, ?> & SelectQuery<R>> R delete(Q query) {
         // реализация Delete-запроса
     }
 }
