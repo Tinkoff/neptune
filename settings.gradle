@@ -13,4 +13,4 @@ include 'retrofit2'
 include 'kafka'
 include 'jupiter.integration'
 include 'allure.jupiter.bridge'
-
+include 'database.abstractions'
