@@ -11,7 +11,8 @@ dependencies {
     inpath(project(":core.api")) {
         transitive = false
     }
-    api group: 'org.springframework', name: 'spring-test', version: '5.3.9'
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.5.4'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: '2.5.4'
 }
 
 test {
