@@ -11,8 +11,8 @@ dependencies {
     inpath(project(":core.api")) {
         transitive = false
     }
-    api group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.5.4'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: '2.5.4'
+    api (group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.5.4')
+    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
 }
 
 test {
@@ -27,7 +27,7 @@ java {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = 'spring.test'
+            artifactId = 'spring.mock.mvc'
             from components.java
             repositories {
                 maven {
@@ -37,7 +37,7 @@ publishing {
             }
             pom {
                 packaging = 'jar'
-                name = 'spring.test'
+                name = 'spring.mock.mvc'
                 version = version
                 url = 'https://github.com/TinkoffCreditSystems/neptune'
                 licenses {
@@ -67,7 +67,7 @@ publishing {
 javadoc {
     destinationDir = file("${buildDir}/../../../neptune.documentation/javadocs/$project.name")
 
-    title = "Neptune Spring Test Integration API. v$globalVersion"
+    title = "Neptune Spring Mock MVC Integration API. v$globalVersion"
     options.author true
     options.links 'http://download.oracle.com/javase/9/docs/api/'
     options.addStringOption 'Xdoclint:none', '-quiet'
