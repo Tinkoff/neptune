@@ -8,6 +8,7 @@ import java.util.*;
 import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.core.api.localization.LocalizationBundlePartition.getKnownPartitions;
 import static ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator.getKey;
+import static ru.tinkoff.qa.neptune.core.api.localization.TemplateParameter.buildTextByTemplate;
 
 public class LocalizationByResourceBundle implements StepLocalization {
 
@@ -31,25 +32,25 @@ public class LocalizationByResourceBundle implements StepLocalization {
     }
 
     @Override
-    public <T> String classTranslation(Class<T> clz, String description, Map<String, String> descriptionTemplateParams, Locale locale) {
+    public <T> String classTranslation(Class<T> clz, String description, List<TemplateParameter> descriptionTemplateParams, Locale locale) {
         var value = getFromResourceBundles(locale, getKey(clz));
 
         if (value == null) {
-            return StepLocalization.buildTextByTemplate(description, descriptionTemplateParams);
+            return buildTextByTemplate(description, descriptionTemplateParams);
         }
 
-        return StepLocalization.buildTextByTemplate(value, descriptionTemplateParams);
+        return buildTextByTemplate(value, descriptionTemplateParams);
     }
 
     @Override
-    public String methodTranslation(Method method, String description, Map<String, String> descriptionTemplateParams, Locale locale) {
+    public String methodTranslation(Method method, String description, List<TemplateParameter> descriptionTemplateParams, Locale locale) {
         var value = getFromResourceBundles(locale, getKey(method));
 
         if (value == null) {
-            return StepLocalization.buildTextByTemplate(description, descriptionTemplateParams);
+            return buildTextByTemplate(description, descriptionTemplateParams);
         }
 
-        return StepLocalization.buildTextByTemplate(value, descriptionTemplateParams);
+        return buildTextByTemplate(value, descriptionTemplateParams);
     }
 
     @Override
