@@ -4,7 +4,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.nonNull;
 
@@ -84,7 +83,6 @@ public class MockMvcContext extends Context<MockMvcContext> {
     }
 
     void setDefault(MockMvc defaultMockMvc) {
-        checkNotNull(defaultMockMvc);
         this.defaultMockMvc = defaultMockMvc;
     }
 

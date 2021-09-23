@@ -117,9 +117,8 @@ public class ResourceBundleGenerator {
                             !cls.equals(MatchedObjectsBundleFilter.class) &&
                             !cls.equals(ParameterPojoBundleFilter.class) &&
                             !cls.equals(OtherObjectsBundleFilter.class) &&
-                            ofNullable(cls.getAnnotation(BindToPartition.class))
-                                    .map(b -> b.value().equalsIgnoreCase(partition.getName()))
-                                    .orElse(false))
+                            stream(cls.getAnnotationsByType(BindToPartition.class))
+                                    .anyMatch(a -> a.value().equalsIgnoreCase(partition.getName())))
                     .forEach(cls -> {
                         try {
                             var c = cls.getConstructor();

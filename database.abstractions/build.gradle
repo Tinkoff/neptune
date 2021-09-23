@@ -13,21 +13,6 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-processResources {
-    doLast {
-        generateBundle.exec()
-    }
-}
-
-task generateBundle(type: JavaExec)  {
-    classpath sourceSets.main.runtimeClasspath
-    main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
-    args "ru_RU",
-            "$projectDir/src/main/resources",
-            "false",
-            "database.abstractions"
-}
-
 publishing {
     publications {
         mavenJava(MavenPublication) {

@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 import static java.lang.reflect.Modifier.isAbstract;
+import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator.getResourceInputStream;
@@ -23,14 +24,14 @@ public abstract class LocalizationBundlePartition {
     private final String name;
     private final String defaultBundleName;
     private final String customBundleName;
-    private final String packageName;
+    private final List<String> packageName;
     private Properties defaultBundle;
     private Properties customBundle;
     private boolean isRead;
 
-    protected LocalizationBundlePartition(String name, String packageName) {
+    protected LocalizationBundlePartition(String name, String... packageName) {
         this.name = name;
-        this.packageName = packageName;
+        this.packageName = asList(packageName);
         this.defaultBundleName = "neptune_Localization" + "_" + name;
         customBundleName = this.defaultBundleName + "_CUSTOM";
     }
@@ -98,7 +99,7 @@ public abstract class LocalizationBundlePartition {
     /**
      * @return name of a root package of a module
      */
-    public final String getPackageName() {
+    public final List<String> getPackageNames() {
         return packageName;
     }
 

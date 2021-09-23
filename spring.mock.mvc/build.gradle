@@ -12,7 +12,8 @@ dependencies {
         transitive = false
     }
     api (group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.5.4')
-    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+    implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+    implementation group: 'org.springframework', name: 'spring-webmvc', version: '5.3.10'
 }
 
 test {
@@ -22,6 +23,31 @@ test {
 java {
     withJavadocJar()
     withSourcesJar()
+}
+
+task generateDefaultBundle(type: JavaExec)  {
+    classpath sourceSets.main.runtimeClasspath
+    main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
+    args Locale.US.toString(),
+            "$projectDir/src/main/resources",
+            "false",
+            "spring.result.matchers"
+}
+
+task generateBundle(type: JavaExec)  {
+    dependsOn generateDefaultBundle
+    classpath sourceSets.main.runtimeClasspath
+    main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
+    args "ru_RU",
+            "$projectDir/src/main/resources",
+            "false",
+            "spring.mock.mvc"
+}
+
+processResources {
+    doLast {
+        generateBundle.exec()
+    }
 }
 
 publishing {

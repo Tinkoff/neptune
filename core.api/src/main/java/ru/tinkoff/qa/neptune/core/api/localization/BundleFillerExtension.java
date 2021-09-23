@@ -12,12 +12,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 import static java.lang.String.valueOf;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator.cutPartOfPath;
 import static ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator.getKey;
 
@@ -123,8 +124,10 @@ public abstract class BundleFillerExtension {
                 var key = getKey(annotatedElement);
                 var value = ofNullable(properties)
                         .map(p -> p.get(key))
-                        .orElse(annotation.value());
-                newLine(annotation.value(), key, value);
+                        .orElseGet(() -> ofNullable(annotation).map(Description::value).orElse(null));
+
+                value = ofNullable(value).orElse(EMPTY);
+                newLine(ofNullable(annotation).map(Description::value).orElse(EMPTY), key, value);
                 return;
             }
 
@@ -151,8 +154,8 @@ public abstract class BundleFillerExtension {
         private void newLine(String originalText, String key, Object value) throws IOException {
             output.newLine();
 
-            var textLines = originalText.lines().collect(Collectors.toList());
-            if (textLines.size() == 1) {
+            var textLines = originalText.lines().collect(toList());
+            if (textLines.size() == 1 || isBlank(originalText)) {
                 output.write("#Original text = " + originalText);
             } else {
                 output.write("#Original text = " + textLines.get(0));
@@ -162,13 +165,14 @@ public abstract class BundleFillerExtension {
                 }
             }
 
-            var valueLines = valueOf(value).lines().collect(Collectors.toList());
+            var stringVal = valueOf(value);
+            var valueLines = stringVal.lines().collect(toList());
             output.newLine();
 
-            if (valueLines.size() == 1) {
-                output.write(key + " = " + value);
+            if (valueLines.size() == 1 || isBlank(stringVal)) {
+                output.write(key + "=" + value);
             } else {
-                output.write(key + " = " + valueLines.get(0) + "\\r\\n\\");
+                output.write(key + "=" + valueLines.get(0) + "\\r\\n\\");
                 for (int i = 1; i < valueLines.size(); i++) {
                     output.newLine();
                     if (i < valueLines.size() - 1) {

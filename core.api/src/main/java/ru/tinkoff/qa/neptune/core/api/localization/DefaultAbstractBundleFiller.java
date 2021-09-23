@@ -19,7 +19,10 @@ import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.Def
 abstract class DefaultAbstractBundleFiller extends BundleFillerExtension {
 
     protected DefaultAbstractBundleFiller(LocalizationBundlePartition p, List<? extends Class<?>> toAdd, String sectionName) {
-        super(toAdd.stream().filter(c -> c.getPackageName().contains(p.getPackageName())).collect(toList()), sectionName);
+        super(toAdd.stream().filter(c -> p.getPackageNames()
+                        .stream()
+                        .anyMatch(s -> c.getPackageName().contains(s)))
+                .collect(toList()), sectionName);
     }
 
     @Override
