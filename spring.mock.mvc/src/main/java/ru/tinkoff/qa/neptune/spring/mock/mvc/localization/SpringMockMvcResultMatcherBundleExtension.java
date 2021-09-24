@@ -66,7 +66,7 @@ public final class SpringMockMvcResultMatcherBundleExtension extends BundleFille
         return stream(clazz.getDeclaredMethods())
                 .filter(m -> isPublic(m.getModifiers()) &&
                         (Objects.equals(m.getReturnType(), ResultMatcher.class) || CLASSES.contains(m.getReturnType())))
-                .sorted(comparing(Method::getName))
+                .sorted(comparing(Method::toString))
                 .collect(toList());
     }
 }
