@@ -19,7 +19,7 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.DeserializeBody.deserializeB
  *
  * @param <T> is a type of item of resulted array
  */
-@SequentialGetStepSupplier.DefineCriteriaParameterName("Result criteria")
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted array")
 public final class GetArrayFromResponse<T> extends SequentialGetStepSupplier
         .GetArrayChainedStepSupplier<MockMvcContext, T, MockHttpServletResponse, GetArrayFromResponse<T>> {
 

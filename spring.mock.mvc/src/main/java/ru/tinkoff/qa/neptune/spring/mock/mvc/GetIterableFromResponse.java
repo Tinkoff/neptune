@@ -19,7 +19,7 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.DeserializeBody.deserializeB
  *
  * @param <T> is a type of iterable to get
  */
-@SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria for every item of resulted iterable")
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted iterable")
 public final class GetIterableFromResponse<R, T extends Iterable<R>> extends SequentialGetStepSupplier
         .GetIterableChainedStepSupplier<MockMvcContext, T, MockHttpServletResponse, R, GetIterableFromResponse<R, T>> {
 

@@ -21,15 +21,10 @@ import static java.util.stream.Collectors.toList;
 @BindToPartition("spring.mock.mvc")
 public final class SpringMockMvcResultMatcherBundleExtension extends BundleFillerExtension {
 
-    private final List<Class<?>> classes;
-
-    private SpringMockMvcResultMatcherBundleExtension(List<Class<?>> classes) {
-        super(classes, "SPRING RESULT MATCHERS");
-        this.classes = classes;
-    }
+    private final static List<Class<?>> CLASSES = prepareClasses();
 
     public SpringMockMvcResultMatcherBundleExtension() {
-        this(prepareClasses());
+        super(CLASSES, "SPRING RESULT MATCHERS");
     }
 
     private static List<Class<?>> prepareClasses() {
@@ -57,6 +52,10 @@ public final class SpringMockMvcResultMatcherBundleExtension extends BundleFille
                 .anyMatch(m1 -> isPublic(m1.getModifiers()) && Objects.equals(m1.getReturnType(), ResultMatcher.class));
     }
 
+    public static List<Class<?>> getFactoryClasses() {
+        return CLASSES;
+    }
+
     @Override
     protected List<AnnotatedElement> addFields(Class<?> clazz) {
         return of();
@@ -66,7 +65,7 @@ public final class SpringMockMvcResultMatcherBundleExtension extends BundleFille
     protected List<Method> addMethods(Class<?> clazz) {
         return stream(clazz.getDeclaredMethods())
                 .filter(m -> isPublic(m.getModifiers()) &&
-                        (Objects.equals(m.getReturnType(), ResultMatcher.class) || classes.contains(m.getReturnType())))
+                        (Objects.equals(m.getReturnType(), ResultMatcher.class) || CLASSES.contains(m.getReturnType())))
                 .sorted(comparing(Method::getName))
                 .collect(toList());
     }

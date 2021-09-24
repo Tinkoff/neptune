@@ -926,37 +926,37 @@ public interface StepLocalization {
    * Makes translation by usage of a class.
    *
    * @param clz                       is a class whose metadata may be used for auxiliary purposes
-   * @param description               is a description of a step. It is fully completed by value taken
+   * @param description               is a description of a step. It is commonly completed by value taken
    *                                  from {@link Description} of a class and by values which are taken from
    *                                  fields annotated by {@link DescriptionFragment}
-   * @param descriptionTemplateParams is a map of parameters and their values. These parameters are taken from
+   * @param descriptionTemplateParams is a list of parameters and their values. These parameters are taken from
    *                                  fields annotated by {@link DescriptionFragment}. This parameter is included
-   *                                  because the map is possible to be re-used for some reasons.
+   *                                  because the list is possible to be re-used for some reasons.
    * @param locale                    is a used locale
-   * @param <T>                       is a type of a class
+   * @param <T>                       is a type of class
    * @return translated text
    */
   <T> String classTranslation(Class<T> clz,
                               String description,
-                              Map<String, String> descriptionTemplateParams,
+                              List<TemplateParameter> descriptionTemplateParams,
                               Locale locale);
 
   /**
    * Makes translation by usage of a method.
    *
    * @param method                    is a method whose metadata may be used for auxiliary purposes
-   * @param description               is a description of a step. It is fully completed by value taken
+   * @param description               is a description of a step. It is commonly completed by value taken
    *                                  from {@link Description} of a method and by values which are taken from
    *                                  method parameters annotated by {@link DescriptionFragment}
-   * @param descriptionTemplateParams is a map of parameters and their values. These parameters are taken from
+   * @param descriptionTemplateParams is a list of parameters and their values. These parameters are taken from
    *                                  method parameters annotated by {@link DescriptionFragment}.This parameter is included
-   *                                  because the map is possible to be re-used for some reasons.
+   *                                  because the list is possible to be re-used for some reasons.
    * @param locale                    is a used locale
    * @return translated text
    */
   String methodTranslation(Method method,
                            String description,
-                           Map<String, String> descriptionTemplateParams,
+                           List<TemplateParameter> descriptionTemplateParams,
                            Locale locale);
 
   /**
@@ -965,7 +965,7 @@ public interface StepLocalization {
    * @param member      is an annotated element whose metadata may be used for auxiliary purposes
    * @param description is a description taken from the member
    * @param locale      is a used locale
-   * @param <T>         is a type of a member
+   * @param <T>         is a type of member
    * @return translated text
    */
   <T extends AnnotatedElement & Member> String memberTranslation(T member,
