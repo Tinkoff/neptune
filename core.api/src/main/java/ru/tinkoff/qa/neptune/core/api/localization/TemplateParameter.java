@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.core.api.localization;
 
+import org.apache.commons.lang3.ArrayUtils;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import java.lang.reflect.AnnotatedElement;
@@ -8,11 +9,14 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 import static java.lang.String.valueOf;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.ArrayUtils.add;
 import static ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter.ParameterValueReader.getParameterForStep;
@@ -40,13 +44,32 @@ public final class TemplateParameter {
 
             if (e instanceof Parameter) {
                 if (template.contains("{" + i + "}")) {
-                    result.add(new TemplateParameter(valueOf(i), valueOf(values[i])));
+                    result.add(new TemplateParameter(valueOf(i), toString(values[i])));
                 }
             }
             i++;
         }
 
         return result;
+    }
+
+    private static String toString(Object o) {
+        if (isNull(o)) {
+            return "null";
+        }
+
+        var clz = o.getClass();
+        if (clz.isArray()) {
+            return ArrayUtils.toString(o);
+        }
+
+        if (Iterable.class.isAssignableFrom(clz)) {
+            return StreamSupport.stream(((Iterable<?>) o).spliterator(), false)
+                    .map(Object::toString)
+                    .collect(joining(", "));
+        }
+
+        return valueOf(o);
     }
 
     static List<TemplateParameter> getTemplateParameters(String template, Method m, Object[] invocationParameters) {
