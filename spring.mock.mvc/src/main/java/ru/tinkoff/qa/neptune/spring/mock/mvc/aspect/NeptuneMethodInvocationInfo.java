@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.spring.mock.mvc.aspect;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import java.lang.reflect.Method;
@@ -30,8 +31,8 @@ class NeptuneMethodInvocationInfo implements MvcUriComponentsBuilder.MethodInvoc
 
     @Override
     public String toString() {
-        return "controller type " + getControllerType()
-                + "; controller method " + getControllerMethod()
-                + "; args " + Arrays.toString(getArgumentValues());
+        return "controller type '" + getControllerType()
+                + "'; controller method '" + getControllerMethod().getName()
+                + "'; args " + ArrayUtils.toString(getArgumentValues());
     }
 }
