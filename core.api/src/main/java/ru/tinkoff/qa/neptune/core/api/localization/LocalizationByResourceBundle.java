@@ -18,7 +18,9 @@ public class LocalizationByResourceBundle implements StepLocalization {
         List<Properties> bundles;
         synchronized (RESOURCE_BUNDLES) {
             bundles = RESOURCE_BUNDLES.computeIfAbsent(locale,
-                    l -> getKnownPartitions().stream().map(p -> p.getResourceBundle(locale)).collect(toList()));
+                    l -> getKnownPartitions().stream().map(p -> p.getResourceBundle(locale))
+                            .filter(Objects::nonNull)
+                            .collect(toList()));
         }
 
         var key = getKey(e);

@@ -9,8 +9,8 @@ dependencies {
         transitive = false
     }
     api group: 'com.rabbitmq', name: 'amqp-client', version: '5.13.1'
-    testImplementation  group: 'org.mockito', name: 'mockito-core', version: '3.7.7'
-    testImplementation 'org.mockito:mockito-inline:2.7.21'
+    testImplementation  group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockitoVersion
 }
 
 task generateBundle(type: JavaExec)  {

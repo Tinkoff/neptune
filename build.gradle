@@ -1,5 +1,5 @@
 ext {
-    globalVersion = '0.19.7-ALPHA'
+    globalVersion = '0.19.8-ALPHA'
 }
 
 subprojects {
@@ -31,6 +31,8 @@ subprojects {
         seleniumVersion = '3.141.59'
         allureVersion = '2.15.0'
         jacksonVersion = '2.12.5'
+        mockitoVersion = '3.12.4'
+        springVersion = '5.3.10'
         globalVersion = version
     }
 

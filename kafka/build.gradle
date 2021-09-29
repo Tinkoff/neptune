@@ -9,8 +9,8 @@ dependencies {
         transitive = false
     }
     api group: 'org.apache.kafka', name: 'kafka-clients', version: '2.8.0'
-    testImplementation  group: 'org.mockito', name: 'mockito-core', version: '3.7.7'
-    testImplementation 'org.mockito:mockito-inline:2.7.21'
+    testImplementation  group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockitoVersion
 }
 
 java {

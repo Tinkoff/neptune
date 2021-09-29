@@ -13,7 +13,7 @@ import java.time.Duration;
 
 import static java.time.Duration.ofSeconds;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers.CHROME_DRIVER;
 
 public abstract class BaseWebDriverTest {
@@ -51,7 +51,7 @@ public abstract class BaseWebDriverTest {
 
     @BeforeClass
     public void setUpBeforeClass() {
-        initMocks(this);
+        openMocks(this);
     }
 
     @BeforeMethod

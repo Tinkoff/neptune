@@ -2,8 +2,8 @@ plugins {
     id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
 }
 
-repositories {
-    mavenCentral()
+configurations {
+    agent
 }
 
 dependencies {
@@ -11,9 +11,55 @@ dependencies {
     inpath(project(":core.api")) {
         transitive = false
     }
-    api (group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.5.4')
+    api(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.5.5')
+    inpath (group: 'org.springframework', name: 'spring-test', version: springVersion) {
+        transitive = true
+    }
     implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
-    implementation group: 'org.springframework', name: 'spring-webmvc', version: '5.3.10'
+    api group: 'org.springframework', name: 'spring-web', version: springVersion
+    api group: 'org.springframework', name: 'spring-webmvc', version: springVersion
+    testImplementation  group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockitoVersion
+
+    compileOnly('javax.websocket:javax.websocket-api:1.1')
+    compileOnly('javax.websocket:javax.websocket-client-api:1.1')
+    compileOnly('org.mortbay.jetty:jsp-api-2.0:6.1.26')
+    compileOnly('org.apache.ant:ant:1.10.11')
+    compileOnly('io.netty:netty-buffer:4.1.68.Final')
+    compileOnly('io.projectreactor.tools:blockhound:1.0.6.RELEASE')
+    compileOnly(group: 'org.springframework', name: 'spring-orm', version: springVersion)
+    compileOnly(group: 'org.springframework', name: 'spring-tx', version: springVersion)
+    compileOnly(group: 'org.springframework', name: 'spring-webflux', version: springVersion)
+    compileOnly(group: 'org.springframework', name: 'spring-websocket', version: springVersion)
+    compileOnly('jakarta.activation:jakarta.activation-api:2.0.1')
+    compileOnly('jakarta.el:jakarta.el-api:4.0.0')
+    compileOnly('jakarta.inject:jakarta.inject-api:2.0.0')
+    compileOnly('jakarta.servlet:jakarta.servlet-api:5.0.0')
+    compileOnly('jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.0.0')
+    compileOnly('jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:2.0.0')
+    compileOnly('jakarta.xml.bind:jakarta.xml.bind-api:3.0.1')
+    compileOnly('jakarta.websocket:jakarta.websocket-api:2.0.0')
+    compileOnly('junit:junit:4.13.2')
+    compileOnly('org.apache.tomcat.embed:tomcat-embed-core:10.0.8')
+    compileOnly('org.junit.jupiter:junit-jupiter-api:5.8.0')
+    compileOnly('org.testng:testng:7.4.0')
+    compileOnly('org.codehaus.groovy:groovy:3.0.8')
+    compileOnly('org.hamcrest:hamcrest:2.2')
+    compileOnly('net.sourceforge.htmlunit:htmlunit:2.52.0')
+    compileOnly('org.seleniumhq.selenium:htmlunit-driver:2.51.0') {
+        exclude group: "net.bytebuddy", module: "byte-buddy"
+    }
+    compileOnly('org.seleniumhq.selenium:selenium-java:3.141.59') {
+        exclude group: "net.bytebuddy", module: "byte-buddy"
+    }
+    compileOnly('org.xmlunit:xmlunit-matchers:2.8.2')
+    compileOnly('org.skyscreamer:jsonassert:1.5.0')
+    compileOnly('com.jayway.jsonpath:json-path:2.6.0')
+    compileOnly('org.jetbrains.kotlin:kotlin-reflect:1.5.21')
+    compileOnly('org.jetbrains.kotlin:kotlin-stdlib:1.5.21')
+    compileOnly('io.projectreactor:reactor-test:3.4.10')
+    compileOnly('org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt')
+    compileOnly('org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.5.2-native-mt')
 }
 
 test {
