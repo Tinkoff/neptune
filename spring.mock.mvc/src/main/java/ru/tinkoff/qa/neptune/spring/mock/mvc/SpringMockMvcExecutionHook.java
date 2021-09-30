@@ -29,7 +29,8 @@ public final class SpringMockMvcExecutionHook implements ExecutionHook {
         if (isNull(mockMvcField)) {
             getContext().setDefault(null);
         } else {
-            MockMvc mockMvc = null;
+            MockMvc mockMvc;
+            mockMvcField.setAccessible(true);
             try {
                 if (isStatic(mockMvcField.getModifiers())) {
                     mockMvc = (MockMvc) mockMvcField.get(currentClazz);

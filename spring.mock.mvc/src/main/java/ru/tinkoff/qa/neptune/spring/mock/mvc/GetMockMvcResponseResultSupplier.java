@@ -14,6 +14,7 @@ import ru.tinkoff.qa.neptune.spring.mock.mvc.captors.RequestBodyStringCaptor;
 import ru.tinkoff.qa.neptune.spring.mock.mvc.captors.ResponseBodyStringCaptor;
 import ru.tinkoff.qa.neptune.spring.mock.mvc.captors.ResponseStringCaptor;
 
+import java.io.UnsupportedEncodingException;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,6 +22,10 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.valueOf;
+import static java.util.Collections.list;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.spring.mock.mvc.CheckMockMvcExpectation.checkExpectation;
 import static ru.tinkoff.qa.neptune.spring.mock.mvc.GetArrayFromResponse.array;
@@ -89,10 +94,16 @@ public final class GetMockMvcResponseResultSupplier extends SequentialGetStepSup
     private void dataForCapturing() {
         var c = getResponse.getInnerRequestResponseCatcher();
         try {
-            requestBody = c.getRequest().getContentAsString();
-            response = c.getResponse();
-            responseBody = c.getResponse().getContentAsString();
+            var request = c.getRequest();
+            requestBody = nonNull(request) ? request.getContentAsString() : null;
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        response = c.getResponse();
+        try {
+            responseBody = nonNull(response) ? response.getContentAsString() : null;
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
     }
@@ -114,14 +125,19 @@ public final class GetMockMvcResponseResultSupplier extends SequentialGetStepSup
     @Override
     protected Map<String, String> additionalParameters() {
         var request = getResponse.getInnerRequestResponseCatcher().getRequest();
+
+        if (isNull(request)) {
+            return Map.of();
+        }
+
         var result = new LinkedHashMap<String, String>();
 
         result.put("Request URL", request.getRequestURL().toString());
-        result.put("Port", request.getRequestURL().toString());
+        result.put("Port", valueOf(request.getRemotePort()));
         result.put("Method", request.getMethod());
 
         var names = request.getHeaderNames();
-        names.asIterator().forEachRemaining(s -> result.put(s, request.getHeader(s)));
+        names.asIterator().forEachRemaining(s -> result.put(s, String.join(";", list(request.getHeaders(s)))));
 
         var user = request.getRemoteUser();
         if (isNotBlank(user)) {
@@ -1093,11 +1109,11 @@ public final class GetMockMvcResponseResultSupplier extends SequentialGetStepSup
             response = result.getResponse();
         }
 
-        public MockHttpServletRequest getRequest() {
+        MockHttpServletRequest getRequest() {
             return request;
         }
 
-        public MockHttpServletResponse getResponse() {
+        MockHttpServletResponse getResponse() {
             return response;
         }
     }

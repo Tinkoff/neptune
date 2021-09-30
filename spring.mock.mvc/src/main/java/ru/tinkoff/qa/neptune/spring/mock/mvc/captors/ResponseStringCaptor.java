@@ -27,7 +27,7 @@ public class ResponseStringCaptor extends StringCaptor<MockHttpServletResponse> 
 
         var names = caught.getHeaderNames();
         names.forEach(s -> result.append(s).append(": ")
-                .append(caught.getHeader(s))
+                .append(String.join(";", caught.getHeaders(s)))
                 .append("\r\n"));
 
         if (isNotBlank(caught.getRedirectedUrl())) {
