@@ -1088,9 +1088,7 @@ public final class GetMockMvcResponseResultSupplier extends SequentialGetStepSup
 
                 var messageBuilder = new StringBuilder();
                 messageBuilder.append("Mismatches: ");
-                errors.forEach(e -> {
-                    messageBuilder.append("\r\n").append("\r\n").append(e.getMessage());
-                });
+                errors.forEach(e -> messageBuilder.append("\r\n").append("\r\n").append(e.getMessage()));
                 throw new AssertionError(messageBuilder.toString());
             } catch (Exception e) {
                 throw new RuntimeException(e);
