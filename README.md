@@ -45,10 +45,11 @@ Module documentation:
 - [Integration of Neptune with Hamcrest matchers](check/README.md)
 - [Integration of Neptune with Allure test reporting framework](allure.integration/README.md)
 - [Integration of Neptune native http client of Java (since v11)](http.api/README.md)
+- [Integration of Neptune with Swagger 3.x](neptune.swagger.codegen/README.md)
+- [Integration of Neptune with Spring MockMvc](spring.mock.mvc/README.md)
 - [Integration of Neptune with Retrofit2](retrofit2/README.md)
 - [Integration of Neptune with Rabbit MQ](rabbit.mq/README.MD)  
 - [Integration of Neptune with Kafka](kafka/README.md)
-- [Integration of Neptune with Swagger 3.x](neptune.swagger.codegen/README.md)
 - [Integration of Neptune with Selenium WebDriver API](selenium/README.md)
 - [Neptune Database abstractions](database.abstractions/README.md)
 
