@@ -3,11 +3,10 @@ package ru.tinkoff.qa.neptune.core.api.localization;
 import io.github.classgraph.ClassGraph;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
+import java.util.*;
 
 import static java.lang.reflect.Modifier.isAbstract;
+import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator.getResourceInputStream;
@@ -23,14 +22,13 @@ public abstract class LocalizationBundlePartition {
     private final String name;
     private final String defaultBundleName;
     private final String customBundleName;
-    private final String packageName;
-    private Properties defaultBundle;
-    private Properties customBundle;
-    private boolean isRead;
+    private final List<String> packageName;
+    private final Map<Locale, Properties> defaultBundles = new HashMap<>();
+    private final Map<Locale, Properties> customBundles = new HashMap<>();
 
-    protected LocalizationBundlePartition(String name, String packageName) {
+    protected LocalizationBundlePartition(String name, String... packageName) {
         this.name = name;
-        this.packageName = packageName;
+        this.packageName = asList(packageName);
         this.defaultBundleName = "neptune_Localization" + "_" + name;
         customBundleName = this.defaultBundleName + "_CUSTOM";
     }
@@ -58,23 +56,31 @@ public abstract class LocalizationBundlePartition {
         return knownPartitions;
     }
 
-    final Properties getResourceBundle(Locale l) {
-        if (!isRead) {
+    final synchronized Properties getResourceBundle(Locale l) {
+        Properties defaultBundle;
+        Properties customBundle;
+        if (!defaultBundles.containsKey(l)) {
             try {
                 defaultBundle = propertiesFromStream(
                         getResourceInputStream(getDefaultBundleName() + "_" + l + ".properties"));
             } catch (IOException e) {
                 defaultBundle = null;
             }
+            defaultBundles.put(l, defaultBundle);
+        } else {
+            defaultBundle = defaultBundles.get(l);
+        }
 
+        if (!customBundles.containsKey(l)) {
             try {
                 customBundle = propertiesFromStream(
                         getResourceInputStream(getCustomBundleName() + "_" + l + ".properties"));
             } catch (IOException e) {
                 customBundle = null;
             }
-
-            isRead = true;
+            customBundles.put(l, customBundle);
+        } else {
+            customBundle = customBundles.get(l);
         }
 
         if (defaultBundle == null && customBundle == null) {
@@ -98,7 +104,7 @@ public abstract class LocalizationBundlePartition {
     /**
      * @return name of a root package of a module
      */
-    public final String getPackageName() {
+    public final List<String> getPackageNames() {
         return packageName;
     }
 

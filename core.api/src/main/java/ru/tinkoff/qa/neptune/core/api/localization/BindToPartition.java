@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.core.api.localization;
 
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -12,6 +13,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  */
 @Retention(RUNTIME)
 @Target({TYPE})
+@Repeatable(BindToPartitions.class)
 public @interface BindToPartition {
     /**
      * @return name of {@link LocalizationBundlePartition}

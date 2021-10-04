@@ -13,7 +13,11 @@ final class MatchesMoreThanOneCriteria extends MismatchDescriber {
     @DescriptionFragment(value = "matchers", makeReadableBy = CriteriaCollectionValueGetter.class)
     final Collection<Matcher<?>> matchers;
 
-    MatchesMoreThanOneCriteria(Collection<Matcher<?>> matchers) {
+    @DescriptionFragment(value = "value")
+    final Object value;
+
+    MatchesMoreThanOneCriteria(Collection<Matcher<?>> matchers, Object value) {
         this.matchers = matchers;
+        this.value = value;
     }
 }

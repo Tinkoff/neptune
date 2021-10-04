@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api.localization.aspect;
+package ru.tinkoff.qa.neptune.core.api.aspects;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -16,6 +16,7 @@ import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.trans
 @Aspect
 @SuppressWarnings("unused")
 public class LocalizationAspect {
+
     private static final String POINTCUT_CRITERIA_METHOD =
             "execution(static ru.tinkoff.qa.neptune.core.api.steps.Criteria *(..))";
 

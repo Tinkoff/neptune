@@ -24,7 +24,7 @@ dependencies {
         exclude group: 'com.google.code.gson', module: 'gson'
         exclude group: 'net.bytebuddy', module:'byte-buddy'
     }
-    testImplementation  group: 'org.mockito', name: 'mockito-core', version: '3.7.7'
+    testImplementation  group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
     implementation group: 'cglib', name: 'cglib', version: '3.3.0'
     implementation group: 'org.jsoup', name: 'jsoup', version: '1.14.2'
     api group: 'com.browserup', name: 'browserup-proxy-core', version: '2.1.2'
