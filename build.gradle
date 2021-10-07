@@ -33,6 +33,7 @@ subprojects {
         jacksonVersion = '2.12.5'
         mockitoVersion = '3.12.4'
         springVersion = '5.3.10'
+        springBootVersion = '2.5.5'
         globalVersion = version
     }
 
