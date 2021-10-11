@@ -848,8 +848,8 @@ public class MyLocalizationPartition extends LocalizationBundlePartition // <-н
     public MyLocalizationPartition() { //необходимо, чтобы конструктор 
         // был доступен и не имел параметров
         super("my.module" //название модуля для механизма локализации
-                , "org.mypack"); //имя корневого пакета, 
-        // к которому относятся вложенные объекты 
+                , "org.mypack"); //имя корневых пакетов, 
+        // к которым относятся вложенные объекты 
         // для локализации
     }
 }
