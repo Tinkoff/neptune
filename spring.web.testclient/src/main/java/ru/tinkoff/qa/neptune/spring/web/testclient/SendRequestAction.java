@@ -2,12 +2,12 @@ package ru.tinkoff.qa.neptune.spring.web.testclient;
 
 import org.hamcrest.Matcher;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.lang.Nullable;
 import org.springframework.test.web.reactive.server.*;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.spring.web.testclient.captors.WebTestClientStringCaptor;
+import ru.tinkoff.qa.neptune.spring.web.testclient.expectation.descriptions.*;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -17,12 +17,15 @@ import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.ArrayUtils.add;
-import static ru.tinkoff.qa.neptune.spring.web.testclient.CheckWebTestClientExpectation.checkExpectation;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.GetArrayFromResponse.array;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.GetIterableFromResponse.iterable;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.GetObjectFromResponseBody.objectFromBody;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.GetObjectFromResponseBody.responseBody;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.GetObjectFromResponseBodyIterable.objectFromIterable;
+import static ru.tinkoff.qa.neptune.spring.web.testclient.LogWebTestClientExpectation.logExpectation;
 
 @SuppressWarnings("unchecked")
 @SequentialActionSupplier.DefinePerformImperativeParameterName("Send request and then get response")
@@ -32,7 +35,7 @@ public final class SendRequestAction<B> extends SequentialActionSupplier<WebTest
             responseSpec -> bytePrimitiveToByteWrapperArray(responseSpec.expectBody().returnResult().getResponseBody());
 
     private final Function<WebTestClient, WebTestClient.RequestHeadersSpec<?>> requestSpec;
-    private final LinkedList<CheckWebTestClientExpectation<?>> assertions = new LinkedList<>();
+    private final LinkedList<Expectation<?>> assertions = new LinkedList<>();
     private final List<AssertionError> errors = new LinkedList<>();
     private WebTestClient.ResponseSpec responseSpec;
     private Function<WebTestClient.ResponseSpec, B> bodyFormat;
@@ -59,6 +62,21 @@ public final class SendRequestAction<B> extends SequentialActionSupplier<WebTest
         return result;
     }
 
+    private <T> SendRequestAction<B> addExpectation(Function<WebTestClient.ResponseSpec, T> f, String description) {
+        assertions.add(new Expectation<>(new Function<WebTestClient.ResponseSpec, T>() {
+            @Override
+            public T apply(WebTestClient.ResponseSpec spec) {
+                return f.apply(spec);
+            }
+
+            @Override
+            public String toString() {
+                return description;
+            }
+        }));
+        return this;
+    }
+
     public static SendRequestAction<Byte[]> send(Function<WebTestClient,
             WebTestClient.RequestHeadersSpec<?>> requestSpec) {
         return new SendRequestAction<Byte[]>(requestSpec)
@@ -72,98 +90,119 @@ public final class SendRequestAction<B> extends SequentialActionSupplier<WebTest
         return new SendRequestAction<Byte[]>(requestSpec).performOn(webTestClientContext -> client);
     }
 
-    private <T> SendRequestAction<B> addExpectation(Function<WebTestClient.ResponseSpec, T> f) {
-        assertions.add(checkExpectation(f));
-        return this;
-    }
-
-    <T, R> SendRequestAction<B> addExpectation(Function<WebTestClient.ResponseSpec, T> start,
-                                               Function<T, R> end) {
-        return addExpectation(start.andThen(end));
-    }
-
     public SendRequestAction<B> expectStatus(Function<StatusAssertions, WebTestClient.ResponseSpec> statusCheck) {
-        return addExpectation(WebTestClient.ResponseSpec::expectStatus, statusCheck);
+        return addExpectation(spec -> statusCheck.apply(spec.expectStatus()), new ExpectResponseStatus().toString());
     }
 
-    public SendRequestAction<B> expectHeader(Function<HeaderAssertions, WebTestClient.ResponseSpec> statusCheck) {
-        return addExpectation(WebTestClient.ResponseSpec::expectHeader, statusCheck);
+    public SendRequestAction<B> expectHeader(Function<HeaderAssertions, WebTestClient.ResponseSpec> headerCheck) {
+        return addExpectation(spec -> headerCheck.apply(spec.expectHeader()), new ExpectResponseHeaders().toString());
     }
 
-    public SendRequestAction<B> expectCookie(Function<CookieAssertions, WebTestClient.ResponseSpec> statusCheck) {
-        return addExpectation(WebTestClient.ResponseSpec::expectCookie, statusCheck);
+    public SendRequestAction<B> expectCookie(Function<CookieAssertions, WebTestClient.ResponseSpec> cookieCheck) {
+        return addExpectation(spec -> cookieCheck.apply(spec.expectCookie()), new ExpectResponseCookies().toString());
     }
 
-    public SendRequestAction<B> expectJson(String expectedJson) {
-        return addExpectation(WebTestClient.ResponseSpec::expectBody, spec -> spec.json(expectedJson));
+    public SendRequestAction<B> expectBodyJson(String expectedJson) {
+        return addExpectation(spec -> spec.expectBody().json(expectedJson), new ExpectedBodyJson(expectedJson).toString());
     }
 
-    public SendRequestAction<B> expectXml(String expectedXml) {
-        return addExpectation(WebTestClient.ResponseSpec::expectBody, spec -> spec.xml(expectedXml));
+    public SendRequestAction<B> expectBodyXml(String expectedXml) {
+        return addExpectation(spec -> spec.expectBody().xml(expectedXml), new ExpectedBodyXml(expectedXml).toString());
     }
 
-    public SendRequestAction<B> expectJsonPath(String expression, Object... args) {
-        return addExpectation(WebTestClient.ResponseSpec::expectBody, spec -> spec.jsonPath(expression, args));
+    public <T> SendRequestAction<B> expectBodyJsonPath(String expression, Function<JsonPathAssertions, T> assertion, Object... args) {
+        return addExpectation(spec -> assertion.apply(spec.expectBody().jsonPath(expression, args)),
+                new ExpectJsonPath(expression, args).toString());
     }
 
-    public SendRequestAction<B> expectXpath(String expression, Object... args) {
-        return addExpectation(WebTestClient.ResponseSpec::expectBody, spec -> spec.xpath(expression, args));
+    public <T> SendRequestAction<B> expectBodyXpath(String expression,
+                                                    Function<XpathAssertions, T> assertion,
+                                                    Object... args) {
+        return addExpectation(spec -> assertion.apply(spec.expectBody().xpath(expression, args)),
+                new ExpectXpath(expression, null, args).toString());
     }
 
-    public SendRequestAction<B> expectXpath(String expression, @Nullable Map<String, String> namespaces, Object... args) {
-        return addExpectation(WebTestClient.ResponseSpec::expectBody, spec -> spec.xpath(expression, namespaces, args));
+    public <T> SendRequestAction<B> expectBodyXpath(String expression,
+                                                    Function<XpathAssertions, T> assertion,
+                                                    Map<String, String> namespaces,
+                                                    Object... args) {
+        return addExpectation(spec -> assertion.apply(spec.expectBody().xpath(expression, namespaces, args)),
+                new ExpectXpath(expression, namespaces, args).toString());
     }
 
     private <T> SendRequestAction<B> expectBody(String description, Function<byte[], T> f, Matcher<? super T> matcher) {
-        return addExpectation(new Function<WebTestClient.ResponseSpec, WebTestClient.BodyContentSpec>() {
-            @Override
-            public WebTestClient.BodyContentSpec apply(WebTestClient.ResponseSpec responseSpec) {
-                return responseSpec.expectBody().consumeWith(entityExchangeResult -> matcher.matches(f.apply(entityExchangeResult.getResponseBody())));
-            }
-
-            public String toString() {
-                return description + " " + matcher.toString();
-            }
-        });
+        return addExpectation(responseSpec -> responseSpec
+                        .expectBody()
+                        .consumeWith(entityExchangeResult -> matcher.matches(f.apply(entityExchangeResult.getResponseBody()))),
+                description + " " + matcher.toString());
     }
 
-    public SendRequestAction<B> expectBodyString(Matcher<? super String> matcher) {
+    public SendRequestAction<B> expectBodyStringContent(Matcher<? super String> matcher) {
         return expectBody(new StringContent().toString(), String::new, matcher);
     }
 
-    public SendRequestAction<B> expectBodyBytes(Matcher<? super Byte[]> matcher) {
-        return expectBody(new StringContent().toString(),
+    public SendRequestAction<B> expectBodyByteContent(Matcher<? super Byte[]> matcher) {
+        return expectBody(new ByteContent().toString(),
                 SendRequestAction::bytePrimitiveToByteWrapperArray, matcher);
     }
 
-    public SendRequestAction<Void> expectEmptyBody() {
-        var result = (SendRequestAction<Void>) this;
-        result.bodyFormat = spec -> spec.expectBody().isEmpty().getResponseBody();
-        return result;
-    }
-
-    public <T> SendRequestAction<T> expectBodyAs(Class<T> tClass) {
+    private <T> SendRequestAction<T> setBodyFormat(Function<WebTestClient.ResponseSpec, T> f, String description) {
         var result = (SendRequestAction<T>) this;
-        result.bodyFormat = spec -> spec.expectBody(tClass).returnResult().getResponseBody();
+        result.bodyFormat = new Function<>() {
+            @Override
+            public T apply(WebTestClient.ResponseSpec spec) {
+                return f.apply(spec);
+            }
+
+            @Override
+            public String toString() {
+                return description;
+            }
+        };
         return result;
     }
 
-    public <T> SendRequestAction<T> expectBodyAs(ParameterizedTypeReference<T> type) {
-        var result = (SendRequestAction<T>) this;
-        result.bodyFormat = spec -> spec.expectBody(type).returnResult().getResponseBody();
-        return result;
+    public SendRequestAction<Void> emptyBody() {
+        return setBodyFormat(spec -> spec.expectBody().isEmpty().getResponseBody(), new ExpectEmptyBody().toString());
     }
 
-    public <T> SendRequestAction<List<T>> expectBodyAsListOf(Class<T> itemClass) {
-        var result = (SendRequestAction<List<T>>) this;
-        result.bodyFormat = spec -> spec.expectBodyList(itemClass).returnResult().getResponseBody();
-        return result;
+    public SendRequestAction<Byte[]> hasBody() {
+        return setBodyFormat(spec -> DEFAULT_BODY_FORMAT.andThen(bytes -> {
+            assertThat(new ExpectAnyBody().toString(), bytes, not(nullValue()));
+            return bytes;
+        }).apply(spec), new ExpectAnyBody().toString());
     }
 
-    public <T> SendRequestAction<List<T>> expectBodyAsListOf(ParameterizedTypeReference<T> itemType) {
-        var result = (SendRequestAction<List<T>>) this;
-        result.bodyFormat = spec -> spec.expectBodyList(itemType).returnResult().getResponseBody();
-        return result;
+    public <T> SendRequestAction<T> bodyAs(Class<T> tClass) {
+        return setBodyFormat(spec -> {
+            var body = spec.expectBody(tClass).returnResult().getResponseBody();
+            assertThat(body, not(nullValue()));
+            return body;
+        }, new ExpectedBodyOfClass(tClass).toString());
+    }
+
+    public <T> SendRequestAction<T> bodyAs(ParameterizedTypeReference<T> type) {
+        return setBodyFormat(spec -> {
+            var body = spec.expectBody(type).returnResult().getResponseBody();
+            assertThat(body, not(nullValue()));
+            return body;
+        }, new ExpectedBodyOfType(type).toString());
+    }
+
+    public <T> SendRequestAction<List<T>> bodyAsListOf(Class<T> itemClass) {
+        return setBodyFormat(spec -> {
+            var body = spec.expectBodyList(itemClass).returnResult().getResponseBody();
+            assertThat(body, not(nullValue()));
+            return body;
+        }, new ExpectedBodyListOfClass(itemClass).toString());
+    }
+
+    public <T> SendRequestAction<List<T>> bodyAsListOf(ParameterizedTypeReference<T> itemType) {
+        return setBodyFormat(spec -> {
+            var body = spec.expectBodyList(itemType).returnResult().getResponseBody();
+            assertThat(body, not(nullValue()));
+            return body;
+        }, new ExpectedBodyListOfType(itemType).toString());
     }
 
     @Override
@@ -174,12 +213,13 @@ public final class SendRequestAction<B> extends SequentialActionSupplier<WebTest
         result = responseSpec.returnResult(Void.class);
 
         if (bodyFormat != null) {
-            assertions.addLast(checkExpectation(bodyFormat));
+            assertions.addLast(new Expectation<>(bodyFormat));
         }
 
-        assertions.forEach(a -> {
+        assertions.forEach(ex -> {
             try {
-                a.get().performAction(responseSpec);
+                ex.verify(responseSpec);
+                logExpectation(ex).get().performAction(ex);
             } catch (AssertionError e) {
                 errors.add(e);
             }

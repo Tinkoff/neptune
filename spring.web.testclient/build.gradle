@@ -12,6 +12,31 @@ java {
     withSourcesJar()
 }
 
+task generateDefaultBundle(type: JavaExec)  {
+    classpath sourceSets.main.runtimeClasspath
+    main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
+    args Locale.US.toString(),
+            "$projectDir/src/main/resources",
+            "false",
+            "spring.assertions"
+}
+
+task generateBundle(type: JavaExec)  {
+    dependsOn generateDefaultBundle
+    classpath sourceSets.main.runtimeClasspath
+    main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
+    args "ru_RU",
+            "$projectDir/src/main/resources",
+            "false",
+            "spring.web.testclient"
+}
+
+processResources {
+    doLast {
+        generateBundle.exec()
+    }
+}
+
 dependencies {
     api project(':core.api')
     inpath(project(":core.api")) {
