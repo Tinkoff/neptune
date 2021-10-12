@@ -6,6 +6,7 @@ import org.springframework.test.web.reactive.server.*;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.spring.web.testclient.captors.WebTestClientStringCaptor;
 import ru.tinkoff.qa.neptune.spring.web.testclient.expectation.descriptions.*;
 
@@ -28,14 +29,14 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient.GetObjectFromResponseB
 import static ru.tinkoff.qa.neptune.spring.web.testclient.LogWebTestClientExpectation.logExpectation;
 
 @SuppressWarnings("unchecked")
-@SequentialActionSupplier.DefinePerformImperativeParameterName("Send request and then get response")
+@Description("Send request and then get response")
 public final class SendRequestAction<B> extends SequentialActionSupplier<WebTestClientContext, WebTestClient, SendRequestAction<B>> {
 
     private static final Function<WebTestClient.ResponseSpec, Byte[]> DEFAULT_BODY_FORMAT =
             responseSpec -> bytePrimitiveToByteWrapperArray(responseSpec.expectBody().returnResult().getResponseBody());
 
     private final Function<WebTestClient, WebTestClient.RequestHeadersSpec<?>> requestSpec;
-    private final LinkedList<Expectation<?>> assertions = new LinkedList<>();
+    final LinkedList<Expectation<?>> assertions = new LinkedList<>();
     private final List<AssertionError> errors = new LinkedList<>();
     private WebTestClient.ResponseSpec responseSpec;
     private Function<WebTestClient.ResponseSpec, B> bodyFormat;

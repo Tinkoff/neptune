@@ -45,7 +45,7 @@ public final class Expectation<T> {
         return super.toString();
     }
 
-    public StringBuilder appendDescription() {
+    public StringBuilder descriptionBuilder() {
         builder = new StringBuilder();
         if (isNotBlank(description)) {
             builder.append(description);

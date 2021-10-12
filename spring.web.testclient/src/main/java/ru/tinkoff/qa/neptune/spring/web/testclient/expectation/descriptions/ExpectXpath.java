@@ -8,7 +8,7 @@ import java.util.Map;
 import static java.util.Objects.isNull;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
-@Description("Body. Xpath '{xPath}. Namespaces '{nameSpaces}'. Arguments '{args}'")
+@Description("Body. Xpath '{xPath}'. Namespaces '{nameSpaces}'. Arguments '{args}'")
 public final class ExpectXpath {
 
     @DescriptionFragment("xPath")

@@ -5,7 +5,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
-@Description("Body. Json path '{jsonPath}. Arguments '{args}'")
+@Description("Body. Json path '{jsonPath}'. Arguments '{args}'")
 public final class ExpectJsonPath {
 
     @DescriptionFragment("jsonPath")

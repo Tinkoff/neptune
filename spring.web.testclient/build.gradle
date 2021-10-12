@@ -91,6 +91,11 @@ dependencies {
     compileOnly('io.projectreactor:reactor-test:3.4.10')
     compileOnly('org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt')
     compileOnly('org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.5.2-native-mt')
+
+    testImplementation('io.projectreactor.tools:blockhound:1.0.6.RELEASE')
+    testImplementation('io.projectreactor:reactor-test:3.4.10')
+    testImplementation('org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.5.2-native-mt')
+    testImplementation(group: 'org.springframework', name: 'spring-webflux', version: springVersion)
 }
 
 publishing {

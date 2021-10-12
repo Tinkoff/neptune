@@ -9,7 +9,7 @@ public final class ResponseWebClientStringCaptor extends WebTestClientStringCapt
     public StringBuilder getData(ExchangeResult caught) {
         var sb = new StringBuilder("Status: ").append(caught.getRawStatusCode());
         var headers = caught.getResponseHeaders();
-        headers.forEach((k, v) -> sb.append(k).append(": ").append(String.join(";", v)).append("\r\n"));
+        headers.forEach((k, v) -> sb.append("\r\n").append(k).append(": ").append(String.join(";", v)));
         return sb;
     }
 }

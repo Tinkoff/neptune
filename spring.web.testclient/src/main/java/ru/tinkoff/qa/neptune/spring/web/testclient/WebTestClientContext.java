@@ -25,11 +25,13 @@ public class WebTestClientContext extends Context<WebTestClientContext> {
         return defaultWebTestClient;
     }
 
-    public WebTestClientContext webTestClient(SendRequestAction<?> sending) {
-        return super.perform(sending);
+    public static WebTestClientContext webTestClient(SendRequestAction<?> sending) {
+        var context = getContext();
+        return context.perform(sending);
     }
 
-    public <T> T webTestClient(SequentialGetStepSupplier<WebTestClientContext, T, ?, ?, ?> sending) {
-        return super.get(sending);
+    public static <T> T webTestClient(SequentialGetStepSupplier<WebTestClientContext, T, ?, ?, ?> sending) {
+        var context = getContext();
+        return context.get(sending);
     }
 }

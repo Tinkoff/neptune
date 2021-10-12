@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.spring.web.testclient;
 
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import static java.util.Objects.nonNull;
 
@@ -15,7 +16,7 @@ final class LogWebTestClientExpectation extends SequentialActionSupplier<Expecta
     }
 
     @Description("{description}")
-    static <T> LogWebTestClientExpectation logExpectation(Expectation<T> expectation) {
+    static <T> LogWebTestClientExpectation logExpectation(@DescriptionFragment("description") Expectation<T> expectation) {
         return new LogWebTestClientExpectation().performOn(expectation);
     }
 
