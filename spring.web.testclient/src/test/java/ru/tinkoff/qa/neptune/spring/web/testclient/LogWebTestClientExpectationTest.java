@@ -73,7 +73,7 @@ public class LogWebTestClientExpectationTest {
     public static Object[][] data4() {
         return new Object[][]{
                 {null, null, "Body. Json path 'some.path'. Arguments '{1,2,3,4}'. Some description"},
-                {RUSSIAN, LocalizationByResourceBundle.class, "Тело ответа. Json path 'some.path. Аргументы '{1,2,3,4}'. Some description"},
+                {RUSSIAN, LocalizationByResourceBundle.class, "Тело ответа. Json path 'some.path'. Аргументы '{1,2,3,4}'. Some description"},
         };
     }
 

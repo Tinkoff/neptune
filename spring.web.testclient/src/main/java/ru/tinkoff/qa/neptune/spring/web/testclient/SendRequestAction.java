@@ -25,6 +25,7 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient.GetArrayFromResponse.a
 import static ru.tinkoff.qa.neptune.spring.web.testclient.GetIterableFromResponse.iterable;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.GetObjectFromResponseBody.objectFromBody;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.GetObjectFromResponseBody.responseBody;
+import static ru.tinkoff.qa.neptune.spring.web.testclient.GetObjectFromResponseBodyArray.objectFromArray;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.GetObjectFromResponseBodyIterable.objectFromIterable;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.LogWebTestClientExpectation.logExpectation;
 
@@ -286,9 +287,9 @@ public final class SendRequestAction<B> extends SequentialActionSupplier<WebTest
         return objectFromIterable(description, new FromBodyGet<>(this, howToGet));
     }
 
-    public <T, S extends Iterable<T>> GetObjectFromResponseBodyIterable<T> thenGetValueFromArray(
+    public <T> GetObjectFromResponseBodyArray<T> thenGetValueFromArray(
             String description,
-            Function<B, S> howToGet) {
-        return objectFromIterable(description, new FromBodyGet<>(this, howToGet));
+            Function<B, T[]> howToGet) {
+        return objectFromArray(description, new FromBodyGet<>(this, howToGet));
     }
 }

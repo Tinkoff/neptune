@@ -6,7 +6,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
-@Description("Non null body of type {type}")
+@Description("Non null body. Type '{type}'")
 public final class ExpectedBodyOfType {
 
     @DescriptionFragment("type")
