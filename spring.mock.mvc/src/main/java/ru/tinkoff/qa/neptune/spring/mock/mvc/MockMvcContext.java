@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.spring.mock.mvc;
 
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import static com.google.common.base.Preconditions.checkState;
@@ -33,51 +34,7 @@ public class MockMvcContext extends Context<MockMvcContext> {
      * @param specification is specification of value to get
      * @return value taken from / calculated by response body
      */
-    public static <T> T mockMvcGet(GetObjectFromResponseBody<T> specification) {
-        var context = getContext();
-        return context.get(specification);
-    }
-
-    /**
-     * Gets some array from body of response.
-     *
-     * @param specification is specification of array to get
-     * @return array taken from / calculated by response body
-     */
-    public static <T> T[] mockMvcGet(GetArrayFromResponse<T> specification) {
-        var context = getContext();
-        return context.get(specification);
-    }
-
-    /**
-     * Gets some iterable from body of response.
-     *
-     * @param specification is specification of iterable to get
-     * @return iterable taken from / calculated by response body
-     */
-    public static <T, S extends Iterable<T>> S mockMvcGet(GetIterableFromResponse<T, S> specification) {
-        var context = getContext();
-        return context.get(specification);
-    }
-
-    /**
-     * Gets some item of array from body of response.
-     *
-     * @param specification is specification of value to get
-     * @return value taken from / calculated by response body
-     */
-    public static <T> T mockMvcGet(GetObjectFromResponseBodyArray<T> specification) {
-        var context = getContext();
-        return context.get(specification);
-    }
-
-    /**
-     * Gets some item of iterable from body of response.
-     *
-     * @param specification is specification of value to get
-     * @return value taken from / calculated by response body
-     */
-    public static <T> T mockMvcGet(GetObjectFromResponseBodyIterable<T> specification) {
+    public static <T> T mockMvcGet(SequentialGetStepSupplier<MockMvcContext, T, ?, ?, ?> specification) {
         var context = getContext();
         return context.get(specification);
     }

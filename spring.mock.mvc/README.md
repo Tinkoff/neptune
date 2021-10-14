@@ -1,4 +1,4 @@
-Integration of Neptune with [Spring MockMvc](https://spring.io/guides/gs/testing-web/)
+Integration of Neptune with [Spring MockMvc](https://spring.getdocs.org/en-US/spring-framework-docs/docs/testing/integration-testing/spring-mvc-test-framework.html)
 
 ## Maven
 

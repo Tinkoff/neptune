@@ -36,8 +36,8 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 /**
  * This class is designed to build and to supply actions to be performed on different objects.
  *
- * @param <T>    is the type of an input value.
- * @param <R>    is the type of an object to perform action on.
+ * @param <T>    is the type of input value.
+ * @param <R>    is the type of object to perform action on.
  * @param <THIS> is self-type.
  */
 @SuppressWarnings("unchecked")

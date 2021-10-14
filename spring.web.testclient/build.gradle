@@ -1,6 +1,41 @@
 plugins {
     id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
 }
+version 'unspecified'
+
+test {
+    useTestNG()
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+task generateDefaultBundle(type: JavaExec)  {
+    classpath sourceSets.main.runtimeClasspath
+    main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
+    args Locale.US.toString(),
+            "$projectDir/src/main/resources",
+            "false",
+            "spring.assertions"
+}
+
+task generateBundle(type: JavaExec)  {
+    dependsOn generateDefaultBundle
+    classpath sourceSets.main.runtimeClasspath
+    main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
+    args "ru_RU",
+            "$projectDir/src/main/resources",
+            "false",
+            "spring.web.testclient"
+}
+
+processResources {
+    doLast {
+        generateBundle.exec()
+    }
+}
 
 dependencies {
     api project(':core.api')
@@ -56,46 +91,17 @@ dependencies {
     compileOnly('io.projectreactor:reactor-test:3.4.10')
     compileOnly('org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt')
     compileOnly('org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.5.2-native-mt')
-}
 
-test {
-    useTestNG()
-}
-
-java {
-    withJavadocJar()
-    withSourcesJar()
-}
-
-task generateDefaultBundle(type: JavaExec)  {
-    classpath sourceSets.main.runtimeClasspath
-    main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
-    args Locale.US.toString(),
-            "$projectDir/src/main/resources",
-            "false",
-            "spring.result.matchers"
-}
-
-task generateBundle(type: JavaExec)  {
-    dependsOn generateDefaultBundle
-    classpath sourceSets.main.runtimeClasspath
-    main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
-    args "ru_RU",
-            "$projectDir/src/main/resources",
-            "false",
-            "spring.mock.mvc"
-}
-
-processResources {
-    doLast {
-        generateBundle.exec()
-    }
+    testImplementation('io.projectreactor.tools:blockhound:1.0.6.RELEASE')
+    testImplementation('io.projectreactor:reactor-test:3.4.10')
+    testImplementation('org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.5.2-native-mt')
+    testImplementation(group: 'org.springframework', name: 'spring-webflux', version: springVersion)
 }
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = 'spring.mock.mvc'
+            artifactId = 'spring.web.testclient'
             from components.java
             repositories {
                 maven {
@@ -105,7 +111,7 @@ publishing {
             }
             pom {
                 packaging = 'jar'
-                name = 'spring.mock.mvc'
+                name = 'spring.web.testclient'
                 version = version
                 url = 'https://github.com/TinkoffCreditSystems/neptune'
                 licenses {
@@ -135,7 +141,7 @@ publishing {
 javadoc {
     destinationDir = file("${buildDir}/../../../neptune.documentation/javadocs/$project.name")
 
-    title = "Neptune Spring Mock MVC Integration API. v$globalVersion"
+    title = "Neptune Spring WebTestClient Integration API. v$globalVersion"
     options.author true
     options.links 'http://download.oracle.com/javase/9/docs/api/'
     options.addStringOption 'Xdoclint:none', '-quiet'
