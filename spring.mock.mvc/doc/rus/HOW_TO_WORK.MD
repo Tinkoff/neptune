@@ -22,6 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.spring.mock.mvc.GetMockMvcResponseResultSupplier.response;
@@ -38,7 +39,7 @@ public class MyTest {
     @Test
     public void myTest() {
         MockHttpServletResponse response = mockMvcGet(response(
-                post("/some/path/and?query=params") //запрос
+                post("/some/path") //запрос
                         .contentType(APPLICATION_JSON) //и его параметры 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk()) //тут можно указать параметры ожидаемого ответа
@@ -52,13 +53,14 @@ public class MyTest {
 }
 ```
 
-Так же можно обойтись бех [механизма внедрения зависимостей Spring](https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-dependencies)
+Так же можно обойтись без [механизма внедрения зависимостей Spring](https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-dependencies)
 или какой-либо другой предварительной инициализации полей.
 
 ```java
 import org.springframework.boot.test.context.SpringBootTest;
 
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.web.servlet.MockMvc;
 
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -78,7 +80,7 @@ public class MyTest {
         
         var response = mockMvcGet(response(
                 mockMvc, //явная передача инстанса MockMvc
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -148,7 +150,7 @@ public class MyTest {
     @Test
     public void myTest() {
         String body = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -188,7 +190,7 @@ public class MyTest {
         var transformer = new MyDataTransformer();
         
         Dto body = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -222,7 +224,7 @@ public class MyTest {
         var transformer = new MyDataTransformer();
         
         GenericDto<SomeType> body = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -257,7 +259,7 @@ public class MyTest {
         var transformer = new MyDataTransformer();
         
         String value = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -292,7 +294,7 @@ public class MyTest {
         var transformer = new MyDataTransformer();
         
         String value = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -330,7 +332,7 @@ public class MyTest {
     public void myTest() {
         
         Dto body = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -362,7 +364,7 @@ public class MyTest {
     public void myTest() {
         
         GenericDto<SomeType> body = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -395,7 +397,7 @@ public class MyTest {
     public void myTest() {
         
         String value = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -427,7 +429,7 @@ public class MyTest {
     @Test
     public void myTest() {
         String value = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -469,7 +471,7 @@ public class MyTest {
         var transformer = new MyDataTransformer();
 
         DtoList body = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -509,7 +511,7 @@ public class MyTest {
       var transformer = new MyDataTransformer();
       
       List<Dto> body = mockMvcGet(response(
-              post("/some/path/and?query=params")
+              post("/some/path")
                       .contentType(APPLICATION_JSON)
                       .contentType("{\"someString 1\"}"))
               .expect(status().isOk())
@@ -549,7 +551,7 @@ public class MyTest {
         var transformer = new MyDataTransformer();
         
         List<Object> value = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -589,7 +591,7 @@ public class MyTest {
         var transformer = new MyDataTransformer();
 
         List<Object> value = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -630,7 +632,7 @@ public class MyTest {
     public void myTest() {
 
         DtoList body = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -668,7 +670,7 @@ public class MyTest {
   public void myTest() {
       
       List<Dto> body = mockMvcGet(response(
-              post("/some/path/and?query=params")
+              post("/some/path")
                       .contentType(APPLICATION_JSON)
                       .contentType("{\"someString 1\"}"))
               .expect(status().isOk())
@@ -706,7 +708,7 @@ public class MyTest {
     public void myTest() {
         
         List<Object> value = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -744,7 +746,7 @@ public class MyTest {
     public void myTest() {
 
         List<Object> value = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -788,7 +790,7 @@ public class MyTest {
         var transformer = new MyDataTransformer();
 
         Dto[] body = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -825,7 +827,7 @@ public class MyTest {
       var transformer = new MyDataTransformer();
       
       GenericDto<SomeType>[] body = mockMvcGet(response(
-              post("/some/path/and?query=params")
+              post("/some/path")
                       .contentType(APPLICATION_JSON)
                       .contentType("{\"someString 1\"}"))
               .expect(status().isOk())
@@ -863,7 +865,7 @@ public class MyTest {
         var transformer = new MyDataTransformer();
         
         Object[] value = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -901,7 +903,7 @@ public class MyTest {
         var transformer = new MyDataTransformer();
 
         Object[] value = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -942,7 +944,7 @@ public class MyTest {
   public void myTest() {
 
     Dto[] body = mockMvcGet(response(
-            post("/some/path/and?query=params")
+            post("/some/path")
                     .contentType(APPLICATION_JSON)
                     .contentType("{\"someString 1\"}"))
             .expect(status().isOk())
@@ -977,7 +979,7 @@ public class MyTest {
   public void myTest() {
       
       GenericDto<SomeType>[] body = mockMvcGet(response(
-              post("/some/path/and?query=params")
+              post("/some/path")
                       .contentType(APPLICATION_JSON)
                       .contentType("{\"someString 1\"}"))
               .expect(status().isOk())
@@ -1013,7 +1015,7 @@ public class MyTest {
     public void myTest() {
         
         Object[] value = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -1049,7 +1051,7 @@ public class MyTest {
   public void myTest() {
 
     Object[] value = mockMvcGet(response(
-            post("/some/path/and?query=params")
+            post("/some/path")
                     .contentType(APPLICATION_JSON)
                     .contentType("{\"someString 1\"}"))
             .expect(status().isOk())
@@ -1093,7 +1095,7 @@ public class MyTest {
         var transformer = new MyDataTransformer();
 
         Dto dto = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -1133,7 +1135,7 @@ public class MyTest {
       var transformer = new MyDataTransformer();
 
       Dto dto = mockMvcGet(response(
-              post("/some/path/and?query=params")
+              post("/some/path")
                       .contentType(APPLICATION_JSON)
                       .contentType("{\"someString 1\"}"))
               .expect(status().isOk())
@@ -1171,7 +1173,7 @@ public class MyTest {
         var transformer = new MyDataTransformer();
         
         Object value = mockMvcGet(response(
-                post("/some/path/and?query=params")
+                post("/some/path")
                         .contentType(APPLICATION_JSON)
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -1211,7 +1213,7 @@ public class MyTest {
         var transformer = new MyDataTransformer();
 
         Object value = mockMvcGet(response(
-                post("/some/path/and?query=params")
+                post("/some/path")
                         .contentType(APPLICATION_JSON)
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -1252,7 +1254,7 @@ public class MyTest {
     public void myTest() {
         
         Dto dto = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -1290,7 +1292,7 @@ public class MyTest {
   public void myTest() {
 
       Dto dto = mockMvcGet(response(
-              post("/some/path/and?query=params")
+              post("/some/path")
                       .contentType(APPLICATION_JSON)
                       .contentType("{\"someString 1\"}"))
               .expect(status().isOk())
@@ -1326,7 +1328,7 @@ public class MyTest {
     public void myTest() {
         
         Object value = mockMvcGet(response(
-                post("/some/path/and?query=params")
+                post("/some/path")
                         .contentType(APPLICATION_JSON)
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -1364,7 +1366,7 @@ public class MyTest {
     public void myTest() {
 
         Object value = mockMvcGet(response(
-                post("/some/path/and?query=params")
+                post("/some/path")
                         .contentType(APPLICATION_JSON)
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -1408,7 +1410,7 @@ public class MyTest {
         var transformer = new MyDataTransformer();
 
         Dto dto = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -1447,7 +1449,7 @@ public class MyTest {
       var transformer = new MyDataTransformer();
 
       GenericDto<SomeType> dto = mockMvcGet(response(
-              post("/some/path/and?query=params")
+              post("/some/path")
                       .contentType(APPLICATION_JSON)
                       .contentType("{\"someString 1\"}"))
               .expect(status().isOk())
@@ -1485,7 +1487,7 @@ public class MyTest {
         var transformer = new MyDataTransformer();
         
         Object value = mockMvcGet(response(
-                post("/some/path/and?query=params")
+                post("/some/path")
                         .contentType(APPLICATION_JSON)
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -1525,7 +1527,7 @@ public class MyTest {
         var transformer = new MyDataTransformer();
 
         Object value = mockMvcGet(response(
-                post("/some/path/and?query=params")
+                post("/some/path")
                         .contentType(APPLICATION_JSON)
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -1566,7 +1568,7 @@ public class MyTest {
     public void myTest() {
 
         Dto dto = mockMvcGet(response(
-                post("/some/path/and?query=params") 
+                post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -1604,7 +1606,7 @@ public class MyTest {
   public void myTest() {
 
       GenericDto<SomeType> dto = mockMvcGet(response(
-              post("/some/path/and?query=params")
+              post("/some/path")
                       .contentType(APPLICATION_JSON)
                       .contentType("{\"someString 1\"}"))
               .expect(status().isOk())
@@ -1641,7 +1643,7 @@ public class MyTest {
     public void myTest() {
         
         Object value = mockMvcGet(response(
-                post("/some/path/and?query=params")
+                post("/some/path")
                         .contentType(APPLICATION_JSON)
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
@@ -1680,7 +1682,7 @@ public class MyTest {
   public void myTest() {
 
     Object value = mockMvcGet(response(
-            post("/some/path/and?query=params")
+            post("/some/path")
                     .contentType(APPLICATION_JSON)
                     .contentType("{\"someString 1\"}"))
             .expect(status().isOk())
