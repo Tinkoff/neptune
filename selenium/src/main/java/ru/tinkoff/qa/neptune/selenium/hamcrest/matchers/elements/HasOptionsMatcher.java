@@ -4,7 +4,6 @@ import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasOptions;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Select;
 
@@ -18,7 +17,7 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsCons
 @Description("options: {matcher}")
 public final class HasOptionsMatcher extends NeptuneFeatureMatcher<HasOptions> {
 
-    @DescriptionFragment(value = "matcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "matcher")
     private final Matcher<Iterable<String>> matcher;
 
     private HasOptionsMatcher(Matcher<Iterable<String>> matcher) {

@@ -6,7 +6,6 @@ import org.hamcrest.StringDescription;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.MismatchDescriber;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import java.time.Duration;
 
@@ -18,7 +17,7 @@ import static java.util.Optional.ofNullable;
 final class MatcherWithTime<T> extends NeptuneFeatureMatcher<T> {
 
     private final Duration waitForMatch;
-    @DescriptionFragment(value = "delegateDescription", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "delegateDescription")
     private final Matcher<T> delegateTo;
 
     MatcherWithTime(Duration waitForMatch, Matcher<T> delegateTo) {

@@ -44,7 +44,7 @@ dependencies {
     }
     api(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion)
     inpath (group: 'org.springframework', name: 'spring-test', version: springVersion) {
-        transitive = true
+        transitive = false
     }
     implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
     api group: 'org.springframework', name: 'spring-web', version: springVersion
@@ -56,7 +56,7 @@ dependencies {
     compileOnly('javax.websocket:javax.websocket-client-api:1.1')
     compileOnly('org.mortbay.jetty:jsp-api-2.0:6.1.26')
     compileOnly('org.apache.ant:ant:1.10.11')
-    compileOnly('io.netty:netty-buffer:4.1.68.Final')
+    compileOnly('io.netty:netty-buffer:4.1.69.Final')
     compileOnly('io.projectreactor.tools:blockhound:1.0.6.RELEASE')
     compileOnly(group: 'org.springframework', name: 'spring-orm', version: springVersion)
     compileOnly(group: 'org.springframework', name: 'spring-tx', version: springVersion)

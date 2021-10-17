@@ -5,7 +5,6 @@ import org.openqa.selenium.SearchContext;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasValue;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -15,7 +14,7 @@ import static org.hamcrest.Matchers.equalTo;
 @Description("element value: {criteria}")
 public final class HasValueMatcher<Q, T extends SearchContext & HasValue<Q>> extends NeptuneFeatureMatcher<T> {
 
-    @DescriptionFragment(value = "criteria", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "criteria")
     private final Matcher<? super Q> criteria;
 
     private HasValueMatcher(Matcher<? super Q> criteria) {

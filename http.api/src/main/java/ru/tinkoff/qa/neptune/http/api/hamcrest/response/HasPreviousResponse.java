@@ -4,7 +4,6 @@ import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import java.net.http.HttpResponse;
 
@@ -18,8 +17,7 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.not.NotMatcher.notO
 @Description("response from redirect: {previousResponse}")
 public final class HasPreviousResponse<T> extends NeptuneFeatureMatcher<HttpResponse<T>> {
 
-    @DescriptionFragment(value = "previousResponse",
-            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "previousResponse")
     public final Matcher<? super HttpResponse<T>> responseMatcher;
 
     private HasPreviousResponse(Matcher<? super HttpResponse<T>> responseMatcher) {

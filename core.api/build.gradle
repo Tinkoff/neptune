@@ -9,6 +9,9 @@ configurations {
 dependencies {
     implementation group: 'org.objenesis', name: 'objenesis', version: '3.2'
     implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.15'
+    inpath(group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion)  {
+        transitive = false
+    }
     api group: 'org.aspectj', name: 'aspectjrt', version: '1.9.6'
     api group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.6'
     agent group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.6'

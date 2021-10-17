@@ -4,7 +4,6 @@ import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import java.net.http.HttpResponse;
 
@@ -17,7 +16,7 @@ import static org.hamcrest.Matchers.equalTo;
 @Description("response body {bodyMatcher}")
 public final class HasBody<T> extends NeptuneFeatureMatcher<HttpResponse<T>> {
 
-    @DescriptionFragment(value = "bodyMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "bodyMatcher")
     private final Matcher<? super T> bodyMatcher;
 
     private HasBody(Matcher<? super T> bodyMatcher) {

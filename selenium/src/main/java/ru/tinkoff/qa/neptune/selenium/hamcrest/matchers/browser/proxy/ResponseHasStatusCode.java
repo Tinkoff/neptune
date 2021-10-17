@@ -5,7 +5,6 @@ import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.hamcrest.Matchers.equalTo;
@@ -13,7 +12,7 @@ import static org.hamcrest.Matchers.equalTo;
 @Description("Response status code {statusCodeMatcher}")
 public final class ResponseHasStatusCode extends NeptuneFeatureMatcher<HarEntry> {
 
-    @DescriptionFragment(value = "statusCodeMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "statusCodeMatcher")
     private final Matcher<? super Integer> statusCodeMatcher;
 
     private ResponseHasStatusCode(Matcher<? super Integer> statusCodeMatcher) {

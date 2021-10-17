@@ -6,7 +6,6 @@ import ru.tinkoff.qa.neptune.core.api.hamcrest.NullValueMismatch;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.ObjectIsNotPresentMismatch;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.PropertyValueMismatch;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import java.util.Map;
 
@@ -28,10 +27,10 @@ public abstract class MappedDiagnosticFeatureMatcher<T, K, V> extends NeptuneFea
     public static final String KEY_MATCHER_MASK = "key";
     public static final String VALUE_MATCHER_MASK = "value";
 
-    @DescriptionFragment(value = KEY_MATCHER_MASK, makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = KEY_MATCHER_MASK)
     private final Matcher<? super K> keyMatcher;
 
-    @DescriptionFragment(value = VALUE_MATCHER_MASK, makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = VALUE_MATCHER_MASK)
     private final Matcher<? super V> valueMatcher;
 
     @SafeVarargs

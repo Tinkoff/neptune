@@ -4,12 +4,11 @@ import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.MismatchDescriber;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 @Description("The item ['{currentCriteria}'] doesn't go after : [{lastSuccessful}; index: {lastSuccessfulIndex}; criteria: '{lastSuccessfulCriteria}']")
 public final class OutOfItemsOrderMismatch extends MismatchDescriber {
 
-    @DescriptionFragment(value = "currentCriteria", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "currentCriteria")
     final Matcher<?> current;
 
     @DescriptionFragment("lastSuccessful")
@@ -18,7 +17,7 @@ public final class OutOfItemsOrderMismatch extends MismatchDescriber {
     @DescriptionFragment("lastSuccessfulIndex")
     final int lastIndex;
 
-    @DescriptionFragment(value = "lastSuccessfulCriteria", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "lastSuccessfulCriteria")
     final Matcher<?> lastSuccessful;
 
     public OutOfItemsOrderMismatch(Matcher<?> current, Object last, int lastIndex, Matcher<?> lastSuccessful) {
