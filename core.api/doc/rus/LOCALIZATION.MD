@@ -508,7 +508,12 @@ task generateBundle(type: JavaExec) {
 - `neptune_Localization_core_CUSTOM_ru_RU.properties` - для [core](./README.MD)
 - `neptune_Localization_check_CUSTOM_ru_RU.properties` - для [check](./../../../check/doc/rus/README.MD)
 - `neptune_Localization_http_CUSTOM_ru_RU.properties` - для [http](./../../../http.api/doc/rus/README.MD)
-- `neptune_Localization_selenium_CUSTOM_ru_RU.properties` - для [http](./../../../selenium/doc/rus/README.MD)
+- `neptune_Localization_selenium_CUSTOM_ru_RU.properties` - для [selenium](./../../../selenium/doc/rus/README.MD)
+- `neptune_Localization_kafka_CUSTOM_ru_RU.properties` - для [kafka](./../../../kafka/doc/rus/README.MD)
+- `neptune_Localization_kafka_CUSTOM_ru_RU.properties` - для [rabbit.mq](./../../../rabbit.mq/doc/rus/README.MD)
+- `neptune_Localization_retrofit2_CUSTOM_ru_RU.properties` - для [retrofit2](./../../../retrofit2/doc/rus/README.MD)
+- `neptune_Localization_spring.mock.mvc_CUSTOM_ru_RU.properties` - для [spring.mock.mvc](./../../../spring.mock.mvc/doc/rus/README.MD)
+- `neptune_Localization_spring.web.testclient_CUSTOM_ru_RU.properties` - для [spring.web.testclient](./../../../spring.web.testclient/doc/rus/README.MD)
 
 Ниже пример одного из файлов (с русской локализацией)
 
