@@ -94,13 +94,18 @@ task generateBundle(type: JavaExec) {
 }
 ```
 
-При настройках, указанных выше, в зависимости от того, какие модули Neptune используются в качестве зависимостей, будут созданные 
+При настройках, указанных выше, в зависимости от того, какие модули Neptune используются в качестве зависимостей, будут созданы
 следующие файлы:
 
 - `neptune_Localization_core_de_DE.properties` - для [core](./README.MD)
 - `neptune_Localization_check_de_DE.properties` - для [check](./../../../check/doc/rus/README.MD)
 - `neptune_Localization_http_de_DE.properties` - для [http](./../../../http.api/doc/rus/README.MD)
-- `neptune_Localization_selenium_de_DE.properties` - для [http](./../../../selenium/doc/rus/README.MD)
+- `neptune_Localization_selenium_de_DE.properties` - для [selenium](./../../../selenium/doc/rus/README.MD)
+- `neptune_Localization_kafka_de_DE.properties` - для [kafka](./../../../kafka/doc/rus/README.MD)
+- `neptune_Localization_kafka_de_DE.properties` - для [rabbit.mq](./../../../rabbit.mq/doc/rus/README.MD)
+- `neptune_Localization_retrofit2_de_DE.properties` - для [retrofit2](./../../../retrofit2/doc/rus/README.MD)
+- `neptune_Localization_spring.mock.mvc_de_DE.properties` - для [spring.mock.mvc](./../../../spring.mock.mvc/doc/rus/README.MD)
+- `neptune_Localization_spring.web.testclient_de_DE.properties` - для [spring.web.testclient](./../../../spring.web.testclient/doc/rus/README.MD)
 
 Ниже пример одного из файлов
 
