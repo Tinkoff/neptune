@@ -111,7 +111,10 @@ public final class ContentManagementHook implements ExecutionHook {
 
     @Override
     public void executeMethodHook(Method method, Object on, boolean isTest) {
-        var defaultCommand = getDefaultContentManagementCommand(on.getClass(), on, isTest);
+        var defaultCommand =
+                getDefaultContentManagementCommand(on instanceof Class ? (Class<?>) on : on.getClass(),
+                        on,
+                        isTest);
 
         var getWindow = getWindow().apply(method);
         var navigationURLSupplier = getNavigationURL().apply(method, on);
