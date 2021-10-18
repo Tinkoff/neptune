@@ -4,7 +4,6 @@ import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import java.net.http.HttpResponse;
 
@@ -17,8 +16,7 @@ import static org.hamcrest.Matchers.equalTo;
 @Description("status code {status}")
 public final class HasStatusCode extends NeptuneFeatureMatcher<HttpResponse<?>> {
 
-    @DescriptionFragment(value = "status",
-            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "status")
     private final Matcher<? super Integer> statusMatcher;
 
     private HasStatusCode(Matcher<? super Integer> statusMatcher) {

@@ -6,7 +6,6 @@ import org.openqa.selenium.WebElement;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasCssValue;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 
@@ -20,7 +19,7 @@ public final class HasCssValueMatcher extends NeptuneFeatureMatcher<SearchContex
 
     @DescriptionFragment("cssProperty")
     private final String cssProperty;
-    @DescriptionFragment(value = "matcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "matcher")
     private final Matcher<String> matcher;
 
     private HasCssValueMatcher(String cssProperty, Matcher<String> matcher) {

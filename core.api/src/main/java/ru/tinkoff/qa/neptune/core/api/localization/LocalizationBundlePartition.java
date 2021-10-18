@@ -5,8 +5,10 @@ import io.github.classgraph.ClassGraph;
 import java.io.IOException;
 import java.util.*;
 
+import static java.lang.String.valueOf;
 import static java.lang.reflect.Modifier.isAbstract;
 import static java.util.Arrays.asList;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator.getResourceInputStream;
@@ -23,8 +25,7 @@ public abstract class LocalizationBundlePartition {
     private final String defaultBundleName;
     private final String customBundleName;
     private final List<String> packageName;
-    private final Map<Locale, Properties> defaultBundles = new HashMap<>();
-    private final Map<Locale, Properties> customBundles = new HashMap<>();
+    private final Map<Locale, Map<String, String>> bundleContent = new HashMap<>();
 
     protected LocalizationBundlePartition(String name, String... packageName) {
         this.name = name;
@@ -56,42 +57,42 @@ public abstract class LocalizationBundlePartition {
         return knownPartitions;
     }
 
-    final synchronized Properties getResourceBundle(Locale l) {
-        Properties defaultBundle;
-        Properties customBundle;
-        if (!defaultBundles.containsKey(l)) {
-            try {
-                defaultBundle = propertiesFromStream(
-                        getResourceInputStream(getDefaultBundleName() + "_" + l + ".properties"));
-            } catch (IOException e) {
-                defaultBundle = null;
-            }
-            defaultBundles.put(l, defaultBundle);
-        } else {
-            defaultBundle = defaultBundles.get(l);
-        }
-
-        if (!customBundles.containsKey(l)) {
-            try {
-                customBundle = propertiesFromStream(
-                        getResourceInputStream(getCustomBundleName() + "_" + l + ".properties"));
-            } catch (IOException e) {
-                customBundle = null;
-            }
-            customBundles.put(l, customBundle);
-        } else {
-            customBundle = customBundles.get(l);
-        }
-
-        if (defaultBundle == null && customBundle == null) {
+    private static Properties getBundleBuName(String name, Locale l) {
+        try {
+            return propertiesFromStream(
+                    getResourceInputStream(name + "_" + l + ".properties"));
+        } catch (IOException e) {
             return null;
         }
+    }
 
-        if (customBundle != null) {
-            return customBundle;
+    private static void fillMap(Map<String, String> result, Properties properties) {
+        properties.forEach((k, v) -> {
+            if (nonNull(v)) {
+                result.put(valueOf(k), valueOf(v));
+            } else {
+                result.put(valueOf(k), null);
+            }
+        });
+    }
+
+    final synchronized Map<String, String> getResourceBundle(Locale l) {
+        var result = new LinkedHashMap<String, String>();
+
+        if (!bundleContent.containsKey(l)) {
+            var defaultBundle = getBundleBuName(getDefaultBundleName(), l);
+            var customBundle = getBundleBuName(getCustomBundleName(), l);
+            if (nonNull(defaultBundle)) {
+                fillMap(result, defaultBundle);
+            }
+            if (nonNull(customBundle)) {
+                fillMap(result, customBundle);
+            }
+            bundleContent.put(l, result);
+            return result;
+        } else {
+            return bundleContent.get(l);
         }
-
-        return defaultBundle;
     }
 
     /**

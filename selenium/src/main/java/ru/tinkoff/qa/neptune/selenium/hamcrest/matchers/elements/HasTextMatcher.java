@@ -7,7 +7,6 @@ import org.openqa.selenium.internal.WrapsElement;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasTextContent;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 
@@ -18,7 +17,7 @@ import static org.hamcrest.Matchers.*;
 @Description("text: {matcher}")
 public final class HasTextMatcher extends NeptuneFeatureMatcher<SearchContext> {
 
-    @DescriptionFragment(value = "matcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "matcher")
     private final Matcher<String> matcher;
 
     private HasTextMatcher(Matcher<String> matcher) {

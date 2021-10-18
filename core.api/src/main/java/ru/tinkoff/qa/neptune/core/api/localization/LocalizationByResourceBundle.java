@@ -10,12 +10,12 @@ import static ru.tinkoff.qa.neptune.core.api.localization.LocalizationBundlePart
 import static ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator.getKey;
 import static ru.tinkoff.qa.neptune.core.api.localization.TemplateParameter.buildTextByTemplate;
 
-public class LocalizationByResourceBundle implements StepLocalization {
+public final class LocalizationByResourceBundle implements StepLocalization {
 
-    private static final Map<Locale, List<Properties>> RESOURCE_BUNDLES = new HashMap<>();
+    private static final Map<Locale, List<Map<String, String>>> RESOURCE_BUNDLES = new HashMap<>();
 
     public static String getFromResourceBundles(Locale locale, AnnotatedElement e) {
-        List<Properties> bundles;
+        List<Map<String, String>> bundles;
         synchronized (RESOURCE_BUNDLES) {
             bundles = RESOURCE_BUNDLES.computeIfAbsent(locale,
                     l -> getKnownPartitions().stream().map(p -> p.getResourceBundle(locale))
@@ -26,7 +26,7 @@ public class LocalizationByResourceBundle implements StepLocalization {
         var key = getKey(e);
         for (var rb : bundles) {
             if (rb.containsKey(key)) {
-                return rb.getProperty(key);
+                return rb.get(key);
             }
         }
 

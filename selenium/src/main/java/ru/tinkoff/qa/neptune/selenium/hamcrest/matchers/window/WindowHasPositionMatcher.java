@@ -5,7 +5,6 @@ import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.PropertyValueMismatch;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -16,9 +15,9 @@ import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.window.IsWindowPr
 @Description("position x {xMatcher} and y {yMatcher}")
 public final class WindowHasPositionMatcher extends NeptuneFeatureMatcher<Window> {
 
-    @DescriptionFragment(value = "xMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "xMatcher")
     private final Matcher<Integer> xMatcher;
-    @DescriptionFragment(value = "yMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "yMatcher")
     private final Matcher<Integer> yMatcher;
 
     private WindowHasPositionMatcher(Matcher<Integer> xMatcher, Matcher<Integer> yMatcher) {

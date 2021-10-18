@@ -48,8 +48,8 @@ final class BrowserUrlCreator {
     private static <T extends AnnotatedElement & Member> T filter(String name, Collection<T> collection) {
         return collection.stream().filter(t -> {
             var variables = t.getAnnotationsByType(BrowserUrlVariable.class);
-            return stream(variables).anyMatch(browserUrlVariable -> browserUrlVariable.name().equals(name)
-                    || (isBlank(browserUrlVariable.name()) && t.getName().equals(name)));
+            return stream(variables)
+                    .anyMatch(browserUrlVariable -> browserUrlVariable.name().equals(name) || (isBlank(browserUrlVariable.name()) && t.getName().equals(name)));
         }).findFirst().orElse(null);
     }
 
@@ -57,20 +57,22 @@ final class BrowserUrlCreator {
         var urlParts = new UrlParts(rawURL);
         var patternParams = urlParts.getVariables();
 
-        var cls = o.getClass();
+        var cls = o instanceof Class ? (Class<?>) o : o.getClass();
+        var requiredStatic = o instanceof Class;
         var clz = cls;
         var fields = new ArrayList<Field>();
         var methods = new ArrayList<Method>();
 
         while (!clz.equals(Object.class)) {
             fields.addAll(stream(clz.getDeclaredFields())
-                    .filter(field -> field.getAnnotationsByType(BrowserUrlVariable.class).length > 0)
+                    .filter(field -> field.getAnnotationsByType(BrowserUrlVariable.class).length <= 0 || !requiredStatic || isStatic(field.getModifiers()))
                     .collect(toList()));
 
             methods.addAll(stream(clz.getDeclaredMethods())
                     .filter(method -> method.getAnnotationsByType(BrowserUrlVariable.class).length > 0
                             && method.getParameterTypes().length == 0
-                            && !method.getReturnType().equals(void.class))
+                            && !method.getReturnType().equals(void.class)
+                            && (!requiredStatic || isStatic(method.getModifiers())))
                     .collect(toList()));
 
             clz = clz.getSuperclass();
@@ -128,8 +130,11 @@ final class BrowserUrlCreator {
                 continue;
             }
 
-            throw new UnsupportedOperationException(format("URL-variable '%s' is not mapped by any " +
-                            "field (fields of superclasses are included) of '%s'. Given raw URL with variables: [%s]",
+            throw new UnsupportedOperationException(format("URL-variable '%s' is not mapped by any "
+                            + (requiredStatic ? "static " : EMPTY)
+                            + "field (fields of superclasses are included) or "
+                            + (requiredStatic ? "static " : EMPTY)
+                            + "method (methods of superclasses are included)  of '%s'. Given raw URL with variables: [%s]",
                     p,
                     cls.getName(),
                     rawURL));
@@ -306,7 +311,7 @@ final class BrowserUrlCreator {
                     rawURL2 = rawURL2.substring(1);
                 }
 
-                this.protocolPart = protocol + colons.toString() + slashes.toString();
+                this.protocolPart = protocol + colons.toString() + slashes;
             }
 
             this.refPart = ofNullable(getSegment(rawURL2, "#"))

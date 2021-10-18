@@ -8,7 +8,6 @@ import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.Count;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.Item;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import java.util.List;
 import java.util.Map;
@@ -27,7 +26,7 @@ public abstract class SetOfObjectsItemsMatcher<S, R, T extends Iterable<R>> exte
 
     static final String COUNT = "count";
 
-    @DescriptionFragment(value = COUNT, makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = COUNT)
     private final Matcher<Integer> countMatcher;
 
     @SafeVarargs

@@ -4,7 +4,6 @@ import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Link;
 
 import java.net.URL;
@@ -16,7 +15,7 @@ import static org.hamcrest.Matchers.equalTo;
 @Description("reference: {refMatcher}")
 public final class HasReference extends NeptuneFeatureMatcher<Link> {
 
-    @DescriptionFragment(value = "refMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "refMatcher")
     private final Matcher<? super String> refMatcher;
 
     private HasReference(Matcher<? super String> refMatcher) {

@@ -7,12 +7,11 @@ import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.Key;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.descriptions.Value;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import java.util.Map;
 
+import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.equalTo;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.AnyThingMatcher.anything;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.all.AllCriteriaMatcher.all;
 
 /**
@@ -24,13 +23,13 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.all.AllCriteriaMatc
 @Description("Key: {key} Value: {value}")
 public final class MapEntryMatcher<K, V> extends NeptuneFeatureMatcher<Map.Entry<K, V>> {
 
-    @DescriptionFragment(value = "key", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "key")
     private final Matcher<? super K> keyMatcher;
 
-    @DescriptionFragment(value = "value", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "value")
     private final Matcher<? super V> valueMatcher;
 
-    protected MapEntryMatcher(Matcher<? super K> keyMatcher, Matcher<? super V> valueMatcher) {
+    private MapEntryMatcher(Matcher<? super K> keyMatcher, Matcher<? super V> valueMatcher) {
         super(true);
         this.keyMatcher = keyMatcher;
         this.valueMatcher = valueMatcher;

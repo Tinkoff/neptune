@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.AnyThingMatcher.anything;
+import static org.hamcrest.core.IsAnything.anything;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableInOrder;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFeatureMatcher.KEY_MATCHER_MASK;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFeatureMatcher.VALUE_MATCHER_MASK;
@@ -20,11 +20,11 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFea
 @Description("response header name <{" + KEY_MATCHER_MASK + "}> <{" + VALUE_MATCHER_MASK + "}>")
 public final class HasHeaders extends MappedDiagnosticFeatureMatcher<HttpResponse<?>, String, List<String>> {
 
-    private HasHeaders(Matcher<? super String> nameMatcher, Matcher<Iterable<String>> valueMatcher) {
+    private HasHeaders(Matcher<? super String> nameMatcher, Matcher<? super Iterable<String>> valueMatcher) {
         super(true, nameMatcher, valueMatcher);
     }
 
-    private static HasHeaders hasHeaders(Matcher<? super String> nameMatcher, Matcher<Iterable<String>> valueMatcher) {
+    private static HasHeaders hasHeaders(Matcher<? super String> nameMatcher, Matcher<? super Iterable<String>> valueMatcher) {
         return new HasHeaders(nameMatcher, valueMatcher);
     }
 
@@ -60,7 +60,7 @@ public final class HasHeaders extends MappedDiagnosticFeatureMatcher<HttpRespons
      * @param valueMatcher is criteria that describes expected value
      * @return a new instance of {@link HasHeaders}
      */
-    public static HasHeaders hasHeader(String key, Matcher<Iterable<String>> valueMatcher) {
+    public static HasHeaders hasHeader(String key, Matcher<? super Iterable<String>> valueMatcher) {
         return hasHeaders(equalTo(key), valueMatcher);
     }
 
@@ -72,7 +72,7 @@ public final class HasHeaders extends MappedDiagnosticFeatureMatcher<HttpRespons
      * @param valueMatcher is criteria that describes expected value
      * @return a new instance of {@link HasHeaders}
      */
-    public static HasHeaders hasHeader(Matcher<? super String> keyMatcher, Matcher<Iterable<String>> valueMatcher) {
+    public static HasHeaders hasHeader(Matcher<? super String> keyMatcher, Matcher<? super Iterable<String>> valueMatcher) {
         return hasHeaders(keyMatcher, valueMatcher);
     }
 
@@ -102,7 +102,7 @@ public final class HasHeaders extends MappedDiagnosticFeatureMatcher<HttpRespons
      * @param valueMatcher criteria that describes expected header value
      * @return a new instance of {@link HasHeaders}
      */
-    public static HasHeaders hasHeaderValue(Matcher<Iterable<String>> valueMatcher) {
+    public static HasHeaders hasHeaderValue(Matcher<? super Iterable<String>> valueMatcher) {
         return hasHeaders(anything(), valueMatcher);
     }
 

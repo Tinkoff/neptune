@@ -1,33 +1,36 @@
 package ru.tinkoff.qa.neptune.selenium.test.hooks;
 
+import ru.tinkoff.qa.neptune.selenium.content.management.BrowserContentUsage;
 import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
 import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
+import ru.tinkoff.qa.neptune.selenium.content.management.UseDefaultBrowserContent;
 
+@UseDefaultBrowserContent(howOften = BrowserContentUsage.FOR_EVERY_METHOD)
 @Navigate(to = "/{parameter1}/{parameter2}/{parameter3}?&p4={parameter4}" +
         "&p5={parameter5}" +
         "&p6={parameter6}" +
         "&p7={parameter8}")
-public class ClassWithNavigationOnTest15 {
+public class ClassWithNavigationOnTest16 {
 
-    private final int p1 = 1;
+    private static final int p1 = 1;
 
-    private final String p2 = "ABC ";
+    private static final String p2 = "ABC ";
 
-    private final String p3 = "ABC ";
+    private static final String p3 = "ABC ";
 
     @BrowserUrlVariable
-    private final int parameter4 = 1;
+    private static final int parameter4 = 1;
 
     @BrowserUrlVariable(name = "parameter5", method = "getP5", toEncodeForQueries = false)
     @BrowserUrlVariable(name = "parameter6", method = "getP6")
-    private final UrlVarPojo p7 = new UrlVarPojo();
+    private static final UrlVarPojo p7 = new UrlVarPojo();
 
     @BrowserUrlVariable(name = "parameter8")
-    public String parameter7() {
+    public static String parameter7() {
         return "Static ";
     }
 
-    public void test1() {
+    public static void test1() {
     }
 
     @Navigate(to = "{parameter1}" +
@@ -36,21 +39,21 @@ public class ClassWithNavigationOnTest15 {
             "&p5={parameter5}" +
             "&p6={parameter6}" +
             "&p7={parameter8}")
-    public void test2() {
+    public static void test2() {
     }
 
     @BrowserUrlVariable(name = "parameter3")
-    public String getP3() {
+    public static String getP3() {
         return p3;
     }
 
     @BrowserUrlVariable(name = "parameter2")
-    public String getP2() {
+    public static String getP2() {
         return p2;
     }
 
     @BrowserUrlVariable(name = "parameter1")
-    public int getP1() {
+    public static int getP1() {
         return p1;
     }
 
