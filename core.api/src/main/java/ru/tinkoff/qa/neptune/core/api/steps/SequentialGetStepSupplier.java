@@ -46,10 +46,10 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
  * This class is designed to build and to supply sequential functions to get desired value.
  * There are protected methods to be overridden/re-used as public when it is necessary.
  *
- * @param <T>    is a type of an input value
- * @param <R>    is a type of a returned value
- * @param <M>    is a type of a mediator value is used to get the required result
- * @param <P>    is a type of a value checked by a {@link Predicate}.
+ * @param <T>    is a type of input value
+ * @param <R>    is a type of returned value
+ * @param <M>    is a type of mediator value is used to get the required result
+ * @param <P>    is a type of value checked by a {@link Predicate}.
  * @param <THIS> this is the self-type. It is used for the method chaining.
  */
 @SuppressWarnings("unchecked")
@@ -338,6 +338,25 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     protected void onFailure(M m, Throwable throwable) {
     }
 
+    Map<String, String> calculatedParameters() {
+        var result = new LinkedHashMap<String, String>();
+        if ((from instanceof SequentialGetStepSupplier<?, ?, ?, ?, ?>)
+                && this.getClass().getAnnotation(IncludeParamsOfInnerGetterStep.class) != null) {
+            var get = (SequentialGetStepSupplier<?, ?, ?, ?, ?>) from;
+            var additional = get.calculatedParameters();
+
+            if (additional.size() > 0) {
+                result.putAll(additional);
+            }
+        }
+
+        var additional = additionalParameters();
+        if (nonNull(additional) && additional.size() > 0) {
+            result.putAll(additional);
+        }
+        return result;
+    }
+
     /**
      * Returns additional parameters calculated during step execution
      *
@@ -369,7 +388,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
         var params = getParameters();
         var resultDescription = translate(getResultMetadata(this.getClass(), true));
-        var description = translate(translate(getImperativeMetadata(this.getClass(), true)) + " " + this.description).trim();
+        var description = translate(translate(getImperativeMetadata(this.getClass(), true)) + " " + this.getDescription()).trim();
 
         var toBeReturned = new Get<>(description, endFunction)
                 .setResultDescription(resultDescription)
@@ -397,7 +416,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
             toBeReturned.turnReportingOff();
         }
 
-        return toBeReturned.setAdditionalParams(this::additionalParameters);
+        return toBeReturned.setAdditionalParams(this::calculatedParameters);
     }
 
     protected Function<T, M> preparePreFunction() {
@@ -547,8 +566,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     /**
      * This class is designed to build and supply functions to get some desired object-value.
      *
-     * @param <T>    is a type of an input value
-     * @param <R>    is a type of a result value
+     * @param <T>    is a type of input value
+     * @param <R>    is a type of result value
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
     public static abstract class GetObjectStepSupplier<T, R, THIS extends GetObjectStepSupplier<T, R, THIS>>
@@ -563,9 +582,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     /**
      * This class is designed to build and supply chained functions to get object-value.
      *
-     * @param <T>    is a type of an input value
-     * @param <R>    is a type of a result value
-     * @param <M>    is a type of a mediator value is used to get the result
+     * @param <T>    is a type of input value
+     * @param <R>    is a type of result value
+     * @param <M>    is a type of mediator value is used to get the result
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
     public static abstract class GetObjectChainedStepSupplier<T, R, M, THIS extends GetObjectChainedStepSupplier<T, R, M, THIS>>
@@ -662,8 +681,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     /**
      * This class is designed to build and supply functions to get desired value using some iterable.
      *
-     * @param <T>    is a type of an input value
-     * @param <R>    is a type of a result value. Also it is a type of an item from iterable.
+     * @param <T>    is a type of input value
+     * @param <R>    is a type of result value. Also it is a type of item from iterable.
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
     public static abstract class GetObjectFromIterableStepSupplier<T, R, THIS extends GetObjectFromIterableStepSupplier<T, R, THIS>>
@@ -678,9 +697,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     /**
      * This class is designed to build and supply chained functions to get desired value using some iterable.
      *
-     * @param <T>    is a type of an input value
-     * @param <R>    is a type of a result value. Also it is a type of an item from iterable.
-     * @param <M>    is a type of a mediator value is used to get the result
+     * @param <T>    is a type of input value
+     * @param <R>    is a type of result value. Also it is a type of item from iterable.
+     * @param <M>    is a type of mediator value is used to get the result
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
     public static abstract class GetObjectFromIterableChainedStepSupplier<T, R, M, THIS extends GetObjectFromIterableChainedStepSupplier<T, R, M, THIS>>
@@ -777,8 +796,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     /**
      * This class is designed to build and supply functions to get desired value using some array.
      *
-     * @param <T>    is a type of an input value
-     * @param <R>    is a type of a result value. Also it is a type of an item from array.
+     * @param <T>    is a type of input value
+     * @param <R>    is a type of result value. Also it is a type of item from array.
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
     public static abstract class GetObjectFromArrayStepSupplier<T, R, THIS extends GetObjectFromArrayStepSupplier<T, R, THIS>>
@@ -793,9 +812,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     /**
      * This class is designed to build and supply chained functions to get desired value using some array.
      *
-     * @param <T>    is a type of an input value
-     * @param <R>    is a type of a result value. Also it is a type of an item from array.
-     * @param <M>    is a type of a mediator value is used to get the result
+     * @param <T>    is a type of input value
+     * @param <R>    is a type of result value. Also it is a type of item from array.
+     * @param <M>    is a type of mediator value is used to get the result
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
     public static abstract class GetObjectFromArrayChainedStepSupplier<T, R, M, THIS extends GetObjectFromArrayChainedStepSupplier<T, R, M, THIS>>
@@ -892,9 +911,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     /**
      * This class is designed to build and supply functions to get some desired iterable-value.
      *
-     * @param <T>    is a type of an input value
+     * @param <T>    is a type of input value
      * @param <S>    is a type of resulted iterable
-     * @param <R>    is a type of an an item from resulted iterable
+     * @param <R>    is a type of item from resulted iterable
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
     public static abstract class GetIterableStepSupplier<T, S extends Iterable<R>, R, THIS extends GetIterableStepSupplier<T, S, R, THIS>>
@@ -909,10 +928,10 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     /**
      * This class is designed to build and supply chained functions to get some desired iterable-value.
      *
-     * @param <T>    is a type of an input value
+     * @param <T>    is a type of input value
      * @param <S>    is a type of resulted iterable
-     * @param <M>    is a type of a mediator value is used to get the result
-     * @param <R>    is a type of an an item from resulted iterable
+     * @param <M>    is a type of mediator value is used to get the result
+     * @param <R>    is a type of item from resulted iterable
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
     public static abstract class GetIterableChainedStepSupplier<T, S extends Iterable<R>, M, R, THIS extends GetIterableChainedStepSupplier<T, S, M, R, THIS>>
@@ -1009,8 +1028,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     /**
      * This class is designed to build and supply functions to get some desired array-value.
      *
-     * @param <T>    is a type of an input value
-     * @param <R>    is a type of an an item from resulted array
+     * @param <T>    is a type of input value
+     * @param <R>    is a type of item from resulted array
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
     public static abstract class GetArrayStepSupplier<T, R, THIS extends GetArrayStepSupplier<T, R, THIS>>
@@ -1025,9 +1044,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     /**
      * This class is designed to build and supply chained functions to get some desired array-value.
      *
-     * @param <T>    is a type of an input value
-     * @param <M>    is a type of a mediator value is used to get the result
-     * @param <R>    is a type of an an item from resulted array
+     * @param <T>    is a type of input value
+     * @param <M>    is a type of mediator value is used to get the result
+     * @param <R>    is a type of item from resulted array
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
     public static abstract class GetArrayChainedStepSupplier<T, R, M, THIS extends GetArrayChainedStepSupplier<T, R, M, THIS>>

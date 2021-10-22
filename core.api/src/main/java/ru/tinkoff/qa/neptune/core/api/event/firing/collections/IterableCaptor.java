@@ -8,7 +8,7 @@ import java.util.Arrays;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
-abstract class IterableCaptor<T extends Iterable<?>> extends StringCaptor<T> {
+public abstract class IterableCaptor<T extends Iterable<?>> extends StringCaptor<T> {
 
     private static final String LINE_SEPARATOR = "\r\n";
 

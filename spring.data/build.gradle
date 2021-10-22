@@ -17,6 +17,12 @@ dependencies {
         transitive = false
     }
     api group: 'org.springframework.data', name: 'spring-data-commons', version: '2.5.5'
+    compileOnly(group: 'org.springframework', name: 'spring-context', version: springVersion)
+    compileOnly(group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.21')
+    compileOnly('io.projectreactor.tools:blockhound:1.0.6.RELEASE')
+    compileOnly('io.projectreactor:reactor-test:3.4.10')
+    compileOnly(group: 'io.micrometer', name: 'micrometer-core', version: '1.7.5')
+    compileOnly(group: 'io.reactivex.rxjava3', name: 'rxjava', version: '3.1.2')
 }
 
 java {

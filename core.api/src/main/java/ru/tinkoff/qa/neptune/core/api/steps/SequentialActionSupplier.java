@@ -148,13 +148,33 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
      */
     protected abstract void howToPerform(R value);
 
+    private Map<String, String> calculatedParameters() {
+        var result = new LinkedHashMap<String, String>();
+
+        if ((toBePerformedOn instanceof SequentialGetStepSupplier<?, ?, ?, ?, ?>)
+                && this.getClass().getAnnotation(IncludeParamsOfInnerGetterStep.class) != null) {
+            var get = (SequentialGetStepSupplier<?, ?, ?, ?, ?>) toBePerformedOn;
+            var additional = get.calculatedParameters();
+
+            if (additional.size() > 0) {
+                result.putAll(additional);
+            }
+        }
+
+        var additional = additionalParameters();
+        if (nonNull(additional) && additional.size() > 0) {
+            result.putAll(additional);
+        }
+        return result;
+    }
+
     /**
      * Returns additional parameters calculated during step execution
      *
      * @return additional parameters calculated during step execution
      */
     protected Map<String, String> additionalParameters() {
-        return null;
+        return Map.of();
     }
 
     @Override
@@ -191,7 +211,7 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
 
         return toBeReturned.setParameters(getParameters())
                 .setMaxDepth(getMaxDepth(this.getClass()))
-                .setAdditionalParams(this::additionalParameters);
+                .setAdditionalParams(this::calculatedParameters);
     }
 
     @Override
