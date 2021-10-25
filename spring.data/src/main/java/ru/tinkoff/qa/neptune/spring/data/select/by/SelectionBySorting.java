@@ -8,13 +8,14 @@ import org.springframework.data.repository.reactive.RxJava2SortingRepository;
 import org.springframework.data.repository.reactive.RxJava3SortingRepository;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @SuppressWarnings("unchecked")
 @Description("all by sorting '{sort}'")
-public final class SelectionBySorting<R, ID, T extends Repository<R, ID>> extends SelectByFunction<R, ID, T, Iterable<R>> {
+public final class SelectionBySorting<R, ID, T extends Repository<R, ID>> extends SpringDataFunction<T, Iterable<R>> {
 
     @DescriptionFragment("sort")
     final Sort sort;

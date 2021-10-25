@@ -1,4 +1,5 @@
-package ru.tinkoff.qa.neptune.spring.data.select.by;
+package ru.tinkoff.qa.neptune.spring.data;
+
 
 import org.springframework.data.repository.Repository;
 
@@ -9,15 +10,15 @@ import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.joining;
 import static org.springframework.util.ClassUtils.getAllInterfaces;
 
-abstract class SelectByFunction<R, ID, T extends Repository<R, ID>, RESULT> implements Function<T, RESULT> {
+public abstract class SpringDataFunction<INPUT, RESULT> implements Function<INPUT, RESULT> {
 
     private final Class<?>[] supported;
 
-    SelectByFunction(Class<?>... supported) {
+    protected SpringDataFunction(Class<?>... supported) {
         this.supported = supported;
     }
 
-    final RuntimeException unsupportedRepository(T repo) {
+    protected final <T extends Repository<?, ?>> RuntimeException unsupportedRepository(T repo) {
         if (isNull(repo)) {
             return new IllegalArgumentException("Repository instance should not be null");
         }

@@ -1,23 +1,20 @@
 package ru.tinkoff.qa.neptune.spring.data.captors;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.tinkoff.qa.neptune.core.api.event.firing.collections.IterableCaptor;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS;
-import static java.lang.String.valueOf;
+import static java.util.Arrays.stream;
 import static java.util.List.of;
 import static java.util.Objects.isNull;
 import static org.apache.commons.collections.IteratorUtils.toList;
-import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
+import static ru.tinkoff.qa.neptune.spring.data.data.serializer.DataSerializer.serializeObjects;
 
 @SuppressWarnings("unchecked")
-@Description("Entity(ies)")
+@Description("Object(s)")
 public class EntitiesCaptor extends IterableCaptor<List<String>> {
 
     @Override
@@ -38,28 +35,14 @@ public class EntitiesCaptor extends IterableCaptor<List<String>> {
         }
 
         List<Object> toLog;
-        if (!(toBeCaptured instanceof Iterable)) {
-            toLog = of(toBeCaptured);
-        } else {
+        if (toBeCaptured instanceof Iterable) {
             toLog = toList(((Iterable<Object>) toBeCaptured).iterator());
+        } else if (toBeCaptured.getClass().isArray()) {
+            toLog = stream((Object[]) toBeCaptured).collect(Collectors.toList());
+        } else {
+            toLog = of(toBeCaptured);
         }
 
-        return toLog
-                .stream()
-                .map(o -> {
-                    if (isLoggable(o)) {
-                        return valueOf(o);
-                    }
-
-                    try {
-                        return new ObjectMapper()
-                                .setSerializationInclusion(ALWAYS)
-                                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:S"))
-                                .writeValueAsString(o);
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                        return "could not serialize value";
-                    }
-                }).collect(Collectors.toList());
+        return serializeObjects(ALWAYS, toLog).collect(Collectors.toList());
     }
 }

@@ -1,21 +1,17 @@
 package ru.tinkoff.qa.neptune.spring.data.select;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.tinkoff.qa.neptune.spring.data.select.by.SelectionByMethod;
 import ru.tinkoff.qa.neptune.spring.data.select.dictionary.Argument;
 import ru.tinkoff.qa.neptune.spring.data.select.dictionary.HowToSelect;
 import ru.tinkoff.qa.neptune.spring.data.select.dictionary.InvokedMethod;
 
-import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static java.lang.String.valueOf;
-import static java.util.Arrays.stream;
 import static java.util.Objects.isNull;
-import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
+import static ru.tinkoff.qa.neptune.spring.data.data.serializer.DataSerializer.serializeObjects;
 
 final class SelectionAdditionalArgumentsFactory {
 
@@ -31,24 +27,7 @@ final class SelectionAdditionalArgumentsFactory {
         }
 
         var result = new LinkedHashMap<String, String>();
-        stream(args)
-                .map(o -> {
-                    if (isLoggable(o)) {
-                        return valueOf(o);
-                    }
-
-                    try {
-                        return new ObjectMapper()
-                                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:S"))
-                                .setSerializationInclusion(NON_NULL)
-                                .writeValueAsString(o);
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                        return "could not serialize value";
-                    }
-                }).forEach(s -> {
-                    result.put(new Argument() + " " + result.size(), s);
-                });
+        serializeObjects(NON_NULL, args).forEach(s -> result.put(new Argument() + " " + result.size(), s));
 
         return result;
     }

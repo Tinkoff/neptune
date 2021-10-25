@@ -5,7 +5,6 @@ import org.springframework.data.repository.Repository;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataContext;
 import ru.tinkoff.qa.neptune.spring.data.captors.EntitiesCaptor;
@@ -19,7 +18,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.data.domain.ExampleMatcher.matching;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.spring.data.select.GetArrayFromEntity.getArrayFromEntity;
 import static ru.tinkoff.qa.neptune.spring.data.select.GetItemOfArrayFromEntity.getArrayItemFromEntity;
 import static ru.tinkoff.qa.neptune.spring.data.select.GetItemOfIterableFromEntity.getIterableItemFromEntity;
@@ -29,6 +27,7 @@ import static ru.tinkoff.qa.neptune.spring.data.select.by.SelectionByExample.get
 import static ru.tinkoff.qa.neptune.spring.data.select.by.SelectionByIds.getSingleById;
 
 @MaxDepthOfReporting(0)
+@SequentialGetStepSupplier.DefineFromParameterName("Repository")
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Select:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time to select required entity")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Entity criteria")
@@ -95,23 +94,19 @@ public abstract class SelectOneStepSupplier<R, ID, T extends Repository<R, ID>>
 
     public static final class SelectOneStepSupplierImpl<R, ID, T extends Repository<R, ID>> extends SelectOneStepSupplier<R, ID, T> {
 
-        @StepParameter("Repository")
-        T repository;
-
         private SelectOneStepSupplierImpl(Function<T, R> select) {
             super(select);
         }
 
         @Override
         public SelectOneStepSupplier<R, ID, T> from(T from) {
-            repository = from;
             return super.from(from);
         }
 
         @Override
         public SelectOneStepSupplier<R, ID, T> setDescription(String description) {
             checkArgument(isNotBlank(description), "Description should be defined");
-            return super.setDescription(translate(description));
+            return super.setDescription(description);
         }
     }
 }

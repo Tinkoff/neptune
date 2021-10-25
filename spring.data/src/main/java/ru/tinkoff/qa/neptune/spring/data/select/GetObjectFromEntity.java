@@ -1,10 +1,12 @@
 package ru.tinkoff.qa.neptune.spring.data.select;
 
 import org.springframework.data.repository.Repository;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataContext;
+import ru.tinkoff.qa.neptune.spring.data.captors.EntitiesCaptor;
 
 import java.util.function.Function;
 
@@ -18,6 +20,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
  * @param <M> is a type of entity
  */
 @SuppressWarnings("unchecked")
+@CaptureOnSuccess(by = EntitiesCaptor.class)
 @IncludeParamsOfInnerGetterStep
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Result criteria")
 public abstract class GetObjectFromEntity<T, M, S extends GetObjectFromEntity<T, M, S>> extends SequentialGetStepSupplier

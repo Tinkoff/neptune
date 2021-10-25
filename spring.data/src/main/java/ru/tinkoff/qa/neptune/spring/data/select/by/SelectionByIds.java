@@ -7,6 +7,8 @@ import org.springframework.data.repository.reactive.RxJava2CrudRepository;
 import org.springframework.data.repository.reactive.RxJava3CrudRepository;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.spring.data.IDParameterValueGetter;
+import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -15,7 +17,7 @@ import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.trans
 
 @SuppressWarnings("unchecked")
 @Description("id(s) {ids}")
-public abstract class SelectionByIds<R, ID, T extends Repository<R, ID>, RESULT> extends SelectByFunction<R, ID, T, RESULT> {
+public abstract class SelectionByIds<R, ID, T extends Repository<R, ID>, RESULT> extends SpringDataFunction<T, RESULT> {
 
     @DescriptionFragment(value = "ids", makeReadableBy = IDParameterValueGetter.class)
     final ID[] ids;

@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.QueryByExampleExecutor;
 import org.springframework.data.repository.query.ReactiveQueryByExampleExecutor;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
@@ -15,7 +16,7 @@ import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.trans
 
 @SuppressWarnings("unchecked")
 @Description("By example. Probe: '{probe}'. Matcher: {matcher}")
-public abstract class SelectionByExample<R, ID, T extends Repository<R, ID>, RESULT> extends SelectByFunction<R, ID, T, RESULT> {
+public abstract class SelectionByExample<R, ID, T extends Repository<R, ID>, RESULT> extends SpringDataFunction<T, RESULT> {
 
     @DescriptionFragment(value = "probe", makeReadableBy = ProbeParameterValueGetter.class)
     private final R probe;

@@ -5,12 +5,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @Description("As page. Page number: {number}. Page size: {size}. Offset: {offset}. Sorting: {sort}")
-public final class SelectionAsPage<R, ID, T extends PagingAndSortingRepository<R, ID>> extends SelectByFunction<R, ID, T, Iterable<R>> {
+public final class SelectionAsPage<R, ID, T extends PagingAndSortingRepository<R, ID>> extends SpringDataFunction<T, Iterable<R>> {
 
     @DescriptionFragment("number")
     final int number;
