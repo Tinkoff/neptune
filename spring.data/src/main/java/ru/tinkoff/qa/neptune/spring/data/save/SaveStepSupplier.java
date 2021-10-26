@@ -11,13 +11,13 @@ import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.database.abstractions.InsertQuery;
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
 import ru.tinkoff.qa.neptune.database.abstractions.UpdateAction;
+import ru.tinkoff.qa.neptune.spring.data.RepositoryParameterValueGetter;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataContext;
 import ru.tinkoff.qa.neptune.spring.data.captors.EntitiesCaptor;
 import ru.tinkoff.qa.neptune.spring.data.save.dictionary.Update;
 import ru.tinkoff.qa.neptune.spring.data.select.SelectManyStepSupplier;
 import ru.tinkoff.qa.neptune.spring.data.select.SelectOneStepSupplier;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +29,6 @@ import static java.util.List.of;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
-@IncludeParamsOfInnerGetterStep
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Save:")
 @CaptureOnSuccess(by = EntitiesCaptor.class)
 public abstract class SaveStepSupplier<INPUT, RESULT, R, ID, T extends Repository<R, ID>>
@@ -37,7 +36,7 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R, ID, T extends Repositor
         implements InsertQuery<RESULT>,
         SelectQuery<RESULT> {
 
-    @StepParameter("Repository")
+    @StepParameter(value = "Repository", makeReadableBy = RepositoryParameterValueGetter.class)
     final T repo;
     List<UpdateAction<R>> updates = of();
 
@@ -48,13 +47,12 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R, ID, T extends Repositor
 
     public static <R, ID, T extends Repository<R, ID>> SaveStepSupplier<R, R, R, ID, T> save(
             String description,
-            T repository,
             SelectOneStepSupplier<R, ID, T> select) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var translated = translate(description);
-        ((SelectOneStepSupplier.SelectOneStepSupplierImpl<R, ID, T>) select).setDescription(translated);
-        ((SelectOneStepSupplier.SelectOneStepSupplierImpl<R, ID, T>) select).from(repository);
-        return new SaveOneStepSupplier<>(repository)
+        var impl = ((SelectOneStepSupplier.SelectOneStepSupplierImpl<R, ID, T>) select);
+        impl.setDescription(translated);
+        return new SaveOneStepSupplier<>(impl.getRepository())
                 .setDescription(translated)
                 .from(select);
     }
@@ -72,13 +70,12 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R, ID, T extends Repositor
 
     public static <R, ID, T extends Repository<R, ID>> SaveStepSupplier<Iterable<R>, Iterable<R>, R, ID, T> save(
             String description,
-            T repository,
             SelectManyStepSupplier<R, ID, T> select) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var translated = translate(description);
-        ((SelectManyStepSupplier.SelectManyStepSupplierImpl<R, ID, T>) select).setDescription(translated);
-        ((SelectManyStepSupplier.SelectManyStepSupplierImpl<R, ID, T>) select).from(repository);
-        return new SaveManyStepSupplier<>(repository)
+        var impl = ((SelectManyStepSupplier.SelectManyStepSupplierImpl<R, ID, T>) select);
+        impl.setDescription(translated);
+        return new SaveManyStepSupplier<>(impl.getRepository())
                 .setDescription(translated)
                 .from(select);
     }
@@ -98,7 +95,7 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R, ID, T extends Repositor
     @Override
     public Map<String, String> getParameters() {
         var i = 1;
-        var result = new LinkedHashMap<String, String>();
+        var result = super.getParameters();
         for (var u : updates) {
             result.put(new Update() + " " + i, u.toString());
             i++;
@@ -119,6 +116,7 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R, ID, T extends Repositor
         return super.setDescription(description);
     }
 
+    @IncludeParamsOfInnerGetterStep
     private static class SaveOneStepSupplier<R, ID, T extends Repository<R, ID>> extends SaveStepSupplier<R, R, R, ID, T> {
 
         protected SaveOneStepSupplier(T repository) {
@@ -132,6 +130,7 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R, ID, T extends Repositor
         }
     }
 
+    @IncludeParamsOfInnerGetterStep
     private static class SaveManyStepSupplier<R, ID, T extends Repository<R, ID>> extends SaveStepSupplier<Iterable<R>, Iterable<R>, R, ID, T> {
 
         protected SaveManyStepSupplier(T repository) {

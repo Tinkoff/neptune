@@ -19,9 +19,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
  * @param <T> is a type of object to get
  * @param <M> is a type of entity
  */
-@SuppressWarnings("unchecked")
 @CaptureOnSuccess(by = EntitiesCaptor.class)
-@IncludeParamsOfInnerGetterStep
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted array")
 public abstract class GetArrayFromEntity<T, M, S extends GetArrayFromEntity<T, M, S>>
         extends SequentialGetStepSupplier.GetArrayChainedStepSupplier<SpringDataContext, T, M, S>
@@ -38,28 +36,18 @@ public abstract class GetArrayFromEntity<T, M, S extends GetArrayFromEntity<T, M
     }
 
     @Override
-    protected S from(SequentialGetStepSupplier<SpringDataContext, ? extends M, ?, ?, ?> from) {
-        setDescription(from.toString());
-        return super.from(from);
-    }
-
-    @Override
     protected String getDescription() {
         return ofNullable(getFrom())
                 .map(Object::toString)
                 .orElse(EMPTY);
     }
 
+    @IncludeParamsOfInnerGetterStep
     public static final class GetArrayFromEntityImpl<T, M>
             extends GetArrayFromEntity<T, M, GetArrayFromEntityImpl<T, M>> {
 
         private GetArrayFromEntityImpl(Function<M, T[]> originalFunction) {
             super(originalFunction);
-        }
-
-        public <ID, R extends Repository<M, ID>> GetArrayFromEntityImpl<T, M> setRepository(R repository) {
-            ofNullable(getFrom()).ifPresent(o -> ((SelectOneStepSupplier.SelectOneStepSupplierImpl<M, ID, R>) o).from(repository));
-            return this;
         }
 
         @Override

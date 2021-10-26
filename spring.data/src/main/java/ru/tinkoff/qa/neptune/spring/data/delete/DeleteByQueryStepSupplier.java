@@ -11,6 +11,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGett
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
+import ru.tinkoff.qa.neptune.spring.data.RepositoryParameterValueGetter;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataContext;
 import ru.tinkoff.qa.neptune.spring.data.captors.EntitiesCaptor;
 import ru.tinkoff.qa.neptune.spring.data.select.SelectManyStepSupplier;
@@ -35,7 +36,7 @@ public final class DeleteByQueryStepSupplier<TO_DELETE, R, ID, T extends Reposit
         extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<SpringDataContext, Void, TO_DELETE, DeleteByQueryStepSupplier<TO_DELETE, R, ID, T>>
         implements SelectQuery<Void> {
 
-    @StepParameter("Repository")
+    @StepParameter(value = "Repository", makeReadableBy = RepositoryParameterValueGetter.class)
     final T repo;
 
     @CaptureOnSuccess(by = EntitiesCaptor.class)
@@ -49,13 +50,12 @@ public final class DeleteByQueryStepSupplier<TO_DELETE, R, ID, T extends Reposit
 
     public static <R, ID, T extends Repository<R, ID>> DeleteByQueryStepSupplier<R, R, ID, T> delete(
             String description,
-            T repository,
             SelectOneStepSupplier<R, ID, T> select) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var translated = translate(description);
-        ((SelectOneStepSupplier.SelectOneStepSupplierImpl<R, ID, T>) select).setDescription(translated);
-        ((SelectOneStepSupplier.SelectOneStepSupplierImpl<R, ID, T>) select).from(repository);
-        return new DeleteByQueryStepSupplier<>(repository, new DeleteEntities.DeleteOne<>(repository))
+        var impl = ((SelectOneStepSupplier.SelectOneStepSupplierImpl<R, ID, T>) select);
+        impl.setDescription(translated);
+        return new DeleteByQueryStepSupplier<>(impl.getRepository(), new DeleteEntities.DeleteOne<>(impl.getRepository()))
                 .setDescription(translated)
                 .from(select);
     }
@@ -75,13 +75,12 @@ public final class DeleteByQueryStepSupplier<TO_DELETE, R, ID, T extends Reposit
 
     public static <R, ID, T extends Repository<R, ID>> DeleteByQueryStepSupplier<Iterable<R>, R, ID, T> delete(
             String description,
-            T repository,
             SelectManyStepSupplier<R, ID, T> select) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var translated = translate(description);
-        ((SelectManyStepSupplier.SelectManyStepSupplierImpl<R, ID, T>) select).setDescription(translated);
-        ((SelectManyStepSupplier.SelectManyStepSupplierImpl<R, ID, T>) select).from(repository);
-        return new DeleteByQueryStepSupplier<>(repository, new DeleteEntities.DeleteMany<>(repository))
+        var impl = ((SelectManyStepSupplier.SelectManyStepSupplierImpl<R, ID, T>) select);
+        impl.setDescription(translated);
+        return new DeleteByQueryStepSupplier<>(impl.getRepository(), new DeleteEntities.DeleteMany<>(impl.getRepository()))
                 .setDescription(translated)
                 .from(select);
     }

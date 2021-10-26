@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.core.api.steps.parameters;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
@@ -22,7 +21,8 @@ import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.trans
  * @param <T> is a type of field value to covert
  */
 public interface ParameterValueGetter<T> {
-    String getParameterValue(T fieldValue) throws JsonProcessingException;
+
+    String getParameterValue(T fieldValue);
 
     final class DefaultParameterValueGetter implements ParameterValueGetter<Object> {
 

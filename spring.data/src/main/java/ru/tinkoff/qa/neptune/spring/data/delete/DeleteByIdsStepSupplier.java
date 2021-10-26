@@ -8,6 +8,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
 import ru.tinkoff.qa.neptune.spring.data.IDParameterValueGetter;
+import ru.tinkoff.qa.neptune.spring.data.RepositoryParameterValueGetter;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataContext;
 
 import java.util.function.Function;
@@ -17,11 +18,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-@SequentialGetStepSupplier.DefineFromParameterName("Repository")
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Delete:")
 public final class DeleteByIdsStepSupplier<R, ID, T extends Repository<R, ID>>
         extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<SpringDataContext, Void, T, DeleteByIdsStepSupplier<R, ID, T>>
         implements SelectQuery<Void> {
+
+    @StepParameter(value = "Repository", makeReadableBy = RepositoryParameterValueGetter.class)
+    T repository;
 
     @StepParameter(value = "Id(s)", makeReadableBy = IDParameterValueGetter.class)
     final ID[] ids;
@@ -31,6 +34,12 @@ public final class DeleteByIdsStepSupplier<R, ID, T extends Repository<R, ID>>
         super(originalFunction);
         this.ids = ids;
         from(repository);
+    }
+
+    @Override
+    protected DeleteByIdsStepSupplier<R, ID, T> from(T from) {
+        repository = from;
+        return super.from(from);
     }
 
     @SafeVarargs

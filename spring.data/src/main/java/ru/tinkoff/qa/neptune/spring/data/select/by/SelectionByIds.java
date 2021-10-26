@@ -90,15 +90,15 @@ public abstract class SelectionByIds<R, ID, T extends Repository<R, ID>, RESULT>
             }
 
             if (t instanceof ReactiveCrudRepository) {
-                return ((ReactiveCrudRepository<R, ID>) t).findAllById(asList(ids)).toIterable();
+                return ((ReactiveCrudRepository<R, ID>) t).findAllById(asList(ids)).collectList().block();
             }
 
             if (t instanceof RxJava2CrudRepository) {
-                return ((RxJava2CrudRepository<R, ID>) t).findAllById(asList(ids)).blockingIterable();
+                return ((RxJava2CrudRepository<R, ID>) t).findAllById(asList(ids)).toList().blockingGet();
             }
 
             if (t instanceof RxJava3CrudRepository) {
-                return ((RxJava3CrudRepository<R, ID>) t).findAllById(asList(ids)).blockingIterable();
+                return ((RxJava3CrudRepository<R, ID>) t).findAllById(asList(ids)).toList().blockingGet();
             }
 
             throw unsupportedRepository(t);

@@ -41,15 +41,15 @@ public final class SelectionBySorting<R, ID, T extends Repository<R, ID>> extend
         }
 
         if (t instanceof ReactiveSortingRepository) {
-            return ((ReactiveSortingRepository<R, ID>) t).findAll(sort).toIterable();
+            return ((ReactiveSortingRepository<R, ID>) t).findAll(sort).collectList().block();
         }
 
         if (t instanceof RxJava2SortingRepository) {
-            return ((RxJava2SortingRepository<R, ID>) t).findAll(sort).blockingIterable();
+            return ((RxJava2SortingRepository<R, ID>) t).findAll(sort).toList().blockingGet();
         }
 
         if (t instanceof RxJava3SortingRepository) {
-            return ((RxJava3SortingRepository<R, ID>) t).findAll(sort).blockingIterable();
+            return ((RxJava3SortingRepository<R, ID>) t).findAll(sort).toList().blockingGet();
         }
 
         throw unsupportedRepository(t);

@@ -38,77 +38,66 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
     }
 
     public <R, ID, T extends Repository<R, ID>> R select(String description,
-                                                         T from,
                                                          SelectOneStepSupplier<R, ID, T> by) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var impl = (SelectOneStepSupplier.SelectOneStepSupplierImpl<R, ID, T>) by;
-        ((SelectOneStepSupplier.SelectOneStepSupplierImpl<R, ID, T>) impl.setDescription(translate(description))).from(from);
-        return select(by);
+        return select(impl.setDescription(translate(description)));
     }
 
     public <R, ID, T extends Repository<R, ID>> Iterable<R> select(String description,
-                                                                   T from,
                                                                    SelectManyStepSupplier<R, ID, T> by) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var impl = (SelectManyStepSupplier.SelectManyStepSupplierImpl<R, ID, T>) by;
-        ((SelectManyStepSupplier.SelectManyStepSupplierImpl<R, ID, T>) impl.setDescription(translate(description))).from(from);
-        return select(by);
+        return select(impl.setDescription(translate(description)));
     }
 
     public <S, R, ID, T extends Repository<R, ID>> S select(String description,
-                                                            T from,
                                                             GetObjectFromEntity<S, R, ?> toGet) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var impl = (GetObjectFromEntity.GetObjectFromEntityImpl<S, R>) toGet;
-        return select(impl.setDescription(translate(description)).setRepository(from));
+        return select(impl.setDescription(translate(description)));
     }
 
     public <ITEM, S extends Iterable<ITEM>, R, ID, T extends Repository<R, ID>> S select(String description,
-                                                                                         T from,
                                                                                          GetIterableFromEntity<ITEM, S, R, ?> toGet) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var impl = (GetIterableFromEntity.GetIterableFromEntityImpl<ITEM, S, R>) toGet;
-        return select(impl.setDescription(translate(description)).setRepository(from));
+        return select(impl.setDescription(translate(description)));
     }
 
     public <ITEM, R, ID, T extends Repository<R, ID>> ITEM[] select(String description,
-                                                                    T from,
                                                                     GetArrayFromEntity<ITEM, R, ?> toGet) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var impl = (GetArrayFromEntity.GetArrayFromEntityImpl<ITEM, R>) toGet;
-        return select(impl.setDescription(translate(description)).setRepository(from));
+        return select(impl.setDescription(translate(description)));
     }
 
     public <ITEM, R, ID, T extends Repository<R, ID>> ITEM select(String description,
-                                                                  T from,
                                                                   GetItemOfIterableFromEntity<ITEM, ? extends Iterable<ITEM>, R, ?> toGet) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var impl = (GetItemOfIterableFromEntity.GetItemOfIterableFromEntityImpl<ITEM, ? extends Iterable<ITEM>, R>) toGet;
-        return select(impl.setDescription(translate(description)).setRepository(from));
+        return select(impl.setDescription(translate(description)));
     }
 
     public <ITEM, R, ID, T extends Repository<R, ID>> ITEM select(String description,
-                                                                  T from,
                                                                   GetItemOfArrayFromEntity<ITEM, R, ?> toGet) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var impl = (GetItemOfArrayFromEntity.GetItemOfArrayFromEntityImpl<ITEM, R>) toGet;
-        return select(impl.setDescription(translate(description)).setRepository(from));
+        return select(impl.setDescription(translate(description)));
     }
 
     public <ITEM, R, ID, T extends Repository<R, ID>> List<ITEM> select(String description,
-                                                                        T from,
                                                                         GetIterableFromEntities<ITEM, R, ?> toGet) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var impl = (GetIterableFromEntities.GetIterableFromEntitiesImpl<ITEM, R>) toGet;
-        return select(impl.setDescription(translate(description)).setRepository(from));
+        return select(impl.setDescription(translate(description)));
     }
 
     public <ITEM, R, ID, T extends Repository<R, ID>> ITEM select(String description,
-                                                                  T from,
                                                                   GetIterableItemFromEntities<ITEM, R, ?> toGet) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var impl = (GetIterableItemFromEntities.GetIterableItemFromEntitiesImpl<ITEM, R>) toGet;
-        return select(impl.setDescription(translate(description)).setRepository(from));
+        return select(impl.setDescription(translate(description)));
     }
 
     @Override
@@ -116,13 +105,13 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
         return get(query);
     }
 
-    public <R, ID, T extends Repository<R, ID>> SpringDataContext delete(String description, T repository, SelectOneStepSupplier<R, ID, T> select) {
-        delete(DeleteByQueryStepSupplier.delete(description, repository, select));
+    public <R, ID, T extends Repository<R, ID>> SpringDataContext delete(String description, SelectOneStepSupplier<R, ID, T> select) {
+        delete(DeleteByQueryStepSupplier.delete(description, select));
         return this;
     }
 
-    public <R, ID, T extends Repository<R, ID>> SpringDataContext delete(String description, T repository, SelectManyStepSupplier<R, ID, T> select) {
-        delete(DeleteByQueryStepSupplier.delete(description, repository, select));
+    public <R, ID, T extends Repository<R, ID>> SpringDataContext delete(String description, SelectManyStepSupplier<R, ID, T> select) {
+        delete(DeleteByQueryStepSupplier.delete(description, select));
         return this;
     }
 
@@ -177,10 +166,9 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
     }
 
     public <R, ID, T extends Repository<R, ID>> R save(String description,
-                                                       T repository,
                                                        SelectOneStepSupplier<R, ID, T> select,
                                                        UpdateAction<R>... updateActions) {
-        return update(SaveStepSupplier.save(description, repository, select), updateActions);
+        return update(SaveStepSupplier.save(description, select), updateActions);
     }
 
     public <R, ID, T extends Repository<R, ID>> Iterable<R> save(String description,
@@ -191,9 +179,8 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
     }
 
     public <R, ID, T extends Repository<R, ID>> Iterable<R> save(String description,
-                                                                 T repository,
                                                                  SelectManyStepSupplier<R, ID, T> select,
                                                                  UpdateAction<R>... updateActions) {
-        return update(SaveStepSupplier.save(description, repository, select), updateActions);
+        return update(SaveStepSupplier.save(description, select), updateActions);
     }
 }

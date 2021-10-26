@@ -19,9 +19,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
  * @param <T> is a type of object to get
  * @param <M> is a type of entity
  */
-@SuppressWarnings("unchecked")
 @CaptureOnSuccess(by = EntitiesCaptor.class)
-@IncludeParamsOfInnerGetterStep
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted iterable")
 public abstract class GetIterableFromEntity<T, I extends Iterable<T>, M, S extends GetIterableFromEntity<T, I, M, S>>
         extends SequentialGetStepSupplier.GetIterableChainedStepSupplier<SpringDataContext, I, M, T, S>
@@ -38,28 +36,18 @@ public abstract class GetIterableFromEntity<T, I extends Iterable<T>, M, S exten
     }
 
     @Override
-    protected S from(SequentialGetStepSupplier<SpringDataContext, ? extends M, ?, ?, ?> from) {
-        setDescription(from.toString());
-        return super.from(from);
-    }
-
-    @Override
     protected String getDescription() {
         return ofNullable(getFrom())
                 .map(Object::toString)
                 .orElse(EMPTY);
     }
 
+    @IncludeParamsOfInnerGetterStep
     public static final class GetIterableFromEntityImpl<T, I extends Iterable<T>, M>
             extends GetIterableFromEntity<T, I, M, GetIterableFromEntityImpl<T, I, M>> {
 
         private GetIterableFromEntityImpl(Function<M, I> originalFunction) {
             super(originalFunction);
-        }
-
-        public <ID, R extends Repository<M, ID>> GetIterableFromEntityImpl<T, I, M> setRepository(R repository) {
-            ofNullable(getFrom()).ifPresent(o -> ((SelectOneStepSupplier.SelectOneStepSupplierImpl<M, ID, R>) o).from(repository));
-            return this;
         }
 
         @Override
