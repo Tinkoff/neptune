@@ -64,7 +64,7 @@ dependencies {
     compileOnly(group: 'org.springframework', name: 'spring-websocket', version: springVersion)
     compileOnly('jakarta.activation:jakarta.activation-api:2.0.1')
     compileOnly('jakarta.el:jakarta.el-api:4.0.0')
-    compileOnly('jakarta.inject:jakarta.inject-api:2.0.0')
+    compileOnly('jakarta.inject:jakarta.inject-api:2.0.1.MR')
     compileOnly('jakarta.servlet:jakarta.servlet-api:5.0.0')
     compileOnly('jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.0.0')
     compileOnly('jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:2.0.0')
@@ -83,12 +83,12 @@ dependencies {
     compileOnly('org.seleniumhq.selenium:selenium-java:3.141.59') {
         exclude group: "net.bytebuddy", module: "byte-buddy"
     }
-    compileOnly('org.xmlunit:xmlunit-matchers:2.8.2')
+    compileOnly('org.xmlunit:xmlunit-matchers:2.8.3')
     compileOnly('org.skyscreamer:jsonassert:1.5.0')
     compileOnly('com.jayway.jsonpath:json-path:2.6.0')
-    compileOnly('org.jetbrains.kotlin:kotlin-reflect:1.5.21')
-    compileOnly('org.jetbrains.kotlin:kotlin-stdlib:1.5.21')
-    compileOnly('io.projectreactor:reactor-test:3.4.10')
+    compileOnly('org.jetbrains.kotlin:kotlin-reflect:1.5.31')
+    compileOnly('org.jetbrains.kotlin:kotlin-stdlib:1.5.31')
+    compileOnly('io.projectreactor:reactor-test:3.4.11')
     compileOnly('org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt')
     compileOnly('org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.5.2-native-mt')
 

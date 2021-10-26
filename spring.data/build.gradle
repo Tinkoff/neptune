@@ -2,11 +2,6 @@ plugins {
     id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
 }
 
-dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-}
-
 test {
     useTestNG()
 }
@@ -20,7 +15,7 @@ dependencies {
     compileOnly(group: 'org.springframework', name: 'spring-context', version: springVersion)
     compileOnly(group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.21')
     compileOnly('io.projectreactor.tools:blockhound:1.0.6.RELEASE')
-    compileOnly('io.projectreactor:reactor-test:3.4.10')
+    compileOnly('io.projectreactor:reactor-test:3.4.11')
     compileOnly(group: 'io.micrometer', name: 'micrometer-core', version: '1.7.5')
     compileOnly(group: 'io.reactivex.rxjava3', name: 'rxjava', version: '3.1.2')
 }
@@ -28,6 +23,21 @@ dependencies {
 java {
     withJavadocJar()
     withSourcesJar()
+}
+
+task generateBundle(type: JavaExec)  {
+    classpath sourceSets.main.runtimeClasspath
+    main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
+    args "ru_RU",
+            "$projectDir/src/main/resources",
+            "false",
+            "spring.data"
+}
+
+processResources {
+    doLast {
+        generateBundle.exec()
+    }
 }
 
 publishing {
