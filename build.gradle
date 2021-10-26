@@ -27,6 +27,8 @@ subprojects {
 
     ext {
         testNGVersion = '7.4.0'
+        junit5Version = '5.8.1'
+        junit5PlatformVersion = '1.8.1'
         hamcrestVersion = '2.2'
         seleniumVersion = '3.141.59'
         allureVersion = '2.15.0'

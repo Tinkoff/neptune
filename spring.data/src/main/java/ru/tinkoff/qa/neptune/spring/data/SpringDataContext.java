@@ -147,12 +147,7 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
     }
 
     @Override
-    protected <R, Q extends SequentialGetStepSupplier<SpringDataContext, R, ?, ?, ?> & SelectQuery<R>> R updateOne(Q query, UpdateAction<R>... actions) {
-        return get(((SaveStepSupplier<?, R, R, ?, ?>) query).setUpdates(actions));
-    }
-
-    @Override
-    protected <R, S extends Iterable<R>, Q extends SequentialGetStepSupplier<SpringDataContext, S, ?, ?, ?> & SelectQuery<S>> S updateMany(Q query, UpdateAction<R>... actions) {
+    protected <R, S, Q extends SequentialGetStepSupplier<SpringDataContext, S, ?, ?, ?> & SelectQuery<S>> S update(Q query, UpdateAction<R>... actions) {
         return get(((SaveStepSupplier<?, S, R, ?, ?>) query).setUpdates(actions));
     }
 
@@ -178,27 +173,27 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
                                                        T repository,
                                                        R toSave,
                                                        UpdateAction<R>... updateActions) {
-        return updateOne(SaveStepSupplier.save(description, repository, toSave), updateActions);
+        return update(SaveStepSupplier.save(description, repository, toSave), updateActions);
     }
 
     public <R, ID, T extends Repository<R, ID>> R save(String description,
                                                        T repository,
                                                        SelectOneStepSupplier<R, ID, T> select,
                                                        UpdateAction<R>... updateActions) {
-        return updateOne(SaveStepSupplier.save(description, repository, select), updateActions);
+        return update(SaveStepSupplier.save(description, repository, select), updateActions);
     }
 
     public <R, ID, T extends Repository<R, ID>> Iterable<R> save(String description,
                                                                  T repository,
                                                                  Iterable<R> toSave,
                                                                  UpdateAction<R>... updateActions) {
-        return updateMany(SaveStepSupplier.save(description, repository, toSave), updateActions);
+        return update(SaveStepSupplier.save(description, repository, toSave), updateActions);
     }
 
     public <R, ID, T extends Repository<R, ID>> Iterable<R> save(String description,
                                                                  T repository,
                                                                  SelectManyStepSupplier<R, ID, T> select,
                                                                  UpdateAction<R>... updateActions) {
-        return updateMany(SaveStepSupplier.save(description, repository, select), updateActions);
+        return update(SaveStepSupplier.save(description, repository, select), updateActions);
     }
 }
