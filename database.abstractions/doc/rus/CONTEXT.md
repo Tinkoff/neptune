@@ -22,7 +22,7 @@ public class HibernateDatabaseContext extends AbstractDatabaseStepContext<Hibern
     }
 
     @Override
-    protected <R, Q extends SequentialGetStepSupplier<HibernateDatabaseContext, R, ?, ?, ?> & SelectQuery<R>> R update(Q query, UpdateAction<R>... actions) {
+    protected <R, S, Q extends SequentialGetStepSupplier<HibernateDatabaseContext, S, ?, ?, ?> & SelectQuery<S>> S update(Q query, UpdateAction<R>... actions) {
         // реализация Update-запроса
     }
 
