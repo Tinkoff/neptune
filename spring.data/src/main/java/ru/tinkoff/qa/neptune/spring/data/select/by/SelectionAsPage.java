@@ -7,6 +7,8 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
 
+import java.util.ArrayList;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
@@ -44,6 +46,6 @@ public final class SelectionAsPage<R, ID, T extends PagingAndSortingRepository<R
 
     @Override
     public Iterable<R> apply(T t) {
-        return t.findAll(pageable);
+        return new ArrayList<>(t.findAll(pageable).getContent());
     }
 }

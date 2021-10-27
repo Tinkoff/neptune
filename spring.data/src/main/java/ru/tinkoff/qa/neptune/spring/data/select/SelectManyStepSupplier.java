@@ -20,6 +20,7 @@ import ru.tinkoff.qa.neptune.spring.data.select.by.SelectionByMethod;
 import ru.tinkoff.qa.neptune.spring.data.select.by.SelectionBySorting;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -27,6 +28,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.data.domain.ExampleMatcher.matching;
+import static org.springframework.data.domain.Sort.by;
 import static ru.tinkoff.qa.neptune.spring.data.properties.SpringDataWaitingSelectedResultDuration.SPRING_DATA_SLEEPING_TIME;
 import static ru.tinkoff.qa.neptune.spring.data.properties.SpringDataWaitingSelectedResultDuration.SPRING_DATA_WAITING_FOR_SELECTION_RESULT_TIME;
 import static ru.tinkoff.qa.neptune.spring.data.select.GetIterableFromEntities.getIterableFromEntities;
@@ -66,6 +68,27 @@ public abstract class SelectManyStepSupplier<R, ID, T extends Repository<R, ID>>
     public static <R, ID, T extends Repository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
                                                                                                      Sort sort) {
         return new SelectManyStepSupplierImpl<>(repository, new SelectionBySorting<>(sort));
+    }
+
+    public static <R, ID, T extends Repository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                     String... properties) {
+        return allBySorting(repository, by(properties));
+    }
+
+    public static <R, ID, T extends Repository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                     List<Sort.Order> orders) {
+        return allBySorting(repository, by(orders));
+    }
+
+    public static <R, ID, T extends Repository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                     Sort.Order... orders) {
+        return allBySorting(repository, by(orders));
+    }
+
+    public static <R, ID, T extends Repository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                     Sort.Direction direction,
+                                                                                                     String... properties) {
+        return allBySorting(repository, by(direction, properties));
     }
 
     public static <R, ID, T extends PagingAndSortingRepository<R, ID>> SelectManyStepSupplier<R, ID, T> asAPage(T repository,

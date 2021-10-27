@@ -14,12 +14,13 @@ dependencies {
     api group: 'org.springframework.data', name: 'spring-data-commons', version: '2.5.6'
     testImplementation  group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockitoVersion
-    compileOnly(group: 'org.springframework', name: 'spring-context', version: springVersion)
-    compileOnly(group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.21')
-    compileOnly('io.projectreactor.tools:blockhound:1.0.6.RELEASE')
-    compileOnly('io.projectreactor:reactor-test:3.4.11')
-    compileOnly(group: 'io.micrometer', name: 'micrometer-core', version: '1.7.5')
-    compileOnly(group: 'io.reactivex.rxjava3', name: 'rxjava', version: '3.1.2')
+    compileClasspath(group: 'org.springframework', name: 'spring-context', version: springVersion)
+    compileClasspath(group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.21')
+    compileClasspath('io.projectreactor.tools:blockhound:1.0.6.RELEASE')
+    compileClasspath('io.projectreactor:reactor-test:3.4.11')
+    compileClasspath(group: 'io.micrometer', name: 'micrometer-core', version: '1.7.5')
+    compileClasspath(group: 'io.reactivex.rxjava3', name: 'rxjava', version: '3.1.2')
+    compileClasspath(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
 
     testImplementation(group: 'org.springframework', name: 'spring-context', version: springVersion)
     testImplementation(group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.21')
