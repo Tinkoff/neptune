@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.spring.data.select;
 
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.repository.Repository;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
@@ -10,7 +9,6 @@ import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
 import ru.tinkoff.qa.neptune.spring.data.RepositoryParameterValueGetter;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataContext;
 import ru.tinkoff.qa.neptune.spring.data.captors.EntitiesCaptor;
-import ru.tinkoff.qa.neptune.spring.data.select.by.SelectionByMethod;
 
 import java.time.Duration;
 import java.util.Map;
@@ -19,7 +17,6 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.springframework.data.domain.ExampleMatcher.matching;
 import static ru.tinkoff.qa.neptune.spring.data.properties.SpringDataWaitingSelectedResultDuration.SPRING_DATA_SLEEPING_TIME;
 import static ru.tinkoff.qa.neptune.spring.data.properties.SpringDataWaitingSelectedResultDuration.SPRING_DATA_WAITING_FOR_SELECTION_RESULT_TIME;
 import static ru.tinkoff.qa.neptune.spring.data.select.GetArrayFromEntity.getArrayFromEntity;
@@ -27,8 +24,6 @@ import static ru.tinkoff.qa.neptune.spring.data.select.GetItemOfArrayFromEntity.
 import static ru.tinkoff.qa.neptune.spring.data.select.GetItemOfIterableFromEntity.getIterableItemFromEntity;
 import static ru.tinkoff.qa.neptune.spring.data.select.GetIterableFromEntity.getIterableFromEntity;
 import static ru.tinkoff.qa.neptune.spring.data.select.GetObjectFromEntity.getObjectFromEntity;
-import static ru.tinkoff.qa.neptune.spring.data.select.by.SelectionByExample.getSingleByExample;
-import static ru.tinkoff.qa.neptune.spring.data.select.by.SelectionByIds.getSingleById;
 
 @SuppressWarnings("unchecked")
 @MaxDepthOfReporting(0)
@@ -45,7 +40,7 @@ public abstract class SelectOneStepSupplier<R, ID, T extends Repository<R, ID>>
 
     private final SelectionAdditionalArgumentsFactory additionalArgumentsFactory;
 
-    private SelectOneStepSupplier(T repository, Function<T, R> select) {
+    SelectOneStepSupplier(T repository, Function<T, R> select) {
         super(select);
         checkNotNull(select);
         additionalArgumentsFactory = new SelectionAdditionalArgumentsFactory(select);
@@ -55,30 +50,20 @@ public abstract class SelectOneStepSupplier<R, ID, T extends Repository<R, ID>>
         from(repository);
     }
 
-    public static <R, ID, T extends Repository<R, ID>> SelectOneStepSupplier<R, ID, T> byId(T repository, ID id) {
-        return new SelectOneStepSupplierImpl<>(repository, getSingleById(id));
-    }
-
-    public static <R, ID, T extends Repository<R, ID>> SelectOneStepSupplier<R, ID, T> byExample(T repository,
-                                                                                                 R probe,
-                                                                                                 ExampleMatcher matcher) {
-        return new SelectOneStepSupplierImpl<>(repository, getSingleByExample(probe, matcher));
-    }
-
-    public static <R, ID, T extends Repository<R, ID>> SelectOneStepSupplier<R, ID, T> byExample(T repository,
-                                                                                                 R probe) {
-        return byExample(repository, probe, matching());
-    }
-
-    public static <R, ID, T extends Repository<R, ID>> SelectOneStepSupplier<R, ID, T> by(T repository,
-                                                                                          Function<T, R> f) {
-        return new SelectOneStepSupplierImpl<>(repository, new SelectionByMethod<>(f));
-    }
-
     @Override
     protected SelectOneStepSupplier<R, ID, T> from(T from) {
         repository = from;
         return super.from(from);
+    }
+
+    T getRepository() {
+        return (T) getFrom();
+    }
+
+    @Override
+    protected SelectOneStepSupplier<R, ID, T> setDescription(String description) {
+        checkArgument(isNotBlank(description), "Description should be defined");
+        return super.setDescription(description);
     }
 
     @Override
@@ -114,22 +99,5 @@ public abstract class SelectOneStepSupplier<R, ID, T extends Repository<R, ID>>
 
     public <S> GetItemOfArrayFromEntity<S, R, ?> thenGetArrayItem(Function<R, S[]> f) {
         return getArrayItemFromEntity(this, f);
-    }
-
-    public static final class SelectOneStepSupplierImpl<R, ID, T extends Repository<R, ID>> extends SelectOneStepSupplier<R, ID, T> {
-
-        private SelectOneStepSupplierImpl(T repository, Function<T, R> select) {
-            super(repository, select);
-        }
-
-        public T getRepository() {
-            return (T) getFrom();
-        }
-
-        @Override
-        public SelectOneStepSupplier<R, ID, T> setDescription(String description) {
-            checkArgument(isNotBlank(description), "Description should be defined");
-            return super.setDescription(description);
-        }
     }
 }

@@ -52,7 +52,7 @@ public abstract class GetIterableFromEntity<T, I extends Iterable<T>, M, S exten
 
         @Override
         public GetIterableFromEntityImpl<T, I, M> setDescription(String description) {
-            ofNullable(getFrom()).ifPresent(o -> ((SelectOneStepSupplier.SelectOneStepSupplierImpl<?, ?, ?>) o).setDescription(description));
+            ofNullable(getFrom()).ifPresent(o -> ((SetsDescription) o).changeDescription(description));
             return this;
         }
     }

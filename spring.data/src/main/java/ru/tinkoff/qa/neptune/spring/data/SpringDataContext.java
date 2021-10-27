@@ -40,15 +40,15 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
     public <R, ID, T extends Repository<R, ID>> R select(String description,
                                                          SelectOneStepSupplier<R, ID, T> by) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        var impl = (SelectOneStepSupplier.SelectOneStepSupplierImpl<R, ID, T>) by;
-        return select(impl.setDescription(translate(description)));
+        ((SetsDescription) by).changeDescription(translate(description));
+        return select(by);
     }
 
     public <R, ID, T extends Repository<R, ID>> Iterable<R> select(String description,
                                                                    SelectManyStepSupplier<R, ID, T> by) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        var impl = (SelectManyStepSupplier.SelectManyStepSupplierImpl<R, ID, T>) by;
-        return select(impl.setDescription(translate(description)));
+        ((SetsDescription) by).changeDescription(translate(description));
+        return select(by);
     }
 
     public <S, R, ID, T extends Repository<R, ID>> S select(String description,

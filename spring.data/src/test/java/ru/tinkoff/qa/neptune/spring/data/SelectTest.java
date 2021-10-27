@@ -4,9 +4,11 @@ import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 import org.mockito.Mock;
-import org.springframework.data.repository.Repository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -19,11 +21,12 @@ import static java.util.List.of;
 import static java.util.Optional.ofNullable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
+import static org.springframework.data.domain.Sort.Direction.ASC;
 import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
-import static ru.tinkoff.qa.neptune.spring.data.select.SelectManyStepSupplier.byIds;
-import static ru.tinkoff.qa.neptune.spring.data.select.SelectOneStepSupplier.byId;
+import static ru.tinkoff.qa.neptune.spring.data.select.SelectStepFactoryCommon.*;
 
 public class SelectTest {
 
@@ -65,6 +68,9 @@ public class SelectTest {
     @Mock
     private io.reactivex.rxjava3.core.Single<List<TestEntity>> mockSingle2;
 
+    @Mock
+    private Page<TestEntity> mockPage;
+
     @BeforeClass
     public void prepareClass() {
         openMocks(this);
@@ -88,27 +94,118 @@ public class SelectTest {
         when(testRxJava3SortingRepository.findAllById(of(1L, 2L))).thenReturn(mockFlowable2);
         when(mockFlowable2.toList()).thenReturn(mockSingle2);
         when(mockSingle2.blockingGet()).thenReturn(TEST_ENTITIES);
+
+        when(testRepository.findAll(any(Sort.class))).thenReturn(TEST_ENTITIES);
+        when(reactiveCrudRepository.findAll(any(Sort.class))).thenReturn(mockFlux);
+        when(testRxJava2SortingRepository.findAll(any(Sort.class))).thenReturn(mockFlowable);
+        when(testRxJava3SortingRepository.findAll(any(Sort.class))).thenReturn(mockFlowable2);
+
+        when(testRepository.findAll(any(Pageable.class))).thenReturn(mockPage);
+        when(mockPage.getContent()).thenReturn(TEST_ENTITIES);
     }
 
-    @DataProvider
-    public Object[][] data() {
-        return new Object[][]{
-                {testRepository},
-                {reactiveCrudRepository},
-                {testRxJava2SortingRepository},
-                {testRxJava3SortingRepository}
-        };
-    }
+    @Test
+    public void selectByIdTest() {
+        var entity = springData().select("Test entity",
+                byId(testRepository, 1L));
 
-    @Test(dataProvider = "data")
-    public void selectByIdTest(Repository<TestEntity, Long> repository) {
-        var entity = springData().select("Test entity", byId(repository, 1L));
         assertThat(entity, is(TEST_ENTITIES.get(0)));
     }
 
-    @Test(dataProvider = "data")
-    public void selectByIdSTest(Repository<TestEntity, Long> repository) {
-        var entity = springData().select("Test entity", byIds(repository, 1L, 2L));
-        assertThat(entity, is(TEST_ENTITIES));
+    @Test
+    public void selectByIdTest2() {
+        var entity = springData().select("Test entity",
+                byId(reactiveCrudRepository, 1L));
+
+        assertThat(entity, is(TEST_ENTITIES.get(0)));
+    }
+
+    @Test
+    public void selectByIdTest3() {
+        var entity = springData().select("Test entity",
+                byId(testRxJava2SortingRepository, 1L));
+
+        assertThat(entity, is(TEST_ENTITIES.get(0)));
+    }
+
+    @Test
+    public void selectByIdTest4() {
+        var entity = springData().select("Test entity",
+                byId(testRxJava3SortingRepository, 1L));
+
+        assertThat(entity, is(TEST_ENTITIES.get(0)));
+    }
+
+    @Test
+    public void selectByIdSTest() {
+        var entities = springData().select("Test entity",
+                byIds(testRepository, 1L, 2L));
+
+        assertThat(entities, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectByIdSTest2() {
+        var entities = springData().select("Test entity",
+                byIds(reactiveCrudRepository, 1L, 2L));
+
+        assertThat(entities, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectByIdSTest3() {
+        var entities = springData().select("Test entity",
+                byIds(testRxJava2SortingRepository, 1L, 2L));
+
+        assertThat(entities, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectByIdSTest4() {
+        var entities = springData().select("Test entity",
+                byIds(testRxJava3SortingRepository, 1L, 2L));
+
+        assertThat(entities, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectBySortingTest() {
+        var entities = springData().select("Test entity",
+                allBySorting(testRepository, ASC, "id", "name"));
+
+        assertThat(entities, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectBySortingTest2() {
+        var entities = springData().select("Test entity",
+                allBySorting(reactiveCrudRepository, ASC, "id", "name"));
+
+        assertThat(entities, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectBySortingTest3() {
+        var entities = springData().select("Test entity",
+                allBySorting(testRxJava2SortingRepository, ASC, "id", "name"));
+
+        assertThat(entities, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectBySortingTest4() {
+        var entities = springData().select("Test entity",
+                allBySorting(testRxJava3SortingRepository, ASC, "id", "name"));
+
+        assertThat(entities, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectByPageable() {
+        var entities = springData().select("Test entity", asAPage(testRepository,
+                PageRequest.of(0,
+                        5,
+                        Sort.by("id").descending().and(Sort.by("name")))));
+        assertThat(entities, is(TEST_ENTITIES));
     }
 }

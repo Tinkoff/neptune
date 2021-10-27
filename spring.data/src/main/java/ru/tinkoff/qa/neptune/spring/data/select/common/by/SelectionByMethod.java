@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.spring.data.select.by;
+package ru.tinkoff.qa.neptune.spring.data.select.common.by;
 
 import org.springframework.data.repository.Repository;
 

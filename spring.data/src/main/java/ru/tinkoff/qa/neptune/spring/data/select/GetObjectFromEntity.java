@@ -58,7 +58,7 @@ public abstract class GetObjectFromEntity<T, M, S extends GetObjectFromEntity<T,
 
         @Override
         public GetObjectFromEntityImpl<T, M> setDescription(String description) {
-            ofNullable(getFrom()).ifPresent(o -> ((SelectOneStepSupplier.SelectOneStepSupplierImpl<?, ?, ?>) o).setDescription(description));
+            ofNullable(getFrom()).ifPresent(o -> ((SetsDescription) o).changeDescription(description));
             return this;
         }
     }

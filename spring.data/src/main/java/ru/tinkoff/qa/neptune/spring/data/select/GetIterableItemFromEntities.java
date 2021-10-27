@@ -56,7 +56,7 @@ public abstract class GetIterableItemFromEntities<T, M, S extends GetIterableIte
 
         @Override
         public GetIterableItemFromEntitiesImpl<T, M> setDescription(String description) {
-            ofNullable(getFrom()).ifPresent(o -> ((SelectOneStepSupplier.SelectOneStepSupplierImpl<?, ?, ?>) o).setDescription(description));
+            ofNullable(getFrom()).ifPresent(o -> ((SetsDescription) o).changeDescription(description));
             return this;
         }
     }

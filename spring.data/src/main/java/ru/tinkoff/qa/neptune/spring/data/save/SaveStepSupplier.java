@@ -15,8 +15,10 @@ import ru.tinkoff.qa.neptune.spring.data.RepositoryParameterValueGetter;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataContext;
 import ru.tinkoff.qa.neptune.spring.data.captors.EntitiesCaptor;
 import ru.tinkoff.qa.neptune.spring.data.save.dictionary.Update;
+import ru.tinkoff.qa.neptune.spring.data.select.HasRepositoryInfo;
 import ru.tinkoff.qa.neptune.spring.data.select.SelectManyStepSupplier;
 import ru.tinkoff.qa.neptune.spring.data.select.SelectOneStepSupplier;
+import ru.tinkoff.qa.neptune.spring.data.select.SetsDescription;
 
 import java.util.List;
 import java.util.Map;
@@ -29,6 +31,7 @@ import static java.util.List.of;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
+@SuppressWarnings("unchecked")
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Save:")
 @CaptureOnSuccess(by = EntitiesCaptor.class)
 public abstract class SaveStepSupplier<INPUT, RESULT, R, ID, T extends Repository<R, ID>>
@@ -50,9 +53,9 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R, ID, T extends Repositor
             SelectOneStepSupplier<R, ID, T> select) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var translated = translate(description);
-        var impl = ((SelectOneStepSupplier.SelectOneStepSupplierImpl<R, ID, T>) select);
-        impl.setDescription(translated);
-        return new SaveOneStepSupplier<>(impl.getRepository())
+        var repository = ((HasRepositoryInfo<R, ID, T>) select).getRepository();
+        ((SetsDescription) select).changeDescription(translated);
+        return new SaveOneStepSupplier<>(repository)
                 .setDescription(translated)
                 .from(select);
     }
@@ -73,9 +76,9 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R, ID, T extends Repositor
             SelectManyStepSupplier<R, ID, T> select) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var translated = translate(description);
-        var impl = ((SelectManyStepSupplier.SelectManyStepSupplierImpl<R, ID, T>) select);
-        impl.setDescription(translated);
-        return new SaveManyStepSupplier<>(impl.getRepository())
+        var repository = ((HasRepositoryInfo<R, ID, T>) select).getRepository();
+        ((SetsDescription) select).changeDescription(translated);
+        return new SaveManyStepSupplier<>(repository)
                 .setDescription(translated)
                 .from(select);
     }
@@ -109,11 +112,6 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R, ID, T extends Repositor
         checkArgument(updates.length > 0, "At least one update should be defined");
         this.updates = asList(updates);
         return this;
-    }
-
-    @Override
-    protected SaveStepSupplier<INPUT, RESULT, R, ID, T> setDescription(String description) {
-        return super.setDescription(description);
     }
 
     @IncludeParamsOfInnerGetterStep

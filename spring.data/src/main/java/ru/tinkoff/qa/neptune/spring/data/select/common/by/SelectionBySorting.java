@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.spring.data.select.by;
+package ru.tinkoff.qa.neptune.spring.data.select.common.by;
 
 import com.google.common.collect.Lists;
 import org.springframework.data.domain.Sort;

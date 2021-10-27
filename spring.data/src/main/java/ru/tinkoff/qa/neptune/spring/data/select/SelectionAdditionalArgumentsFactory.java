@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.spring.data.select;
 
-import ru.tinkoff.qa.neptune.spring.data.select.by.SelectionByMethod;
+import ru.tinkoff.qa.neptune.spring.data.select.common.by.SelectionByMethod;
 import ru.tinkoff.qa.neptune.spring.data.select.dictionary.Argument;
 import ru.tinkoff.qa.neptune.spring.data.select.dictionary.HowToSelect;
 import ru.tinkoff.qa.neptune.spring.data.select.dictionary.InvokedMethod;
@@ -11,6 +11,7 @@ import java.util.Map;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static java.lang.String.valueOf;
 import static java.util.Objects.isNull;
+import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 import static ru.tinkoff.qa.neptune.spring.data.data.serializer.DataSerializer.serializeObjects;
 
 final class SelectionAdditionalArgumentsFactory {
@@ -38,7 +39,7 @@ final class SelectionAdditionalArgumentsFactory {
             var s = ((SelectionByMethod<?, ?, ?, ?>) toRead);
             result.put(new InvokedMethod().toString(), s.getInvoked().toString());
             result.putAll(convertArguments(s.getParameters()));
-        } else {
+        } else if (isLoggable(toRead)) {
             result.put(new HowToSelect().toString(), valueOf(toRead));
         }
 

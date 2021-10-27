@@ -14,8 +14,10 @@ import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
 import ru.tinkoff.qa.neptune.spring.data.RepositoryParameterValueGetter;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataContext;
 import ru.tinkoff.qa.neptune.spring.data.captors.EntitiesCaptor;
+import ru.tinkoff.qa.neptune.spring.data.select.HasRepositoryInfo;
 import ru.tinkoff.qa.neptune.spring.data.select.SelectManyStepSupplier;
 import ru.tinkoff.qa.neptune.spring.data.select.SelectOneStepSupplier;
+import ru.tinkoff.qa.neptune.spring.data.select.SetsDescription;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +32,7 @@ import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.trans
 import static ru.tinkoff.qa.neptune.spring.data.data.serializer.DataSerializer.serializeObject;
 import static ru.tinkoff.qa.neptune.spring.data.data.serializer.DataSerializer.serializeObjects;
 
+@SuppressWarnings("unchecked")
 @IncludeParamsOfInnerGetterStep
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Delete:")
 public final class DeleteByQueryStepSupplier<TO_DELETE, R, ID, T extends Repository<R, ID>>
@@ -53,9 +56,9 @@ public final class DeleteByQueryStepSupplier<TO_DELETE, R, ID, T extends Reposit
             SelectOneStepSupplier<R, ID, T> select) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var translated = translate(description);
-        var impl = ((SelectOneStepSupplier.SelectOneStepSupplierImpl<R, ID, T>) select);
-        impl.setDescription(translated);
-        return new DeleteByQueryStepSupplier<>(impl.getRepository(), new DeleteEntities.DeleteOne<>(impl.getRepository()))
+        var repository = ((HasRepositoryInfo<R, ID, T>) select).getRepository();
+        ((SetsDescription) select).changeDescription(translated);
+        return new DeleteByQueryStepSupplier<>(repository, new DeleteEntities.DeleteOne<>(repository))
                 .setDescription(translated)
                 .from(select);
     }
@@ -78,9 +81,9 @@ public final class DeleteByQueryStepSupplier<TO_DELETE, R, ID, T extends Reposit
             SelectManyStepSupplier<R, ID, T> select) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var translated = translate(description);
-        var impl = ((SelectManyStepSupplier.SelectManyStepSupplierImpl<R, ID, T>) select);
-        impl.setDescription(translated);
-        return new DeleteByQueryStepSupplier<>(impl.getRepository(), new DeleteEntities.DeleteMany<>(impl.getRepository()))
+        var repository = ((HasRepositoryInfo<R, ID, T>) select).getRepository();
+        ((SetsDescription) select).changeDescription(translated);
+        return new DeleteByQueryStepSupplier<>(repository, new DeleteEntities.DeleteMany<>(repository))
                 .setDescription(translated)
                 .from(select);
     }
@@ -110,10 +113,5 @@ public final class DeleteByQueryStepSupplier<TO_DELETE, R, ID, T extends Reposit
         } else {
             deleted = of(serializeObject(ALWAYS, toDelete));
         }
-    }
-
-    @Override
-    protected DeleteByQueryStepSupplier<TO_DELETE, R, ID, T> setDescription(String description) {
-        return super.setDescription(description);
     }
 }
