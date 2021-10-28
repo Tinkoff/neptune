@@ -21,10 +21,10 @@ import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.trans
 @Description("By example. Probe: '{probe}'. Matcher: {matcher}")
 public abstract class SelectionByExample<R, ID, T extends Repository<R, ID>, RESULT> extends SpringDataFunction<T, RESULT> {
 
-    @DescriptionFragment(value = "probe", makeReadableBy = ProbeParameterValueGetter.class)
+    @DescriptionFragment(value = "probe", makeReadableBy = ProbeSerializingParameterValueGetter.class)
     private final R probe;
 
-    @DescriptionFragment("matcher")
+    @DescriptionFragment(value = "matcher", makeReadableBy = ProbeSerializingParameterValueGetter.class)
     private final ExampleMatcher matcher;
 
     private SelectionByExample(R probe, ExampleMatcher matcher) {
