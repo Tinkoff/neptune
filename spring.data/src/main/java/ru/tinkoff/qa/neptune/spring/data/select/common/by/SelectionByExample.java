@@ -8,41 +8,31 @@ import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.QueryByExampleExecutor;
 import org.springframework.data.repository.query.ReactiveQueryByExampleExecutor;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @SuppressWarnings("unchecked")
-@Description("By example. Probe: '{probe}'. Matcher: {matcher}")
+@Description("By example")
 public abstract class SelectionByExample<R, ID, T extends Repository<R, ID>, RESULT> extends SpringDataFunction<T, RESULT> {
 
-    @DescriptionFragment(value = "probe", makeReadableBy = ProbeSerializingParameterValueGetter.class)
-    private final R probe;
+    private R probe;
 
-    @DescriptionFragment(value = "matcher", makeReadableBy = ProbeSerializingParameterValueGetter.class)
-    private final ExampleMatcher matcher;
+    private ExampleMatcher matcher;
 
-    private SelectionByExample(R probe, ExampleMatcher matcher) {
+    private SelectionByExample() {
         super(QueryByExampleExecutor.class, ReactiveQueryByExampleExecutor.class);
-        checkNotNull(probe);
-        checkNotNull(matcher);
-        this.probe = probe;
-        this.matcher = matcher;
     }
 
-    public static <R, ID, T extends Repository<R, ID>> SelectionByExample<R, ID, T, R> getSingleByExample(R probe, ExampleMatcher matcher) {
-        return new SelectASingleByExample<>(probe, matcher);
+    public static <R, ID, T extends Repository<R, ID>> SelectASingleByExample<R, ID, T> getSingleByExample() {
+        return new SelectASingleByExample<>();
     }
 
-    public static <R, ID, T extends Repository<R, ID>> SelectionByExample<R, ID, T, Iterable<R>> getIterableByExample(R probe,
-                                                                                                                      ExampleMatcher matcher,
-                                                                                                                      Sort sort) {
-        return new SelectIterableByExample<>(probe, matcher, sort);
+    public static <R, ID, T extends Repository<R, ID>> SelectIterableByExample<R, ID, T> getIterableByExample() {
+        return new SelectIterableByExample<>();
     }
 
     protected final Example<R> getExample() {
@@ -54,12 +44,16 @@ public abstract class SelectionByExample<R, ID, T extends Repository<R, ID>, RES
         return translate(this);
     }
 
-    private static final class SelectASingleByExample<R, ID, T
-            extends Repository<R, ID>> extends SelectionByExample<R, ID, T, R> {
+    public void setProbe(R probe) {
+        this.probe = probe;
+    }
 
-        private SelectASingleByExample(R probe, ExampleMatcher matcher) {
-            super(probe, matcher);
-        }
+    public void setMatcher(ExampleMatcher matcher) {
+        this.matcher = matcher;
+    }
+
+    public static final class SelectASingleByExample<R, ID, T
+            extends Repository<R, ID>> extends SelectionByExample<R, ID, T, R> {
 
         @Override
         public R apply(T t) {
@@ -75,15 +69,10 @@ public abstract class SelectionByExample<R, ID, T extends Repository<R, ID>, RES
         }
     }
 
-    private static final class SelectIterableByExample<R, ID, T
+    public static final class SelectIterableByExample<R, ID, T
             extends Repository<R, ID>> extends SelectionByExample<R, ID, T, Iterable<R>> {
 
-        private final Sort sort;
-
-        private SelectIterableByExample(R probe, ExampleMatcher matcher, Sort sort) {
-            super(probe, matcher);
-            this.sort = sort;
-        }
+        private Sort sort;
 
         @Override
         public Iterable<R> apply(T t) {
@@ -105,9 +94,8 @@ public abstract class SelectionByExample<R, ID, T extends Repository<R, ID>, RES
             throw unsupportedRepository(t);
         }
 
-        @Override
-        public String toString() {
-            return isNull(sort) ? super.toString() : super.toString() + " " + sort;
+        public void setSort(Sort sort) {
+            this.sort = sort;
         }
     }
 }

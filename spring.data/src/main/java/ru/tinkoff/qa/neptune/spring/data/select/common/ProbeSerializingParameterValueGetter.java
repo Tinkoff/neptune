@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.spring.data.select.common.by;
+package ru.tinkoff.qa.neptune.spring.data.select.common;
 
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 

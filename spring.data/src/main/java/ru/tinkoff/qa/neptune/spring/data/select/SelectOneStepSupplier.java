@@ -40,7 +40,7 @@ public abstract class SelectOneStepSupplier<R, ID, T extends Repository<R, ID>>
 
     private final SelectionAdditionalArgumentsFactory additionalArgumentsFactory;
 
-    SelectOneStepSupplier(T repository, Function<T, R> select) {
+    protected SelectOneStepSupplier(T repository, Function<T, R> select) {
         super(select);
         checkNotNull(select);
         additionalArgumentsFactory = new SelectionAdditionalArgumentsFactory(select);

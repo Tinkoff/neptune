@@ -37,7 +37,7 @@ public abstract class SelectManyStepSupplier<R, ID, T extends Repository<R, ID>>
 
     private final SelectionAdditionalArgumentsFactory additionalArgumentsFactory;
 
-    SelectManyStepSupplier(T repository, Function<T, Iterable<R>> select) {
+    protected SelectManyStepSupplier(T repository, Function<T, Iterable<R>> select) {
         super(select);
         checkNotNull(select);
         additionalArgumentsFactory = new SelectionAdditionalArgumentsFactory(select);

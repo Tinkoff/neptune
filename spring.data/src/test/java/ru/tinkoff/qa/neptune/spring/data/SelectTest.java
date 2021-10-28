@@ -29,7 +29,7 @@ import static org.springframework.data.domain.ExampleMatcher.matchingAny;
 import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.data.domain.Sort.by;
 import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
-import static ru.tinkoff.qa.neptune.spring.data.select.SelectStepFactoryCommon.*;
+import static ru.tinkoff.qa.neptune.spring.data.select.CommonSelectStepFactory.*;
 
 public class SelectTest {
 
@@ -111,6 +111,9 @@ public class SelectTest {
 
         when(testRepository.findAll(any(Example.class))).thenReturn(TEST_ENTITIES);
         when(testRepository.findAll(any(Example.class), any(Sort.class))).thenReturn(TEST_ENTITIES);
+
+        when(reactiveCrudRepository.findAll(any(Example.class))).thenReturn(mockFlux);
+        when(reactiveCrudRepository.findAll(any(Example.class), any(Sort.class))).thenReturn(mockFlux);
     }
 
     @Test
@@ -147,7 +150,7 @@ public class SelectTest {
 
     @Test
     public void selectByIdSTest() {
-        var entities = springData().select("Test entity",
+        var entities = springData().select("Test entities",
                 byIds(testRepository, 1L, 2L));
 
         assertThat(entities, is(TEST_ENTITIES));
@@ -155,7 +158,7 @@ public class SelectTest {
 
     @Test
     public void selectByIdSTest2() {
-        var entities = springData().select("Test entity",
+        var entities = springData().select("Test entities",
                 byIds(reactiveCrudRepository, 1L, 2L));
 
         assertThat(entities, is(TEST_ENTITIES));
@@ -163,7 +166,7 @@ public class SelectTest {
 
     @Test
     public void selectByIdSTest3() {
-        var entities = springData().select("Test entity",
+        var entities = springData().select("Test entities",
                 byIds(testRxJava2SortingRepository, 1L, 2L));
 
         assertThat(entities, is(TEST_ENTITIES));
@@ -171,7 +174,7 @@ public class SelectTest {
 
     @Test
     public void selectByIdSTest4() {
-        var entities = springData().select("Test entity",
+        var entities = springData().select("Test entities",
                 byIds(testRxJava3SortingRepository, 1L, 2L));
 
         assertThat(entities, is(TEST_ENTITIES));
@@ -179,7 +182,7 @@ public class SelectTest {
 
     @Test
     public void selectBySortingTest() {
-        var entities = springData().select("Test entity",
+        var entities = springData().select("Test entities",
                 allBySorting(testRepository, ASC, "id", "name"));
 
         assertThat(entities, is(TEST_ENTITIES));
@@ -187,7 +190,7 @@ public class SelectTest {
 
     @Test
     public void selectBySortingTest2() {
-        var entities = springData().select("Test entity",
+        var entities = springData().select("Test entities",
                 allBySorting(reactiveCrudRepository, ASC, "id", "name"));
 
         assertThat(entities, is(TEST_ENTITIES));
@@ -195,7 +198,7 @@ public class SelectTest {
 
     @Test
     public void selectBySortingTest3() {
-        var entities = springData().select("Test entity",
+        var entities = springData().select("Test entities",
                 allBySorting(testRxJava2SortingRepository, ASC, "id", "name"));
 
         assertThat(entities, is(TEST_ENTITIES));
@@ -203,7 +206,7 @@ public class SelectTest {
 
     @Test
     public void selectBySortingTest4() {
-        var entities = springData().select("Test entity",
+        var entities = springData().select("Test entities",
                 allBySorting(testRxJava3SortingRepository, ASC, "id", "name"));
 
         assertThat(entities, is(TEST_ENTITIES));
@@ -211,7 +214,7 @@ public class SelectTest {
 
     @Test
     public void selectByPageable() {
-        var entities = springData().select("Test entity", asAPage(testRepository)
+        var entities = springData().select("Test entities", asAPage(testRepository)
                 .number(0)
                 .size(5)
                 .sort(by("id").descending().and(by("name"))));
@@ -221,12 +224,68 @@ public class SelectTest {
     @Test
     public void selectOneByExampleTest() {
         var entity = springData().select("Test entity",
-                byExample(testRepository,
-                        new TestEntity(),
-                        matchingAny()
-                                .withMatcher("firstName", ignoreCase())
-                                .withMatcher("lastName", ignoreCase())));
+                byExample(testRepository, new TestEntity())
+                        .matcher(m -> m.withMatcher("firstName", ignoreCase()))
+                        .matcher(m -> m.withMatcher("lastName", ignoreCase()))
+                        .initialMatcher(matchingAny()));
 
         assertThat(entity, is(TEST_ENTITIES.get(0)));
+    }
+
+    @Test
+    public void selectOneByExampleTest2() {
+        var entity = springData().select("Test entity",
+                byExample(reactiveCrudRepository, new TestEntity())
+                        .matcher(m -> m.withMatcher("firstName", ignoreCase()))
+                        .matcher(m -> m.withMatcher("lastName", ignoreCase()))
+                        .initialMatcher(matchingAny()));
+
+        assertThat(entity, is(TEST_ENTITIES.get(0)));
+    }
+
+    @Test
+    public void selectAllByExampleTest() {
+        var entity = springData().select("Test entities",
+                allByExample(testRepository, new TestEntity())
+                        .matcher(m -> m.withMatcher("firstName", ignoreCase()))
+                        .matcher(m -> m.withMatcher("lastName", ignoreCase()))
+                        .initialMatcher(matchingAny()));
+
+        assertThat(entity, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectAllByExampleTest2() {
+        var entity = springData().select("Test entities",
+                allByExample(testRepository, new TestEntity())
+                        .matcher(m -> m.withMatcher("firstName", ignoreCase()))
+                        .matcher(m -> m.withMatcher("lastName", ignoreCase()))
+                        .initialMatcher(matchingAny())
+                        .sorting(ASC, "id", "name"));
+
+        assertThat(entity, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectAllByExampleTest3() {
+        var entity = springData().select("Test entities",
+                allByExample(reactiveCrudRepository, new TestEntity())
+                        .matcher(m -> m.withMatcher("firstName", ignoreCase()))
+                        .matcher(m -> m.withMatcher("lastName", ignoreCase()))
+                        .initialMatcher(matchingAny()));
+
+        assertThat(entity, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectAllByExampleTest4() {
+        var entity = springData().select("Test entities",
+                allByExample(reactiveCrudRepository, new TestEntity())
+                        .matcher(m -> m.withMatcher("firstName", ignoreCase()))
+                        .matcher(m -> m.withMatcher("lastName", ignoreCase()))
+                        .initialMatcher(matchingAny())
+                        .sorting(ASC, "id", "name"));
+
+        assertThat(entity, is(TEST_ENTITIES));
     }
 }

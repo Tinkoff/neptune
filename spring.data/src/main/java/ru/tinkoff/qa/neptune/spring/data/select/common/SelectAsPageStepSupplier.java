@@ -1,9 +1,10 @@
-package ru.tinkoff.qa.neptune.spring.data.select;
+package ru.tinkoff.qa.neptune.spring.data.select.common;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.spring.data.select.SelectManyStepSupplier;
 import ru.tinkoff.qa.neptune.spring.data.select.common.by.SelectionAsPage;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public abstract class SelectAsPageStepSupplier<R, ID, T extends PagingAndSorting
     @StepParameter("sort")
     Sort sort = unsorted();
 
-    SelectAsPageStepSupplier(T repository, SelectionAsPage<R, ID, T> select) {
+    protected SelectAsPageStepSupplier(T repository, SelectionAsPage<R, ID, T> select) {
         super(repository, select);
         this.select = select;
     }
@@ -68,22 +69,4 @@ public abstract class SelectAsPageStepSupplier<R, ID, T extends PagingAndSorting
         super.onStart(t);
     }
 
-    static final class DefaultSelectAsPageStepSupplier<R, ID, T extends PagingAndSortingRepository<R, ID>>
-            extends SelectAsPageStepSupplier<R, ID, T>
-            implements SetsDescription, HasRepositoryInfo<R, ID, T> {
-
-        DefaultSelectAsPageStepSupplier(T repository, SelectionAsPage<R, ID, T> select) {
-            super(repository, select);
-        }
-
-        @Override
-        public T getRepository() {
-            return HasRepositoryInfo.super.getRepository();
-        }
-
-        @Override
-        public void changeDescription(String description) {
-            SetsDescription.super.changeDescription(description);
-        }
-    }
 }
