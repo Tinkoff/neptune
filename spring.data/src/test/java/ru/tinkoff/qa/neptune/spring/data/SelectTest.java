@@ -4,9 +4,9 @@ import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 import org.mockito.Mock;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -24,7 +24,10 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
+import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.ignoreCase;
+import static org.springframework.data.domain.ExampleMatcher.matchingAny;
 import static org.springframework.data.domain.Sort.Direction.ASC;
+import static org.springframework.data.domain.Sort.by;
 import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
 import static ru.tinkoff.qa.neptune.spring.data.select.SelectStepFactoryCommon.*;
 
@@ -100,8 +103,14 @@ public class SelectTest {
         when(testRxJava2SortingRepository.findAll(any(Sort.class))).thenReturn(mockFlowable);
         when(testRxJava3SortingRepository.findAll(any(Sort.class))).thenReturn(mockFlowable2);
 
-        when(testRepository.findAll(any(Pageable.class))).thenReturn(mockPage);
+        when(testRepository.findAll(any(PageRequest.class))).thenReturn(mockPage);
         when(mockPage.getContent()).thenReturn(TEST_ENTITIES);
+
+        when(testRepository.findOne(any(Example.class))).thenReturn(ofNullable(TEST_ENTITIES.get(0)));
+        when(reactiveCrudRepository.findOne(any(Example.class))).thenReturn(mockMono);
+
+        when(testRepository.findAll(any(Example.class))).thenReturn(TEST_ENTITIES);
+        when(testRepository.findAll(any(Example.class), any(Sort.class))).thenReturn(TEST_ENTITIES);
     }
 
     @Test
@@ -202,10 +211,22 @@ public class SelectTest {
 
     @Test
     public void selectByPageable() {
-        var entities = springData().select("Test entity", asAPage(testRepository,
-                PageRequest.of(0,
-                        5,
-                        Sort.by("id").descending().and(Sort.by("name")))));
+        var entities = springData().select("Test entity", asAPage(testRepository)
+                .number(0)
+                .size(5)
+                .sort(by("id").descending().and(by("name"))));
         assertThat(entities, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectOneByExampleTest() {
+        var entity = springData().select("Test entity",
+                byExample(testRepository,
+                        new TestEntity(),
+                        matchingAny()
+                                .withMatcher("firstName", ignoreCase())
+                                .withMatcher("lastName", ignoreCase())));
+
+        assertThat(entity, is(TEST_ENTITIES.get(0)));
     }
 }

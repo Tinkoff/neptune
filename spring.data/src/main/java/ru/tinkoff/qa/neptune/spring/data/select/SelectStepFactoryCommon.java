@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.spring.data.select;
 
 import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -250,19 +249,18 @@ public final class SelectStepFactoryCommon {
     }
 
 
-    public static <R, ID, T extends PagingAndSortingRepository<R, ID>> SelectManyStepSupplier<R, ID, T> asAPage(T repository,
-                                                                                                                Pageable pageable) {
-        return new SelectManyStepSupplierImpl<>(repository, new SelectionAsPage<>(pageable));
+    public static <R, ID, T extends PagingAndSortingRepository<R, ID>> SelectAsPageStepSupplier<R, ID, T> asAPage(T repository) {
+        return new SelectAsPageStepSupplier.DefaultSelectAsPageStepSupplier<>(repository, new SelectionAsPage<>());
     }
 
 
-    public static <R, ID, T extends Repository<R, ID> & QueryByExampleExecutor<R>> SelectOneStepSupplier<R, ID, T> by(T repository,
-                                                                                                                      Function<T, R> f) {
+    public static <R, ID, T extends Repository<R, ID> & QueryByExampleExecutor<R>> SelectOneStepSupplier<R, ID, T> byInvocation(T repository,
+                                                                                                                                Function<T, R> f) {
         return new SelectOneStepSupplierImpl<>(repository, new SelectionByMethod<>(f));
     }
 
-    public static <R, S extends Iterable<R>, ID, T extends Repository<R, ID>> SelectManyStepSupplier<R, ID, T> allBy(T repository,
-                                                                                                                     Function<T, S> f) {
+    public static <R, S extends Iterable<R>, ID, T extends Repository<R, ID>> SelectManyStepSupplier<R, ID, T> allByInvocation(T repository,
+                                                                                                                               Function<T, S> f) {
         return new SelectManyStepSupplierImpl<>(repository, new SelectionByMethod<>((Function<T, Iterable<R>>) f));
     }
 }

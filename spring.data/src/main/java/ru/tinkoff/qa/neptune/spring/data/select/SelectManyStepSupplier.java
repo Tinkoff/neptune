@@ -41,6 +41,7 @@ public abstract class SelectManyStepSupplier<R, ID, T extends Repository<R, ID>>
         super(select);
         checkNotNull(select);
         additionalArgumentsFactory = new SelectionAdditionalArgumentsFactory(select);
+        addIgnored(Throwable.class);
         timeOut(SPRING_DATA_WAITING_FOR_SELECTION_RESULT_TIME.get());
         pollingInterval(SPRING_DATA_SLEEPING_TIME.get());
         from(repository);
