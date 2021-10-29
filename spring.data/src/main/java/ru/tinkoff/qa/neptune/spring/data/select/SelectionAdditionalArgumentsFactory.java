@@ -37,7 +37,7 @@ final class SelectionAdditionalArgumentsFactory {
         var result = new LinkedHashMap<String, String>();
         if (toRead instanceof SelectionByMethod) {
             var s = ((SelectionByMethod<?, ?, ?, ?>) toRead);
-            result.put(new InvokedMethod().toString(), s.getInvoked().toString());
+            result.put(new InvokedMethod().toString(), s.getInvoked().getName());
             result.putAll(convertArguments(s.getParameters()));
         } else if (isLoggable(toRead)) {
             result.put(new HowToSelect().toString(), valueOf(toRead));

@@ -23,7 +23,7 @@ public abstract class SpringDataFunction<INPUT, RESULT> implements Function<INPU
             return new IllegalArgumentException("Repository instance should not be null");
         }
 
-        var interfaces = getAllInterfaces(repo.getClass());
+        var interfaces = getAllInterfaces(repo);
         return new UnsupportedOperationException("Only following Repository interfaces are supported now: \r\n"
                 + stream(supported).map(Class::getName).collect(joining("\r\n"))
                 + "\r\n"

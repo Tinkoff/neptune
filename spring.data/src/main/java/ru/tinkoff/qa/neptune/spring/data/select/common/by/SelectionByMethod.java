@@ -26,7 +26,7 @@ public final class SelectionByMethod<R, ID, T extends Repository<R, ID>, RESULT>
     @Override
     public RESULT apply(T t) {
         var proxyRepo = (T) newProxyInstance(getSystemClassLoader(),
-                getAllInterfaces(t.getClass()),
+                getAllInterfaces(t),
                 new RepositoryMethodInvocationHandler(this, t));
         return delegate.apply(proxyRepo);
     }

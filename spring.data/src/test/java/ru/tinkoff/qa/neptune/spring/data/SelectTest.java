@@ -31,6 +31,7 @@ import static org.springframework.data.domain.Sort.by;
 import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
 import static ru.tinkoff.qa.neptune.spring.data.select.CommonSelectStepFactory.*;
 
+@SuppressWarnings("unchecked")
 public class SelectTest {
 
     private static final List<TestEntity> TEST_ENTITIES = new ArrayList<>(of(
@@ -114,6 +115,9 @@ public class SelectTest {
 
         when(reactiveCrudRepository.findAll(any(Example.class))).thenReturn(mockFlux);
         when(reactiveCrudRepository.findAll(any(Example.class), any(Sort.class))).thenReturn(mockFlux);
+
+        when(testRepository.findSomething(any(boolean.class), any(String.class), any(int.class))).thenReturn(TEST_ENTITIES.get(0));
+        when(testRepository.findEntities(any(boolean.class), any(String.class), any(int.class))).thenReturn(TEST_ENTITIES);
     }
 
     @Test
@@ -285,6 +289,22 @@ public class SelectTest {
                         .matcher(m -> m.withMatcher("lastName", ignoreCase()))
                         .initialMatcher(matchingAny())
                         .sorting(ASC, "id", "name"));
+
+        assertThat(entity, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectOneByInvocationTest() {
+        var entity = springData().select("Test entity",
+                byInvocation(testRepository, r -> r.findSomething(true, "ABCD", 123)));
+
+        assertThat(entity, is(TEST_ENTITIES.get(0)));
+    }
+
+    @Test
+    public void selectAllByInvocationTest() {
+        var entity = springData().select("Test entities",
+                allByInvocation(testRepository, r -> r.findEntities(true, "ABCD", 123)));
 
         assertThat(entity, is(TEST_ENTITIES));
     }

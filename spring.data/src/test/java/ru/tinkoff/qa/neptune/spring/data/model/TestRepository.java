@@ -6,5 +6,7 @@ import org.springframework.data.repository.query.QueryByExampleExecutor;
 
 public interface TestRepository extends PagingAndSortingRepository<TestEntity, Long>, QueryByExampleExecutor<TestEntity> {
 
-    TestEntity findSomething(Object... params);
+    TestEntity findSomething(boolean p1, String p2, int p3);
+
+    Iterable<TestEntity> findEntities(boolean p1, String p2, int p3);
 }
