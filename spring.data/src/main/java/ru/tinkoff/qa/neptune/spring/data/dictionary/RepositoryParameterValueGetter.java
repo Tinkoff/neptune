@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.spring.data;
+package ru.tinkoff.qa.neptune.spring.data.dictionary;
 
 import org.springframework.data.repository.Repository;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;

@@ -8,8 +8,8 @@ import org.springframework.data.repository.reactive.RxJava2CrudRepository;
 import org.springframework.data.repository.reactive.RxJava3CrudRepository;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.spring.data.IDParameterValueGetter;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
+import ru.tinkoff.qa.neptune.spring.data.dictionary.IDParameterValueGetter;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;

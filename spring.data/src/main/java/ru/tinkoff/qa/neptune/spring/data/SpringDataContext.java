@@ -11,6 +11,7 @@ import ru.tinkoff.qa.neptune.spring.data.delete.DeleteByQueryStepSupplier;
 import ru.tinkoff.qa.neptune.spring.data.save.SaveStepSupplier;
 import ru.tinkoff.qa.neptune.spring.data.select.*;
 
+import java.time.Duration;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -182,5 +183,70 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
                                                                  SelectManyStepSupplier<R, ID, T> select,
                                                                  UpdateAction<R>... updateActions) {
         return update(SaveStepSupplier.save(description, select), updateActions);
+    }
+
+    public <R, ID, T extends Repository<R, ID>> boolean presenceOf(String description,
+                                                                   SelectOneStepSupplier<R, ID, T> by,
+                                                                   Class<? extends Throwable>... toIgnore) {
+        checkArgument(isNotBlank(description), "Description should be defined");
+        ((SetsDescription) by).changeDescription(translate(description));
+        return super.presenceOf(by, toIgnore);
+    }
+
+    public <R, ID, T extends Repository<R, ID>> boolean presenceOfOrThrow(String description,
+                                                                          SelectOneStepSupplier<R, ID, T> by,
+                                                                          Class<? extends Throwable>... toIgnore) {
+        checkArgument(isNotBlank(description), "Description should be defined");
+        ((SetsDescription) by).changeDescription(translate(description));
+        return super.presenceOfOrThrow(by, toIgnore);
+    }
+
+    public <R, ID, T extends Repository<R, ID>> boolean presenceOf(String description,
+                                                                   SelectManyStepSupplier<R, ID, T> by,
+                                                                   Class<? extends Throwable>... toIgnore) {
+        checkArgument(isNotBlank(description), "Description should be defined");
+        ((SetsDescription) by).changeDescription(translate(description));
+        return super.presenceOf(by, toIgnore);
+    }
+
+    public <R, ID, T extends Repository<R, ID>> boolean presenceOfOrThrow(String description,
+                                                                          SelectManyStepSupplier<R, ID, T> by,
+                                                                          Class<? extends Throwable>... toIgnore) {
+        checkArgument(isNotBlank(description), "Description should be defined");
+        ((SetsDescription) by).changeDescription(translate(description));
+        return super.presenceOfOrThrow(by, toIgnore);
+    }
+
+
+    public <R, ID, T extends Repository<R, ID>> boolean absenceOf(String description,
+                                                                  SelectOneStepSupplier<R, ID, T> by,
+                                                                  Duration timeOut) {
+        checkArgument(isNotBlank(description), "Description should be defined");
+        ((SetsDescription) by).changeDescription(translate(description));
+        return super.absenceOf(by, timeOut);
+    }
+
+    public <R, ID, T extends Repository<R, ID>> boolean absenceOfOrThrow(String description,
+                                                                         SelectOneStepSupplier<R, ID, T> by,
+                                                                         Duration timeOut) {
+        checkArgument(isNotBlank(description), "Description should be defined");
+        ((SetsDescription) by).changeDescription(translate(description));
+        return super.absenceOfOrThrow(by, timeOut);
+    }
+
+    public <R, ID, T extends Repository<R, ID>> boolean absenceOf(String description,
+                                                                  SelectManyStepSupplier<R, ID, T> by,
+                                                                  Duration timeOut) {
+        checkArgument(isNotBlank(description), "Description should be defined");
+        ((SetsDescription) by).changeDescription(translate(description));
+        return super.absenceOf(by, timeOut);
+    }
+
+    public <R, ID, T extends Repository<R, ID>> boolean absenceOfOrThrow(String description,
+                                                                         SelectManyStepSupplier<R, ID, T> by,
+                                                                         Duration timeOut) {
+        checkArgument(isNotBlank(description), "Description should be defined");
+        ((SetsDescription) by).changeDescription(translate(description));
+        return super.absenceOfOrThrow(by, timeOut);
     }
 }

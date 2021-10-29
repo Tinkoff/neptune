@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.spring.data.select;
+package ru.tinkoff.qa.neptune.spring.data.select.common;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.CrudRepository;
@@ -9,9 +9,10 @@ import org.springframework.data.repository.query.ReactiveQueryByExampleExecutor;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.data.repository.reactive.RxJava2CrudRepository;
 import org.springframework.data.repository.reactive.RxJava3CrudRepository;
-import ru.tinkoff.qa.neptune.spring.data.select.common.SelectAsPageStepSupplier;
-import ru.tinkoff.qa.neptune.spring.data.select.common.SelectManyByExampleStepSupplier;
-import ru.tinkoff.qa.neptune.spring.data.select.common.SelectOneByExampleStepSupplier;
+import ru.tinkoff.qa.neptune.spring.data.select.HasRepositoryInfo;
+import ru.tinkoff.qa.neptune.spring.data.select.SelectManyStepSupplier;
+import ru.tinkoff.qa.neptune.spring.data.select.SelectOneStepSupplier;
+import ru.tinkoff.qa.neptune.spring.data.select.SetsDescription;
 import ru.tinkoff.qa.neptune.spring.data.select.common.by.SelectionAsPage;
 import ru.tinkoff.qa.neptune.spring.data.select.common.by.SelectionByExample;
 import ru.tinkoff.qa.neptune.spring.data.select.common.by.SelectionByMethod;
@@ -212,7 +213,7 @@ public final class CommonSelectStepFactory {
         return new CommonSelectManyStepSupplierImpl<>(repository, new SelectionByMethod<>((Function<T, Iterable<R>>) f));
     }
 
-    static final class CommonSelectOneStepSupplierImpl<R, ID, T extends Repository<R, ID>> extends
+    private static final class CommonSelectOneStepSupplierImpl<R, ID, T extends Repository<R, ID>> extends
             SelectOneStepSupplier<R, ID, T>
             implements SetsDescription, HasRepositoryInfo<R, ID, T> {
 
@@ -231,7 +232,7 @@ public final class CommonSelectStepFactory {
         }
     }
 
-    static final class CommonSelectManyStepSupplierImpl<R, ID, T extends Repository<R, ID>>
+    private static final class CommonSelectManyStepSupplierImpl<R, ID, T extends Repository<R, ID>>
             extends SelectManyStepSupplier<R, ID, T>
             implements SetsDescription, HasRepositoryInfo<R, ID, T> {
 
@@ -250,7 +251,7 @@ public final class CommonSelectStepFactory {
         }
     }
 
-    static final class CommonSelectAsPageStepSupplier<R, ID, T extends PagingAndSortingRepository<R, ID>>
+    private static final class CommonSelectAsPageStepSupplier<R, ID, T extends PagingAndSortingRepository<R, ID>>
             extends SelectAsPageStepSupplier<R, ID, T>
             implements SetsDescription, HasRepositoryInfo<R, ID, T> {
 
@@ -269,7 +270,7 @@ public final class CommonSelectStepFactory {
         }
     }
 
-    static final class CommonSelectOneByExampleStepSupplier<R, ID, T extends Repository<R, ID>> extends SelectOneByExampleStepSupplier<R, ID, T>
+    private static final class CommonSelectOneByExampleStepSupplier<R, ID, T extends Repository<R, ID>> extends SelectOneByExampleStepSupplier<R, ID, T>
             implements SetsDescription, HasRepositoryInfo<R, ID, T> {
 
         private CommonSelectOneByExampleStepSupplier(R probe, T repository, SelectionByExample.SelectASingleByExample<R, ID, T> select) {
@@ -287,7 +288,7 @@ public final class CommonSelectStepFactory {
         }
     }
 
-    static final class CommonSelectManyByExampleStepSupplier<R, ID, T extends Repository<R, ID>> extends SelectManyByExampleStepSupplier<R, ID, T>
+    private static final class CommonSelectManyByExampleStepSupplier<R, ID, T extends Repository<R, ID>> extends SelectManyByExampleStepSupplier<R, ID, T>
             implements SetsDescription, HasRepositoryInfo<R, ID, T> {
 
 

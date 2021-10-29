@@ -1,9 +1,9 @@
 package ru.tinkoff.qa.neptune.spring.data.select;
 
+import ru.tinkoff.qa.neptune.spring.data.dictionary.Argument;
+import ru.tinkoff.qa.neptune.spring.data.dictionary.HowToSelect;
+import ru.tinkoff.qa.neptune.spring.data.dictionary.InvokedMethod;
 import ru.tinkoff.qa.neptune.spring.data.select.common.by.SelectionByMethod;
-import ru.tinkoff.qa.neptune.spring.data.select.dictionary.Argument;
-import ru.tinkoff.qa.neptune.spring.data.select.dictionary.HowToSelect;
-import ru.tinkoff.qa.neptune.spring.data.select.dictionary.InvokedMethod;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

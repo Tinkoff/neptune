@@ -29,7 +29,7 @@ import static org.springframework.data.domain.ExampleMatcher.matchingAny;
 import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.data.domain.Sort.by;
 import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
-import static ru.tinkoff.qa.neptune.spring.data.select.CommonSelectStepFactory.*;
+import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.*;
 
 @SuppressWarnings("unchecked")
 public class SelectTest {

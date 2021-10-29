@@ -7,9 +7,9 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
-import ru.tinkoff.qa.neptune.spring.data.IDParameterValueGetter;
-import ru.tinkoff.qa.neptune.spring.data.RepositoryParameterValueGetter;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataContext;
+import ru.tinkoff.qa.neptune.spring.data.dictionary.IDParameterValueGetter;
+import ru.tinkoff.qa.neptune.spring.data.dictionary.RepositoryParameterValueGetter;
 
 import java.util.function.Function;
 

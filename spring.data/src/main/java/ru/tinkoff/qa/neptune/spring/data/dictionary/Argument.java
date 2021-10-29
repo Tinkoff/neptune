@@ -1,11 +1,11 @@
-package ru.tinkoff.qa.neptune.spring.data.select.dictionary;
+package ru.tinkoff.qa.neptune.spring.data.dictionary;
 
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
-@Description("Select by method invocation")
-public final class InvokedMethod {
+@Description("Argument")
+public final class Argument {
 
     @Override
     public String toString() {

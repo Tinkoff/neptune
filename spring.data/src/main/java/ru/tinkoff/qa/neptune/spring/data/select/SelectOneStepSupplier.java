@@ -6,9 +6,9 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporti
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
-import ru.tinkoff.qa.neptune.spring.data.RepositoryParameterValueGetter;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataContext;
 import ru.tinkoff.qa.neptune.spring.data.captors.EntitiesCaptor;
+import ru.tinkoff.qa.neptune.spring.data.dictionary.RepositoryParameterValueGetter;
 
 import java.time.Duration;
 import java.util.Map;
