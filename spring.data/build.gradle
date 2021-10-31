@@ -6,6 +6,10 @@ test {
     useTestNG()
 }
 
+configurations {
+    bundleGeneration
+}
+
 dependencies {
     implementation(project(":database.abstractions"))
     inpath(project(":core.api")) {
@@ -28,6 +32,8 @@ dependencies {
     testImplementation('io.projectreactor:reactor-test:3.4.11')
     testImplementation(group: 'io.micrometer', name: 'micrometer-core', version: '1.7.5')
     testImplementation(group: 'io.reactivex.rxjava3', name: 'rxjava', version: '3.1.2')
+
+    bundleGeneration(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
 }
 
 java {
@@ -36,6 +42,7 @@ java {
 }
 
 task generateBundle(type: JavaExec)  {
+    classpath=configurations.bundleGeneration + sourceSets.main.compileClasspath
     classpath sourceSets.main.runtimeClasspath
     main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
     args "ru_RU",

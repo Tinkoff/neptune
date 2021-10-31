@@ -8,7 +8,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static java.util.Arrays.stream;
 import static ru.tinkoff.qa.neptune.spring.data.data.serializer.DataSerializer.serializeObject;
 
-public final class IDParameterValueGetter implements ParameterValueGetter<Object[]> {
+public final class ObjectArrayParameterValueGetter implements ParameterValueGetter<Object[]> {
 
     @Override
     public String getParameterValue(Object[] fieldValue) {

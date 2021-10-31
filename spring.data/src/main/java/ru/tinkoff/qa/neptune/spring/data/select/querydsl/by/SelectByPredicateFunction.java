@@ -1,19 +1,21 @@
 package ru.tinkoff.qa.neptune.spring.data.select.querydsl.by;
 
 import com.querydsl.core.types.Predicate;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import org.springframework.data.repository.Repository;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayList;
 
-public abstract class ByPredicateFunction<R, T extends QuerydslPredicateExecutor<R>, RESULT> extends SpringDataFunction<T, RESULT> {
+public abstract class SelectByPredicateFunction<R, ID, T extends Repository<R, ID> & QuerydslPredicateExecutor<R>, RESULT> extends SpringDataFunction<T, RESULT> {
 
     final Predicate predicate;
 
-    public ByPredicateFunction(Predicate predicate) {
+    public SelectByPredicateFunction(Predicate predicate) {
         super(QuerydslPredicateExecutor.class);
         checkNotNull(predicate);
         this.predicate = predicate;
@@ -24,7 +26,7 @@ public abstract class ByPredicateFunction<R, T extends QuerydslPredicateExecutor
     }
 
     @Description("By predicate")
-    public static final class SelectOneByPredicate<R, T extends QuerydslPredicateExecutor<R>> extends ByPredicateFunction<R, T, R> {
+    public static final class SelectOneByPredicate<R, ID, T extends Repository<R, ID> & QuerydslPredicateExecutor<R>> extends SelectByPredicateFunction<R, ID, T, R> {
 
         public SelectOneByPredicate(Predicate predicate) {
             super(predicate);
@@ -37,7 +39,7 @@ public abstract class ByPredicateFunction<R, T extends QuerydslPredicateExecutor
     }
 
     @Description("By predicate")
-    public static final class SelectManyByPredicate<R, T extends QuerydslPredicateExecutor<R>> extends ByPredicateFunction<R, T, Iterable<R>> {
+    public static final class SelectManyByPredicate<R, ID, T extends Repository<R, ID> & QuerydslPredicateExecutor<R>> extends SelectByPredicateFunction<R, ID, T, Iterable<R>> {
 
         public SelectManyByPredicate(Predicate predicate) {
             super(predicate);
@@ -50,7 +52,7 @@ public abstract class ByPredicateFunction<R, T extends QuerydslPredicateExecutor
     }
 
     @Description("By predicate and sorting")
-    public static final class SelectManyByPredicateAndSorting<R, T extends QuerydslPredicateExecutor<R>> extends ByPredicateFunction<R, T, Iterable<R>> {
+    public static final class SelectManyByPredicateAndSorting<R, ID, T extends Repository<R, ID> & QuerydslPredicateExecutor<R>> extends SelectByPredicateFunction<R, ID, T, Iterable<R>> {
 
         private final Sort sort;
 
@@ -67,6 +69,26 @@ public abstract class ByPredicateFunction<R, T extends QuerydslPredicateExecutor
         @Override
         public Iterable<R> apply(T t) {
             return newArrayList(t.findAll(predicate, sort));
+        }
+    }
+
+    @Description("By predicate as page")
+    public static final class SelectManyByPredicateAndPageable<R, ID, T extends Repository<R, ID> & QuerydslPredicateExecutor<R>> extends SelectByPredicateFunction<R, ID, T, Iterable<R>> {
+
+        private Pageable pageable;
+
+        public SelectManyByPredicateAndPageable(Predicate predicate) {
+            super(predicate);
+        }
+
+        @Override
+        public Iterable<R> apply(T t) {
+            return newArrayList(t.findAll(predicate, pageable));
+        }
+
+
+        public void setPageable(Pageable pageable) {
+            this.pageable = pageable;
         }
     }
 }

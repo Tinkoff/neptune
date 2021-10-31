@@ -3,28 +3,28 @@ package ru.tinkoff.qa.neptune.spring.data.select.querydsl.by;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import org.springframework.data.repository.Repository;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
 
 import static com.google.common.base.Preconditions.*;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 
-public final class ByOrderedFunction<R, T extends QuerydslPredicateExecutor<R>>
+public final class SelectByOrderedFunction<R, T extends Repository<R, ?> & QuerydslPredicateExecutor<R>>
         extends SpringDataFunction<T, Iterable<R>> {
 
     private Predicate predicate;
     private OrderSpecifier<?>[] orderSpecifiers;
 
-    public ByOrderedFunction() {
+    public SelectByOrderedFunction() {
         super(QuerydslPredicateExecutor.class);
     }
 
     public void setPredicate(Predicate predicate) {
-        checkNotNull(predicate);
         this.predicate = predicate;
     }
 
-    public void setPredicate(OrderSpecifier<?>... orders) {
+    public void setOrderSpecifiers(OrderSpecifier<?>... orders) {
         checkNotNull(orders);
         checkArgument(orders.length > 0, "At least one order specifier should be defined");
         this.orderSpecifiers = orders;

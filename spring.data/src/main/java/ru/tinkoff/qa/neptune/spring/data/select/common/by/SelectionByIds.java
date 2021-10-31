@@ -9,7 +9,7 @@ import org.springframework.data.repository.reactive.RxJava3CrudRepository;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
-import ru.tinkoff.qa.neptune.spring.data.dictionary.IDParameterValueGetter;
+import ru.tinkoff.qa.neptune.spring.data.dictionary.ObjectArrayParameterValueGetter;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -22,7 +22,7 @@ import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.trans
 @Description("id(s) {ids}")
 public abstract class SelectionByIds<R, ID, T extends Repository<R, ID>, RESULT> extends SpringDataFunction<T, RESULT> {
 
-    @DescriptionFragment(value = "ids", makeReadableBy = IDParameterValueGetter.class)
+    @DescriptionFragment(value = "ids", makeReadableBy = ObjectArrayParameterValueGetter.class)
     final ID[] ids;
 
     @SafeVarargs
