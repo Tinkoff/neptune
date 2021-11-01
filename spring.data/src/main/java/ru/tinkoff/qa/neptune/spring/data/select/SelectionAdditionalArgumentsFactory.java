@@ -33,14 +33,20 @@ final class SelectionAdditionalArgumentsFactory {
         return result;
     }
 
+    Map<String, String> getParameters() {
+        var result = new LinkedHashMap<String, String>();
+        if (isLoggable(toRead)) {
+            result.put(new HowToSelect().toString(), valueOf(toRead));
+        }
+        return result;
+    }
+
     Map<String, String> getAdditionalParameters() {
         var result = new LinkedHashMap<String, String>();
         if (toRead instanceof SelectionByMethod) {
             var s = ((SelectionByMethod<?, ?, ?, ?>) toRead);
             result.put(new InvokedMethod().toString(), s.getInvoked().getName());
             result.putAll(convertArguments(s.getParameters()));
-        } else if (isLoggable(toRead)) {
-            result.put(new HowToSelect().toString(), valueOf(toRead));
         }
 
         return result;

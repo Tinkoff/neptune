@@ -32,6 +32,7 @@ dependencies {
     testImplementation('io.projectreactor:reactor-test:3.4.11')
     testImplementation(group: 'io.micrometer', name: 'micrometer-core', version: '1.7.5')
     testImplementation(group: 'io.reactivex.rxjava3', name: 'rxjava', version: '3.1.2')
+    testImplementation(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
 
     bundleGeneration(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
 }

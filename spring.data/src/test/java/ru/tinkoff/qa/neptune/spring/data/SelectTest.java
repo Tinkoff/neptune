@@ -1,5 +1,8 @@
 package ru.tinkoff.qa.neptune.spring.data;
 
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
@@ -8,6 +11,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.querydsl.QPageRequest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import reactor.core.publisher.Flux;
@@ -30,6 +34,7 @@ import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.data.domain.Sort.by;
 import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
 import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.*;
+import static ru.tinkoff.qa.neptune.spring.data.select.querydsl.QueryDSLSelectStepFactory.*;
 
 @SuppressWarnings("unchecked")
 public class SelectTest {
@@ -71,6 +76,12 @@ public class SelectTest {
     private io.reactivex.rxjava3.core.Flowable<TestEntity> mockFlowable2;
     @Mock
     private io.reactivex.rxjava3.core.Single<List<TestEntity>> mockSingle2;
+
+    @Mock
+    private TestQuerydslPredicateExecutorRepository querydslRepository;
+
+    @Mock
+    private TestReactiveQuerydslPredicateExecutorRepository reactiveQuerydslRepository;
 
     @Mock
     private Page<TestEntity> mockPage;
@@ -118,6 +129,44 @@ public class SelectTest {
 
         when(testRepository.findSomething(any(boolean.class), any(String.class), any(int.class))).thenReturn(TEST_ENTITIES.get(0));
         when(testRepository.findEntities(any(boolean.class), any(String.class), any(int.class))).thenReturn(TEST_ENTITIES);
+
+        when(querydslRepository.findOne(any(Predicate.class))).thenReturn(ofNullable(TEST_ENTITIES.get(0)));
+        when(querydslRepository.findAll(any(Predicate.class))).thenReturn(TEST_ENTITIES);
+
+        when(reactiveQuerydslRepository.findOne(any(Predicate.class))).thenReturn(mockMono);
+        when(reactiveQuerydslRepository.findAll(any(Predicate.class))).thenReturn(mockFlux);
+
+        when(querydslRepository.findAll(any(Predicate.class), any(Sort.class))).thenReturn(TEST_ENTITIES);
+        when(reactiveQuerydslRepository.findAll(any(Predicate.class), any(Sort.class))).thenReturn(mockFlux);
+
+        when(querydslRepository.findAll(any(Predicate.class),
+                any(OrderSpecifier.class),
+                any(OrderSpecifier.class),
+                any(OrderSpecifier.class)))
+                .thenReturn(TEST_ENTITIES);
+
+        when(querydslRepository.findAll(any(OrderSpecifier.class),
+                any(OrderSpecifier.class),
+                any(OrderSpecifier.class)))
+                .thenReturn(TEST_ENTITIES);
+
+        when(reactiveQuerydslRepository.findAll(any(Predicate.class),
+                any(OrderSpecifier.class),
+                any(OrderSpecifier.class),
+                any(OrderSpecifier.class))).thenReturn(mockFlux);
+        when(reactiveQuerydslRepository.findAll(
+                any(OrderSpecifier.class),
+                any(OrderSpecifier.class),
+                any(OrderSpecifier.class))).thenReturn(mockFlux);
+
+        when(querydslRepository.findAll(any(Predicate.class),
+                any(QPageRequest.class)))
+                .thenReturn(mockPage);
+
+        when(testRepository.findAll()).thenReturn(TEST_ENTITIES);
+        when(reactiveCrudRepository.findAll()).thenReturn(mockFlux);
+        when(testRxJava2SortingRepository.findAll()).thenReturn(mockFlowable);
+        when(testRxJava3SortingRepository.findAll()).thenReturn(mockFlowable2);
     }
 
     @Test
@@ -303,9 +352,196 @@ public class SelectTest {
 
     @Test
     public void selectAllByInvocationTest() {
-        var entity = springData().select("Test entities",
+        var entities = springData().select("Test entities",
                 allByInvocation(testRepository, r -> r.findEntities(true, "ABCD", 123)));
 
-        assertThat(entity, is(TEST_ENTITIES));
+        assertThat(entities, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectByPredicateTest() {
+        var q = QTestEntity.qTestEntity;
+        var predicate = q.id.eq(1L)
+                .and(q.name.eq("Test name"))
+                .and(q.listData.contains("A"));
+
+        var entity = springData().select("Test entity",
+                byPredicate(querydslRepository, predicate));
+
+        assertThat(entity, is(TEST_ENTITIES.get(0)));
+    }
+
+    @Test
+    public void selectByPredicateTest2() {
+        var q = QTestEntity.qTestEntity;
+        var predicate = q.id.eq(1L)
+                .and(q.name.eq("Test name"))
+                .and(q.listData.contains("A"));
+
+        var entity = springData().select("Test entity",
+                byPredicate(reactiveQuerydslRepository, predicate));
+
+        assertThat(entity, is(TEST_ENTITIES.get(0)));
+    }
+
+    @Test
+    public void selectAllByPredicateTest() {
+        var q = QTestEntity.qTestEntity;
+        var predicate = q.id.eq(1L)
+                .and(q.name.eq("Test name"))
+                .and(q.listData.contains("A"));
+
+        var entities = springData().select("Test entities",
+                allByPredicate(querydslRepository, predicate));
+
+        assertThat(entities, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectAllByPredicateTest2() {
+        var q = QTestEntity.qTestEntity;
+        var predicate = q.id.eq(1L)
+                .and(q.name.eq("Test name"))
+                .and(q.listData.contains("A"));
+
+        var entities = springData().select("Test entities",
+                allByPredicate(reactiveQuerydslRepository, predicate));
+
+        assertThat(entities, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectAllByPredicateAndSortTest() {
+        var q = QTestEntity.qTestEntity;
+        var predicate = q.id.eq(1L)
+                .and(q.name.eq("Test name"))
+                .and(q.listData.contains("A"));
+
+        var entities = springData().select("Test entities",
+                allByPredicate(querydslRepository,
+                        predicate,
+                        ASC, "id", "name"));
+
+        assertThat(entities, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectAllByPredicateAndSortTest2() {
+        var q = QTestEntity.qTestEntity;
+        var predicate = q.id.eq(1L)
+                .and(q.name.eq("Test name"))
+                .and(q.listData.contains("A"));
+
+        var entities = springData().select("Test entities",
+                allByPredicate(reactiveQuerydslRepository,
+                        predicate,
+                        ASC, "id", "name"));
+
+        assertThat(entities, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectAllOrderedTest() {
+        var q = QTestEntity.qTestEntity;
+
+        var entities = springData().select("Test entities",
+                allOrdered(querydslRepository, Order.ASC, q.id)
+                        .orderSpecifier(Order.DESC, q.name)
+                        .orderSpecifier(Order.ASC, q.arrayData));
+
+        assertThat(entities, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectAllOrderedTest2() {
+        var q = QTestEntity.qTestEntity;
+
+        var entities = springData().select("Test entities",
+                allOrdered(reactiveQuerydslRepository, Order.ASC, q.id)
+                        .orderSpecifier(Order.DESC, q.name)
+                        .orderSpecifier(Order.ASC, q.arrayData));
+
+        assertThat(entities, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectAllOrderedTest3() {
+        var q = QTestEntity.qTestEntity;
+        var predicate = q.id.eq(1L)
+                .and(q.name.eq("Test name"))
+                .and(q.listData.contains("A"));
+
+        var entities = springData().select("Test entities",
+                allOrdered(querydslRepository, Order.ASC, q.id)
+                        .orderSpecifier(Order.DESC, q.name)
+                        .orderSpecifier(Order.ASC, q.arrayData)
+                        .predicate(predicate));
+
+        assertThat(entities, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectAllOrderedTest4() {
+        var q = QTestEntity.qTestEntity;
+        var predicate = q.id.eq(1L)
+                .and(q.name.eq("Test name"))
+                .and(q.listData.contains("A"));
+
+        var entities = springData().select("Test entities",
+                allOrdered(reactiveQuerydslRepository, Order.ASC, q.id)
+                        .orderSpecifier(Order.DESC, q.name)
+                        .orderSpecifier(Order.ASC, q.arrayData)
+                        .predicate(predicate));
+
+        assertThat(entities, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectAllAsPageByPredicate() {
+        var q = QTestEntity.qTestEntity;
+        var predicate = q.id.eq(1L)
+                .and(q.name.eq("Test name"))
+                .and(q.listData.contains("A"));
+
+        var entities = springData().select("Test entities",
+                asAPageByPredicate(querydslRepository, predicate)
+                        .number(0)
+                        .size(5)
+                        .orderSpecifier(Order.DESC, q.name)
+                        .orderSpecifier(Order.ASC, q.arrayData));
+
+        assertThat(entities, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectAllTest() {
+        var entities = springData().select("Test entities",
+                all(testRepository));
+
+        assertThat(entities, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectAllTest2() {
+        var entities = springData().select("Test entities",
+                all(reactiveCrudRepository));
+
+        assertThat(entities, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectAllTest3() {
+        var entities = springData().select("Test entities",
+                all(testRxJava2SortingRepository));
+
+        assertThat(entities, is(TEST_ENTITIES));
+    }
+
+    @Test
+    public void selectAllTest4() {
+        var entities = springData().select("Test entities",
+                all(testRxJava3SortingRepository));
+
+        assertThat(entities, is(TEST_ENTITIES));
     }
 }

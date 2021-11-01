@@ -13,10 +13,7 @@ import ru.tinkoff.qa.neptune.spring.data.select.HasRepositoryInfo;
 import ru.tinkoff.qa.neptune.spring.data.select.SelectManyStepSupplier;
 import ru.tinkoff.qa.neptune.spring.data.select.SelectOneStepSupplier;
 import ru.tinkoff.qa.neptune.spring.data.select.SetsDescription;
-import ru.tinkoff.qa.neptune.spring.data.select.common.by.SelectionAsPage;
-import ru.tinkoff.qa.neptune.spring.data.select.common.by.SelectionByExample;
-import ru.tinkoff.qa.neptune.spring.data.select.common.by.SelectionByMethod;
-import ru.tinkoff.qa.neptune.spring.data.select.common.by.SelectionBySorting;
+import ru.tinkoff.qa.neptune.spring.data.select.common.by.*;
 
 import java.util.List;
 import java.util.function.Function;
@@ -70,6 +67,21 @@ public final class CommonSelectStepFactory {
         return new CommonSelectManyStepSupplierImpl<>(repository, getIterableByIds(ids));
     }
 
+    public static <R, ID, T extends CrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> all(T repository) {
+        return new CommonSelectManyStepSupplierImpl<>(repository, new SelectAll<>());
+    }
+
+    public static <R, ID, T extends ReactiveCrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> all(T repository) {
+        return new CommonSelectManyStepSupplierImpl<>(repository, new SelectAll<>());
+    }
+
+    public static <R, ID, T extends RxJava2CrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> all(T repository) {
+        return new CommonSelectManyStepSupplierImpl<>(repository, new SelectAll<>());
+    }
+
+    public static <R, ID, T extends RxJava3CrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> all(T repository) {
+        return new CommonSelectManyStepSupplierImpl<>(repository, new SelectAll<>());
+    }
 
     public static <R, ID, T extends CrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
                                                                                                          Sort sort) {

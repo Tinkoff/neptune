@@ -74,6 +74,13 @@ public abstract class SelectManyStepSupplier<R, ID, T extends Repository<R, ID>>
     }
 
     @Override
+    public Map<String, String> getParameters() {
+        var params = additionalArgumentsFactory.getParameters();
+        params.putAll(super.getParameters());
+        return params;
+    }
+
+    @Override
     protected Map<String, String> additionalParameters() {
         return additionalArgumentsFactory.getAdditionalParameters();
     }

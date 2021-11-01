@@ -1,23 +1,30 @@
 package ru.tinkoff.qa.neptune.spring.data.select.querydsl.by;
 
+import com.google.common.collect.Lists;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import org.springframework.data.querydsl.ReactiveQuerydslPredicateExecutor;
 import org.springframework.data.repository.Repository;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
 
 import static com.google.common.base.Preconditions.*;
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
-public final class SelectByOrderedFunction<R, T extends Repository<R, ?> & QuerydslPredicateExecutor<R>>
+@Description("By order specifiers")
+@SuppressWarnings("unchecked")
+public final class SelectByOrderedFunction<R, ID, T extends Repository<R, ID>>
         extends SpringDataFunction<T, Iterable<R>> {
 
     private Predicate predicate;
     private OrderSpecifier<?>[] orderSpecifiers;
 
     public SelectByOrderedFunction() {
-        super(QuerydslPredicateExecutor.class);
+        super(QuerydslPredicateExecutor.class, ReactiveQuerydslPredicateExecutor.class);
     }
 
     public void setPredicate(Predicate predicate) {
@@ -34,7 +41,36 @@ public final class SelectByOrderedFunction<R, T extends Repository<R, ?> & Query
     public Iterable<R> apply(T t) {
         checkState(nonNull(orderSpecifiers) && orderSpecifiers.length > 0, "At least one order specifier should be defined");
         return ofNullable(predicate)
-                .map(p -> t.findAll(p, orderSpecifiers))
-                .orElseGet(() -> t.findAll(orderSpecifiers));
+                .map(p -> {
+                    if (t instanceof QuerydslPredicateExecutor) {
+                        return newArrayList(((QuerydslPredicateExecutor<R>) t).findAll(predicate, orderSpecifiers));
+                    }
+
+                    if (t instanceof ReactiveQuerydslPredicateExecutor) {
+                        return ofNullable(((ReactiveQuerydslPredicateExecutor<R>) t).findAll(predicate, orderSpecifiers).collectList().block())
+                                .map(Lists::newArrayList)
+                                .orElse(null);
+                    }
+
+                    throw unsupportedRepository(t);
+                })
+                .orElseGet(() -> {
+                    if (t instanceof QuerydslPredicateExecutor) {
+                        return newArrayList(((QuerydslPredicateExecutor<R>) t).findAll(orderSpecifiers));
+                    }
+
+                    if (t instanceof ReactiveQuerydslPredicateExecutor) {
+                        return ofNullable(((ReactiveQuerydslPredicateExecutor<R>) t).findAll(orderSpecifiers).collectList().block())
+                                .map(Lists::newArrayList)
+                                .orElse(null);
+                    }
+
+                    throw unsupportedRepository(t);
+                });
+    }
+
+    @Override
+    public String toString() {
+        return translate(this);
     }
 }

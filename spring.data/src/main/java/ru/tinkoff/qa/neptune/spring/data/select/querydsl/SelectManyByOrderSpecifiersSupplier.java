@@ -25,7 +25,7 @@ import static ru.tinkoff.qa.neptune.spring.data.data.serializer.DataSerializer.s
 
 @SuppressWarnings("unchecked")
 public abstract class SelectManyByOrderSpecifiersSupplier<R, ID,
-        T extends Repository<R, ID> & QuerydslPredicateExecutor<R>,
+        T extends Repository<R, ID>,
         S extends SelectManyByOrderSpecifiersSupplier<R, ID, T, S>>
         extends SelectManyStepSupplier<R, ID, T> {
 
@@ -65,13 +65,13 @@ public abstract class SelectManyByOrderSpecifiersSupplier<R, ID,
     }
 
     public static abstract class SelectManyByPredicateAndOrderSpecifiersSupplier<R, ID,
-            T extends Repository<R, ID> & QuerydslPredicateExecutor<R>>
+            T extends Repository<R, ID>>
             extends SelectManyByOrderSpecifiersSupplier<R, ID, T, SelectManyByPredicateAndOrderSpecifiersSupplier<R, ID, T>> {
 
         @StepParameter(value = "Predicate", makeReadableBy = PredicateParameterValueGetter.class, doNotReportNullValues = true)
         private Predicate predicate;
 
-        protected SelectManyByPredicateAndOrderSpecifiersSupplier(T repository, SelectByOrderedFunction<R, T> f) {
+        protected SelectManyByPredicateAndOrderSpecifiersSupplier(T repository, SelectByOrderedFunction<R, ID, T> f) {
             super(repository, f);
         }
 
@@ -82,8 +82,8 @@ public abstract class SelectManyByOrderSpecifiersSupplier<R, ID,
 
         @Override
         protected void onStart(T t) {
-            ((SelectByOrderedFunction<R, T>) f).setPredicate(predicate);
-            ((SelectByOrderedFunction<R, T>) f).setOrderSpecifiers(orderSpecifiers);
+            ((SelectByOrderedFunction<R, ID, T>) f).setPredicate(predicate);
+            ((SelectByOrderedFunction<R, ID, T>) f).setOrderSpecifiers(orderSpecifiers);
         }
     }
 
