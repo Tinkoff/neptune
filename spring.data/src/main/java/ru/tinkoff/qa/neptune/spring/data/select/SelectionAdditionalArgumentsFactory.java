@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.spring.data.select;
 
 import ru.tinkoff.qa.neptune.spring.data.dictionary.Argument;
-import ru.tinkoff.qa.neptune.spring.data.dictionary.HowToSelect;
 import ru.tinkoff.qa.neptune.spring.data.dictionary.InvokedMethod;
 import ru.tinkoff.qa.neptune.spring.data.select.common.by.SelectionByMethod;
 
@@ -9,9 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-import static java.lang.String.valueOf;
 import static java.util.Objects.isNull;
-import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 import static ru.tinkoff.qa.neptune.spring.data.data.serializer.DataSerializer.serializeObjects;
 
 final class SelectionAdditionalArgumentsFactory {
@@ -30,14 +27,6 @@ final class SelectionAdditionalArgumentsFactory {
         var result = new LinkedHashMap<String, String>();
         serializeObjects(NON_NULL, args).forEach(s -> result.put(new Argument() + " " + result.size(), s));
 
-        return result;
-    }
-
-    Map<String, String> getParameters() {
-        var result = new LinkedHashMap<String, String>();
-        if (isLoggable(toRead)) {
-            result.put(new HowToSelect().toString(), valueOf(toRead));
-        }
         return result;
     }
 

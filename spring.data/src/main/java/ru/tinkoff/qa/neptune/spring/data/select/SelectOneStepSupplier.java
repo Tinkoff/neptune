@@ -38,11 +38,15 @@ public abstract class SelectOneStepSupplier<R, ID, T extends Repository<R, ID>>
     @StepParameter(value = "Repository", makeReadableBy = RepositoryParameterValueGetter.class)
     T repository;
 
+    @StepParameter(value = "selected by")
+    final Function<T, R> select;
+
     private final SelectionAdditionalArgumentsFactory additionalArgumentsFactory;
 
     protected SelectOneStepSupplier(T repository, Function<T, R> select) {
         super(select);
         checkNotNull(select);
+        this.select = select;
         additionalArgumentsFactory = new SelectionAdditionalArgumentsFactory(select);
         addIgnored(Throwable.class);
         timeOut(SPRING_DATA_WAITING_FOR_SELECTION_RESULT_TIME.get());
@@ -74,13 +78,6 @@ public abstract class SelectOneStepSupplier<R, ID, T extends Repository<R, ID>>
     @Override
     public SelectOneStepSupplier<R, ID, T> pollingInterval(Duration pollingTime) {
         return super.pollingInterval(pollingTime);
-    }
-
-    @Override
-    public Map<String, String> getParameters() {
-        var params = additionalArgumentsFactory.getParameters();
-        params.putAll(super.getParameters());
-        return params;
     }
 
     @Override
