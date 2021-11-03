@@ -220,44 +220,140 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
         return get(query);
     }
 
-    public <R, ID, T extends Repository<R, ID>> R save(String description, T repository, R toSave) {
+    @SafeVarargs
+    public final <R, ID, T extends Repository<R, ID>> R save(String description,
+                                                             SelectOneStepSupplier<R, ID, T> select,
+                                                             UpdateAction<R>... updateActions) {
+        return update(SaveStepSupplier.save(description, select), updateActions);
+    }
+
+    @SafeVarargs
+    public final <R, ID, T extends Repository<R, ID>> Iterable<R> save(String description,
+                                                                       SelectManyStepSupplier<R, ID, T> select,
+                                                                       UpdateAction<R>... updateActions) {
+        return update(SaveStepSupplier.save(description, select), updateActions);
+    }
+
+
+    public <R, ID, T extends CrudRepository<R, ID>> R save(String description, T repository, R toSave) {
         return insert(SaveStepSupplier.save(description, repository, toSave));
     }
 
-    public <R, ID, T extends Repository<R, ID>> Iterable<R> save(String description, T repository, Iterable<R> toSave) {
+    public <R, ID, T extends CrudRepository<R, ID>> Iterable<R> save(String description, T repository, Iterable<R> toSave) {
         return insert(SaveStepSupplier.save(description, repository, toSave));
     }
 
-    public <R, ID, T extends Repository<R, ID>> Iterable<R> save(String description, T repository, R... toSave) {
+    public <R, ID, T extends CrudRepository<R, ID>> Iterable<R> save(String description, T repository, R... toSave) {
         checkNotNull(toSave);
         return save(description, repository, asList(toSave));
     }
 
-    public <R, ID, T extends Repository<R, ID>> R save(String description,
-                                                       T repository,
-                                                       R toSave,
-                                                       UpdateAction<R>... updateActions) {
-        return update(SaveStepSupplier.save(description, repository, toSave), updateActions);
-    }
-
-    public <R, ID, T extends Repository<R, ID>> R save(String description,
-                                                       SelectOneStepSupplier<R, ID, T> select,
-                                                       UpdateAction<R>... updateActions) {
-        return update(SaveStepSupplier.save(description, select), updateActions);
-    }
-
-    public <R, ID, T extends Repository<R, ID>> Iterable<R> save(String description,
+    @SafeVarargs
+    public final <R, ID, T extends CrudRepository<R, ID>> R save(String description,
                                                                  T repository,
-                                                                 Iterable<R> toSave,
+                                                                 R toSave,
                                                                  UpdateAction<R>... updateActions) {
         return update(SaveStepSupplier.save(description, repository, toSave), updateActions);
     }
 
-    public <R, ID, T extends Repository<R, ID>> Iterable<R> save(String description,
-                                                                 SelectManyStepSupplier<R, ID, T> select,
-                                                                 UpdateAction<R>... updateActions) {
-        return update(SaveStepSupplier.save(description, select), updateActions);
+    @SafeVarargs
+    public final <R, ID, T extends CrudRepository<R, ID>> Iterable<R> save(String description,
+                                                                           T repository,
+                                                                           Iterable<R> toSave,
+                                                                           UpdateAction<R>... updateActions) {
+        return update(SaveStepSupplier.save(description, repository, toSave), updateActions);
     }
+
+
+    public <R, ID, T extends ReactiveCrudRepository<R, ID>> R save(String description, T repository, R toSave) {
+        return insert(SaveStepSupplier.save(description, repository, toSave));
+    }
+
+    public <R, ID, T extends ReactiveCrudRepository<R, ID>> Iterable<R> save(String description, T repository, Iterable<R> toSave) {
+        return insert(SaveStepSupplier.save(description, repository, toSave));
+    }
+
+    public <R, ID, T extends ReactiveCrudRepository<R, ID>> Iterable<R> save(String description, T repository, R... toSave) {
+        checkNotNull(toSave);
+        return save(description, repository, asList(toSave));
+    }
+
+    @SafeVarargs
+    public final <R, ID, T extends ReactiveCrudRepository<R, ID>> R save(String description,
+                                                                         T repository,
+                                                                         R toSave,
+                                                                         UpdateAction<R>... updateActions) {
+        return update(SaveStepSupplier.save(description, repository, toSave), updateActions);
+    }
+
+    @SafeVarargs
+    public final <R, ID, T extends ReactiveCrudRepository<R, ID>> Iterable<R> save(String description,
+                                                                                   T repository,
+                                                                                   Iterable<R> toSave,
+                                                                                   UpdateAction<R>... updateActions) {
+        return update(SaveStepSupplier.save(description, repository, toSave), updateActions);
+    }
+
+
+    public <R, ID, T extends RxJava2CrudRepository<R, ID>> R save(String description, T repository, R toSave) {
+        return insert(SaveStepSupplier.save(description, repository, toSave));
+    }
+
+    public <R, ID, T extends RxJava2CrudRepository<R, ID>> Iterable<R> save(String description, T repository, Iterable<R> toSave) {
+        return insert(SaveStepSupplier.save(description, repository, toSave));
+    }
+
+    public <R, ID, T extends RxJava2CrudRepository<R, ID>> Iterable<R> save(String description, T repository, R... toSave) {
+        checkNotNull(toSave);
+        return save(description, repository, asList(toSave));
+    }
+
+    @SafeVarargs
+    public final <R, ID, T extends RxJava2CrudRepository<R, ID>> R save(String description,
+                                                                        T repository,
+                                                                        R toSave,
+                                                                        UpdateAction<R>... updateActions) {
+        return update(SaveStepSupplier.save(description, repository, toSave), updateActions);
+    }
+
+    @SafeVarargs
+    public final <R, ID, T extends RxJava2CrudRepository<R, ID>> Iterable<R> save(String description,
+                                                                                  T repository,
+                                                                                  Iterable<R> toSave,
+                                                                                  UpdateAction<R>... updateActions) {
+        return update(SaveStepSupplier.save(description, repository, toSave), updateActions);
+    }
+
+
+    public <R, ID, T extends RxJava3CrudRepository<R, ID>> R save(String description, T repository, R toSave) {
+        return insert(SaveStepSupplier.save(description, repository, toSave));
+    }
+
+    public <R, ID, T extends RxJava3CrudRepository<R, ID>> Iterable<R> save(String description, T repository, Iterable<R> toSave) {
+        return insert(SaveStepSupplier.save(description, repository, toSave));
+    }
+
+    public <R, ID, T extends RxJava3CrudRepository<R, ID>> Iterable<R> save(String description, T repository, R... toSave) {
+        checkNotNull(toSave);
+        return save(description, repository, asList(toSave));
+    }
+
+    @SafeVarargs
+    public final <R, ID, T extends RxJava3CrudRepository<R, ID>> R save(String description,
+                                                                        T repository,
+                                                                        R toSave,
+                                                                        UpdateAction<R>... updateActions) {
+        return update(SaveStepSupplier.save(description, repository, toSave), updateActions);
+    }
+
+    @SafeVarargs
+    public final <R, ID, T extends RxJava3CrudRepository<R, ID>> Iterable<R> save(String description,
+                                                                                  T repository,
+                                                                                  Iterable<R> toSave,
+                                                                                  UpdateAction<R>... updateActions) {
+        return update(SaveStepSupplier.save(description, repository, toSave), updateActions);
+    }
+
 
     public <R, ID, T extends Repository<R, ID>> boolean presenceOf(String description,
                                                                    SelectOneStepSupplier<R, ID, T> by,

@@ -62,15 +62,15 @@ abstract class SaveFunction<R, ID, T extends Repository<R, ID>, INPUT, RESULT> e
             }
 
             if (repo instanceof ReactiveCrudRepository) {
-                return ((ReactiveCrudRepository<R, ID>) repo).saveAll(toSave).toIterable();
+                return ((ReactiveCrudRepository<R, ID>) repo).saveAll(toSave).collectList().block();
             }
 
             if (repo instanceof RxJava2CrudRepository) {
-                return ((RxJava2CrudRepository<R, ID>) repo).saveAll(toSave).blockingIterable();
+                return ((RxJava2CrudRepository<R, ID>) repo).saveAll(toSave).toList().blockingGet();
             }
 
             if (repo instanceof RxJava3CrudRepository) {
-                return ((RxJava3CrudRepository<R, ID>) repo).saveAll(toSave).blockingIterable();
+                return ((RxJava3CrudRepository<R, ID>) repo).saveAll(toSave).toList().blockingGet();
             }
 
             throw unsupportedRepository(repo);

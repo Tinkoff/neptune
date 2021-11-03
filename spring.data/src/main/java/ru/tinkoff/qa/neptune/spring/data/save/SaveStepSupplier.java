@@ -4,6 +4,7 @@ import com.google.common.collect.Iterables;
 import org.springframework.data.repository.Repository;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
@@ -60,6 +61,7 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R, ID, T extends Repositor
                 .from(select);
     }
 
+    @Description("{description}")
     public static <R, ID, T extends Repository<R, ID>> SaveStepSupplier<R, R, R, ID, T> save(
             @DescriptionFragment(value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
@@ -83,6 +85,7 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R, ID, T extends Repositor
                 .from(select);
     }
 
+    @Description("{description}")
     public static <R, ID, T extends Repository<R, ID>> SaveStepSupplier<Iterable<R>, Iterable<R>, R, ID, T> save(
             @DescriptionFragment(value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
