@@ -7,11 +7,11 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGett
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataContext;
 import ru.tinkoff.qa.neptune.spring.data.captors.EntitiesCaptor;
+import ru.tinkoff.qa.neptune.spring.data.dictionary.RequiredEntity;
 
 import java.util.function.Function;
 
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  * Gets some {@link Iterable} from selected entity.
@@ -35,13 +35,6 @@ public abstract class GetIterableFromEntity<T, I extends Iterable<T>, M, S exten
         return new GetIterableFromEntityImpl<>(f).from(from);
     }
 
-    @Override
-    protected String getDescription() {
-        return ofNullable(getFrom())
-                .map(Object::toString)
-                .orElse(EMPTY);
-    }
-
     @IncludeParamsOfInnerGetterStep
     public static final class GetIterableFromEntityImpl<T, I extends Iterable<T>, M>
             extends GetIterableFromEntity<T, I, M, GetIterableFromEntityImpl<T, I, M>> {
@@ -52,7 +45,8 @@ public abstract class GetIterableFromEntity<T, I extends Iterable<T>, M, S exten
 
         @Override
         public GetIterableFromEntityImpl<T, I, M> setDescription(String description) {
-            ofNullable(getFrom()).ifPresent(o -> ((SetsDescription) o).changeDescription(description));
+            super.setDescription(description);
+            ofNullable(getFrom()).ifPresent(o -> ((SetsDescription) o).changeDescription(new RequiredEntity().toString()));
             return this;
         }
     }

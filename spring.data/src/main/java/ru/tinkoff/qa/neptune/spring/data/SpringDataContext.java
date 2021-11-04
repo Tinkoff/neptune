@@ -43,67 +43,120 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
         return get(query);
     }
 
-    public <R, ID, T extends Repository<R, ID>> R select(String description,
-                                                         SelectOneStepSupplier<R, ID, T> by) {
+    private static <R, ID, T extends Repository<R, ID>> SelectOneStepSupplier<R, ID, T> setDescription(String description,
+                                                                                                       SelectOneStepSupplier<R, ID, T> by) {
         checkArgument(isNotBlank(description), "Description should be defined");
         ((SetsDescription) by).changeDescription(translate(description));
-        return select(by);
+        return by;
+    }
+
+
+    private static <R, ID, T extends Repository<R, ID>> SelectManyStepSupplier<R, ID, T> setDescription(String description,
+                                                                                                        SelectManyStepSupplier<R, ID, T> by) {
+        checkArgument(isNotBlank(description), "Description should be defined");
+        ((SetsDescription) by).changeDescription(translate(description));
+        return by;
+    }
+
+
+    private static <S, R> GetObjectFromEntity.GetObjectFromEntityImpl<S, R> setDescription(String description,
+                                                                                           GetObjectFromEntity<S, R, ?> toGet) {
+        checkArgument(isNotBlank(description), "Description should be defined");
+        var impl = (GetObjectFromEntity.GetObjectFromEntityImpl<S, R>) toGet;
+        return impl.setDescription(translate(description));
+    }
+
+    private static <ITEM, S extends Iterable<ITEM>, R> GetIterableFromEntity.GetIterableFromEntityImpl<ITEM, S, R>
+    setDescription(String description,
+                   GetIterableFromEntity<ITEM, S, R, ?> toGet) {
+        checkArgument(isNotBlank(description), "Description should be defined");
+        var impl = (GetIterableFromEntity.GetIterableFromEntityImpl<ITEM, S, R>) toGet;
+        return impl.setDescription(translate(description));
+    }
+
+    private static <ITEM, R> GetArrayFromEntity.GetArrayFromEntityImpl<ITEM, R>
+    setDescription(String description,
+                   GetArrayFromEntity<ITEM, R, ?> toGet) {
+        checkArgument(isNotBlank(description), "Description should be defined");
+        var impl = (GetArrayFromEntity.GetArrayFromEntityImpl<ITEM, R>) toGet;
+        return impl.setDescription(translate(description));
+    }
+
+    private static <ITEM, R> GetItemOfIterableFromEntity.GetItemOfIterableFromEntityImpl<ITEM, ? extends Iterable<ITEM>, R>
+    setDescription(String description,
+                   GetItemOfIterableFromEntity<ITEM, ? extends Iterable<ITEM>, R, ?> toGet) {
+        checkArgument(isNotBlank(description), "Description should be defined");
+        var impl = (GetItemOfIterableFromEntity.GetItemOfIterableFromEntityImpl<ITEM, ? extends Iterable<ITEM>, R>) toGet;
+        return impl.setDescription(translate(description));
+    }
+
+    private static <ITEM, R> GetItemOfArrayFromEntity.GetItemOfArrayFromEntityImpl<ITEM, R>
+    setDescription(String description,
+                   GetItemOfArrayFromEntity<ITEM, R, ?> toGet) {
+        checkArgument(isNotBlank(description), "Description should be defined");
+        var impl = (GetItemOfArrayFromEntity.GetItemOfArrayFromEntityImpl<ITEM, R>) toGet;
+        return impl.setDescription(translate(description));
+    }
+
+    private static <ITEM, R> GetIterableFromEntities.GetIterableFromEntitiesImpl<ITEM, R>
+    setDescription(String description,
+                   GetIterableFromEntities<ITEM, R, ?> toGet) {
+        checkArgument(isNotBlank(description), "Description should be defined");
+        var impl = (GetIterableFromEntities.GetIterableFromEntitiesImpl<ITEM, R>) toGet;
+        return impl.setDescription(translate(description));
+    }
+
+    private static <ITEM, R> GetIterableItemFromEntities.GetIterableItemFromEntitiesImpl<ITEM, R>
+    setDescription(String description,
+                   GetIterableItemFromEntities<ITEM, R, ?> toGet) {
+        checkArgument(isNotBlank(description), "Description should be defined");
+        var impl = (GetIterableItemFromEntities.GetIterableItemFromEntitiesImpl<ITEM, R>) toGet;
+        return impl.setDescription(translate(description));
+    }
+
+    public <R, ID, T extends Repository<R, ID>> R select(String description,
+                                                         SelectOneStepSupplier<R, ID, T> by) {
+        return select(setDescription(description, by));
     }
 
     public <R, ID, T extends Repository<R, ID>> Iterable<R> select(String description,
                                                                    SelectManyStepSupplier<R, ID, T> by) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        ((SetsDescription) by).changeDescription(translate(description));
-        return select(by);
+        return select(setDescription(description, by));
     }
 
     public <S, R> S select(String description,
                            GetObjectFromEntity<S, R, ?> toGet) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        var impl = (GetObjectFromEntity.GetObjectFromEntityImpl<S, R>) toGet;
-        return select(impl.setDescription(translate(description)));
+        return select(setDescription(description, toGet));
     }
 
     public <ITEM, S extends Iterable<ITEM>, R> S select(String description,
                                                         GetIterableFromEntity<ITEM, S, R, ?> toGet) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        var impl = (GetIterableFromEntity.GetIterableFromEntityImpl<ITEM, S, R>) toGet;
-        return select(impl.setDescription(translate(description)));
+        return select(setDescription(description, toGet));
     }
 
     public <ITEM, R> ITEM[] select(String description,
                                    GetArrayFromEntity<ITEM, R, ?> toGet) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        var impl = (GetArrayFromEntity.GetArrayFromEntityImpl<ITEM, R>) toGet;
-        return select(impl.setDescription(translate(description)));
+        return select(setDescription(description, toGet));
     }
 
     public <ITEM, R> ITEM select(String description,
                                  GetItemOfIterableFromEntity<ITEM, ? extends Iterable<ITEM>, R, ?> toGet) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        var impl = (GetItemOfIterableFromEntity.GetItemOfIterableFromEntityImpl<ITEM, ? extends Iterable<ITEM>, R>) toGet;
-        return select(impl.setDescription(translate(description)));
+        return select(setDescription(description, toGet));
     }
 
     public <ITEM, R> ITEM select(String description,
                                  GetItemOfArrayFromEntity<ITEM, R, ?> toGet) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        var impl = (GetItemOfArrayFromEntity.GetItemOfArrayFromEntityImpl<ITEM, R>) toGet;
-        return select(impl.setDescription(translate(description)));
+        return select(setDescription(description, toGet));
     }
 
     public <ITEM, R> List<ITEM> select(String description,
                                        GetIterableFromEntities<ITEM, R, ?> toGet) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        var impl = (GetIterableFromEntities.GetIterableFromEntitiesImpl<ITEM, R>) toGet;
-        return select(impl.setDescription(translate(description)));
+        return select(setDescription(description, toGet));
     }
 
     public <ITEM, R> ITEM select(String description,
                                  GetIterableItemFromEntities<ITEM, R, ?> toGet) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        var impl = (GetIterableItemFromEntities.GetIterableItemFromEntitiesImpl<ITEM, R>) toGet;
-        return select(impl.setDescription(translate(description)));
+        return select(setDescription(description, toGet));
     }
 
     @Override
@@ -358,65 +411,230 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
     public <R, ID, T extends Repository<R, ID>> boolean presenceOf(String description,
                                                                    SelectOneStepSupplier<R, ID, T> by,
                                                                    Class<? extends Throwable>... toIgnore) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        ((SetsDescription) by).changeDescription(translate(description));
-        return super.presenceOf(by, toIgnore);
+        return super.presenceOf(setDescription(description, by), toIgnore);
     }
 
     public <R, ID, T extends Repository<R, ID>> boolean presenceOfOrThrow(String description,
                                                                           SelectOneStepSupplier<R, ID, T> by,
                                                                           Class<? extends Throwable>... toIgnore) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        ((SetsDescription) by).changeDescription(translate(description));
-        return super.presenceOfOrThrow(by, toIgnore);
+        return super.presenceOfOrThrow(setDescription(description, by), toIgnore);
     }
 
     public <R, ID, T extends Repository<R, ID>> boolean presenceOf(String description,
                                                                    SelectManyStepSupplier<R, ID, T> by,
                                                                    Class<? extends Throwable>... toIgnore) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        ((SetsDescription) by).changeDescription(translate(description));
-        return super.presenceOf(by, toIgnore);
+        return super.presenceOf(setDescription(description, by), toIgnore);
     }
 
     public <R, ID, T extends Repository<R, ID>> boolean presenceOfOrThrow(String description,
                                                                           SelectManyStepSupplier<R, ID, T> by,
                                                                           Class<? extends Throwable>... toIgnore) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        ((SetsDescription) by).changeDescription(translate(description));
-        return super.presenceOfOrThrow(by, toIgnore);
+        return super.presenceOfOrThrow(setDescription(description, by), toIgnore);
+    }
+
+
+    public <S, R> boolean presenceOf(String description,
+                                     GetObjectFromEntity<S, R, ?> toGet,
+                                     Class<? extends Throwable>... toIgnore) {
+        return super.presenceOf(setDescription(description, toGet), toIgnore);
+    }
+
+    public <S, R> boolean presenceOfOrThrow(String description,
+                                            GetObjectFromEntity<S, R, ?> toGet,
+                                            Class<? extends Throwable>... toIgnore) {
+        return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
+    }
+
+
+    public <ITEM, S extends Iterable<ITEM>, R> boolean presenceOf(String description,
+                                                                  GetIterableFromEntity<ITEM, S, R, ?> toGet,
+                                                                  Class<? extends Throwable>... toIgnore) {
+        return super.presenceOf(setDescription(description, toGet), toIgnore);
+    }
+
+    public <ITEM, S extends Iterable<ITEM>, R> boolean presenceOfOrThrow(String description,
+                                                                         GetIterableFromEntity<ITEM, S, R, ?> toGet,
+                                                                         Class<? extends Throwable>... toIgnore) {
+        return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
+    }
+
+
+    public <ITEM, R> boolean presenceOf(String description,
+                                        GetArrayFromEntity<ITEM, R, ?> toGet,
+                                        Class<? extends Throwable>... toIgnore) {
+        return super.presenceOf(setDescription(description, toGet), toIgnore);
+    }
+
+    public <ITEM, R> boolean presenceOfOrThrow(String description,
+                                               GetArrayFromEntity<ITEM, R, ?> toGet,
+                                               Class<? extends Throwable>... toIgnore) {
+        return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
+    }
+
+
+    public <ITEM, R> boolean presenceOf(String description,
+                                        GetItemOfIterableFromEntity<ITEM, ? extends Iterable<ITEM>, R, ?> toGet,
+                                        Class<? extends Throwable>... toIgnore) {
+        return super.presenceOf(setDescription(description, toGet), toIgnore);
+    }
+
+    public <ITEM, R> boolean presenceOfOrThrow(String description,
+                                               GetItemOfIterableFromEntity<ITEM, ? extends Iterable<ITEM>, R, ?> toGet,
+                                               Class<? extends Throwable>... toIgnore) {
+        return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
+    }
+
+
+    public <ITEM, R> boolean presenceOf(String description,
+                                        GetItemOfArrayFromEntity<ITEM, R, ?> toGet,
+                                        Class<? extends Throwable>... toIgnore) {
+        return super.presenceOf(setDescription(description, toGet), toIgnore);
+    }
+
+    public <ITEM, R> boolean presenceOfOrThrow(String description,
+                                               GetItemOfArrayFromEntity<ITEM, R, ?> toGet,
+                                               Class<? extends Throwable>... toIgnore) {
+        return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
+    }
+
+
+    public <ITEM, R> boolean presenceOf(String description,
+                                        GetIterableFromEntities<ITEM, R, ?> toGet,
+                                        Class<? extends Throwable>... toIgnore) {
+        return super.presenceOf(setDescription(description, toGet), toIgnore);
+    }
+
+    public <ITEM, R> boolean presenceOfOrThrow(String description,
+                                               GetIterableFromEntities<ITEM, R, ?> toGet,
+                                               Class<? extends Throwable>... toIgnore) {
+        return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
+    }
+
+    public <ITEM, R> boolean presenceOf(String description,
+                                        GetIterableItemFromEntities<ITEM, R, ?> toGet,
+                                        Class<? extends Throwable>... toIgnore) {
+        return super.presenceOf(setDescription(description, toGet), toIgnore);
+    }
+
+    public <ITEM, R> boolean presenceOfOrThrow(String description,
+                                               GetIterableItemFromEntities<ITEM, R, ?> toGet,
+                                               Class<? extends Throwable>... toIgnore) {
+        return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
     }
 
 
     public <R, ID, T extends Repository<R, ID>> boolean absenceOf(String description,
                                                                   SelectOneStepSupplier<R, ID, T> by,
                                                                   Duration timeOut) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        ((SetsDescription) by).changeDescription(translate(description));
-        return super.absenceOf(by, timeOut);
+        return super.absenceOf(setDescription(description, by), timeOut);
     }
 
     public <R, ID, T extends Repository<R, ID>> boolean absenceOfOrThrow(String description,
                                                                          SelectOneStepSupplier<R, ID, T> by,
                                                                          Duration timeOut) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        ((SetsDescription) by).changeDescription(translate(description));
-        return super.absenceOfOrThrow(by, timeOut);
+        return super.absenceOfOrThrow(setDescription(description, by), timeOut);
     }
 
     public <R, ID, T extends Repository<R, ID>> boolean absenceOf(String description,
                                                                   SelectManyStepSupplier<R, ID, T> by,
                                                                   Duration timeOut) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        ((SetsDescription) by).changeDescription(translate(description));
-        return super.absenceOf(by, timeOut);
+        return super.absenceOf(setDescription(description, by), timeOut);
     }
 
     public <R, ID, T extends Repository<R, ID>> boolean absenceOfOrThrow(String description,
                                                                          SelectManyStepSupplier<R, ID, T> by,
                                                                          Duration timeOut) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        ((SetsDescription) by).changeDescription(translate(description));
-        return super.absenceOfOrThrow(by, timeOut);
+        return super.absenceOfOrThrow(setDescription(description, by), timeOut);
+    }
+
+
+    public <S, R> boolean absenceOf(String description,
+                                    GetObjectFromEntity<S, R, ?> toGet,
+                                    Duration timeOut) {
+        return super.absenceOf(setDescription(description, toGet), timeOut);
+    }
+
+    public <S, R> boolean absenceOfOrThrow(String description,
+                                           GetObjectFromEntity<S, R, ?> toGet,
+                                           Duration timeOut) {
+        return super.absenceOfOrThrow(setDescription(description, toGet), timeOut);
+    }
+
+
+    public <ITEM, S extends Iterable<ITEM>, R> boolean absenceOf(String description,
+                                                                 GetIterableFromEntity<ITEM, S, R, ?> toGet,
+                                                                 Duration timeOut) {
+        return super.absenceOf(setDescription(description, toGet), timeOut);
+    }
+
+    public <ITEM, S extends Iterable<ITEM>, R> boolean absenceOfOrThrow(String description,
+                                                                        GetIterableFromEntity<ITEM, S, R, ?> toGet,
+                                                                        Duration timeOut) {
+        return super.absenceOfOrThrow(setDescription(description, toGet), timeOut);
+    }
+
+
+    public <ITEM, R> boolean absenceOf(String description,
+                                       GetArrayFromEntity<ITEM, R, ?> toGet,
+                                       Duration timeOut) {
+        return super.absenceOf(setDescription(description, toGet), timeOut);
+    }
+
+    public <ITEM, R> boolean absenceOfOrThrow(String description,
+                                              GetArrayFromEntity<ITEM, R, ?> toGet,
+                                              Duration timeOut) {
+        return super.absenceOfOrThrow(setDescription(description, toGet), timeOut);
+    }
+
+
+    public <ITEM, R> boolean absenceOf(String description,
+                                       GetItemOfIterableFromEntity<ITEM, ? extends Iterable<ITEM>, R, ?> toGet,
+                                       Duration timeOut) {
+        return super.absenceOf(setDescription(description, toGet), timeOut);
+    }
+
+    public <ITEM, R> boolean absenceOfOrThrow(String description,
+                                              GetItemOfIterableFromEntity<ITEM, ? extends Iterable<ITEM>, R, ?> toGet,
+                                              Duration timeOut) {
+        return super.absenceOfOrThrow(setDescription(description, toGet), timeOut);
+    }
+
+
+    public <ITEM, R> boolean absenceOf(String description,
+                                       GetItemOfArrayFromEntity<ITEM, R, ?> toGet,
+                                       Duration timeOut) {
+        return super.absenceOf(setDescription(description, toGet), timeOut);
+    }
+
+    public <ITEM, R> boolean absenceOfOrThrow(String description,
+                                              GetItemOfArrayFromEntity<ITEM, R, ?> toGet,
+                                              Duration timeOut) {
+        return super.absenceOfOrThrow(setDescription(description, toGet), timeOut);
+    }
+
+
+    public <ITEM, R> boolean absenceOf(String description,
+                                       GetIterableFromEntities<ITEM, R, ?> toGet,
+                                       Duration timeOut) {
+        return super.absenceOf(setDescription(description, toGet), timeOut);
+    }
+
+    public <ITEM, R> boolean absenceOfOrThrow(String description,
+                                              GetIterableFromEntities<ITEM, R, ?> toGet,
+                                              Duration timeOut) {
+        return super.absenceOfOrThrow(setDescription(description, toGet), timeOut);
+    }
+
+
+    public <ITEM, R> boolean absenceOf(String description,
+                                       GetIterableItemFromEntities<ITEM, R, ?> toGet,
+                                       Duration timeOut) {
+        return super.absenceOf(setDescription(description, toGet), timeOut);
+    }
+
+    public <ITEM, R> boolean absenceOfOrThrow(String description,
+                                              GetIterableItemFromEntities<ITEM, R, ?> toGet,
+                                              Duration timeOut) {
+        return super.absenceOfOrThrow(setDescription(description, toGet), timeOut);
     }
 }

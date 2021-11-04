@@ -7,11 +7,11 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGett
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataContext;
 import ru.tinkoff.qa.neptune.spring.data.captors.EntitiesCaptor;
+import ru.tinkoff.qa.neptune.spring.data.dictionary.RequiredEntity;
 
 import java.util.function.Function;
 
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  * Gets some object from selected entity.
@@ -41,13 +41,6 @@ public abstract class GetObjectFromEntity<T, M, S extends GetObjectFromEntity<T,
         return super.from(from);
     }
 
-    @Override
-    protected String getDescription() {
-        return ofNullable(getFrom())
-                .map(Object::toString)
-                .orElse(EMPTY);
-    }
-
     @IncludeParamsOfInnerGetterStep
     public static final class GetObjectFromEntityImpl<T, M>
             extends GetObjectFromEntity<T, M, GetObjectFromEntityImpl<T, M>> {
@@ -58,7 +51,8 @@ public abstract class GetObjectFromEntity<T, M, S extends GetObjectFromEntity<T,
 
         @Override
         public GetObjectFromEntityImpl<T, M> setDescription(String description) {
-            ofNullable(getFrom()).ifPresent(o -> ((SetsDescription) o).changeDescription(description));
+            super.setDescription(description);
+            ofNullable(getFrom()).ifPresent(o -> ((SetsDescription) o).changeDescription(new RequiredEntity().toString()));
             return this;
         }
     }
