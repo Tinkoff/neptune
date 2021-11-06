@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.spring.data.select.common.by;
 
-import com.google.common.collect.Lists;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -13,9 +12,7 @@ import ru.tinkoff.qa.neptune.spring.data.dictionary.ObjectArrayParameterValueGet
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
-import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @SuppressWarnings("unchecked")
@@ -89,25 +86,19 @@ public abstract class SelectionByIds<R, ID, T extends Repository<R, ID>, RESULT>
         @Override
         public Iterable<R> apply(T t) {
             if (t instanceof CrudRepository) {
-                return newArrayList(((CrudRepository<R, ID>) t).findAllById(asList(ids)));
+                return ((CrudRepository<R, ID>) t).findAllById(asList(ids));
             }
 
             if (t instanceof ReactiveCrudRepository) {
-                return ofNullable(((ReactiveCrudRepository<R, ID>) t).findAllById(asList(ids)).collectList().block())
-                        .map(Lists::newArrayList)
-                        .orElse(null);
+                return ((ReactiveCrudRepository<R, ID>) t).findAllById(asList(ids)).collectList().block();
             }
 
             if (t instanceof RxJava2CrudRepository) {
-                return ofNullable(((RxJava2CrudRepository<R, ID>) t).findAllById(asList(ids)).toList().blockingGet())
-                        .map(Lists::newArrayList)
-                        .orElse(null);
+                return ((RxJava2CrudRepository<R, ID>) t).findAllById(asList(ids)).toList().blockingGet();
             }
 
             if (t instanceof RxJava3CrudRepository) {
-                return ofNullable(((RxJava3CrudRepository<R, ID>) t).findAllById(asList(ids)).toList().blockingGet())
-                        .map(Lists::newArrayList)
-                        .orElse(null);
+                return ((RxJava3CrudRepository<R, ID>) t).findAllById(asList(ids)).toList().blockingGet();
             }
 
             throw unsupportedRepository(t);

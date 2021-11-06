@@ -12,6 +12,7 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Optional.ofNullable;
 
+@Deprecated(forRemoval = true)
 @SuppressWarnings("unchecked")
 class SqlTypedQuery<T extends PersistableObject> extends SqlQuery<T, List<T>> implements IdSetter {
 

@@ -9,6 +9,7 @@ import static java.util.stream.Collectors.joining;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.data.base.api.PersistableObject.getTable;
 
+@Deprecated(forRemoval = true)
 public class TableNameGetterFromCollection implements ParameterValueGetter<Collection<PersistableObject>> {
 
     @Override

@@ -5,6 +5,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.AdditionalMetadata;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
+import ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetList;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 
 import java.lang.annotation.Annotation;
@@ -35,11 +36,11 @@ import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultGetParameterReader.*;
 import static ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter.StepParameterCreator.createStepParameter;
 import static ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData.ThrowWhenNoDataReader.getDeclaredBy;
+import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetList.getList;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromArray.getFromArray;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSubArray.getArray;
-import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSubIterable.getIterable;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 /**
@@ -839,12 +840,12 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
     }
 
-    private static class PrivateGetIterableStepSupplier<T, S extends Iterable<R>, M, R, THIS extends PrivateGetIterableStepSupplier<T, S, M, R, THIS>>
-            extends SequentialGetStepSupplier<T, S, M, R, THIS> {
+    private static class PrivateGetListStepSupplier<T, S extends Iterable<R>, M, R, THIS extends PrivateGetListStepSupplier<T, S, M, R, THIS>>
+            extends SequentialGetStepSupplier<T, List<R>, M, R, THIS> {
 
         private final Function<M, S> originalFunction;
 
-        PrivateGetIterableStepSupplier(Function<M, S> originalFunction) {
+        PrivateGetListStepSupplier(Function<M, S> originalFunction) {
             super();
             this.originalFunction = originalFunction;
         }
@@ -875,68 +876,68 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
 
         @Override
-        protected Function<M, S> getEndFunction() {
+        protected Function<M, List<R>> getEndFunction() {
             return ofNullable(getCriteria())
                     .map(c -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
-                                    ofNullable(exceptionSupplier)
-                                            .map(supplier -> getIterable(originalFunction, c.get(), wait, sleep, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> getIterable(originalFunction, c.get(), wait, sleep, ignored.toArray(new Class[]{}))))
+                                            ofNullable(exceptionSupplier)
+                                                    .map(supplier -> ToGetList.getList(originalFunction, c.get(), wait, sleep, supplier, ignored.toArray(new Class[]{})))
+                                                    .orElseGet(() -> ToGetList.getList(originalFunction, c.get(), wait, sleep, ignored.toArray(new Class[]{}))))
 
                                     .orElseGet(() -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> getIterable(originalFunction, c.get(), wait, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> getIterable(originalFunction, c.get(), wait, ignored.toArray(new Class[]{})))))
+                                            .map(supplier -> ToGetList.getList(originalFunction, c.get(), wait, supplier, ignored.toArray(new Class[]{})))
+                                            .orElseGet(() -> ToGetList.getList(originalFunction, c.get(), wait, ignored.toArray(new Class[]{})))))
 
                             .orElseGet(() -> ofNullable(exceptionSupplier)
-                                    .map(supplier -> getIterable(originalFunction, c.get(), supplier, ignored.toArray(new Class[]{})))
-                                    .orElseGet(() -> getIterable(originalFunction, c.get(), ignored.toArray(new Class[]{})))))
+                                    .map(supplier -> ToGetList.getList(originalFunction, c.get(), supplier, ignored.toArray(new Class[]{})))
+                                    .orElseGet(() -> ToGetList.getList(originalFunction, c.get(), ignored.toArray(new Class[]{})))))
 
                     .orElseGet(() -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime)
                                     .map(sleep -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> getIterable(originalFunction, wait, sleep, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> getIterable(originalFunction, wait, sleep, ignored.toArray(new Class[]{}))))
+                                            .map(supplier -> ToGetList.getList(originalFunction, wait, sleep, supplier, ignored.toArray(new Class[]{})))
+                                            .orElseGet(() -> ToGetList.getList(originalFunction, wait, sleep, ignored.toArray(new Class[]{}))))
 
                                     .orElseGet(() -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> getIterable(originalFunction, wait, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> getIterable(originalFunction, wait, ignored.toArray(new Class[]{})))))
+                                            .map(supplier -> ToGetList.getList(originalFunction, wait, supplier, ignored.toArray(new Class[]{})))
+                                            .orElseGet(() -> ToGetList.getList(originalFunction, wait, ignored.toArray(new Class[]{})))))
 
                             .orElseGet(() -> ofNullable(exceptionSupplier)
-                                    .map(supplier -> getIterable(originalFunction, supplier, ignored.toArray(new Class[]{})))
-                                    .orElse(getIterable(originalFunction, ignored.toArray(new Class[]{})))));
+                                    .map(supplier -> ToGetList.getList(originalFunction, supplier, ignored.toArray(new Class[]{})))
+                                    .orElse(getList(originalFunction, ignored.toArray(new Class[]{})))));
         }
     }
 
     /**
-     * This class is designed to build and supply functions to get some desired iterable-value.
+     * This class is designed to build and supply functions to get some immutable list-value.
      *
      * @param <T>    is a type of input value
-     * @param <S>    is a type of resulted iterable
+     * @param <S>    is a type of iterable
      * @param <R>    is a type of item from resulted iterable
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetIterableStepSupplier<T, S extends Iterable<R>, R, THIS extends GetIterableStepSupplier<T, S, R, THIS>>
-            extends PrivateGetIterableStepSupplier<T, S, T, R, THIS> {
+    public static abstract class GetListStepSupplier<T, S extends Iterable<R>, R, THIS extends GetListStepSupplier<T, S, R, THIS>>
+            extends PrivateGetListStepSupplier<T, S, T, R, THIS> {
 
-        protected GetIterableStepSupplier(Function<T, S> originalFunction) {
+        protected GetListStepSupplier(Function<T, S> originalFunction) {
             super(originalFunction);
             from(t -> t);
         }
     }
 
     /**
-     * This class is designed to build and supply chained functions to get some desired iterable-value.
+     * This class is designed to build and supply chained functions to get some immutable list-value.
      *
      * @param <T>    is a type of input value
-     * @param <S>    is a type of resulted iterable
+     * @param <S>    is a type of iterable
      * @param <M>    is a type of mediator value is used to get the result
      * @param <R>    is a type of item from resulted iterable
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetIterableChainedStepSupplier<T, S extends Iterable<R>, M, R, THIS extends GetIterableChainedStepSupplier<T, S, M, R, THIS>>
-            extends PrivateGetIterableStepSupplier<T, S, M, R, THIS> {
+    public static abstract class GetListChainedStepSupplier<T, S extends Iterable<R>, M, R, THIS extends GetListChainedStepSupplier<T, S, M, R, THIS>>
+            extends PrivateGetListStepSupplier<T, S, M, R, THIS> {
 
-        protected GetIterableChainedStepSupplier(Function<M, S> originalFunction) {
+        protected GetListChainedStepSupplier(Function<M, S> originalFunction) {
             super(originalFunction);
         }
 

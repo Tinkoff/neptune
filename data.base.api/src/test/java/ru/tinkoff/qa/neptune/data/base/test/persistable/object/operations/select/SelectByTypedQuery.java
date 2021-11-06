@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.selec
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.data.base.api.NothingIsSelectedException;
+import ru.tinkoff.qa.neptune.data.base.api.result.TableResultList;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Book;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.QBook;
@@ -228,7 +229,7 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
 
         assertThat(rows, containsInRelativeOrder(contains(alexanderPushkin,
                 ruslanAndLudmila.getName(),
-                ruslanAndLudmila.getYearOfFinishing()),
+                        ruslanAndLudmila.getYearOfFinishing()),
 
                 contains(hugo,
                         theLegendOfTheAges.getName(),
@@ -238,11 +239,11 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
                         aHeroOfOurTimes.getName(),
                         aHeroOfOurTimes.getYearOfFinishing())));
 
-        assertThat(rows.getColumn(0), contains(alexanderPushkin, hugo, lermontov));
-        assertThat(rows.getColumn(1), contains(ruslanAndLudmila.getName(),
+        assertThat(((TableResultList) rows).getColumn(0), contains(alexanderPushkin, hugo, lermontov));
+        assertThat(((TableResultList) rows).getColumn(1), contains(ruslanAndLudmila.getName(),
                 theLegendOfTheAges.getName(),
                 aHeroOfOurTimes.getName()));
-        assertThat(rows.getColumn(2), contains(ruslanAndLudmila.getYearOfFinishing(),
+        assertThat(((TableResultList) rows).getColumn(2), contains(ruslanAndLudmila.getYearOfFinishing(),
                 theLegendOfTheAges.getYearOfFinishing(),
                 aHeroOfOurTimes.getYearOfFinishing()));
     }

@@ -17,8 +17,7 @@ import java.util.function.Function;
 @CaptureOnSuccess(by = CollectionCaptor.class)
 @Description("Http cookies")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Http cookie criteria")
-public final class GetHttpCookiesSupplier extends SequentialGetStepSupplier
-        .GetIterableChainedStepSupplier<HttpStepContext, List<HttpCookie>, CookieManager, HttpCookie, GetHttpCookiesSupplier> {
+public final class GetHttpCookiesSupplier extends SequentialGetStepSupplier.GetListChainedStepSupplier<HttpStepContext, List<HttpCookie>, CookieManager, HttpCookie, GetHttpCookiesSupplier> {
 
     @StepParameter(value = "Associated with URI", doNotReportNullValues = true)
     private final URI uri;

@@ -5,49 +5,50 @@ import com.google.common.collect.Iterables;
 import javax.annotation.Nullable;
 import java.time.Duration;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.StreamSupport.stream;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetConditionalHelper.*;
 
 @SuppressWarnings("unchecked")
-public final class ToGetSubIterable {
+public final class ToGetList {
 
-    private ToGetSubIterable() {
+    private ToGetList() {
         super();
     }
 
-    private static <T, R, V extends Iterable<R>> Function<T, V> iterable(Function<T, V> function,
-                                                                         Predicate<? super R> condition,
-                                                                         @Nullable Duration waitingTime,
-                                                                         @Nullable Duration sleepingTime,
-                                                                         @Nullable Supplier<? extends RuntimeException> exceptionSupplier,
-                                                                         Collection<Class<? extends Throwable>> toIgnore) {
+    private static <T, R, V extends Iterable<R>> Function<T, List<R>> iterable(Function<T, V> function,
+                                                                               Predicate<? super R> condition,
+                                                                               @Nullable Duration waitingTime,
+                                                                               @Nullable Duration sleepingTime,
+                                                                               @Nullable Supplier<? extends RuntimeException> exceptionSupplier,
+                                                                               Collection<Class<? extends Throwable>> toIgnore) {
         return fluentWaitFunction(t ->
                         ofNullable(function.apply(t)).map(v -> {
-                            var result = stream(v.spliterator(), false).filter(r -> {
+                            var arrayList = newArrayList(v);
+                            var result = arrayList.stream().filter(r -> {
                                 try {
-                                    return !notNullAnd(condition).test(r);
+                                    return notNullAnd(condition).test(r);
                                 } catch (Throwable t1) {
-                                    return !printErrorAndFalse(t1);
+                                    return printErrorAndFalse(t1);
                                 }
                             }).collect(toList());
 
-                            Iterables.removeAll(v, result);
-                            return v;
+                            return new ImmutableArrayList<>(result);
                         }).orElse(null),
                 waitingTime, sleepingTime, v -> nonNull(v) && Iterables.size(v) > 0, exceptionSupplier, toIgnore);
 
     }
 
     /**
-     * This method returns a function. The result function returns an {@link Iterable} of elements which differ from null
+     * This method returns a function. The result function returns immutable {@link List} of elements which differ from null
      * and suit the criteria.
      *
      * @param function          function which should return {@link Iterable}
@@ -61,16 +62,17 @@ public final class ToGetSubIterable {
      * @param <T>               is a type of input value
      * @param <R>               is a type of target values
      * @param <V>               is a type of {@link Iterable} of {@code R}
-     * @return a function. The result function returns an {@link Iterable} of elements which differ from null
+     * @return a function. The result function returns immutable {@link List} of elements which differ from null
      * and suit the criteria. It returns not empty iterable when there are such elements. Some exception is thrown if result
      * iterable is null or has no elements which suit the criteria.
      */
-    public static <T, R, V extends Iterable<R>> Function<T, V> getIterable(Function<T, V> function,
-                                                                           Predicate<? super R> condition,
-                                                                           Duration waitingTime,
-                                                                           Duration sleepingTime,
-                                                                           Supplier<? extends RuntimeException> exceptionSupplier,
-                                                                           Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public static <T, R, V extends Iterable<R>> Function<T, List<R>> getList(Function<T, V> function,
+                                                                             Predicate<? super R> condition,
+                                                                             Duration waitingTime,
+                                                                             Duration sleepingTime,
+                                                                             Supplier<? extends RuntimeException> exceptionSupplier,
+                                                                             Class<? extends Throwable>... toIgnore) {
         return iterable(checkFunction(function),
                 checkCondition(condition),
                 checkWaitingTime(waitingTime),
@@ -80,7 +82,7 @@ public final class ToGetSubIterable {
     }
 
     /**
-     * This method returns a function. The result function returns an {@link Iterable} of elements which differ from null.
+     * This method returns a function. The result function returns immutable {@link List} of elements which differ from null.
      *
      * @param function          function which should return {@link Iterable}
      * @param waitingTime       is a duration of the waiting for valuable result
@@ -92,15 +94,16 @@ public final class ToGetSubIterable {
      * @param <T>               is a type of input value
      * @param <R>               is a type of target values
      * @param <V>               is a type of {@link Iterable} of {@code R}
-     * @return a function. The result function returns an {@link Iterable} of elements which differ from null.
+     * @return a function. The result function returns immutable {@link List} of elements which differ from null.
      * It returns not empty iterable when there are such elements. Some exception is thrown if result
      * iterable is null or has no elements or all elements are {@code null}.
      */
-    public static <T, R, V extends Iterable<R>> Function<T, V> getIterable(Function<T, V> function,
-                                                                           Duration waitingTime,
-                                                                           Duration sleepingTime,
-                                                                           Supplier<? extends RuntimeException> exceptionSupplier,
-                                                                           Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public static <T, R, V extends Iterable<R>> Function<T, List<R>> getList(Function<T, V> function,
+                                                                             Duration waitingTime,
+                                                                             Duration sleepingTime,
+                                                                             Supplier<? extends RuntimeException> exceptionSupplier,
+                                                                             Class<? extends Throwable>... toIgnore) {
         return iterable(checkFunction(function),
                 (Predicate<? super R>) AS_IS,
                 checkWaitingTime(waitingTime),
@@ -110,7 +113,7 @@ public final class ToGetSubIterable {
     }
 
     /**
-     * This method returns a function. The result function returns an {@link Iterable} of elements which differ from null
+     * This method returns a function. The result function returns immutable {@link List} of elements which differ from null
      * and suit the criteria.
      *
      * @param function          function which should return {@link Iterable}
@@ -122,15 +125,16 @@ public final class ToGetSubIterable {
      * @param <T>               is a type of input value
      * @param <R>               is a type of target values
      * @param <V>               is a type of {@link Iterable} of {@code R}
-     * @return a function. The result function returns an {@link Iterable} of elements which differ from null
+     * @return a function. The result function returns immutable {@link List} of elements which differ from null
      * and suit the criteria. It returns not empty iterable when there are such elements. Some exception is thrown if result
      * iterable is null or has no elements which suit the criteria.
      */
-    public static <T, R, V extends Iterable<R>> Function<T, V> getIterable(Function<T, V> function,
-                                                                           Predicate<? super R> condition,
-                                                                           Duration waitingTime,
-                                                                           Supplier<? extends RuntimeException> exceptionSupplier,
-                                                                           Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public static <T, R, V extends Iterable<R>> Function<T, List<R>> getList(Function<T, V> function,
+                                                                             Predicate<? super R> condition,
+                                                                             Duration waitingTime,
+                                                                             Supplier<? extends RuntimeException> exceptionSupplier,
+                                                                             Class<? extends Throwable>... toIgnore) {
         return iterable(checkFunction(function),
                 checkCondition(condition),
                 checkWaitingTime(waitingTime),
@@ -140,7 +144,7 @@ public final class ToGetSubIterable {
     }
 
     /**
-     * This method returns a function. The result function returns an {@link Iterable} of elements which differ from null.
+     * This method returns a function. The result function returns immutable {@link List} of elements which differ from null.
      *
      * @param function          function which should return {@link Iterable}
      * @param waitingTime       is a duration of the waiting for valuable result
@@ -150,14 +154,15 @@ public final class ToGetSubIterable {
      * @param <T>               is a type of input value
      * @param <R>               is a type of target values
      * @param <V>               is a type of {@link Iterable} of {@code R}
-     * @return a function. The result function returns an {@link Iterable} of elements which differ from null.
+     * @return a function. The result function returns immutable {@link List} of elements which differ from null.
      * It returns not empty iterable when there are such elements. Some exception is thrown if result
      * iterable is null or has no elements or all elements are {@code null}.
      */
-    public static <T, R, V extends Iterable<R>> Function<T, V> getIterable(Function<T, V> function,
-                                                                           Duration waitingTime,
-                                                                           Supplier<? extends RuntimeException> exceptionSupplier,
-                                                                           Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public static <T, R, V extends Iterable<R>> Function<T, List<R>> getList(Function<T, V> function,
+                                                                             Duration waitingTime,
+                                                                             Supplier<? extends RuntimeException> exceptionSupplier,
+                                                                             Class<? extends Throwable>... toIgnore) {
         return iterable(checkFunction(function),
                 (Predicate<? super R>) AS_IS,
                 checkWaitingTime(waitingTime),
@@ -167,7 +172,7 @@ public final class ToGetSubIterable {
     }
 
     /**
-     * This method returns a function. The result function returns an {@link Iterable} of elements which differ from null
+     * This method returns a function. The result function returns immutable {@link List} of elements which differ from null
      * and suit the criteria.
      *
      * @param function          function which should return {@link Iterable}
@@ -178,14 +183,15 @@ public final class ToGetSubIterable {
      * @param <T>               is a type of input value
      * @param <R>               is a type of target values
      * @param <V>               is a type of {@link Iterable} of {@code R}
-     * @return a function. The result function returns an {@link Iterable} of elements which differ from null
+     * @return a function. The result function returns immutable {@link List} of elements which differ from null
      * and suit the criteria. It returns not empty iterable when there are such elements. Some exception is thrown if result
      * iterable is null or has no elements which suit the criteria.
      */
-    public static <T, R, V extends Iterable<R>> Function<T, V> getIterable(Function<T, V> function,
-                                                                           Predicate<? super R> condition,
-                                                                           Supplier<? extends RuntimeException> exceptionSupplier,
-                                                                           Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public static <T, R, V extends Iterable<R>> Function<T, List<R>> getList(Function<T, V> function,
+                                                                             Predicate<? super R> condition,
+                                                                             Supplier<? extends RuntimeException> exceptionSupplier,
+                                                                             Class<? extends Throwable>... toIgnore) {
         return iterable(checkFunction(function),
                 checkCondition(condition),
                 null,
@@ -195,7 +201,7 @@ public final class ToGetSubIterable {
     }
 
     /**
-     * This method returns a function. The result function returns an {@link Iterable} of elements which differ from null.
+     * This method returns a function. The result function returns immutable {@link List} of elements which differ from null.
      *
      * @param function          function which should return {@link Iterable}
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
@@ -204,13 +210,14 @@ public final class ToGetSubIterable {
      * @param <T>               is a type of input value
      * @param <R>               is a type of target values
      * @param <V>               is a type of {@link Iterable} of {@code R}
-     * @return a function. The result function returns an {@link Iterable} of elements which differ from null.
+     * @return a function. The result function returns immutable {@link List} of elements which differ from null.
      * It returns not empty iterable when there are such elements. Some exception is thrown if result
      * iterable is null or has no elements or all elements are {@code null}.
      */
-    public static <T, R, V extends Iterable<R>> Function<T, V> getIterable(Function<T, V> function,
-                                                                           Supplier<? extends RuntimeException> exceptionSupplier,
-                                                                           Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public static <T, R, V extends Iterable<R>> Function<T, List<R>> getList(Function<T, V> function,
+                                                                             Supplier<? extends RuntimeException> exceptionSupplier,
+                                                                             Class<? extends Throwable>... toIgnore) {
         return iterable(checkFunction(function),
                 (Predicate<? super R>) AS_IS,
                 null,
@@ -220,7 +227,7 @@ public final class ToGetSubIterable {
     }
 
     /**
-     * This method returns a function. The result function returns an {@link Iterable} of elements which differ from null
+     * This method returns a function. The result function returns immutable {@link List} of elements which differ from null
      * and suit the criteria.
      *
      * @param function     function which should return {@link Iterable}
@@ -232,15 +239,16 @@ public final class ToGetSubIterable {
      * @param <T>          is a type of input value
      * @param <R>          is a type of target values
      * @param <V>          is a type of {@link Iterable} of {@code R}
-     * @return a function. The result function returns an {@link Iterable} of elements which differ from null
+     * @return a function. The result function returns immutable {@link List} of elements which differ from null
      * and suit the criteria. It returns not empty iterable when there are such elements. Empty iterable is returned if result
      * iterable is null or has no elements which suit the criteria.
      */
-    public static <T, R, V extends Iterable<R>> Function<T, V> getIterable(Function<T, V> function,
-                                                                           Predicate<? super R> condition,
-                                                                           Duration waitingTime,
-                                                                           Duration sleepingTime,
-                                                                           Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public static <T, R, V extends Iterable<R>> Function<T, List<R>> getList(Function<T, V> function,
+                                                                             Predicate<? super R> condition,
+                                                                             Duration waitingTime,
+                                                                             Duration sleepingTime,
+                                                                             Class<? extends Throwable>... toIgnore) {
         return iterable(checkFunction(function),
                 checkCondition(condition),
                 checkWaitingTime(waitingTime),
@@ -250,7 +258,7 @@ public final class ToGetSubIterable {
     }
 
     /**
-     * This method returns a function. The result function returns an {@link Iterable} of elements which differ from null.
+     * This method returns a function. The result function returns immutable {@link List} of elements which differ from null.
      *
      * @param function     function which should return {@link Iterable}
      * @param waitingTime  is a duration of the waiting for valuable result
@@ -260,14 +268,15 @@ public final class ToGetSubIterable {
      * @param <T>          is a type of input value
      * @param <R>          is a type of target values
      * @param <V>          is a type of {@link Iterable} of {@code R}
-     * @return a function. The result function returns an {@link Iterable} of elements which differ from null.
+     * @return a function. The result function returns immutable {@link List} of elements which differ from null.
      * It returns not empty iterable when there are such elements. Empty iterable is returned if result
      * iterable is null or has no elements or all elements are {@code null}.
      */
-    public static <T, R, V extends Iterable<R>> Function<T, V> getIterable(Function<T, V> function,
-                                                                           Duration waitingTime,
-                                                                           Duration sleepingTime,
-                                                                           Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public static <T, R, V extends Iterable<R>> Function<T, List<R>> getList(Function<T, V> function,
+                                                                             Duration waitingTime,
+                                                                             Duration sleepingTime,
+                                                                             Class<? extends Throwable>... toIgnore) {
         return iterable(checkFunction(function),
                 (Predicate<? super R>) AS_IS,
                 checkWaitingTime(waitingTime),
@@ -277,7 +286,7 @@ public final class ToGetSubIterable {
     }
 
     /**
-     * This method returns a function. The result function returns an {@link Iterable} of elements which differ from null
+     * This method returns a function. The result function returns immutable {@link List} of elements which differ from null
      * and suit the criteria.
      *
      * @param function    function which should return {@link Iterable}
@@ -287,14 +296,15 @@ public final class ToGetSubIterable {
      * @param <T>         is a type of input value
      * @param <R>         is a type of target values
      * @param <V>         is a type of {@link Iterable} of {@code R}
-     * @return a function. The result function returns an {@link Iterable} of elements which differ from null
+     * @return a function. The result function returns immutable {@link List} of elements which differ from null
      * and suit the criteria. It returns not empty iterable when there are such elements. Empty iterable is returned if result
      * iterable is null or has no elements which suit the criteria.
      */
-    public static <T, R, V extends Iterable<R>> Function<T, V> getIterable(Function<T, V> function,
-                                                                           Predicate<? super R> condition,
-                                                                           Duration waitingTime,
-                                                                           Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public static <T, R, V extends Iterable<R>> Function<T, List<R>> getList(Function<T, V> function,
+                                                                             Predicate<? super R> condition,
+                                                                             Duration waitingTime,
+                                                                             Class<? extends Throwable>... toIgnore) {
         return iterable(checkFunction(function),
                 checkCondition(condition),
                 checkWaitingTime(waitingTime),
@@ -304,7 +314,7 @@ public final class ToGetSubIterable {
     }
 
     /**
-     * This method returns a function. The result function returns an {@link Iterable} of elements which differ from null.
+     * This method returns a function. The result function returns immutable {@link List} of elements which differ from null.
      *
      * @param function    function which should return {@link Iterable}
      * @param waitingTime is a duration of the waiting for valuable result
@@ -312,13 +322,14 @@ public final class ToGetSubIterable {
      * @param <T>         is a type of input value
      * @param <R>         is a type of target values
      * @param <V>         is a type of {@link Iterable} of {@code R}
-     * @return a function. The result function returns an {@link Iterable} of elements which differ from null.
+     * @return a function. The result function returns immutable {@link List} of elements which differ from null.
      * It returns not empty iterable when there are such elements. Empty iterable is returned if result
      * iterable is null or has no elements or all elements are {@code null}.
      */
-    public static <T, R, V extends Iterable<R>> Function<T, V> getIterable(Function<T, V> function,
-                                                                           Duration waitingTime,
-                                                                           Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public static <T, R, V extends Iterable<R>> Function<T, List<R>> getList(Function<T, V> function,
+                                                                             Duration waitingTime,
+                                                                             Class<? extends Throwable>... toIgnore) {
         return iterable(checkFunction(function),
                 (Predicate<? super R>) AS_IS,
                 checkWaitingTime(waitingTime),
@@ -328,7 +339,7 @@ public final class ToGetSubIterable {
     }
 
     /**
-     * This method returns a function. The result function returns an {@link Iterable} of elements which differ from null
+     * This method returns a function. The result function returns immutable {@link List} of elements which differ from null
      * and suit the criteria.
      *
      * @param function  function which should return {@link Iterable}
@@ -337,13 +348,14 @@ public final class ToGetSubIterable {
      * @param <T>       is a type of input value
      * @param <R>       is a type of target values
      * @param <V>       is a type of {@link Iterable} of {@code R}
-     * @return a function. The result function returns an {@link Iterable} of elements which differ from null
+     * @return a function. The result function returns immutable {@link List} of elements which differ from null
      * and suit the criteria. It returns not empty iterable when there are such elements. Empty iterable is returned if result
      * iterable is null or has no elements which suit the criteria.
      */
-    public static <T, R, V extends Iterable<R>> Function<T, V> getIterable(Function<T, V> function,
-                                                                           Predicate<? super R> condition,
-                                                                           Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public static <T, R, V extends Iterable<R>> Function<T, List<R>> getList(Function<T, V> function,
+                                                                             Predicate<? super R> condition,
+                                                                             Class<? extends Throwable>... toIgnore) {
         return iterable(checkFunction(function),
                 checkCondition(condition),
                 null,
@@ -353,19 +365,20 @@ public final class ToGetSubIterable {
     }
 
     /**
-     * This method returns a function. The result function returns an {@link Iterable} of elements which differ from {@code null}.
+     * This method returns a function. The result function returns immutable {@link List} of elements which differ from {@code null}.
      *
      * @param function function which should return {@link Iterable}
      * @param toIgnore classes of exception to be ignored during execution
      * @param <T>      is a type of input value
      * @param <R>      is a type of target values
      * @param <V>      is a type of {@link Iterable} of {@code R}
-     * @return a function. The result function returns an {@link Iterable} of elements which differ from null
+     * @return a function. The result function returns immutable {@link List} of elements which differ from null
      * and suit the criteria. It returns not empty iterable when there are such elements. Empty iterable is returned if result
      * iterable is null or has no elements which suit the criteria.
      */
-    public static <T, R, V extends Iterable<R>> Function<T, V> getIterable(Function<T, V> function,
-                                                                           Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public static <T, R, V extends Iterable<R>> Function<T, List<R>> getList(Function<T, V> function,
+                                                                             Class<? extends Throwable>... toIgnore) {
         return iterable(checkFunction(function),
                 (Predicate<? super R>) AS_IS,
                 null,

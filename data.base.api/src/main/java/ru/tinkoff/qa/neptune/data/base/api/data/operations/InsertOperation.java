@@ -18,6 +18,7 @@ import static java.util.stream.Collectors.toList;
  *
  * @param <T> is a type of objects to be inserted
  */
+@Deprecated(forRemoval = true)
 public final class InsertOperation<T extends PersistableObject> extends DataOperation<T, Collection<T>, InsertOperation<T>> {
 
     @StepParameter("To be inserted")

@@ -9,6 +9,7 @@ import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
+@Deprecated(forRemoval = true)
 public final class DBConnectionStore {
 
     private static final List<DBConnectionSupplier> CONNECTION_DATA_SUPPLIERS =
@@ -51,7 +52,7 @@ public final class DBConnectionStore {
         checkArgument(nonNull(supplierClass), "Class of DB connection supplier " +
                 "is expected to be not a null value");
         return getConnectionDataSuppliers().stream().filter(dbConnectionSupplier ->
-                dbConnectionSupplier.getClass().equals(supplierClass))
+                        dbConnectionSupplier.getClass().equals(supplierClass))
                 .findFirst()
                 .map(DBConnectionSupplier::get)
                 .orElseGet(() -> {

@@ -29,11 +29,12 @@ import static ru.tinkoff.qa.neptune.data.base.api.ConnectionDataReader.getConnec
  * @param <T> is a type of objects to be operated and returned
  * @param <R> is a type of subclass of {@link DataOperation}
  */
+@Deprecated(forRemoval = true)
 @CaptureOnSuccess(by = DBCaptor.class)
 @CaptureOnFailure(by = DBCaptor.class)
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Perform in database:")
 public abstract class DataOperation<T extends PersistableObject, M, R extends DataOperation<T, M, R>>
-        extends SequentialGetStepSupplier.GetIterableChainedStepSupplier<DataBaseStepContext, List<T>, M, T, R> {
+        extends SequentialGetStepSupplier.GetListChainedStepSupplier<DataBaseStepContext, List<T>, M, T, R> {
 
     protected final PersistenceMapWrapper<T> mapWrapper;
     private DataBaseStepContext context;
@@ -70,7 +71,7 @@ public abstract class DataOperation<T extends PersistableObject, M, R extends Da
     @SafeVarargs
     @Description("Update {toUpdate}")
     public static <T extends PersistableObject> UpdateOperation<T, List<T>, ?> updated(
-            @DescriptionFragment("toUpdate") SelectList<?, List<T>> howToSelect,
+            @DescriptionFragment("toUpdate") SelectList<T, List<T>> howToSelect,
             UpdateExpression<T>... set) {
         return new UpdateOperation.UpdateBySelection<>(new PersistenceMapWrapper<>(), howToSelect, set);
     }
@@ -146,7 +147,7 @@ public abstract class DataOperation<T extends PersistableObject, M, R extends Da
      */
     @Description("Delete {toDelete}")
     public static <T extends PersistableObject> DeleteOperation<T, List<T>, ?> deleted(
-            @DescriptionFragment("toDelete") SelectList<?, List<T>> howToSelect) {
+            @DescriptionFragment("toDelete") SelectList<T, List<T>> howToSelect) {
         return new DeleteOperation.DeleteBySelection<>(new PersistenceMapWrapper<>(), howToSelect);
     }
 

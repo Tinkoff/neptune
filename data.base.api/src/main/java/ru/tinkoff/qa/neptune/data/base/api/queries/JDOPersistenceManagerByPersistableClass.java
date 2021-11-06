@@ -9,6 +9,7 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static ru.tinkoff.qa.neptune.data.base.api.ConnectionDataReader.getConnection;
 
+@Deprecated(forRemoval = true)
 class JDOPersistenceManagerByPersistableClass<T extends PersistableObject> implements Function<DataBaseStepContext, JDOPersistenceManager> {
 
     private final Class<T> clazz;

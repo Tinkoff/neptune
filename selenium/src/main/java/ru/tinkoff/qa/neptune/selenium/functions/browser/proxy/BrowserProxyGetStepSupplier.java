@@ -19,7 +19,7 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.GetProxy.getBro
 @CaptureOnSuccess(by = CollectionCaptor.class)
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria for http request/response")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Waiting time")
-public class BrowserProxyGetStepSupplier extends SequentialGetStepSupplier.GetIterableStepSupplier<SeleniumStepContext, List<HarEntry>, HarEntry, BrowserProxyGetStepSupplier> {
+public class BrowserProxyGetStepSupplier extends SequentialGetStepSupplier.GetListStepSupplier<SeleniumStepContext, List<HarEntry>, HarEntry, BrowserProxyGetStepSupplier> {
 
     private BrowserProxyGetStepSupplier() {
         super(getBrowserProxy().andThen(proxy -> ofNullable(proxy)

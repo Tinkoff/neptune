@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.spring.data.select.common.by;
 
-import com.google.common.collect.Lists;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.Repository;
@@ -12,8 +11,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Lists.newArrayList;
-import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @SuppressWarnings("unchecked")
@@ -40,25 +37,19 @@ public final class SelectionBySorting<R, ID, T extends Repository<R, ID>> extend
     @Override
     public Iterable<R> apply(T t) {
         if (t instanceof PagingAndSortingRepository) {
-            return newArrayList(((PagingAndSortingRepository<R, ID>) t).findAll(sort));
+            return ((PagingAndSortingRepository<R, ID>) t).findAll(sort);
         }
 
         if (t instanceof ReactiveSortingRepository) {
-            return ofNullable(((ReactiveSortingRepository<R, ID>) t).findAll(sort).collectList().block())
-                    .map(Lists::newArrayList)
-                    .orElse(null);
+            return ((ReactiveSortingRepository<R, ID>) t).findAll(sort).collectList().block();
         }
 
         if (t instanceof RxJava2SortingRepository) {
-            return ofNullable(((RxJava2SortingRepository<R, ID>) t).findAll(sort).toList().blockingGet())
-                    .map(Lists::newArrayList)
-                    .orElse(null);
+            return ((RxJava2SortingRepository<R, ID>) t).findAll(sort).toList().blockingGet();
         }
 
         if (t instanceof RxJava3SortingRepository) {
-            return ofNullable(((RxJava3SortingRepository<R, ID>) t).findAll(sort).toList().blockingGet())
-                    .map(Lists::newArrayList)
-                    .orElse(null);
+            return ((RxJava3SortingRepository<R, ID>) t).findAll(sort).toList().blockingGet();
         }
 
         throw unsupportedRepository(t);

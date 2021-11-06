@@ -16,8 +16,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
  * @param <T> is a type of iterable to get
  */
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted iterable")
-public final class GetIterableFromResponse<R, T extends Iterable<R>> extends SequentialGetStepSupplier
-        .GetIterableStepSupplier<WebTestClientContext, T, R, GetIterableFromResponse<R, T>> {
+public final class GetIterableFromResponse<R, T extends Iterable<R>> extends SequentialGetStepSupplier.GetListStepSupplier<WebTestClientContext, T, R, GetIterableFromResponse<R, T>> {
 
     private GetIterableFromResponse(Function<WebTestClientContext, T> f) {
         super(f);

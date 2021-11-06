@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.spring.data.select.querydsl.by;
 
-import com.google.common.collect.Lists;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -11,8 +10,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Lists.newArrayList;
-import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @SuppressWarnings("unchecked")
@@ -65,13 +62,11 @@ public abstract class SelectByPredicateFunction<R, ID, T extends Repository<R, I
         @Override
         public Iterable<R> apply(T t) {
             if (t instanceof QuerydslPredicateExecutor) {
-                return newArrayList(((QuerydslPredicateExecutor<R>) t).findAll(predicate));
+                return ((QuerydslPredicateExecutor<R>) t).findAll(predicate);
             }
 
             if (t instanceof ReactiveQuerydslPredicateExecutor) {
-                return ofNullable(((ReactiveQuerydslPredicateExecutor<R>) t).findAll(predicate).collectList().block())
-                        .map(Lists::newArrayList)
-                        .orElse(null);
+                return ((ReactiveQuerydslPredicateExecutor<R>) t).findAll(predicate).collectList().block();
             }
 
             throw unsupportedRepository(t);
@@ -96,13 +91,11 @@ public abstract class SelectByPredicateFunction<R, ID, T extends Repository<R, I
         @Override
         public Iterable<R> apply(T t) {
             if (t instanceof QuerydslPredicateExecutor) {
-                return newArrayList(((QuerydslPredicateExecutor<R>) t).findAll(predicate, sort));
+                return ((QuerydslPredicateExecutor<R>) t).findAll(predicate, sort);
             }
 
             if (t instanceof ReactiveQuerydslPredicateExecutor) {
-                return ofNullable(((ReactiveQuerydslPredicateExecutor<R>) t).findAll(predicate, sort).collectList().block())
-                        .map(Lists::newArrayList)
-                        .orElse(null);
+                return ((ReactiveQuerydslPredicateExecutor<R>) t).findAll(predicate, sort).collectList().block();
             }
 
             throw unsupportedRepository(t);
@@ -120,7 +113,7 @@ public abstract class SelectByPredicateFunction<R, ID, T extends Repository<R, I
 
         @Override
         public Iterable<R> apply(T t) {
-            return newArrayList(t.findAll(predicate, pageable).getContent());
+            return t.findAll(predicate, pageable).getContent();
         }
 
 

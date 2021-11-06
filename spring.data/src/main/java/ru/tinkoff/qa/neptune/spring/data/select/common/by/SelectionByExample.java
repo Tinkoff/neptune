@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.spring.data.select.common.by;
 
-import com.google.common.collect.Lists;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Sort;
@@ -10,9 +9,7 @@ import org.springframework.data.repository.query.ReactiveQueryByExampleExecutor;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.isNull;
-import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @SuppressWarnings("unchecked")
@@ -78,17 +75,13 @@ public abstract class SelectionByExample<R, ID, T extends Repository<R, ID>, RES
         public Iterable<R> apply(T t) {
             if (t instanceof QueryByExampleExecutor) {
                 var repo = (QueryByExampleExecutor<R>) t;
-                return isNull(sort) ? newArrayList(repo.findAll(getExample())) : newArrayList(repo.findAll(getExample(), sort));
+                return isNull(sort) ? repo.findAll(getExample()) : repo.findAll(getExample(), sort);
             }
 
             if (t instanceof ReactiveQueryByExampleExecutor) {
                 var repo = (ReactiveQueryByExampleExecutor<R>) t;
-                return isNull(sort) ? ofNullable(repo.findAll(getExample()).collectList().block())
-                        .map(Lists::newArrayList)
-                        .orElse(null) :
-                        ofNullable(repo.findAll(getExample(), sort).collectList().block())
-                                .map(Lists::newArrayList)
-                                .orElse(null);
+                return isNull(sort) ? repo.findAll(getExample()).collectList().block()
+                        : repo.findAll(getExample(), sort).collectList().block();
             }
 
             throw unsupportedRepository(t);

@@ -20,6 +20,7 @@ import javax.jdo.query.PersistableExpression;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.SLEEPING_TIME;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.WAITING_FOR_SELECTION_RESULT_TIME;
@@ -35,13 +36,14 @@ import static ru.tinkoff.qa.neptune.data.base.api.queries.sql.SqlQuery.bySql;
  * @param <T> is a type of retrieved values
  * @param <R> is a type of a records of retrieved values
  */
+@Deprecated(forRemoval = true)
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Select from data base:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time to select objects")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Record criteria")
 @MaxDepthOfReporting(0)
 @ThrowWhenNoData(toThrow = NothingIsSelectedException.class, startDescription = "Not selected:")
 public class SelectList<T, R extends List<T>> extends SequentialGetStepSupplier
-        .GetIterableChainedStepSupplier<DataBaseStepContext, R, JDOPersistenceManager, T, SelectList<T, R>> {
+        .GetListChainedStepSupplier<DataBaseStepContext, R, JDOPersistenceManager, T, SelectList<T, R>> {
 
     private final KeepResultPersistent resultPersistent;
 
@@ -87,13 +89,21 @@ public class SelectList<T, R extends List<T>> extends SequentialGetStepSupplier
      * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectList}
      */
     @Description("rows of raw data from '{of}'")
-    public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectList<List<Object>, TableResultList>
+    public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectList<List<Object>, List<List<Object>>>
     rows(@DescriptionFragment(
             value = "of",
             makeReadableBy = TableNameGetter.class) Class<R> toSelectFrom,
          JDOQLResultQueryParams<R, Q> params) {
         return new SelectList<>(null,
-                byJDOQLResultQuery(toSelectFrom, params))
+                byJDOQLResultQuery(toSelectFrom, params)) {
+
+            @Override
+            protected Function<JDOPersistenceManager, List<List<Object>>> getEndFunction() {
+                return super.getEndFunction().andThen(r -> new TableResultList(r) {
+
+                });
+            }
+        }
                 .from(getConnectionByClass(toSelectFrom));
     }
 
@@ -197,15 +207,21 @@ public class SelectList<T, R extends List<T>> extends SequentialGetStepSupplier
      * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectList}
      */
     @Description("rows of raw data from '{of}'")
-    public static <R extends DBConnectionSupplier> SelectList<List<Object>, TableResultList> rows(
+    public static <R extends DBConnectionSupplier> SelectList<List<Object>, List<List<Object>>> rows(
             String sql,
             @DescriptionFragment(
                     value = "of",
                     makeReadableBy = TableNameGetter.class) Class<R> connection,
             Object... parameters) {
         return new SelectList<>(null,
-                bySql(sql, parameters))
-                .from(getConnectionBySupplierClass(connection));
+                bySql(sql, parameters)) {
+            @Override
+            protected Function<JDOPersistenceManager, List<List<Object>>> getEndFunction() {
+                return super.getEndFunction().andThen(r -> new TableResultList(r) {
+
+                });
+            }
+        }.from(getConnectionBySupplierClass(connection));
     }
 
     /**
@@ -222,14 +238,22 @@ public class SelectList<T, R extends List<T>> extends SequentialGetStepSupplier
      * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectList}
      */
     @Description("rows of raw data from '{of}'")
-    public static <R extends DBConnectionSupplier> SelectList<List<Object>, TableResultList> rows(
+    public static <R extends DBConnectionSupplier> SelectList<List<Object>, List<List<Object>>> rows(
             String sql,
             @DescriptionFragment(
                     value = "of",
                     makeReadableBy = TableNameGetter.class) Class<R> connection,
             Map<String, ?> parameters) {
         return new SelectList<>(null,
-                bySql(sql, parameters))
+                bySql(sql, parameters)) {
+
+            @Override
+            protected Function<JDOPersistenceManager, List<List<Object>>> getEndFunction() {
+                return super.getEndFunction().andThen(r -> new TableResultList(r) {
+
+                });
+            }
+        }
                 .from(getConnectionBySupplierClass(connection));
     }
 

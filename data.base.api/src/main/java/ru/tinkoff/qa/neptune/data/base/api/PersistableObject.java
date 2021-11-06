@@ -16,6 +16,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 /**
  * This abstract class is designed to mark persistable classes.
  */
+@Deprecated(forRemoval = true)
 public abstract class PersistableObject extends OrmObject implements Cloneable {
 
     public static final String[] DATA_NUCLEOUS_ENHANCED_FIELDS = new String[]{"dnStateManager", "dnFlags", "dnDetachedState", "$"};

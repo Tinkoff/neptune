@@ -13,6 +13,7 @@ import ru.tinkoff.qa.neptune.rabbit.mq.function.purge.RabbitMqPurgeQueueSupplier
 import ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.binding.RabbitMqBindSupplier.bindAction;
@@ -91,7 +92,7 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
      * @param <T>      is a type of desired value
      * @return read value
      */
-    public <T, S extends Iterable<T>> S read(RabbitMqBasicGetIterableSupplier<T, S> basicGet) {
+    public <T, S extends Iterable<T>> List<T> read(RabbitMqBasicGetIterableSupplier<T, S> basicGet) {
         return get(basicGet);
     }
 

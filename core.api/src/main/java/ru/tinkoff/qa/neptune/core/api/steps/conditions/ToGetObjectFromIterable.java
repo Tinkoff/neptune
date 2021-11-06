@@ -62,6 +62,7 @@ public final class ToGetObjectFromIterable {
      * It returns a value if something that suits criteria is found. Some exception is thrown if
      * result iterable to get value from is null or has zero-size or it has no item which suits criteria.
      */
+    @SafeVarargs
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
                                                                                Predicate<? super R> condition,
                                                                                Duration waitingTime,
@@ -92,6 +93,7 @@ public final class ToGetObjectFromIterable {
      * @return a function. The result function returns a single first found non-null value from {@link Iterable}.
      * Some exception is thrown if result iterable to get value from is null or has zero-size.
      */
+    @SafeVarargs
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
                                                                                Duration waitingTime,
                                                                                Duration sleepingTime,
@@ -122,6 +124,7 @@ public final class ToGetObjectFromIterable {
      * It returns a value if something that suits criteria is found. Some exception is thrown if
      * result iterable to get value from is null or has zero-size or it has no item which suits criteria.
      */
+    @SafeVarargs
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
                                                                                Predicate<? super R> condition,
                                                                                Duration waitingTime,
@@ -149,6 +152,7 @@ public final class ToGetObjectFromIterable {
      * @return a function. The result function returns a single first found non-null value from {@link Iterable}.
      * Some exception is thrown if result iterable to get value from is null or has zero-size.
      */
+    @SafeVarargs
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
                                                                                Duration waitingTime,
                                                                                Supplier<? extends RuntimeException> exceptionSupplier,
@@ -177,6 +181,7 @@ public final class ToGetObjectFromIterable {
      * It returns a value if something that suits criteria is found. Some exception is thrown if
      * result iterable to get value from is null or has zero-size or it has no item which suits criteria.
      */
+    @SafeVarargs
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
                                                                                Predicate<? super R> condition,
                                                                                Supplier<? extends RuntimeException> exceptionSupplier,
@@ -201,6 +206,7 @@ public final class ToGetObjectFromIterable {
      * @return a function. The result function returns a single first found non-null value from {@link Iterable}.
      * Some exception is thrown if result iterable to get value from is null or has zero-size.
      */
+    @SafeVarargs
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
                                                                                Supplier<? extends RuntimeException> exceptionSupplier,
                                                                                Class<? extends Throwable>... toIgnore) {
@@ -228,6 +234,7 @@ public final class ToGetObjectFromIterable {
      * It returns a value if something that suits criteria is found. {@code null} is returned if
      * result iterable to get value from is null or has zero-size or it has no item which suits criteria.
      */
+    @SafeVarargs
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
                                                                                Predicate<? super R> condition,
                                                                                Duration waitingTime,
@@ -255,6 +262,7 @@ public final class ToGetObjectFromIterable {
      * @return a function. The result function returns a single first found non-null value from {@link Iterable}.
      * {@code null} is returned if result iterable to get value from is null or has zero-size.
      */
+    @SafeVarargs
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
                                                                                Duration waitingTime,
                                                                                Duration sleepingTime,
@@ -282,6 +290,7 @@ public final class ToGetObjectFromIterable {
      * It returns a value if something that suits criteria is found. {@code null} is returned if
      * result iterable to get value from is null or has zero-size or it has no item which suits criteria.
      */
+    @SafeVarargs
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
                                                                                Predicate<? super R> condition,
                                                                                Duration waitingTime,
@@ -305,6 +314,7 @@ public final class ToGetObjectFromIterable {
      * @return a function. The result function returns a single first found non-null value from {@link Iterable}.
      * {@code null} is returned if result iterable to get value from is null or has zero-size.
      */
+    @SafeVarargs
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
                                                                                Duration waitingTime,
                                                                                Class<? extends Throwable>... toIgnore) {
@@ -329,6 +339,7 @@ public final class ToGetObjectFromIterable {
      * It returns a value if something that suits criteria is found. {@code null} is returned if
      * result iterable to get value from is null or has zero-size or it has no item which suits criteria.
      */
+    @SafeVarargs
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
                                                                                Predicate<? super R> condition,
                                                                                Class<? extends Throwable>... toIgnore) {
@@ -350,6 +361,7 @@ public final class ToGetObjectFromIterable {
      * @return a function. The result function returns a single first found non-null value from {@link Iterable}.
      * {@code null} is returned if result iterable to get value from is null or has zero-size.
      */
+    @SafeVarargs
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
                                                                                Class<? extends Throwable>... toIgnore) {
         return singleFromIterable(checkFunction(function),

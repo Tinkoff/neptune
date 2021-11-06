@@ -25,6 +25,7 @@ import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.WhereJunction.an
  * @param <T> is a type of {@link PersistableObject} to be selected
  * @param <Q> is a type of {@link PersistableExpression} that represents {@code T} in a query
  */
+@Deprecated(forRemoval = true)
 @SuppressWarnings("unchecked")
 public abstract class JDOParameters<T extends PersistableObject, Q extends PersistableExpression<T>, S extends JDOParameters<T, Q, S>> {
 

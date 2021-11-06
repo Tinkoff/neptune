@@ -119,8 +119,8 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
         return select(setDescription(description, by));
     }
 
-    public <R, ID, T extends Repository<R, ID>> Iterable<R> select(String description,
-                                                                   SelectManyStepSupplier<R, ID, T> by) {
+    public <R, ID, T extends Repository<R, ID>> List<R> select(String description,
+                                                               SelectManyStepSupplier<R, ID, T> by) {
         return select(setDescription(description, by));
     }
 
@@ -129,8 +129,8 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
         return select(setDescription(description, toGet));
     }
 
-    public <ITEM, S extends Iterable<ITEM>, R> S select(String description,
-                                                        GetIterableFromEntity<ITEM, S, R, ?> toGet) {
+    public <ITEM, S extends Iterable<ITEM>, R> List<ITEM> select(String description,
+                                                                 GetIterableFromEntity<ITEM, S, R, ?> toGet) {
         return select(setDescription(description, toGet));
     }
 

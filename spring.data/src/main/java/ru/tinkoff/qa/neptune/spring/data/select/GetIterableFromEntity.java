@@ -9,6 +9,7 @@ import ru.tinkoff.qa.neptune.spring.data.SpringDataContext;
 import ru.tinkoff.qa.neptune.spring.data.captors.EntitiesCaptor;
 import ru.tinkoff.qa.neptune.spring.data.dictionary.RequiredEntity;
 
+import java.util.List;
 import java.util.function.Function;
 
 import static java.util.Optional.ofNullable;
@@ -22,8 +23,8 @@ import static java.util.Optional.ofNullable;
 @CaptureOnSuccess(by = EntitiesCaptor.class)
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted iterable")
 public abstract class GetIterableFromEntity<T, I extends Iterable<T>, M, S extends GetIterableFromEntity<T, I, M, S>>
-        extends SequentialGetStepSupplier.GetIterableChainedStepSupplier<SpringDataContext, I, M, T, S>
-        implements SelectQuery<I> {
+        extends SequentialGetStepSupplier.GetListChainedStepSupplier<SpringDataContext, I, M, T, S>
+        implements SelectQuery<List<T>> {
 
     private GetIterableFromEntity(Function<M, I> originalFunction) {
         super(originalFunction);

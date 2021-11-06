@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.spring.data.select.querydsl.by;
 
-import com.google.common.collect.Lists;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
@@ -10,7 +9,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
 
 import static com.google.common.base.Preconditions.*;
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
@@ -43,26 +41,22 @@ public final class SelectByOrderedFunction<R, ID, T extends Repository<R, ID>>
         return ofNullable(predicate)
                 .map(p -> {
                     if (t instanceof QuerydslPredicateExecutor) {
-                        return newArrayList(((QuerydslPredicateExecutor<R>) t).findAll(predicate, orderSpecifiers));
+                        return ((QuerydslPredicateExecutor<R>) t).findAll(predicate, orderSpecifiers);
                     }
 
                     if (t instanceof ReactiveQuerydslPredicateExecutor) {
-                        return ofNullable(((ReactiveQuerydslPredicateExecutor<R>) t).findAll(predicate, orderSpecifiers).collectList().block())
-                                .map(Lists::newArrayList)
-                                .orElse(null);
+                        return ((ReactiveQuerydslPredicateExecutor<R>) t).findAll(predicate, orderSpecifiers).collectList().block();
                     }
 
                     throw unsupportedRepository(t);
                 })
                 .orElseGet(() -> {
                     if (t instanceof QuerydslPredicateExecutor) {
-                        return newArrayList(((QuerydslPredicateExecutor<R>) t).findAll(orderSpecifiers));
+                        return ((QuerydslPredicateExecutor<R>) t).findAll(orderSpecifiers);
                     }
 
                     if (t instanceof ReactiveQuerydslPredicateExecutor) {
-                        return ofNullable(((ReactiveQuerydslPredicateExecutor<R>) t).findAll(orderSpecifiers).collectList().block())
-                                .map(Lists::newArrayList)
-                                .orElse(null);
+                        return ((ReactiveQuerydslPredicateExecutor<R>) t).findAll(orderSpecifiers).collectList().block();
                     }
 
                     throw unsupportedRepository(t);

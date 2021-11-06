@@ -36,6 +36,7 @@ import static ru.tinkoff.qa.neptune.data.base.api.queries.sql.SqlQuery.bySql;
  *
  * @param <T> is a type of retrieved value
  */
+@Deprecated(forRemoval = true)
 @CaptureOnSuccess(by = DBCaptor.class)
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Select from data base:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time to select object")

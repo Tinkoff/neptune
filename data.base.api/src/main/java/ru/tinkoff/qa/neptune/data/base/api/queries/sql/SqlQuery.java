@@ -3,7 +3,6 @@ package ru.tinkoff.qa.neptune.data.base.api.queries.sql;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.api.queries.KeepResultPersistent;
 import ru.tinkoff.qa.neptune.data.base.api.queries.Query;
-import ru.tinkoff.qa.neptune.data.base.api.result.TableResultList;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,6 +13,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+@Deprecated(forRemoval = true)
 public abstract class SqlQuery<T, S extends List<T>> implements Query<T, S> {
 
     final String sql;
@@ -79,7 +79,7 @@ public abstract class SqlQuery<T, S extends List<T>> implements Query<T, S> {
      *                   </p>
      * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.sql.SqlQuery}
      */
-    public static SqlQuery<List<Object>, TableResultList> bySql(String sql, Object... parameters) {
+    public static SqlQuery<List<Object>, List<List<Object>>> bySql(String sql, Object... parameters) {
         return new SqlUntypedQuery(sql, parameters);
     }
 
@@ -94,7 +94,7 @@ public abstract class SqlQuery<T, S extends List<T>> implements Query<T, S> {
      *                   </p>
      * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.sql.SqlQuery}
      */
-    public static SqlQuery<List<Object>, TableResultList> bySql(String sql, Map<String, ?> parameters) {
+    public static SqlQuery<List<Object>, List<List<Object>>> bySql(String sql, Map<String, ?> parameters) {
         return new SqlUntypedQuery(sql, parameters);
     }
 
@@ -107,7 +107,7 @@ public abstract class SqlQuery<T, S extends List<T>> implements Query<T, S> {
                 stringBuilder.append(Arrays.toString((Object[]) o));
             } else {
 
-                stringBuilder.append(o.toString());
+                stringBuilder.append(o);
             }
         });
 

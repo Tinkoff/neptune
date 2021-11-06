@@ -14,6 +14,7 @@ import static java.util.Optional.ofNullable;
  * Connection data is described by {@link PersistenceUnitMetaData}
  * The resulted connection is represented by {@link JDOPersistenceManagerFactory}
  */
+@Deprecated(forRemoval = true)
 public final class DBConnection {
 
     private final PersistenceUnitMetaData persistenceUnitMetaData;

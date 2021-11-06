@@ -25,7 +25,7 @@ import static java.util.stream.StreamSupport.stream;
 @CaptureOnSuccess(by = EntitiesCaptor.class)
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted iterable")
 public abstract class GetIterableFromEntities<T, M, S extends GetIterableFromEntities<T, M, S>>
-        extends SequentialGetStepSupplier.GetIterableChainedStepSupplier<SpringDataContext, List<T>, Iterable<M>, T, S>
+        extends SequentialGetStepSupplier.GetListChainedStepSupplier<SpringDataContext, List<T>, Iterable<M>, T, S>
         implements SelectQuery<List<T>> {
 
     private GetIterableFromEntities(Function<M, T> originalFunction) {

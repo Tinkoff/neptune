@@ -6,6 +6,7 @@ import com.google.gson.FieldAttributes;
 import static org.apache.commons.lang3.ArrayUtils.contains;
 import static ru.tinkoff.qa.neptune.data.base.api.PersistableObject.DATA_NUCLEOUS_ENHANCED_FIELDS;
 
+@Deprecated(forRemoval = true)
 public class DataNucleousEnhancedExclusionStrategy implements ExclusionStrategy {
 
     @Override

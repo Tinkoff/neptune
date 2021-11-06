@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.select;
 
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.data.base.api.result.TableResultList;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.ConnectionDataSupplierForTestBase1;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Book;
@@ -102,16 +103,16 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
                 .addWhere(qBook -> qBook.yearOfFinishing.gteq(1820))
                 .orderBy(qBook -> qBook.yearOfFinishing.asc())));
 
-        assertThat(booksAndAuthors.getColumn(1),
+        assertThat(((TableResultList) booksAndAuthors).getColumn(1),
                 contains(books.stream().map(Book::getName).toArray(String[]::new)));
 
-        assertThat(booksAndAuthors.getColumn(5),
+        assertThat(((TableResultList) booksAndAuthors).getColumn(5),
                 contains(books.stream().map(book -> book.getAuthor().getFirstName()).toArray(String[]::new)));
 
-        assertThat(booksAndAuthors.getColumn(6),
+        assertThat(((TableResultList) booksAndAuthors).getColumn(6),
                 contains(books.stream().map(book -> book.getAuthor().getLastName()).toArray(String[]::new)));
 
-        assertThat(booksAndAuthors.getColumn(7, o -> {
+        assertThat(((TableResultList) booksAndAuthors).getColumn(7, o -> {
                     try {
                         return SIMPLE_DATE_FORMAT.parse(o.toString());
                     } catch (ParseException e) {
@@ -120,7 +121,7 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
                 }),
                 contains(books.stream().map(book -> book.getAuthor().getBirthDate()).toArray(Date[]::new)));
 
-        assertThat(booksAndAuthors.getColumn(8, o -> {
+        assertThat(((TableResultList) booksAndAuthors).getColumn(8, o -> {
                     try {
                         return SIMPLE_DATE_FORMAT.parse(o.toString());
                     } catch (ParseException e) {
@@ -129,7 +130,7 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
                 }),
                 contains(books.stream().map(book -> book.getAuthor().getDeathDate()).toArray(Date[]::new)));
 
-        assertThat(booksAndAuthors.getColumn(9),
+        assertThat(((TableResultList) booksAndAuthors).getColumn(9),
                 contains(books.stream().map(book -> book.getAuthor().getBiography()).toArray(String[]::new)));
     }
 
@@ -143,16 +144,16 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
                 .addWhere(qBook -> qBook.yearOfFinishing.gteq(1820))
                 .orderBy(qBook -> qBook.yearOfFinishing.asc())));
 
-        assertThat(booksAndAuthors.getColumn(1),
+        assertThat(((TableResultList) booksAndAuthors).getColumn(1),
                 contains(books.stream().map(Book::getName).toArray(String[]::new)));
 
-        assertThat(booksAndAuthors.getColumn(5),
+        assertThat(((TableResultList) booksAndAuthors).getColumn(5),
                 contains(books.stream().map(book -> book.getAuthor().getFirstName()).toArray(String[]::new)));
 
-        assertThat(booksAndAuthors.getColumn(6),
+        assertThat(((TableResultList) booksAndAuthors).getColumn(6),
                 contains(books.stream().map(book -> book.getAuthor().getLastName()).toArray(String[]::new)));
 
-        assertThat(booksAndAuthors.getColumn(7, o -> {
+        assertThat(((TableResultList) booksAndAuthors).getColumn(7, o -> {
                     try {
                         return SIMPLE_DATE_FORMAT.parse(o.toString());
                     } catch (ParseException e) {
@@ -161,7 +162,7 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
                 }),
                 contains(books.stream().map(book -> book.getAuthor().getBirthDate()).toArray(Date[]::new)));
 
-        assertThat(booksAndAuthors.getColumn(8, o -> {
+        assertThat(((TableResultList) booksAndAuthors).getColumn(8, o -> {
                     try {
                         return SIMPLE_DATE_FORMAT.parse(o.toString());
                     } catch (ParseException e) {
@@ -170,7 +171,7 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
                 }),
                 contains(books.stream().map(book -> book.getAuthor().getDeathDate()).toArray(Date[]::new)));
 
-        assertThat(booksAndAuthors.getColumn(9),
+        assertThat(((TableResultList) booksAndAuthors).getColumn(9),
                 contains(books.stream().map(book -> book.getAuthor().getBiography()).toArray(String[]::new)));
     }
 

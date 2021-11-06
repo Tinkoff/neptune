@@ -11,6 +11,7 @@ import ru.tinkoff.qa.neptune.spring.data.captors.EntitiesCaptor;
 import ru.tinkoff.qa.neptune.spring.data.dictionary.RepositoryParameterValueGetter;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -29,8 +30,8 @@ import static ru.tinkoff.qa.neptune.spring.data.select.GetIterableItemFromEntiti
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria for every resulted entity")
 @CaptureOnSuccess(by = EntitiesCaptor.class)
 public abstract class SelectManyStepSupplier<R, ID, T extends Repository<R, ID>>
-        extends SequentialGetStepSupplier.GetIterableChainedStepSupplier<SpringDataContext, Iterable<R>, T, R, SelectManyStepSupplier<R, ID, T>>
-        implements SelectQuery<Iterable<R>> {
+        extends SequentialGetStepSupplier.GetListChainedStepSupplier<SpringDataContext, Iterable<R>, T, R, SelectManyStepSupplier<R, ID, T>>
+        implements SelectQuery<List<R>> {
 
     @StepParameter(value = "Repository", makeReadableBy = RepositoryParameterValueGetter.class)
     T repository;
