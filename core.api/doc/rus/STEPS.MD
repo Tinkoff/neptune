@@ -7,13 +7,13 @@
 - [Шаги](#Шаги)
     - [Произвольные шаги, которые могут быть описаны в тесте](#Произвольные-шаги-которые-могут-быть-описаны-в-тесте)
     - [Шаги, которые возвращают результат](#Шаги-которые-возвращают-результат)
-        - [Шаг, который возвращает объект (`java.lang.Object` и его наследники).](#Шаг-который-возвращает-объект-javalangObject-и-его-наследники)
-          - [Шаг, который возвращает объект.](#Шаг-который-возвращает-объект)
-          - [Шаг, который возвращает объект, соответствующий определенным критериям.](#Шаг-который-возвращает-объект-соответствующий-определенным-критериям)
-        - [Шаг, который возвращает один из объектов, входящих в состав Iterable<?>.](#Шаг-который-возвращает-один-из-объектов-входящих-в-состав-iterable)
-        - [Шаг, который возвращает один из объектов, входящих в состав массива.](#Шаг-который-возвращает-один-из-объектов-входящих-в-состав-массива)
-        - [Шаг, который возвращает Iterable<?>.](#Шаг-который-возвращает-iterable)
-        - [Шаг, который возвращает массив.](#Шаг-который-возвращает-массив)
+        - [Шаг, который возвращает объект (`java.lang.Object` и его наследники)](#Шаг-который-возвращает-объект-javalangObject-и-его-наследники)
+          - [Шаг, который возвращает объект](#Шаг-который-возвращает-объект)
+          - [Шаг, который возвращает объект, соответствующий определенным критериям](#Шаг-который-возвращает-объект-соответствующий-определенным-критериям)
+        - [Шаг, который возвращает один из объектов, входящих в состав Iterable<?>](#Шаг-который-возвращает-один-из-объектов-входящих-в-состав-iterable)
+        - [Шаг, который возвращает один из объектов, входящих в состав массива](#Шаг-который-возвращает-один-из-объектов-входящих-в-состав-массива)
+        - [Шаг, который возвращает List](#Шаг-который-возвращает-List)
+        - [Шаг, который возвращает массив](#Шаг-который-возвращает-массив)
     - [Шаги, которые выполняют действие](#Шаги-которые-выполняют-действие)
     - [Критерии](#Критерии)
         - [Объединение критериев в один логическим И](#Объединение-критериев-в-один-логическим-И)
@@ -879,10 +879,9 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObject
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-#### Шаг, который возвращает Iterable<?>.
+#### Шаг, который возвращает List
 
-Подходит для ситуаций, когда в результате вычислений получается объект `java.lang.Iterable`, и нужно его вернуть (целиком 
-или оставив в его составе элементы, подходящие под некоторые критерии).
+Подходит для ситуаций, когда результат необходимо вернуть в виде объекта `java.util.List`.
 
 - 1
 
@@ -897,21 +896,22 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * Так описывается шаг, возвращающий коллекцию или другой java.lang.Iterable.
+ * Так описывается шаг, возвращающий java.util.List.
  * 
  * В данном случае наличие "посредника" не предусматривается, т.е. коллекция получается напрямую от входного параметра.
- * Критерии проверяют на соответствие все объекты, входящие в коллекцию, и если такие объекты были найдены - они возвращается
- * в качестве результата.
+ * Критерии проверяют на соответствие все объекты, входящие в коллекцию, и если такие объекты были найдены - они возвращаются
+ * в виде java.util.List (не модифицируемого).
  * 
  * Если по истечении времени, отведенного на выполнение шага, коллекция/Iterable не были получены - может вернуться null 
  * (зависит от реализации шага).
  * Если по истечении времени, отведенного на выполнение шага, в коллекции/Iterable не было элементов, подходящих под критерии -
- * вернется пустая коллекция/Iterable
+ * вернется пустой List
  */
 @ThrowWhenNoData(toThrow = IllegalStateException.class, startDescription = "Can't get:")
-public class MyGetStepSupplier<T, S extends Iterable<T>> extends SequentialGetStepSupplier.GetIterableStepSupplier<
+public class MyGetStepSupplier<T, S extends Iterable<T>> extends SequentialGetStepSupplier.GetListStepSupplier<
         MyTestContext,
-        S,
+        S, //тип Iterable/коллекции, который может быть обработан в рамках данного шага
+        //и преобразован в результирующий не-модифицируемый объект java.util.List
         T,
         MyGetStepSupplier<T, S>>
 {
@@ -920,7 +920,8 @@ public class MyGetStepSupplier<T, S extends Iterable<T>> extends SequentialGetSt
         this(myTestContext -> {
             var o = myTestContext.getSomeResource();
             ///дальнейшие вычисления
-            return //возврат КОЛЛЕКЦИИ или какого либо другого Iterable<T>
+            return //возврат КОЛЛЕКЦИИ или какого либо другого Iterable<T>,
+            //которые будут преобразованы в не-модифицируемый объект java.util.List
         });
     }
 
@@ -943,12 +944,12 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * Так описывается шаг, возвращающий коллекцию или другой java.lang.Iterable.
+ * Так описывается шаг, возвращающий java.util.List.
  * 
  * В данном случае наличие "посредника" предусматривается.
- * 
- * Критерии проверяют на соответствие все объекты, входящие в коллекцию, и если такие объекты были найдены - они возвращается
- * в качестве результата.
+ *
+ * Критерии проверяют на соответствие все объекты, входящие в коллекцию, и если такие объекты были найдены - они возвращаются
+ * в виде java.util.List (не модифицируемого).
  * 
  * Если по истечении времени, отведенного на выполнение шага, коллекция/Iterable не были получены - может вернуться null 
  * (зависит от реализации шага).
@@ -956,9 +957,10 @@ import java.util.function.Predicate;
  * вернется пустая коллекция/Iterable
  */
 @ThrowWhenNoData(toThrow = IllegalStateException.class, startDescription = "Can't get:")
-public class MyGetStepSupplier<T, M, S extends Iterable<T>> extends SequentialGetStepSupplier.GetIterableChainedStepSupplier<
+public class MyGetStepSupplier<T, M, S extends Iterable<T>> extends SequentialGetStepSupplier.GetListChainedStepSupplier<
         MyTestContext,
-        S,
+        S, //тип Iterable/коллекции, который может быть обработан в рамках данного шага
+        //и преобразован в результирующий не-модифицируемый объект java.util.List
         M,
         T,
         MyGetStepSupplier<T, M, S>>
@@ -967,7 +969,8 @@ public class MyGetStepSupplier<T, M, S extends Iterable<T>> extends SequentialGe
     protected MyGetStepSupplier() {
         this(m -> {
             ///дальнейшие вычисления
-            return //возврат КОЛЛЕКЦИИ или какого либо другого Iterable<T>
+            return //возврат КОЛЛЕКЦИИ или какого либо другого Iterable<T>,
+            //которые будут преобразованы в не-модифицируемый объект java.util.List
         });
     }
 
@@ -1966,7 +1969,7 @@ import java.util.function.Predicate;
 // - GetObjectChainedStepSupplier
 // - GetObjectFromIterableChainedStepSupplier
 // - GetObjectFromArrayChainedStepSupplier
-// - GetIterableChainedStepSupplier
+// - GetListChainedStepSupplier
 // - GetArrayChainedStepSupplier
 @SequentialGetStepSupplier.DefineResultDescriptionParameterName("Resulted value") //Пояснение к результату, который должен
 // возвращать шаг, построенный объектом данного класса. Эта информация выводится на консоль/в отчет о тестировании,
@@ -1975,7 +1978,7 @@ import java.util.function.Predicate;
 // - GetObjectChainedStepSupplier
 // - GetObjectFromIterableChainedStepSupplier
 // - GetObjectFromArrayChainedStepSupplier
-// - GetIterableChainedStepSupplier
+// - GetListChainedStepSupplier
 // - GetArrayChainedStepSupplier
 //Присутствие данной аннотации означает, что если результат вычисляется через контекст опосредованно,
 //и способ вычисления значения-посредника передан через объект класса-наследника SequentialGetStepSupplier,
@@ -1989,8 +1992,8 @@ public class MyGetStepSupplier<T, M, P>
         //extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<>
         //extends SequentialGetStepSupplier.GetObjectFromArrayStepSupplier<>
         //extends SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier<>
-        //extends SequentialGetStepSupplier.GetIterableStepSupplier<>
-        //extends SequentialGetStepSupplier.GetIterableChainedStepSupplier<>
+        //extends SequentialGetStepSupplier.GetListStepSupplier<>
+        //extends SequentialGetStepSupplier.GetListChainedStepSupplier<>
         //extends SequentialGetStepSupplier.GetArrayStepSupplier<>
         //extends SequentialGetStepSupplier.GetArrayChainedStepSupplier<>
 {
@@ -2249,8 +2252,8 @@ public class MyGetStepSupplier<T, M, P>
         //extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<>
         //extends SequentialGetStepSupplier.GetObjectFromArrayStepSupplier<>
         //extends SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier<>
-        //extends SequentialGetStepSupplier.GetIterableStepSupplier<>
-        //extends SequentialGetStepSupplier.GetIterableChainedStepSupplier<>
+        //extends SequentialGetStepSupplier.GetListStepSupplier<>
+        //extends SequentialGetStepSupplier.GetListChainedStepSupplier<>
         //extends SequentialGetStepSupplier.GetArrayStepSupplier<>
         //extends SequentialGetStepSupplier.GetArrayChainedStepSupplier<>
 {
@@ -2365,8 +2368,8 @@ public class MyGetStepSupplier<T, M, P>
         //extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<>
         //extends SequentialGetStepSupplier.GetObjectFromArrayStepSupplier<>
         //extends SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier<>
-        //extends SequentialGetStepSupplier.GetIterableStepSupplier<>
-        //extends SequentialGetStepSupplier.GetIterableChainedStepSupplier<>
+        //extends SequentialGetStepSupplier.GetListStepSupplier<>
+        //extends SequentialGetStepSupplier.GetListChainedStepSupplier<>
         //extends SequentialGetStepSupplier.GetArrayStepSupplier<>
         //extends SequentialGetStepSupplier.GetArrayChainedStepSupplier<>
 {
@@ -2453,8 +2456,8 @@ public class MyGetStepSupplier<T, M, P>
         //extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<>
         //extends SequentialGetStepSupplier.GetObjectFromArrayStepSupplier<>
         //extends SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier<>
-        //extends SequentialGetStepSupplier.GetIterableStepSupplier<>
-        //extends SequentialGetStepSupplier.GetIterableChainedStepSupplier<>
+        //extends SequentialGetStepSupplier.GetListStepSupplier<>
+        //extends SequentialGetStepSupplier.GetListChainedStepSupplier<>
         //extends SequentialGetStepSupplier.GetArrayStepSupplier<>
         //extends SequentialGetStepSupplier.GetArrayChainedStepSupplier<>
 {
