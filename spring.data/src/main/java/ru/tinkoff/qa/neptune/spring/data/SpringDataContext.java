@@ -114,48 +114,48 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
         return impl.setDescription(translate(description));
     }
 
-    public <R, ID, T extends Repository<R, ID>> R select(String description,
-                                                         SelectOneStepSupplier<R, ID, T> by) {
+    public <R, ID, T extends Repository<R, ID>> R find(String description,
+                                                       SelectOneStepSupplier<R, ID, T> by) {
         return select(setDescription(description, by));
     }
 
-    public <R, ID, T extends Repository<R, ID>> List<R> select(String description,
-                                                               SelectManyStepSupplier<R, ID, T> by) {
+    public <R, ID, T extends Repository<R, ID>> List<R> find(String description,
+                                                             SelectManyStepSupplier<R, ID, T> by) {
         return select(setDescription(description, by));
     }
 
-    public <S, R> S select(String description,
-                           GetObjectFromEntity<S, R, ?> toGet) {
+    public <S, R> S find(String description,
+                         GetObjectFromEntity<S, R, ?> toGet) {
         return select(setDescription(description, toGet));
     }
 
-    public <ITEM, S extends Iterable<ITEM>, R> List<ITEM> select(String description,
-                                                                 GetListFromEntity<ITEM, S, R, ?> toGet) {
+    public <ITEM, S extends Iterable<ITEM>, R> List<ITEM> find(String description,
+                                                               GetListFromEntity<ITEM, S, R, ?> toGet) {
         return select(setDescription(description, toGet));
     }
 
-    public <ITEM, R> ITEM[] select(String description,
-                                   GetArrayFromEntity<ITEM, R, ?> toGet) {
+    public <ITEM, R> ITEM[] find(String description,
+                                 GetArrayFromEntity<ITEM, R, ?> toGet) {
         return select(setDescription(description, toGet));
     }
 
-    public <ITEM, R> ITEM select(String description,
-                                 GetItemOfIterableFromEntity<ITEM, ? extends Iterable<ITEM>, R, ?> toGet) {
+    public <ITEM, R> ITEM find(String description,
+                               GetItemOfIterableFromEntity<ITEM, ? extends Iterable<ITEM>, R, ?> toGet) {
         return select(setDescription(description, toGet));
     }
 
-    public <ITEM, R> ITEM select(String description,
-                                 GetItemOfArrayFromEntity<ITEM, R, ?> toGet) {
+    public <ITEM, R> ITEM find(String description,
+                               GetItemOfArrayFromEntity<ITEM, R, ?> toGet) {
         return select(setDescription(description, toGet));
     }
 
-    public <ITEM, R> List<ITEM> select(String description,
-                                       GetListFromEntities<ITEM, R, ?> toGet) {
+    public <ITEM, R> List<ITEM> find(String description,
+                                     GetListFromEntities<ITEM, R, ?> toGet) {
         return select(setDescription(description, toGet));
     }
 
-    public <ITEM, R> ITEM select(String description,
-                                 GetIterableItemFromEntities<ITEM, R, ?> toGet) {
+    public <ITEM, R> ITEM find(String description,
+                               GetIterableItemFromEntities<ITEM, R, ?> toGet) {
         return select(setDescription(description, toGet));
     }
 

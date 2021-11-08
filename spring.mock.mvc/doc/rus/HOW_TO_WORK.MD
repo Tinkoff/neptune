@@ -1,6 +1,10 @@
 # Работа с MockMVC
 
-О принципах работы шагов, которые возвращают результат, можно прочитать
+- О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст). 
+  Объект [контекста для работы со Spring MockMvc](https://tinkoffcreditsystems.github.io/neptune/spring.mock.mvc/ru/tinkoff/qa/neptune/spring/mock/mvc/MockMvcContext.html) 
+  в примерах ниже вызывается статическим методом `mockMvcGet`
+
+- О принципах работы шагов, которые возвращают результат, можно прочитать
 [здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги-которые-возвращают-результат).
 
 ## Оглавление

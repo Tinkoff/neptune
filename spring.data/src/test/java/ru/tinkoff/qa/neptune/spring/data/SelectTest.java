@@ -19,7 +19,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectByIdTest() {
-        var entity = springData().select("Test entity",
+        var entity = springData().find("Test entity",
                 byId(testRepository, 1L));
 
         assertThat(entity, is(TEST_ENTITIES.get(0)));
@@ -27,7 +27,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectByIdTest2() {
-        var entity = springData().select("Test entity",
+        var entity = springData().find("Test entity",
                 byId(reactiveCrudRepository, 1L));
 
         assertThat(entity, is(TEST_ENTITIES.get(0)));
@@ -35,7 +35,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectByIdTest3() {
-        var entity = springData().select("Test entity",
+        var entity = springData().find("Test entity",
                 byId(testRxJava2SortingRepository, 1L));
 
         assertThat(entity, is(TEST_ENTITIES.get(0)));
@@ -43,7 +43,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectByIdTest4() {
-        var entity = springData().select("Test entity",
+        var entity = springData().find("Test entity",
                 byId(testRxJava3SortingRepository, 1L));
 
         assertThat(entity, is(TEST_ENTITIES.get(0)));
@@ -51,7 +51,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectByIdSTest() {
-        var entities = springData().select("Test entities",
+        var entities = springData().find("Test entities",
                 byIds(testRepository, 1L, 2L));
 
         assertThat(entities, is(TEST_ENTITIES));
@@ -59,7 +59,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectByIdSTest2() {
-        var entities = springData().select("Test entities",
+        var entities = springData().find("Test entities",
                 byIds(reactiveCrudRepository, 1L, 2L));
 
         assertThat(entities, is(TEST_ENTITIES));
@@ -67,7 +67,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectByIdSTest3() {
-        var entities = springData().select("Test entities",
+        var entities = springData().find("Test entities",
                 byIds(testRxJava2SortingRepository, 1L, 2L));
 
         assertThat(entities, is(TEST_ENTITIES));
@@ -75,7 +75,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectByIdSTest4() {
-        var entities = springData().select("Test entities",
+        var entities = springData().find("Test entities",
                 byIds(testRxJava3SortingRepository, 1L, 2L));
 
         assertThat(entities, is(TEST_ENTITIES));
@@ -83,7 +83,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectBySortingTest() {
-        var entities = springData().select("Test entities",
+        var entities = springData().find("Test entities",
                 allBySorting(testRepository, ASC, "id", "name"));
 
         assertThat(entities, is(TEST_ENTITIES));
@@ -91,7 +91,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectBySortingTest2() {
-        var entities = springData().select("Test entities",
+        var entities = springData().find("Test entities",
                 allBySorting(reactiveCrudRepository, ASC, "id", "name"));
 
         assertThat(entities, is(TEST_ENTITIES));
@@ -99,7 +99,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectBySortingTest3() {
-        var entities = springData().select("Test entities",
+        var entities = springData().find("Test entities",
                 allBySorting(testRxJava2SortingRepository, ASC, "id", "name"));
 
         assertThat(entities, is(TEST_ENTITIES));
@@ -107,7 +107,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectBySortingTest4() {
-        var entities = springData().select("Test entities",
+        var entities = springData().find("Test entities",
                 allBySorting(testRxJava3SortingRepository, ASC, "id", "name"));
 
         assertThat(entities, is(TEST_ENTITIES));
@@ -115,7 +115,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectByPageable() {
-        var entities = springData().select("Test entities", asAPage(testRepository)
+        var entities = springData().find("Test entities", asAPage(testRepository)
                 .number(0)
                 .size(5)
                 .sort(by("id").descending().and(by("name"))));
@@ -124,7 +124,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectOneByExampleTest() {
-        var entity = springData().select("Test entity",
+        var entity = springData().find("Test entity",
                 byExample(testRepository, new TestEntity())
                         .matcher(m -> m.withMatcher("firstName", ignoreCase()))
                         .matcher(m -> m.withMatcher("lastName", ignoreCase()))
@@ -135,7 +135,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectOneByExampleTest2() {
-        var entity = springData().select("Test entity",
+        var entity = springData().find("Test entity",
                 byExample(reactiveCrudRepository, new TestEntity())
                         .matcher(m -> m.withMatcher("firstName", ignoreCase()))
                         .matcher(m -> m.withMatcher("lastName", ignoreCase()))
@@ -146,7 +146,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectAllByExampleTest() {
-        var entity = springData().select("Test entities",
+        var entity = springData().find("Test entities",
                 allByExample(testRepository, new TestEntity())
                         .matcher(m -> m.withMatcher("firstName", ignoreCase()))
                         .matcher(m -> m.withMatcher("lastName", ignoreCase()))
@@ -157,7 +157,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectAllByExampleTest2() {
-        var entity = springData().select("Test entities",
+        var entity = springData().find("Test entities",
                 allByExample(testRepository, new TestEntity())
                         .matcher(m -> m.withMatcher("firstName", ignoreCase()))
                         .matcher(m -> m.withMatcher("lastName", ignoreCase()))
@@ -169,7 +169,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectAllByExampleTest3() {
-        var entity = springData().select("Test entities",
+        var entity = springData().find("Test entities",
                 allByExample(reactiveCrudRepository, new TestEntity())
                         .matcher(m -> m.withMatcher("firstName", ignoreCase()))
                         .matcher(m -> m.withMatcher("lastName", ignoreCase()))
@@ -180,7 +180,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectAllByExampleTest4() {
-        var entity = springData().select("Test entities",
+        var entity = springData().find("Test entities",
                 allByExample(reactiveCrudRepository, new TestEntity())
                         .matcher(m -> m.withMatcher("firstName", ignoreCase()))
                         .matcher(m -> m.withMatcher("lastName", ignoreCase()))
@@ -192,7 +192,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectOneByInvocationTest() {
-        var entity = springData().select("Test entity",
+        var entity = springData().find("Test entity",
                 byInvocation(testRepository, r -> r.findSomething(true, "ABCD", 123)));
 
         assertThat(entity, is(TEST_ENTITIES.get(0)));
@@ -200,7 +200,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectAllByInvocationTest() {
-        var entities = springData().select("Test entities",
+        var entities = springData().find("Test entities",
                 allByInvocation(testRepository, r -> r.findEntities(true, "ABCD", 123)));
 
         assertThat(entities, is(TEST_ENTITIES));
@@ -213,7 +213,7 @@ public class SelectTest extends BaseSpringDataTest {
                 .and(q.name.eq("Test name"))
                 .and(q.listData.contains("A"));
 
-        var entity = springData().select("Test entity",
+        var entity = springData().find("Test entity",
                 byPredicate(querydslRepository, predicate));
 
         assertThat(entity, is(TEST_ENTITIES.get(0)));
@@ -226,7 +226,7 @@ public class SelectTest extends BaseSpringDataTest {
                 .and(q.name.eq("Test name"))
                 .and(q.listData.contains("A"));
 
-        var entity = springData().select("Test entity",
+        var entity = springData().find("Test entity",
                 byPredicate(reactiveQuerydslRepository, predicate));
 
         assertThat(entity, is(TEST_ENTITIES.get(0)));
@@ -239,7 +239,7 @@ public class SelectTest extends BaseSpringDataTest {
                 .and(q.name.eq("Test name"))
                 .and(q.listData.contains("A"));
 
-        var entities = springData().select("Test entities",
+        var entities = springData().find("Test entities",
                 allByPredicate(querydslRepository, predicate));
 
         assertThat(entities, is(TEST_ENTITIES));
@@ -252,7 +252,7 @@ public class SelectTest extends BaseSpringDataTest {
                 .and(q.name.eq("Test name"))
                 .and(q.listData.contains("A"));
 
-        var entities = springData().select("Test entities",
+        var entities = springData().find("Test entities",
                 allByPredicate(reactiveQuerydslRepository, predicate));
 
         assertThat(entities, is(TEST_ENTITIES));
@@ -265,7 +265,7 @@ public class SelectTest extends BaseSpringDataTest {
                 .and(q.name.eq("Test name"))
                 .and(q.listData.contains("A"));
 
-        var entities = springData().select("Test entities",
+        var entities = springData().find("Test entities",
                 allByPredicate(querydslRepository,
                         predicate,
                         ASC, "id", "name"));
@@ -280,7 +280,7 @@ public class SelectTest extends BaseSpringDataTest {
                 .and(q.name.eq("Test name"))
                 .and(q.listData.contains("A"));
 
-        var entities = springData().select("Test entities",
+        var entities = springData().find("Test entities",
                 allByPredicate(reactiveQuerydslRepository,
                         predicate,
                         ASC, "id", "name"));
@@ -292,7 +292,7 @@ public class SelectTest extends BaseSpringDataTest {
     public void selectAllOrderedTest() {
         var q = QTestEntity.qTestEntity;
 
-        var entities = springData().select("Test entities",
+        var entities = springData().find("Test entities",
                 allOrdered(querydslRepository, Order.ASC, q.id)
                         .orderSpecifier(Order.DESC, q.name)
                         .orderSpecifier(Order.ASC, q.arrayData));
@@ -304,7 +304,7 @@ public class SelectTest extends BaseSpringDataTest {
     public void selectAllOrderedTest2() {
         var q = QTestEntity.qTestEntity;
 
-        var entities = springData().select("Test entities",
+        var entities = springData().find("Test entities",
                 allOrdered(reactiveQuerydslRepository, Order.ASC, q.id)
                         .orderSpecifier(Order.DESC, q.name)
                         .orderSpecifier(Order.ASC, q.arrayData));
@@ -319,7 +319,7 @@ public class SelectTest extends BaseSpringDataTest {
                 .and(q.name.eq("Test name"))
                 .and(q.listData.contains("A"));
 
-        var entities = springData().select("Test entities",
+        var entities = springData().find("Test entities",
                 allOrdered(querydslRepository, Order.ASC, q.id)
                         .orderSpecifier(Order.DESC, q.name)
                         .orderSpecifier(Order.ASC, q.arrayData)
@@ -335,7 +335,7 @@ public class SelectTest extends BaseSpringDataTest {
                 .and(q.name.eq("Test name"))
                 .and(q.listData.contains("A"));
 
-        var entities = springData().select("Test entities",
+        var entities = springData().find("Test entities",
                 allOrdered(reactiveQuerydslRepository, Order.ASC, q.id)
                         .orderSpecifier(Order.DESC, q.name)
                         .orderSpecifier(Order.ASC, q.arrayData)
@@ -351,7 +351,7 @@ public class SelectTest extends BaseSpringDataTest {
                 .and(q.name.eq("Test name"))
                 .and(q.listData.contains("A"));
 
-        var entities = springData().select("Test entities",
+        var entities = springData().find("Test entities",
                 asAPageByPredicate(querydslRepository, predicate)
                         .number(0)
                         .size(5)
@@ -363,7 +363,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectAllTest() {
-        var entities = springData().select("Test entities",
+        var entities = springData().find("Test entities",
                 all(testRepository));
 
         assertThat(entities, is(TEST_ENTITIES));
@@ -371,7 +371,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectAllTest2() {
-        var entities = springData().select("Test entities",
+        var entities = springData().find("Test entities",
                 all(reactiveCrudRepository));
 
         assertThat(entities, is(TEST_ENTITIES));
@@ -379,7 +379,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectAllTest3() {
-        var entities = springData().select("Test entities",
+        var entities = springData().find("Test entities",
                 all(testRxJava2SortingRepository));
 
         assertThat(entities, is(TEST_ENTITIES));
@@ -387,7 +387,7 @@ public class SelectTest extends BaseSpringDataTest {
 
     @Test
     public void selectAllTest4() {
-        var entities = springData().select("Test entities",
+        var entities = springData().find("Test entities",
                 all(testRxJava3SortingRepository));
 
         assertThat(entities, is(TEST_ENTITIES));

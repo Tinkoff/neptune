@@ -15,7 +15,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
 
     @Test
     public void getObjectFromEntityTest() {
-        var data = springData().select("Test data", byId(testRepository, 1L)
+        var data = springData().find("Test data", byId(testRepository, 1L)
                 .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 1"))
                 .thenGetObject(TestEntity::getId)
                 .criteria("Lesser than 2", l -> l < 2));
@@ -25,7 +25,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
 
     @Test
     public void getObjectFromEntityTest2() {
-        var data = springData().select("Test data", byId(testRepository, 1L)
+        var data = springData().find("Test data", byId(testRepository, 1L)
                 .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 2"))
                 .thenGetObject(TestEntity::getId)
                 .criteria("Lesser than 2", l -> l < 2));
@@ -35,7 +35,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
 
     @Test
     public void getObjectFromEntityTest3() {
-        var data = springData().select("Test data", byId(testRepository, 1L)
+        var data = springData().find("Test data", byId(testRepository, 1L)
                 .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 1"))
                 .thenGetObject(TestEntity::getId)
                 .criteria("Greater than 2", l -> l > 2));
@@ -46,7 +46,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
     @Test
     public void getObjectFromEntityTest4() {
         try {
-            springData().select("Test data", byId(testRepository, 1L)
+            springData().find("Test data", byId(testRepository, 1L)
                     .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 2"))
                     .throwOnNoResult()
                     .thenGetObject(TestEntity::getId)
@@ -63,7 +63,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
     @Test
     public void getObjectFromEntityTest5() {
         try {
-            springData().select("Test data", byId(testRepository, 1L)
+            springData().find("Test data", byId(testRepository, 1L)
                     .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 1"))
                     .thenGetObject(TestEntity::getId)
                     .criteria("Greater than 2", l -> l > 2)
@@ -80,7 +80,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
 
     @Test
     public void getIterableFromEntityTest() {
-        var data = springData().select("Test data", byId(testRepository, 1L)
+        var data = springData().find("Test data", byId(testRepository, 1L)
                 .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 1"))
                 .thenGetList(TestEntity::getListData)
                 .criteria("not E", s -> !s.equalsIgnoreCase("e")));
@@ -90,7 +90,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
 
     @Test
     public void getIterableFromEntityTest2() {
-        var data = springData().select("Test data", byId(testRepository, 1L)
+        var data = springData().find("Test data", byId(testRepository, 1L)
                 .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 2"))
                 .thenGetList(TestEntity::getListData)
                 .criteria("not E", s -> !s.equalsIgnoreCase("e")));
@@ -100,7 +100,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
 
     @Test
     public void getIterableFromEntityTest3() {
-        var data = springData().select("Test data", byId(testRepository, 1L)
+        var data = springData().find("Test data", byId(testRepository, 1L)
                 .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 1"))
                 .thenGetList(TestEntity::getListData)
                 .criteria("not A, B, C or D", s -> !s.equalsIgnoreCase("a")
@@ -114,7 +114,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
     @Test
     public void getIterableFromEntityTest4() {
         try {
-            springData().select("Test data", byId(testRepository, 1L)
+            springData().find("Test data", byId(testRepository, 1L)
                     .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 2"))
                     .throwOnNoResult()
                     .thenGetList(TestEntity::getListData)
@@ -131,7 +131,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
     @Test
     public void getIterableFromEntityTest5() {
         try {
-            springData().select("Test data", byId(testRepository, 1L)
+            springData().find("Test data", byId(testRepository, 1L)
                     .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 1"))
                     .thenGetList(TestEntity::getListData)
                     .criteria("not A, B, C or D", s -> !s.equalsIgnoreCase("a")
@@ -150,7 +150,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
 
     @Test
     public void getArrayFromEntityTest() {
-        var data = springData().select("Test data", byId(testRepository, 1L)
+        var data = springData().find("Test data", byId(testRepository, 1L)
                 .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 1"))
                 .thenGetArray(TestEntity::getArrayData)
                 .criteria("not E", s -> !s.equalsIgnoreCase("e")));
@@ -160,7 +160,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
 
     @Test
     public void getArrayFromEntityTest2() {
-        var data = springData().select("Test data", byId(testRepository, 1L)
+        var data = springData().find("Test data", byId(testRepository, 1L)
                 .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 2"))
                 .thenGetArray(TestEntity::getArrayData)
                 .criteria("not E", s -> !s.equalsIgnoreCase("e")));
@@ -170,7 +170,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
 
     @Test
     public void getArrayFromEntityTest3() {
-        var data = springData().select("Test data", byId(testRepository, 1L)
+        var data = springData().find("Test data", byId(testRepository, 1L)
                 .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 1"))
                 .thenGetArray(TestEntity::getArrayData)
                 .criteria("not A, B, C or D", s -> !s.equalsIgnoreCase("a")
@@ -184,7 +184,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
     @Test
     public void getArrayFromEntityTest4() {
         try {
-            springData().select("Test data", byId(testRepository, 1L)
+            springData().find("Test data", byId(testRepository, 1L)
                     .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 2"))
                     .throwOnNoResult()
                     .thenGetArray(TestEntity::getArrayData)
@@ -201,7 +201,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
     @Test
     public void getArrayFromEntityTest5() {
         try {
-            springData().select("Test data", byId(testRepository, 1L)
+            springData().find("Test data", byId(testRepository, 1L)
                     .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 1"))
                     .thenGetArray(TestEntity::getArrayData)
                     .criteria("not A, B, C or D", s -> !s.equalsIgnoreCase("a")
@@ -220,7 +220,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
 
     @Test
     public void getIterableItemFromEntityTest() {
-        var data = springData().select("Test data", byId(testRepository, 1L)
+        var data = springData().find("Test data", byId(testRepository, 1L)
                 .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 1"))
                 .thenGetIterableItem(TestEntity::getListData)
                 .criteria("not E", s -> !s.equalsIgnoreCase("e")));
@@ -230,7 +230,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
 
     @Test
     public void getIterableItemFromEntityTest2() {
-        var data = springData().select("Test data", byId(testRepository, 1L)
+        var data = springData().find("Test data", byId(testRepository, 1L)
                 .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 2"))
                 .thenGetIterableItem(TestEntity::getListData)
                 .criteria("not E", s -> !s.equalsIgnoreCase("e")));
@@ -240,7 +240,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
 
     @Test
     public void getIterableItemFromEntityTest3() {
-        var data = springData().select("Test data", byId(testRepository, 1L)
+        var data = springData().find("Test data", byId(testRepository, 1L)
                 .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 1"))
                 .thenGetIterableItem(TestEntity::getListData)
                 .criteria("not A, B, C or D", s -> !s.equalsIgnoreCase("a")
@@ -254,7 +254,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
     @Test
     public void getIterableItemFromEntityTest4() {
         try {
-            springData().select("Test data", byId(testRepository, 1L)
+            springData().find("Test data", byId(testRepository, 1L)
                     .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 2"))
                     .throwOnNoResult()
                     .thenGetIterableItem(TestEntity::getListData)
@@ -271,7 +271,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
     @Test
     public void getIterableItemFromEntityTest5() {
         try {
-            springData().select("Test data", byId(testRepository, 1L)
+            springData().find("Test data", byId(testRepository, 1L)
                     .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 1"))
                     .thenGetIterableItem(TestEntity::getListData)
                     .criteria("not A, B, C or D", s -> !s.equalsIgnoreCase("a")
@@ -290,7 +290,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
 
     @Test
     public void getArrayItemFromEntityTest() {
-        var data = springData().select("Test data", byId(testRepository, 1L)
+        var data = springData().find("Test data", byId(testRepository, 1L)
                 .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 1"))
                 .thenGetArrayItem(TestEntity::getArrayData)
                 .criteria("not E", s -> !s.equalsIgnoreCase("e")));
@@ -300,7 +300,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
 
     @Test
     public void getArrayItemFromEntityTest2() {
-        var data = springData().select("Test data", byId(testRepository, 1L)
+        var data = springData().find("Test data", byId(testRepository, 1L)
                 .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 2"))
                 .thenGetArrayItem(TestEntity::getArrayData)
                 .criteria("not E", s -> !s.equalsIgnoreCase("e")));
@@ -310,7 +310,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
 
     @Test
     public void getArrayItemFromEntityTest3() {
-        var data = springData().select("Test data", byId(testRepository, 1L)
+        var data = springData().find("Test data", byId(testRepository, 1L)
                 .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 1"))
                 .thenGetArrayItem(TestEntity::getArrayData)
                 .criteria("not A, B, C or D", s -> !s.equalsIgnoreCase("a")
@@ -324,7 +324,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
     @Test
     public void getArrayItemFromEntityTest4() {
         try {
-            springData().select("Test data", byId(testRepository, 1L)
+            springData().find("Test data", byId(testRepository, 1L)
                     .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 2"))
                     .throwOnNoResult()
                     .thenGetArrayItem(TestEntity::getArrayData)
@@ -341,7 +341,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
     @Test
     public void getArrayItemFromEntityTest5() {
         try {
-            springData().select("Test data", byId(testRepository, 1L)
+            springData().find("Test data", byId(testRepository, 1L)
                     .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 1"))
                     .thenGetArrayItem(TestEntity::getArrayData)
                     .criteria("not A, B, C or D", s -> !s.equalsIgnoreCase("a")
@@ -361,7 +361,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
 
     @Test
     public void getIterableFromEntitiesTest() {
-        var data = springData().select("Test data", byIds(testRepository, 1L, 2L)
+        var data = springData().find("Test data", byIds(testRepository, 1L, 2L)
                 .criteria("Name != 'Test Name 3'", testEntity -> !testEntity
                         .getName()
                         .equalsIgnoreCase("Test Name 3"))
@@ -373,7 +373,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
 
     @Test
     public void getIterableFromEntitiesTest2() {
-        var data = springData().select("Test data", byIds(testRepository, 1L, 2L)
+        var data = springData().find("Test data", byIds(testRepository, 1L, 2L)
                 .criteria("Name = 'Test Name 3'", testEntity -> testEntity
                         .getName()
                         .equalsIgnoreCase("Test Name 3"))
@@ -385,7 +385,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
 
     @Test
     public void getIterableFromEntitiesTest3() {
-        var data = springData().select("Test data", byIds(testRepository, 1L, 2L)
+        var data = springData().find("Test data", byIds(testRepository, 1L, 2L)
                 .criteria("Name != 'Test Name 3'", testEntity -> !testEntity
                         .getName()
                         .equalsIgnoreCase("Test Name 3"))
@@ -398,7 +398,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
     @Test
     public void getIterableFromEntitiesTest4() {
         try {
-            springData().select("Test data", byIds(testRepository, 1L, 2L)
+            springData().find("Test data", byIds(testRepository, 1L, 2L)
                     .criteria("Name = 'Test Name 3'", testEntity -> testEntity
                             .getName()
                             .equalsIgnoreCase("Test Name 3"))
@@ -417,7 +417,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
     @Test
     public void getIterableFromEntitiesTest5() {
         try {
-            springData().select("Test data", byIds(testRepository, 1L, 2L)
+            springData().find("Test data", byIds(testRepository, 1L, 2L)
                     .criteria("Name != 'Test Name 3'", testEntity -> !testEntity
                             .getName()
                             .equalsIgnoreCase("Test Name 3"))
@@ -436,7 +436,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
 
     @Test
     public void getIterableItemFromEntitiesTest() {
-        var data = springData().select("Test data", byIds(testRepository, 1L, 2L)
+        var data = springData().find("Test data", byIds(testRepository, 1L, 2L)
                 .criteria("Name != 'Test Name 3'", testEntity -> !testEntity
                         .getName()
                         .equalsIgnoreCase("Test Name 3"))
@@ -448,7 +448,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
 
     @Test
     public void getIterableItemFromEntitiesTest2() {
-        var data = springData().select("Test data", byIds(testRepository, 1L, 2L)
+        var data = springData().find("Test data", byIds(testRepository, 1L, 2L)
                 .criteria("Name = 'Test Name 3'", testEntity -> testEntity
                         .getName()
                         .equalsIgnoreCase("Test Name 3"))
@@ -460,7 +460,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
 
     @Test
     public void getIterableItemFromEntitiesTest3() {
-        var data = springData().select("Test data", byIds(testRepository, 1L, 2L)
+        var data = springData().find("Test data", byIds(testRepository, 1L, 2L)
                 .criteria("Name != 'Test Name 3'", testEntity -> !testEntity
                         .getName()
                         .equalsIgnoreCase("Test Name 3"))
@@ -473,7 +473,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
     @Test
     public void getIterableItemFromEntitiesTest4() {
         try {
-            springData().select("Test data", byIds(testRepository, 1L, 2L)
+            springData().find("Test data", byIds(testRepository, 1L, 2L)
                     .criteria("Name = 'Test Name 3'", testEntity -> testEntity
                             .getName()
                             .equalsIgnoreCase("Test Name 3"))
@@ -492,7 +492,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
     @Test
     public void getIterableItemFromEntitiesTest5() {
         try {
-            springData().select("Test data", byIds(testRepository, 1L, 2L)
+            springData().find("Test data", byIds(testRepository, 1L, 2L)
                     .criteria("Name != 'Test Name 3'", testEntity -> !testEntity
                             .getName()
                             .equalsIgnoreCase("Test Name 3"))

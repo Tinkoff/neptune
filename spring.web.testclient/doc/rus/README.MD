@@ -1,5 +1,9 @@
 # Работа с WebTestClient
 
+- О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст). 
+  Объект [контекста для работы со Spring WebTestClient](https://tinkoffcreditsystems.github.io/neptune/spring.web.testclient/ru/tinkoff/qa/neptune/spring/web/testclient/WebTestClientContext.html)
+  в примерах ниже вызывается статическим методом `webTestClient`
+
 - О принципах работы шагов, которые возвращают результат, можно 
   прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги-которые-возвращают-результат). 
 
