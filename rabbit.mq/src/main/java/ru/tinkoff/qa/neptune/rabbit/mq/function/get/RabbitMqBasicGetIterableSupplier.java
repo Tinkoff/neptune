@@ -31,8 +31,7 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaultDataTran
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria for every item of resulted iterable")
 @MaxDepthOfReporting(0)
-public class RabbitMqBasicGetIterableSupplier<T, S extends Iterable<T>> extends SequentialGetStepSupplier
-        .GetIterableStepSupplier<RabbitMqStepContext, S, T, RabbitMqBasicGetIterableSupplier<T, S>> {
+public class RabbitMqBasicGetIterableSupplier<T, S extends Iterable<T>> extends SequentialGetStepSupplier.GetListStepSupplier<RabbitMqStepContext, S, T, RabbitMqBasicGetIterableSupplier<T, S>> {
 
     final GetFromQueue<?> getFromQueue;
 
@@ -212,7 +211,7 @@ public class RabbitMqBasicGetIterableSupplier<T, S extends Iterable<T>> extends 
     }
 
     @Override
-    protected void onSuccess(S s) {
+    protected void onSuccess(List<T> s) {
         var ms = getFromQueue.getMessages();
         if (s != null && Iterables.size(s) > 0) {
             message = ms.getLast();

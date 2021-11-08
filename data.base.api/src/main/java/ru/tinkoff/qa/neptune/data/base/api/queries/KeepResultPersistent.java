@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.data.base.api.queries;
 
+@Deprecated(forRemoval = true)
 public class KeepResultPersistent {
 
     private boolean toKeepOnPersistent;

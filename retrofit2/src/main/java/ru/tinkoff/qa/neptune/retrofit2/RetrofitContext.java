@@ -4,6 +4,8 @@ package ru.tinkoff.qa.neptune.retrofit2;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.retrofit2.steps.*;
 
+import java.util.List;
+
 /**
  * This is just entry point to invoke some action on retrofit
  */
@@ -23,7 +25,7 @@ public class RetrofitContext extends Context<RetrofitContext> {
         return super.get(what);
     }
 
-    public <M, R, S extends Iterable<R>> S get(GetIterableSupplier<M, R, S, ?> what) {
+    public <M, R, S extends Iterable<R>> List<R> get(GetIterableSupplier<M, R, S, ?> what) {
         return super.get(what);
     }
 

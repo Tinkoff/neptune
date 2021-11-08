@@ -12,7 +12,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import java.time.Duration;
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Arrays.stream;
@@ -52,8 +52,8 @@ public abstract class RemoveCookiesActionSupplier<T>
      * @return instance of {@link RemoveCookiesActionSupplier}
      */
     @SafeVarargs
-    public static RemoveCookiesActionSupplier<Set<Cookie>> deleteCookies(Duration timeToFindCookies,
-                                                                         Criteria<Cookie>... toBeRemoved) {
+    public static RemoveCookiesActionSupplier<List<Cookie>> deleteCookies(Duration timeToFindCookies,
+                                                                          Criteria<Cookie>... toBeRemoved) {
         return new RemoveFoundCookies(timeToFindCookies, toBeRemoved);
     }
 
@@ -92,7 +92,7 @@ public abstract class RemoveCookiesActionSupplier<T>
      */
     @MaxDepthOfReporting(0)
     @IncludeParamsOfInnerGetterStep
-    private static final class RemoveFoundCookies extends RemoveCookiesActionSupplier<Set<Cookie>> {
+    private static final class RemoveFoundCookies extends RemoveCookiesActionSupplier<List<Cookie>> {
 
         private WebDriver driver;
 
@@ -113,7 +113,7 @@ public abstract class RemoveCookiesActionSupplier<T>
         }
 
         @Override
-        protected void howToPerform(Set<Cookie> value) {
+        protected void howToPerform(List<Cookie> value) {
             var options = driver.manage();
             value.forEach(options::deleteCookie);
         }

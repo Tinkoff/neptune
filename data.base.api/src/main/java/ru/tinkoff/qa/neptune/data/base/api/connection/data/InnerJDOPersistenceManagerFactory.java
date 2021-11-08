@@ -10,6 +10,7 @@ import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.UUID.randomUUID;
 
+@Deprecated(forRemoval = true)
 public final class InnerJDOPersistenceManagerFactory extends JDOPersistenceManagerFactory {
 
     private final int DEPTH = -1;

@@ -12,6 +12,7 @@ import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -33,7 +34,7 @@ import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSuppl
 @ThrowWhenNoData(toThrow = DesiredDataHasNotBeenReceivedException.class, startDescription = "No data received:")
 @SuppressWarnings("unchecked")
 public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Iterable<R>, M, Q extends GetObjectsFromIterableBodyStepSupplier<T, R, S, M, Q>>
-        extends SequentialGetStepSupplier.GetIterableChainedStepSupplier<HttpStepContext, S, M, R, Q> {
+        extends SequentialGetStepSupplier.GetListChainedStepSupplier<HttpStepContext, S, M, R, Q> {
 
     private GetObjectsFromIterableBodyStepSupplier(Function<M, S> f) {
         super(f);
@@ -271,7 +272,7 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
         }
 
         @Override
-        public Function<HttpStepContext, S> get() {
+        public Function<HttpStepContext, List<R>> get() {
             if (derivedValueCriteria != null) {
                 ((ResponseSequentialGetSupplierInternal<T, S>) getFrom()).criteria(iterableResultMatches(hasResultItems(derivedValueCriteria)));
             }

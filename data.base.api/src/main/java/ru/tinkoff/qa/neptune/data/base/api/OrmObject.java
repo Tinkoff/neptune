@@ -7,6 +7,7 @@ import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
 import static org.apache.commons.lang3.ArrayUtils.contains;
 
+@Deprecated(forRemoval = true)
 class OrmObject {
     boolean equalsByFields(Object obj, String... fieldsToBeExcluded) {
         Class<?> clazz = this.getClass();

@@ -30,6 +30,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.Step.$;
  * @param <T> is a type of objects to be updated
  * @param <R> is a type of subclass of {@link UpdateOperation}
  */
+@Deprecated(forRemoval = true)
 public abstract class UpdateOperation<T extends PersistableObject, M, R extends UpdateOperation<T, M, R>> extends DataOperation<T, M, R> {
 
     private final UpdateExpression<T>[] updates;

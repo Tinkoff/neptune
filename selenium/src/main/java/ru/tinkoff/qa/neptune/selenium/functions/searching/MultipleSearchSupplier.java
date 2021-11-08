@@ -35,7 +35,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMEN
 @CaptureOnSuccess(by = ListOfWebElementImageCaptor.class)
 @CaptureOnFailure(by = {WebDriverImageCaptor.class, WebElementImageCaptor.class})
 public final class MultipleSearchSupplier<R extends SearchContext> extends
-        SequentialGetStepSupplier.GetIterableChainedStepSupplier<Object, List<R>, SearchContext, R, MultipleSearchSupplier<R>> {
+        SequentialGetStepSupplier.GetListChainedStepSupplier<Object, List<R>, SearchContext, R, MultipleSearchSupplier<R>> {
 
     private MultipleSearchSupplier(Function<SearchContext, List<R>> originalFunction) {
         super(originalFunction);

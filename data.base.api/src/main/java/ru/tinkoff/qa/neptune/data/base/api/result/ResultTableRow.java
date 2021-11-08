@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import static java.lang.String.format;
 
+@Deprecated(forRemoval = true)
 class ResultTableRow extends ArrayList<Object> {
 
     ResultTableRow(Collection<Object> from) {

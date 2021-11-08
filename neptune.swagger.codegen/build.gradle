@@ -1,6 +1,6 @@
 dependencies {
-    implementation group: 'io.swagger.codegen.v3', name: 'swagger-codegen', version: '3.0.27'
-    implementation group: 'io.swagger.codegen.v3', name: 'swagger-codegen-generators', version: '1.0.27'
+    implementation group: 'io.swagger.codegen.v3', name: 'swagger-codegen', version: '3.0.29'
+    implementation group: 'io.swagger.codegen.v3', name: 'swagger-codegen-generators', version: '1.0.29'
 }
 
 java {

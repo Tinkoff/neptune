@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.data.base.api.queries.ids;
 /**
  * The utility class that helps to build a query by known ids
  */
+@Deprecated(forRemoval = true)
 public final class Ids extends IdQueryBuilder {
 
     private Ids(Object[] ids) {

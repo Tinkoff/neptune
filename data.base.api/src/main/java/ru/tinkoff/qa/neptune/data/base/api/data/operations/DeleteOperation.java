@@ -17,6 +17,7 @@ import java.util.ArrayList;
  * @param <T> is a type of objects to be deleted
  * @param <R> is a type of subclass of {@link DeleteOperation}
  */
+@Deprecated(forRemoval = true)
 @SuppressWarnings("unchecked")
 public abstract class DeleteOperation<T extends PersistableObject, M, R extends DeleteOperation<T, M, R>> extends DataOperation<T, M, R> {
 

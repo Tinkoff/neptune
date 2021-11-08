@@ -10,6 +10,7 @@ import java.util.List;
  * @param <T> is a type of resulted objects
  * @param <S> is a type of resulted list
  */
+@Deprecated(forRemoval = true)
 public interface Query<T, S extends List<T>> {
 
     S execute(JDOPersistenceManager jdoPersistenceManager);

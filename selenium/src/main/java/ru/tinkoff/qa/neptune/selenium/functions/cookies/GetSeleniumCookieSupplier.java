@@ -23,8 +23,7 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentF
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time to find cookies")
 @Description("Cookies")
 @MaxDepthOfReporting(0)
-public final class GetSeleniumCookieSupplier extends SequentialGetStepSupplier
-        .GetIterableChainedStepSupplier<SeleniumStepContext, Set<Cookie>, WebDriver, Cookie, GetSeleniumCookieSupplier> {
+public final class GetSeleniumCookieSupplier extends SequentialGetStepSupplier.GetListChainedStepSupplier<SeleniumStepContext, Set<Cookie>, WebDriver, Cookie, GetSeleniumCookieSupplier> {
 
     private GetSeleniumCookieSupplier() {
         super(driver -> driver.manage().getCookies());

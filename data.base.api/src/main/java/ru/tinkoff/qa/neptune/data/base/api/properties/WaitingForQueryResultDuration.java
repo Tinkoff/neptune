@@ -15,6 +15,7 @@ import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResu
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.QueryTimeValueProperties.SLEEPING_TIME_VALUE;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.QueryTimeValueProperties.WAITING_FOR_SELECTION_RESULT_TIME_VALUE;
 
+@Deprecated(forRemoval = true)
 public final class WaitingForQueryResultDuration extends DurationSupplier {
 
     /**

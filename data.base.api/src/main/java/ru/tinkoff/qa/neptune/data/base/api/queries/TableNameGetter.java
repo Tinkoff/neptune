@@ -5,6 +5,7 @@ import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import static ru.tinkoff.qa.neptune.data.base.api.PersistableObject.getTable;
 
+@Deprecated(forRemoval = true)
 public class TableNameGetter implements ParameterValueGetter<Class<? extends PersistableObject>> {
 
     @Override
