@@ -82,7 +82,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
     public void getIterableFromEntityTest() {
         var data = springData().select("Test data", byId(testRepository, 1L)
                 .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 1"))
-                .thenGetIterable(TestEntity::getListData)
+                .thenGetList(TestEntity::getListData)
                 .criteria("not E", s -> !s.equalsIgnoreCase("e")));
 
         assertThat(data, contains("A", "B", "C", "D"));
@@ -92,7 +92,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
     public void getIterableFromEntityTest2() {
         var data = springData().select("Test data", byId(testRepository, 1L)
                 .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 2"))
-                .thenGetIterable(TestEntity::getListData)
+                .thenGetList(TestEntity::getListData)
                 .criteria("not E", s -> !s.equalsIgnoreCase("e")));
 
         assertThat(data, nullValue());
@@ -102,7 +102,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
     public void getIterableFromEntityTest3() {
         var data = springData().select("Test data", byId(testRepository, 1L)
                 .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 1"))
-                .thenGetIterable(TestEntity::getListData)
+                .thenGetList(TestEntity::getListData)
                 .criteria("not A, B, C or D", s -> !s.equalsIgnoreCase("a")
                         && !s.equalsIgnoreCase("b")
                         && !s.equalsIgnoreCase("c")
@@ -117,7 +117,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
             springData().select("Test data", byId(testRepository, 1L)
                     .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 2"))
                     .throwOnNoResult()
-                    .thenGetIterable(TestEntity::getListData)
+                    .thenGetList(TestEntity::getListData)
                     .criteria("not E", s -> !s.equalsIgnoreCase("e")));
         } catch (Throwable e) {
             assertThat(e, instanceOf(NotPresentException.class));
@@ -133,7 +133,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
         try {
             springData().select("Test data", byId(testRepository, 1L)
                     .criteria("Name = 'Test Name 1'", testEntity -> testEntity.getName().equals("Test Name 1"))
-                    .thenGetIterable(TestEntity::getListData)
+                    .thenGetList(TestEntity::getListData)
                     .criteria("not A, B, C or D", s -> !s.equalsIgnoreCase("a")
                             && !s.equalsIgnoreCase("b")
                             && !s.equalsIgnoreCase("c")
@@ -365,7 +365,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
                 .criteria("Name != 'Test Name 3'", testEntity -> !testEntity
                         .getName()
                         .equalsIgnoreCase("Test Name 3"))
-                .thenGetIterable(TestEntity::getName)
+                .thenGetList(TestEntity::getName)
                 .criteria("not \"Test Name 3\"", s -> !s.equalsIgnoreCase("Test Name 3")));
 
         assertThat(data, contains("Test Name 1", "Test Name 2"));
@@ -377,7 +377,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
                 .criteria("Name = 'Test Name 3'", testEntity -> testEntity
                         .getName()
                         .equalsIgnoreCase("Test Name 3"))
-                .thenGetIterable(TestEntity::getName)
+                .thenGetList(TestEntity::getName)
                 .criteria("not \"Test Name 3\"", s -> !s.equalsIgnoreCase("Test Name 3")));
 
         assertThat(data, either(emptyIterable()).or(nullValue()));
@@ -389,7 +389,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
                 .criteria("Name != 'Test Name 3'", testEntity -> !testEntity
                         .getName()
                         .equalsIgnoreCase("Test Name 3"))
-                .thenGetIterable(TestEntity::getName)
+                .thenGetList(TestEntity::getName)
                 .criteria("is \"Test Name 3\"", s -> s.equalsIgnoreCase("Test Name 3")));
 
         assertThat(data, either(emptyIterable()).or(nullValue()));
@@ -403,7 +403,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
                             .getName()
                             .equalsIgnoreCase("Test Name 3"))
                     .throwOnNoResult()
-                    .thenGetIterable(TestEntity::getName)
+                    .thenGetList(TestEntity::getName)
                     .criteria("not \"Test Name 3\"", s -> !s.equalsIgnoreCase("Test Name 3")));
         } catch (Throwable e) {
             assertThat(e, instanceOf(NotPresentException.class));
@@ -421,7 +421,7 @@ public class DataExtractionTest extends BaseSpringDataTest {
                     .criteria("Name != 'Test Name 3'", testEntity -> !testEntity
                             .getName()
                             .equalsIgnoreCase("Test Name 3"))
-                    .thenGetIterable(TestEntity::getName)
+                    .thenGetList(TestEntity::getName)
                     .criteria("is \"Test Name 3\"", s -> s.equalsIgnoreCase("Test Name 3"))
                     .throwOnNoResult());
         } catch (Throwable e) {

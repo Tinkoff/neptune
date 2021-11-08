@@ -22,7 +22,7 @@ import static ru.tinkoff.qa.neptune.spring.data.properties.SpringDataWaitingSele
 import static ru.tinkoff.qa.neptune.spring.data.select.GetArrayFromEntity.getArrayFromEntity;
 import static ru.tinkoff.qa.neptune.spring.data.select.GetItemOfArrayFromEntity.getArrayItemFromEntity;
 import static ru.tinkoff.qa.neptune.spring.data.select.GetItemOfIterableFromEntity.getIterableItemFromEntity;
-import static ru.tinkoff.qa.neptune.spring.data.select.GetIterableFromEntity.getIterableFromEntity;
+import static ru.tinkoff.qa.neptune.spring.data.select.GetListFromEntity.getListFromEntity;
 import static ru.tinkoff.qa.neptune.spring.data.select.GetObjectFromEntity.getObjectFromEntity;
 
 @SuppressWarnings("unchecked")
@@ -89,8 +89,8 @@ public abstract class SelectOneStepSupplier<R, ID, T extends Repository<R, ID>>
         return getObjectFromEntity(this, f);
     }
 
-    public <ITEM, S extends Iterable<ITEM>> GetIterableFromEntity<ITEM, S, R, ?> thenGetIterable(Function<R, S> f) {
-        return getIterableFromEntity(this, f);
+    public <ITEM, S extends Iterable<ITEM>> GetListFromEntity<ITEM, S, R, ?> thenGetList(Function<R, S> f) {
+        return getListFromEntity(this, f);
     }
 
     public <S> GetArrayFromEntity<S, R, ?> thenGetArray(Function<R, S[]> f) {

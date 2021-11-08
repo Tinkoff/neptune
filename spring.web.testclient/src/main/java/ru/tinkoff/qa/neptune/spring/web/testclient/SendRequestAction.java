@@ -22,7 +22,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.GetArrayFromResponse.array;
-import static ru.tinkoff.qa.neptune.spring.web.testclient.GetIterableFromResponse.iterable;
+import static ru.tinkoff.qa.neptune.spring.web.testclient.GetListFromResponse.list;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.GetObjectFromResponseBody.objectFromBody;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.GetObjectFromResponseBody.responseBody;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.GetObjectFromResponseBodyArray.objectFromArray;
@@ -445,11 +445,11 @@ public final class SendRequestAction<B> extends SequentialActionSupplier<WebTest
      * @param howToGet    describes how to get desired value
      * @param <T>         is a type of item from resulted iterable
      * @param <S>         is a type of resulted iterable
-     * @return an instance of {@link GetIterableFromResponse}
+     * @return an instance of {@link GetListFromResponse}
      */
-    public <T, S extends Iterable<T>> GetIterableFromResponse<T, S> thenGetIterable(String description,
-                                                                                    Function<B, S> howToGet) {
-        return iterable(description, new FromBodyGet<>(this, howToGet));
+    public <T, S extends Iterable<T>> GetListFromResponse<T, S> thenGetList(String description,
+                                                                            Function<B, S> howToGet) {
+        return list(description, new FromBodyGet<>(this, howToGet));
     }
 
     /**

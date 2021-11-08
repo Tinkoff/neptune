@@ -24,17 +24,17 @@ import static java.util.stream.StreamSupport.stream;
  */
 @CaptureOnSuccess(by = EntitiesCaptor.class)
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted iterable")
-public abstract class GetIterableFromEntities<T, M, S extends GetIterableFromEntities<T, M, S>>
+public abstract class GetListFromEntities<T, M, S extends GetListFromEntities<T, M, S>>
         extends SequentialGetStepSupplier.GetListChainedStepSupplier<SpringDataContext, List<T>, Iterable<M>, T, S>
         implements SelectQuery<List<T>> {
 
-    private GetIterableFromEntities(Function<M, T> originalFunction) {
+    private GetListFromEntities(Function<M, T> originalFunction) {
         super(ms -> stream(ms.spliterator(), false)
                 .map(originalFunction)
                 .collect(toList()));
     }
 
-    static <T, M, ID, R extends Repository<M, ID>> GetIterableFromEntities<T, M, ?> getIterableFromEntities(
+    static <T, M, ID, R extends Repository<M, ID>> GetListFromEntities<T, M, ?> getListFromEntities(
             SelectManyStepSupplier<M, ID, R> from,
             Function<M, T> f) {
         return new GetIterableFromEntitiesImpl<>(f).from(from);
@@ -42,7 +42,7 @@ public abstract class GetIterableFromEntities<T, M, S extends GetIterableFromEnt
 
     @IncludeParamsOfInnerGetterStep
     public static final class GetIterableFromEntitiesImpl<T, M>
-            extends GetIterableFromEntities<T, M, GetIterableFromEntitiesImpl<T, M>> {
+            extends GetListFromEntities<T, M, GetIterableFromEntitiesImpl<T, M>> {
 
         private GetIterableFromEntitiesImpl(Function<M, T> originalFunction) {
             super(originalFunction);

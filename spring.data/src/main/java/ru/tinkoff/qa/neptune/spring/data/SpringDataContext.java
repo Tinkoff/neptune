@@ -66,11 +66,11 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
         return impl.setDescription(translate(description));
     }
 
-    private static <ITEM, S extends Iterable<ITEM>, R> GetIterableFromEntity.GetIterableFromEntityImpl<ITEM, S, R>
+    private static <ITEM, S extends Iterable<ITEM>, R> GetListFromEntity.GetIterableFromEntityImpl<ITEM, S, R>
     setDescription(String description,
-                   GetIterableFromEntity<ITEM, S, R, ?> toGet) {
+                   GetListFromEntity<ITEM, S, R, ?> toGet) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        var impl = (GetIterableFromEntity.GetIterableFromEntityImpl<ITEM, S, R>) toGet;
+        var impl = (GetListFromEntity.GetIterableFromEntityImpl<ITEM, S, R>) toGet;
         return impl.setDescription(translate(description));
     }
 
@@ -98,11 +98,11 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
         return impl.setDescription(translate(description));
     }
 
-    private static <ITEM, R> GetIterableFromEntities.GetIterableFromEntitiesImpl<ITEM, R>
+    private static <ITEM, R> GetListFromEntities.GetIterableFromEntitiesImpl<ITEM, R>
     setDescription(String description,
-                   GetIterableFromEntities<ITEM, R, ?> toGet) {
+                   GetListFromEntities<ITEM, R, ?> toGet) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        var impl = (GetIterableFromEntities.GetIterableFromEntitiesImpl<ITEM, R>) toGet;
+        var impl = (GetListFromEntities.GetIterableFromEntitiesImpl<ITEM, R>) toGet;
         return impl.setDescription(translate(description));
     }
 
@@ -130,7 +130,7 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
     }
 
     public <ITEM, S extends Iterable<ITEM>, R> List<ITEM> select(String description,
-                                                                 GetIterableFromEntity<ITEM, S, R, ?> toGet) {
+                                                                 GetListFromEntity<ITEM, S, R, ?> toGet) {
         return select(setDescription(description, toGet));
     }
 
@@ -150,7 +150,7 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
     }
 
     public <ITEM, R> List<ITEM> select(String description,
-                                       GetIterableFromEntities<ITEM, R, ?> toGet) {
+                                       GetListFromEntities<ITEM, R, ?> toGet) {
         return select(setDescription(description, toGet));
     }
 
@@ -447,13 +447,13 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
 
 
     public <ITEM, S extends Iterable<ITEM>, R> boolean presenceOf(String description,
-                                                                  GetIterableFromEntity<ITEM, S, R, ?> toGet,
+                                                                  GetListFromEntity<ITEM, S, R, ?> toGet,
                                                                   Class<? extends Throwable>... toIgnore) {
         return super.presenceOf(setDescription(description, toGet), toIgnore);
     }
 
     public <ITEM, S extends Iterable<ITEM>, R> boolean presenceOfOrThrow(String description,
-                                                                         GetIterableFromEntity<ITEM, S, R, ?> toGet,
+                                                                         GetListFromEntity<ITEM, S, R, ?> toGet,
                                                                          Class<? extends Throwable>... toIgnore) {
         return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
     }
@@ -499,13 +499,13 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
 
 
     public <ITEM, R> boolean presenceOf(String description,
-                                        GetIterableFromEntities<ITEM, R, ?> toGet,
+                                        GetListFromEntities<ITEM, R, ?> toGet,
                                         Class<? extends Throwable>... toIgnore) {
         return super.presenceOf(setDescription(description, toGet), toIgnore);
     }
 
     public <ITEM, R> boolean presenceOfOrThrow(String description,
-                                               GetIterableFromEntities<ITEM, R, ?> toGet,
+                                               GetListFromEntities<ITEM, R, ?> toGet,
                                                Class<? extends Throwable>... toIgnore) {
         return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
     }
@@ -562,13 +562,13 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
 
 
     public <ITEM, S extends Iterable<ITEM>, R> boolean absenceOf(String description,
-                                                                 GetIterableFromEntity<ITEM, S, R, ?> toGet,
+                                                                 GetListFromEntity<ITEM, S, R, ?> toGet,
                                                                  Duration timeOut) {
         return super.absenceOf(setDescription(description, toGet), timeOut);
     }
 
     public <ITEM, S extends Iterable<ITEM>, R> boolean absenceOfOrThrow(String description,
-                                                                        GetIterableFromEntity<ITEM, S, R, ?> toGet,
+                                                                        GetListFromEntity<ITEM, S, R, ?> toGet,
                                                                         Duration timeOut) {
         return super.absenceOfOrThrow(setDescription(description, toGet), timeOut);
     }
@@ -614,13 +614,13 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
 
 
     public <ITEM, R> boolean absenceOf(String description,
-                                       GetIterableFromEntities<ITEM, R, ?> toGet,
+                                       GetListFromEntities<ITEM, R, ?> toGet,
                                        Duration timeOut) {
         return super.absenceOf(setDescription(description, toGet), timeOut);
     }
 
     public <ITEM, R> boolean absenceOfOrThrow(String description,
-                                              GetIterableFromEntities<ITEM, R, ?> toGet,
+                                              GetListFromEntities<ITEM, R, ?> toGet,
                                               Duration timeOut) {
         return super.absenceOfOrThrow(setDescription(description, toGet), timeOut);
     }
