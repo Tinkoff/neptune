@@ -534,6 +534,55 @@ public class MyTest {
 - [RxJava2SortingRepository](https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/reactive/RxJava2SortingRepository.html)
 - [RxJava3SortingRepository](https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/reactive/RxJava3SortingRepository.html)
 
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
+
+import static org.springframework.data.domain.Sort.Direction.ASC;
+import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
+import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.allBySorting;
+
+@SpringBootTest
+public class MyTest {
+
+    @Autowired
+    private TestRepository testRepository;
+
+    @Test
+    public void myTest() {
+        List<TestEntity> entities = springData().find("Test entities", //описание того что выбирается
+                //есть следующие варианты: 
+                // - allBySorting(T, org.springframework.data.domain.Sort)
+                // - allBySorting(T, java.lang.String...)
+                // - allBySorting(T, java.util.List<org.springframework.data.domain.Sort.Order>)
+                // - allBySorting(T, org.springframework.data.domain.Sort.Order...)
+                // где T - тип расширяющий org.springframework.data.repository.Repository и один/несколько из перечисленных
+                // выше допустимых интерфейсов
+                allBySorting(testRepository, ASC, "id", "name"))
+                        //можно указать один-несколько критериев,
+                        .criteria("Name == 'Some name'", testEntity -> testEntity.getName().equals("Some name"))
+                        //которым должны соответствовать отобранные записи
+                        .timeOut(ofSeconds(5)) //можно указать время, за которое подходящие записи должны быть выбраны,
+                        // если оно отличается от того, что указано в свойствах/переменных окружения
+                        // SPRING_DATA_WAITING_FOR_SELECTION_RESULT_TIME_UNIT и SPRING_DATA_WAITING_FOR_SELECTION_RESULT_TIME_VALUE
+                        .pollingInterval(ofMillis(200)) //можно указать время интервала между попытками получить
+                        // необходимый результат в рамках отведенного для этого времени, если значение этого интервала
+                        //должно отличаться от того, что указано в свойствах/переменных окружения
+                        // SPRING_DATA_SLEEPING_TIME_UNIT и SPRING_DATA_SLEEPING_TIME_VALUE
+                        .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, если 
+        // записей нет совсем или нет ни одной записи, которая бы соответствовала перечисленным 
+        // критериям. Иначе - вернется null или пустая коллекция.
+    }
+}
+```
+
+Про свойства / переменные окружения `SPRING_DATA_SLEEPING_TIME_UNIT`, `SPRING_DATA_SLEEPING_TIME_VALUE`,
+`SPRING_DATA_SLEEPING_TIME_UNIT` и `SPRING_DATA_SLEEPING_TIME_VALUE` можно прочитать [здесь](#Настройки).
+
+Кроме записей, целиком можно сделать выборку их данных. Данный механизм подробно описан в [выбор записей по ID](#Выбор-нескольких-записей-по-ID)
+и для выборки с сортировкой он работает идентично.
 
 [к оглавлению документа](#Оглавление)
 
@@ -549,7 +598,7 @@ public class MyTest {
 
 [к оглавлению документа](#Оглавление)
 
-### Произвольный вызов метода репозитория
+#### Произвольный вызов метода репозитория
 
 [к оглавлению документа](#Оглавление)
 
