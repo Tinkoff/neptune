@@ -85,23 +85,23 @@ public abstract class SelectOneStepSupplier<R, ID, T extends Repository<R, ID>>
         return additionalArgumentsFactory.getAdditionalParameters();
     }
 
-    public <S> GetObjectFromEntity<S, R, ?> thenGetObject(Function<R, S> f) {
+    public <S> GetObjectFromEntity<S, R> thenGetObject(Function<R, S> f) {
         return getObjectFromEntity(this, f);
     }
 
-    public <ITEM, S extends Iterable<ITEM>> GetListFromEntity<ITEM, S, R, ?> thenGetList(Function<R, S> f) {
+    public <ITEM, S extends Iterable<ITEM>> GetListFromEntity<ITEM, S, R> thenGetList(Function<R, S> f) {
         return getListFromEntity(this, f);
     }
 
-    public <S> GetArrayFromEntity<S, R, ?> thenGetArray(Function<R, S[]> f) {
+    public <S> GetArrayFromEntity<S, R> thenGetArray(Function<R, S[]> f) {
         return getArrayFromEntity(this, f);
     }
 
-    public <ITEM, S extends Iterable<ITEM>> GetItemOfIterableFromEntity<ITEM, S, R, ?> thenGetIterableItem(Function<R, S> f) {
+    public <ITEM, S extends Iterable<ITEM>> GetItemOfIterableFromEntity<ITEM, S, R> thenGetIterableItem(Function<R, S> f) {
         return getIterableItemFromEntity(this, f);
     }
 
-    public <S> GetItemOfArrayFromEntity<S, R, ?> thenGetArrayItem(Function<R, S[]> f) {
+    public <S> GetItemOfArrayFromEntity<S, R> thenGetArrayItem(Function<R, S[]> f) {
         return getArrayItemFromEntity(this, f);
     }
 }

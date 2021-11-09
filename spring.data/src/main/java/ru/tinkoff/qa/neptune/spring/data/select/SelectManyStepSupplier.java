@@ -83,11 +83,11 @@ public abstract class SelectManyStepSupplier<R, ID, T extends Repository<R, ID>>
         return additionalArgumentsFactory.getAdditionalParameters();
     }
 
-    public <ITEM> GetListFromEntities<ITEM, R, ?> thenGetList(Function<R, ITEM> f) {
+    public <ITEM> GetListFromEntities<ITEM, R> thenGetList(Function<R, ITEM> f) {
         return getListFromEntities(this, f);
     }
 
-    public <ITEM> GetIterableItemFromEntities<ITEM, R, ?> thenGetIterableItem(Function<R, ITEM> f) {
+    public <ITEM> GetIterableItemFromEntities<ITEM, R> thenGetIterableItem(Function<R, ITEM> f) {
         return getIterableItemFromEntities(this, f);
     }
 }
