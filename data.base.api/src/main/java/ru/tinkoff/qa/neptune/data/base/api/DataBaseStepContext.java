@@ -22,6 +22,7 @@ import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.data.base.api.data.operations.DataOperation.*;
 
+@Deprecated(forRemoval = true)
 @SuppressWarnings("unchecked")
 public class DataBaseStepContext extends Context<DataBaseStepContext> implements Stoppable {
 
@@ -62,7 +63,7 @@ public class DataBaseStepContext extends Context<DataBaseStepContext> implements
     }
 
     public final <T, R extends List<T>> R select(SelectList<?, R> selectList) {
-        return get(selectList);
+        return (R) get(selectList);
     }
 
     public final <T> T select(SelectASingle<T> selectOne) {
@@ -75,7 +76,7 @@ public class DataBaseStepContext extends Context<DataBaseStepContext> implements
     }
 
     @SafeVarargs
-    public final <T extends PersistableObject> List<T> update(SelectList<?, List<T>> howToSelect, UpdateExpression<T>... set) {
+    public final <T extends PersistableObject> List<T> update(SelectList<T, List<T>> howToSelect, UpdateExpression<T>... set) {
         return (List<T>) get(updated(howToSelect, set));
     }
 

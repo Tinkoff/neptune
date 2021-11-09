@@ -23,7 +23,7 @@ public class ClassWithNavigationOnTest15 {
     private final UrlVarPojo p7 = new UrlVarPojo();
 
     @BrowserUrlVariable(name = "parameter8")
-    public static String parameter7() {
+    public String parameter7() {
         return "Static ";
     }
 

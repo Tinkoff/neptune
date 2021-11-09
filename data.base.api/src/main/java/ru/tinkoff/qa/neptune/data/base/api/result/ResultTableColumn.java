@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import static java.lang.String.format;
 
+@Deprecated(forRemoval = true)
 class ResultTableColumn<T> extends ArrayList<T> {
 
     ResultTableColumn() {

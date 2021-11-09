@@ -35,7 +35,6 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -1521,7 +1520,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @param getCookies is how to get find cookies
      * @return a set of {@link Cookie}
      */
-    public Set<Cookie> get(GetSeleniumCookieSupplier getCookies) {
+    public List<Cookie> get(GetSeleniumCookieSupplier getCookies) {
         changeContentIfNecessary();
         return super.get(getCookies);
     }

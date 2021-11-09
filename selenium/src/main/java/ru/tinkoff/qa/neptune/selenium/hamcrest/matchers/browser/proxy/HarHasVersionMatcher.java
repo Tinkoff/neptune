@@ -5,7 +5,6 @@ import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.RecordedRequest;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.RecordedResponse;
 
@@ -21,7 +20,7 @@ public final class HarHasVersionMatcher extends NeptuneFeatureMatcher<HarEntry> 
     @DescriptionFragment(value = "getFrom")
     private final Object getFrom;
 
-    @DescriptionFragment(value = "httpVersion", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "httpVersion")
     private final Matcher<? super HttpClient.Version> versionMatcher;
 
     private HarHasVersionMatcher(Object getFrom, Matcher<? super HttpClient.Version> versionMatcher) {

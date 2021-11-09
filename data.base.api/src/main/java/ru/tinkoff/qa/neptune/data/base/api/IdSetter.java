@@ -16,10 +16,11 @@ import static java.util.List.of;
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 
+@Deprecated(forRemoval = true)
 public interface IdSetter {
 
     private static List<PersistableObject> getFlatListOfPersistableObjects(Collection<?> ts,
-                                                                   LinkedList<PersistableObject> found) {
+                                                                           LinkedList<PersistableObject> found) {
         ts.forEach(t -> {
             var fields = t.getClass().getDeclaredFields();
             stream(fields).forEach(field -> {
@@ -63,8 +64,7 @@ public interface IdSetter {
                     Stream<?> objectStream;
                     if (type.isArray()) {
                         objectStream = stream((Object[]) value);
-                    }
-                    else {
+                    } else {
                         objectStream = StreamSupport.stream(((Iterable<?>) value).spliterator(), false);
                     }
 

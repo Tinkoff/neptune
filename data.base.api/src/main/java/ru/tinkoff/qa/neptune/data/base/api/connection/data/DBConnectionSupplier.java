@@ -21,10 +21,11 @@ import static ru.tinkoff.qa.neptune.data.base.api.ConnectionDataReader.usesConne
  * This class is designed to prepare data of the connection to be created and used
  * for further interaction with a data base.
  */
+@Deprecated(forRemoval = true)
 public abstract class DBConnectionSupplier implements Supplier<DBConnection> {
 
     private static final List<Class<? extends PersistableObject>> persistableClasses = new ArrayList<>();
-    private static TransactionType DEFAULT_TRANSACTION_TYPE = RESOURCE_LOCAL;
+    private static final TransactionType DEFAULT_TRANSACTION_TYPE = RESOURCE_LOCAL;
 
     private DBConnection connectionData;
     private final List<String> tableClassNames;

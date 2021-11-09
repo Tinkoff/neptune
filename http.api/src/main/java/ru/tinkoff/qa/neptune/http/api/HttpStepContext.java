@@ -126,10 +126,10 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @param iterable is description how to get an {@link Iterable} from a body of http response
      * @param <T>      is a type of response body
      * @param <R>      is a type of an element of {@link Iterable} which is extracted from a body of http response
-     * @param <S>      is a type of resulted {@link Iterable}
+     * @param <S>      is a type of {@link Iterable}
      * @return an instance of {@code <S>}
      */
-    public <T, R, S extends Iterable<R>> S bodyData(GetObjectsFromIterableBodyStepSupplier<T, R, S, ?, ?> iterable) {
+    public <T, R, S extends Iterable<R>> List<R> bodyData(GetObjectsFromIterableBodyStepSupplier<T, R, S, ?, ?> iterable) {
         return get(iterable);
     }
 

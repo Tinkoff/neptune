@@ -49,10 +49,9 @@ public final class NeptuneJUnit5Extension implements TestInstancePostProcessor,
     private <T> T invokeHooksAndProceed(InvocationInterceptor.Invocation<T> invocation,
                                         ReflectiveInvocationContext<Method> invocationContext,
                                         boolean isTest) throws Throwable {
-        hooks.forEach(executionHook -> executionHook
-                .executeMethodHook(invocationContext.getExecutable(),
-                        invocationContext.getTarget().orElseGet(invocationContext::getTarget),
-                        isTest));
+        hooks.forEach(executionHook -> executionHook.executeMethodHook(invocationContext.getExecutable(),
+                invocationContext.getTarget().orElseGet(invocationContext::getTargetClass),
+                isTest));
         return invocation.proceed();
     }
 

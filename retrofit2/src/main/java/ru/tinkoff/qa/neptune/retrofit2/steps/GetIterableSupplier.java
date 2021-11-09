@@ -10,6 +10,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.retrofit2.RetrofitContext;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -28,8 +29,7 @@ import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getRespons
 
 @SuppressWarnings("unchecked")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted iterable")
-public abstract class GetIterableSupplier<M, R, S extends Iterable<R>, E extends GetIterableSupplier<M, R, S, E>> extends SequentialGetStepSupplier
-        .GetIterableChainedStepSupplier<RetrofitContext, S, RequestExecutionResult<M, S>, R, E> {
+public abstract class GetIterableSupplier<M, R, S extends Iterable<R>, E extends GetIterableSupplier<M, R, S, E>> extends SequentialGetStepSupplier.GetListChainedStepSupplier<RetrofitContext, S, RequestExecutionResult<M, S>, R, E> {
 
     private Criteria<R> derivedValueCriteria;
 
@@ -190,7 +190,7 @@ public abstract class GetIterableSupplier<M, R, S extends Iterable<R>, E extends
     }
 
     @Override
-    public Function<RetrofitContext, S> get() {
+    public Function<RetrofitContext, List<R>> get() {
         if (derivedValueCriteria != null) {
             ((SendRequestAndGet<M, S>) getFrom()).criteria(iterableResultMatches(hasResultItems(derivedValueCriteria)));
         }

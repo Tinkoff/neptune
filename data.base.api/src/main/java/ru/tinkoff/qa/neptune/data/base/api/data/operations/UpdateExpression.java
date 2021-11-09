@@ -16,6 +16,7 @@ import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.trans
  *
  * @param <T> is a type of {@link PersistableObject} to be updated
  */
+@Deprecated(forRemoval = true)
 public final class UpdateExpression<T extends PersistableObject> {
 
     private final String description;

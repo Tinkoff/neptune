@@ -19,6 +19,7 @@ import static java.util.Arrays.stream;
  *
  * @param <T> is a type of {@link PersistableObject} to be selected
  */
+@Deprecated(forRemoval = true)
 public final class IdQuery<T extends PersistableObject> implements Query<T, List<T>>, IdSetter {
 
     private final Class<T> classOfRequestedValue;

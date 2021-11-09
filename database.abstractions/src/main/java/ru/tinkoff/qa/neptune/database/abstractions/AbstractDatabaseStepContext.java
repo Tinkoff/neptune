@@ -12,7 +12,7 @@ public abstract class AbstractDatabaseStepContext<T extends AbstractDatabaseStep
 
     protected abstract <R, Q extends SequentialGetStepSupplier<T, R, ?, ?, ?> & SelectQuery<R>> R select(Q query);
 
-    protected abstract <R, Q extends SequentialGetStepSupplier<T, R, ?, ?, ?> & SelectQuery<R>> R update(Q query, UpdateAction<R>... actions);
+    protected abstract <R, S, Q extends SequentialGetStepSupplier<T, S, ?, ?, ?> & SelectQuery<S>> S update(Q query, UpdateAction<R>... actions);
 
     protected abstract <R, Q extends SequentialGetStepSupplier<T, R, ?, ?, ?> & SelectQuery<R>> R delete(Q query);
 

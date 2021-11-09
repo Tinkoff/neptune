@@ -5,7 +5,6 @@ import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.PropertyValueMismatch;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.Height;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.Width;
@@ -18,9 +17,9 @@ import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.window.IsWindowPr
 @Description("size width {widthMatcher} and height {heightMatcher}")
 public final class WindowHasSizeMatcher extends NeptuneFeatureMatcher<Window> {
 
-    @DescriptionFragment(value = "widthMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "widthMatcher")
     private final Matcher<Integer> widthMatcher;
-    @DescriptionFragment(value = "heightMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "heightMatcher")
     private final Matcher<Integer> heightMatcher;
 
     private WindowHasSizeMatcher(Matcher<Integer> widthMatcher, Matcher<Integer> heightMatcher) {

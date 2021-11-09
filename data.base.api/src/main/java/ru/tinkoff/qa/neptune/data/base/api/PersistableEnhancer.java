@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.nonNull;
 import static org.datanucleus.PropertyNames.PROPERTY_METADATA_ALWAYS_DETACHABLE;
 
+@Deprecated(forRemoval = true)
 public final class PersistableEnhancer {
     /**
      * Enhances persistable classes. Classes that need to be be enhanced should implement {@link PersistableObject}.

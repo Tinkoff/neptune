@@ -17,7 +17,7 @@ public final class UpdateAction<T> {
     private UpdateAction(String description, Consumer<T> updateAction) {
         checkArgument(isNotBlank(description), "Description of an update action should not be a null or blank string");
         checkArgument(nonNull(updateAction), "Please define an update action");
-        this.description = description;
+        this.description = translate(description);
         this.updateAction = updateAction;
     }
 

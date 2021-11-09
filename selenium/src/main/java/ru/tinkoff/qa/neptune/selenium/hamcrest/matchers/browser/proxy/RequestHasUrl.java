@@ -5,7 +5,6 @@ import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -16,7 +15,7 @@ import static org.hamcrest.Matchers.equalTo;
 @Description("Request URL {urlMatcher}")
 public final class RequestHasUrl extends NeptuneFeatureMatcher<HarEntry> {
 
-    @DescriptionFragment(value = "urlMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "urlMatcher")
     private final Matcher<?> urlMatcher;
     private final boolean toCheckURL;
 

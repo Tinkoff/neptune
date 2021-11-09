@@ -12,8 +12,8 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.equalTo;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.AnyThingMatcher.anything;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableInOrder;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFeatureMatcher.KEY_MATCHER_MASK;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFeatureMatcher.VALUE_MATCHER_MASK;
@@ -21,7 +21,7 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFea
 @Description("has a column with header <{" + KEY_MATCHER_MASK + "}> {" + VALUE_MATCHER_MASK + "}")
 public class HasColumnMatcher extends MappedDiagnosticFeatureMatcher<Table, String, List<String>> {
 
-    private HasColumnMatcher(Matcher<? super String> headerMatcher, Matcher<List<String>> columnMatcher) {
+    private HasColumnMatcher(Matcher<? super String> headerMatcher, Matcher<? super List<String>> columnMatcher) {
         super(true, headerMatcher, columnMatcher);
     }
 
@@ -65,7 +65,7 @@ public class HasColumnMatcher extends MappedDiagnosticFeatureMatcher<Table, Stri
      * @param valuesMatcher is the criteria to check values of the expected column
      * @return created object of {@link HasColumnMatcher}
      */
-    public static Matcher<Table> hasAColumn(String column, Matcher<List<String>> valuesMatcher) {
+    public static Matcher<Table> hasAColumn(String column, Matcher<? super List<String>> valuesMatcher) {
         checkArgument(!isBlank(column), "Name of the expected column should not be blank");
         return hasAColumn(equalTo(column), valuesMatcher);
     }
@@ -79,7 +79,7 @@ public class HasColumnMatcher extends MappedDiagnosticFeatureMatcher<Table, Stri
      * @param valuesMatcher is the criteria to check values of the expected column
      * @return created object of {@link HasColumnMatcher}
      */
-    public static Matcher<Table> hasAColumn(Matcher<? super String> columnMatcher, Matcher<List<String>> valuesMatcher) {
+    public static Matcher<Table> hasAColumn(Matcher<? super String> columnMatcher, Matcher<? super List<String>> valuesMatcher) {
         return new HasColumnMatcher(columnMatcher, valuesMatcher);
     }
 

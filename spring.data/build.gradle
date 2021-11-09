@@ -1,0 +1,111 @@
+plugins {
+    id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
+}
+
+test {
+    useTestNG()
+}
+
+configurations {
+    bundleGeneration
+}
+
+dependencies {
+    implementation(project(":database.abstractions"))
+    inpath(project(":core.api")) {
+        transitive = false
+    }
+    api group: 'org.springframework.data', name: 'spring-data-commons', version: '2.5.6'
+    testImplementation  group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockitoVersion
+    compileClasspath(group: 'org.springframework', name: 'spring-context', version: springVersion)
+    compileClasspath(group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.21')
+    compileClasspath('io.projectreactor.tools:blockhound:1.0.6.RELEASE')
+    compileClasspath('io.projectreactor:reactor-test:3.4.11')
+    compileClasspath(group: 'io.micrometer', name: 'micrometer-core', version: '1.7.5')
+    compileClasspath(group: 'io.reactivex.rxjava3', name: 'rxjava', version: '3.1.2')
+    compileClasspath(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
+
+    testImplementation(group: 'org.springframework', name: 'spring-context', version: springVersion)
+    testImplementation(group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.21')
+    testImplementation('io.projectreactor.tools:blockhound:1.0.6.RELEASE')
+    testImplementation('io.projectreactor:reactor-test:3.4.11')
+    testImplementation(group: 'io.micrometer', name: 'micrometer-core', version: '1.7.5')
+    testImplementation(group: 'io.reactivex.rxjava3', name: 'rxjava', version: '3.1.2')
+    testImplementation(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
+
+    bundleGeneration(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+task generateBundle(type: JavaExec)  {
+    classpath=configurations.bundleGeneration + sourceSets.main.compileClasspath
+    classpath sourceSets.main.runtimeClasspath
+    main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
+    args "ru_RU",
+            "$projectDir/src/main/resources",
+            "false",
+            "spring.data"
+}
+
+processResources {
+    doLast {
+        generateBundle.exec()
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'spring.data'
+            from components.java
+            repositories {
+                maven {
+                    credentials(PasswordCredentials)
+                    url = 'https://nexus-new.tcsbank.ru/repository/mvn-bigops-qa'
+                }
+            }
+            pom {
+                packaging = 'jar'
+                name = 'spring.data'
+                version = version
+                url = 'https://github.com/TinkoffCreditSystems/neptune'
+                licenses {
+                    license {
+                        name = 'Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution = 'repo'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'TikhomirovSergey'
+                        name = 'Sergey Tikhomirov'
+                        email = 'tichomirovsergey@gmail.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
+                    url = 'https://github.com/TinkoffCreditSystems/neptune'
+                }
+            }
+        }
+    }
+}
+
+javadoc {
+    destinationDir = file("${buildDir}/../../../neptune.documentation/javadocs/$project.name")
+
+    title = "Neptune Spring Data Commons Integration API. v$globalVersion"
+    options.author true
+    options.links 'http://download.oracle.com/javase/9/docs/api/'
+    options.addStringOption 'Xdoclint:none', '-quiet'
+    options.memberLevel = JavadocMemberLevel.PROTECTED
+    options.bottom = "Copyright &copy; 2021 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+    options.addBooleanOption('html5', true)
+}

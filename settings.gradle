@@ -14,3 +14,7 @@ include 'kafka'
 include 'jupiter.integration'
 include 'allure.jupiter.bridge'
 include 'database.abstractions'
+include 'spring.mock.mvc'
+include 'spring.data'
+include 'spring.web.testclient'
+

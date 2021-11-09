@@ -13,6 +13,7 @@ import static ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSt
 /**
  * This is utility that tries to read info about proper connection from {@link PersistableObject}
  */
+@Deprecated(forRemoval = true)
 public class ConnectionDataReader {
 
     private static final ScanResult SCAN_RESULT = new ClassGraph()

@@ -8,6 +8,7 @@ import java.util.List;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
+@Deprecated(forRemoval = true)
 @Description("Persistable DB objects")
 public class DBObjectsCaptor extends DBCaptor<List<PersistableObject>> {
 

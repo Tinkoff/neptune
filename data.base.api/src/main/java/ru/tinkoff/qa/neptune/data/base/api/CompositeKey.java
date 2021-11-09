@@ -25,6 +25,7 @@ import static java.util.stream.Collectors.toList;
  *            }'}
  * </p>
  */
+@Deprecated(forRemoval = true)
 public abstract class CompositeKey extends OrmObject implements Serializable {
 
     @Override

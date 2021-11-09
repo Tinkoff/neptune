@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.data.base.api.queries;
 
+@Deprecated(forRemoval = true)
 public interface ResultPersistentManager {
 
     default void keepResultPersistent(SelectASingle<?> select) {

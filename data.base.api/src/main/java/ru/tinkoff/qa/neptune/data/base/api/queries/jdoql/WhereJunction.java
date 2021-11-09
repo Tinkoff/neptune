@@ -17,6 +17,7 @@ import static org.datanucleus.query.expression.Expression.OP_OR;
  * This is the utility class that helps to aggregate complex where-expressions
  * by AND-/OR junctions.
  */
+@Deprecated(forRemoval = true)
 public final class WhereJunction {
 
     private final Expression.DyadicOperator operator;

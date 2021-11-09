@@ -94,13 +94,18 @@ task generateBundle(type: JavaExec) {
 }
 ```
 
-При настройках, указанных выше, в зависимости от того, какие модули Neptune используются в качестве зависимостей, будут созданные 
+При настройках, указанных выше, в зависимости от того, какие модули Neptune используются в качестве зависимостей, будут созданы
 следующие файлы:
 
 - `neptune_Localization_core_de_DE.properties` - для [core](./README.MD)
 - `neptune_Localization_check_de_DE.properties` - для [check](./../../../check/doc/rus/README.MD)
 - `neptune_Localization_http_de_DE.properties` - для [http](./../../../http.api/doc/rus/README.MD)
-- `neptune_Localization_selenium_de_DE.properties` - для [http](./../../../selenium/doc/rus/README.MD)
+- `neptune_Localization_selenium_de_DE.properties` - для [selenium](./../../../selenium/doc/rus/README.MD)
+- `neptune_Localization_kafka_de_DE.properties` - для [kafka](./../../../kafka/doc/rus/README.MD)
+- `neptune_Localization_kafka_de_DE.properties` - для [rabbit.mq](./../../../rabbit.mq/doc/rus/README.MD)
+- `neptune_Localization_retrofit2_de_DE.properties` - для [retrofit2](./../../../retrofit2/doc/rus/README.MD)
+- `neptune_Localization_spring.mock.mvc_de_DE.properties` - для [spring.mock.mvc](./../../../spring.mock.mvc/doc/rus/README.MD)
+- `neptune_Localization_spring.web.testclient_de_DE.properties` - для [spring.web.testclient](./../../../spring.web.testclient/doc/rus/README.MD)
 
 Ниже пример одного из файлов
 
@@ -503,7 +508,12 @@ task generateBundle(type: JavaExec) {
 - `neptune_Localization_core_CUSTOM_ru_RU.properties` - для [core](./README.MD)
 - `neptune_Localization_check_CUSTOM_ru_RU.properties` - для [check](./../../../check/doc/rus/README.MD)
 - `neptune_Localization_http_CUSTOM_ru_RU.properties` - для [http](./../../../http.api/doc/rus/README.MD)
-- `neptune_Localization_selenium_CUSTOM_ru_RU.properties` - для [http](./../../../selenium/doc/rus/README.MD)
+- `neptune_Localization_selenium_CUSTOM_ru_RU.properties` - для [selenium](./../../../selenium/doc/rus/README.MD)
+- `neptune_Localization_kafka_CUSTOM_ru_RU.properties` - для [kafka](./../../../kafka/doc/rus/README.MD)
+- `neptune_Localization_kafka_CUSTOM_ru_RU.properties` - для [rabbit.mq](./../../../rabbit.mq/doc/rus/README.MD)
+- `neptune_Localization_retrofit2_CUSTOM_ru_RU.properties` - для [retrofit2](./../../../retrofit2/doc/rus/README.MD)
+- `neptune_Localization_spring.mock.mvc_CUSTOM_ru_RU.properties` - для [spring.mock.mvc](./../../../spring.mock.mvc/doc/rus/README.MD)
+- `neptune_Localization_spring.web.testclient_CUSTOM_ru_RU.properties` - для [spring.web.testclient](./../../../spring.web.testclient/doc/rus/README.MD)
 
 Ниже пример одного из файлов (с русской локализацией)
 
@@ -848,8 +858,8 @@ public class MyLocalizationPartition extends LocalizationBundlePartition // <-н
     public MyLocalizationPartition() { //необходимо, чтобы конструктор 
         // был доступен и не имел параметров
         super("my.module" //название модуля для механизма локализации
-                , "org.mypack"); //имя корневого пакета, 
-        // к которому относятся вложенные объекты 
+                , "org.mypack"); //имя корневых пакетов, 
+        // к которым относятся вложенные объекты 
         // для локализации
     }
 }
@@ -926,50 +936,56 @@ public interface StepLocalization {
    * Makes translation by usage of a class.
    *
    * @param clz                       is a class whose metadata may be used for auxiliary purposes
-   * @param description               is a description of a step. It is fully completed by value taken
-   *                                  from {@link Description} of a class and by values which are taken from
-   *                                  fields annotated by {@link DescriptionFragment}
-   * @param descriptionTemplateParams is a map of parameters and their values. These parameters are taken from
+   * @param template                  is a template of a string to be translated. It is usually taken
+   *                                  from {@link Description} of a class. It may contain named parameters
+   *                                  placed between '{}'. Names of parameters should correspond to class fields
+   *                                  annotated by {@link DescriptionFragment}
+   * @param descriptionTemplateParams is a list of parameters and their values. These parameters are taken from
    *                                  fields annotated by {@link DescriptionFragment}. This parameter is included
-   *                                  because the map is possible to be re-used for some reasons.
+   *                                  because the list is possible to be re-used for some reasons.
    * @param locale                    is a used locale
-   * @param <T>                       is a type of a class
+   * @param <T>                       is a type of class
    * @return translated text
    */
   <T> String classTranslation(Class<T> clz,
-                              String description,
-                              Map<String, String> descriptionTemplateParams,
+                              String template,
+                              List<TemplateParameter> descriptionTemplateParams,
                               Locale locale);
 
   /**
    * Makes translation by usage of a method.
    *
    * @param method                    is a method whose metadata may be used for auxiliary purposes
-   * @param description               is a description of a step. It is fully completed by value taken
-   *                                  from {@link Description} of a method and by values which are taken from
-   *                                  method parameters annotated by {@link DescriptionFragment}
-   * @param descriptionTemplateParams is a map of parameters and their values. These parameters are taken from
-   *                                  method parameters annotated by {@link DescriptionFragment}.This parameter is included
-   *                                  because the map is possible to be re-used for some reasons.
+   * @param template                  is a template of a string to be translated. It is usually taken
+   *                                  from {@link Description} of a method. It may contain named parameters
+   *                                  placed between '{}'. Names of parameters should correspond to
+   *                                  method parameters annotated by {@link DescriptionFragment}. In case of methods
+   *                                  numbers from 0 are allowed to be used as parameter names between '{}'. Each
+   *                                  defined number should be an index of a parameter of the method signature.
+   * @param descriptionTemplateParams is a list of parameters and their values. These parameters are taken from
+   *                                  method parameters. Name of each {@link TemplateParameter} is formed by
+   *                                  {@link DescriptionFragment} or index of the corresponding {@link Parameter} of
+   *                                  the method signature. This parameter is included because the list is possible
+   *                                  to be re-used for some reasons.
    * @param locale                    is a used locale
    * @return translated text
    */
   String methodTranslation(Method method,
-                           String description,
-                           Map<String, String> descriptionTemplateParams,
+                           String template,
+                           List<TemplateParameter> descriptionTemplateParams,
                            Locale locale);
 
   /**
    * Makes translation by usage of other annotated element that differs from {@link Class} and {@link Method}
    *
-   * @param member      is an annotated element whose metadata may be used for auxiliary purposes
-   * @param description is a description taken from the member
-   * @param locale      is a used locale
-   * @param <T>         is a type of a member
+   * @param member         is an annotated element whose metadata may be used for auxiliary purposes
+   * @param toBeTranslated is a string to be translated. This string is usually taken from the member
+   * @param locale         is a used locale
+   * @param <T>            is a type of member
    * @return translated text
    */
   <T extends AnnotatedElement & Member> String memberTranslation(T member,
-                                                                 String description,
+                                                                 String toBeTranslated,
                                                                  Locale locale);
 
   /**

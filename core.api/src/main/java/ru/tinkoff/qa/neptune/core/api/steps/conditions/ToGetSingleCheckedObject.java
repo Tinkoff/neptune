@@ -55,6 +55,7 @@ public final class ToGetSingleCheckedObject {
      * @return a function. The result function returns a single value.
      * It returns a value if it suits criteria. Some exception is thrown if value is null or doesn't suit criteria.
      */
+    @SafeVarargs
     public static <T, R> Function<T, R> getSingle(Function<T, R> function,
                                                   Predicate<? super R> condition,
                                                   Duration waitingTime,
@@ -84,6 +85,7 @@ public final class ToGetSingleCheckedObject {
      * @return a function. The result function returns a single value.
      * It returns a value if it differs from null. Some exception is thrown if value is null.
      */
+    @SafeVarargs
     public static <T, R> Function<T, R> getSingle(Function<T, R> function,
                                                   Duration waitingTime, Duration sleepingTime,
                                                   Supplier<? extends RuntimeException> exceptionSupplier,
@@ -111,6 +113,7 @@ public final class ToGetSingleCheckedObject {
      * @return a function. The result function returns a single value.
      * It returns a value if it suits criteria. Some exception is thrown if value is null or doesn't suit criteria.
      */
+    @SafeVarargs
     public static <T, R> Function<T, R> getSingle(Function<T, R> function,
                                                   Predicate<? super R> condition,
                                                   Duration waitingTime,
@@ -137,6 +140,7 @@ public final class ToGetSingleCheckedObject {
      * @return a function. The result function returns a single value.
      * It returns a value if it differs from null. Some exception is thrown if value is null.
      */
+    @SafeVarargs
     public static <T, R> Function<T, R> getSingle(Function<T, R> function,
                                                   Duration waitingTime,
                                                   Supplier<? extends RuntimeException> exceptionSupplier,
@@ -163,6 +167,7 @@ public final class ToGetSingleCheckedObject {
      * @return a function. The result function returns a single value.
      * It returns a value if it suits criteria. Some exception is thrown if value is null or doesn't suit criteria.
      */
+    @SafeVarargs
     public static <T, R> Function<T, R> getSingle(Function<T, R> function,
                                                   Predicate<? super R> condition,
                                                   Supplier<? extends RuntimeException> exceptionSupplier,
@@ -186,6 +191,7 @@ public final class ToGetSingleCheckedObject {
      * @return a function. The result function returns a single value.
      * It returns a value if it differs from null. Some exception is thrown if value is null.
      */
+    @SafeVarargs
     public static <T, R> Function<T, R> getSingle(Function<T, R> function,
                                                   Supplier<? extends RuntimeException> exceptionSupplier,
                                                   Class<? extends Throwable>... toIgnore) {
@@ -211,6 +217,7 @@ public final class ToGetSingleCheckedObject {
      * @return a function. The result function returns a single value.
      * It returns a value if it suits criteria. {@code null} is returned if value is null or doesn't suit criteria.
      */
+    @SafeVarargs
     public static <T, R> Function<T, R> getSingle(Function<T, R> function,
                                                   Predicate<? super R> condition,
                                                   Duration waitingTime,
@@ -237,6 +244,7 @@ public final class ToGetSingleCheckedObject {
      * @return a function. The result function returns a single value.
      * It returns a value if it differs from null. {@code null} is returned if value is null.
      */
+    @SafeVarargs
     public static <T, R> Function<T, R> getSingle(Function<T, R> function,
                                                   Duration waitingTime,
                                                   Duration sleepingTime,
@@ -262,6 +270,7 @@ public final class ToGetSingleCheckedObject {
      * @return a function. The result function returns a single value.
      * It returns a value if it suits criteria. {@code null} is returned if value is null or doesn't suit criteria.
      */
+    @SafeVarargs
     public static <T, R> Function<T, R> getSingle(Function<T, R> function,
                                                   Predicate<? super R> condition,
                                                   Duration waitingTime,
@@ -285,6 +294,7 @@ public final class ToGetSingleCheckedObject {
      * @return a function. The result function returns a single value.
      * It returns a value if it differs from null. {@code null} is returned if value is null.
      */
+    @SafeVarargs
     public static <T, R> Function<T, R> getSingle(Function<T, R> function,
                                                   Duration waitingTime,
                                                   Class<? extends Throwable>... toIgnore) {
@@ -308,6 +318,7 @@ public final class ToGetSingleCheckedObject {
      * @return a function. The result function returns a single value.
      * It returns a value if it suits criteria. {@code null} is returned if value is null or doesn't suit criteria.
      */
+    @SafeVarargs
     public static <T, R> Function<T, R> getSingle(Function<T, R> function,
                                                   Predicate<? super R> condition,
                                                   Class<? extends Throwable>... toIgnore) {
@@ -327,6 +338,7 @@ public final class ToGetSingleCheckedObject {
      * @return a function. The result function returns a single value.
      * It returns a value if it suits criteria. {@code null} is returned if value is null or doesn't suit criteria.
      */
+    @SafeVarargs
     public static <T, R> Function<T, R> getSingle(Function<T, R> function,
                                                   Class<? extends Throwable>... toIgnore) {
         return checkedSingle(checkFunction(function),

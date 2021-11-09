@@ -6,7 +6,6 @@ import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.hamcrest.Matchers.is;
@@ -14,7 +13,7 @@ import static org.hamcrest.Matchers.is;
 @Description("Request method {methodMatcher}")
 public final class RequestHasMethod extends NeptuneFeatureMatcher<HarEntry> {
 
-    @DescriptionFragment(value = "methodMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "methodMatcher")
     private final Matcher<? super HttpMethod> methodMatcher;
 
     private RequestHasMethod(Matcher<? super HttpMethod> methodMatcher) {

@@ -73,7 +73,7 @@ public final class OnlyOneMatcher<T> extends NeptuneFeatureMatcher<T> {
                 .stream()
                 .filter(Map.Entry::getValue)
                 .map(Map.Entry::getKey)
-                .collect(toList())));
+                .collect(toList()), toMatch));
         return false;
     }
 }

@@ -15,6 +15,7 @@ import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.core.api.localization.BasicLocalizationTest.SomeCriteria.*;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 
+@SuppressWarnings("unused")
 public class BasicLocalizationTest {
     @DataProvider(parallel = true)
     public static Object[][] data1() {
@@ -36,6 +37,10 @@ public class BasicLocalizationTest {
                         "Method with Composite Description + some string1,some string2 ActionSupplier"
                 },
                 {
+                        TestActionStepSupplier.methodWithCompositeAnnotation3("some string1", "some string2"),
+                        "Method with Composite Description + some string1,some string2 ActionSupplier"
+                },
+                {
                         TestGetStepSupplier.methodWithoutAnnotation(),
                         "Class Description GetSupplier"
                 },
@@ -49,6 +54,10 @@ public class BasicLocalizationTest {
                 },
                 {
                         TestGetStepSupplier.methodWithCompositeAnnotation2("some string1", "some string2"),
+                        "Method with Composite Description + some string1,some string2 GetSupplier"
+                },
+                {
+                        TestGetStepSupplier.methodWithCompositeAnnotation3("some string1", "some string2"),
                         "Method with Composite Description + some string1,some string2 GetSupplier"
                 }
         };
@@ -102,6 +111,11 @@ public class BasicLocalizationTest {
             return new TestActionStepSupplier();
         }
 
+        @Description("Method with Composite Description + {0},{1} ActionSupplier")
+        public static TestActionStepSupplier methodWithCompositeAnnotation3(String s1, String s2) {
+            return new TestActionStepSupplier();
+        }
+
         @Override
         protected void howToPerform(Object value) {
 
@@ -133,6 +147,11 @@ public class BasicLocalizationTest {
         @Description("Method with Composite Description + {element1},{element2} GetSupplier")
         public static TestGetStepSupplier methodWithCompositeAnnotation2(@DescriptionFragment("element1") String s1,
                                                                          @DescriptionFragment("element2") String s2) {
+            return new TestGetStepSupplier();
+        }
+
+        @Description("Method with Composite Description + {0},{1} GetSupplier")
+        public static TestGetStepSupplier methodWithCompositeAnnotation3(String s1, String s2) {
             return new TestGetStepSupplier();
         }
     }

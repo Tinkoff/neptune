@@ -4,7 +4,6 @@ import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
 import java.net.MalformedURLException;
@@ -18,7 +17,7 @@ import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.window.IsWindowPr
 @Description("URL of loaded page {urlMatcher}")
 public final class AtThePageMatcher extends NeptuneFeatureMatcher<Window> {
 
-    @DescriptionFragment(value = "urlMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "urlMatcher")
     private final Matcher<?> urlMatcher;
     private final boolean toCheckURL;
 

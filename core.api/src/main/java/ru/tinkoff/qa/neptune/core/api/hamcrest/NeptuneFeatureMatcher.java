@@ -57,7 +57,7 @@ public abstract class NeptuneFeatureMatcher<T> extends BaseMatcher<T> {
                 return "(" + matcher + ")";
             }
 
-            return translate(matcher.toString());
+            return matcher.toString();
         }).collect(joining(delimiter));
     }
 

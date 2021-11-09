@@ -4,7 +4,6 @@ import org.datanucleus.api.jdo.JDOPersistenceManager;
 import ru.tinkoff.qa.neptune.data.base.api.IdSetter;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.api.queries.Query;
-import ru.tinkoff.qa.neptune.data.base.api.result.TableResultList;
 
 import javax.jdo.JDOQLTypedQuery;
 import javax.jdo.query.PersistableExpression;
@@ -24,7 +23,8 @@ import static ru.tinkoff.qa.neptune.data.base.api.ConnectionDataReader.getConnec
  *
  * @param <T> is a type of {@link PersistableObject} objects to take field values from
  */
-public final class JDOQLResultQuery<T extends PersistableObject, Q extends PersistableExpression<T>> implements Query<List<Object>, TableResultList>, IdSetter {
+@Deprecated(forRemoval = true)
+public final class JDOQLResultQuery<T extends PersistableObject, Q extends PersistableExpression<T>> implements Query<List<Object>, List<List<Object>>>, IdSetter {
 
     private final Class<T> tClass;
     private final JDOQLResultQueryParams<T, Q> parameters;
@@ -46,7 +46,7 @@ public final class JDOQLResultQuery<T extends PersistableObject, Q extends Persi
     }
 
     @Override
-    public TableResultList execute(JDOPersistenceManager jdoPersistenceManager) {
+    public List<List<Object>> execute(JDOPersistenceManager jdoPersistenceManager) {
         var query = ofNullable(parameters)
                 .map(p -> p.buildQuery(new ReadableJDOQuery<>(jdoPersistenceManager, tClass)))
                 .orElseGet(() -> new ReadableJDOQuery<>(jdoPersistenceManager, tClass));
@@ -104,8 +104,7 @@ public final class JDOQLResultQuery<T extends PersistableObject, Q extends Persi
             }
         });
 
-        return new TableResultList(toBeReturned) {
-        };
+        return toBeReturned;
     }
 
     public String toString() {

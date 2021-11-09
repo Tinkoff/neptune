@@ -65,6 +65,7 @@ public final class ToGetSubArray {
      * and suit the criteria. It returns not empty array when there are such elements. Some exception is thrown if result
      * array is null or has no elements which suit the criteria.
      */
+    @SafeVarargs
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Predicate<? super R> condition,
                                                    Duration waitingTime,
@@ -95,6 +96,7 @@ public final class ToGetSubArray {
      * It returns not empty array when there are such elements. Some exception is thrown if result
      * array is null or has no elements or all elements are {@code null}.
      */
+    @SafeVarargs
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Duration waitingTime,
                                                    Duration sleepingTime,
@@ -124,6 +126,7 @@ public final class ToGetSubArray {
      * and suit the criteria. It returns not empty array when there are such elements. Some exception is thrown if result
      * array is null or has no elements which suit the criteria.
      */
+    @SafeVarargs
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Predicate<? super R> condition,
                                                    Duration waitingTime,
@@ -151,6 +154,7 @@ public final class ToGetSubArray {
      * It returns not empty array when there are such elements. Some exception is thrown if result
      * array is null or has no elements or all elements are {@code null}.
      */
+    @SafeVarargs
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Duration waitingTime,
                                                    Supplier<? extends RuntimeException> exceptionSupplier,
@@ -178,6 +182,7 @@ public final class ToGetSubArray {
      * and suit the criteria. It returns not empty array when there are such elements. Some exception is thrown if result
      * array is null or has no elements which suit the criteria.
      */
+    @SafeVarargs
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Predicate<? super R> condition,
                                                    Supplier<? extends RuntimeException> exceptionSupplier,
@@ -203,6 +208,7 @@ public final class ToGetSubArray {
      * It returns not empty array when there are such elements. Some exception is thrown if result
      * array is null or has no elements or all elements are {@code null}.
      */
+    @SafeVarargs
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Supplier<? extends RuntimeException> exceptionSupplier,
                                                    Class<? extends Throwable>... toIgnore) {
@@ -230,6 +236,7 @@ public final class ToGetSubArray {
      * and suit the criteria. It returns not empty array when there are such elements. Empty array is returned if result
      * array is null or has no elements which suit the criteria.
      */
+    @SafeVarargs
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Predicate<? super R> condition,
                                                    Duration waitingTime,
@@ -257,6 +264,7 @@ public final class ToGetSubArray {
      * It returns not empty array when there are such elements. Empty array is returned if result
      * array is null or has no elements or all elements are {@code null}.
      */
+    @SafeVarargs
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Duration waitingTime,
                                                    Duration sleepingTime,
@@ -283,6 +291,7 @@ public final class ToGetSubArray {
      * and suit the criteria. It returns not empty array when there are such elements. Empty array is returned if result
      * array is null or has no elements which suit the criteria.
      */
+    @SafeVarargs
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Predicate<? super R> condition,
                                                    Duration waitingTime,
@@ -307,6 +316,7 @@ public final class ToGetSubArray {
      * It returns not empty array when there are such elements. Empty array is returned if result
      * array is null or has no elements or all elements are {@code null}.
      */
+    @SafeVarargs
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Duration waitingTime,
                                                    Class<? extends Throwable>... toIgnore) {
@@ -331,6 +341,7 @@ public final class ToGetSubArray {
      * The result function will return values if something is found. Empty array or {@code null} are
      * returned otherwise. It depends on result of the {@link Function#apply(Object)}
      */
+    @SafeVarargs
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Predicate<? super R> condition,
                                                    Class<? extends Throwable>... toIgnore) {
@@ -353,6 +364,7 @@ public final class ToGetSubArray {
      * The result function will return values if something is found. Empty array or {@code null} are
      * returned otherwise. It depends on result of the {@link Function#apply(Object)}
      */
+    @SafeVarargs
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Class<? extends Throwable>... toIgnore) {
         return array(checkFunction(function),

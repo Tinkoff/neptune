@@ -4,7 +4,6 @@ import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
@@ -18,8 +17,7 @@ import static org.hamcrest.Matchers.equalTo;
 @Description("protocol version {version}")
 public final class HasVersion extends NeptuneFeatureMatcher<HttpResponse<?>> {
 
-    @DescriptionFragment(value = "version",
-            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "version")
     private final Matcher<? super HttpClient.Version> versionMatcher;
 
     private HasVersion(Matcher<? super HttpClient.Version> versionMatcher) {

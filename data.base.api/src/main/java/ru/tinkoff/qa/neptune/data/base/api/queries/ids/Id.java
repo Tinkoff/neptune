@@ -5,6 +5,7 @@ import static java.util.Optional.ofNullable;
 /**
  * The utility class that helps to build a query by known id
  */
+@Deprecated(forRemoval = true)
 public final class Id extends IdQueryBuilder {
 
     private Id(Object id) {

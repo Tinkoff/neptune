@@ -33,8 +33,7 @@ import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAF
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Object criteria")
 @MaxDepthOfReporting(0)
 @SuppressWarnings("unchecked")
-public abstract class KafkaPollIterableSupplier<T, S extends KafkaPollIterableSupplier<T, S>> extends SequentialGetStepSupplier
-        .GetIterableStepSupplier<KafkaStepContext, List<T>, T, S> {
+public abstract class KafkaPollIterableSupplier<T, S extends KafkaPollIterableSupplier<T, S>> extends SequentialGetStepSupplier.GetListStepSupplier<KafkaStepContext, List<T>, T, S> {
 
     final GetFromTopics<?> getFromTopics;
 

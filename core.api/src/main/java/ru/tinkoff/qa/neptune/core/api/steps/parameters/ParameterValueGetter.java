@@ -21,6 +21,7 @@ import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.trans
  * @param <T> is a type of field value to covert
  */
 public interface ParameterValueGetter<T> {
+
     String getParameterValue(T fieldValue);
 
     final class DefaultParameterValueGetter implements ParameterValueGetter<Object> {

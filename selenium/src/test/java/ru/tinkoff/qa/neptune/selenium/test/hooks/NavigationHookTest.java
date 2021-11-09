@@ -33,11 +33,12 @@ public class NavigationHookTest extends BaseWebDriverTest {
     private static final ClassWithNavigationOnTest13 O13 = new ClassWithNavigationOnTest13();
     private static final ClassWithNavigationOnTest14 O14 = new ClassWithNavigationOnTest14();
     private static final ClassWithNavigationOnTest15 O15 = new ClassWithNavigationOnTest15();
+    private static final ClassWithNavigationOnTest16 O16 = new ClassWithNavigationOnTest16();
 
     private static final ContentManagementHook hook = new ContentManagementHook();
 
     private static Method getMethod(Object o, String method) throws NoSuchMethodException {
-        return o.getClass().getDeclaredMethod(method);
+        return (o instanceof Class ? (Class<?>) o : o.getClass()).getDeclaredMethod(method);
     }
 
     @DataProvider
@@ -94,6 +95,10 @@ public class NavigationHookTest extends BaseWebDriverTest {
                 {O14, "test2", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE")},
                 {O15, "test1", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=Static+")},
                 {O15, "test2", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=Static+")},
+                {O16, "test1", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=Static+")},
+                {O16, "test2", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=Static+")},
+                {ClassWithNavigationOnTest16.class, "test1", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=Static+")},
+                {ClassWithNavigationOnTest16.class, "test2", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=Static+")},
         };
     }
 

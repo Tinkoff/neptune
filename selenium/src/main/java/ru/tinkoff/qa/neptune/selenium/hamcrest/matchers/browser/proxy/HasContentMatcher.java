@@ -10,15 +10,14 @@ import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NullValueMismatch;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.DeserializationErrorMismatch;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.RecordedRequest;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.RecordedResponse;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Optional.ofNullable;
+import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.equalTo;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.AnyThingMatcher.anything;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.all.AllCriteriaMatcher.all;
 import static ru.tinkoff.qa.neptune.selenium.properties.ProxiedTrafficBodyTransformer.PROXIED_TRAFFIC_BODY_TRANSFORMER;
 
@@ -28,7 +27,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
     @DescriptionFragment(value = "getFrom")
     private final Object getFrom;
 
-    @DescriptionFragment(value = "responseBody", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "responseBody")
     private final Matcher<?> bodyMatcher;
     private final DataTransformer transformer;
     private final Class<?> objectClass;

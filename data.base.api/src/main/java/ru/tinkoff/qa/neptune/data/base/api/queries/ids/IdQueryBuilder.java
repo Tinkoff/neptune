@@ -13,6 +13,7 @@ import static java.util.stream.Collectors.joining;
 /**
  * The utility class that helps to build a query by known ids
  */
+@Deprecated(forRemoval = true)
 abstract class IdQueryBuilder {
 
     private final Object[] ids;

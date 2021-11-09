@@ -19,6 +19,7 @@ import static ru.tinkoff.qa.neptune.data.base.api.ConnectionDataReader.getConnec
  *
  * @param <T> is a type of {@link PersistableObject} to be selected
  */
+@Deprecated(forRemoval = true)
 public final class JDOQLQuery<T extends PersistableObject, Q extends PersistableExpression<T>> implements Query<T, List<T>>, IdSetter {
 
     private final Class<T> tClass;

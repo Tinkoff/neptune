@@ -9,6 +9,7 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionStore.getKnownConnection;
 
+@Deprecated(forRemoval = true)
 class JDOPersistenceManagerByConnectionSupplierClass
         implements Function<DataBaseStepContext, JDOPersistenceManager> {
 

@@ -20,6 +20,7 @@ import static org.apache.commons.lang3.ArrayUtils.add;
  * @param <T> is a type of {@link PersistableObject} objects to take field values from
  * @param <Q> is a type of {@link PersistableExpression} that represents {@code T} in a query
  */
+@Deprecated(forRemoval = true)
 public class JDOQLResultQueryParams<T extends PersistableObject, Q extends PersistableExpression<T>>
         extends JDOParameters<T, Q, JDOQLResultQueryParams<T, Q>> {
 

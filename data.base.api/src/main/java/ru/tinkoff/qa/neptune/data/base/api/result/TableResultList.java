@@ -15,6 +15,7 @@ import static java.util.stream.Collectors.toList;
  * This collection contains results of SQL/JDO selection. This result contains values of data store table/
  * {@link ru.tinkoff.qa.neptune.data.base.api.PersistableObject} fields.
  */
+@Deprecated(forRemoval = true)
 public class TableResultList extends ArrayList<List<Object>> {
 
     protected TableResultList(List<List<Object>> from) {

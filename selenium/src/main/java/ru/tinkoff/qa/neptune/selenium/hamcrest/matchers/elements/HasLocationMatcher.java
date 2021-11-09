@@ -8,7 +8,6 @@ import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.PropertyValueMismatch;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasLocation;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 
@@ -20,9 +19,9 @@ import static org.hamcrest.Matchers.equalTo;
 @Description("location x {xMatcher} and y {yMatcher} relatively [{point}]")
 public final class HasLocationMatcher extends NeptuneFeatureMatcher<SearchContext> {
 
-    @DescriptionFragment(value = "xMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "xMatcher")
     private final Matcher<Integer> xMatcher;
-    @DescriptionFragment(value = "yMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "yMatcher")
     private final Matcher<Integer> yMatcher;
     @DescriptionFragment(value = "point", makeReadableBy = PointValueGetter.class)
     private final Point relativeTo;

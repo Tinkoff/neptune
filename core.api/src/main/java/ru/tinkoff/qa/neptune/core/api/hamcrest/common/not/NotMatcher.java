@@ -10,7 +10,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.stream;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 /**
  * This matcher checks an object by every defined and inverted criteria
@@ -49,7 +48,7 @@ public final class NotMatcher<T> extends NeptuneFeatureMatcher<T> {
         var count = stream(toInvert).map(m -> {
             var result = !m.matches(toMatch);
             if (!result) {
-                appendMismatchDescription(new StringDescription().appendText(translate(m.toString())));
+                appendMismatchDescription(new StringDescription().appendText(m.toString()));
             }
             return result;
         }).filter(b -> !b).count();

@@ -5,7 +5,6 @@ import org.openqa.selenium.Alert;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
@@ -14,7 +13,7 @@ import static org.hamcrest.Matchers.equalTo;
 @Description("alert text {textMatcher}")
 public final class AlertHasTextMatcher extends NeptuneFeatureMatcher<Alert> {
 
-    @DescriptionFragment(value = "textMatcher", makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+    @DescriptionFragment(value = "textMatcher")
     private final Matcher<String> textMatcher;
 
     private AlertHasTextMatcher(Matcher<String> textMatcher) {
