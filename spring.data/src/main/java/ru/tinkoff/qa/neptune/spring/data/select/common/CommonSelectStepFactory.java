@@ -6,9 +6,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.QueryByExampleExecutor;
 import org.springframework.data.repository.query.ReactiveQueryByExampleExecutor;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.data.repository.reactive.RxJava2CrudRepository;
-import org.springframework.data.repository.reactive.RxJava3CrudRepository;
+import org.springframework.data.repository.reactive.*;
 import ru.tinkoff.qa.neptune.spring.data.select.HasRepositoryInfo;
 import ru.tinkoff.qa.neptune.spring.data.select.SelectManyStepSupplier;
 import ru.tinkoff.qa.neptune.spring.data.select.SelectOneStepSupplier;
@@ -83,107 +81,107 @@ public final class CommonSelectStepFactory {
         return new CommonSelectManyStepSupplierImpl<>(repository, new SelectAll<>());
     }
 
-    public static <R, ID, T extends CrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
-                                                                                                         Sort sort) {
+    public static <R, ID, T extends PagingAndSortingRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                                     Sort sort) {
         return new CommonSelectManyStepSupplierImpl<>(repository, new SelectionBySorting<>(sort));
     }
 
-    public static <R, ID, T extends CrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
-                                                                                                         String... properties) {
+    public static <R, ID, T extends PagingAndSortingRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                                     String... properties) {
         return allBySorting(repository, Sort.by(properties));
     }
 
-    public static <R, ID, T extends CrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
-                                                                                                         List<Sort.Order> orders) {
+    public static <R, ID, T extends PagingAndSortingRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                                     List<Sort.Order> orders) {
         return allBySorting(repository, Sort.by(orders));
     }
 
-    public static <R, ID, T extends CrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
-                                                                                                         Sort.Order... orders) {
+    public static <R, ID, T extends PagingAndSortingRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                                     Sort.Order... orders) {
         return allBySorting(repository, Sort.by(orders));
     }
 
-    public static <R, ID, T extends CrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
-                                                                                                         Sort.Direction direction,
-                                                                                                         String... properties) {
+    public static <R, ID, T extends PagingAndSortingRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                                     Sort.Direction direction,
+                                                                                                                     String... properties) {
         return allBySorting(repository, Sort.by(direction, properties));
     }
 
-    public static <R, ID, T extends ReactiveCrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
-                                                                                                                 Sort sort) {
+    public static <R, ID, T extends ReactiveSortingRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                                    Sort sort) {
         return new CommonSelectManyStepSupplierImpl<>(repository, new SelectionBySorting<>(sort));
     }
 
-    public static <R, ID, T extends ReactiveCrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
-                                                                                                                 String... properties) {
+    public static <R, ID, T extends ReactiveSortingRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                                    String... properties) {
         return allBySorting(repository, Sort.by(properties));
     }
 
-    public static <R, ID, T extends ReactiveCrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
-                                                                                                                 List<Sort.Order> orders) {
+    public static <R, ID, T extends ReactiveSortingRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                                    List<Sort.Order> orders) {
         return allBySorting(repository, Sort.by(orders));
     }
 
-    public static <R, ID, T extends ReactiveCrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
-                                                                                                                 Sort.Order... orders) {
+    public static <R, ID, T extends ReactiveSortingRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                                    Sort.Order... orders) {
         return allBySorting(repository, Sort.by(orders));
     }
 
-    public static <R, ID, T extends ReactiveCrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
-                                                                                                                 Sort.Direction direction,
-                                                                                                                 String... properties) {
+    public static <R, ID, T extends ReactiveSortingRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                                    Sort.Direction direction,
+                                                                                                                    String... properties) {
         return allBySorting(repository, Sort.by(direction, properties));
     }
 
-    public static <R, ID, T extends RxJava2CrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
-                                                                                                                Sort sort) {
+    public static <R, ID, T extends RxJava2SortingRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                                   Sort sort) {
         return new CommonSelectManyStepSupplierImpl<>(repository, new SelectionBySorting<>(sort));
     }
 
-    public static <R, ID, T extends RxJava2CrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
-                                                                                                                String... properties) {
+    public static <R, ID, T extends RxJava2SortingRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                                   String... properties) {
         return allBySorting(repository, Sort.by(properties));
     }
 
-    public static <R, ID, T extends RxJava2CrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
-                                                                                                                List<Sort.Order> orders) {
+    public static <R, ID, T extends RxJava2SortingRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                                   List<Sort.Order> orders) {
         return allBySorting(repository, Sort.by(orders));
     }
 
-    public static <R, ID, T extends RxJava2CrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
-                                                                                                                Sort.Order... orders) {
+    public static <R, ID, T extends RxJava2SortingRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                                   Sort.Order... orders) {
         return allBySorting(repository, Sort.by(orders));
     }
 
-    public static <R, ID, T extends RxJava2CrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
-                                                                                                                Sort.Direction direction,
-                                                                                                                String... properties) {
+    public static <R, ID, T extends RxJava2SortingRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                                   Sort.Direction direction,
+                                                                                                                   String... properties) {
         return allBySorting(repository, Sort.by(direction, properties));
     }
 
-    public static <R, ID, T extends RxJava3CrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
-                                                                                                                Sort sort) {
+    public static <R, ID, T extends RxJava3SortingRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                                   Sort sort) {
         return new CommonSelectManyStepSupplierImpl<>(repository, new SelectionBySorting<>(sort));
     }
 
-    public static <R, ID, T extends RxJava3CrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
-                                                                                                                String... properties) {
+    public static <R, ID, T extends RxJava3SortingRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                                   String... properties) {
         return allBySorting(repository, Sort.by(properties));
     }
 
-    public static <R, ID, T extends RxJava3CrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
-                                                                                                                List<Sort.Order> orders) {
+    public static <R, ID, T extends RxJava3SortingRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                                   List<Sort.Order> orders) {
         return allBySorting(repository, Sort.by(orders));
     }
 
-    public static <R, ID, T extends RxJava3CrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
-                                                                                                                Sort.Order... orders) {
+    public static <R, ID, T extends RxJava3SortingRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                                   Sort.Order... orders) {
         return allBySorting(repository, Sort.by(orders));
     }
 
-    public static <R, ID, T extends RxJava3CrudRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
-                                                                                                                Sort.Direction direction,
-                                                                                                                String... properties) {
+    public static <R, ID, T extends RxJava3SortingRepository<R, ID>> SelectManyStepSupplier<R, ID, T> allBySorting(T repository,
+                                                                                                                   Sort.Direction direction,
+                                                                                                                   String... properties) {
         return allBySorting(repository, Sort.by(direction, properties));
     }
 
