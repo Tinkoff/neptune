@@ -1,5 +1,9 @@
 # Работа с WebTestClient
 
+- О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст). 
+  Объект [контекста для работы со Spring WebTestClient](https://tinkoffcreditsystems.github.io/neptune/spring.web.testclient/ru/tinkoff/qa/neptune/spring/web/testclient/WebTestClientContext.html)
+  в примерах ниже вызывается статическим методом `webTestClient`
+
 - О принципах работы шагов, которые возвращают результат, можно 
   прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги-которые-возвращают-результат). 
 
@@ -11,7 +15,7 @@
 - [Отправка запроса и получение ответа](#Отправка-запроса-и-получение-ответа)
 - [Получение данных тела ответа](#Получение-данных-тела-ответа)
     - [Получение данных тела ответа как Java-объект](#Получение-данных-тела-ответа-как-Java-объект)
-    - [Получение данных тела ответа как Iterable](#Получение-данных-тела-ответа-как-Iterable)
+    - [Получение данных тела ответа как List](#Получение-данных-тела-ответа-как-List)
     - [Получение данных тела ответа в виде массива](#Получение-данных-тела-ответа-в-виде-массива)
     - [Получение данных тела ответа как Java-объект из Iterable](#Получение-данных-тела-ответа-как-Java-объект-из-Iterable)
     - [Получение данных тела ответа как Java-объект из массива](#Получение-данных-тела-ответа-как-Java-объект-из-массива)
@@ -358,7 +362,7 @@ public class MyTest {
 
 [к оглавлению документа](#Оглавление)
 
-### Получение данных тела ответа как Iterable
+### Получение данных тела ответа как List
 
 ```java
 import org.springframework.beans.factory.annotation.Autowired;
@@ -387,7 +391,7 @@ public class MyTest {
               .expectStatus(StatusAssertions::isOk)
               .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
               .bodyAs(Dto.class)
-              .thenGetIterable("Value of the field 'listValue'", //описание списка, который следует получить
+              .thenGetList("Value of the field 'listValue'", //описание списка, который следует получить
                       Dto::listValue) //описание получения списка в виде функции
               .criteria("Описание критерия, которому должен соответствовать " +
                               "каждый элемент, который попадет в результирующий список",

@@ -5,28 +5,25 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import java.lang.reflect.Array;
 import java.time.Duration;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.time.Duration.ofMillis;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess.CaptureOnSuccessReader.readCaptorsOnSuccess;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
 
-@SuppressWarnings("unchecked")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for absence")
 @SequentialGetStepSupplier.DefineResultDescriptionParameterName("Is absent")
-@IncludeParamsOfInnerGetterStep
 @MaxDepthOfReporting(0)
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Wait for:")
 @ThrowWhenNoData(toThrow = StillPresentException.class, startDescription = "Still present:")
@@ -49,8 +46,9 @@ public final class Absence<T> extends SequentialGetStepSupplier.GetObjectChained
 
     private Absence(SequentialGetStepSupplier<?, ?, ?, ?, ?> toBeAbsent) {
         this();
-        from(turnReportingOff(toBeAbsent.clone().timeOut(ofMillis(0))
-                .pollingInterval(ofMillis(0))
+        from(turnReportingOff(toBeAbsent
+                .clone()
+                .clearTimeout()
                 .addIgnored(Throwable.class)));
 
         readCaptorsOnSuccess(toBeAbsent.getClass(), successCaptors);
@@ -73,6 +71,13 @@ public final class Absence<T> extends SequentialGetStepSupplier.GetObjectChained
     public Absence<T> throwOnNoResult() {
         this.exceptionSupplier = new ExceptionSupplierForAbsenceAndPresence(this);
         return this;
+    }
+
+    @Override
+    public Map<String, String> getParameters() {
+        var result = super.getParameters();
+        result.putAll(((SequentialGetStepSupplier<?, ?, ?, ?, ?>) getFrom()).getParameters());
+        return result;
     }
 
     protected Function<T, Object> preparePreFunction() {
