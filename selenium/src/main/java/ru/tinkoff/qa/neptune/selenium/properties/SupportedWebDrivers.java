@@ -7,19 +7,18 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.opera.OperaDriver;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 
 import java.net.URL;
 import java.util.function.Supplier;
 
-import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.ArrayUtils.addAll;
-import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.*;
-import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.REMOTE_WEB_DRIVER_URL_PROPERTY;
 import static io.github.bonigarcia.wdm.WebDriverManager.*;
+import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.ArrayUtils.addAll;
+import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.REMOTE;
+import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.REMOTE_WEB_DRIVER_URL_PROPERTY;
 
 /**
  * This enum wraps a class of supported {@link WebDriver} and array of arguments
@@ -33,38 +32,6 @@ public enum SupportedWebDrivers implements Supplier<Object[]> {
         @Override
         public WebDriverManager getWebDriverManager() {
 
-            if (nonNull(REMOTE_WEB_DRIVER_URL_PROPERTY.get())) {
-                return null;
-            }
-
-            var browserName = ofNullable(CommonCapabilityProperties.BROWSER_NAME.get())
-                    .map(Object::toString)
-                    .orElse(null);
-
-            if (BrowserType.SAFARI.equalsIgnoreCase(browserName)) {
-                return null;
-            }
-
-            if (BrowserType.CHROME.equalsIgnoreCase(browserName)) {
-                return chromedriver();
-            }
-
-            if (BrowserType.EDGE.equalsIgnoreCase(browserName)) {
-                return edgedriver();
-            }
-
-            if (BrowserType.FIREFOX.equalsIgnoreCase(browserName)) {
-                return firefoxdriver();
-            }
-
-            if (BrowserType.IEXPLORE.equalsIgnoreCase(browserName)) {
-                return iedriver();
-            }
-
-            if (BrowserType.OPERA_BLINK.equalsIgnoreCase(browserName)) {
-                return operadriver();
-            }
-
             return null;
         }
 
@@ -74,7 +41,8 @@ public enum SupportedWebDrivers implements Supplier<Object[]> {
                     .map(url -> {
                         var result = new Object[]{url};
                         return addAll(result, super.get());
-                    }).orElseGet(super::get);
+                    }).orElseThrow(() -> new IllegalStateException(format("The property %s should be defined",
+                            REMOTE_WEB_DRIVER_URL_PROPERTY.getName())));
         }
     },
     /**

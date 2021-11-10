@@ -17,7 +17,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyGetStepSupplier.proxiedRequests;
 import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CHROME;
-import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.USE_BROWSER_PROXY;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers.CHROME_DRIVER;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
@@ -27,7 +26,6 @@ public class BrowserProxyStepNegativeTest {
     private final Map<String, String> PROPERTIES_TO_SET_BEFORE =
             ofEntries(entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getName(), CHROME_DRIVER.name()),
                     entry(BASE_WEB_DRIVER_URL_PROPERTY.getName(), "https://www.google.com"),
-                    entry(USE_BROWSER_PROXY.getName(), "false"),
                     entry(CHROME.getName(), ChromeSettingsSupplierForProxy.class.getName())
             );
 
@@ -53,7 +51,6 @@ public class BrowserProxyStepNegativeTest {
 
     @Test(description = "When it is needed to use proxy, but WebDriver is not opened")
     public void test3() {
-        USE_BROWSER_PROXY.accept(true);
         assertThat("List of captured requests is empty", seleniumSteps.get(proxiedRequests()), hasSize(0));
     }
 

@@ -20,9 +20,4 @@ public enum SessionFlagProperties implements BooleanValuePropertySupplier {
             section = "Selenium. Session flags")
     @PropertyName("FORCE_WINDOW_MAXIMIZING_ON_START")
     FORCE_WINDOW_MAXIMIZING_ON_START,
-
-    @PropertyDescription(description = {"It means that WebDriver session will be using browser proxy"},
-            section = "Selenium. Session flags")
-    @PropertyName("USE_BROWSER_PROXY")
-    USE_BROWSER_PROXY
 }

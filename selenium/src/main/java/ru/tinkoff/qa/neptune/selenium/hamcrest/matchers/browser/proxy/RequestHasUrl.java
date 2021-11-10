@@ -1,19 +1,20 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy;
 
-import com.browserup.harreader.model.HarEntry;
 import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.HttpTraffic;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.hamcrest.Matchers.equalTo;
 
 @Description("Request URL {urlMatcher}")
-public final class RequestHasUrl extends NeptuneFeatureMatcher<HarEntry> {
+public final class RequestHasUrl extends NeptuneFeatureMatcher<HttpTraffic> {
 
     @DescriptionFragment(value = "urlMatcher")
     private final Matcher<?> urlMatcher;
@@ -67,8 +68,9 @@ public final class RequestHasUrl extends NeptuneFeatureMatcher<HarEntry> {
     }
 
     @Override
-    protected boolean featureMatches(HarEntry toMatch) {
-        var requestUrl = toMatch.getRequest().getUrl();
+    protected boolean featureMatches(HttpTraffic toMatch) {
+        var request = toMatch.getRequest().getRequest();
+        var requestUrl = request.getUrl() + request.getUrlFragment().orElse(EMPTY);
 
         URL url;
         try {

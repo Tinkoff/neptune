@@ -6,7 +6,7 @@ import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.opera.OperaOptions;
-import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.safari.SafariOptions;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertyDefaultValue;
@@ -42,28 +42,24 @@ public enum CapabilityTypes implements PropertySupplier<MutableCapabilities, Cla
         }
 
         var browserNameString = String.valueOf(browserName);
-        if (BrowserType.SAFARI.equalsIgnoreCase(browserNameString)) {
+        if (Browser.SAFARI.browserName().equalsIgnoreCase(browserNameString)) {
             return new SafariOptions();
         }
 
-        if (BrowserType.CHROME.equalsIgnoreCase(browserNameString)) {
+        if (Browser.CHROME.browserName().equalsIgnoreCase(browserNameString)) {
             return new ChromeOptions();
         }
 
-        if (BrowserType.EDGE.equalsIgnoreCase(browserNameString)) {
+        if (Browser.EDGE.browserName().equalsIgnoreCase(browserNameString)) {
             return new EdgeOptions();
         }
 
-        if (BrowserType.FIREFOX.equalsIgnoreCase(browserNameString)) {
+        if (Browser.FIREFOX.browserName().equalsIgnoreCase(browserNameString)) {
             return new FirefoxOptions();
         }
 
-        if (BrowserType.IEXPLORE.equalsIgnoreCase(browserNameString)) {
+        if (Browser.IE.browserName().equalsIgnoreCase(browserNameString)) {
             return new InternetExplorerOptions();
-        }
-
-        if (BrowserType.OPERA_BLINK.equalsIgnoreCase(browserNameString)) {
-            return new OperaOptions();
         }
 
         return new MutableCapabilities();

@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements;
 import org.hamcrest.Matcher;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.WrapsElement;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;

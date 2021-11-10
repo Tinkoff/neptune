@@ -80,6 +80,12 @@ public class MockTargetLocator implements WebDriver.TargetLocator {
     }
 
     @Override
+    public WebDriver newWindow(WindowType typeHint) {
+        //TODO does nothing yet
+        return null;
+    }
+
+    @Override
     public WebDriver defaultContent() {
         return driver.setSwitchedToDefaultContent();
     }
