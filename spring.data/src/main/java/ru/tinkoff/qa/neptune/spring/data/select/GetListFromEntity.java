@@ -21,7 +21,7 @@ import static java.util.Optional.ofNullable;
  * @param <M> is a type of entity
  */
 @CaptureOnSuccess(by = EntitiesCaptor.class)
-@SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted iterable")
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of every item")
 public abstract class GetListFromEntity<T, I extends Iterable<T>, M>
         extends SequentialGetStepSupplier.GetListChainedStepSupplier<SpringDataContext, I, M, T, GetListFromEntity<T, I, M>>
         implements SelectQuery<List<T>> {

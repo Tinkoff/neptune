@@ -213,8 +213,8 @@ public final class CommonSelectStepFactory {
     }
 
 
-    public static <R, ID, T extends Repository<R, ID> & QueryByExampleExecutor<R>> SelectOneStepSupplier<R, ID, T> byInvocation(T repository,
-                                                                                                                                Function<T, R> f) {
+    public static <R, ID, T extends Repository<R, ID>> SelectOneStepSupplier<R, ID, T> byInvocation(T repository,
+                                                                                                    Function<T, R> f) {
         return new CommonSelectOneStepSupplierImpl<>(repository, new SelectionByMethod<>(f));
     }
 

@@ -20,7 +20,7 @@ import static java.util.Optional.ofNullable;
  * @param <M> is a type of entity
  */
 @CaptureOnSuccess(by = EntitiesCaptor.class)
-@SequentialGetStepSupplier.DefineCriteriaParameterName("Result criteria")
+@SequentialGetStepSupplier.DefineCriteriaParameterName
 public abstract class GetObjectFromEntity<T, M> extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SpringDataContext, T, M, GetObjectFromEntity<T, M>>
         implements SelectQuery<T> {

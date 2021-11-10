@@ -23,7 +23,7 @@ import static java.util.stream.StreamSupport.stream;
  * @param <M> is a type of entity
  */
 @CaptureOnSuccess(by = EntitiesCaptor.class)
-@SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted iterable")
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of every item")
 public abstract class GetListFromEntities<T, M>
         extends SequentialGetStepSupplier.GetListChainedStepSupplier<SpringDataContext, List<T>, Iterable<M>, T, GetListFromEntities<T, M>>
         implements SelectQuery<List<T>> {
