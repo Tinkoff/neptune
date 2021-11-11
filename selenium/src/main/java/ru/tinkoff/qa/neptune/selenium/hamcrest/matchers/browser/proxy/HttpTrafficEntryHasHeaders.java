@@ -21,12 +21,12 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFea
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFeatureMatcher.VALUE_MATCHER_MASK;
 
 @Description("{getFrom} has header [{" + KEY_MATCHER_MASK + "}] {" + VALUE_MATCHER_MASK + "}")
-public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HttpTraffic, String, String> {
+public class HttpTrafficEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HttpTraffic, String, String> {
 
     @DescriptionFragment(value = "getFrom")
     private final Object getFrom;
 
-    private HarEntryHasHeaders(Object getFrom, Matcher<? super String> nameMatcher, Matcher<? super String> valueMatcher) {
+    private HttpTrafficEntryHasHeaders(Object getFrom, Matcher<? super String> nameMatcher, Matcher<? super String> valueMatcher) {
         super(true, nameMatcher, valueMatcher);
         checkNotNull(getFrom);
         this.getFrom = getFrom;
@@ -87,7 +87,7 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HttpTraff
      */
     @SafeVarargs
     public static Matcher<HttpTraffic> responseHasHeader(Matcher<? super String> nameMatcher, Matcher<? super String>... valueMatchers) {
-        return new HarEntryHasHeaders(new RecordedResponse(), nameMatcher, all(valueMatchers));
+        return new HttpTrafficEntryHasHeaders(new RecordedResponse(), nameMatcher, all(valueMatchers));
     }
 
     /**
@@ -210,7 +210,7 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HttpTraff
      */
     @SafeVarargs
     public static Matcher<HttpTraffic> requestHasHeader(Matcher<? super String> nameMatcher, Matcher<? super String>... valueMatchers) {
-        return new HarEntryHasHeaders(new RecordedRequest(), nameMatcher, all(valueMatchers));
+        return new HttpTrafficEntryHasHeaders(new RecordedRequest(), nameMatcher, all(valueMatchers));
     }
 
     /**

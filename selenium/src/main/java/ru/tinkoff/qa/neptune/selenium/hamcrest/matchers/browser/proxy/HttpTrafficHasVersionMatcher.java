@@ -15,7 +15,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.hamcrest.Matchers.equalTo;
 
 @Description("{getFrom} HTTP version {httpVersion}")
-public final class HarHasVersionMatcher extends NeptuneFeatureMatcher<HttpTraffic> {
+public final class HttpTrafficHasVersionMatcher extends NeptuneFeatureMatcher<HttpTraffic> {
 
     @DescriptionFragment(value = "getFrom")
     private final Object getFrom;
@@ -23,7 +23,7 @@ public final class HarHasVersionMatcher extends NeptuneFeatureMatcher<HttpTraffi
     @DescriptionFragment(value = "httpVersion")
     private final Matcher<? super HttpClient.Version> versionMatcher;
 
-    private HarHasVersionMatcher(Object getFrom, Matcher<? super HttpClient.Version> versionMatcher) {
+    private HttpTrafficHasVersionMatcher(Object getFrom, Matcher<? super HttpClient.Version> versionMatcher) {
         super(true);
         this.getFrom = getFrom;
         this.versionMatcher = versionMatcher;
@@ -33,17 +33,17 @@ public final class HarHasVersionMatcher extends NeptuneFeatureMatcher<HttpTraffi
      * Creates matcher that checks HTTP version of the response.
      *
      * @param versionMatcher criteria that describes expected HTTP version
-     * @return a new instance of {@link HarHasVersionMatcher}
+     * @return a new instance of {@link HttpTrafficHasVersionMatcher}
      */
     public static Matcher<HttpTraffic> responseHasVersion(Matcher<? super HttpClient.Version> versionMatcher) {
-        return new HarHasVersionMatcher(new RecordedResponse(), versionMatcher);
+        return new HttpTrafficHasVersionMatcher(new RecordedResponse(), versionMatcher);
     }
 
     /**
      * Creates matcher that checks HTTP version of the response.
      *
      * @param version is the expected HTTP version
-     * @return a new instance of {@link HarHasVersionMatcher}
+     * @return a new instance of {@link HttpTrafficHasVersionMatcher}
      */
     public static Matcher<HttpTraffic> responseHasVersion(HttpClient.Version version) {
         return responseHasVersion(equalTo(version));
