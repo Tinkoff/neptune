@@ -21,7 +21,7 @@ dependencies {
     compileClasspath('javax.websocket:javax.websocket-client-api:1.1')
     compileClasspath('org.mortbay.jetty:jsp-api-2.0:6.1.26')
     compileClasspath('org.apache.ant:ant:1.10.11')
-    compileClasspath('io.netty:netty-buffer:4.1.69.Final')
+    compileClasspath('io.netty:netty-buffer:4.1.70.Final')
     compileClasspath('io.projectreactor.tools:blockhound:1.0.6.RELEASE')
     compileClasspath(group: 'org.springframework', name: 'spring-orm', version: springVersion)
     compileClasspath(group: 'org.springframework', name: 'spring-tx', version: springVersion)
@@ -50,7 +50,7 @@ dependencies {
     compileClasspath('com.jayway.jsonpath:json-path:2.6.0')
     compileClasspath('org.jetbrains.kotlin:kotlin-reflect:1.5.31')
     compileClasspath('org.jetbrains.kotlin:kotlin-stdlib:1.5.31')
-    compileClasspath('io.projectreactor:reactor-test:3.4.10')
+    compileClasspath('io.projectreactor:reactor-test:3.4.11')
     compileClasspath('org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt')
     compileClasspath('org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.5.2-native-mt')
 }
