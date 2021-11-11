@@ -11,10 +11,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class HttpProxy {
     private final DevTools devTools;
-    private List<RequestWillBeSent> requestList = new CopyOnWriteArrayList<>();
-    private List<ResponseReceived> responseList = new CopyOnWriteArrayList<>();
-    private List<HttpTraffic> httpTrafficList = new CopyOnWriteArrayList<>();
-    private List<HttpTraffic> dumpHttpTrafficList = new CopyOnWriteArrayList<>();
+    private final List<RequestWillBeSent> requestList = new CopyOnWriteArrayList<>();
+    private final List<ResponseReceived> responseList = new CopyOnWriteArrayList<>();
+    private final List<HttpTraffic> httpTrafficList = new CopyOnWriteArrayList<>();
+    private final List<HttpTraffic> dumpHttpTrafficList = new CopyOnWriteArrayList<>();
 
     public HttpProxy(DevTools devTools) {
         this.devTools = devTools;

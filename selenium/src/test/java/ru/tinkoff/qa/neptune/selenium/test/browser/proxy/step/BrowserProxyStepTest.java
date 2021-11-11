@@ -64,7 +64,7 @@ public class BrowserProxyStepTest {
         seleniumSteps.enableAndRefreshNetwork();
         seleniumSteps
                 .navigateTo("https://github.com")
-                .resetProxyRecording();
+                .enableAndRefreshNetwork();
 
         List<HttpTraffic> requests = seleniumSteps.navigateTo("/")
                 .get(proxiedRequests()

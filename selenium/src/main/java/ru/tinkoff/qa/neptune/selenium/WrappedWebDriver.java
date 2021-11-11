@@ -14,6 +14,7 @@ import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.selenium.authentication.AuthenticationPerformer;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 
+import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
@@ -158,11 +159,12 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             return devTools;
         }
 
+        var driver = getWrappedDriver();
         if (driver instanceof HasDevTools) {
             devTools = ((HasDevTools) driver).getDevTools();
             return devTools;
         } else {
-            throw new UnsupportedOperationException("This wrappedDriver does not support the use of selenium devTools");
+            throw new UnsupportedOperationException(format("This wrappedDriver(%s) does not support the use of selenium devTools", driver.getClass()));
         }
     }
 }
