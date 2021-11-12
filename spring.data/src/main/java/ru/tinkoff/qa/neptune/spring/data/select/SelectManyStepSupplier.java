@@ -83,10 +83,25 @@ public abstract class SelectManyStepSupplier<R, ID, T extends Repository<R, ID>>
         return additionalArgumentsFactory.getAdditionalParameters();
     }
 
+    /**
+     * Creates a step that returns a list of data taken from selected instances of an entity-class
+     *
+     * @param f      describes how to get desired data from each entity-object
+     * @param <ITEM> is a type of item of aggregated list
+     * @return step that returns a list of objects after execution.
+     */
     public <ITEM> GetListFromEntities<ITEM, R> thenGetList(Function<R, ITEM> f) {
         return getListFromEntities(this, f);
     }
 
+    /**
+     * Creates a step that returns an object taken from the list collected of data
+     * of selected instances of an entity-class.
+     *
+     * @param f      describes how to get desired data from each entity-object
+     * @param <ITEM> is a type of item of aggregated list
+     * @return step that returns an object after execution.
+     */
     public <ITEM> GetIterableItemFromEntities<ITEM, R> thenGetIterableItem(Function<R, ITEM> f) {
         return getIterableItemFromEntities(this, f);
     }
