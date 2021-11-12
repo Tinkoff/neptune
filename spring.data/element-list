@@ -1,0 +1,13 @@
+ru.tinkoff.qa.neptune.spring.data
+ru.tinkoff.qa.neptune.spring.data.captors
+ru.tinkoff.qa.neptune.spring.data.data.serializer
+ru.tinkoff.qa.neptune.spring.data.delete
+ru.tinkoff.qa.neptune.spring.data.dictionary
+ru.tinkoff.qa.neptune.spring.data.localization
+ru.tinkoff.qa.neptune.spring.data.properties
+ru.tinkoff.qa.neptune.spring.data.save
+ru.tinkoff.qa.neptune.spring.data.select
+ru.tinkoff.qa.neptune.spring.data.select.common
+ru.tinkoff.qa.neptune.spring.data.select.common.by
+ru.tinkoff.qa.neptune.spring.data.select.querydsl
+ru.tinkoff.qa.neptune.spring.data.select.querydsl.by

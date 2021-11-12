@@ -1,0 +1,5 @@
+ru.tinkoff.qa.neptune.spring.web.testclient
+ru.tinkoff.qa.neptune.spring.web.testclient.aspect
+ru.tinkoff.qa.neptune.spring.web.testclient.captors
+ru.tinkoff.qa.neptune.spring.web.testclient.expectation.descriptions
+ru.tinkoff.qa.neptune.spring.web.testclient.localization
