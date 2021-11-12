@@ -18,12 +18,6 @@ dependencies {
         exclude group: 'org.apache.commons', module: 'commons-lang3'
         exclude group: 'org.jsoup', module: 'jsoup'
     }
-    implementation (group: 'org.seleniumhq.selenium', name: 'selenium-server', version: seleniumServerVersion) {
-        exclude group: 'org.seleniumhq.selenium', module: 'htmlunit-driver'
-        exclude group: 'com.google.guava', module: 'guava'
-        exclude group: 'com.google.code.gson', module: 'gson'
-        exclude group: 'net.bytebuddy', module:'byte-buddy'
-    }
     testImplementation  group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
     implementation group: 'cglib', name: 'cglib', version: '3.3.0'
     implementation group: 'org.jsoup', name: 'jsoup', version: '1.14.3'

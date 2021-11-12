@@ -1,12 +1,11 @@
 package ru.tinkoff.qa.neptune.selenium.functions.browser.proxy;
 
 import io.netty.handler.codec.http.HttpMethod;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.devtools.v95.network.Network;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.collections.CollectionCaptor;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.selenium.HttpProxy;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import java.net.http.HttpClient;
@@ -24,36 +23,10 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.GetHttpProxy.ge
 public class BrowserProxyGetStepSupplier extends SequentialGetStepSupplier.GetListStepSupplier<SeleniumStepContext, List<HttpTraffic>, HttpTraffic, BrowserProxyGetStepSupplier> {
 
     private BrowserProxyGetStepSupplier() {
-        super(getBrowserProxy().andThen(httpProxy -> ofNullable(httpProxy)
-                .map(proxy -> {
-                    var devTools = proxy.getDevTools();
-                    var requests = proxy.getRequestList();
-                    var responses = proxy.getResponseList();
-
-                    requests.forEach(request -> {
-                        var httpTraffic = new HttpTraffic();
-                        var response = responses
-                                .stream()
-                                .filter(r -> r.getRequestId().toString().equals(request.getRequestId().toString()))
-                                .findFirst()
-                                .orElse(null);
-
-                        httpTraffic.setRequest(request)
-                                .setResponse(response);
-
-                        try {
-                            var body = devTools.send(Network.getResponseBody(request.getRequestId()));
-                            httpTraffic.setBody(body);
-                        } catch (WebDriverException e) {
-                            e.printStackTrace();
-                        }
-
-                        proxy.getHttpTrafficList()
-                                .add(httpTraffic);
-                    });
-                    return proxy.getHttpTrafficList();
-                })
-                .orElseGet(ArrayList::new)));
+        super(getBrowserProxy()
+                .andThen(httpProxy -> ofNullable(httpProxy)
+                        .map(HttpProxy::getTraffic)
+                        .orElseGet(ArrayList::new)));
 
     }
 

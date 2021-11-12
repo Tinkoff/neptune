@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium;
 
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.v95.network.Network;
 import org.openqa.selenium.devtools.v95.network.model.RequestWillBeSent;
@@ -31,20 +32,27 @@ public class HttpProxy {
         dumpHttpTrafficList.clear();
     }
 
-    public List<RequestWillBeSent> getRequestList() {
-        return requestList;
-    }
+    public List<HttpTraffic> getTraffic() {
+        requestList.forEach(request -> {
+            var httpTraffic = new HttpTraffic();
+            var response = responseList
+                    .stream()
+                    .filter(r -> r.getRequestId().toString().equals(request.getRequestId().toString()))
+                    .findFirst()
+                    .orElse(null);
 
-    public List<ResponseReceived> getResponseList() {
-        return responseList;
-    }
+            httpTraffic.setRequest(request)
+                    .setResponse(response);
 
-    public List<HttpTraffic> getHttpTrafficList() {
+            try {
+                var body = devTools.send(Network.getResponseBody(request.getRequestId()));
+                httpTraffic.setBody(body);
+            } catch (WebDriverException e) {
+                e.printStackTrace();
+            }
+
+            httpTrafficList.add(httpTraffic);
+        });
         return httpTrafficList;
-    }
-
-
-    public DevTools getDevTools() {
-        return devTools;
     }
 }

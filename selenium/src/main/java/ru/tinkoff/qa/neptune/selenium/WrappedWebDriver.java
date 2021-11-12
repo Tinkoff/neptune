@@ -9,7 +9,6 @@ import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.remote.UnreachableBrowserException;
-import org.openqa.selenium.remote.server.SeleniumServer;
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.selenium.authentication.AuthenticationPerformer;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
@@ -26,10 +25,6 @@ import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_D
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_FOR_PAGE_LOADED_DURATION;
 
 public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
-
-    private static SeleniumServer server;
-    private static boolean serverStarted;
-
     private final SupportedWebDrivers supportedWebDriver;
     private WebDriver driver;
     private DevTools devTools;
@@ -40,25 +35,12 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
         this.supportedWebDriver = supportedWebDriver;
     }
 
-    private static synchronized void shutDownServerLocally() {
-        if (server == null || serverStarted) {
-            return;
-        }
-
-        try {
-            server.stop();
-            server = null;
-            serverStarted = false;
-        } catch (Throwable ignored) {
-        }
-    }
-
     private synchronized boolean isNewSession() {
         if (isAlive()) {
             return false;
         }
+        devTools = null;
         Object[] parameters = supportedWebDriver.get();
-        ;
 
         try {
             var c = findSuitableConstructor(supportedWebDriver.getWebDriverClass(),
@@ -130,6 +112,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             if (isAlive) {
                 driver.quit();
             }
+            devTools = null;
             driver = null;
             return;
         }
@@ -144,14 +127,13 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
     }
 
     public void shutDown() {
+        devTools = null;
         ofNullable(driver).ifPresent(webDriver -> {
             try {
                 webDriver.quit();
             } catch (Throwable ignored) {
             }
         });
-
-        shutDownServerLocally();
     }
 
     public DevTools getDevTools() {
