@@ -85,22 +85,60 @@ public abstract class SelectOneStepSupplier<R, ID, T extends Repository<R, ID>>
         return additionalArgumentsFactory.getAdditionalParameters();
     }
 
+    /**
+     * Creates a step that returns an object calculated or taken from selected entity-object
+     *
+     * @param f   describes how to get desired data from the entity-object
+     * @param <S> is a type of desired result
+     * @return step that returns an object after execution.
+     */
     public <S> GetObjectFromEntity<S, R> thenGetObject(Function<R, S> f) {
         return getObjectFromEntity(this, f);
     }
 
+    /**
+     * Creates a step that returns a list calculated or taken from selected entity-object
+     *
+     * @param f      describes how to get desired data from the entity-object
+     * @param <ITEM> is a type of resulted list item
+     * @param <S>    is a type of iterable to get. This iterable is converted to list which
+     *               consists of required objects
+     * @return step that returns a list after execution.
+     */
     public <ITEM, S extends Iterable<ITEM>> GetListFromEntity<ITEM, S, R> thenGetList(Function<R, S> f) {
         return getListFromEntity(this, f);
     }
 
+    /**
+     * Creates a step that returns an array calculated or taken from selected entity-object
+     *
+     * @param f   describes how to get desired data from the entity-object
+     * @param <S> is a type of array item
+     * @return step that returns an array after execution.
+     */
     public <S> GetArrayFromEntity<S, R> thenGetArray(Function<R, S[]> f) {
         return getArrayFromEntity(this, f);
     }
 
+    /**
+     * Creates a step that returns an object taken from an iterable calculated or taken from selected entity-object
+     *
+     * @param f      is how to get an iterable to take the resulted object from
+     * @param <ITEM> is a type of iterable item
+     * @param <S>    is a type of iterable to take the resulted object from
+     * @return step that returns an object after execution.
+     */
     public <ITEM, S extends Iterable<ITEM>> GetItemOfIterableFromEntity<ITEM, S, R> thenGetIterableItem(Function<R, S> f) {
         return getIterableItemFromEntity(this, f);
     }
 
+    /**
+     * Creates a step that returns an object taken from an array calculated or taken from selected entity-object
+     *
+     * @param f   is how to get an array to take the resulted object from
+     * @param <S> is a type of array item
+     * @return step that returns an object after execution.
+     */
     public <S> GetItemOfArrayFromEntity<S, R> thenGetArrayItem(Function<R, S[]> f) {
         return getArrayItemFromEntity(this, f);
     }

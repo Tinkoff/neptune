@@ -14,12 +14,6 @@ import java.util.function.Function;
 
 import static java.util.Optional.ofNullable;
 
-/**
- * Gets some {@link Iterable} from selected entity.
- *
- * @param <T> is a type of object to get
- * @param <M> is a type of entity
- */
 @CaptureOnSuccess(by = EntitiesCaptor.class)
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of every item")
 public abstract class GetListFromEntity<T, I extends Iterable<T>, M>
