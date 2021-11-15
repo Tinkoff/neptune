@@ -8,6 +8,7 @@ import org.openqa.selenium.devtools.v95.network.model.ResponseReceived;
 import ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.HttpTraffic;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class HttpProxy {
@@ -17,8 +18,9 @@ public class HttpProxy {
     private final List<HttpTraffic> httpTrafficList = new CopyOnWriteArrayList<>();
     private final List<HttpTraffic> dumpHttpTrafficList = new CopyOnWriteArrayList<>();
 
-    public HttpProxy(DevTools devTools) {
-        this.devTools = devTools;
+    public HttpProxy(DevTools dt) {
+        this.devTools = dt;
+        devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty()));
     }
 
     public void listen() {

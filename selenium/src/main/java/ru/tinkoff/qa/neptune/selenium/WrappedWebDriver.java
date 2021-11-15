@@ -14,7 +14,6 @@ import ru.tinkoff.qa.neptune.selenium.authentication.AuthenticationPerformer;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 
 import static java.lang.String.format;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -112,10 +111,12 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             if (isAlive) {
                 driver.quit();
             }
-            devTools = null;
             driver = null;
             return;
         }
+
+        ofNullable(devTools).ifPresent(DevTools::clearListeners);
+        devTools = null;
     }
 
     @Override
@@ -137,16 +138,21 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
     }
 
     public DevTools getDevTools() {
-        if (!isNull(devTools)) {
-            return devTools;
-        }
+        return ofNullable(devTools)
+                .map(dt -> {
+                    dt.createSessionIfThereIsNotOne();
+                    return dt;
+                })
+                .orElseGet(() -> {
+                    var driver = getWrappedDriver();
+                    if (driver instanceof HasDevTools) {
+                        devTools = ((HasDevTools) driver).getDevTools();
+                        devTools.createSession();
+                        return devTools;
+                    } else {
+                        throw new UnsupportedOperationException(format("This wrappedDriver(%s) does not support the use of selenium devTools", driver.getClass()));
+                    }
+                });
 
-        var driver = getWrappedDriver();
-        if (driver instanceof HasDevTools) {
-            devTools = ((HasDevTools) driver).getDevTools();
-            return devTools;
-        } else {
-            throw new UnsupportedOperationException(format("This wrappedDriver(%s) does not support the use of selenium devTools", driver.getClass()));
-        }
     }
 }

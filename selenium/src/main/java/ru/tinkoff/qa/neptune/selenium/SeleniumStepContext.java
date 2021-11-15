@@ -1,9 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium;
 
 import org.openqa.selenium.*;
-import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
-import org.openqa.selenium.devtools.v95.network.Network;
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
@@ -37,7 +35,6 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -304,7 +301,6 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     public SeleniumStepContext enableAndRefreshNetwork() {
         if (isNull(proxy)) {
             proxy = new HttpProxy(getDevTools());
-            executeDevToolsCommand(Network.enable(Optional.empty(), Optional.empty(), Optional.empty()));
             proxy.listen();
         } else {
             proxy.clearDump();
@@ -316,16 +312,9 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
         return wrappedWebDriver.getDevTools();
     }
 
-    public <T> T executeDevToolsCommand(Command<T> command) {
-        var devTools = wrappedWebDriver.getDevTools();
-        if (devTools.getCdpSession() == null) {
-            devTools.createSession();
-        }
-        return devTools.send(command);
-    }
-
     @Override
     public void refreshContext() {
+        proxy = null;
         wrappedWebDriver.refreshContext();
     }
 

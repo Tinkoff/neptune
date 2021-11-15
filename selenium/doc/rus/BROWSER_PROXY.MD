@@ -10,9 +10,6 @@
 
 - [Критерии для поиска нужных записей траффика](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/functions/browser/proxy/BrowserProxyCriteria.html)
 
-# Оглавление
-
-- [Проксирование/запись трафика браузера](#Проксированиезапись-трафика-браузера)
 
 ## Проксирование/запись трафика браузера
 
@@ -46,7 +43,6 @@ import java.util.List;
 import static io.netty.handler.codec.http.HttpMethod.GET;
 import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
-import static ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyGetStepSupplier.proxiedRequests;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.button;
 
@@ -59,25 +55,25 @@ public class Tezzt {
             .navigateTo("/some/url/path")
             .click(button("Submit"))
             .get(proxiedRequests() //получаем запросы, записанные входе действий выше
-                    .criteria(recordedRequestMethod(GET)) //можно перечислить критерии,
-                    .criteria(recordedResponseStatusCode(200)) //которым должны соответствовать извлекаемые 
-                    .criteria(recordedRequestUrlMatches("https://www.google.com")) //запросы
+                    .recordedRequestMethod(GET) //можно перечислить критерии,
+                    .recordedResponseStatusCode(200) //которым должны соответствовать извлекаемые 
+                    .recordedRequestUrlMatches("https://www.google.com") //запросы
                     .timeOut(ofSeconds(10))); //можно указать время, за которое желаемые запросы должны быть получены
 
     //а так проверяется простой факт того, что ожидаемые запросы были отправлены/ответы получены
     boolean areRequestsPresent = inBrowser().presenceOf(proxiedRequests()
-            .criteria(recordedRequestMethod(GET)) //можно перечислить критерии,
-            .criteria(recordedResponseStatusCode(200)) //которым должны соответствовать извлекаемые 
-            .criteria(recordedRequestUrlMatches("https://www.google.com")) //запросы
+            .recordedRequestMethod(GET)//можно перечислить критерии,
+            .recordedResponseStatusCode(200) //которым должны соответствовать извлекаемые 
+            .recordedRequestUrlMatches("https://www.google.com") //запросы
             .timeOut(ofSeconds(10))); //можно указать время, за которое желаемые запросы
     // должны быть получены
     // вернется true если хотя бы один запрос, подходящий под описание выше, 
     // был пойман, если нет - false
 
-        boolean areRequestsPresent = inBrowser().presenceOfOrThrow(proxiedRequests());
-        // вернется true если хотя бы один запрос, подходящий под описание выше, 
-        // был пойман, если нет - будет выброшено исключение
-    }
+    boolean areRequestsPresent = inBrowser().presenceOfOrThrow(proxiedRequests());
+    // вернется true если хотя бы один запрос, подходящий под описание выше, 
+    // был пойман, если нет - будет выброшено исключение
+  }
 }
 ```
 
@@ -92,7 +88,6 @@ import java.util.List;
 import static io.netty.handler.codec.http.HttpMethod.GET;
 import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
-import static ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyGetStepSupplier.proxiedRequests;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.button;
 
@@ -105,13 +100,13 @@ public class Tezzt {
             //какие-то промежуточные действия в браузере
             .enableAndRefreshNetwork() //<-сброс ранее записанного трафика
             .navigateTo("/some/url/path2") //новая запись трафика начинается тут
-                .click(button("Submit"))
-                .get(proxiedRequests() //получаем запросы, записанные входе действий выше
-                        .criteria(recordedRequestMethod(GET)) 
-                        .criteria(recordedResponseStatusCode(200))  
-                        .criteria(recordedRequestUrlMatches("https://www.google.com")) 
-                        .timeOut(ofSeconds(10)));
-    }
+            .click(button("Submit"))
+            .get(proxiedRequests() //получаем запросы, записанные входе действий выше
+                    .recordedRequestMethod(GET)
+                    .recordedResponseStatusCode(200)
+                    .recordedRequestUrlMatches("https://www.google.com")
+                    .timeOut(ofSeconds(10)));
+  }
 }
 ```
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)

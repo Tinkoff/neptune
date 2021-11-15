@@ -21,7 +21,6 @@ import static java.util.Map.ofEntries;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsEachItemMatcher.eachOfIterable;
-import static ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyGetStepSupplier.proxiedRequests;
 import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.RequestHasMethod.requestHasMethod;
 import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.ResponseHasStatusCode.responseHasStatusCode;
@@ -50,7 +49,6 @@ public class BrowserProxyStepTest {
 
     @Test
     public void proxiedCaptureTest() {
-        seleniumSteps.getWrappedDriver();
         seleniumSteps.enableAndRefreshNetwork();
         seleniumSteps.navigateTo("https://www.google.com");
         List<HttpTraffic> requests = seleniumSteps.get(proxiedRequests());
@@ -60,7 +58,6 @@ public class BrowserProxyStepTest {
 
     @Test
     public void proxyGetStepSupplierCriteriaTest() {
-        seleniumSteps.getWrappedDriver();
         seleniumSteps.enableAndRefreshNetwork();
         seleniumSteps
                 .navigateTo("https://github.com")
@@ -68,9 +65,9 @@ public class BrowserProxyStepTest {
 
         List<HttpTraffic> requests = seleniumSteps.navigateTo("/")
                 .get(proxiedRequests()
-                        .criteria(recordedRequestMethod(GET))
-                        .criteria(recordedResponseStatusCode(200))
-                        .criteria(recordedRequestUrlMatches("https://www.google.com"))
+                        .recordedRequestMethod(GET)
+                        .recordedResponseStatusCode(200)
+                        .recordedRequestUrlMatches("https://www.google.com")
                         .timeOut(ofSeconds(10)));
 
         assertThat("Proxy with filter captured only one request", requests, hasSize(greaterThanOrEqualTo(1)));
