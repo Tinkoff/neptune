@@ -16,19 +16,19 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
  * @param <T> is a type of iterable to get
  */
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted iterable")
-public final class GetIterableFromResponse<R, T extends Iterable<R>> extends SequentialGetStepSupplier.GetListStepSupplier<WebTestClientContext, T, R, GetIterableFromResponse<R, T>> {
+public final class GetListFromResponse<R, T extends Iterable<R>> extends SequentialGetStepSupplier.GetListStepSupplier<WebTestClientContext, T, R, GetListFromResponse<R, T>> {
 
-    private GetIterableFromResponse(Function<WebTestClientContext, T> f) {
+    private GetListFromResponse(Function<WebTestClientContext, T> f) {
         super(f);
     }
 
     @Description("{description}")
-    static <R, T, S extends Iterable<T>> GetIterableFromResponse<T, S> iterable(
+    static <R, T, S extends Iterable<T>> GetListFromResponse<T, S> list(
             @DescriptionFragment(
                     value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class) String description,
             FromBodyGet<S, R> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetIterableFromResponse<>(f);
+        return new GetListFromResponse<>(f);
     }
 }

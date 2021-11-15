@@ -5,12 +5,12 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -21,7 +21,6 @@ import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catc
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess.CaptureOnSuccessReader.readCaptorsOnSuccess;
 
 @SequentialGetStepSupplier.DefineResultDescriptionParameterName("Is present")
-@IncludeParamsOfInnerGetterStep
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Wait for:")
 @MaxDepthOfReporting(0)
 public final class Presence<T> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Presence<T>> {
@@ -113,5 +112,12 @@ public final class Presence<T> extends SequentialGetStepSupplier.GetObjectChaine
     public Presence<T> addIgnored(Class<? extends Throwable> toBeIgnored) {
         ignored2.add(toBeIgnored);
         return this;
+    }
+
+    @Override
+    public Map<String, String> getParameters() {
+        var result = super.getParameters();
+        result.putAll(((SequentialGetStepSupplier<?, ?, ?, ?, ?>) getFrom()).getParameters());
+        return result;
     }
 }

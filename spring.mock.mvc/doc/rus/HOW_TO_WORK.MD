@@ -1,7 +1,11 @@
 # Работа с MockMVC
 
-О принципах работы шагов, которые возвращают результат, можно прочитать
-[здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги-которые-возвращают-результат).
+- О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст).
+  Объект [контекста для работы со Spring MockMvc](https://tinkoffcreditsystems.github.io/neptune/spring.mock.mvc/ru/tinkoff/qa/neptune/spring/mock/mvc/MockMvcContext.html)
+  в примерах ниже вызывается статическим методом `mockMvcGet`
+
+- О принципах работы шагов, которые возвращают результат, можно прочитать
+  [здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги-которые-возвращают-результат).
 
 ## Оглавление
 - [Получение ответа](#Получение-ответа)
@@ -9,7 +13,7 @@
     - [Десериализация](#Десериализация)
     - [Получение тела ответа в виде текста](#Получение-тела-ответа-в-виде-текста)
     - [Получение данных тела ответа как Java-объект](#Получение-данных-тела-ответа-как-Java-объект)
-    - [Получение данных тела ответа как Iterable](#Получение-данных-тела-ответа-как-Iterable)
+    - [Получение данных тела ответа как List](#Получение-данных-тела-ответа-как-List)
     - [Получение данных тела ответа в виде массива](#Получение-данных-тела-ответа-в-виде-массива)
     - [Получение данных тела ответа как Java-объект из Iterable](#Получение-данных-тела-ответа-как-Java-объект-из-Iterable)
     - [Получение данных тела ответа как Java-объект из массива](#Получение-данных-тела-ответа-как-Java-объект-из-массива)
@@ -449,12 +453,13 @@ public class MyTest {
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-
-### Получение данных тела ответа как Iterable
+### Получение данных тела ответа как List
 
 [Десериализация](#Десериализация)
 
 ```java
+import java.util.List;
+
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.spring.mock.mvc.GetMockMvcResponseResultSupplier.response;
 import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
@@ -463,32 +468,32 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-    @Test
-    public void myTest() {
-        var transformer = new MyDataTransformer();
+  @Test
+  public void myTest() {
+    var transformer = new MyDataTransformer();
 
-        DtoList body = mockMvcGet(response(
-                post("/some/path") 
-                        .contentType(APPLICATION_JSON) 
-                        .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
-                .thenGetIterable("List of dto's", //описание списка, который следует получить
-                        transformer, //указываем с помощью какого объекта происходит десериализация
-                        DtoList.class) //указываем, в объект какого класса должно быть десериализовано тело ответа
-                        //public class DtoList extends ArrayList<Dto>
-                .criteria("Описание критерия, которому должен соответствовать " +
-                        "каждый элемент, который попадет в результирующий список", 
-                        dto -> /*предикат, как работает критерий*/) 
-                //можно указать один или несколько критериев, которым должен соответствовать
-                //каждый элемент результирующего списка
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-                // если у ответа нет тела или результирующий список пустой (не было ни одного элемента, 
-                //который бы соответствовал перечисленным критериям, или тело десериализовалось в пустой список)
-    }
+    List<Dto> body = mockMvcGet(response(
+            post("/some/path")
+                    .contentType(APPLICATION_JSON)
+                    .contentType("{\"someString 1\"}"))
+            .expect(status().isOk())
+            .expect(content().string(containsString("SUCCESS")))
+            .thenGetList("List of dto's", //описание списка, который следует получить
+                    transformer, //указываем с помощью какого объекта происходит десериализация
+                    DtoList.class) //указываем, в объект какого класса должно быть десериализовано тело ответа
+            //public class DtoList extends ArrayList<Dto>
+            .criteria("Описание критерия, которому должен соответствовать " +
+                            "каждый элемент, который попадет в результирующий список",
+                    dto -> /*предикат, как работает критерий*/)
+            //можно указать один или несколько критериев, которым должен соответствовать
+            //каждый элемент результирующего списка
+            .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
+    // если у ответа нет тела или результирующий список пустой (не было ни одного элемента, 
+    //который бы соответствовал перечисленным критериям, или тело десериализовалось в пустой список)
+  }
 }
 ```
 
@@ -516,7 +521,7 @@ public class MyTest {
                       .contentType("{\"someString 1\"}"))
               .expect(status().isOk())
               .expect(content().string(containsString("SUCCESS")))
-              .thenGetIterable("List of dto's", //описание списка, который следует получить
+              .thenGetList("List of dto's", //описание списка, который следует получить
                       transformer, //указываем с помощью какого объекта происходит десериализация
                       new TypeReference<List<Dto>>() {}) //указываем, в объект 
                       // какого типа должно быть десериализовано тело ответа
@@ -556,7 +561,7 @@ public class MyTest {
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
                 .expect(content().string(containsString("SUCCESS")))
-                .thenGetIterable("Value of the field 'listValue'", //описание списка, который следует получить
+                .thenGetList("Value of the field 'listValue'", //описание списка, который следует получить
                         transformer, //указываем с помощью какого объекта происходит десериализация
                         Dto.class, //указываем, в объект какого класса должно быть десериализовано тело ответа
                         Dto::listValue) //описание получения списка в виде функции
@@ -596,7 +601,7 @@ public class MyTest {
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
                 .expect(content().string(containsString("SUCCESS")))
-                .thenGetIterable("Value of the field 'listValue'", //описание списка, который следует получить
+                .thenGetList("Value of the field 'listValue'", //описание списка, который следует получить
                         transformer, //указываем с помощью какого объекта происходит десериализация
                         new TypeReference<GenericDto<SomeType>>() {}, //указываем, в объект какого типа должно быть 
                         // десериализовано тело ответа
@@ -617,6 +622,8 @@ public class MyTest {
 И тогда
 
 ```java
+import java.util.List;
+
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.spring.mock.mvc.GetMockMvcResponseResultSupplier.response;
 import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
@@ -625,30 +632,30 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-    @Test
-    public void myTest() {
+  @Test
+  public void myTest() {
 
-        DtoList body = mockMvcGet(response(
-                post("/some/path") 
-                        .contentType(APPLICATION_JSON) 
-                        .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
-                .thenGetIterable("List of dto's", //описание списка, который следует получить
-                        DtoList.class) //указываем, в объект какого класса должно быть десериализовано тело ответа
-                        //public class DtoList extends ArrayList<Dto>
-                .criteria("Описание критерия, которому должен соответствовать " +
-                        "каждый элемент, который попадет в результирующий список", 
-                        dto -> /*предикат, как работает критерий*/) 
-                //можно указать один или несколько критериев, которым должен соответствовать
-                //каждый элемент результирующего списка
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
-                // если у ответа нет тела или результирующий список пустой (не было ни одного элемента, 
-                //который бы соответствовал перечисленным критериям, или тело десериализовалось в пустой список)
-    }
+    List<Dto> body = mockMvcGet(response(
+            post("/some/path")
+                    .contentType(APPLICATION_JSON)
+                    .contentType("{\"someString 1\"}"))
+            .expect(status().isOk())
+            .expect(content().string(containsString("SUCCESS")))
+            .thenGetList("List of dto's", //описание списка, который следует получить
+                    DtoList.class) //указываем, в объект какого класса должно быть десериализовано тело ответа
+            //public class DtoList extends ArrayList<Dto>
+            .criteria("Описание критерия, которому должен соответствовать " +
+                            "каждый элемент, который попадет в результирующий список",
+                    dto -> /*предикат, как работает критерий*/)
+            //можно указать один или несколько критериев, которым должен соответствовать
+            //каждый элемент результирующего списка
+            .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
+    // если у ответа нет тела или результирующий список пустой (не было ни одного элемента, 
+    //который бы соответствовал перечисленным критериям, или тело десериализовалось в пустой список)
+  }
 }
 ```
 
@@ -675,8 +682,9 @@ public class MyTest {
                       .contentType("{\"someString 1\"}"))
               .expect(status().isOk())
               .expect(content().string(containsString("SUCCESS")))
-              .thenGetIterable("List of dto's", //описание списка, который следует получить
-                      new TypeReference<List<Dto>>() {}) //указываем, в объект 
+              .thenGetList("List of dto's", //описание списка, который следует получить
+                      new TypeReference<List<Dto>>() {
+                      }) //указываем, в объект 
                       // какого типа должно быть десериализовано тело ответа
               .criteria("Описание критерия, которому должен соответствовать " + 
                       "каждый элемент, который попадет в результирующий список",
@@ -713,7 +721,7 @@ public class MyTest {
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
                 .expect(content().string(containsString("SUCCESS")))
-                .thenGetIterable("Value of the field 'listValue'", //описание списка, который следует получить
+                .thenGetList("Value of the field 'listValue'", //описание списка, который следует получить
                         Dto.class, //указываем, в объект какого класса должно быть десериализовано тело ответа
                         Dto::listValue) //описание получения списка в виде функции
                 .criteria("Описание критерия, которому должен соответствовать " +
@@ -751,8 +759,9 @@ public class MyTest {
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
                 .expect(content().string(containsString("SUCCESS")))
-                .thenGetIterable("Value of the field 'listValue'", //описание списка, который следует получить
-                        new TypeReference<GenericDto<SomeType>>() {}, //указываем, в объект какого типа должно быть 
+                .thenGetList("Value of the field 'listValue'", //описание списка, который следует получить
+                        new TypeReference<GenericDto<SomeType>>() {
+                        }, //указываем, в объект какого типа должно быть 
                         // десериализовано тело ответа
                         GenericDto::listValue) //описание получения списка в виде функции
                 .criteria("Описание критерия, которому должен соответствовать " +
@@ -908,7 +917,7 @@ public class MyTest {
                         .contentType("{\"someString 1\"}"))
                 .expect(status().isOk())
                 .expect(content().string(containsString("SUCCESS")))
-                .thenGetIterable("Value of the field 'arrayValue'", //описание массива, который следует получить
+                .thenGetList("Value of the field 'arrayValue'", //описание массива, который следует получить
                         transformer, //указываем с помощью какого объекта происходит десериализация
                         new TypeReference<GenericDto<SomeType>>() {}, //указываем, в объект какого типа должно быть 
                         // десериализовано тело ответа
@@ -1056,8 +1065,9 @@ public class MyTest {
                     .contentType("{\"someString 1\"}"))
             .expect(status().isOk())
             .expect(content().string(containsString("SUCCESS")))
-            .thenGetIterable("Value of the field 'arrayValue'", //описание массива, который следует получить
-                    new TypeReference<GenericDto<SomeType>>() {}, //указываем, в объект какого типа должно быть 
+            .thenGetList("Value of the field 'arrayValue'", //описание массива, который следует получить
+                    new TypeReference<GenericDto<SomeType>>() {
+                    }, //указываем, в объект какого типа должно быть 
                     // десериализовано тело ответа
                     GenericDto::arrayValue) //описание получения массив в виде функции
             .criteria("Описание критерия, которому должен соответствовать " +

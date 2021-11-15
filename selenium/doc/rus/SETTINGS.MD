@@ -497,9 +497,6 @@ public class SomeClass {
 
 ### Ожидание элемента(ов)
 
-
-  
-
 Свойства `WAITING_FOR_ELEMENTS_TIME_UNIT` и `WAITING_FOR_ELEMENTS_TIME` определяют время ожидания появления элементов страницы 
 по умолчанию. Для свойства `WAITING_FOR_ELEMENTS_TIME_UNIT` следует указать значение, соответствующее одному из элементов 
 перечисления `java.time.temporal.ChronoUnit`, для свойства `WAITING_FOR_ELEMENTS_TIME` следует указать значение, которое 

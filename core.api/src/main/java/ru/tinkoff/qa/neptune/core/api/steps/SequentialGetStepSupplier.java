@@ -22,6 +22,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.valueOf;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static java.time.Duration.ofMillis;
 import static java.util.List.of;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
@@ -237,6 +238,19 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         checkArgument(nonNull(timeOut), "Time out should not be a null value");
         checkArgument(!timeOut.isNegative(), "Time out should be a positive value");
         this.timeToGet = timeOut;
+        return (THIS) this;
+    }
+
+    final THIS clearTimeout() {
+        this.timeOut(ofMillis(0));
+        this.pollingInterval(ofMillis(0));
+
+        var from = getFrom();
+        if (from instanceof SequentialGetStepSupplier) {
+            var newFrom = ((SequentialGetStepSupplier<T, ? extends M, ?, ?, ?>) from).clone();
+            newFrom.clearTimeout();
+            from(newFrom);
+        }
         return (THIS) this;
     }
 

@@ -19,8 +19,8 @@
 - [Получение сообщения](#Получение-сообщения)
   - [Получение данных сообщения как Java-объект](#Получение-данных-сообщения-как-Java-объект)
     - [Получение сообщения в виде строки](#Получение-сообщения-в-виде-строки)
-    - [Получение объекта при помощи десериализации](#Получение-объекта-при-помощи-десериализации)  
-  - [Получение данных сообщения как Iterable](#Получение-данных-сообщения-как-Iterable)
+    - [Получение объекта при помощи десериализации](#Получение-объекта-при-помощи-десериализации)
+  - [Получение данных сообщения как List](#Получение-данных-сообщения-как-List)
   - [Получение данных сообщения в виде массива](#Получение-данных-сообщения-в-виде-массива)
   - [Получение данных сообщения как Java-объект из Iterable](#Получение-данных-сообщения-как-Java-объект-из-Iterable)
   - [Получение данных сообщения как Java-объект из массива](#Получение-данных-сообщения-как-Java-объект-из-массива)
@@ -671,7 +671,7 @@ public class MyTest {
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-### Получение данных сообщения как Iterable
+### Получение данных сообщения как List
 
 В примерах ниже предполагается, что настройка / свойство / переменная окружения
 [RABBIT_MQ_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#RABBIT_MQ_DEFAULT_DATA_TRANSFORMER) перед началом выполнения имеет
@@ -684,21 +684,21 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetItera
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        // Возвращает сообщение из очереди, десериализованное в коллекцию/Iterable
-        //Из общего сообщения (Iterable/коллекции) вернется под-множество подходящих элементов.
-        ListOfClassToDeserialize result = rabbitMq().read(rabbitIterable("Результирующий лист", //описываем то, 
-                // что нужно получить
-                "test_queue", //имя очереди
-                ListOfClassToDeserialize.class) //класс, который реализует Iterable<ClassToDeserialize> 
-                // или Collection<ClassToDeserialize>
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-                // которому должен соответствовать каждый элемент результирующей коллекции
-                .timeOut(ofSeconds(5)) //можно указать время на получение 
-                // ожидаемого результата = 5 секунд
-                .throwOnNoResult() //можно указать, что должно быть выброшено исключение, 
-                // если результат не был получен
+  @Test
+  public void myTest() {
+    // Возвращает сообщение из очереди, десериализованное в коллекцию/Iterable
+    // Из общего сообщения (Iterable/коллекции) вернется под-множество(немутабельный лист) подходящих элементов.
+    List<ClassToDeserialize> result = rabbitMq().read(rabbitIterable("Результирующий лист", //описываем то, 
+            // что нужно получить
+            "test_queue", //имя очереди
+            ListOfClassToDeserialize.class) //класс, который реализует Iterable<ClassToDeserialize> 
+            // или Collection<ClassToDeserialize>
+            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
+            // которому должен соответствовать каждый элемент результирующей коллекции
+            .timeOut(ofSeconds(5)) //можно указать время на получение 
+            // ожидаемого результата = 5 секунд
+            .throwOnNoResult() //можно указать, что должно быть выброшено исключение, 
+            // если результат не был получен
                 .autoAck()); //можно указать, что auto acknowledge
     }
 }
@@ -717,9 +717,9 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        // Возвращает сообщение из очереди, десериализованное в коллекцию/Iterable
-        // Из общего сообщения (Iterable/коллекции) вернется под-множество подходящих элементов.
-        List<ClassToDeserialize> result = rabbitMq().read(rabbitIterable("Результирующий лист", //описываем то, 
+      // Возвращает сообщение из очереди, десериализованное в коллекцию/Iterable
+      // Из общего сообщения (Iterable/коллекции) вернется под-множество(немутабельный лист) подходящих элементов.
+      List<ClassToDeserialize> result = rabbitMq().read(rabbitIterable("Результирующий лист", //описываем то, 
                 // что нужно получить
                 "test_queue", //имя очереди
                 new TypeReference<List<ClassToDeserialize>>() {
@@ -746,8 +746,8 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        // Возвращается Iterable или коллекция. Сообщение не обязательно является коллекцией 
-        // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
+      // Возвращается немутабельный лист. Сообщение необязательно является коллекцией 
+      // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
         // вычислений. Из коллекции вернется под-множество подходящих элементов.
         List<Object> result = rabbitMq().read(rabbitIterable("Результирующий лист", //описываем 
                 // то, что нужно получить
@@ -780,8 +780,8 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        // Возвращается Iterable или коллекция. Сообщение не обязательно является коллекцией 
-        // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
+      // Возвращается немутабельный лист. Сообщение необязательно является коллекцией 
+      // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
         // вычислений. Из коллекции вернется под-множество подходящих элементов.
         List<Object> result = rabbitMq().read(rabbitIterable("Результирующий лист",
                 "test_queue",
@@ -805,16 +805,18 @@ public class MyTest {
 В этом случае в примерах выше не надо указывать имя очереди.
 
 ```java
+import java.util.List;
+
 import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetIterableSupplier.rabbitIterable;
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        ClassToDeserialize result = rabbitMq().read(rabbitIterable("Результирующий лист", 
-                ListOfClassToDeserialize.class)//класс, который реализует Iterable<ClassToDeserialize> 
+  @Test
+  public void myTest() {
+    List<ClassToDeserialize> result = rabbitMq().read(rabbitIterable("Результирующий лист",
+                    ListOfClassToDeserialize.class)//класс, который реализует Iterable<ClassToDeserialize> 
                 // или Collection<ClassToDeserialize>
                 //указание других опциональных параметров
                 );
@@ -941,20 +943,20 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetArray
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        // Возвращается массив. Сообщение не обязательно является массивом. 
-        // Промежуточный массив получаются в ходе дополнительных 
-        // вычислений. Из массива вернется под-массив подходящих элементов.
-        Object[] result = rabbitMq().read(rabbitArray("Результирующий массив", //описываем 
-                // то, что нужно получить
-                "test_queue", //имя очереди
-                ClassToDeserialize.class, //класс модели для десериализации
-                o -> {
-                    return /*описываем то, как получаем или вычисляем Object[]*/
-                })
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-                // которому должен соответствовать каждый элемент результирующего массива
+  @Test
+  public void myTest() {
+    // Возвращается массив. Сообщение необязательно является массивом. 
+    // Промежуточный массив получается в ходе дополнительных 
+    // вычислений. Из массива вернется под-массив подходящих элементов.
+    Object[] result = rabbitMq().read(rabbitArray("Результирующий массив", //описываем 
+            // то, что нужно получить
+            "test_queue", //имя очереди
+            ClassToDeserialize.class, //класс модели для десериализации
+            o -> {
+              return /*описываем то, как получаем или вычисляем Object[]*/
+            })
+            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
+            // которому должен соответствовать каждый элемент результирующего массива
                 .timeOut(ofSeconds(5)) //можно указать время на получение 
                 // ожидаемого результата = 5 секунд
                 .throwOnNoResult()//можно указать, что должно быть выброшено исключение, 
@@ -973,20 +975,20 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetArray
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        // Возвращается массив. Сообщение не обязательно является массивом. 
-        // Промежуточный массив получаются в ходе дополнительных 
-        // вычислений. Из массива вернется под-массив подходящих элементов.
-        Object[] result = rabbitMq().read(rabbitArray("Результирующий массив",
-                "test_queue",
-                new TypeReference<ClassToDeserialize<ParamClass>>() {
-                }, //тип объекта-модели для десериализации
-                o -> {
-                    return /*описываем то, как получаем или вычисляем Object[]*/
-                })
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-                // которому должен соответствовать каждый элемент результирующего массива
+  @Test
+  public void myTest() {
+    // Возвращается массив. Сообщение необязательно является массивом. 
+    // Промежуточный массив получается в ходе дополнительных 
+    // вычислений. Из массива вернется под-массив подходящих элементов.
+    Object[] result = rabbitMq().read(rabbitArray("Результирующий массив",
+            "test_queue",
+            new TypeReference<ClassToDeserialize<ParamClass>>() {
+            }, //тип объекта-модели для десериализации
+            o -> {
+              return /*описываем то, как получаем или вычисляем Object[]*/
+            })
+            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
+            // которому должен соответствовать каждый элемент результирующего массива
                 .timeOut(ofSeconds(5)) //можно указать время на получение 
                 // ожидаемого результата = 5 секунд
                 .throwOnNoResult()//можно указать, что должно быть выброшено исключение, 
@@ -1136,8 +1138,8 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        //Возвращается элемент коллекции / Iterable.  Сообщение не обязательно является коллекцией 
-        // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
+      //Возвращается элемент коллекции / Iterable.  Сообщение необязательно является коллекцией 
+      // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
         // вычислений. Из коллекции вернется первый подходящий элемент.
         Object result = rabbitMq().read(rabbitIterableItem("Нужный элемент листа", //описываем 
                 // то, что нужно получить
@@ -1168,8 +1170,8 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        //Возвращается элемент коллекции / Iterable.  Сообщение не обязательно является коллекцией 
-        // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
+      //Возвращается элемент коллекции / Iterable.  Сообщение необязательно является коллекцией 
+      // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
         // вычислений. Из коллекции вернется первый подходящий элемент.
         Object result = rabbitMq().read(rabbitIterableItem("Нужный элемент листа",
                 "test_queue",
@@ -1327,26 +1329,26 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetArray
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        //Возвращается элемент массива. Сообщение не обязательно является массивом. 
-        // Промежуточный массив получаются в ходе дополнительных вычислений. 
-        // Из массива вернется первый подходящий элемент.
-        Object result = rabbitMq().read(rabbitArrayItem("Нужный элемент массива", //описываем 
-                // то, что нужно получить
-                "test_queue", //имя очереди
-                ClassToDeserialize.class, //класс модели для десериализации
-                o -> {
-                    return /*описываем то, как получаем или вычисляем Object[]*/
-                })
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-                // которому должен соответствовать результирующий элемент массива
-                .timeOut(ofSeconds(5)) //можно указать время на получение 
-                // ожидаемого результата = 5 секунд
-                .throwOnNoResult()//можно указать, что должно быть выброшено исключение, 
-                // если результат не был получен
-                .autoAck()); //можно указать, что auto acknowledge
-    }
+  @Test
+  public void myTest() {
+    //Возвращается элемент массива. Сообщение необязательно является массивом. 
+    // Промежуточный массив получается в ходе дополнительных вычислений. 
+    // Из массива вернется первый подходящий элемент.
+    Object result = rabbitMq().read(rabbitArrayItem("Нужный элемент массива", //описываем 
+            // то, что нужно получить
+            "test_queue", //имя очереди
+            ClassToDeserialize.class, //класс модели для десериализации
+            o -> {
+              return /*описываем то, как получаем или вычисляем Object[]*/
+            })
+            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
+            // которому должен соответствовать результирующий элемент массива
+            .timeOut(ofSeconds(5)) //можно указать время на получение 
+            // ожидаемого результата = 5 секунд
+            .throwOnNoResult()//можно указать, что должно быть выброшено исключение, 
+            // если результат не был получен
+            .autoAck()); //можно указать, что auto acknowledge
+  }
 }
 ```
 
@@ -1360,20 +1362,20 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetArray
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        //Возвращается элемент массива. Сообщение не обязательно является массивом. 
-        // Промежуточный массив получаются в ходе дополнительных вычислений. 
-        // Из массива вернется первый подходящий элемент.
-        Object result = rabbitMq().read(rabbitArrayItem("Нужный элемент массива",
-                "test_queue",
-                new TypeReference<ClassToDeserialize<ParamClass>>() {
-                }, //тип объекта-модели для десериализации
-                o -> {
-                    return /*описываем то, как получаем или вычисляем Object[]*/
-                })
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-                // которому должен соответствовать результирующий элемент из массива
+  @Test
+  public void myTest() {
+    //Возвращается элемент массива. Сообщение необязательно является массивом. 
+    // Промежуточный массив получается в ходе дополнительных вычислений. 
+    // Из массива вернется первый подходящий элемент.
+    Object result = rabbitMq().read(rabbitArrayItem("Нужный элемент массива",
+            "test_queue",
+            new TypeReference<ClassToDeserialize<ParamClass>>() {
+            }, //тип объекта-модели для десериализации
+            o -> {
+              return /*описываем то, как получаем или вычисляем Object[]*/
+            })
+            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
+            // которому должен соответствовать результирующий элемент из массива
                 .timeOut(ofSeconds(5)) //можно указать время на получение 
                 // ожидаемого результата = 5 секунд
                 .throwOnNoResult()//можно указать, что должно быть выброшено исключение, 

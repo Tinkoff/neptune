@@ -136,7 +136,7 @@ public class ResponseBodyTest {
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
                 .bodyAs(Dto.class)
-                .thenGetIterable("List from 'getArrayValue1'", Dto::getArrayValue1)
+                .thenGetList("List from 'getArrayValue1'", Dto::getArrayValue1)
                 .criteria("not contains 'E'", s -> !s.contains("E")));
 
         assertThat(value, hasSize(4));
@@ -149,7 +149,7 @@ public class ResponseBodyTest {
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
                 .bodyAs(Dto.class)
-                .thenGetIterable("List from 'getArrayValue1'", Dto::getArrayValue1)
+                .thenGetList("List from 'getArrayValue1'", Dto::getArrayValue1)
                 .criteria("contains 'E'", s -> s.contains("E")));
 
         assertThat(value, emptyIterable());

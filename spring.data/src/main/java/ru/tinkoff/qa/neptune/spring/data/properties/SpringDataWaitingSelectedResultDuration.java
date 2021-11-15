@@ -42,14 +42,14 @@ public final class SpringDataWaitingSelectedResultDuration extends DurationSuppl
     public enum SpringDataSelectTimeUnitProperties implements EnumPropertySuppler<ChronoUnit> {
         @PropertyDescription(description = {"Time unit (see java.time.temporal.ChronoUnit) of default time",
                 "of the waiting for something is present in a repository"},
-                section = "Data base. Getting the result. Waiting time")
+                section = "Spring Data. Getting the result. Waiting time")
         @PropertyName("SPRING_DATA_WAITING_FOR_SELECTION_RESULT_TIME_UNIT")
         @PropertyDefaultValue("SECONDS")
         SPRING_DATA_WAITING_FOR_SELECTION_RESULT_TIME_UNIT,
 
         @PropertyDescription(description = {"Time unit (see java.time.temporal.ChronoUnit) of default time",
                 "of the sleeping between attempts to get something from a repository"},
-                section = "Data base. Getting the result. Sleeping time")
+                section = "Spring Data. Getting the result. Sleeping time")
         @PropertyName("SPRING_DATA_SLEEPING_TIME_UNIT")
         @PropertyDefaultValue("MILLIS")
         SPRING_DATA_SLEEPING_TIME_UNIT
@@ -57,13 +57,13 @@ public final class SpringDataWaitingSelectedResultDuration extends DurationSuppl
 
     public enum SpringDataSelectTimeValueProperties implements LongValuePropertySupplier {
         @PropertyDescription(description = "Default value of time of the waiting for something is present in a repository",
-                section = "Data base. Getting the result. Waiting time")
+                section = "Spring Data. Getting the result. Waiting time")
         @PropertyName("SPRING_DATA_WAITING_FOR_SELECTION_RESULT_TIME_VALUE")
         @PropertyDefaultValue("1")
         SPRING_DATA_WAITING_FOR_SELECTION_RESULT_TIME_VALUE,
 
         @PropertyDescription(description = "Default value of time of the sleeping between attempts to get something from a repository",
-                section = "Data base. Getting the result. Sleeping time")
+                section = "Spring Data. Getting the result. Sleeping time")
         @PropertyName("SPRING_DATA_SLEEPING_TIME_VALUE")
         @PropertyDefaultValue("100")
         SPRING_DATA_SLEEPING_TIME_VALUE

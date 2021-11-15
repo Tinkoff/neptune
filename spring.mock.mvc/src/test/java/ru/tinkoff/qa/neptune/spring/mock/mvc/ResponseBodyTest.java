@@ -462,7 +462,7 @@ public class ResponseBodyTest {
                                 "true"
                         )))
                 .expect(forwardedUrl("https://google.com/api/request/1"))
-                .thenGetIterable("List of int", IntList.class)
+                .thenGetList("List of int", IntList.class)
                 .criteria("lesser than 5", i -> i < 5)
         );
 
@@ -480,7 +480,7 @@ public class ResponseBodyTest {
                                 "true"
                         )))
                 .expect(forwardedUrl("https://google.com/api/request/1"))
-                .thenGetIterable("List of int", new TypeReference<List<Integer>>() {
+                .thenGetList("List of int", new TypeReference<List<Integer>>() {
                 })
                 .criteria("lesser than 5", i -> i < 5)
         );
@@ -499,7 +499,7 @@ public class ResponseBodyTest {
                                 "true"
                         )))
                 .expect(forwardedUrl("https://google.com/api/request/1"))
-                .thenGetIterable("List of int", IntList.class)
+                .thenGetList("List of int", IntList.class)
                 .criteria("greater than 6", i -> i > 6)
         );
 
@@ -517,7 +517,7 @@ public class ResponseBodyTest {
                                 "true"
                         )))
                 .expect(forwardedUrl("https://google.com/api/request/1"))
-                .thenGetIterable("List of int", new TypeReference<List<Integer>>() {
+                .thenGetList("List of int", new TypeReference<List<Integer>>() {
                 })
                 .criteria("greater than 6", i -> i > 6)
         );
@@ -536,7 +536,7 @@ public class ResponseBodyTest {
                                 "true"
                         )))
                 .expect(forwardedUrl("https://google.com/api/request/1"))
-                .thenGetIterable("Value of the field 'arrayValue1'",
+                .thenGetList("Value of the field 'arrayValue1'",
                         BoundedDto.class,
                         GenericDto::getArrayValue1)
                 .criteria("contains 'a'", s -> s.contains("a"))
@@ -556,7 +556,7 @@ public class ResponseBodyTest {
                                 "true"
                         )))
                 .expect(forwardedUrl("https://google.com/api/request/1"))
-                .thenGetIterable("Value of the field 'arrayValue2'",
+                .thenGetList("Value of the field 'arrayValue2'",
                         new TypeReference<GenericDto<String[], List<Integer>>>() {
                         },
                         GenericDto::getArrayValue2)
@@ -577,7 +577,7 @@ public class ResponseBodyTest {
                                 "true"
                         )))
                 .expect(forwardedUrl("https://google.com/api/request/1"))
-                .thenGetIterable("Value of the field 'arrayValue1'",
+                .thenGetList("Value of the field 'arrayValue1'",
                         BoundedDto.class,
                         GenericDto::getArrayValue1)
                 .criteria("contains 'j'", s -> s.contains("j"))
@@ -597,7 +597,7 @@ public class ResponseBodyTest {
                                 "true"
                         )))
                 .expect(forwardedUrl("https://google.com/api/request/1"))
-                .thenGetIterable("Value of the field 'arrayValue2'",
+                .thenGetList("Value of the field 'arrayValue2'",
                         new TypeReference<GenericDto<String[], List<Integer>>>() {
                         },
                         GenericDto::getArrayValue2)
