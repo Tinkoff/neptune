@@ -16,7 +16,7 @@ tasks.withType(JavaCompile) {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = 'data.base.api'
+            artifactId = 'database.abstractions'
             from components.java
             repositories {
                 maven {
