@@ -11,7 +11,8 @@ configurations {
 }
 
 dependencies {
-    implementation(project(":database.abstractions"))
+    api(project(":database.abstractions"))
+    api project(':core.api')
     inpath(project(":core.api")) {
         transitive = false
     }
@@ -21,7 +22,7 @@ dependencies {
     compileClasspath(group: 'org.springframework', name: 'spring-context', version: springVersion)
     compileClasspath(group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.21')
     compileClasspath('io.projectreactor.tools:blockhound:1.0.6.RELEASE')
-    compileClasspath('io.projectreactor:reactor-test:3.4.11')
+    compileClasspath('io.projectreactor:reactor-test:3.4.12')
     compileClasspath(group: 'io.micrometer', name: 'micrometer-core', version: '1.7.5')
     compileClasspath(group: 'io.reactivex.rxjava3', name: 'rxjava', version: '3.1.2')
     compileClasspath(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
