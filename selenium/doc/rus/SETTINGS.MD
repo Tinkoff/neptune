@@ -189,9 +189,6 @@ public class SomeClass {
 
 #### WEB_DRIVER_CAPABILITY_BROWSER_NAME
 
-
-  
-
 Указывает значение `browserName` для тех случаев, когда `WEB_DRIVER_TO_LAUNCH=REMOTE_DRIVER`. Во всех остальных случаях
 настройка/свойство игнорируется.
 
@@ -452,12 +449,9 @@ public class SomeClass {
 
 ## REMOTE_WEB_DRIVER_URL
 
-
-  
-
 [Важная информация](#web_driver_to_launch)
 
-Настройка указывает URL хаба `Selenium Grid` или `Selenoid`, который используется для открытия браузера на удаленном окружении.
+Настройка указывает URL хаба `Selenium Grid` или `Selenoid`, который используется для открытия браузера на удаленном устройстве.
 Данное свойство/настройка используется тогда, когда `WEB_DRIVER_TO_LAUNCH=REMOTE_DRIVER`, в остальных случаях игнорируется.
 
 Пример настройки:
@@ -480,9 +474,6 @@ public class SomeClass {
     }
 }
 ```
-
-Если свойство не указано, и `WEB_DRIVER_TO_LAUNCH=REMOTE_DRIVER`, тогда происходит локальный старт Selenium-сервера (`org.openqa.selenium.remote.server.SeleniumServer`), 
-и неявно используются адрес, по которому доступен локальный хаб.
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов-URL)
 
