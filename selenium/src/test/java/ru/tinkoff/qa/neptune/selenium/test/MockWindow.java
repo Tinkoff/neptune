@@ -40,6 +40,11 @@ public class MockWindow implements WebDriver.Window {
     }
 
     @Override
+    public void minimize() {
+        //TODO does nothing for now
+    }
+
+    @Override
     public void fullscreen() {
         //TODO does nothing for now
     }

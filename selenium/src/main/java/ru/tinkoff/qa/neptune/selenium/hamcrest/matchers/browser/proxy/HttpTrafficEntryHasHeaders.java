@@ -1,19 +1,18 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy;
 
-import com.browserup.harreader.model.HarEntry;
-import com.browserup.harreader.model.HarHeader;
 import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.HttpTraffic;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.HarRecordHeader;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.RecordedRequest;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.RecordedResponse;
 
-import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.valueOf;
 import static java.util.stream.Collectors.toMap;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.equalTo;
@@ -22,12 +21,12 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFea
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.mapped.MappedDiagnosticFeatureMatcher.VALUE_MATCHER_MASK;
 
 @Description("{getFrom} has header [{" + KEY_MATCHER_MASK + "}] {" + VALUE_MATCHER_MASK + "}")
-public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry, String, String> {
+public class HttpTrafficEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HttpTraffic, String, String> {
 
     @DescriptionFragment(value = "getFrom")
     private final Object getFrom;
 
-    private HarEntryHasHeaders(Object getFrom, Matcher<? super String> nameMatcher, Matcher<? super String> valueMatcher) {
+    private HttpTrafficEntryHasHeaders(Object getFrom, Matcher<? super String> nameMatcher, Matcher<? super String> valueMatcher) {
         super(true, nameMatcher, valueMatcher);
         checkNotNull(getFrom);
         this.getFrom = getFrom;
@@ -40,7 +39,7 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
      * @param value is the expected header value
      * @return a new Matcher
      */
-    public static Matcher<HarEntry> responseHasHeader(String name, String value) {
+    public static Matcher<HttpTraffic> responseHasHeader(String name, String value) {
         return responseHasHeader(equalTo(name), value);
     }
 
@@ -51,7 +50,7 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
      * @param value       is the expected header value
      * @return a new Matcher
      */
-    public static Matcher<HarEntry> responseHasHeader(Matcher<? super String> nameMatcher, String value) {
+    public static Matcher<HttpTraffic> responseHasHeader(Matcher<? super String> nameMatcher, String value) {
         return responseHasHeader(nameMatcher, equalTo(value));
     }
 
@@ -63,7 +62,7 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
      * @return a new Matcher
      */
     @SuppressWarnings("unchecked")
-    public static Matcher<HarEntry> responseHasHeader(String name, Matcher<? super String> valueMatcher) {
+    public static Matcher<HttpTraffic> responseHasHeader(String name, Matcher<? super String> valueMatcher) {
         return responseHasHeader(name, new Matcher[]{valueMatcher});
     }
 
@@ -75,7 +74,7 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
      * @return a new Matcher
      */
     @SafeVarargs
-    public static Matcher<HarEntry> responseHasHeader(String name, Matcher<? super String>... valueMatchers) {
+    public static Matcher<HttpTraffic> responseHasHeader(String name, Matcher<? super String>... valueMatchers) {
         return responseHasHeader(equalTo(name), valueMatchers);
     }
 
@@ -87,8 +86,8 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
      * @return a new Matcher
      */
     @SafeVarargs
-    public static Matcher<HarEntry> responseHasHeader(Matcher<? super String> nameMatcher, Matcher<? super String>... valueMatchers) {
-        return new HarEntryHasHeaders(new RecordedResponse(), nameMatcher, all(valueMatchers));
+    public static Matcher<HttpTraffic> responseHasHeader(Matcher<? super String> nameMatcher, Matcher<? super String>... valueMatchers) {
+        return new HttpTrafficEntryHasHeaders(new RecordedResponse(), nameMatcher, all(valueMatchers));
     }
 
     /**
@@ -99,7 +98,7 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
      * @return a new Matcher
      */
     @SuppressWarnings("unchecked")
-    public static Matcher<HarEntry> responseHasHeader(Matcher<? super String> nameMatcher, Matcher<? super String> valueMatcher) {
+    public static Matcher<HttpTraffic> responseHasHeader(Matcher<? super String> nameMatcher, Matcher<? super String> valueMatcher) {
         return responseHasHeader(nameMatcher, new Matcher[]{valueMatcher});
     }
 
@@ -110,7 +109,7 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
      * @param nameMatcher criteria that describes header name
      * @return a new Matcher
      */
-    public static Matcher<HarEntry> responseHasHeaderName(Matcher<? super String> nameMatcher) {
+    public static Matcher<HttpTraffic> responseHasHeaderName(Matcher<? super String> nameMatcher) {
         return responseHasHeader(nameMatcher, anything());
     }
 
@@ -120,7 +119,7 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
      * @param name is the expected header name
      * @return a new Matcher
      */
-    public static Matcher<HarEntry> responseHasHeaderName(String name) {
+    public static Matcher<HttpTraffic> responseHasHeaderName(String name) {
         return responseHasHeaderName(equalTo(name));
     }
 
@@ -131,7 +130,7 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
      * @return a new Matcher
      */
     @SafeVarargs
-    public static Matcher<HarEntry> responseHasHeaderValue(Matcher<? super String>... valueMatchers) {
+    public static Matcher<HttpTraffic> responseHasHeaderValue(Matcher<? super String>... valueMatchers) {
         return responseHasHeader(anything(), valueMatchers);
     }
 
@@ -142,7 +141,7 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
      * @return a new Matcher
      */
     @SuppressWarnings("unchecked")
-    public static Matcher<HarEntry> responseHasHeaderValue(Matcher<? super String> valueMatcher) {
+    public static Matcher<HttpTraffic> responseHasHeaderValue(Matcher<? super String> valueMatcher) {
         return responseHasHeaderValue(new Matcher[]{valueMatcher});
     }
 
@@ -152,7 +151,7 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
      * @param value is the expected header value
      * @return a new Matcher
      */
-    public static Matcher<HarEntry> responseHasHeaderValue(String value) {
+    public static Matcher<HttpTraffic> responseHasHeaderValue(String value) {
         return responseHasHeaderValue(equalTo(value));
     }
 
@@ -163,7 +162,7 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
      * @param value is the expected header value
      * @return a new Matcher
      */
-    public static Matcher<HarEntry> requestHasHeader(String name, String value) {
+    public static Matcher<HttpTraffic> requestHasHeader(String name, String value) {
         return requestHasHeader(equalTo(name), value);
     }
 
@@ -174,7 +173,7 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
      * @param value       is the expected header value
      * @return a new Matcher
      */
-    public static Matcher<HarEntry> requestHasHeader(Matcher<? super String> nameMatcher, String value) {
+    public static Matcher<HttpTraffic> requestHasHeader(Matcher<? super String> nameMatcher, String value) {
         return requestHasHeader(nameMatcher, equalTo(value));
     }
 
@@ -186,7 +185,7 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
      * @return a new Matcher
      */
     @SuppressWarnings("unchecked")
-    public static Matcher<HarEntry> requestHasHeader(String name, Matcher<? super String> valueMatcher) {
+    public static Matcher<HttpTraffic> requestHasHeader(String name, Matcher<? super String> valueMatcher) {
         return requestHasHeader(name, new Matcher[]{valueMatcher});
     }
 
@@ -198,7 +197,7 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
      * @return a new Matcher
      */
     @SafeVarargs
-    public static Matcher<HarEntry> requestHasHeader(String name, Matcher<? super String>... valueMatchers) {
+    public static Matcher<HttpTraffic> requestHasHeader(String name, Matcher<? super String>... valueMatchers) {
         return requestHasHeader(equalTo(name), valueMatchers);
     }
 
@@ -210,8 +209,8 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
      * @return a new Matcher
      */
     @SafeVarargs
-    public static Matcher<HarEntry> requestHasHeader(Matcher<? super String> nameMatcher, Matcher<? super String>... valueMatchers) {
-        return new HarEntryHasHeaders(new RecordedRequest(), nameMatcher, all(valueMatchers));
+    public static Matcher<HttpTraffic> requestHasHeader(Matcher<? super String> nameMatcher, Matcher<? super String>... valueMatchers) {
+        return new HttpTrafficEntryHasHeaders(new RecordedRequest(), nameMatcher, all(valueMatchers));
     }
 
     /**
@@ -222,7 +221,7 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
      * @return a new Matcher
      */
     @SuppressWarnings("unchecked")
-    public static Matcher<HarEntry> requestHasHeader(Matcher<? super String> nameMatcher, Matcher<? super String> valueMatcher) {
+    public static Matcher<HttpTraffic> requestHasHeader(Matcher<? super String> nameMatcher, Matcher<? super String> valueMatcher) {
         return requestHasHeader(nameMatcher, new Matcher[]{valueMatcher});
     }
 
@@ -233,7 +232,7 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
      * @param nameMatcher criteria that describes header name
      * @return a new Matcher
      */
-    public static Matcher<HarEntry> requestHasHeaderName(Matcher<? super String> nameMatcher) {
+    public static Matcher<HttpTraffic> requestHasHeaderName(Matcher<? super String> nameMatcher) {
         return requestHasHeader(nameMatcher, anything());
     }
 
@@ -243,7 +242,7 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
      * @param name is the expected header name
      * @return a new Matcher
      */
-    public static Matcher<HarEntry> requestHasHeaderName(String name) {
+    public static Matcher<HttpTraffic> requestHasHeaderName(String name) {
         return requestHasHeaderName(equalTo(name));
     }
 
@@ -254,7 +253,7 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
      * @return a new Matcher
      */
     @SafeVarargs
-    public static Matcher<HarEntry> requestHasHeaderValue(Matcher<? super String>... valueMatchers) {
+    public static Matcher<HttpTraffic> requestHasHeaderValue(Matcher<? super String>... valueMatchers) {
         return requestHasHeader(anything(), valueMatchers);
     }
 
@@ -265,7 +264,7 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
      * @return a new Matcher
      */
     @SuppressWarnings("unchecked")
-    public static Matcher<HarEntry> requestHasHeaderValue(Matcher<? super String> valueMatcher) {
+    public static Matcher<HttpTraffic> requestHasHeaderValue(Matcher<? super String> valueMatcher) {
         return requestHasHeaderValue(new Matcher[]{valueMatcher});
     }
 
@@ -275,21 +274,23 @@ public class HarEntryHasHeaders extends MappedDiagnosticFeatureMatcher<HarEntry,
      * @param value is the expected header value
      * @return a new Matcher
      */
-    public static Matcher<HarEntry> requestHasHeaderValue(String value) {
+    public static Matcher<HttpTraffic> requestHasHeaderValue(String value) {
         return requestHasHeaderValue(equalTo(value));
     }
 
     @Override
-    protected Map<String, String> getMap(HarEntry harEntry) {
-        List<HarHeader> headers;
+    protected Map<String, String> getMap(HttpTraffic httpTraffic) {
+        Map<String, Object> headers;
 
         if (getFrom instanceof RecordedResponse) {
-            headers = harEntry.getResponse().getHeaders();
+            headers = httpTraffic.getResponse().getResponse().getHeaders().toJson();
         } else {
-            headers = harEntry.getRequest().getHeaders();
+            headers = httpTraffic.getRequest().getRequest().getHeaders().toJson();
         }
 
-        return headers.stream().collect(toMap(HarHeader::getName, HarHeader::getValue));
+        return headers.entrySet()
+                .stream()
+                .collect(toMap(Map.Entry::getKey, entry -> valueOf(entry.getValue())));
     }
 
     @Override

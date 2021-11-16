@@ -48,6 +48,11 @@ class DefaultWindow implements Window, TakesScreenshot {
     }
 
     @Override
+    public void minimize() {
+        switchToMeAndDo(webDriver -> currentWindow(webDriver).minimize());
+    }
+
+    @Override
     public void fullscreen() {
         switchToMeAndDo(webDriver -> currentWindow(webDriver).fullscreen());
     }

@@ -5,8 +5,8 @@
 ## Оглавление
 
 - [Получение сообщения](#Получение-сообщения)
-    - [Получение данных сообщения как List](#Получение-данных-сообщения-как-List)
-    - [Получение данных сообщения в виде массива](#Получение-данных-сообщения-в-виде-массива)
+  - [Получение данных сообщения как List](#Получение-данных-сообщения-как-List)
+  - [Получение данных сообщения в виде массива](#Получение-данных-сообщения-в-виде-массива)
     - [Получение данных сообщения как Java-объект из Iterable](#Получение-данных-сообщения-как-Java-объект-из-Iterable)
 - [Публикация сообщений](#Публикация-сообщений)
 
@@ -33,20 +33,20 @@ import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplie
 
 public class MyTest {
 
-    @Test
-    public void myTest() {
-        // Возвращает сообщение из очереди, десериализованное в коллекцию/Iterable
-        // Из общего сообщения (Iterable/коллекции) вернется под-множество(немутабельный лист) подходящих элементов.
-        List<ClassToDeserialize> results = kafka().poll(kafkaIterable("Результирующий лист", //описываем то, 
-                // что нужно получить
-                ClassToDeserialize.class, //класс элемента результирующего списка
-                "test_topic1", "test_topic2") //топики для получения сообщений
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-                // которому должен соответствовать каждый элемент результирующей коллекции
-                .timeOut(ofSeconds(5)) //можно указать время на получение 
-                // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, если результат не был получен
-    }
+  @Test
+  public void myTest() {
+    // Возвращает сообщение из очереди, десериализованное в коллекцию/Iterable
+    // Из общего сообщения (Iterable/коллекции) вернется под-множество(немутабельный лист) подходящих элементов.
+    List<ClassToDeserialize> results = kafka().poll(kafkaIterable("Результирующий лист", //описываем то, 
+            // что нужно получить
+            ClassToDeserialize.class, //класс элемента результирующего списка
+            "test_topic1", "test_topic2") //топики для получения сообщений
+            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
+            // которому должен соответствовать каждый элемент результирующей коллекции
+            .timeOut(ofSeconds(5)) //можно указать время на получение 
+            // ожидаемого результата = 5 секунд
+            .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, если результат не был получен
+  }
 }
 ```
 
@@ -67,7 +67,7 @@ public class MyTest {
     // Из общего сообщения (Iterable/коллекции) вернется под-множество(немутабельный лист) подходящих элементов.
     List<ClassToDeserialize<SomeType>> result = kafka().poll(kafkaIterable("Результирующий лист", //описываем то, 
             // что нужно получить
-            new TypeReference<ClassToDeserialize<SomeType>> () {
+            new TypeReference<ClassToDeserialize<SomeType>>() {
             }, //тип элемента результирующего списка
             "test_topic1", "test_topic2") //топики для получения сообщений
             .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
@@ -129,7 +129,8 @@ public class MyTest {
     // вычислений. Из коллекции вернется под-множество подходящих элементов.
     List<Object> result = kafka().poll(kafkaIterable("Результирующий лист", //описываем 
             // то, что нужно получить
-            new TypeReference<ClassToDeserialize<SomeType>>() {}, //тип объекта-модели для десериализации
+            new TypeReference<ClassToDeserialize<SomeType>>() {
+            }, //тип объекта-модели для десериализации
             o -> {
               return /*описываем то, как получаем из ClassToDeserialize Object */;
             },
@@ -663,8 +664,7 @@ public class MyTest {
 [KAFKA_KEY_TRANSFORMER](./SETTINGS.MD#KAFKA_KEY_TRANSFORMER),
 [KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER),
 [DEFAULT_TOPIC_FOR_SEND](./SETTINGS.MD#DEFAULT_TOPIC_FOR_SEND)
-[KAFKA_CALL_BACK](./SETTINGS.MD#kafka_call_back),
-перед началом выполнения имеют непустые значения
+[KAFKA_CALL_BACK](./SETTINGS.MD#kafka_call_back), перед началом выполнения имеют непустые значения
 
 ```java
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;

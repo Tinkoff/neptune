@@ -8,13 +8,12 @@
 
 - [Алерты](#Алерты)
 - [Проксирование/запись трафика браузера](#Проксированиезапись-трафика-браузера)
-    - [Заголовки запросов и ответов](#Заголовки-запросов-и-ответов)
-    - [Версия протокола запросов и ответов](#Версия-протокола-запросов-и-ответов)
-    - [Тело запроса и ответа](#Тело-запроса-и-ответа)
-    - [Метод http-запроса](#Метод-http-запроса)
-    - [Проверка query http-запроса](#Проверка-query-http-запроса)
-    - [URL http-запроса](#url-http-запроса)
-    - [Код ответа на запрос](#Код-ответа-на-запрос)
+  - [Заголовки запросов и ответов](#Заголовки-запросов-и-ответов)
+  - [Версия протокола ответов](#Версия-протокола-ответов)
+  - [Тело запроса и ответа](#Тело-запроса-и-ответа)
+  - [Метод http-запроса](#Метод-http-запроса)
+  - [URL http-запроса](#url-http-запроса)
+  - [Код ответа на запрос](#Код-ответа-на-запрос)
 - [Элементы страницы](#Элементы-страницы)
     - [Доступность / Интерактивность](#Доступность--Интерактивность)
     - [Видимость](#Видимость)
@@ -94,15 +93,15 @@ import static ru.tinkoff.qa.neptune.check.MatchAction.match;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsItemsMatcher.iterableHasItem;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
 import static ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyGetStepSupplier.proxiedRequests;
-import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.HarEntryHasHeaders.*;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.HttpTrafficEntryHasHeaders.*;
 
 public class MyTest {
 
     @Test(description = "Использование assertThat")
     public void test() {
-        var httpTraffic = inBrowser()
-                .resetProxyRecording()
-                .get(proxiedRequests());
+      var httpTraffic = inBrowser()
+              .enableAndRefreshNetwork()
+              .get(proxiedRequests());
 
         assertThat("записанный трафик",
                 httpTraffic,
@@ -189,9 +188,9 @@ public class MyTest {
 
     @Test(description = "Использование check")
     public void test2() {
-        var httpTraffic = inBrowser()
-                .resetProxyRecording()
-                .get(proxiedRequests());
+      var httpTraffic = inBrowser()
+              .enableAndRefreshNetwork()
+              .get(proxiedRequests());
 
         check("записанный трафик",
                 httpTraffic,
@@ -235,7 +234,7 @@ public class MyTest {
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-### Версия протокола запросов и ответов
+### Версия протокола ответов
 
 ```java
 package org.mypack;
@@ -249,28 +248,17 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.not.NotMatcher.notO
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsItemsMatcher.iterableHasItem;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
 import static ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyGetStepSupplier.proxiedRequests;
-import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.HarHasVersionMatcher.requestHasVersion;
-import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.HarHasVersionMatcher.responseHasVersion;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.HttpTrafficHasVersionMatcher.responseHasVersion;
 
 public class MyTest {
 
     @Test(description = "Использование assertThat")
     public void test() {
-        var httpTraffic = inBrowser()
-                .resetProxyRecording()
-                .get(proxiedRequests());
+      var httpTraffic = inBrowser()
+              .enableAndRefreshNetwork()
+              .get(proxiedRequests());
 
-        assertThat("записанный трафик",
-                httpTraffic,
-                iterableHasItem(requestHasVersion(HTTP_1_1))); //содержит запрос, у которого
-        // указанная версия http протокола
-
-        assertThat("записанный трафик",
-                httpTraffic,
-                iterableHasItem(requestHasVersion(notOf(equalTo(HTTP_1_1))))); //содержит запрос, у которого
-        // версия http протокола соответствует критерию
-
-        assertThat("записанный трафик",
+      assertThat("записанный трафик",
                 httpTraffic,
                 iterableHasItem(responseHasVersion(HTTP_1_1))); //содержит ответ, у которого
         // указанная версия http протокола
@@ -283,16 +271,12 @@ public class MyTest {
 
     @Test(description = "Использование check")
     public void test2() {
-        var httpTraffic = inBrowser()
-                .resetProxyRecording()
-                .get(proxiedRequests());
+      var httpTraffic = inBrowser()
+              .enableAndRefreshNetwork()
+              .get(proxiedRequests());
 
         check("записанный трафик",
                 httpTraffic,
-                match(iterableHasItem(requestHasVersion(HTTP_1_1))), //содержит запрос, у которого
-                // указанная версия http протокола
-                match(iterableHasItem(requestHasVersion(HTTP_1_1))), //содержит запрос, у которого
-                // указанная версия http протокола
                 match(iterableHasItem(responseHasVersion(HTTP_1_1))), //содержит ответ, у которого
                 // указанная версия http протокола
                 match(iterableHasItem(responseHasVersion(notOf(equalTo(HTTP_1_1)))))); //содержит ответ, у которого
@@ -328,9 +312,9 @@ public class MyTest {
 
     @Test(description = "Использование assertThat")
     public void test() {
-        var httpTraffic = inBrowser()
-                .resetProxyRecording()
-                .get(proxiedRequests());
+      var httpTraffic = inBrowser()
+              .enableAndRefreshNetwork()
+              .get(proxiedRequests());
 
         var someExpectedBody = new SomeObjectClass();
 
@@ -426,9 +410,9 @@ public class MyTest {
 
     @Test(description = "Использование check")
     public void test2() {
-        var httpTraffic = inBrowser()
-                .resetProxyRecording()
-                .get(proxiedRequests());
+      var httpTraffic = inBrowser()
+              .enableAndRefreshNetwork()
+              .get(proxiedRequests());
 
         var someExpectedBody = new SomeObjectClass();
 
@@ -536,9 +520,9 @@ public class MyTest {
 
     @Test(description = "Использование assertThat")
     public void test() {
-        var httpTraffic = inBrowser()
-                .resetProxyRecording()
-                .get(proxiedRequests());
+      var httpTraffic = inBrowser()
+              .enableAndRefreshNetwork()
+              .get(proxiedRequests());
 
         var someExpectedBody = new SomeObjectClass();
 
@@ -637,9 +621,9 @@ public class MyTest {
 
     @Test(description = "Использование check")
     public void test2() {
-        var httpTraffic = inBrowser()
-                .resetProxyRecording()
-                .get(proxiedRequests());
+      var httpTraffic = inBrowser()
+              .enableAndRefreshNetwork()
+              .get(proxiedRequests());
 
         var someExpectedBody = new SomeObjectClass();
 
@@ -721,7 +705,7 @@ public class MyTest {
 ```java
 package org.mypack;
 
-import static com.browserup.harreader.model.HttpMethod.GET;
+import static io.netty.handler.codec.http.HttpMethod.GET;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static ru.tinkoff.qa.neptune.check.CheckActionSupplier.check;
@@ -736,9 +720,9 @@ public class MyTest {
 
     @Test(description = "Использование assertThat")
     public void test() {
-        var httpTraffic = inBrowser()
-                .resetProxyRecording()
-                .get(proxiedRequests());
+      var httpTraffic = inBrowser()
+              .enableAndRefreshNetwork()
+              .get(proxiedRequests());
 
         assertThat("записанный трафик",
                 httpTraffic,
@@ -753,9 +737,9 @@ public class MyTest {
 
     @Test(description = "Использование check")
     public void test2() {
-        var httpTraffic = inBrowser()
-                .resetProxyRecording()
-                .get(proxiedRequests());
+      var httpTraffic = inBrowser()
+              .enableAndRefreshNetwork()
+              .get(proxiedRequests());
 
         check("записанный трафик",
                 httpTraffic,
@@ -763,102 +747,6 @@ public class MyTest {
                 // указанный http-метод
                 match(iterableHasItem(requestHasMethod(notOf(equalTo(GET)))))); //содержит запрос, у которого
         // http-метод соответствует критерию
-    }
-}
-```
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
-### Проверка query http-запроса
-
-```java
-package org.mypack;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static ru.tinkoff.qa.neptune.check.CheckActionSupplier.check;
-import static ru.tinkoff.qa.neptune.check.MatchAction.match;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsItemsMatcher.iterableHasItem;
-import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
-import static ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyGetStepSupplier.proxiedRequests;
-import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.RequestHasQueries.requestHasQueryParameter;
-import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.RequestHasQueries.requestHasQueryParameterValue;
-
-public class MyTest {
-
-    @Test(description = "Использование assertThat")
-    public void test() {
-        var httpTraffic = inBrowser()
-                .resetProxyRecording()
-                .get(proxiedRequests());
-
-        assertThat("записанный трафик",
-                httpTraffic,
-                iterableHasItem(requestHasQueryParameter("header", "value123"))); //содержит запрос, у которого
-        // указанный query-параметр с указанным значением
-
-        assertThat("записанный трафик",
-                httpTraffic,
-                iterableHasItem(requestHasQueryParameter("header", containsString("value")))); //содержит запрос,
-        // у которого указанный query-параметр со значением, которое соответствует указанному критерию
-
-        assertThat("записанный трафик",
-                httpTraffic,
-                iterableHasItem(requestHasQueryParameter(containsString("header"), "value123"))); //содержит запрос,
-        // у которого query-параметр, чье имя соответствует указанному критерию, с указанным значением
-
-        assertThat("записанный трафик",
-                httpTraffic,
-                iterableHasItem(requestHasQueryParameter(containsString("header"), containsString("value"))));
-        //содержит запрос, у которого query-параметр, чье имя соответствует указанному критерию, со значением,
-        // которое соответствует указанному критерию
-
-        assertThat("записанный трафик",
-                httpTraffic,
-                iterableHasItem(requestHasQueryParameter("header"))); //содержит запрос, у которого
-        // указанный query-параметр
-
-        assertThat("записанный трафик",
-                httpTraffic,
-                iterableHasItem(requestHasQueryParameter(containsString("header")))); //содержит запрос,
-        // у которого query-параметр, чье имя соответствует указанному критерию
-
-        assertThat("записанный трафик",
-                httpTraffic,
-                iterableHasItem(requestHasQueryParameterValue("value123"))); //содержит запрос, у которого
-        // query-параметр с указанным значением
-
-        assertThat("записанный трафик",
-                httpTraffic,
-                iterableHasItem(requestHasQueryParameterValue(containsString("value")))); //содержит запрос, у которого
-        // query-параметр со значением, которое соответствует указанному критерию
-    }
-
-    @Test(description = "Использование check")
-    public void test2() {
-        var httpTraffic = inBrowser()
-                .resetProxyRecording()
-                .get(proxiedRequests());
-
-        check("записанный трафик",
-                httpTraffic,
-                match(iterableHasItem(requestHasQueryParameter("header", "value123"))), //содержит запрос, у которого
-                // указанный query-параметр с указанным значением
-                match(iterableHasItem(requestHasQueryParameter("header", containsString("value")))),//содержит запрос,
-                // у которого указанный query-параметр со значением, которое соответствует указанному критерию
-                match(iterableHasItem(requestHasQueryParameter(containsString("header"), "value123"))), //содержит запрос,
-                // у которого query-параметр, чье имя соответствует указанному критерию, с указанным значением
-                match(iterableHasItem(requestHasQueryParameter(containsString("header"), containsString("value")))), //содержит запрос,
-                // у которого query-параметр,  чье имя соответствует указанному критерию, со значением,
-                // которое соответствует указанному критерию
-                match(iterableHasItem(requestHasQueryParameter("header"))), //содержит запрос, у которого
-                // указанный query-параметр
-                match(iterableHasItem(requestHasQueryParameter(containsString("header")))), //содержит запрос,
-                // у которого query-параметр, чье имя соответствует указанному критерию
-                match(iterableHasItem(requestHasQueryParameterValue("value123"))), //содержит запрос, у которого
-                // query-параметр с указанным значением
-                match(iterableHasItem(requestHasQueryParameterValue(containsString("value"))))); //содержит запрос
-        // c query-параметром, у которого значение соответствует указанному критерию
     }
 }
 ```
@@ -887,9 +775,9 @@ public class MyTest {
 
     @Test(description = "Использование assertThat")
     public void test() throws Exception {
-        var httpTraffic = inBrowser()
-                .resetProxyRecording()
-                .get(proxiedRequests());
+      var httpTraffic = inBrowser()
+              .enableAndRefreshNetwork()
+              .get(proxiedRequests());
 
         var url = new URL("https://www.google.com/search?q=how+to+write+e2e+test+cases");
 
@@ -917,9 +805,9 @@ public class MyTest {
 
     @Test(description = "Использование check")
     public void test2() throws Exception {
-        var httpTraffic = inBrowser()
-                .resetProxyRecording()
-                .get(proxiedRequests());
+      var httpTraffic = inBrowser()
+              .enableAndRefreshNetwork()
+              .get(proxiedRequests());
 
         var url = new URL("https://www.google.com/search?q=how+to+write+e2e+test+cases");
 
@@ -960,9 +848,9 @@ public class MyTest {
 
     @Test(description = "Использование assertThat")
     public void test() {
-        var httpTraffic = inBrowser()
-                .resetProxyRecording()
-                .get(proxiedRequests());
+      var httpTraffic = inBrowser()
+              .enableAndRefreshNetwork()
+              .get(proxiedRequests());
 
         assertThat("записанный трафик",
                 httpTraffic,
@@ -977,9 +865,9 @@ public class MyTest {
 
     @Test(description = "Использование check")
     public void test2() {
-        var httpTraffic = inBrowser()
-                .resetProxyRecording()
-                .get(proxiedRequests());
+      var httpTraffic = inBrowser()
+              .enableAndRefreshNetwork()
+              .get(proxiedRequests());
 
         check("записанный трафик",
                 httpTraffic,

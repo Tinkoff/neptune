@@ -1,70 +1,89 @@
 package ru.tinkoff.qa.neptune.selenium.functions.browser.proxy;
 
-import com.browserup.harreader.model.HarEntry;
+import io.netty.handler.codec.http.HttpMethod;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.collections.CollectionCaptor;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.selenium.HttpProxy;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
+import java.net.http.HttpClient;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
-import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.GetProxy.getBrowserProxy;
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.GetHttpProxy.getBrowserProxy;
 
 @Description("Http traffic")
 @CaptureOnSuccess(by = CollectionCaptor.class)
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria for http request/response")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Waiting time")
-public class BrowserProxyGetStepSupplier extends SequentialGetStepSupplier.GetListStepSupplier<SeleniumStepContext, List<HarEntry>, HarEntry, BrowserProxyGetStepSupplier> {
+public class BrowserProxyGetStepSupplier extends SequentialGetStepSupplier.GetListStepSupplier<SeleniumStepContext, List<HttpTraffic>, HttpTraffic, BrowserProxyGetStepSupplier> {
 
     private BrowserProxyGetStepSupplier() {
-        super(getBrowserProxy().andThen(proxy -> ofNullable(proxy)
-                .map(p -> {
-                    var harEntries = new NeptuneHarEntries();
+        super(getBrowserProxy()
+                .andThen(httpProxy -> ofNullable(httpProxy)
+                        .map(HttpProxy::getTraffic)
+                        .orElseGet(ArrayList::new)));
 
-                    if (!p.isStarted()) {
-                        return harEntries;
-                    }
-
-                    var har = p.getHar();
-                    if (har == null) {
-                        System.err.println("HAR recording is not started");
-                        return harEntries;
-                    }
-
-                    harEntries.addAll(har.getLog().getEntries().stream().map(harEntry -> {
-                        HarEntry entry = new HarEntry() {
-                            @Override
-                            public String toString() {
-                                var request = getRequest();
-                                return translate(new NeptuneHarEntryDescription()) + ": " + request.getMethod() + " "
-                                        + request.getUrl();
-                            }
-                        };
-                        entry.setCache(harEntry.getCache());
-                        entry.setComment(harEntry.getComment());
-                        entry.setPageref(harEntry.getPageref());
-                        entry.setRequest(harEntry.getRequest());
-                        entry.setConnection(harEntry.getConnection());
-                        entry.setResponse(harEntry.getResponse());
-                        entry.setServerIPAddress(harEntry.getServerIPAddress());
-                        entry.setStartedDateTime(harEntry.getStartedDateTime());
-                        entry.setTime(harEntry.getTime());
-                        entry.setTimings(harEntry.getTimings());
-                        return entry;
-                    }).collect(toList()));
-
-                    return harEntries;
-                })
-                .orElseGet(NeptuneHarEntries::new)));
     }
 
     public static BrowserProxyGetStepSupplier proxiedRequests() {
         return new BrowserProxyGetStepSupplier();
+    }
+
+    public BrowserProxyGetStepSupplier recordedRequestUrl(String url) {
+        return criteria(BrowserProxyCriteria.recordedRequestUrl(url));
+    }
+
+    public BrowserProxyGetStepSupplier recordedRequestUrlMatches(String urlExpression) {
+        return criteria(BrowserProxyCriteria.recordedRequestUrlMatches(urlExpression));
+    }
+
+    public BrowserProxyGetStepSupplier recordedRequestMethod(HttpMethod method) {
+        return criteria(BrowserProxyCriteria.recordedRequestMethod(method));
+    }
+
+    public BrowserProxyGetStepSupplier recordedResponseHttpVersion(HttpClient.Version version) {
+        return criteria(BrowserProxyCriteria.recordedResponseHttpVersion(version));
+    }
+
+    public BrowserProxyGetStepSupplier recordedRequestHeader(String name, String value) {
+        return criteria(BrowserProxyCriteria.recordedRequestHeader(name, value));
+    }
+
+    public BrowserProxyGetStepSupplier recordedRequestHeaderMatches(String name, String valueExpression) {
+        return criteria(BrowserProxyCriteria.recordedRequestHeaderMatches(name, valueExpression));
+    }
+
+    public BrowserProxyGetStepSupplier recordedResponseHeader(String name, String value) {
+        return criteria(BrowserProxyCriteria.recordedResponseHeader(name, value));
+    }
+
+    public BrowserProxyGetStepSupplier recordedResponseHeaderMatches(String name, String valueExpression) {
+        return criteria(BrowserProxyCriteria.recordedResponseHeaderMatches(name, valueExpression));
+    }
+
+    public BrowserProxyGetStepSupplier recordedRequestBody(String body) {
+        return criteria(BrowserProxyCriteria.recordedRequestBody(body));
+    }
+
+    public BrowserProxyGetStepSupplier recordedResponseBody(String body) {
+        return criteria(BrowserProxyCriteria.recordedResponseBody(body));
+    }
+
+    public BrowserProxyGetStepSupplier recordedRequestBodyMatches(String bodyExpression) {
+        return criteria(BrowserProxyCriteria.recordedRequestBodyMatches(bodyExpression));
+    }
+
+    public BrowserProxyGetStepSupplier recordedResponseBodyMatches(String bodyExpression) {
+        return criteria(BrowserProxyCriteria.recordedResponseBodyMatches(bodyExpression));
+    }
+
+    public BrowserProxyGetStepSupplier recordedResponseStatusCode(int status) {
+        return criteria(BrowserProxyCriteria.recordedResponseStatusCode(status));
     }
 
     @Override

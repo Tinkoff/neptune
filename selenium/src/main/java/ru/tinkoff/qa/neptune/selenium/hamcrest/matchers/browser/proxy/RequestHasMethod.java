@@ -1,17 +1,17 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy;
 
-import com.browserup.harreader.model.HarEntry;
-import com.browserup.harreader.model.HttpMethod;
+import io.netty.handler.codec.http.HttpMethod;
 import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.HttpTraffic;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.hamcrest.Matchers.is;
 
 @Description("Request method {methodMatcher}")
-public final class RequestHasMethod extends NeptuneFeatureMatcher<HarEntry> {
+public final class RequestHasMethod extends NeptuneFeatureMatcher<HttpTraffic> {
 
     @DescriptionFragment(value = "methodMatcher")
     private final Matcher<? super HttpMethod> methodMatcher;
@@ -28,7 +28,7 @@ public final class RequestHasMethod extends NeptuneFeatureMatcher<HarEntry> {
      * @param methodMatcher criteria that describes expected method
      * @return a new instance of {@link RequestHasMethod}
      */
-    public static Matcher<HarEntry> requestHasMethod(Matcher<? super HttpMethod> methodMatcher) {
+    public static Matcher<HttpTraffic> requestHasMethod(Matcher<? super HttpMethod> methodMatcher) {
         return new RequestHasMethod(methodMatcher);
     }
 
@@ -38,14 +38,14 @@ public final class RequestHasMethod extends NeptuneFeatureMatcher<HarEntry> {
      * @param method is the expected method of the request
      * @return a new instance of {@link RequestHasMethod}
      */
-    public static Matcher<HarEntry> requestHasMethod(HttpMethod method) {
+    public static Matcher<HttpTraffic> requestHasMethod(HttpMethod method) {
         return new RequestHasMethod(is(method));
     }
 
 
     @Override
-    protected boolean featureMatches(HarEntry toMatch) {
-        var requestMethod = toMatch.getRequest().getMethod();
+    protected boolean featureMatches(HttpTraffic toMatch) {
+        var requestMethod = new HttpMethod(toMatch.getRequest().getRequest().getMethod());
         var result = methodMatcher.matches(requestMethod);
 
         if (!result) {

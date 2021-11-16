@@ -1,11 +1,11 @@
 # Работа с MockMVC
 
-- О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст). 
-  Объект [контекста для работы со Spring MockMvc](https://tinkoffcreditsystems.github.io/neptune/spring.mock.mvc/ru/tinkoff/qa/neptune/spring/mock/mvc/MockMvcContext.html) 
+- О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст).
+  Объект [контекста для работы со Spring MockMvc](https://tinkoffcreditsystems.github.io/neptune/spring.mock.mvc/ru/tinkoff/qa/neptune/spring/mock/mvc/MockMvcContext.html)
   в примерах ниже вызывается статическим методом `mockMvcGet`
 
 - О принципах работы шагов, которые возвращают результат, можно прочитать
-[здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги-которые-возвращают-результат).
+  [здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги-которые-возвращают-результат).
 
 ## Оглавление
 - [Получение ответа](#Получение-ответа)
@@ -453,7 +453,6 @@ public class MyTest {
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-
 ### Получение данных тела ответа как List
 
 [Десериализация](#Десериализация)
@@ -684,7 +683,8 @@ public class MyTest {
               .expect(status().isOk())
               .expect(content().string(containsString("SUCCESS")))
               .thenGetList("List of dto's", //описание списка, который следует получить
-                      new TypeReference<List<Dto>>() {}) //указываем, в объект 
+                      new TypeReference<List<Dto>>() {
+                      }) //указываем, в объект 
                       // какого типа должно быть десериализовано тело ответа
               .criteria("Описание критерия, которому должен соответствовать " + 
                       "каждый элемент, который попадет в результирующий список",
@@ -760,7 +760,8 @@ public class MyTest {
                 .expect(status().isOk())
                 .expect(content().string(containsString("SUCCESS")))
                 .thenGetList("Value of the field 'listValue'", //описание списка, который следует получить
-                        new TypeReference<GenericDto<SomeType>>() {}, //указываем, в объект какого типа должно быть 
+                        new TypeReference<GenericDto<SomeType>>() {
+                        }, //указываем, в объект какого типа должно быть 
                         // десериализовано тело ответа
                         GenericDto::listValue) //описание получения списка в виде функции
                 .criteria("Описание критерия, которому должен соответствовать " +
@@ -1065,7 +1066,8 @@ public class MyTest {
             .expect(status().isOk())
             .expect(content().string(containsString("SUCCESS")))
             .thenGetList("Value of the field 'arrayValue'", //описание массива, который следует получить
-                    new TypeReference<GenericDto<SomeType>>() {}, //указываем, в объект какого типа должно быть 
+                    new TypeReference<GenericDto<SomeType>>() {
+                    }, //указываем, в объект какого типа должно быть 
                     // десериализовано тело ответа
                     GenericDto::arrayValue) //описание получения массив в виде функции
             .criteria("Описание критерия, которому должен соответствовать " +

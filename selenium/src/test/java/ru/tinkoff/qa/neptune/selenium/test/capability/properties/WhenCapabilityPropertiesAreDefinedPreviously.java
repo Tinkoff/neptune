@@ -38,7 +38,6 @@ import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_D
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.REMOTE_WEB_DRIVER_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUnitProperties.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeValueProperties.*;
-import static ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.FirefoxSettingsSupplierWithProfile.EMPTY_PROFILE;
 
 /**
  * For the testing of the case if properties are partially defined before selenium.properties are read.
@@ -145,7 +144,7 @@ public class WhenCapabilityPropertiesAreDefinedPreviously {
                 is( true));
         assertThat("Browser version info", firefoxOptions.getCapability("browserVersion"),
                 is("60"));
-        assertThat("Firefox profile", firefoxOptions.getProfile(), equalTo(EMPTY_PROFILE));
+        assertThat("Firefox profile", firefoxOptions.getProfile(), notNullValue());
     }
 
     @AfterClass
