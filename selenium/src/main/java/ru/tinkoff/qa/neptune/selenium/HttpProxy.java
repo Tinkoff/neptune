@@ -16,7 +16,6 @@ public class HttpProxy {
     private final List<RequestWillBeSent> requestList = new CopyOnWriteArrayList<>();
     private final List<ResponseReceived> responseList = new CopyOnWriteArrayList<>();
     private final List<HttpTraffic> httpTrafficList = new CopyOnWriteArrayList<>();
-    private final List<HttpTraffic> dumpHttpTrafficList = new CopyOnWriteArrayList<>();
 
     public HttpProxy(DevTools dt) {
         this.devTools = dt;
@@ -31,7 +30,7 @@ public class HttpProxy {
     public void clearDump() {
         requestList.clear();
         responseList.clear();
-        dumpHttpTrafficList.clear();
+        httpTrafficList.clear();
     }
 
     public List<HttpTraffic> getTraffic() {
