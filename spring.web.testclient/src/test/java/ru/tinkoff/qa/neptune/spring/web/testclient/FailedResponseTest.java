@@ -1,28 +1,21 @@
 package ru.tinkoff.qa.neptune.spring.web.testclient;
 
 import org.hamcrest.Matcher;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.reactive.server.*;
+import org.springframework.test.web.reactive.server.StatusAssertions;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testng.annotations.*;
 import ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents;
 
-import java.net.URI;
 import java.util.Map;
-import java.util.Random;
+import java.util.function.Consumer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.openMocks;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
-import static org.springframework.test.web.reactive.server.MockAssertionsCreator.createHeaderAssertion;
-import static org.springframework.test.web.reactive.server.MockAssertionsCreator.createStatusAssertion;
 import static org.testng.Assert.fail;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.not.NotMatcher.notOf;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.MapEntryMatcher.mapEntry;
@@ -33,91 +26,34 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient.SendRequestAction.send
 import static ru.tinkoff.qa.neptune.spring.web.testclient.TestStringInjector.getMessages;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.WebTestClientContext.webTestClient;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
-public class FailedResponseTest {
-
-    @Mock
-    private WebTestClient client;
-
-    @Mock
-    private WebTestClient.RequestHeadersUriSpec uriSpec;
-
-    @Mock
-    private WebTestClient.ResponseSpec responseSpec;
-
-    @Mock
-    private ExchangeResult result;
-
-    @Mock
-    private FluxExchangeResult<Void> resultForReport;
-
-    @Mock
-    private WebTestClient.BodyContentSpec bodyContentSpec;
-
-    @Mock
-    private WebTestClient.BodySpec<Integer, ?> integerBodySpec;
-
-    @Mock
-    private EntityExchangeResult<Integer> intResult;
+@SuppressWarnings({"unchecked"})
+public class FailedResponseTest extends BaseTest {
 
     @DataProvider
     public static Object[][] data() {
         return new Object[][]{
                 {SUCCESS, anEmptyMap()},
                 {FAILURE, mapOf(
-                        mapEntry("Request body", notOf(emptyOrNullString())),
-                        mapEntry("Response body", notOf(emptyOrNullString())),
-                        mapEntry("Response", notOf(emptyOrNullString()))
+                        mapEntry("Request and response", notOf(emptyOrNullString()))
                 )},
                 {SUCCESS_AND_FAILURE, mapOf(
-                        mapEntry("Request body", notOf(emptyOrNullString())),
-                        mapEntry("Response body", notOf(emptyOrNullString())),
-                        mapEntry("Response", notOf(emptyOrNullString()))
+                        mapEntry("Request and response", notOf(emptyOrNullString()))
                 )},
         };
     }
 
     @BeforeClass
     public void setUpBeforeClass() {
-        byte[] b = new byte[20];
-        new Random().nextBytes(b);
-
-        var requestHeaders = new HttpHeaders();
-        requestHeaders.setContentType(MediaType.APPLICATION_JSON);
-        requestHeaders.setContentLength(50);
-
-        var responseHeaders = new HttpHeaders();
-        responseHeaders.setContentType(TEXT_PLAIN);
-        responseHeaders.setContentLength(50);
-
-        openMocks(this);
-        when(client.get()).thenReturn(uriSpec);
-        when(uriSpec.uri("https://google.com/api/request/1")).thenReturn(uriSpec);
-        when(uriSpec.exchange()).thenReturn(responseSpec);
-
-        when(responseSpec.expectStatus()).thenReturn(createStatusAssertion(result, responseSpec));
-        when(responseSpec.expectHeader()).thenReturn(createHeaderAssertion(result, responseSpec));
-
-        when(result.getRawStatusCode()).thenReturn(200);
-        when(result.getResponseHeaders()).thenReturn(new HttpHeaders());
-        doThrow(new AssertionError("Test assertion error")).when(result).assertWithDiagnostics(any(Runnable.class));
-
-        when(responseSpec.expectBody()).thenReturn(bodyContentSpec);
-        when(bodyContentSpec.isEmpty()).thenThrow(new AssertionError("Body is not empty"));
+        super.setUpBeforeClass();
 
         Mockito.<WebTestClient.BodySpec<Integer, ?>>when(responseSpec.expectBody(Integer.class)).thenReturn(integerBodySpec);
-        when(integerBodySpec.returnResult()).thenReturn(intResult);
+        doAnswer(invocation -> {
+            var consumer = invocation.getArgument(0, Consumer.class);
+            consumer.accept(intResult);
+            return integerBodySpec;
+        }).when(integerBodySpec).consumeWith(any(Consumer.class));
         when(intResult.getResponseBody()).thenThrow(new RuntimeException("Test parse exception") {
         });
-
-        when(responseSpec.returnResult(Void.class)).thenReturn(resultForReport);
-        when(resultForReport.getUrl()).thenReturn(URI.create("https://google.com/api/request/1"));
-        when(resultForReport.getMethod()).thenReturn(HttpMethod.GET);
-        when(resultForReport.getRequestHeaders()).thenReturn(requestHeaders);
-        when(resultForReport.getRequestBodyContent()).thenReturn("Hello".getBytes());
-        when(resultForReport.getResponseBodyContent()).thenReturn("Hi".getBytes());
-        when(resultForReport.getRawStatusCode()).thenReturn(200);
-        when(resultForReport.getResponseHeaders()).thenReturn(responseHeaders);
     }
 
     @Test
@@ -127,17 +63,10 @@ public class FailedResponseTest {
                     .uri("https://google.com/api/request/1"))
                     .expectStatus(StatusAssertions::isOk)
                     .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                    .emptyBody()
-                    .thenGetBody());
+                    .emptyBody());
         } catch (AssertionError e) {
             assertThat(e.getCause(), nullValue());
-            assertThat(e.getMessage(), is("Mismatches: \r\n" +
-                    "\r\n" +
-                    "Test assertion error\r\n" +
-                    "\r\n" +
-                    "Test assertion error\r\n" +
-                    "\r\n" +
-                    "Body is not empty"));
+            mapEntry("Request and response", notOf(emptyOrNullString()));
             return;
         }
 
@@ -147,6 +76,62 @@ public class FailedResponseTest {
     @Test
     public void failedTest2() {
         try {
+            setByteSupplier(() -> null);
+            webTestClient(send(client, w -> w.get()
+                    .uri("https://google.com/api/request/1"))
+                    .expectStatus(StatusAssertions::isOk)
+                    .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
+                    .hasBody());
+        } catch (AssertionError e) {
+            assertThat(e.getCause(), nullValue());
+            mapEntry("Request and response", notOf(emptyOrNullString()));
+            return;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test
+    public void failedTest3() {
+        try {
+            setByteSupplier(() -> new byte[0]);
+            webTestClient(send(client, w -> w.get()
+                    .uri("https://google.com/api/request/1"))
+                    .expectStatus(StatusAssertions::isOk)
+                    .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
+                    .hasBody());
+        } catch (AssertionError e) {
+            assertThat(e.getCause(), nullValue());
+            mapEntry("Request and response", notOf(emptyOrNullString()));
+            return;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test
+    public void failedTest4() {
+        try {
+            setByteSupplier(() -> {
+                throw new RuntimeException();
+            });
+            webTestClient(send(client, w -> w.get()
+                    .uri("https://google.com/api/request/1"))
+                    .expectStatus(StatusAssertions::isOk)
+                    .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
+                    .hasBody());
+        } catch (AssertionError e) {
+            assertThat(e.getCause(), nullValue());
+            mapEntry("Request and response", notOf(emptyOrNullString()));
+            return;
+        }
+
+        fail("Exception was expected");
+    }
+
+    @Test
+    public void failedTest5() {
+        try {
             webTestClient(send(client, w -> w.get()
                     .uri("https://google.com/api/request/1"))
                     .expectStatus(StatusAssertions::isOk)
@@ -154,13 +139,7 @@ public class FailedResponseTest {
                     .bodyAs(Integer.class)
                     .thenGetBody());
         } catch (AssertionError e) {
-            assertThat(e.getMessage(), is("Mismatches: \r\n" +
-                    "\r\n" +
-                    "Test assertion error\r\n" +
-                    "\r\n" +
-                    "Test assertion error\r\n" +
-                    "\r\n" +
-                    "Test parse exception"));
+            mapEntry("Request and response", notOf(emptyOrNullString()));
             return;
         }
 

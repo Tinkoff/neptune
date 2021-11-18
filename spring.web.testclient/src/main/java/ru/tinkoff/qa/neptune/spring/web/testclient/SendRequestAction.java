@@ -1,13 +1,12 @@
 package ru.tinkoff.qa.neptune.spring.web.testclient;
 
-import org.hamcrest.Matcher;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.test.web.reactive.server.*;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
-import ru.tinkoff.qa.neptune.spring.web.testclient.captors.WebTestClientStringCaptor;
+import ru.tinkoff.qa.neptune.spring.web.testclient.captors.RequestExchangeResultCaptor;
 import ru.tinkoff.qa.neptune.spring.web.testclient.expectation.descriptions.*;
 
 import java.util.LinkedHashMap;
@@ -15,12 +14,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.apache.commons.lang3.ArrayUtils.add;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
+import static java.util.Objects.nonNull;
+import static ru.tinkoff.qa.neptune.spring.web.testclient.BodySpecFunction.*;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.GetArrayFromResponse.array;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.GetListFromResponse.list;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.GetObjectFromResponseBody.objectFromBody;
@@ -38,35 +36,20 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient.LogWebTestClientExpect
 @Description("Send request and then get response")
 public final class SendRequestAction<B> extends SequentialActionSupplier<WebTestClientContext, WebTestClient, SendRequestAction<B>> {
 
-    private static final Function<WebTestClient.ResponseSpec, Byte[]> DEFAULT_BODY_FORMAT =
-            responseSpec -> bytePrimitiveToByteWrapperArray(responseSpec.expectBody().returnResult().getResponseBody());
-
     private final Function<WebTestClient, WebTestClient.RequestHeadersSpec<?>> requestSpec;
     final LinkedList<Expectation<?>> assertions = new LinkedList<>();
     private final List<AssertionError> errors = new LinkedList<>();
     private WebTestClient.ResponseSpec responseSpec;
-    private Function<WebTestClient.ResponseSpec, B> bodyFormat;
+    private BodySpecFunction<B, ?> bodyFormat;
+    private Supplier<BodySpecFunction<B, ?>> formatSupplier;
 
-    @CaptureOnSuccess(by = WebTestClientStringCaptor.class)
-    @CaptureOnFailure(by = WebTestClientStringCaptor.class)
+    @CaptureOnSuccess(by = RequestExchangeResultCaptor.class)
+    @CaptureOnFailure(by = RequestExchangeResultCaptor.class)
     private ExchangeResult result;
 
     private SendRequestAction(Function<WebTestClient, WebTestClient.RequestHeadersSpec<?>> requestSpec) {
         checkNotNull(requestSpec);
         this.requestSpec = requestSpec;
-    }
-
-    private static Byte[] bytePrimitiveToByteWrapperArray(byte[] bytes) {
-        if (bytes == null) {
-            return null;
-        }
-
-        var result = new Byte[]{};
-        for (var b : bytes) {
-            result = add(result, b);
-        }
-
-        return result;
     }
 
     private <T> SendRequestAction<B> addExpectation(Function<WebTestClient.ResponseSpec, T> f, String description) {
@@ -119,7 +102,7 @@ public final class SendRequestAction<B> extends SequentialActionSupplier<WebTest
      *
      * @param client      explicitly defined instance of {@link WebTestClient}
      * @param requestSpec is a request specification
-     * @return
+     * @return an instance of {@link SendRequestAction}
      */
     public static SendRequestAction<Byte[]> send(WebTestClient client,
                                                  Function<WebTestClient,
@@ -235,47 +218,9 @@ public final class SendRequestAction<B> extends SequentialActionSupplier<WebTest
                 new ExpectXpath(expression, namespaces, args).toString());
     }
 
-    private <T> SendRequestAction<B> expectBody(String description, Function<byte[], T> f, Matcher<? super T> matcher) {
-        return addExpectation(responseSpec -> responseSpec
-                        .expectBody()
-                        .consumeWith(entityExchangeResult -> matcher.matches(f.apply(entityExchangeResult.getResponseBody()))),
-                description + " " + matcher.toString());
-    }
-
-    /**
-     * Defines a criteria to check response body as text content
-     *
-     * @param matcher criteria to check text content
-     * @return self-reference
-     */
-    public SendRequestAction<B> expectBodyStringContent(Matcher<? super String> matcher) {
-        return expectBody(new StringContent().toString(), String::new, matcher);
-    }
-
-    /**
-     * Defines a criteria to check response body as binary content
-     *
-     * @param matcher criteria to check binary content
-     * @return self-reference
-     */
-    public SendRequestAction<B> expectBodyByteContent(Matcher<? super Byte[]> matcher) {
-        return expectBody(new ByteContent().toString(),
-                SendRequestAction::bytePrimitiveToByteWrapperArray, matcher);
-    }
-
-    private <T> SendRequestAction<T> setBodyFormat(Function<WebTestClient.ResponseSpec, T> f, String description) {
+    private <T> SendRequestAction<T> setBodyFormatSupplier(Supplier<BodySpecFunction<T, ?>> s) {
         var result = (SendRequestAction<T>) this;
-        result.bodyFormat = new Function<>() {
-            @Override
-            public T apply(WebTestClient.ResponseSpec spec) {
-                return f.apply(spec);
-            }
-
-            @Override
-            public String toString() {
-                return description;
-            }
-        };
+        result.formatSupplier = s;
         return result;
     }
 
@@ -285,7 +230,7 @@ public final class SendRequestAction<B> extends SequentialActionSupplier<WebTest
      * @return a reference to {@link SendRequestAction}
      */
     public SendRequestAction<Void> emptyBody() {
-        return setBodyFormat(spec -> spec.expectBody().isEmpty().getResponseBody(), new ExpectEmptyBody().toString());
+        return setBodyFormatSupplier(BodySpecFunction::emptyBody);
     }
 
     /**
@@ -294,10 +239,7 @@ public final class SendRequestAction<B> extends SequentialActionSupplier<WebTest
      * @return a reference to {@link SendRequestAction}
      */
     public SendRequestAction<Byte[]> hasBody() {
-        return setBodyFormat(spec -> DEFAULT_BODY_FORMAT.andThen(bytes -> {
-            assertThat(new ExpectAnyBody().toString(), bytes, not(nullValue()));
-            return bytes;
-        }).apply(spec), new ExpectAnyBody().toString());
+        return setBodyFormatSupplier(BodySpecFunction::nonEmptyRawContent);
     }
 
     /**
@@ -308,11 +250,7 @@ public final class SendRequestAction<B> extends SequentialActionSupplier<WebTest
      * @return a reference to {@link SendRequestAction}
      */
     public <T> SendRequestAction<T> bodyAs(Class<T> tClass) {
-        return setBodyFormat(spec -> {
-            var body = spec.expectBody(tClass).returnResult().getResponseBody();
-            assertThat(body, not(nullValue()));
-            return body;
-        }, new ExpectedBodyOfClass(tClass).toString());
+        return setBodyFormatSupplier(() -> bodyMappedAs(tClass));
     }
 
     /**
@@ -323,11 +261,7 @@ public final class SendRequestAction<B> extends SequentialActionSupplier<WebTest
      * @return a reference to {@link SendRequestAction}
      */
     public <T> SendRequestAction<T> bodyAs(ParameterizedTypeReference<T> type) {
-        return setBodyFormat(spec -> {
-            var body = spec.expectBody(type).returnResult().getResponseBody();
-            assertThat(body, not(nullValue()));
-            return body;
-        }, new ExpectedBodyOfType(type).toString());
+        return setBodyFormatSupplier(() -> bodyMappedAs(type));
     }
 
     /**
@@ -338,11 +272,7 @@ public final class SendRequestAction<B> extends SequentialActionSupplier<WebTest
      * @return a reference to {@link SendRequestAction}
      */
     public <T> SendRequestAction<List<T>> bodyAsListOf(Class<T> itemClass) {
-        return setBodyFormat(spec -> {
-            var body = spec.expectBodyList(itemClass).returnResult().getResponseBody();
-            assertThat(body, not(nullValue()));
-            return body;
-        }, new ExpectedBodyListOfClass(itemClass).toString());
+        return setBodyFormatSupplier(() -> listBodyOf(itemClass));
     }
 
     /**
@@ -353,21 +283,18 @@ public final class SendRequestAction<B> extends SequentialActionSupplier<WebTest
      * @return a reference to {@link SendRequestAction}
      */
     public <T> SendRequestAction<List<T>> bodyAsListOf(ParameterizedTypeReference<T> itemType) {
-        return setBodyFormat(spec -> {
-            var body = spec.expectBodyList(itemType).returnResult().getResponseBody();
-            assertThat(body, not(nullValue()));
-            return body;
-        }, new ExpectedBodyListOfType(itemType).toString());
+        return setBodyFormatSupplier(() -> listBodyOf(itemType));
     }
 
     @Override
     protected void howToPerform(WebTestClient value) {
         errors.clear();
         result = null;
+        bodyFormat = null;
         responseSpec = requestSpec.apply(value).exchange();
-        result = responseSpec.returnResult(Void.class);
 
-        if (bodyFormat != null) {
+        if (nonNull(formatSupplier)) {
+            bodyFormat = formatSupplier.get();
             assertions.addLast(new Expectation<>(bodyFormat));
         }
 
@@ -380,10 +307,15 @@ public final class SendRequestAction<B> extends SequentialActionSupplier<WebTest
             }
         });
 
-        if (bodyFormat != null) {
+
+        if (nonNull(formatSupplier)) {
             assertions.removeLast();
+        } else {
+            bodyFormat = (BodySpecFunction<B, ?>) defaultContent();
+            bodyFormat.apply(responseSpec);
         }
 
+        result = bodyFormat.exchangeResult();
         if (errors.size() == 0) {
             return;
         }
@@ -410,11 +342,7 @@ public final class SendRequestAction<B> extends SequentialActionSupplier<WebTest
     }
 
     B getBody() {
-        if (bodyFormat == null) {
-            return (B) DEFAULT_BODY_FORMAT.apply(responseSpec);
-        }
-
-        return bodyFormat.apply(responseSpec);
+        return bodyFormat.getBody();
     }
 
     /**
