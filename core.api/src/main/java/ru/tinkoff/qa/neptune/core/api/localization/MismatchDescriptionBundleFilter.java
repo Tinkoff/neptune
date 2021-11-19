@@ -7,22 +7,33 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import java.util.List;
 
 import static java.util.Comparator.comparing;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
 final class MismatchDescriptionBundleFilter extends DefaultAbstractBundleFiller {
 
-    final static List<Class<?>> MISMATCH_DESCRIPTIONS = new ClassGraph()
-            .enableAllInfo()
-            .scan()
-            .getSubclasses(MismatchDescriber.class.getName())
-            .loadClasses(MismatchDescriber.class)
-            .stream()
-            .filter(c -> c.getAnnotation(Description.class) != null)
-            .map(cls -> (Class<?>) cls)
-            .sorted(comparing(Class::getName))
-            .collect(toList());
+    private static List<Class<?>> mismatchDescriptions;
 
     protected MismatchDescriptionBundleFilter(LocalizationBundlePartition p) {
-        super(p, MISMATCH_DESCRIPTIONS, "MISMATCH DESCRIPTIONS");
+        super(p, getMismatchDescriptions(), "MISMATCH DESCRIPTIONS");
+    }
+
+    public static synchronized List<Class<?>> getMismatchDescriptions() {
+        if (nonNull(mismatchDescriptions)) {
+            return mismatchDescriptions;
+        }
+
+        mismatchDescriptions = new ClassGraph()
+                .enableAllInfo()
+                .scan()
+                .getSubclasses(MismatchDescriber.class.getName())
+                .loadClasses(MismatchDescriber.class)
+                .stream()
+                .filter(c -> c.getAnnotation(Description.class) != null)
+                .map(cls -> (Class<?>) cls)
+                .sorted(comparing(Class::getName))
+                .collect(toList());
+
+        return mismatchDescriptions;
     }
 }

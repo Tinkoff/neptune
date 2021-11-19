@@ -15,19 +15,24 @@ import static java.lang.reflect.Modifier.isPublic;
 import static java.util.Arrays.stream;
 import static java.util.Comparator.comparing;
 import static java.util.List.of;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
 @BindToPartition("spring.result.matchers")
 @BindToPartition("spring.mock.mvc")
 public final class SpringMockMvcResultMatcherBundleExtension extends BundleFillerExtension {
 
-    private final static List<Class<?>> CLASSES = prepareClasses();
+    private static List<Class<?>> classes;
 
     public SpringMockMvcResultMatcherBundleExtension() {
-        super(CLASSES, "SPRING RESULT MATCHERS");
+        super(prepareClasses(), "SPRING RESULT MATCHERS");
     }
 
-    private static List<Class<?>> prepareClasses() {
+    private static synchronized List<Class<?>> prepareClasses() {
+        if (nonNull(classes)) {
+            return classes;
+        }
+
         var result = new LinkedList<Class<?>>();
         result.addFirst(MockMvcResultMatchers.class);
 
@@ -39,6 +44,7 @@ public final class SpringMockMvcResultMatcherBundleExtension extends BundleFille
                 .sorted(comparing(Class::getName))
                 .forEach(result::add);
 
+        classes = result;
         return result;
     }
 
@@ -53,7 +59,7 @@ public final class SpringMockMvcResultMatcherBundleExtension extends BundleFille
     }
 
     public static List<Class<?>> getFactoryClasses() {
-        return CLASSES;
+        return prepareClasses();
     }
 
     @Override
@@ -65,7 +71,7 @@ public final class SpringMockMvcResultMatcherBundleExtension extends BundleFille
     protected List<Method> addMethods(Class<?> clazz) {
         return stream(clazz.getDeclaredMethods())
                 .filter(m -> isPublic(m.getModifiers()) &&
-                        (Objects.equals(m.getReturnType(), ResultMatcher.class) || CLASSES.contains(m.getReturnType())))
+                        (Objects.equals(m.getReturnType(), ResultMatcher.class) || prepareClasses().contains(m.getReturnType())))
                 .sorted(comparing(Method::toString))
                 .collect(toList());
     }
