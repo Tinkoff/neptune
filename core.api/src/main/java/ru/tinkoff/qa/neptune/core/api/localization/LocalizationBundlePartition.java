@@ -1,16 +1,15 @@
 package ru.tinkoff.qa.neptune.core.api.localization;
 
-import io.github.classgraph.ClassGraph;
-
 import java.io.IOException;
 import java.util.*;
 
 import static java.lang.String.valueOf;
-import static java.lang.reflect.Modifier.isAbstract;
 import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static java.util.ServiceLoader.load;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.StreamSupport.stream;
 import static ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator.getResourceInputStream;
 import static ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator.propertiesFromStream;
 
@@ -36,23 +35,11 @@ public abstract class LocalizationBundlePartition {
 
     static List<LocalizationBundlePartition> getKnownPartitions() {
         knownPartitions = ofNullable(knownPartitions)
-                .orElseGet(() -> new ClassGraph()
-                        .enableAllInfo()
-                        .scan()
-                        .getSubclasses(LocalizationBundlePartition.class.getName())
-                        .loadClasses(LocalizationBundlePartition.class)
-                        .stream()
-                        .filter(c -> !isAbstract(c.getModifiers()))
-                        .map(cls -> {
-                            try {
-                                var c = cls.getConstructor();
-                                c.setAccessible(true);
-                                return c.newInstance();
-                            } catch (Throwable t) {
-                                throw new RuntimeException(t);
-                            }
-                        })
-                        .collect(toList()));
+                .orElseGet(() -> {
+                    var iterator = load(LocalizationBundlePartition.class).iterator();
+                    Iterable<LocalizationBundlePartition> iterable = () -> iterator;
+                    return stream(iterable.spliterator(), false).collect(toList());
+                });
 
         return knownPartitions;
     }
