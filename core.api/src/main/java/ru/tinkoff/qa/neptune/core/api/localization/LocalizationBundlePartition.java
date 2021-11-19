@@ -36,9 +36,12 @@ public abstract class LocalizationBundlePartition {
     static List<LocalizationBundlePartition> getKnownPartitions() {
         knownPartitions = ofNullable(knownPartitions)
                 .orElseGet(() -> {
+                    var result = new LinkedList<LocalizationBundlePartition>();
+                    result.addFirst(new CoreLocalizationBundlePartition());
                     var iterator = load(LocalizationBundlePartition.class).iterator();
                     Iterable<LocalizationBundlePartition> iterable = () -> iterator;
-                    return stream(iterable.spliterator(), false).collect(toList());
+                    result.addAll(stream(iterable.spliterator(), false).collect(toList()));
+                    return result;
                 });
 
         return knownPartitions;
