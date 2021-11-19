@@ -845,7 +845,9 @@ task generateBundle(type: JavaExec) {
 ### Создание бандла для нового модуля
 
 Допустим, был создан новый модуль для [объектов](#Объекты-для-механизиа-локализации) которого может понадобиться локализация
-на разные языки. Тогда нужно просто добавить класс
+на разные языки. Тогда нужно:
+
+- создать класс 
 
 ```java
 package org.mypack;
@@ -865,7 +867,21 @@ public class MyLocalizationPartition extends LocalizationBundlePartition // <-н
 }
 ```
 
-и теперь
+- Настроить [SPI](https://docs.oracle.com/javase/tutorial/ext/basics/spi.html). В `resources` директорий `main` или `test` 
+  создать следующие директории и файлы
+
+```
+    META-INF
+    |
+    +---- services
+             |
+             +----ru.tinkoff.qa.neptune.core.api.localization.LocalizationBundlePartition
+```
+
+- В файл `ru.tinkoff.qa.neptune.core.api.localization.LocalizationBundlePartition` внести запись
+  `org.mypack.MyLocalizationPartition`
+
+И теперь
 
 - Maven
 
