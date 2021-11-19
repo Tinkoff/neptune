@@ -10,18 +10,23 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
 import static java.util.List.of;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
 final class StepBundleFilter extends DefaultAbstractBundleFiller {
 
-    static final List<Class<?>> STEPS = prepareStepClasses();
+    private static LinkedList<Class<?>> steps;
 
     protected StepBundleFilter(LocalizationBundlePartition p) {
-        super(p, STEPS, "STEPS");
+        super(p, getStepClasses(), "STEPS");
     }
 
-    private static List<Class<?>> prepareStepClasses() {
-        var steps = new LinkedList<Class<?>>();
+    public static synchronized List<Class<?>> getStepClasses() {
+        if (nonNull(steps)) {
+            return steps;
+        }
+
+        steps = new LinkedList<>();
         of(SequentialActionSupplier.class, SequentialGetStepSupplier.class).forEach(cls -> {
             var nestMembers = asList(cls.getNestMembers());
             steps.addAll(new ClassGraph()
