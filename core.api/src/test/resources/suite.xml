@@ -16,12 +16,6 @@
         </packages>
     </test>
 
-    <test name="Hook test">
-        <packages>
-            <package name="ru.tinkoff.qa.neptune.core.api.hooks.*"/>
-        </packages>
-    </test>
-
     <test name="Property tests" group-by-instances="true">
         <classes>
             <class name="ru.tinkoff.qa.neptune.core.api.properties.EmptyPropertiesReadingTest"/>
