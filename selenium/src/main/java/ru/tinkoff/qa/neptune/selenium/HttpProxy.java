@@ -34,26 +34,31 @@ public class HttpProxy {
     }
 
     public List<HttpTraffic> getTraffic() {
-        requestList.forEach(request -> {
-            var httpTraffic = new HttpTraffic();
-            var response = responseList
-                    .stream()
-                    .filter(r -> r.getRequestId().toString().equals(request.getRequestId().toString()))
-                    .findFirst()
-                    .orElse(null);
+        try {
+            requestList.forEach(request -> {
+                var httpTraffic = new HttpTraffic();
+                var response = responseList
+                        .stream()
+                        .filter(r -> r.getRequestId().toString().equals(request.getRequestId().toString()))
+                        .findFirst()
+                        .orElse(null);
 
-            httpTraffic.setRequest(request)
-                    .setResponse(response);
+                httpTraffic.setRequest(request)
+                        .setResponse(response);
 
-            try {
-                var body = devTools.send(Network.getResponseBody(request.getRequestId()));
-                httpTraffic.setBody(body);
-            } catch (WebDriverException e) {
-                e.printStackTrace();
-            }
+                try {
+                    var body = devTools.send(Network.getResponseBody(request.getRequestId()));
+                    httpTraffic.setBody(body);
+                } catch (WebDriverException e) {
+                    e.printStackTrace();
+                }
 
-            httpTrafficList.add(httpTraffic);
-        });
+                httpTrafficList.add(httpTraffic);
+            });
+        } finally {
+            requestList.clear();
+            responseList.clear();
+        }
         return httpTrafficList;
     }
 }
