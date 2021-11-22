@@ -60,7 +60,7 @@ public final class ResponseCriteria {
      * Builds criteria to match url of a response.
      *
      * @param expression is a substring that url of a response is supposed to have.
-     *                   It is possible to pass reg exp pattern that url should fit.
+     *                   It is possible to pass regexp pattern that url should fit.
      * @return criteria.
      */
     @Description("response URL contains '{expression}' or meets regExp pattern '{expression}'")
@@ -70,9 +70,9 @@ public final class ResponseCriteria {
     }
 
     @Description("Response URL {description} is '{expected}'")
-    private static <T> Criteria<Response> urlPartStringCriteria(@DescriptionFragment("description") String description,
-                                                                @DescriptionFragment("expected") String expected,
-                                                                Function<URL, String> getPart) {
+    private static Criteria<Response> urlPartStringCriteria(@DescriptionFragment("description") String description,
+                                                            @DescriptionFragment("expected") String expected,
+                                                            Function<URL, String> getPart) {
         checkArgument(isNotBlank(expected), format("Expected URL %s should not be defined as a blank/null string", description));
         return condition(r -> {
             try {
@@ -113,7 +113,7 @@ public final class ResponseCriteria {
      * Builds criteria to match http response url by host value.
      *
      * @param expression is a substring that host is supposed to have.
-     *                   It is possible to pass reg exp pattern that host should fit.
+     *                   It is possible to pass regexp pattern that host should fit.
      * @return criteria.
      */
     public static Criteria<Response> responseURLHostMatches(String expression) {
@@ -134,10 +134,10 @@ public final class ResponseCriteria {
      * Builds criteria to match http response url by protocol value.
      *
      * @param expression is a substring that protocol is supposed to have.
-     *                   It is possible to pass reg exp pattern that scheme should fit.
+     *                   It is possible to pass regexp pattern that scheme should fit.
      * @return criteria.
      */
-    public static Criteria<Response> responseURLSchemeMatches(String expression) {
+    public static Criteria<Response> responseURLProtocolMatches(String expression) {
         return urlPartRegExpCriteria("protocol", expression, URL::getProtocol);
     }
 
@@ -155,7 +155,7 @@ public final class ResponseCriteria {
      * Builds criteria to match http response url by path value.
      *
      * @param expression is a substring that path is supposed to have.
-     *                   It is possible to pass reg exp pattern that path should fit.
+     *                   It is possible to pass regexp pattern that path should fit.
      * @return criteria.
      */
     public static Criteria<Response> responseURLPathMatches(String expression) {
@@ -176,7 +176,7 @@ public final class ResponseCriteria {
      * Builds criteria to match http response url by query value.
      *
      * @param expression is a substring that query is supposed to have.
-     *                   It is possible to pass reg exp pattern that query should fit.
+     *                   It is possible to pass regexp pattern that query should fit.
      * @return criteria.
      */
     public static Criteria<Response> responseURLQueryMatches(String expression) {
@@ -197,7 +197,7 @@ public final class ResponseCriteria {
      * Builds criteria to match http response url by user info value.
      *
      * @param expression is a substring that user info is supposed to have.
-     *                   It is possible to pass reg exp pattern that user info should fit.
+     *                   It is possible to pass regexp pattern that user info should fit.
      * @return criteria.
      */
     public static Criteria<Response> responseURLUserInfoMatches(String expression) {

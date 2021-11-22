@@ -23,7 +23,6 @@ import static org.hamcrest.Matchers.*;
 import static org.testng.AssertJUnit.fail;
 import static ru.tinkoff.qa.neptune.core.api.dependency.injection.DependencyInjector.injectValues;
 import static ru.tinkoff.qa.neptune.retrofit2.RetrofitContext.retrofit;
-import static ru.tinkoff.qa.neptune.retrofit2.criteria.ResponseCriteria.*;
 import static ru.tinkoff.qa.neptune.retrofit2.properties.DefaultRetrofitProperty.DEFAULT_RETROFIT_PROPERTY;
 import static ru.tinkoff.qa.neptune.retrofit2.properties.DefaultRetrofitURLProperty.DEFAULT_RETROFIT_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.retrofit2.steps.GetArraySupplier.callArray;
@@ -63,11 +62,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
     @Test
     public void objectFromBodyTest1() {
         var result = retrofit().get(callBody(() -> callService.getJson())
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .criteria("Size == 2", r -> r.size() == 2));
 
         assertThat(result, hasSize(2));
@@ -76,11 +75,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
     @Test
     public void objectFromBodyTest2() {
         var result = retrofit().get(callBody(() -> callService.getJson())
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .criteria("Size > 2", r -> r.size() > 2));
 
         assertThat(result, nullValue());
@@ -90,11 +89,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
     public void objectFromBodyTest3() {
         try {
             retrofit().get(callBody(() -> callService.getJson())
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("Size > 2", r -> r.size() > 2)
                     .throwOnNoResult());
         } catch (Exception e) {
@@ -110,11 +109,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
     public void objectFromBodyTest4() {
         try {
             retrofit().get(callBody(() -> callService.getXml())
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("Size == 2", r -> r.size() == 2)
                     .throwOnNoResult());
         } catch (Exception e) {
@@ -129,11 +128,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
     public void objectFromBodyTest5() {
         var start = currentTimeMillis();
         retrofit().get(callBody(() -> callService.getJson())
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .criteria("Size > 2", r -> r.size() > 2)
                 .retryTimeOut(ofSeconds(5))
                 .pollingInterval(ofMillis(500)));
@@ -149,11 +148,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
         var start = currentTimeMillis();
         try {
             retrofit().get(callBody(() -> callService.getJson())
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("Size > 2", r -> r.size() > 2)
                     .retryTimeOut(ofSeconds(5))
                     .pollingInterval(ofMillis(500))
@@ -174,11 +173,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
         var start = currentTimeMillis();
         try {
             retrofit().get(callBody(() -> callService.getXml())
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("Size == 2", r -> r.size() == 2)
                     .retryTimeOut(ofSeconds(5))
                     .pollingInterval(ofMillis(500))
@@ -201,11 +200,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                 "Values of string fields",
                 () -> callService.getJson(),
                 dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                 .criteria("Size == 2", r -> r.size() == 2));
 
@@ -218,11 +217,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                 "Values of string fields",
                 () -> callService.getJson(),
                 dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                 .criteria("Size > 2", r -> r.size() > 2));
 
@@ -236,11 +235,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Values of string fields",
                     () -> callService.getJson(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("Size > 2", r -> r.size() > 2)
                     .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                     .throwOnNoResult());
@@ -260,11 +259,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Values of string fields",
                     () -> callService.getXml(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                     .criteria("Size == 2", r -> r.size() == 2)
                     .throwOnNoResult());
@@ -283,11 +282,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Values of string fields",
                     () -> callService.getJson(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size > 2", dtoObjects -> dtoObjects.size() > 2)
                     .criteria("Size == 2", r -> r.size() == 2)
                     .throwOnNoResult());
@@ -306,11 +305,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                 "Values of string fields",
                 () -> callService.getJson(),
                 dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .criteria("Size > 2", r -> r.size() > 2)
                 .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                 .retryTimeOut(ofSeconds(5))
@@ -330,11 +329,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Values of string fields",
                     () -> callService.getJson(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                     .criteria("Size > 2", r -> r.size() > 2)
                     .retryTimeOut(ofSeconds(5))
@@ -359,11 +358,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Values of string fields",
                     () -> callService.getXml(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                     .criteria("Size == 2", r -> r.size() == 2)
                     .retryTimeOut(ofSeconds(5))
@@ -388,11 +387,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Values of string fields",
                     () -> callService.getJson(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size > 2", dtoObjects -> dtoObjects.size() > 2)
                     .criteria("Size == 2", r -> r.size() == 2)
                     .retryTimeOut(ofSeconds(5))
@@ -414,11 +413,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
     public void getIterableTest1() {
         var result = retrofit().get(callIterable("Result list",
                 () -> callService.getJson())
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .criteria("Size of 'object' == 2", r -> r.getObject().size() == 2));
 
         assertThat(result, hasSize(2));
@@ -428,11 +427,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
     public void getIterableTest2() {
         var result = retrofit().get(callIterable("Result list",
                 () -> callService.getJson())
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2));
 
         assertThat(result, nullValue());
@@ -443,11 +442,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
         try {
             retrofit().get(callIterable("Result list",
                     () -> callService.getJson())
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2)
                     .throwOnNoResult());
         } catch (Exception e) {
@@ -464,11 +463,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
         try {
             retrofit().get(callIterable("Result list",
                     () -> callService.getXml())
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("Size of 'object' == 2", r -> r.getObject().size() == 2)
                     .throwOnNoResult());
         } catch (Exception e) {
@@ -484,11 +483,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
         var start = currentTimeMillis();
         retrofit().get(callIterable("Result list",
                 () -> callService.getJson())
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2)
                 .retryTimeOut(ofSeconds(5))
                 .pollingInterval(ofMillis(500)));
@@ -505,11 +504,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
         try {
             retrofit().get(callIterable("Result list",
                     () -> callService.getJson())
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2)
                     .retryTimeOut(ofSeconds(5))
                     .pollingInterval(ofMillis(500))
@@ -531,11 +530,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
         try {
             retrofit().get(callIterable("Result list",
                     () -> callService.getXml())
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("Size of 'object' == 2", r -> r.getObject().size() == 2)
                     .retryTimeOut(ofSeconds(5))
                     .pollingInterval(ofMillis(500))
@@ -558,11 +557,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                 "Values of string fields",
                 () -> callService.getJson(),
                 dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                 .criteria("Not a blank string", StringUtil::isNotBlank));
 
@@ -575,11 +574,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                 "Values of string fields",
                 () -> callService.getJson(),
                 dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                 .criteria("is a blank string", StringUtil::isBlank));
 
@@ -593,11 +592,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Values of string fields",
                     () -> callService.getJson(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("is a blank string", StringUtil::isBlank)
                     .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                     .throwOnNoResult());
@@ -617,11 +616,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Values of string fields",
                     () -> callService.getXml(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                     .criteria("Not a blank string", StringUtil::isNotBlank)
                     .throwOnNoResult());
@@ -640,11 +639,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Values of string fields",
                     () -> callService.getJson(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size > 2", dtoObjects -> dtoObjects.size() > 2)
                     .criteria("Not a blank string", StringUtil::isNotBlank)
                     .throwOnNoResult());
@@ -663,11 +662,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                 "Values of string fields",
                 () -> callService.getJson(),
                 dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .criteria("is a blank string", StringUtil::isBlank)
                 .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                 .retryTimeOut(ofSeconds(5))
@@ -687,11 +686,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Values of string fields",
                     () -> callService.getJson(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                     .criteria("is a blank string", StringUtil::isBlank)
                     .retryTimeOut(ofSeconds(5))
@@ -716,11 +715,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Values of string fields",
                     () -> callService.getXml(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                     .criteria("Not a blank string", StringUtil::isNotBlank)
                     .retryTimeOut(ofSeconds(5))
@@ -745,11 +744,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Values of string fields",
                     () -> callService.getJson(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size > 2", dtoObjects -> dtoObjects.size() > 2)
                     .criteria("Not a blank string", StringUtil::isNotBlank)
                     .retryTimeOut(ofSeconds(5))
@@ -771,11 +770,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
     public void getArrayTest1() {
         var result = retrofit().get(callArray("Result array",
                 () -> callService.getJsonArray())
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .criteria("Size of 'object' == 2", r -> r.getObject().size() == 2));
 
         assertThat(result, arrayWithSize(2));
@@ -785,11 +784,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
     public void getArrayTest2() {
         var result = retrofit().get(callArray("Result array",
                 () -> callService.getJsonArray())
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2));
 
         assertThat(result, nullValue());
@@ -800,11 +799,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
         try {
             retrofit().get(callArray("Result array",
                     () -> callService.getJsonArray())
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2)
                     .throwOnNoResult());
         } catch (Exception e) {
@@ -821,11 +820,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
         try {
             retrofit().get(callArray("Result array",
                     () -> callService.getXmlArray())
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("Size of 'object' == 2", r -> r.getObject().size() == 2)
                     .throwOnNoResult());
         } catch (Exception e) {
@@ -841,11 +840,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
         var start = currentTimeMillis();
         retrofit().get(callArray("Result array",
                 () -> callService.getJsonArray())
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2)
                 .retryTimeOut(ofSeconds(5))
                 .pollingInterval(ofMillis(500)));
@@ -862,11 +861,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
         try {
             retrofit().get(callArray("Result array",
                     () -> callService.getJsonArray())
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2)
                     .retryTimeOut(ofSeconds(5))
                     .pollingInterval(ofMillis(500))
@@ -888,11 +887,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
         try {
             retrofit().get(callArray("Result array",
                     () -> callService.getXmlArray())
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("Size of 'object' == 2", r -> r.getObject().size() == 2)
                     .retryTimeOut(ofSeconds(5))
                     .pollingInterval(ofMillis(500))
@@ -915,11 +914,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                 "Values of string fields",
                 () -> callService.getJson(),
                 dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                 .criteria("Not a blank string", StringUtil::isNotBlank));
 
@@ -932,11 +931,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                 "Values of string fields",
                 () -> callService.getJson(),
                 dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                 .criteria("is a blank string", StringUtil::isBlank));
 
@@ -950,11 +949,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Values of string fields",
                     () -> callService.getJson(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("is a blank string", StringUtil::isBlank)
                     .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                     .throwOnNoResult());
@@ -974,11 +973,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Values of string fields",
                     () -> callService.getXml(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                     .criteria("Not a blank string", StringUtil::isNotBlank)
                     .throwOnNoResult());
@@ -997,11 +996,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Values of string fields",
                     () -> callService.getJson(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size > 2", dtoObjects -> dtoObjects.size() > 2)
                     .criteria("Not a blank string", StringUtil::isNotBlank)
                     .throwOnNoResult());
@@ -1020,11 +1019,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                 "Values of string fields",
                 () -> callService.getJson(),
                 dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .criteria("is a blank string", StringUtil::isBlank)
                 .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                 .retryTimeOut(ofSeconds(5))
@@ -1044,11 +1043,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Values of string fields",
                     () -> callService.getJson(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                     .criteria("is a blank string", StringUtil::isBlank)
                     .retryTimeOut(ofSeconds(5))
@@ -1073,11 +1072,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Values of string fields",
                     () -> callService.getXml(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                     .criteria("Not a blank string", StringUtil::isNotBlank)
                     .retryTimeOut(ofSeconds(5))
@@ -1102,11 +1101,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Values of string fields",
                     () -> callService.getJson(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size > 2", dtoObjects -> dtoObjects.size() > 2)
                     .criteria("Not a blank string", StringUtil::isNotBlank)
                     .retryTimeOut(ofSeconds(5))
@@ -1128,11 +1127,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
     public void getFromIterableTest1() {
         var result = retrofit().get(callIterableItem("Result",
                 () -> callService.getJson())
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .criteria("Size of 'object' == 2", r -> r.getObject().size() == 2));
 
         assertThat(result, not(nullValue()));
@@ -1142,11 +1141,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
     public void getFromIterableTest2() {
         var result = retrofit().get(callIterableItem("Result",
                 () -> callService.getJson())
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2));
 
         assertThat(result, nullValue());
@@ -1157,11 +1156,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
         try {
             retrofit().get(callIterableItem("Result",
                     () -> callService.getJson())
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2)
                     .throwOnNoResult());
         } catch (Exception e) {
@@ -1178,11 +1177,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
         try {
             retrofit().get(callIterableItem("Result",
                     () -> callService.getXml())
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("Size of 'object' == 2", r -> r.getObject().size() == 2)
                     .throwOnNoResult());
         } catch (Exception e) {
@@ -1198,11 +1197,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
         var start = currentTimeMillis();
         retrofit().get(callIterableItem("Result",
                 () -> callService.getJson())
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2)
                 .retryTimeOut(ofSeconds(5))
                 .pollingInterval(ofMillis(500)));
@@ -1219,11 +1218,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
         try {
             retrofit().get(callIterableItem("Result",
                     () -> callService.getJson())
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2)
                     .retryTimeOut(ofSeconds(5))
                     .pollingInterval(ofMillis(500))
@@ -1245,11 +1244,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
         try {
             retrofit().get(callIterableItem("Result",
                     () -> callService.getXml())
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("Size of 'object' == 2", r -> r.getObject().size() == 2)
                     .retryTimeOut(ofSeconds(5))
                     .pollingInterval(ofMillis(500))
@@ -1272,11 +1271,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                 "Value of string field",
                 () -> callService.getJson(),
                 dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                 .criteria("Not a blank string", StringUtil::isNotBlank));
 
@@ -1289,11 +1288,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                 "Value of string field",
                 () -> callService.getJson(),
                 dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                 .criteria("is a blank string", StringUtil::isBlank));
 
@@ -1307,11 +1306,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Value of string field",
                     () -> callService.getJson(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("is a blank string", StringUtil::isBlank)
                     .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                     .throwOnNoResult());
@@ -1331,11 +1330,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Value of string field",
                     () -> callService.getXml(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                     .criteria("Not a blank string", StringUtil::isNotBlank)
                     .throwOnNoResult());
@@ -1354,11 +1353,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Value of string field",
                     () -> callService.getJson(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size > 2", dtoObjects -> dtoObjects.size() > 2)
                     .criteria("Not a blank string", StringUtil::isNotBlank)
                     .throwOnNoResult());
@@ -1377,11 +1376,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                 "Value of string field",
                 () -> callService.getJson(),
                 dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .criteria("is a blank string", StringUtil::isBlank)
                 .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                 .retryTimeOut(ofSeconds(5))
@@ -1401,11 +1400,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Value of string field",
                     () -> callService.getJson(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                     .criteria("is a blank string", StringUtil::isBlank)
                     .retryTimeOut(ofSeconds(5))
@@ -1430,11 +1429,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Value of string field",
                     () -> callService.getXml(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                     .criteria("Not a blank string", StringUtil::isNotBlank)
                     .retryTimeOut(ofSeconds(5))
@@ -1459,11 +1458,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Value of string field",
                     () -> callService.getJson(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size > 2", dtoObjects -> dtoObjects.size() > 2)
                     .criteria("Not a blank string", StringUtil::isNotBlank)
                     .retryTimeOut(ofSeconds(5))
@@ -1485,11 +1484,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
     public void getArrayItemTest1() {
         var result = retrofit().get(callArrayItem("Result",
                 () -> callService.getJsonArray())
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .criteria("Size of 'object' == 2", r -> r.getObject().size() == 2));
 
         assertThat(result, not(nullValue()));
@@ -1499,11 +1498,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
     public void getArrayItemTest2() {
         var result = retrofit().get(callArrayItem("Result",
                 () -> callService.getJsonArray())
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2));
 
         assertThat(result, nullValue());
@@ -1514,11 +1513,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
         try {
             retrofit().get(callArrayItem("Result",
                     () -> callService.getJsonArray())
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2)
                     .throwOnNoResult());
         } catch (Exception e) {
@@ -1535,11 +1534,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
         try {
             retrofit().get(callArrayItem("Result",
                     () -> callService.getXmlArray())
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("Size of 'object' == 2", r -> r.getObject().size() == 2)
                     .throwOnNoResult());
         } catch (Exception e) {
@@ -1555,11 +1554,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
         var start = currentTimeMillis();
         retrofit().get(callArrayItem("Result",
                 () -> callService.getJsonArray())
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2)
                 .retryTimeOut(ofSeconds(5))
                 .pollingInterval(ofMillis(500)));
@@ -1576,11 +1575,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
         try {
             retrofit().get(callArrayItem("Result",
                     () -> callService.getJsonArray())
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2)
                     .retryTimeOut(ofSeconds(5))
                     .pollingInterval(ofMillis(500))
@@ -1602,11 +1601,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
         try {
             retrofit().get(callArrayItem("Result",
                     () -> callService.getXmlArray())
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("Size of 'object' == 2", r -> r.getObject().size() == 2)
                     .retryTimeOut(ofSeconds(5))
                     .pollingInterval(ofMillis(500))
@@ -1629,11 +1628,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                 "Value of string field",
                 () -> callService.getJson(),
                 dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                 .criteria("Not a blank string", StringUtil::isNotBlank));
 
@@ -1646,11 +1645,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                 "Value of string field",
                 () -> callService.getJson(),
                 dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                 .criteria("is a blank string", StringUtil::isBlank));
 
@@ -1664,11 +1663,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Value of string field",
                     () -> callService.getJson(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .criteria("is a blank string", StringUtil::isBlank)
                     .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                     .throwOnNoResult());
@@ -1688,11 +1687,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Value of string field",
                     () -> callService.getXml(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                     .criteria("Not a blank string", StringUtil::isNotBlank)
                     .throwOnNoResult());
@@ -1711,11 +1710,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Value of string field",
                     () -> callService.getJson(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size > 2", dtoObjects -> dtoObjects.size() > 2)
                     .criteria("Not a blank string", StringUtil::isNotBlank)
                     .throwOnNoResult());
@@ -1734,11 +1733,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                 "Value of string field",
                 () -> callService.getJson(),
                 dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
-                .responseCriteria(statusCode(200))
-                .responseCriteria(headerValue("custom header", "true"))
-                .responseCriteria(headerValueMatches("custom header", "Some"))
-                .responseCriteria(message("Successful json"))
-                .responseCriteria(messageMatches("Successful"))
+                .responseStatusCodeIs(200)
+                .responseHeaderValueIs("custom header", "true")
+                .responseHeaderValueMatches("custom header", "Some")
+                .responseMessageIs("Successful json")
+                .responseMessageMatches("Successful")
                 .criteria("is a blank string", StringUtil::isBlank)
                 .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                 .retryTimeOut(ofSeconds(5))
@@ -1758,11 +1757,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Value of string field",
                     () -> callService.getJson(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                     .criteria("is a blank string", StringUtil::isBlank)
                     .retryTimeOut(ofSeconds(5))
@@ -1787,11 +1786,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Value of string field",
                     () -> callService.getXml(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size == 2", dtoObjects -> dtoObjects.size() == 2)
                     .criteria("Not a blank string", StringUtil::isNotBlank)
                     .retryTimeOut(ofSeconds(5))
@@ -1816,11 +1815,11 @@ public class HttpBodyDataTestFromCall extends BaseBodyDataTest {
                     "Value of string field",
                     () -> callService.getJson(),
                     dtoObjects -> dtoObjects.stream().map(DtoObject::getString).collect(toList()).toArray(new String[]{}))
-                    .responseCriteria(statusCode(200))
-                    .responseCriteria(headerValue("custom header", "true"))
-                    .responseCriteria(headerValueMatches("custom header", "Some"))
-                    .responseCriteria(message("Successful json"))
-                    .responseCriteria(messageMatches("Successful"))
+                    .responseStatusCodeIs(200)
+                    .responseHeaderValueIs("custom header", "true")
+                    .responseHeaderValueMatches("custom header", "Some")
+                    .responseMessageIs("Successful json")
+                    .responseMessageMatches("Successful")
                     .callBodyCriteria("Body size > 2", dtoObjects -> dtoObjects.size() > 2)
                     .criteria("Not a blank string", StringUtil::isNotBlank)
                     .retryTimeOut(ofSeconds(5))
