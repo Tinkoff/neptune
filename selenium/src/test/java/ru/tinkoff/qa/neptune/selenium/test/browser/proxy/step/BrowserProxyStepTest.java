@@ -78,6 +78,28 @@ public class BrowserProxyStepTest {
         );
     }
 
+    @Test
+    public void checkDoubleCall() {
+        seleniumSteps.enableAndRefreshNetwork();
+
+        List<HttpTraffic> requests1 = seleniumSteps.navigateTo("/")
+                .get(proxiedRequests()
+                        .recordedRequestMethod(GET)
+                        .recordedResponseStatusCode(200)
+                        .recordedRequestUrlMatches("https://www.google.com/complete")
+                        .timeOut(ofSeconds(10)));
+
+        List<HttpTraffic> requests2 = seleniumSteps
+                .get(proxiedRequests()
+                        .recordedRequestMethod(GET)
+                        .recordedResponseStatusCode(200)
+                        .recordedRequestUrlMatches("https://www.google.com/complete")
+                        .timeOut(ofSeconds(10)));
+
+
+        assertThat("Сhecking the number of records", requests1, containsInAnyOrder(requests2.toArray()));
+    }
+
     @AfterMethod(alwaysRun = true)
     public void tearDownDriver() {
         seleniumSteps.stop();
