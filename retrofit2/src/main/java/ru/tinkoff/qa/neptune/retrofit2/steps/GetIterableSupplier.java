@@ -29,7 +29,9 @@ import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getRespons
 
 @SuppressWarnings("unchecked")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted iterable")
-public abstract class GetIterableSupplier<M, R, S extends Iterable<R>, E extends GetIterableSupplier<M, R, S, E>> extends SequentialGetStepSupplier.GetListChainedStepSupplier<RetrofitContext, S, RequestExecutionResult<M, S>, R, E> {
+public abstract class GetIterableSupplier<M, R, S extends Iterable<R>, E extends GetIterableSupplier<M, R, S, E>>
+        extends SequentialGetStepSupplier.GetListChainedStepSupplier<RetrofitContext, S, RequestExecutionResult<M, S>, R, E>
+        implements DefinesResponseCriteria<E> {
 
     private Criteria<R> derivedValueCriteria;
 
@@ -112,6 +114,7 @@ public abstract class GetIterableSupplier<M, R, S extends Iterable<R>, E extends
         return iterable(description, new CallBodySupplier<>(call));
     }
 
+    @Override
     public E retryTimeOut(Duration timeOut) {
         ((SendRequestAndGet<M, S>) getFrom()).timeOut(timeOut);
         return (E) this;
@@ -123,26 +126,34 @@ public abstract class GetIterableSupplier<M, R, S extends Iterable<R>, E extends
         return (E) this;
     }
 
+    @Override
     public E responseCriteria(Criteria<Response> criteria) {
         ((SendRequestAndGet<M, S>) getFrom()).criteria(resultResponseCriteria(criteria));
         return (E) this;
     }
 
+    @Override
     public E responseCriteria(String description, Predicate<Response> predicate) {
         return responseCriteria(condition(description, predicate));
     }
 
-    public E responseCriteriaOr(Criteria<Response>... criteria) {
+    @Override
+    @SafeVarargs
+    public final E responseCriteriaOr(Criteria<Response>... criteria) {
         ((SendRequestAndGet<M, S>) getFrom()).criteria(resultResponseCriteria(OR(criteria)));
         return (E) this;
     }
 
-    public E responseCriteriaOnlyOne(Criteria<Response>... criteria) {
+    @Override
+    @SafeVarargs
+    public final E responseCriteriaOnlyOne(Criteria<Response>... criteria) {
         ((SendRequestAndGet<M, S>) getFrom()).criteria(resultResponseCriteria(ONLY_ONE(criteria)));
         return (E) this;
     }
 
-    public E responseCriteriaNot(Criteria<Response>... criteria) {
+    @Override
+    @SafeVarargs
+    public final E responseCriteriaNot(Criteria<Response>... criteria) {
         ((SendRequestAndGet<M, S>) getFrom()).criteria(resultResponseCriteria(NOT(criteria)));
         return (E) this;
     }
