@@ -114,7 +114,6 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             driver = null;
             return;
         }
-
         ofNullable(devTools).ifPresent(DevTools::clearListeners);
         devTools = null;
     }

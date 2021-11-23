@@ -33,6 +33,10 @@ public class HttpProxy {
         httpTrafficList.clear();
     }
 
+    public void disabledNetwork() {
+        devTools.send(Network.disable());
+    }
+
     public List<HttpTraffic> getTraffic() {
         try {
             requestList.forEach(request -> {

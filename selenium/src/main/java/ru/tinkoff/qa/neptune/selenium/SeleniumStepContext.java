@@ -314,6 +314,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
 
     @Override
     public void refreshContext() {
+        proxy.disabledNetwork();
         proxy = null;
         wrappedWebDriver.refreshContext();
     }
