@@ -33,8 +33,7 @@ public class HttpProxy {
         httpTrafficList.clear();
     }
 
-    public void shutDown() {
-        devTools.clearListeners();
+    public void disabledNetwork() {
         devTools.send(Network.disable());
     }
 
