@@ -8,6 +8,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
+import org.openqa.selenium.devtools.v95.network.Network;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.selenium.authentication.AuthenticationPerformer;
@@ -115,7 +116,10 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             return;
         }
 
-        ofNullable(devTools).ifPresent(DevTools::clearListeners);
+        ofNullable(devTools).ifPresent(dt -> {
+            dt.clearListeners();
+            dt.send(Network.disable());
+        });
         devTools = null;
     }
 
