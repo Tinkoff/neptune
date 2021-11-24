@@ -22,7 +22,7 @@ import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
-import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.createCaptors;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.getCaptors;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_EXCHANGE_NAME;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_ROUTING_KEY_NAME;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqAMQPProperty.RABBIT_AMQP_PROPERTY;
@@ -254,7 +254,7 @@ public abstract class RabbitMqPublishSupplier<T extends RabbitMqPublishSupplier<
 
     @Override
     protected void onStart(RabbitMqStepContext rabbitMqStepContext) {
-        catchValue(body, createCaptors(new Class[]{MessageCaptor.class}));
+        catchValue(body, getCaptors(new Class[]{MessageCaptor.class}));
     }
 
     public static final class Mapped extends RabbitMqPublishSupplier<Mapped> {

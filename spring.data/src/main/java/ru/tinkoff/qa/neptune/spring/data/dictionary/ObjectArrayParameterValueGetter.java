@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static java.util.Arrays.stream;
-import static ru.tinkoff.qa.neptune.spring.data.data.serializer.DataSerializer.serializeObject;
+import static ru.tinkoff.qa.neptune.database.abstractions.data.serializer.DataSerializer.serializeObject;
 
 public final class ObjectArrayParameterValueGetter implements ParameterValueGetter<Object[]> {
 

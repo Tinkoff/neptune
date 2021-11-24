@@ -16,7 +16,7 @@ final class CriteriaBundleFilter extends DefaultAbstractBundleFiller {
 
     private static List<Class<?>> criteria;
 
-    protected CriteriaBundleFilter(LocalizationBundlePartition p) {
+    CriteriaBundleFilter(LocalizationBundlePartition p) {
         super(p, getCriteria(), "CRITERIA");
     }
 
@@ -27,7 +27,7 @@ final class CriteriaBundleFilter extends DefaultAbstractBundleFiller {
 
         criteria = new ClassGraph()
                 .enableAllInfo()
-                .scan()
+                .scan(1)
                 .getClassesWithMethodAnnotation(Description.class.getName())
                 .loadClasses(true)
                 .stream()

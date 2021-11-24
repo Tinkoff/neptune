@@ -13,7 +13,7 @@ import ru.tinkoff.qa.neptune.database.abstractions.InsertQuery;
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
 import ru.tinkoff.qa.neptune.database.abstractions.UpdateAction;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataContext;
-import ru.tinkoff.qa.neptune.spring.data.captors.EntitiesCaptor;
+import ru.tinkoff.qa.neptune.database.abstractions.captors.DataCaptor;
 import ru.tinkoff.qa.neptune.spring.data.dictionary.RepositoryParameterValueGetter;
 import ru.tinkoff.qa.neptune.spring.data.dictionary.Update;
 import ru.tinkoff.qa.neptune.spring.data.select.HasRepositoryInfo;
@@ -34,7 +34,7 @@ import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.trans
 
 @SuppressWarnings("unchecked")
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Save:")
-@CaptureOnSuccess(by = EntitiesCaptor.class)
+@CaptureOnSuccess(by = DataCaptor.class)
 public abstract class SaveStepSupplier<INPUT, RESULT, R, ID, T extends Repository<R, ID>>
         extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<SpringDataContext, RESULT, INPUT, SaveStepSupplier<INPUT, RESULT, R, ID, T>>
         implements InsertQuery<RESULT>,

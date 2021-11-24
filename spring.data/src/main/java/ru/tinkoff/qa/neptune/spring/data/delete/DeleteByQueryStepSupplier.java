@@ -12,7 +12,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataContext;
-import ru.tinkoff.qa.neptune.spring.data.captors.EntitiesCaptor;
+import ru.tinkoff.qa.neptune.database.abstractions.captors.DataCaptor;
 import ru.tinkoff.qa.neptune.spring.data.dictionary.RepositoryParameterValueGetter;
 import ru.tinkoff.qa.neptune.spring.data.select.HasRepositoryInfo;
 import ru.tinkoff.qa.neptune.spring.data.select.SelectManyStepSupplier;
@@ -29,8 +29,8 @@ import static java.util.List.of;
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
-import static ru.tinkoff.qa.neptune.spring.data.data.serializer.DataSerializer.serializeObject;
-import static ru.tinkoff.qa.neptune.spring.data.data.serializer.DataSerializer.serializeObjects;
+import static ru.tinkoff.qa.neptune.database.abstractions.data.serializer.DataSerializer.serializeObject;
+import static ru.tinkoff.qa.neptune.database.abstractions.data.serializer.DataSerializer.serializeObjects;
 
 @SuppressWarnings("unchecked")
 @IncludeParamsOfInnerGetterStep
@@ -42,8 +42,8 @@ public final class DeleteByQueryStepSupplier<TO_DELETE, R, ID, T extends Reposit
     @StepParameter(value = "Repository", makeReadableBy = RepositoryParameterValueGetter.class)
     final T repo;
 
-    @CaptureOnSuccess(by = EntitiesCaptor.class)
-    @CaptureOnFailure(by = EntitiesCaptor.class)
+    @CaptureOnSuccess(by = DataCaptor.class)
+    @CaptureOnFailure(by = DataCaptor.class)
     List<String> deleted;
 
     private DeleteByQueryStepSupplier(T repo, DeleteEntities<TO_DELETE, R, ID, T> f) {

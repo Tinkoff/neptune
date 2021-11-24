@@ -14,7 +14,7 @@ public interface ContextRefreshable {
 
     List<Class<? extends Context>> REFRESHABLE_CONTEXTS = new ClassGraph()
             .enableAllInfo()
-            .scan()
+            .scan(1)
             .getSubclasses(Context.class.getName())
             .loadClasses(Context.class)
             .stream()

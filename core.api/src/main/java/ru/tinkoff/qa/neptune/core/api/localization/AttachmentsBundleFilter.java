@@ -24,7 +24,7 @@ final class AttachmentsBundleFilter extends DefaultAbstractBundleFiller {
 
         attachments = new ClassGraph()
                 .enableAllInfo()
-                .scan()
+                .scan(1)
                 .getSubclasses(Captor.class.getName())
                 .loadClasses(Captor.class)
                 .stream()

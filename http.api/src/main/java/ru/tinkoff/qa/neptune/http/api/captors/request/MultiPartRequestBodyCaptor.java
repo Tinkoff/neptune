@@ -8,7 +8,7 @@ import ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart;
 import static java.util.List.of;
 
 @Description("Multipart request body. Part:")
-public class MultiPartRequestBodyCaptor extends AbstractRequestBodyCaptor<MultiPartBody, BodyPart[]> {
+public final class MultiPartRequestBodyCaptor extends AbstractRequestBodyCaptor<MultiPartBody, BodyPart[]> {
 
     public MultiPartRequestBodyCaptor() {
         super(of(new BodyPartCapturedDataInjector()), of(MultiPartBody.class));

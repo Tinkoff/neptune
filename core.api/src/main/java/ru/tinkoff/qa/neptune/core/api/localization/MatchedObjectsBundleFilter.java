@@ -25,7 +25,7 @@ final class MatchedObjectsBundleFilter extends DefaultAbstractBundleFiller {
 
         matchedObjects = new ClassGraph()
                 .enableAllInfo()
-                .scan()
+                .scan(1)
                 .getSubclasses(MatchObjectName.class.getName())
                 .loadClasses(MatchObjectName.class)
                 .stream()

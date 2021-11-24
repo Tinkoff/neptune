@@ -1,0 +1,4 @@
+ru.tinkoff.qa.neptune.selenium.captors.ImageCaptorAfterActionOnElement
+ru.tinkoff.qa.neptune.selenium.captors.ListOfWebElementImageCaptor
+ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor
+ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor

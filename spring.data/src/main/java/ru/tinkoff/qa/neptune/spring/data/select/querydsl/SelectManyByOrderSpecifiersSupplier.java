@@ -21,7 +21,7 @@ import java.util.Map;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.ArrayUtils.add;
-import static ru.tinkoff.qa.neptune.spring.data.data.serializer.DataSerializer.serializeObject;
+import static ru.tinkoff.qa.neptune.database.abstractions.data.serializer.DataSerializer.serializeObject;
 
 @SuppressWarnings("unchecked")
 public abstract class SelectManyByOrderSpecifiersSupplier<R, ID,

@@ -16,7 +16,7 @@ import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import java.net.http.HttpResponse;
 
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
-import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.createCaptors;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.getCaptors;
 
 /**
  * Builds a step-function that receives http response
@@ -60,7 +60,7 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
     @SuppressWarnings("unchecked")
     protected void onStart(HttpStepContext httpStepContext) {
         if (toReport) {
-            catchValue(f.getRequest().body(), createCaptors(new Class[]{AbstractRequestBodyCaptor.class}));
+            catchValue(f.getRequest().body(), getCaptors(new Class[]{AbstractRequestBodyCaptor.class}));
         }
     }
 }

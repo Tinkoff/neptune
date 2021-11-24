@@ -9,7 +9,7 @@ import java.util.Collection;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.createCaptors;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.getCaptors;
 
 /**
  * Annotates subclasses of {@link ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier} and
@@ -39,7 +39,7 @@ public @interface CaptureOnFailure {
             while (!cls.equals(Object.class)) {
                 var onFailure = cls.getAnnotation(CaptureOnFailure.class);
                 if (onFailure != null) {
-                    toFill.addAll(createCaptors(onFailure.by()));
+                    toFill.addAll(getCaptors(onFailure.by()));
                     return;
                 }
                 cls = cls.getSuperclass();
@@ -48,7 +48,7 @@ public @interface CaptureOnFailure {
 
         public static void readCaptorsOnFailure(CaptureOnFailure onFailure, Collection<Captor<Object, Object>> toFill) {
             if (onFailure != null) {
-                toFill.addAll(createCaptors(onFailure.by()));
+                toFill.addAll(getCaptors(onFailure.by()));
             }
         }
     }
