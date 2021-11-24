@@ -26,8 +26,12 @@ final class CriteriaBundleFilter extends DefaultAbstractBundleFiller {
         }
 
         criteria = new ClassGraph()
-                .enableAllInfo()
-                .scan(1)
+                .enableClassInfo()
+                .ignoreClassVisibility()
+                .enableMethodInfo()
+                .ignoreMethodVisibility()
+                .enableAnnotationInfo()
+                .scan()
                 .getClassesWithMethodAnnotation(Description.class.getName())
                 .loadClasses(true)
                 .stream()

@@ -31,8 +31,9 @@ public class HamcrestMatchersBundleExtension extends BundleFillerExtension {
 
     private static List<Class<?>> prepareClasses() {
         return new ClassGraph()
-                .enableAllInfo()
-                .scan(1)
+                .enableClassInfo()
+                .ignoreClassVisibility()
+                .scan()
                 .getAllClasses()
                 .loadClasses(true)
                 .stream()

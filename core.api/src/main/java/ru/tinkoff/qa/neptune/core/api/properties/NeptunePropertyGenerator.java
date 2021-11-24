@@ -134,8 +134,10 @@ public class NeptunePropertyGenerator {
     private static Map<String, List<Property>> getPropertiesMetaMap(Properties props) {
         var propertyMap = new HashMap<String, List<Property>>();
         new ClassGraph()
-                .enableAllInfo()
-                .scan(1).getClassesImplementing(PropertySupplier.class.getName())
+                .enableClassInfo()
+                .ignoreClassVisibility()
+                .scan(0)
+                .getClassesImplementing(PropertySupplier.class.getName())
                 .loadClasses(PropertySupplier.class)
                 .forEach(cls -> {
                     if (!cls.isEnum() && cls.getAnnotation(ExcludeFromExport.class) == null) {

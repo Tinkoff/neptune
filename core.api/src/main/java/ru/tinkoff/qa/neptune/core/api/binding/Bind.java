@@ -58,8 +58,10 @@ public @interface Bind {
     class DefaultBindReader {
 
         private static final List<Class<?>> ANNOTATED_CLASSES = new ClassGraph()
-                .enableAllInfo()
-                .scan(1)
+                .enableClassInfo()
+                .enableAnnotationInfo()
+                .ignoreClassVisibility()
+                .scan()
                 .getClassesWithAnnotation(Bind.class.getName())
                 .loadClasses(true);
 
@@ -67,8 +69,12 @@ public @interface Bind {
 
         private static Set<Field> getAnnotatedFields() {
             var classes = new ClassGraph()
-                    .enableAllInfo()
-                    .scan(1)
+                    .enableClassInfo()
+                    .enableFieldInfo()
+                    .ignoreFieldVisibility()
+                    .ignoreClassVisibility()
+                    .enableAnnotationInfo()
+                    .scan()
                     .getClassesWithFieldAnnotation(Bind.class.getName())
                     .loadClasses(true);
 
