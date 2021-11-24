@@ -25,7 +25,7 @@ final class MatchersBundleFilter extends DefaultAbstractBundleFiller {
 
         matchers = new ClassGraph()
                 .enableAllInfo()
-                .scan()
+                .scan(1)
                 .getSubclasses(NeptuneFeatureMatcher.class.getName())
                 .loadClasses(NeptuneFeatureMatcher.class)
                 .stream()

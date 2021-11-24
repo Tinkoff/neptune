@@ -135,7 +135,7 @@ public class NeptunePropertyGenerator {
         var propertyMap = new HashMap<String, List<Property>>();
         new ClassGraph()
                 .enableAllInfo()
-                .scan().getClassesImplementing(PropertySupplier.class.getName())
+                .scan(1).getClassesImplementing(PropertySupplier.class.getName())
                 .loadClasses(PropertySupplier.class)
                 .forEach(cls -> {
                     if (!cls.isEnum() && cls.getAnnotation(ExcludeFromExport.class) == null) {

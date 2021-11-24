@@ -31,7 +31,7 @@ final class StepBundleFilter extends DefaultAbstractBundleFiller {
             var nestMembers = asList(cls.getNestMembers());
             steps.addAll(new ClassGraph()
                     .enableAllInfo()
-                    .scan()
+                    .scan(1)
                     .getSubclasses(cls.getName())
                     .loadClasses(cls)
                     .stream()

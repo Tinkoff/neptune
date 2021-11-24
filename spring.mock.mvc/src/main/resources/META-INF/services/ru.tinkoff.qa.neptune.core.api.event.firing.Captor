@@ -1,0 +1,3 @@
+ru.tinkoff.qa.neptune.spring.mock.mvc.captors.RequestBodyStringCaptor
+ru.tinkoff.qa.neptune.spring.mock.mvc.captors.ResponseBodyStringCaptor
+ru.tinkoff.qa.neptune.spring.mock.mvc.captors.ResponseStringCaptor

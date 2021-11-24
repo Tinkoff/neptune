@@ -6,7 +6,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataContext;
-import ru.tinkoff.qa.neptune.spring.data.captors.EntitiesCaptor;
+import ru.tinkoff.qa.neptune.database.abstractions.captors.DataCaptor;
 import ru.tinkoff.qa.neptune.spring.data.dictionary.RequiredEntities;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
 
-@CaptureOnSuccess(by = EntitiesCaptor.class)
+@CaptureOnSuccess(by = DataCaptor.class)
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of every item")
 public abstract class GetListFromEntities<T, M>
         extends SequentialGetStepSupplier.GetListChainedStepSupplier<SpringDataContext, List<T>, Iterable<M>, T, GetListFromEntities<T, M>>

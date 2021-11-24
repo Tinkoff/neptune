@@ -1,15 +1,15 @@
 package ru.tinkoff.qa.neptune.core.api.dependency.injection;
 
-import io.github.classgraph.ClassGraph;
-
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.reflect.Modifier.isFinal;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
+import static java.util.ServiceLoader.load;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.ArrayUtils.addAll;
 
 /**
@@ -18,19 +18,13 @@ import static org.apache.commons.lang3.ArrayUtils.addAll;
  */
 public interface DependencyInjector {
 
-    List<DependencyInjector> dependencyInjectors = new ClassGraph()
-            .enableAllInfo()
-            .scan().getClassesImplementing(DependencyInjector.class.getName())
-            .loadClasses(DependencyInjector.class)
-            .stream().map(i -> {
-                try {
-                    var c = i.getConstructor();
-                    c.setAccessible(true);
-                    return  c.newInstance();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }).collect(Collectors.toList());
+    List<DependencyInjector> dependencyInjectors = getDependencyInjectors();
+
+    private static List<DependencyInjector> getDependencyInjectors() {
+        var iterator = load(DependencyInjector.class).iterator();
+        Iterable<DependencyInjector> iterable = () -> iterator;
+        return StreamSupport.stream(iterable.spliterator(), false).collect(toList());
+    }
 
     /**
      * Fills fields of an object with values

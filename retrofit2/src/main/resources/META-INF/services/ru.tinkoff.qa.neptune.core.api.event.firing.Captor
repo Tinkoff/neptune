@@ -1,0 +1,5 @@
+ru.tinkoff.qa.neptune.retrofit2.captors.CommonRequestBodyCaptor
+ru.tinkoff.qa.neptune.retrofit2.captors.FormBodyRequestBodyCaptor
+ru.tinkoff.qa.neptune.retrofit2.captors.MultipartRequestBodyCaptor
+ru.tinkoff.qa.neptune.retrofit2.captors.ResponseBodyCaptor
+ru.tinkoff.qa.neptune.retrofit2.captors.ResponseCaptor

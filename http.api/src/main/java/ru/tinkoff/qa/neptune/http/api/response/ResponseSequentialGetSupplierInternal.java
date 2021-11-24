@@ -24,7 +24,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
-import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.createCaptors;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.getCaptors;
 
 @MaxDepthOfReporting(1)
 @ThrowWhenNoData(toThrow = ExpectedHttpResponseHasNotBeenReceivedException.class, startDescription = "Not received")
@@ -89,7 +89,7 @@ final class ResponseSequentialGetSupplierInternal<T, R> extends SequentialGetSte
     @SuppressWarnings("unchecked")
     protected void onStart(HttpStepContext httpStepContext) {
         if (toReport) {
-            catchValue(f.getRequest().body(), createCaptors(new Class[]{AbstractRequestBodyCaptor.class}));
+            catchValue(f.getRequest().body(), getCaptors(new Class[]{AbstractRequestBodyCaptor.class}));
         }
     }
 

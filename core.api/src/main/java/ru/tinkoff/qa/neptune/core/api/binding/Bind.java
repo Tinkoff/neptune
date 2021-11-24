@@ -59,7 +59,7 @@ public @interface Bind {
 
         private static final List<Class<?>> ANNOTATED_CLASSES = new ClassGraph()
                 .enableAllInfo()
-                .scan()
+                .scan(1)
                 .getClassesWithAnnotation(Bind.class.getName())
                 .loadClasses(true);
 
@@ -68,7 +68,7 @@ public @interface Bind {
         private static Set<Field> getAnnotatedFields() {
             var classes = new ClassGraph()
                     .enableAllInfo()
-                    .scan()
+                    .scan(1)
                     .getClassesWithFieldAnnotation(Bind.class.getName())
                     .loadClasses(true);
 

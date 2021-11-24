@@ -7,7 +7,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataContext;
-import ru.tinkoff.qa.neptune.spring.data.captors.EntitiesCaptor;
+import ru.tinkoff.qa.neptune.database.abstractions.captors.DataCaptor;
 import ru.tinkoff.qa.neptune.spring.data.dictionary.RepositoryParameterValueGetter;
 
 import java.time.Duration;
@@ -30,7 +30,7 @@ import static ru.tinkoff.qa.neptune.spring.data.select.GetObjectFromEntity.getOb
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Select:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time to select required entity")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Entity criteria")
-@CaptureOnSuccess(by = EntitiesCaptor.class)
+@CaptureOnSuccess(by = DataCaptor.class)
 public abstract class SelectOneStepSupplier<R, ID, T extends Repository<R, ID>>
         extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<SpringDataContext, R, T, SelectOneStepSupplier<R, ID, T>>
         implements SelectQuery<R> {

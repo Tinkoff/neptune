@@ -9,7 +9,7 @@ import java.util.Collection;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.createCaptors;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.getCaptors;
 
 /**
  * Annotates subclasses of {@link ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier} and
@@ -45,7 +45,7 @@ public @interface CaptureOnSuccess {
 
         public static void readCaptorsOnSuccess(CaptureOnSuccess onSuccess, Collection<Captor<Object, Object>> toFill) {
             if (onSuccess != null) {
-                toFill.addAll(createCaptors(onSuccess.by()));
+                toFill.addAll(getCaptors(onSuccess.by()));
             }
         }
     }

@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.spring.data.captors;
+package ru.tinkoff.qa.neptune.database.abstractions.captors;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.collections.IterableCaptor;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
@@ -11,11 +11,11 @@ import static java.util.Arrays.stream;
 import static java.util.List.of;
 import static java.util.Objects.isNull;
 import static org.apache.commons.collections.IteratorUtils.toList;
-import static ru.tinkoff.qa.neptune.spring.data.data.serializer.DataSerializer.serializeObjects;
+import static ru.tinkoff.qa.neptune.database.abstractions.data.serializer.DataSerializer.serializeObjects;
 
 @SuppressWarnings("unchecked")
-@Description("Object(s)")
-public class EntitiesCaptor extends IterableCaptor<List<String>> {
+@Description("Resulted data")
+public class DataCaptor extends IterableCaptor<List<String>> {
 
     @Override
     public StringBuilder getData(List<String> caught) {

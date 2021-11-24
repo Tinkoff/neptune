@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
-import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.createCaptors;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.getCaptors;
 
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Response criteria")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time to receive expected http response and get the result")
@@ -78,7 +78,7 @@ class SendRequestAndGet<M, R> extends SequentialGetStepSupplier
     private void fillResultData() {
         var r = f.request();
         if (r != null) {
-            catchValue(r.body(), createCaptors(new Class[]{AbstractRequestBodyCaptor.class, MultipartRequestBodyCaptor.class}));
+            catchValue(r.body(), getCaptors(new Class[]{AbstractRequestBodyCaptor.class, MultipartRequestBodyCaptor.class}));
         }
 
         response = f.response();

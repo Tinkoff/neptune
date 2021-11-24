@@ -16,7 +16,7 @@ dependencies {
     inpath(project(":core.api")) {
         transitive = false
     }
-    api group: 'org.springframework.data', name: 'spring-data-commons', version: '2.5.6'
+    api group: 'org.springframework.data', name: 'spring-data-commons', version: '2.6.0'
     testImplementation  group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockitoVersion
     compileClasspath(group: 'org.springframework', name: 'spring-context', version: springVersion)
@@ -30,7 +30,7 @@ dependencies {
     testImplementation(group: 'org.springframework', name: 'spring-context', version: springVersion)
     testImplementation(group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.21')
     testImplementation('io.projectreactor.tools:blockhound:1.0.6.RELEASE')
-    testImplementation('io.projectreactor:reactor-test:3.4.11')
+    testImplementation('io.projectreactor:reactor-test:3.4.12')
     testImplementation(group: 'io.micrometer', name: 'micrometer-core', version: '1.7.5')
     testImplementation(group: 'io.reactivex.rxjava3', name: 'rxjava', version: '3.1.2')
     testImplementation(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')

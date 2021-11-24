@@ -6,14 +6,14 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataContext;
-import ru.tinkoff.qa.neptune.spring.data.captors.EntitiesCaptor;
+import ru.tinkoff.qa.neptune.database.abstractions.captors.DataCaptor;
 import ru.tinkoff.qa.neptune.spring.data.dictionary.RequiredEntity;
 
 import java.util.function.Function;
 
 import static java.util.Optional.ofNullable;
 
-@CaptureOnSuccess(by = EntitiesCaptor.class)
+@CaptureOnSuccess(by = DataCaptor.class)
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of every item")
 public abstract class GetArrayFromEntity<T, M>
         extends SequentialGetStepSupplier.GetArrayChainedStepSupplier<SpringDataContext, T, M, GetArrayFromEntity<T, M>>

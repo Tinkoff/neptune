@@ -1,0 +1,6 @@
+ru.tinkoff.qa.neptune.core.api.steps.TestFileCaptor
+ru.tinkoff.qa.neptune.core.api.steps.TestNumberCaptor
+ru.tinkoff.qa.neptune.core.api.steps.TestCaptor
+ru.tinkoff.qa.neptune.core.api.steps.PresenceSuccessCaptor
+ru.tinkoff.qa.neptune.core.api.steps.AbcnceSuccessCaptor
+ru.tinkoff.qa.neptune.core.api.steps.TestStringCaptor

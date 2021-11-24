@@ -19,7 +19,7 @@ import static org.openqa.selenium.OutputType.BYTES;
  * Takes screenshot from a whole page
  */
 @Description("Browser screenshot")
-public class WebDriverImageCaptor extends ImageCaptor<WebDriver> {
+public final class WebDriverImageCaptor extends ImageCaptor<WebDriver> {
 
     @Override
     public BufferedImage getData(WebDriver caught) {

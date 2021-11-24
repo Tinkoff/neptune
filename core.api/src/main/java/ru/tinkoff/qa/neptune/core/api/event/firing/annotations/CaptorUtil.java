@@ -1,79 +1,56 @@
 package ru.tinkoff.qa.neptune.core.api.event.firing.annotations;
 
-import io.github.classgraph.ClassGraph;
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
-import ru.tinkoff.qa.neptune.core.api.event.firing.captors.FileCaptor;
-import ru.tinkoff.qa.neptune.core.api.event.firing.captors.ImageCaptor;
-import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
+import ru.tinkoff.qa.neptune.core.api.event.firing.collections.ArrayCaptor;
+import ru.tinkoff.qa.neptune.core.api.event.firing.collections.CollectionCaptor;
+import ru.tinkoff.qa.neptune.core.api.event.firing.collections.MapCaptor;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.StreamSupport;
 
 import static java.lang.reflect.Modifier.isAbstract;
 import static java.util.Arrays.stream;
+import static java.util.ServiceLoader.load;
+import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({"unchecked", "rawtypes"})
 public final class CaptorUtil {
 
-    private static final Map<Class<?>, List<Class<Captor>>> ABSTRACT_CAPTORS = mapOfAbstractCaptors();
+    private static final List<Captor> CAPTORS = initCaptors();
 
-    private static Map<Class<?>, List<Class<Captor>>> mapOfAbstractCaptors() {
-        var children = new ClassGraph()
-                .enableAllInfo()
-                .scan()
-                .getSubclasses(Captor.class.getName())
-                .loadClasses(Captor.class);
 
-        var abstractChildren = children.stream()
-                .filter(captorClass -> isAbstract(captorClass.getModifiers())
-                        && !captorClass.equals(Captor.class)
-                        && !captorClass.equals(ImageCaptor.class)
-                        && !captorClass.equals(FileCaptor.class)
-                        && !captorClass.equals(StringCaptor.class));
+    private static List<Captor> initCaptors() {
+        var iterator = load(Captor.class).iterator();
+        Iterable<Captor> iterable = () -> iterator;
+        var result = StreamSupport
+                .stream(iterable.spliterator(), false)
+                .collect(toCollection(LinkedList::new));
 
-        var result = new HashMap<Class<?>, List<Class<Captor>>>();
-        abstractChildren.forEach(captorClass -> {
-            var found = children.stream()
-                    .filter(captorClass1 -> !isAbstract(captorClass1.getModifiers())
-                            && captorClass.isAssignableFrom(captorClass1))
-                    .collect(toList());
-            if (found.size() > 0) {
-                result.put(captorClass, found);
-            }
-        });
-
+        result.addFirst(new ArrayCaptor());
+        result.addFirst(new CollectionCaptor());
+        result.addFirst(new MapCaptor());
         return result;
     }
 
-    private static Captor createCaptor(Class<? extends Captor> captorClass) {
-        try {
-            var c = captorClass.getConstructor();
-            c.setAccessible(true);
-            return c.newInstance();
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
+    private static List<Captor<Object,Object>> filterCaptors(Predicate<Captor> predicate) {
+        return CAPTORS.stream().filter(predicate).map(c -> (Captor<Object,Object>) c).collect(toList());
     }
 
-    @SuppressWarnings("unchecked")
-    public static List<Captor<Object, Object>> createCaptors(Class<? extends Captor>[] classes) {
+    public static List<Captor<Object, Object>> getCaptors(Class<? extends Captor>[] classes) {
         var result = new ArrayList<Captor<Object, Object>>();
         stream(classes)
                 .forEach(cls -> {
                     var m = cls.getModifiers();
                     if (!isAbstract(m)) {
-                        result.add(createCaptor(cls));
+                        result.addAll(filterCaptors(c -> c.getClass().equals(cls)));
                         return;
                     }
 
-                    var children = ABSTRACT_CAPTORS.get(cls);
-                    if (children != null) {
-                        children.forEach(captorClass -> result.add(createCaptor(captorClass)));
-                    }
+                    result.addAll(filterCaptors(c -> cls.isAssignableFrom(c.getClass())));
                 });
         return result;
     }

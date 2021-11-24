@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.spring.data.data.serializer;
+package ru.tinkoff.qa.neptune.database.abstractions.data.serializer;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
