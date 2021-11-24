@@ -73,6 +73,7 @@ public @interface Bind {
                     .enableFieldInfo()
                     .ignoreFieldVisibility()
                     .ignoreClassVisibility()
+                    .enableAnnotationInfo()
                     .scan()
                     .getClassesWithFieldAnnotation(Bind.class.getName())
                     .loadClasses(true);
