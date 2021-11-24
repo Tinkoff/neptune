@@ -24,8 +24,9 @@ final class MismatchDescriptionBundleFilter extends DefaultAbstractBundleFiller 
         }
 
         mismatchDescriptions = new ClassGraph()
-                .enableAllInfo()
-                .scan(1)
+                .enableClassInfo()
+                .ignoreClassVisibility()
+                .scan()
                 .getSubclasses(MismatchDescriber.class.getName())
                 .loadClasses(MismatchDescriber.class)
                 .stream()

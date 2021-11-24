@@ -13,8 +13,9 @@ import static java.util.stream.Collectors.toList;
 public interface ContextRefreshable {
 
     List<Class<? extends Context>> REFRESHABLE_CONTEXTS = new ClassGraph()
-            .enableAllInfo()
-            .scan(1)
+            .enableClassInfo()
+            .ignoreClassVisibility()
+            .scan()
             .getSubclasses(Context.class.getName())
             .loadClasses(Context.class)
             .stream()

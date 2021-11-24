@@ -30,8 +30,9 @@ final class StepBundleFilter extends DefaultAbstractBundleFiller {
         of(SequentialActionSupplier.class, SequentialGetStepSupplier.class).forEach(cls -> {
             var nestMembers = asList(cls.getNestMembers());
             steps.addAll(new ClassGraph()
-                    .enableAllInfo()
-                    .scan(1)
+                    .enableClassInfo()
+                    .ignoreClassVisibility()
+                    .scan()
                     .getSubclasses(cls.getName())
                     .loadClasses(cls)
                     .stream()

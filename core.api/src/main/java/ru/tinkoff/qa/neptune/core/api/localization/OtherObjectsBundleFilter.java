@@ -36,8 +36,10 @@ final class OtherObjectsBundleFilter extends DefaultAbstractBundleFiller {
         }
 
         other = new ClassGraph()
-                .enableAllInfo()
-                .scan(1)
+                .enableClassInfo()
+                .enableAnnotationInfo()
+                .ignoreClassVisibility()
+                .scan()
                 .getClassesWithAnnotation(Description.class.getName())
                 .loadClasses(true)
                 .stream()

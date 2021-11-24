@@ -25,8 +25,9 @@ final class ParameterPojoBundleFilter extends DefaultAbstractBundleFiller {
         }
 
         parameterPajos = new ClassGraph()
-                .enableAllInfo()
-                .scan(1)
+                .enableClassInfo()
+                .ignoreClassVisibility()
+                .scan()
                 .getClassesImplementing(StepParameterPojo.class.getName())
                 .loadClasses(StepParameterPojo.class)
                 .stream()
