@@ -63,6 +63,9 @@ ru.tinkoff.qa.neptune.data.base.api.queries.jdoql
 ru.tinkoff.qa.neptune.data.base.api.queries.sql
 ru.tinkoff.qa.neptune.data.base.api.result
 ru.tinkoff.qa.neptune.database.abstractions
+ru.tinkoff.qa.neptune.database.abstractions.captors
+ru.tinkoff.qa.neptune.database.abstractions.data.serializer
+ru.tinkoff.qa.neptune.database.abstractions.localization
 ru.tinkoff.qa.neptune.http.api
 ru.tinkoff.qa.neptune.http.api.captors.request
 ru.tinkoff.qa.neptune.http.api.captors.response
@@ -161,8 +164,6 @@ ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.window
 ru.tinkoff.qa.neptune.selenium.localization
 ru.tinkoff.qa.neptune.selenium.properties
 ru.tinkoff.qa.neptune.spring.data
-ru.tinkoff.qa.neptune.spring.data.captors
-ru.tinkoff.qa.neptune.spring.data.data.serializer
 ru.tinkoff.qa.neptune.spring.data.delete
 ru.tinkoff.qa.neptune.spring.data.dictionary
 ru.tinkoff.qa.neptune.spring.data.localization

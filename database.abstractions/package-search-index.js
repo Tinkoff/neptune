@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"ru.tinkoff.qa.neptune.database.abstractions"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"ru.tinkoff.qa.neptune.database.abstractions"},{"l":"ru.tinkoff.qa.neptune.database.abstractions.captors"},{"l":"ru.tinkoff.qa.neptune.database.abstractions.data.serializer"},{"l":"ru.tinkoff.qa.neptune.database.abstractions.localization"}];updateSearchResults();
