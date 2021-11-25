@@ -136,7 +136,7 @@ public class NeptunePropertyGenerator {
         new ClassGraph()
                 .enableClassInfo()
                 .ignoreClassVisibility()
-                .scan(0)
+                .scan()
                 .getClassesImplementing(PropertySupplier.class.getName())
                 .loadClasses(PropertySupplier.class)
                 .forEach(cls -> {
