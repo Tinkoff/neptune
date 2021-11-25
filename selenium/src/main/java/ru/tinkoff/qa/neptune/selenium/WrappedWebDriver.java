@@ -114,7 +114,11 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             driver = null;
             return;
         }
-        ofNullable(devTools).ifPresent(DevTools::clearListeners);
+
+        ofNullable(devTools)
+                .map(DevTools::getCdpSession)
+                .ifPresent(cdpSession -> devTools.clearListeners());
+
         devTools = null;
     }
 
@@ -135,7 +139,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             }
         });
     }
-
+    
     public DevTools getDevTools() {
         return ofNullable(devTools)
                 .map(dt -> {

@@ -100,6 +100,26 @@ public class BrowserProxyStepTest {
         assertThat("Сhecking the number of records", requests1, containsInAnyOrder(requests2.toArray()));
     }
 
+    @Test
+    public void closedWindowBeforeReceivingRequests() {
+        seleniumSteps.enableAndRefreshNetwork();
+        seleniumSteps.navigateTo("https://www.google.com");
+        seleniumSteps.closeWindow();
+        List<HttpTraffic> requests = seleniumSteps.get(proxiedRequests());
+
+        assertThat("Proxy captured requests", requests, hasSize(greaterThan(0)));
+    }
+
+    @Test
+    public void closedWindowBeforeRefreshContext() {
+        seleniumSteps.enableAndRefreshNetwork();
+        seleniumSteps.navigateTo("https://www.google.com");
+        seleniumSteps.closeWindow();
+        seleniumSteps.refreshContext();
+
+        assertThat("fake assert", true, is(true));
+    }
+
     @AfterMethod(alwaysRun = true)
     public void tearDownDriver() {
         seleniumSteps.stop();
