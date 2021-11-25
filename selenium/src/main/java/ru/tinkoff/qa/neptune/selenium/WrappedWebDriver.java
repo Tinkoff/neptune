@@ -139,12 +139,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             }
         });
     }
-
-    public DevTools getCurrentDevTools() {
-        return devTools;
-    }
-
-
+    
     public DevTools getDevTools() {
         return ofNullable(devTools)
                 .map(dt -> {
