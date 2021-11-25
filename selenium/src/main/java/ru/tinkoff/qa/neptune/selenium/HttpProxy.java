@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static java.util.Optional.ofNullable;
+
 public class HttpProxy {
     private final DevTools devTools;
     private final List<RequestWillBeSent> requestList = new CopyOnWriteArrayList<>();
@@ -34,7 +36,8 @@ public class HttpProxy {
     }
 
     public void disabledNetwork() {
-        devTools.send(Network.disable());
+        ofNullable(devTools.getCdpSession())
+                .ifPresent(cdp -> devTools.send(Network.disable()));
     }
 
     public List<HttpTraffic> getTraffic() {
@@ -51,8 +54,10 @@ public class HttpProxy {
                         .setResponse(response);
 
                 try {
-                    var body = devTools.send(Network.getResponseBody(request.getRequestId()));
-                    httpTraffic.setBody(body);
+                    ofNullable(devTools)
+                            .map(DevTools::getCdpSession)
+                            .ifPresent(session ->
+                                    httpTraffic.setBody(devTools.send(Network.getResponseBody(request.getRequestId()))));
                 } catch (WebDriverException e) {
                     e.printStackTrace();
                 }
