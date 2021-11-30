@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.http.api.mapping;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -47,6 +48,7 @@ public abstract class MappedObject {
         try {
             var s = JSON.getMapper().writeValueAsString(this);
             var map = new ObjectMapper()
+                    .registerModule(new JavaTimeModule())
                     .readValue(s, new TypeReference<Map<String, Object>>() {
                     });
 
