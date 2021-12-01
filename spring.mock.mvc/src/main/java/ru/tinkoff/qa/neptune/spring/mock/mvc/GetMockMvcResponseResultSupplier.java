@@ -26,6 +26,7 @@ import static java.lang.String.valueOf;
 import static java.util.Collections.list;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.spring.mock.mvc.CheckMockMvcExpectation.checkExpectation;
 import static ru.tinkoff.qa.neptune.spring.mock.mvc.GetArrayFromResponse.array;
@@ -94,7 +95,9 @@ public final class GetMockMvcResponseResultSupplier extends SequentialGetStepSup
         var c = getResponse.getInnerRequestResponseCatcher();
         try {
             var request = c.getRequest();
-            requestBody = nonNull(request) ? request.getContentAsString() : null;
+            requestBody = nonNull(request) ? ofNullable(request.getContentAsByteArray())
+                    .map(String::new)
+                    .orElse(null) : null;
         } catch (Exception e) {
             e.printStackTrace();
         }
