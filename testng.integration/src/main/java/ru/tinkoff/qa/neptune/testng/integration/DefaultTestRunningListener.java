@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static java.lang.String.valueOf;
+import static java.lang.Thread.currentThread;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
@@ -24,6 +25,8 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.testng.ITestResult.*;
 import static ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable.REFRESHABLE_CONTEXTS;
+import static ru.tinkoff.qa.neptune.core.api.concurrency.BusyThreads.setBusy;
+import static ru.tinkoff.qa.neptune.core.api.concurrency.BusyThreads.setFree;
 import static ru.tinkoff.qa.neptune.core.api.hooks.ExecutionHook.getHooks;
 import static ru.tinkoff.qa.neptune.testng.integration.properties.TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
 
@@ -75,6 +78,7 @@ public final class DefaultTestRunningListener implements IInvokedMethodListener,
 
     @Override
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
+        setBusy(currentThread());
         var reflectionMethod = method.getTestMethod().getConstructorOrMethod().getMethod();
         ofNullable(testResult.getInstance()).ifPresent(o ->
                 refreshIfNecessary(reflectionMethod));
@@ -153,5 +157,6 @@ public final class DefaultTestRunningListener implements IInvokedMethodListener,
             System.out.println();
             System.out.println();
         });
+        setFree(currentThread());
     }
 }
