@@ -20,6 +20,9 @@ dependencies {
     compileClasspath(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
     compileClasspath(group: 'com.querydsl', name: 'querydsl-jpa', version: '5.0.0')
 
+    testImplementation(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
+    testImplementation(group: 'com.querydsl', name: 'querydsl-jpa', version: '5.0.0')
+
     bundleGeneration(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
 }
 

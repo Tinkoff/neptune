@@ -21,15 +21,15 @@ import static java.util.Optional.ofNullable;
  */
 @CaptureOnSuccess(by = DataCaptor.class)
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted iterable")
-public abstract class GetIterableFromEntity<T, I extends Iterable<T>, M, S extends GetIterableFromEntity<T, I, M, S>>
-        extends SequentialGetStepSupplier.GetListChainedStepSupplier<HibernateContext, I, M, T, S>
+public abstract class GetIterableFromEntity<T, I extends Iterable<T>, M>
+        extends SequentialGetStepSupplier.GetListChainedStepSupplier<HibernateContext, I, M, T, GetIterableFromEntity<T, I, M>>
         implements SelectQuery<List<T>> {
 
     private GetIterableFromEntity(Function<M, I> originalFunction) {
         super(originalFunction);
     }
 
-    static <T, I extends Iterable<T>, M> GetIterableFromEntity<T, I, M, ?> getIterableFromEntity(
+    static <T, I extends Iterable<T>, M> GetIterableFromEntity<T, I, M> getIterableFromEntity(
             SelectOneStepSupplier<M> from,
             Function<M, I> f) {
         return new GetIterableFromEntityImpl<>(f).from(from);
@@ -37,7 +37,7 @@ public abstract class GetIterableFromEntity<T, I extends Iterable<T>, M, S exten
 
     @IncludeParamsOfInnerGetterStep
     public static final class GetIterableFromEntityImpl<T, I extends Iterable<T>, M>
-            extends GetIterableFromEntity<T, I, M, GetIterableFromEntityImpl<T, I, M>> {
+            extends GetIterableFromEntity<T, I, M> {
 
         private GetIterableFromEntityImpl(Function<M, I> originalFunction) {
             super(originalFunction);

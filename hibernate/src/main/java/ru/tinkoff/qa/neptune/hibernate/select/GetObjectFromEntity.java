@@ -20,29 +20,23 @@ import static java.util.Optional.ofNullable;
  */
 @CaptureOnSuccess(by = DataCaptor.class)
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Result criteria")
-public abstract class GetObjectFromEntity<T, M, S extends GetObjectFromEntity<T, M, S>> extends SequentialGetStepSupplier
-        .GetObjectChainedStepSupplier<HibernateContext, T, M, S>
+public abstract class GetObjectFromEntity<T, M> extends SequentialGetStepSupplier
+        .GetObjectChainedStepSupplier<HibernateContext, T, M, GetObjectFromEntity<T, M>>
         implements SelectQuery<T> {
 
     private GetObjectFromEntity(Function<M, T> originalFunction) {
         super(originalFunction);
     }
 
-    static <T, M> GetObjectFromEntity<T, M, ?> getObjectFromEntity(
+    static <T, M> GetObjectFromEntity<T, M> getObjectFromEntity(
             SelectOneStepSupplier<M> from,
             Function<M, T> f) {
         return new GetObjectFromEntityImpl<>(f).from(from);
     }
 
-    @Override
-    protected S from(SequentialGetStepSupplier<HibernateContext, ? extends M, ?, ?, ?> from) {
-        setDescription(from.toString());
-        return super.from(from);
-    }
-
     @IncludeParamsOfInnerGetterStep
     public static final class GetObjectFromEntityImpl<T, M>
-            extends GetObjectFromEntity<T, M, GetObjectFromEntityImpl<T, M>> {
+            extends GetObjectFromEntity<T, M> {
 
         private GetObjectFromEntityImpl(Function<M, T> originalFunction) {
             super(originalFunction);

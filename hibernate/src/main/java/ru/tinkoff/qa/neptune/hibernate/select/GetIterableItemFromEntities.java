@@ -22,8 +22,8 @@ import static java.util.stream.StreamSupport.stream;
  */
 @CaptureOnSuccess(by = DataCaptor.class)
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Result criteria")
-public abstract class GetIterableItemFromEntities<T, M, S extends GetIterableItemFromEntities<T, M, S>>
-        extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<HibernateContext, T, Iterable<M>, S>
+public abstract class GetIterableItemFromEntities<T, M>
+        extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<HibernateContext, T, Iterable<M>, GetIterableItemFromEntities<T, M>>
         implements SelectQuery<T> {
 
     protected GetIterableItemFromEntities(Function<M, T> originalFunction) {
@@ -32,7 +32,7 @@ public abstract class GetIterableItemFromEntities<T, M, S extends GetIterableIte
                 .collect(toList()));
     }
 
-    static <T, M> GetIterableItemFromEntities<T, M, ?> getIterableItemFromEntities(
+    static <T, M> GetIterableItemFromEntities<T, M> getIterableItemFromEntities(
             SelectManyStepSupplier<M> from,
             Function<M, T> f) {
         return new GetIterableItemFromEntitiesImpl<>(f).from(from);
@@ -40,7 +40,7 @@ public abstract class GetIterableItemFromEntities<T, M, S extends GetIterableIte
 
     @IncludeParamsOfInnerGetterStep
     public static final class GetIterableItemFromEntitiesImpl<T, M>
-            extends GetIterableItemFromEntities<T, M, GetIterableItemFromEntitiesImpl<T, M>> {
+            extends GetIterableItemFromEntities<T, M> {
 
         private GetIterableItemFromEntitiesImpl(Function<M, T> originalFunction) {
             super(originalFunction);

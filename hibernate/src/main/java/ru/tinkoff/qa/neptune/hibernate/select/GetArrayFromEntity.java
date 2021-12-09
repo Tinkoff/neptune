@@ -20,15 +20,15 @@ import static java.util.Optional.ofNullable;
  */
 @CaptureOnSuccess(by = DataCaptor.class)
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted array")
-public abstract class GetArrayFromEntity<T, M, S extends GetArrayFromEntity<T, M, S>>
-        extends SequentialGetStepSupplier.GetArrayChainedStepSupplier<HibernateContext, T, M, S>
+public abstract class GetArrayFromEntity<T, M>
+        extends SequentialGetStepSupplier.GetArrayChainedStepSupplier<HibernateContext, T, M, GetArrayFromEntity<T, M>>
         implements SelectQuery<T[]> {
 
     private GetArrayFromEntity(Function<M, T[]> originalFunction) {
         super(originalFunction);
     }
 
-    static <T, M> GetArrayFromEntity<T, M, ?> getArrayFromEntity(
+    static <T, M> GetArrayFromEntity<T, M> getArrayFromEntity(
             SelectOneStepSupplier<M> from,
             Function<M, T[]> f) {
         return new GetArrayFromEntityImpl<>(f).from(from);
@@ -36,7 +36,7 @@ public abstract class GetArrayFromEntity<T, M, S extends GetArrayFromEntity<T, M
 
     @IncludeParamsOfInnerGetterStep
     public static final class GetArrayFromEntityImpl<T, M>
-            extends GetArrayFromEntity<T, M, GetArrayFromEntityImpl<T, M>> {
+            extends GetArrayFromEntity<T, M> {
 
         private GetArrayFromEntityImpl(Function<M, T[]> originalFunction) {
             super(originalFunction);
