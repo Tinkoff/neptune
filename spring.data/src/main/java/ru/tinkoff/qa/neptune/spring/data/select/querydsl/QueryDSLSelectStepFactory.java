@@ -9,7 +9,7 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.ReactiveQuerydslPredicateExecutor;
 import org.springframework.data.repository.Repository;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
-import ru.tinkoff.qa.neptune.spring.data.dictionary.PredicateParameterValueGetter;
+import ru.tinkoff.qa.neptune.database.abstractions.dictionary.PredicateParameterValueGetter;
 import ru.tinkoff.qa.neptune.spring.data.select.HasRepositoryInfo;
 import ru.tinkoff.qa.neptune.spring.data.select.SelectManyStepSupplier;
 import ru.tinkoff.qa.neptune.spring.data.select.SelectOneStepSupplier;

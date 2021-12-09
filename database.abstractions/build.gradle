@@ -7,6 +7,7 @@ dependencies {
     inpath(project(":core.api")) {
         transitive = false
     }
+    compileClasspath(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
 }
 
 tasks.withType(JavaCompile) {

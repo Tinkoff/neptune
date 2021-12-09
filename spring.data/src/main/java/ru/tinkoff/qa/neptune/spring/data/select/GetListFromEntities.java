@@ -5,9 +5,9 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
-import ru.tinkoff.qa.neptune.spring.data.SpringDataContext;
 import ru.tinkoff.qa.neptune.database.abstractions.captors.DataCaptor;
-import ru.tinkoff.qa.neptune.spring.data.dictionary.RequiredEntities;
+import ru.tinkoff.qa.neptune.database.abstractions.dictionary.RequiredEntities;
+import ru.tinkoff.qa.neptune.spring.data.SpringDataContext;
 
 import java.util.List;
 import java.util.function.Function;
