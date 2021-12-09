@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.hibernate.dictionary;
 
-import org.hibernate.SessionFactory;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;

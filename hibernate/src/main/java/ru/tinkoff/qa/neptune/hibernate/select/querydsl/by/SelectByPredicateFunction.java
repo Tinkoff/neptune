@@ -13,7 +13,7 @@ import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.getSessionFactory
 
 @Description("By predicate")
 @SuppressWarnings("unchecked")
-public abstract class SelectByPredicateFunction<RESULT> implements Function<Class<?>, RESULT> {
+public abstract class SelectByPredicateFunction<R, RESULT> implements Function<Class<R>, RESULT> {
 
     final Predicate predicate;
 
@@ -31,14 +31,14 @@ public abstract class SelectByPredicateFunction<RESULT> implements Function<Clas
         return translate(this);
     }
 
-    public static final class SelectOneByPredicate<R> extends SelectByPredicateFunction<R> {
+    public static final class SelectOneByPredicate<R> extends SelectByPredicateFunction<R, R> {
 
         public SelectOneByPredicate(Predicate predicate) {
             super(predicate);
         }
 
         @Override
-        public R apply(Class<?> t) {
+        public R apply(Class<R> t) {
             var sessionFactory = getSessionFactoryByEntity(t);
             var session = sessionFactory.getCurrentSession();
 
@@ -46,14 +46,14 @@ public abstract class SelectByPredicateFunction<RESULT> implements Function<Clas
         }
     }
 
-    public static final class SelectManyByPredicate<R> extends SelectByPredicateFunction<Iterable<R>> {
+    public static final class SelectManyByPredicate<R> extends SelectByPredicateFunction<R, Iterable<R>> {
 
         public SelectManyByPredicate(Predicate predicate) {
             super(predicate);
         }
 
         @Override
-        public Iterable<R> apply(Class<?> t) {
+        public Iterable<R> apply(Class<R> t) {
             var sessionFactory = getSessionFactoryByEntity(t);
             var session = sessionFactory.getCurrentSession();
 
@@ -62,7 +62,7 @@ public abstract class SelectByPredicateFunction<RESULT> implements Function<Clas
     }
 
     @Description("By predicate as page")
-    public static final class SelectManyByPredicateAndPagination<R> extends SelectByPredicateFunction<Iterable<R>> {
+    public static final class SelectManyByPredicateAndPagination<R> extends SelectByPredicateFunction<R, Iterable<R>> {
 
         private int limit;
         private int offset;
@@ -72,7 +72,7 @@ public abstract class SelectByPredicateFunction<RESULT> implements Function<Clas
         }
 
         @Override
-        public Iterable<R> apply(Class<?> t) {
+        public Iterable<R> apply(Class<R> t) {
             var sessionFactory = getSessionFactoryByEntity(t);
             var session = sessionFactory.getCurrentSession();
 

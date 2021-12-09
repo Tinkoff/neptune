@@ -33,7 +33,7 @@ final class SelectionAdditionalArgumentsFactory {
     Map<String, String> getAdditionalParameters() {
         var result = new LinkedHashMap<String, String>();
         if (toRead instanceof SelectionByMethod) {
-            var s = ((SelectionByMethod<?>) toRead);
+            var s = ((SelectionByMethod<?, ?>) toRead);
             result.put(new InvokedMethod().toString(), s.getInvoked().getName());
             result.putAll(convertArguments(s.getParameters()));
         }

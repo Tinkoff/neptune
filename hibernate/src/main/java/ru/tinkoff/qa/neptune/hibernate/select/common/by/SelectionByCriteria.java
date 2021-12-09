@@ -10,7 +10,7 @@ import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.trans
 import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.getSessionFactoryByEntity;
 
 @Description("by JPA criteria")
-public abstract class SelectionByCriteria<R, RESULT> implements Function<Class<?>, RESULT> {
+public abstract class SelectionByCriteria<R, RESULT> implements Function<Class<R>, RESULT> {
 
     final CriteriaQuery<R> criteriaQuery;
 
@@ -39,7 +39,7 @@ public abstract class SelectionByCriteria<R, RESULT> implements Function<Class<?
         }
 
         @Override
-        public R apply(Class<?> t) {
+        public R apply(Class<R> t) {
             var sessionFactory = getSessionFactoryByEntity(t);
             var session = sessionFactory.getCurrentSession();
 
@@ -54,7 +54,7 @@ public abstract class SelectionByCriteria<R, RESULT> implements Function<Class<?
         }
 
         @Override
-        public Iterable<R> apply(Class<?> t) {
+        public Iterable<R> apply(Class<R> t) {
             var sessionFactory = getSessionFactoryByEntity(t);
             var session = sessionFactory.getCurrentSession();
 

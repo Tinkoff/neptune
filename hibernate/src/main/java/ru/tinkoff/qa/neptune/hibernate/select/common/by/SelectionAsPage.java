@@ -10,8 +10,7 @@ import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.trans
 import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.getSessionFactoryByEntity;
 
 @Description("As page")
-@SuppressWarnings("unchecked")
-public final class SelectionAsPage<R> implements Function<Class<?>, Iterable<R>> {
+public final class SelectionAsPage<R> implements Function<Class<R>, Iterable<R>> {
 
     private int limit;
     private int offset;
@@ -26,7 +25,7 @@ public final class SelectionAsPage<R> implements Function<Class<?>, Iterable<R>>
     }
 
     @Override
-    public Iterable<R> apply(Class<?> t) {
+    public Iterable<R> apply(Class<R> t) {
         var sessionFactory = getSessionFactoryByEntity(t);
         var session = sessionFactory.getCurrentSession();
         var criteriaBuilder = session.getCriteriaBuilder();
@@ -47,7 +46,7 @@ public final class SelectionAsPage<R> implements Function<Class<?>, Iterable<R>>
             query.setFirstResult(offset);
         }
 
-        return (List<R>) query.getResultList();
+        return query.getResultList();
     }
 
     public void setLimitOffset(int limit, int offset) {

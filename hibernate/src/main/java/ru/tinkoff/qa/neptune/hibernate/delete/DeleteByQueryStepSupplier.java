@@ -34,60 +34,60 @@ import static ru.tinkoff.qa.neptune.database.abstractions.data.serializer.DataSe
 @SuppressWarnings("unchecked")
 @IncludeParamsOfInnerGetterStep
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Delete:")
-public final class DeleteByQueryStepSupplier<TO_DELETE>
-        extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<HibernateContext, Void, TO_DELETE, DeleteByQueryStepSupplier<TO_DELETE>>
+public final class DeleteByQueryStepSupplier<R, TO_DELETE>
+        extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<HibernateContext, Void, TO_DELETE, DeleteByQueryStepSupplier<R, TO_DELETE>>
         implements SelectQuery<Void> {
 
     @StepParameter(value = "Entity", makeReadableBy = EntityParameterValueGetter.class)
-    Class<?> entity;
+    Class<R> entity;
 
     @CaptureOnSuccess(by = DataCaptor.class)
     @CaptureOnFailure(by = DataCaptor.class)
     List<String> deleted;
 
-    private DeleteByQueryStepSupplier(Class<?> entity, DeleteEntities<TO_DELETE> f) {
+    private DeleteByQueryStepSupplier(Class<R> entity, DeleteEntities<TO_DELETE> f) {
         super(f);
         this.entity = entity;
     }
 
-    public static <R> DeleteByQueryStepSupplier<R> delete(
+    public static <R> DeleteByQueryStepSupplier<R, R> delete(
             String description,
             SelectOneStepSupplier<R> select) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var translated = translate(description);
         var entity = ((HasEntityInfo<R>) select).getEntity();
         ((SetsDescription) select).changeDescription(translated);
-        return new DeleteByQueryStepSupplier<R>(entity, new DeleteEntities.DeleteOne<>())
+        return new DeleteByQueryStepSupplier<R, R>(entity, new DeleteEntities.DeleteOne<>())
                 .setDescription(translated)
                 .from(select);
     }
 
     @Description("{description}")
-    public static <R> DeleteByQueryStepSupplier<R> delete(
+    public static <R> DeleteByQueryStepSupplier<R, R> delete(
             @DescriptionFragment(value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
                     String description,
             R toDelete) {
         checkArgument(isNotBlank(description), "Description should be defined");
         checkNotNull(toDelete);
-        return new DeleteByQueryStepSupplier<R>(toDelete.getClass(), new DeleteEntities.DeleteOne<>())
+        return new DeleteByQueryStepSupplier<R, R>((Class<R>) toDelete.getClass(), new DeleteEntities.DeleteOne<>())
                 .from(toDelete);
     }
 
-    public static <R> DeleteByQueryStepSupplier<Iterable<R>> delete(
+    public static <R> DeleteByQueryStepSupplier<R, Iterable<R>> delete(
             String description,
             SelectManyStepSupplier<R> select) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var translated = translate(description);
         var entity = ((HasEntityInfo<R>) select).getEntity();
         ((SetsDescription) select).changeDescription(translated);
-        return new DeleteByQueryStepSupplier<Iterable<R>>(entity, new DeleteEntities.DeleteMany<>())
+        return new DeleteByQueryStepSupplier<R, Iterable<R>>(entity, new DeleteEntities.DeleteMany<>())
                 .setDescription(translated)
                 .from(select);
     }
 
     @Description("{description}")
-    public static <R> DeleteByQueryStepSupplier<Iterable<R>> delete(
+    public static <R> DeleteByQueryStepSupplier<R, Iterable<R>> delete(
             @DescriptionFragment(value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
                     String description,
@@ -95,7 +95,7 @@ public final class DeleteByQueryStepSupplier<TO_DELETE>
         checkArgument(isNotBlank(description), "Description should be defined");
         checkNotNull(toDelete);
         checkArgument(Iterables.size(toDelete) > 0, "At leas one item to delete should be defined");
-        return new DeleteByQueryStepSupplier<Iterable<R>>(toDelete.iterator().next().getClass(),
+        return new DeleteByQueryStepSupplier<R, Iterable<R>>((Class<R>) toDelete.iterator().next().getClass(),
                 new DeleteEntities.DeleteMany<>())
                 .from(toDelete);
     }

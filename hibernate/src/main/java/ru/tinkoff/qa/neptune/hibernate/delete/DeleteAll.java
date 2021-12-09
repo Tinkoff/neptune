@@ -4,13 +4,13 @@ import java.util.function.Function;
 
 import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.getSessionFactoryByEntity;
 
-public final class DeleteAll implements Function<Class<?>, Void> {
+public final class DeleteAll<R> implements Function<Class<R>, Void> {
 
     DeleteAll() {
     }
 
     @Override
-    public Void apply(Class<?> entityCls) {
+    public Void apply(Class<R> entityCls) {
         var sessionFactory = getSessionFactoryByEntity(entityCls);
         var session = sessionFactory.getCurrentSession();
         session.beginTransaction();

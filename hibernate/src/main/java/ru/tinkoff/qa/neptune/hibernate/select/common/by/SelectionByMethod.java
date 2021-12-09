@@ -13,22 +13,23 @@ import static java.lang.reflect.Proxy.newProxyInstance;
 import static org.apache.commons.lang3.ClassUtils.getAllInterfaces;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
+@SuppressWarnings("unchecked")
 @Description("Select by method invocation")
-public final class SelectionByMethod<RESULT> implements Function<Class<?>, RESULT> {
+public final class SelectionByMethod<R, RESULT> implements Function<Class<R>, RESULT> {
 
-    private final Function<Class<?>, RESULT> delegate;
+    private final Function<Class<R>, RESULT> delegate;
     private Method invoked;
     private Object[] parameters;
 
-    public SelectionByMethod(Function<Class<?>, RESULT> delegate) {
+    public SelectionByMethod(Function<Class<R>, RESULT> delegate) {
         checkNotNull(delegate);
         this.delegate = delegate;
     }
 
     @Override
-    public RESULT apply(Class<?> t) {
+    public RESULT apply(Class<R> t) {
         var interfaces = getAllInterfaces(t);
-        var proxyEntity = (Class<?>) newProxyInstance(getSystemClassLoader(),
+        var proxyEntity = (Class<R>) newProxyInstance(getSystemClassLoader(),
                 interfaces.toArray(new Class<?>[0]),
                 new EntityMethodInvocationHandler(this, t));
         return delegate.apply(proxyEntity);
@@ -49,10 +50,10 @@ public final class SelectionByMethod<RESULT> implements Function<Class<?>, RESUL
 
     public static class EntityMethodInvocationHandler implements InvocationHandler {
 
-        private final SelectionByMethod<?> selection;
+        private final SelectionByMethod<?, ?> selection;
         private final Class<?> entity;
 
-        public EntityMethodInvocationHandler(SelectionByMethod<?> selection, Class<?> entity) {
+        public EntityMethodInvocationHandler(SelectionByMethod<?, ?> selection, Class<?> entity) {
             this.selection = selection;
             this.entity = entity;
         }

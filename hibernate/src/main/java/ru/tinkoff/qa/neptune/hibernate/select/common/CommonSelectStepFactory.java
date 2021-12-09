@@ -29,53 +29,53 @@ public final class CommonSelectStepFactory {
         super();
     }
 
-    public static <R, ID extends Serializable> SelectOneStepSupplier<R> byId(Class<?> entity, ID id) {
+    public static <R, ID extends Serializable> SelectOneStepSupplier<R> byId(Class<R> entity, ID id) {
         return new CommonSelectOneStepSupplierImpl<>(entity, getSingleById(id));
     }
 
-    public static <R, ID extends Serializable> SelectManyStepSupplier<R> byIds(Class<?> entity, ID... ids) {
+    public static <R, ID extends Serializable> SelectManyStepSupplier<R> byIds(Class<R> entity, ID... ids) {
         return new CommonSelectManyStepSupplierImpl<>(entity, getIterableByIds(ids));
     }
 
-    public static <R> SelectManyStepSupplier<R> all(Class<?> entity) {
+    public static <R> SelectManyStepSupplier<R> all(Class<R> entity) {
         return new CommonSelectManyStepSupplierImpl<>(entity, new SelectAll<>());
     }
 
-    public static <R> SelectManyStepSupplier<R> allByOrder(Class<?> entity,
+    public static <R> SelectManyStepSupplier<R> allByOrder(Class<R> entity,
                                                            List<Order> orders) {
         return new CommonSelectManyStepSupplierImpl<>(entity, new SelectionByOrder<>(orders));
     }
 
-    public static <R> SelectManyStepSupplier<R> allByOrder(Class<?> entity,
+    public static <R> SelectManyStepSupplier<R> allByOrder(Class<R> entity,
                                                            Order... orders) {
         return allByOrder(entity, List.of(orders));
     }
 
-    public static <R> SelectAsPageStepSupplier<R> asAPage(Class<?> entity) {
+    public static <R> SelectAsPageStepSupplier<R> asAPage(Class<R> entity) {
         return new CommonSelectAsPageStepSupplier<>(entity, new SelectionAsPage<>());
     }
 
-    public static <R> SelectOneStepSupplier<R> byInvocation(Class<?> entity, Function<Class<?>, R> f) {
+    public static <R> SelectOneStepSupplier<R> byInvocation(Class<R> entity, Function<Class<R>, R> f) {
         return new CommonSelectOneStepSupplierImpl<>(entity, new SelectionByMethod<>(f));
     }
 
-    public static <R, S extends Iterable<R>> SelectManyStepSupplier<R> allByInvocation(Class<?> entity, Function<Class<?>, S> f) {
-        return new CommonSelectManyStepSupplierImpl<>(entity, new SelectionByMethod<>((Function<Class<?>, Iterable<R>>) f));
+    public static <R, S extends Iterable<R>> SelectManyStepSupplier<R> allByInvocation(Class<R> entity, Function<Class<R>, S> f) {
+        return new CommonSelectManyStepSupplierImpl<>(entity, new SelectionByMethod<>((Function<Class<R>, Iterable<R>>) f));
     }
 
-    public static <R> SelectOneStepSupplier<R> byCriteria(Class<?> entity, CriteriaQuery<R> criteriaQuery) {
+    public static <R> SelectOneStepSupplier<R> byCriteria(Class<R> entity, CriteriaQuery<R> criteriaQuery) {
         return new CommonSelectOneStepSupplierImpl<>(entity, getSingleByCriteria(criteriaQuery));
     }
 
-    public static <R> SelectManyStepSupplier<R> allByCriteria(Class<?> entity, CriteriaQuery<R> criteriaQuery) {
+    public static <R> SelectManyStepSupplier<R> allByCriteria(Class<R> entity, CriteriaQuery<R> criteriaQuery) {
         return new CommonSelectManyStepSupplierImpl<>(entity, getIterableByCriteria(criteriaQuery));
     }
 
-    public static <R> SelectOneStepSupplier<R> byQuery(Class<?> entity, String query, Object... parameters) {
+    public static <R> SelectOneStepSupplier<R> byQuery(Class<R> entity, String query, Object... parameters) {
         return new CommonSelectOneStepSupplierImpl<>(entity, getSingleByQuery(query, parameters));
     }
 
-    public static <R> SelectManyStepSupplier<R> allByQuery(Class<?> entity, String query, Object... parameters) {
+    public static <R> SelectManyStepSupplier<R> allByQuery(Class<R> entity, String query, Object... parameters) {
         return new CommonSelectManyStepSupplierImpl<>(entity, getIterableByQuery(query, parameters));
     }
 
@@ -83,12 +83,12 @@ public final class CommonSelectStepFactory {
             SelectOneStepSupplier<R>
             implements SetsDescription, HasEntityInfo<R> {
 
-        private CommonSelectOneStepSupplierImpl(Class<?> entity, Function<Class<?>, R> select) {
+        private CommonSelectOneStepSupplierImpl(Class<R> entity, Function<Class<R>, R> select) {
             super(entity, select);
         }
 
         @Override
-        public Class<?> getEntity() {
+        public Class<R> getEntity() {
             return HasEntityInfo.super.getEntity();
         }
 
@@ -102,12 +102,12 @@ public final class CommonSelectStepFactory {
             extends SelectManyStepSupplier<R>
             implements SetsDescription, HasEntityInfo<R> {
 
-        private CommonSelectManyStepSupplierImpl(Class<?> entity, Function<Class<?>, Iterable<R>> select) {
+        private CommonSelectManyStepSupplierImpl(Class<R> entity, Function<Class<R>, Iterable<R>> select) {
             super(entity, select);
         }
 
         @Override
-        public Class<?> getEntity() {
+        public Class<R> getEntity() {
             return HasEntityInfo.super.getEntity();
         }
 
@@ -121,12 +121,12 @@ public final class CommonSelectStepFactory {
             extends SelectAsPageStepSupplier<R>
             implements SetsDescription, HasEntityInfo<R> {
 
-        private CommonSelectAsPageStepSupplier(Class<?> entity, SelectionAsPage<R> select) {
+        private CommonSelectAsPageStepSupplier(Class<R> entity, SelectionAsPage<R> select) {
             super(entity, select);
         }
 
         @Override
-        public Class<?> getEntity() {
+        public Class<R> getEntity() {
             return HasEntityInfo.super.getEntity();
         }
 

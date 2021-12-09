@@ -29,18 +29,18 @@ import static ru.tinkoff.qa.neptune.hibernate.select.GetIterableItemFromEntities
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Entity criteria")
 @CaptureOnSuccess(by = DataCaptor.class)
 public abstract class SelectManyStepSupplier<R>
-        extends SequentialGetStepSupplier.GetListChainedStepSupplier<HibernateContext, Iterable<R>, Class<?>, R, SelectManyStepSupplier<R>>
+        extends SequentialGetStepSupplier.GetListChainedStepSupplier<HibernateContext, Iterable<R>, Class<R>, R, SelectManyStepSupplier<R>>
         implements SelectQuery<List<R>> {
 
     @StepParameter(value = "Entity", makeReadableBy = EntityParameterValueGetter.class)
-    Class<?> entity;
+    Class<R> entity;
 
     @StepParameter(value = "selected by")
-    final Function<Class<?>, Iterable<R>> select;
+    final Function<Class<R>, Iterable<R>> select;
 
     private final SelectionAdditionalArgumentsFactory additionalArgumentsFactory;
 
-    public SelectManyStepSupplier(Class<?> entity, Function<Class<?>, Iterable<R>> select) {
+    public SelectManyStepSupplier(Class<R> entity, Function<Class<R>, Iterable<R>> select) {
         super(select);
         checkNotNull(select);
         this.select = select;
@@ -52,13 +52,13 @@ public abstract class SelectManyStepSupplier<R>
     }
 
     @Override
-    protected SelectManyStepSupplier<R> from(Class<?> from) {
+    protected SelectManyStepSupplier<R> from(Class<R> from) {
         entity = from;
         return super.from(from);
     }
 
-    Class<?> getEntity() {
-        return (Class<?>) getFrom();
+    Class<R> getEntity() {
+        return (Class<R>) getFrom();
     }
 
     @Override

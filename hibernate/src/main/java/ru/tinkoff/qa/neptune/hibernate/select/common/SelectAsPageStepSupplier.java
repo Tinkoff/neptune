@@ -19,7 +19,7 @@ public abstract class SelectAsPageStepSupplier<R> extends SelectManyStepSupplier
     @StepParameter("orders")
     List<Order> orders;
 
-    protected SelectAsPageStepSupplier(Class<?> entity, SelectionAsPage<R> select) {
+    protected SelectAsPageStepSupplier(Class<R> entity, SelectionAsPage<R> select) {
         super(entity, select);
         this.select = select;
     }
@@ -45,7 +45,7 @@ public abstract class SelectAsPageStepSupplier<R> extends SelectManyStepSupplier
     }
 
     @Override
-    protected void onStart(Class<?> t) {
+    protected void onStart(Class<R> t) {
         if (nonNull(orders)) {
             select.setLimitOffset(limit, offset, orders);
         } else {

@@ -40,11 +40,11 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R>
         SelectQuery<RESULT> {
 
     @StepParameter(value = "Entity", makeReadableBy = EntityParameterValueGetter.class)
-    Class<?> entity;
+    Class<R> entity;
 
     List<UpdateAction<R>> updates = of();
 
-    protected SaveStepSupplier(Class<?> entity, SaveFunction<INPUT, RESULT> originalFunction) {
+    protected SaveStepSupplier(Class<R> entity, SaveFunction<INPUT, RESULT> originalFunction) {
         super(originalFunction);
         this.entity = entity;
     }
@@ -56,7 +56,7 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R>
         var translated = translate(description);
         var entity = ((HasEntityInfo<R>) select).getEntity();
         ((SetsDescription) select).changeDescription(translated);
-        return new SaveOneStepSupplier<R>(entity)
+        return new SaveOneStepSupplier<>(entity)
                 .setDescription(translated)
                 .from(select);
     }
@@ -69,7 +69,7 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R>
             R toSave) {
         checkArgument(isNotBlank(description), "Description should be defined");
         checkNotNull(toSave);
-        return new SaveOneStepSupplier<R>(toSave.getClass()).from(toSave);
+        return new SaveOneStepSupplier<>((Class<R>) toSave.getClass()).from(toSave);
     }
 
     public static <R> SaveStepSupplier<Iterable<R>, Iterable<R>, R> save(
@@ -79,7 +79,7 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R>
         var translated = translate(description);
         var entity = ((HasEntityInfo<R>) select).getEntity();
         ((SetsDescription) select).changeDescription(translated);
-        return new SaveManyStepSupplier<R>(entity)
+        return new SaveManyStepSupplier<>(entity)
                 .setDescription(translated)
                 .from(select);
     }
@@ -93,7 +93,7 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R>
         checkArgument(isNotBlank(description), "Description should be defined");
         checkNotNull(toSave);
         checkArgument(Iterables.size(toSave) > 0, "At leas one item to save should be defined");
-        return new SaveManyStepSupplier<R>(toSave.getClass()).from(toSave);
+        return new SaveManyStepSupplier<>((Class<R>) toSave.iterator().next().getClass()).from(toSave);
     }
 
     @Override
@@ -118,7 +118,7 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R>
     @IncludeParamsOfInnerGetterStep
     private static class SaveOneStepSupplier<R> extends SaveStepSupplier<R, R, R> {
 
-        protected SaveOneStepSupplier(Class<?> entity) {
+        protected SaveOneStepSupplier(Class<R> entity) {
             super(entity, new SaveFunction.SaveOne<>());
         }
 
@@ -132,7 +132,7 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R>
     @IncludeParamsOfInnerGetterStep
     private static class SaveManyStepSupplier<R> extends SaveStepSupplier<Iterable<R>, Iterable<R>, R> {
 
-        protected SaveManyStepSupplier(Class<?> entity) {
+        protected SaveManyStepSupplier(Class<R> entity) {
             super(entity, new SaveFunction.SaveMany<>());
         }
 

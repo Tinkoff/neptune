@@ -24,10 +24,10 @@ import static ru.tinkoff.qa.neptune.database.abstractions.data.serializer.DataSe
 public abstract class SelectManyByOrderSpecifiersSupplier<R, S extends SelectManyByOrderSpecifiersSupplier<R, S>>
         extends SelectManyStepSupplier<R> {
 
-    final Function<Class<?>, Iterable<R>> f;
+    final Function<Class<R>, Iterable<R>> f;
     OrderSpecifier<?>[] orderSpecifiers = new OrderSpecifier[]{};
 
-    protected SelectManyByOrderSpecifiersSupplier(Class<?> entity, Function<Class<?>, Iterable<R>> f) {
+    protected SelectManyByOrderSpecifiersSupplier(Class<R> entity, Function<Class<R>, Iterable<R>> f) {
         super(entity, f);
         this.f = f;
     }
@@ -65,7 +65,7 @@ public abstract class SelectManyByOrderSpecifiersSupplier<R, S extends SelectMan
         @StepParameter(value = "Predicate", makeReadableBy = PredicateParameterValueGetter.class, doNotReportNullValues = true)
         private Predicate predicate;
 
-        protected SelectManyByPredicateAndOrderSpecifiersSupplier(Class<?> entity, SelectByOrderedFunction<R> f) {
+        protected SelectManyByPredicateAndOrderSpecifiersSupplier(Class<R> entity, SelectByOrderedFunction<R> f) {
             super(entity, f);
         }
 
@@ -75,7 +75,7 @@ public abstract class SelectManyByOrderSpecifiersSupplier<R, S extends SelectMan
         }
 
         @Override
-        protected void onStart(Class<?> t) {
+        protected void onStart(Class<R> t) {
             ((SelectByOrderedFunction<R>) f).setPredicate(predicate);
             ((SelectByOrderedFunction<R>) f).setOrderSpecifiers(orderSpecifiers);
         }
@@ -92,7 +92,7 @@ public abstract class SelectManyByOrderSpecifiersSupplier<R, S extends SelectMan
         @StepParameter("offset")
         int offset;
 
-        protected SelectManyByPredicateAndPageableSupplier(Class<?> entity, SelectByPredicateFunction.SelectManyByPredicateAndPagination<R> f) {
+        protected SelectManyByPredicateAndPageableSupplier(Class<R> entity, SelectByPredicateFunction.SelectManyByPredicateAndPagination<R> f) {
             super(entity, f);
             this.predicate = f.getPredicate();
         }
@@ -108,7 +108,7 @@ public abstract class SelectManyByOrderSpecifiersSupplier<R, S extends SelectMan
         }
 
         @Override
-        protected void onStart(Class<?> t) {
+        protected void onStart(Class<R> t) {
             ((SelectByPredicateFunction.SelectManyByPredicateAndPagination<R>) f)
                     .setLimitOffset(limit, offset);
         }

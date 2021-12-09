@@ -16,7 +16,7 @@ import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.getSessionFactory
 @Description("By order specifiers")
 @SuppressWarnings("unchecked")
 public final class SelectByOrderedFunction<R>
-        implements Function<Class<?>, Iterable<R>> {
+        implements Function<Class<R>, Iterable<R>> {
 
     private Predicate predicate;
     private OrderSpecifier<?>[] orderSpecifiers;
@@ -36,7 +36,7 @@ public final class SelectByOrderedFunction<R>
     }
 
     @Override
-    public Iterable<R> apply(Class<?> t) {
+    public Iterable<R> apply(Class<R> t) {
         checkState(nonNull(orderSpecifiers) && orderSpecifiers.length > 0, "At least one order specifier should be defined");
 
         var sessionFactory = getSessionFactoryByEntity(t);

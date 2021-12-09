@@ -24,24 +24,25 @@ import static ru.tinkoff.qa.neptune.hibernate.select.GetItemOfIterableFromEntity
 import static ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntity.getIterableFromEntity;
 import static ru.tinkoff.qa.neptune.hibernate.select.GetObjectFromEntity.getObjectFromEntity;
 
+@SuppressWarnings("unchecked")
 @MaxDepthOfReporting(0)
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Select:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time to select required entity")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Entity criteria")
 @CaptureOnSuccess(by = DataCaptor.class)
 public abstract class SelectOneStepSupplier<R>
-        extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<HibernateContext, R, Class<?>, SelectOneStepSupplier<R>>
+        extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<HibernateContext, R, Class<R>, SelectOneStepSupplier<R>>
         implements SelectQuery<R> {
 
     @StepParameter(value = "Entity", makeReadableBy = EntityParameterValueGetter.class)
-    Class<?> entity;
+    Class<R> entity;
 
     @StepParameter(value = "selected by")
-    final Function<Class<?>, R> select;
+    final Function<Class<R>, R> select;
 
     private final SelectionAdditionalArgumentsFactory additionalArgumentsFactory;
 
-    protected SelectOneStepSupplier(Class<?> entity, Function<Class<?>, R> select) {
+    protected SelectOneStepSupplier(Class<R> entity, Function<Class<R>, R> select) {
         super(select);
         checkNotNull(select);
         this.select = select;
@@ -53,13 +54,13 @@ public abstract class SelectOneStepSupplier<R>
     }
 
     @Override
-    protected SelectOneStepSupplier<R> from(Class<?> from) {
+    protected SelectOneStepSupplier<R> from(Class<R> from) {
         entity = from;
         return super.from(from);
     }
 
-    Class<?> getEntity() {
-        return (Class<?>) getFrom();
+    Class<R> getEntity() {
+        return (Class<R>) getFrom();
     }
 
     @Override

@@ -9,23 +9,23 @@ import ru.tinkoff.qa.neptune.hibernate.dictionary.EntityParameterValueGetter;
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Delete:")
 @Description("All records")
-public final class DeleteAllFromStepSupplier
-        extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<HibernateContext, Void, Class<?>, DeleteAllFromStepSupplier>
+public final class DeleteAllFromStepSupplier<R>
+        extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<HibernateContext, Void, Class<R>, DeleteAllFromStepSupplier<R>>
         implements SelectQuery<Void> {
 
     @StepParameter(value = "Entity", makeReadableBy = EntityParameterValueGetter.class)
-    Class<?> entity;
+    Class<R> entity;
 
     private DeleteAllFromStepSupplier() {
-        super(new DeleteAll());
+        super(new DeleteAll<>());
     }
 
-    public static DeleteAllFromStepSupplier deleteAllRecords(Class<?> entityCls) {
-        return new DeleteAllFromStepSupplier().from(entityCls);
+    public static <R> DeleteAllFromStepSupplier<R> deleteAllRecords(Class<R> entityCls) {
+        return new DeleteAllFromStepSupplier<R>().from(entityCls);
     }
 
     @Override
-    protected DeleteAllFromStepSupplier from(Class<?> from) {
+    protected DeleteAllFromStepSupplier<R> from(Class<R> from) {
         entity = from;
         return super.from(from);
     }

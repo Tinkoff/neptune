@@ -2,7 +2,6 @@ package ru.tinkoff.qa.neptune.hibernate.select.common.by;
 
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
-import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -10,9 +9,8 @@ import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.trans
 import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.getSessionFactoryByEntity;
 
 
-@SuppressWarnings("unchecked")
 @Description("By query string")
-public abstract class SelectionByQuery<RESULT> implements Function<Class<?>, RESULT> {
+public abstract class SelectionByQuery<R, RESULT> implements Function<Class<R>, RESULT> {
 
     final String queryString;
     Object[] parameters;
@@ -38,14 +36,14 @@ public abstract class SelectionByQuery<RESULT> implements Function<Class<?>, RES
         return new SelectIterableByQuery<>(queryString, parameters);
     }
 
-    private static final class SelectASingleByQuery<R> extends SelectionByQuery<R> {
+    private static final class SelectASingleByQuery<R> extends SelectionByQuery<R, R> {
 
         private SelectASingleByQuery(String queryString, Object... parameters) {
             super(queryString, parameters);
         }
 
         @Override
-        public R apply(Class<?> t) {
+        public R apply(Class<R> t) {
             var sessionFactory = getSessionFactoryByEntity(t);
             var session = sessionFactory.getCurrentSession();
             var query = session.createQuery(queryString, t);
@@ -54,18 +52,18 @@ public abstract class SelectionByQuery<RESULT> implements Function<Class<?>, RES
                 query.setParameter(i, parameters[i]);
             }
 
-            return (R) query.getSingleResult();
+            return query.getSingleResult();
         }
     }
 
-    private static final class SelectIterableByQuery<R> extends SelectionByQuery<Iterable<R>> {
+    private static final class SelectIterableByQuery<R> extends SelectionByQuery<R, Iterable<R>> {
 
         private SelectIterableByQuery(String queryString, Object... parameters) {
             super(queryString, parameters);
         }
 
         @Override
-        public Iterable<R> apply(Class<?> t) {
+        public Iterable<R> apply(Class<R> t) {
             var sessionFactory = getSessionFactoryByEntity(t);
             var session = sessionFactory.getCurrentSession();
             var query = session.createQuery(queryString, t);
@@ -74,7 +72,7 @@ public abstract class SelectionByQuery<RESULT> implements Function<Class<?>, RES
                 query.setParameter(i, parameters[i]);
             }
 
-            return (List<R>) query.getResultList();
+            return query.getResultList();
         }
     }
 }
