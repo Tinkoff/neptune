@@ -13,7 +13,6 @@ import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.localization.DefaultLocaleProperty.DEFAULT_LOCALE_PROPERTY;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.localization.DefaultLocalizationEngine.DEFAULT_LOCALIZATION_ENGINE;
 
-@SuppressWarnings("unchecked")
 public class MatcherLocalizationTest {
 
     private final static Locale RUSSIAN = toLocale("ru_RU");

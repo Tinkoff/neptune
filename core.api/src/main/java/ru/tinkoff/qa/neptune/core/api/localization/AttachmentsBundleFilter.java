@@ -6,21 +6,33 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
 import java.util.List;
 
 import static java.util.Comparator.comparing;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
 final class AttachmentsBundleFilter extends DefaultAbstractBundleFiller {
 
-    final static List<Class<?>> ATTACHMENTS = new ClassGraph()
-            .enableAllInfo()
-            .scan()
-            .getSubclasses(Captor.class.getName())
-            .loadClasses(Captor.class)
-            .stream()
-            .map(cls -> (Class<?>) cls)
-            .sorted(comparing(Class::getName))
-            .collect(toList());
+    private static List<Class<?>> attachments;
 
     protected AttachmentsBundleFilter(LocalizationBundlePartition p) {
-        super(p, ATTACHMENTS, "ATTACHMENTS");
+        super(p, getAttachments(), "ATTACHMENTS");
+    }
+
+    public static synchronized List<Class<?>> getAttachments() {
+        if (nonNull(attachments)) {
+            return attachments;
+        }
+
+        attachments = new ClassGraph()
+                .enableClassInfo()
+                .ignoreClassVisibility()
+                .scan()
+                .getSubclasses(Captor.class.getName())
+                .loadClasses(Captor.class)
+                .stream()
+                .map(cls -> (Class<?>) cls)
+                .sorted(comparing(Class::getName))
+                .collect(toList());
+
+        return attachments;
     }
 }

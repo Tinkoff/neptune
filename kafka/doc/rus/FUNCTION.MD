@@ -5,8 +5,8 @@
 ## Оглавление
 
 - [Получение сообщения](#Получение-сообщения)
-    - [Получение данных сообщения как Iterable](#Получение-данных-сообщения-как-Iterable)
-    - [Получение данных сообщения в виде массива](#Получение-данных-сообщения-в-виде-массива)
+  - [Получение данных сообщения как List](#Получение-данных-сообщения-как-List)
+  - [Получение данных сообщения в виде массива](#Получение-данных-сообщения-в-виде-массива)
     - [Получение данных сообщения как Java-объект из Iterable](#Получение-данных-сообщения-как-Java-объект-из-Iterable)
 - [Публикация сообщений](#Публикация-сообщений)
 
@@ -17,40 +17,15 @@
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-### Получение данных сообщения как Iterable
+### Получение данных сообщения как List
 
 В примерах ниже предполагается, что настройки / свойства / переменные окружения
 [KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER),
 [DEFAULT_TOPICS_FOR_POLL](./SETTINGS.MD#DEFAULT_TOPICS_FOR_POLL)
-перед началом выполнения имеют непустое значения
+перед началом выполнения имеют непустые значения
 
 ```java
-import static java.time.Duration.ofSeconds;
-import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
-import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaIterable;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        // Возвращает сообщение из очереди, десериализованное в коллекцию/Iterable
-        //Из общего сообщения (Iterable/коллекции) вернется под-множество подходящих элементов.
-        List<ClassToDeserialize> results = kafka().poll(kafkaIterable("Результирующий лист", //описываем то, 
-                // что нужно получить
-                ClassToDeserialize.class, //класс, который реализует Iterable<ClassToDeserialize>
-                // или Collection<ClassToDeserialize>
-                "test_topic1", "test_topic2") //топики для получения сообщений
-                .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
-                // которому должен соответствовать каждый элемент результирующей коллекции
-                .timeOut(ofSeconds(5)) //можно указать время на получение 
-                // ожидаемого результата = 5 секунд
-                .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, если результат не был получен
-    }
-}
-```
-
-```java
-import com.fasterxml.jackson.core.type.TypeReference;
+import java.util.List;
 
 import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
@@ -61,11 +36,39 @@ public class MyTest {
   @Test
   public void myTest() {
     // Возвращает сообщение из очереди, десериализованное в коллекцию/Iterable
-    // Из общего сообщения (Iterable/коллекции) вернется под-множество подходящих элементов.
-    List<ClassToDeserialize> result = kafka().poll(kafkaIterable("Результирующий лист", //описываем то, 
+    // Из общего сообщения (Iterable/коллекции) вернется под-множество(немутабельный лист) подходящих элементов.
+    List<ClassToDeserialize> results = kafka().poll(kafkaIterable("Результирующий лист", //описываем то, 
             // что нужно получить
-            new TypeReference<ClassToDeserialize>() {
-            }, //тип объекта-модели для десериализации
+            ClassToDeserialize.class, //класс элемента результирующего списка
+            "test_topic1", "test_topic2") //топики для получения сообщений
+            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
+            // которому должен соответствовать каждый элемент результирующей коллекции
+            .timeOut(ofSeconds(5)) //можно указать время на получение 
+            // ожидаемого результата = 5 секунд
+            .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, если результат не был получен
+  }
+}
+```
+
+```java
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import java.util.List;
+
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaIterable;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    // Возвращает сообщение из очереди, десериализованное в коллекцию/Iterable
+    // Из общего сообщения (Iterable/коллекции) вернется под-множество(немутабельный лист) подходящих элементов.
+    List<ClassToDeserialize<SomeType>> result = kafka().poll(kafkaIterable("Результирующий лист", //описываем то, 
+            // что нужно получить
+            new TypeReference<ClassToDeserialize<SomeType>>() {
+            }, //тип элемента результирующего списка
             "test_topic1", "test_topic2") //топики для получения сообщений
             .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
             // которому должен соответствовать каждый элемент результирующей коллекции
@@ -78,6 +81,8 @@ public class MyTest {
 ```
 
 ```java
+import java.util.List;
+
 import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
 import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaIterable;
@@ -86,12 +91,46 @@ public class MyTest {
 
   @Test
   public void myTest() {
-    // Возвращается Iterable или коллекция. Сообщение не обязательно является коллекцией 
+    // Возвращается немутабельный лист. Сообщение необязательно является коллекцией 
     // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
     // вычислений. Из коллекции вернется под-множество подходящих элементов.
     List<Object> result = kafka().poll(kafkaIterable("Результирующий лист", //описываем 
             // то, что нужно получить
             ClassToDeserialize.class, //класс модели для десериализации
+            o -> {
+              return /*описываем то, как получаем из ClassToDeserialize Object */;
+            },
+            "test_topic1", "test_topic2") //топики для получения сообщений
+            .criteria("Описание критерия", cls -> cls.getSomeField().equals("someValue")) //можно указать критерий, 
+            // которому должен соответствовать каждый элемент результирующей коллекции
+            .timeOut(ofSeconds(5)) //можно указать время на получение 
+            // ожидаемого результата = 5 секунд
+            .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, 
+    // если результат не был получен
+  }
+}
+```
+
+```java
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import java.util.List;
+
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.function.poll.KafkaPollIterableSupplier.kafkaIterable;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    // Возвращается немутабельный лист. Сообщение необязательно является коллекцией 
+    // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
+    // вычислений. Из коллекции вернется под-множество подходящих элементов.
+    List<Object> result = kafka().poll(kafkaIterable("Результирующий лист", //описываем 
+            // то, что нужно получить
+            new TypeReference<ClassToDeserialize<SomeType>>() {
+            }, //тип объекта-модели для десериализации
             o -> {
               return /*описываем то, как получаем из ClassToDeserialize Object */;
             },
@@ -202,7 +241,7 @@ public class MyTest {
 В примерах ниже предполагается, что настройки / свойства / переменные окружения
 [KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER),
 [DEFAULT_TOPICS_FOR_POLL](./SETTINGS.MD#DEFAULT_TOPICS_FOR_POLL)
-перед началом выполнения имеют непустое значения
+перед началом выполнения имеют непустые значения
 
 ```java
 import static java.time.Duration.ofSeconds;
@@ -239,7 +278,7 @@ public class MyTest {
 
     @Test
     public void myTest() {
-      // Возвращается массив. Сообщение не обязательно является массивом. 
+      // Возвращается массив. Сообщение необязательно является массивом. 
       // Промежуточный массив получаются в ходе дополнительных 
       // вычислений. Из массива вернется под-массив подходящих элементов.
       Object[] result = kafka().poll(kafkaArray("Результирующий массив", //описываем 
@@ -271,7 +310,7 @@ public class MyTest {
 
   @Test
   public void myTest() {
-    // Возвращается массив. Сообщение не обязательно является массивом. 
+    // Возвращается массив. Сообщение необязательно является массивом. 
     // Промежуточный массив получаются в ходе дополнительных 
     // вычислений. Из массива вернется под-массив подходящих элементов.
     ClassToDeserialize[] result = kafka().poll(kafkaArray("Результирующий массив", //описываем то, 
@@ -300,7 +339,7 @@ public class MyTest {
 
     @Test
     public void myTest() {
-      // Возвращается массив. Сообщение не обязательно является массивом. 
+      // Возвращается массив. Сообщение необязательно является массивом. 
       // Промежуточный массив получаются в ходе дополнительных 
       // вычислений. Из массива вернется под-массив подходящих элементов.
       Object[] result = kafka().poll(kafkaArray("Результирующий массив", //описываем то, 
@@ -416,7 +455,7 @@ public class MyTest {
 В примерах ниже предполагается, что настройки / свойства / переменные окружения
 [KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER),
 [DEFAULT_TOPICS_FOR_POLL](./SETTINGS.MD#DEFAULT_TOPICS_FOR_POLL)
-перед началом выполнения имеют непустое значения
+перед началом выполнения имеют непустые значения
 
 ```java
 import static java.time.Duration.ofSeconds;
@@ -479,7 +518,7 @@ public class MyTest {
 
   @Test
   public void myTest() {
-    //Возвращается элемент коллекции / Iterable.  Сообщение не обязательно является коллекцией 
+    //Возвращается элемент коллекции / Iterable.  Сообщение необязательно является коллекцией 
     // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
     // вычислений. Из коллекции вернется первый подходящий элемент.
     Object result = kafka().poll(kafkaIterableItem("Нужный элемент листа", //описываем 
@@ -510,7 +549,7 @@ public class MyTest {
 
   @Test
   public void myTest() {
-    //Возвращается элемент коллекции / Iterable.  Сообщение не обязательно является коллекцией 
+    //Возвращается элемент коллекции / Iterable.  Сообщение необязательно является коллекцией 
     // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
     // вычислений. Из коллекции вернется первый подходящий элемент.
     Object result = kafka().poll(kafkaIterableItem("Нужный элемент листа",
@@ -625,8 +664,7 @@ public class MyTest {
 [KAFKA_KEY_TRANSFORMER](./SETTINGS.MD#KAFKA_KEY_TRANSFORMER),
 [KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER),
 [DEFAULT_TOPIC_FOR_SEND](./SETTINGS.MD#DEFAULT_TOPIC_FOR_SEND)
-[KAFKA_CALL_BACK](./SETTINGS.MD#kafka_call_back),
-перед началом выполнения имеют непустое значения
+[KAFKA_CALL_BACK](./SETTINGS.MD#kafka_call_back), перед началом выполнения имеют непустые значения
 
 ```java
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;

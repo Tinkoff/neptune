@@ -104,6 +104,8 @@ public class ResourceBundleGenerator {
             new OtherObjectsBundleFilter(partition).fill(output, properties);
 
             new ClassGraph().enableAllInfo()
+                    .enableClassInfo()
+                    .ignoreClassVisibility()
                     .scan()
                     .getSubclasses(BundleFillerExtension.class.getName())
                     .loadClasses(BundleFillerExtension.class)

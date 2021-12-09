@@ -9,7 +9,7 @@ import java.util.Map;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static java.util.Objects.isNull;
-import static ru.tinkoff.qa.neptune.spring.data.data.serializer.DataSerializer.serializeObjects;
+import static ru.tinkoff.qa.neptune.database.abstractions.data.serializer.DataSerializer.serializeObjects;
 
 final class SelectionAdditionalArgumentsFactory {
 

@@ -26,10 +26,10 @@ import static java.lang.String.valueOf;
 import static java.util.Collections.list;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.spring.mock.mvc.CheckMockMvcExpectation.checkExpectation;
 import static ru.tinkoff.qa.neptune.spring.mock.mvc.GetArrayFromResponse.array;
-import static ru.tinkoff.qa.neptune.spring.mock.mvc.GetIterableFromResponse.iterable;
 import static ru.tinkoff.qa.neptune.spring.mock.mvc.GetObjectFromResponseBody.*;
 import static ru.tinkoff.qa.neptune.spring.mock.mvc.GetObjectFromResponseBodyArray.objectFromArray;
 import static ru.tinkoff.qa.neptune.spring.mock.mvc.GetObjectFromResponseBodyIterable.objectFromIterable;
@@ -95,7 +95,9 @@ public final class GetMockMvcResponseResultSupplier extends SequentialGetStepSup
         var c = getResponse.getInnerRequestResponseCatcher();
         try {
             var request = c.getRequest();
-            requestBody = nonNull(request) ? request.getContentAsString() : null;
+            requestBody = nonNull(request) ? ofNullable(request.getContentAsByteArray())
+                    .map(String::new)
+                    .orElse(null) : null;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -680,14 +682,14 @@ public final class GetMockMvcResponseResultSupplier extends SequentialGetStepSup
      * @param <R>         is a type of deserialized body
      * @param <T>         is a type of item from resulted iterable
      * @param <S>         is a type of resulted iterable
-     * @return an instance of {@link GetIterableFromResponse}
+     * @return an instance of {@link GetListFromResponse}
      */
-    public <T, R, S extends Iterable<T>> GetIterableFromResponse<T, S> thenGetIterable(
+    public <T, R, S extends Iterable<T>> GetListFromResponse<T, S> thenGetList(
             String description,
             DataTransformer transformer,
             Class<R> tClass,
             Function<R, S> howToGet) {
-        return iterable(description, transformer, tClass, howToGet).from(this);
+        return GetListFromResponse.list(description, transformer, tClass, howToGet).from(this);
     }
 
     /**
@@ -705,14 +707,14 @@ public final class GetMockMvcResponseResultSupplier extends SequentialGetStepSup
      * @param <R>         is a type of deserialized body
      * @param <T>         is a type of item from resulted iterable
      * @param <S>         is a type of resulted iterable
-     * @return an instance of {@link GetIterableFromResponse}
+     * @return an instance of {@link GetListFromResponse}
      */
-    public <T, R, S extends Iterable<T>> GetIterableFromResponse<T, S> thenGetIterable(
+    public <T, R, S extends Iterable<T>> GetListFromResponse<T, S> thenGetList(
             String description,
             DataTransformer transformer,
             TypeReference<R> tRef,
             Function<R, S> howToGet) {
-        return iterable(description, transformer, tRef, howToGet).from(this);
+        return GetListFromResponse.list(description, transformer, tRef, howToGet).from(this);
     }
 
     /**
@@ -733,13 +735,13 @@ public final class GetMockMvcResponseResultSupplier extends SequentialGetStepSup
      * @param <R>         is a type of deserialized body
      * @param <T>         is a type of item from resulted iterable
      * @param <S>         is a type of resulted iterable
-     * @return an instance of {@link GetIterableFromResponse}
+     * @return an instance of {@link GetListFromResponse}
      */
-    public <T, R, S extends Iterable<T>> GetIterableFromResponse<T, S> thenGetIterable(
+    public <T, R, S extends Iterable<T>> GetListFromResponse<T, S> thenGetList(
             String description,
             Class<R> tClass,
             Function<R, S> howToGet) {
-        return thenGetIterable(description, SPRING_MOCK_MVC_DEFAULT_RESPONSE_BODY_TRANSFORMER.get(), tClass, howToGet);
+        return thenGetList(description, SPRING_MOCK_MVC_DEFAULT_RESPONSE_BODY_TRANSFORMER.get(), tClass, howToGet);
     }
 
     /**
@@ -760,13 +762,13 @@ public final class GetMockMvcResponseResultSupplier extends SequentialGetStepSup
      * @param <R>         is a type of deserialized body
      * @param <T>         is a type of item from resulted iterable
      * @param <S>         is a type of resulted iterable
-     * @return an instance of {@link GetIterableFromResponse}
+     * @return an instance of {@link GetListFromResponse}
      */
-    public <T, R, S extends Iterable<T>> GetIterableFromResponse<T, S> thenGetIterable(
+    public <T, R, S extends Iterable<T>> GetListFromResponse<T, S> thenGetList(
             String description,
             TypeReference<R> tRef,
             Function<R, S> howToGet) {
-        return thenGetIterable(description, SPRING_MOCK_MVC_DEFAULT_RESPONSE_BODY_TRANSFORMER.get(), tRef, howToGet);
+        return thenGetList(description, SPRING_MOCK_MVC_DEFAULT_RESPONSE_BODY_TRANSFORMER.get(), tRef, howToGet);
     }
 
     /**
@@ -781,13 +783,13 @@ public final class GetMockMvcResponseResultSupplier extends SequentialGetStepSup
      * @param tClass      is a class of result of performed deserialization
      * @param <T>         is a type of item from resulted iterable
      * @param <S>         is a type of resulted iterable
-     * @return an instance of {@link GetIterableFromResponse}
+     * @return an instance of {@link GetListFromResponse}
      */
-    public <T, S extends Iterable<T>> GetIterableFromResponse<T, S> thenGetIterable(
+    public <T, S extends Iterable<T>> GetListFromResponse<T, S> thenGetList(
             String description,
             DataTransformer transformer,
             Class<S> tClass) {
-        return thenGetIterable(description, transformer, tClass, ts -> ts);
+        return thenGetList(description, transformer, tClass, ts -> ts);
     }
 
     /**
@@ -802,13 +804,13 @@ public final class GetMockMvcResponseResultSupplier extends SequentialGetStepSup
      * @param tRef        is a type of result of performed deserialization
      * @param <T>         is a type of item from resulted iterable
      * @param <S>         is a type of resulted iterable
-     * @return an instance of {@link GetIterableFromResponse}
+     * @return an instance of {@link GetListFromResponse}
      */
-    public <T, S extends Iterable<T>> GetIterableFromResponse<T, S> thenGetIterable(
+    public <T, S extends Iterable<T>> GetListFromResponse<T, S> thenGetList(
             String description,
             DataTransformer transformer,
             TypeReference<S> tRef) {
-        return thenGetIterable(description, transformer, tRef, ts -> ts);
+        return thenGetList(description, transformer, tRef, ts -> ts);
     }
 
     /**
@@ -826,12 +828,12 @@ public final class GetMockMvcResponseResultSupplier extends SequentialGetStepSup
      * @param tClass      is a class of result of performed deserialization
      * @param <T>         is a type of item from resulted iterable
      * @param <S>         is a type of resulted iterable
-     * @return an instance of {@link GetIterableFromResponse}
+     * @return an instance of {@link GetListFromResponse}
      */
-    public <T, S extends Iterable<T>> GetIterableFromResponse<T, S> thenGetIterable(
+    public <T, S extends Iterable<T>> GetListFromResponse<T, S> thenGetList(
             String description,
             Class<S> tClass) {
-        return thenGetIterable(description, SPRING_MOCK_MVC_DEFAULT_RESPONSE_BODY_TRANSFORMER.get(), tClass);
+        return thenGetList(description, SPRING_MOCK_MVC_DEFAULT_RESPONSE_BODY_TRANSFORMER.get(), tClass);
     }
 
     /**
@@ -849,12 +851,12 @@ public final class GetMockMvcResponseResultSupplier extends SequentialGetStepSup
      * @param tRef        is a type of result of performed deserialization
      * @param <T>         is a type of item from resulted iterable
      * @param <S>         is a type of resulted iterable
-     * @return an instance of {@link GetIterableFromResponse}
+     * @return an instance of {@link GetListFromResponse}
      */
-    public <T, S extends Iterable<T>> GetIterableFromResponse<T, S> thenGetIterable(
+    public <T, S extends Iterable<T>> GetListFromResponse<T, S> thenGetList(
             String description,
             TypeReference<S> tRef) {
-        return thenGetIterable(description, SPRING_MOCK_MVC_DEFAULT_RESPONSE_BODY_TRANSFORMER.get(), tRef);
+        return thenGetList(description, SPRING_MOCK_MVC_DEFAULT_RESPONSE_BODY_TRANSFORMER.get(), tRef);
     }
 
 

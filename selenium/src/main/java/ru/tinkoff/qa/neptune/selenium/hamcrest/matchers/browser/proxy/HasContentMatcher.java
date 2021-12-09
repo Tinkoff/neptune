@@ -1,15 +1,14 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy;
 
-import com.browserup.harreader.model.HarContent;
-import com.browserup.harreader.model.HarEntry;
-import com.browserup.harreader.model.HarPostData;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.hamcrest.Matcher;
+import org.openqa.selenium.devtools.v95.network.Network;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NullValueMismatch;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.HttpTraffic;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.DeserializationErrorMismatch;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.RecordedRequest;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.RecordedResponse;
@@ -22,7 +21,7 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.all.AllCriteriaMatc
 import static ru.tinkoff.qa.neptune.selenium.properties.ProxiedTrafficBodyTransformer.PROXIED_TRAFFIC_BODY_TRANSFORMER;
 
 @Description("{getFrom} body {responseBody}")
-public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
+public final class HasContentMatcher extends NeptuneFeatureMatcher<HttpTraffic> {
 
     @DescriptionFragment(value = "getFrom")
     private final Object getFrom;
@@ -54,7 +53,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a matcher
      */
     @SafeVarargs
-    public static <T> Matcher<HarEntry> responseHasBody(Class<T> tClass, DataTransformer dataTransformer, Matcher<? super T>... bodyMatchers) {
+    public static <T> Matcher<HttpTraffic> responseHasBody(Class<T> tClass, DataTransformer dataTransformer, Matcher<? super T>... bodyMatchers) {
         checkNotNull(tClass);
         checkNotNull(dataTransformer);
         return new HasContentMatcher(new RecordedResponse(), all(bodyMatchers), dataTransformer, tClass, null);
@@ -70,7 +69,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a matcher
      */
     @SuppressWarnings("unchecked")
-    public static <T> Matcher<HarEntry> responseHasBody(Class<T> tClass, DataTransformer dataTransformer, Matcher<? super T> bodyMatcher) {
+    public static <T> Matcher<HttpTraffic> responseHasBody(Class<T> tClass, DataTransformer dataTransformer, Matcher<? super T> bodyMatcher) {
         return responseHasBody(tClass, dataTransformer, new Matcher[]{bodyMatcher});
     }
 
@@ -82,7 +81,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @param <T>             is a type of a value of deserialized string body
      * @return a matcher
      */
-    public static <T> Matcher<HarEntry> responseHasBody(Class<T> tClass, DataTransformer dataTransformer) {
+    public static <T> Matcher<HttpTraffic> responseHasBody(Class<T> tClass, DataTransformer dataTransformer) {
         return responseHasBody(tClass, dataTransformer, anything());
     }
 
@@ -95,7 +94,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a matcher
      */
     @SuppressWarnings("unchecked")
-    public static <T> Matcher<HarEntry> responseHasBody(T t, DataTransformer dataTransformer) {
+    public static <T> Matcher<HttpTraffic> responseHasBody(T t, DataTransformer dataTransformer) {
         return responseHasBody((Class<T>) t.getClass(), dataTransformer, equalTo(t));
     }
 
@@ -108,7 +107,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a matcher
      */
     @SafeVarargs
-    public static <T> Matcher<HarEntry> responseHasBody(Class<T> tClass, Matcher<? super T>... bodyMatchers) {
+    public static <T> Matcher<HttpTraffic> responseHasBody(Class<T> tClass, Matcher<? super T>... bodyMatchers) {
         return responseHasBody(tClass, PROXIED_TRAFFIC_BODY_TRANSFORMER.get(), bodyMatchers);
     }
 
@@ -121,7 +120,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a matcher
      */
     @SuppressWarnings("unchecked")
-    public static <T> Matcher<HarEntry> responseHasBody(Class<T> tClass, Matcher<? super T> bodyMatcher) {
+    public static <T> Matcher<HttpTraffic> responseHasBody(Class<T> tClass, Matcher<? super T> bodyMatcher) {
         return responseHasBody(tClass, new Matcher[]{bodyMatcher});
     }
 
@@ -132,7 +131,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @param <T>    is a type of a value of deserialized string body
      * @return a matcher
      */
-    public static <T> Matcher<HarEntry> responseHasBody(Class<T> tClass) {
+    public static <T> Matcher<HttpTraffic> responseHasBody(Class<T> tClass) {
         return responseHasBody(tClass, anything());
     }
 
@@ -143,7 +142,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @param <T> is a type of a value of deserialized string body
      * @return a matcher
      */
-    public static <T> Matcher<HarEntry> responseHasBody(T t) {
+    public static <T> Matcher<HttpTraffic> responseHasBody(T t) {
         return responseHasBody(t, PROXIED_TRAFFIC_BODY_TRANSFORMER.get());
     }
 
@@ -158,7 +157,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a matcher
      */
     @SafeVarargs
-    public static <T> Matcher<HarEntry> responseHasBody(TypeReference<T> tTypeReference, DataTransformer dataTransformer, Matcher<? super T>... bodyMatchers) {
+    public static <T> Matcher<HttpTraffic> responseHasBody(TypeReference<T> tTypeReference, DataTransformer dataTransformer, Matcher<? super T>... bodyMatchers) {
         checkNotNull(tTypeReference);
         checkNotNull(dataTransformer);
         return new HasContentMatcher(new RecordedResponse(), all(bodyMatchers), dataTransformer, null, tTypeReference);
@@ -174,7 +173,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a matcher
      */
     @SuppressWarnings("unchecked")
-    public static <T> Matcher<HarEntry> responseHasBody(TypeReference<T> tTypeReference, DataTransformer dataTransformer, Matcher<? super T> bodyMatcher) {
+    public static <T> Matcher<HttpTraffic> responseHasBody(TypeReference<T> tTypeReference, DataTransformer dataTransformer, Matcher<? super T> bodyMatcher) {
         return responseHasBody(tTypeReference, dataTransformer, new Matcher[]{bodyMatcher});
     }
 
@@ -186,7 +185,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @param <T>             is a type of a value of deserialized string body
      * @return a matcher
      */
-    public static <T> Matcher<HarEntry> responseHasBody(TypeReference<T> tTypeReference, DataTransformer dataTransformer) {
+    public static <T> Matcher<HttpTraffic> responseHasBody(TypeReference<T> tTypeReference, DataTransformer dataTransformer) {
         return responseHasBody(tTypeReference, dataTransformer, anything());
     }
 
@@ -200,7 +199,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a matcher
      */
     @SafeVarargs
-    public static <T> Matcher<HarEntry> responseHasBody(TypeReference<T> tTypeReference, Matcher<? super T>... bodyMatchers) {
+    public static <T> Matcher<HttpTraffic> responseHasBody(TypeReference<T> tTypeReference, Matcher<? super T>... bodyMatchers) {
         return responseHasBody(tTypeReference, PROXIED_TRAFFIC_BODY_TRANSFORMER.get(), bodyMatchers);
     }
 
@@ -213,7 +212,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a matcher
      */
     @SuppressWarnings("unchecked")
-    public static <T> Matcher<HarEntry> responseHasBody(TypeReference<T> tTypeReference, Matcher<? super T> bodyMatcher) {
+    public static <T> Matcher<HttpTraffic> responseHasBody(TypeReference<T> tTypeReference, Matcher<? super T> bodyMatcher) {
         return responseHasBody(tTypeReference, new Matcher[]{bodyMatcher});
     }
 
@@ -224,7 +223,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @param <T>            is a type of a value of deserialized string body
      * @return a matcher
      */
-    public static <T> Matcher<HarEntry> responseHasBody(TypeReference<T> tTypeReference) {
+    public static <T> Matcher<HttpTraffic> responseHasBody(TypeReference<T> tTypeReference) {
         return responseHasBody(tTypeReference, anything());
     }
 
@@ -236,7 +235,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a new instance of {@link HasContentMatcher}
      */
     @SafeVarargs
-    public static Matcher<HarEntry> responseHasRawBody(Matcher<? super String>... bodyMatchers) {
+    public static Matcher<HttpTraffic> responseHasRawBody(Matcher<? super String>... bodyMatchers) {
         return new HasContentMatcher(new RecordedResponse(), all(bodyMatchers), null, null, null);
     }
 
@@ -247,7 +246,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a new instance of {@link HasContentMatcher}
      */
     @SuppressWarnings("unchecked")
-    public static Matcher<HarEntry> responseHasRawBody(Matcher<? super String> bodyMatcher) {
+    public static Matcher<HttpTraffic> responseHasRawBody(Matcher<? super String> bodyMatcher) {
         return responseHasRawBody(new Matcher[]{bodyMatcher});
     }
 
@@ -257,7 +256,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @param body is the expected body of the response
      * @return a new instance of {@link HasContentMatcher}
      */
-    public static Matcher<HarEntry> responseHasRawBody(String body) {
+    public static Matcher<HttpTraffic> responseHasRawBody(String body) {
         return responseHasRawBody(equalTo(body));
     }
 
@@ -271,7 +270,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a matcher
      */
     @SafeVarargs
-    public static <T> Matcher<HarEntry> requestHasBody(Class<T> tClass, DataTransformer dataTransformer, Matcher<? super T>... bodyMatchers) {
+    public static <T> Matcher<HttpTraffic> requestHasBody(Class<T> tClass, DataTransformer dataTransformer, Matcher<? super T>... bodyMatchers) {
         checkNotNull(tClass);
         checkNotNull(dataTransformer);
         return new HasContentMatcher(new RecordedRequest(), all(bodyMatchers), dataTransformer, tClass, null);
@@ -287,7 +286,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a matcher
      */
     @SuppressWarnings("unchecked")
-    public static <T> Matcher<HarEntry> requestHasBody(Class<T> tClass, DataTransformer dataTransformer, Matcher<? super T> bodyMatcher) {
+    public static <T> Matcher<HttpTraffic> requestHasBody(Class<T> tClass, DataTransformer dataTransformer, Matcher<? super T> bodyMatcher) {
         return requestHasBody(tClass, dataTransformer, new Matcher[]{bodyMatcher});
     }
 
@@ -299,7 +298,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @param <T>             is a type of a value of deserialized string body
      * @return a matcher
      */
-    public static <T> Matcher<HarEntry> requestHasBody(Class<T> tClass, DataTransformer dataTransformer) {
+    public static <T> Matcher<HttpTraffic> requestHasBody(Class<T> tClass, DataTransformer dataTransformer) {
         return requestHasBody(tClass, dataTransformer, anything());
     }
 
@@ -312,7 +311,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a matcher
      */
     @SuppressWarnings("unchecked")
-    public static <T> Matcher<HarEntry> requestHasBody(T t, DataTransformer dataTransformer) {
+    public static <T> Matcher<HttpTraffic> requestHasBody(T t, DataTransformer dataTransformer) {
         return requestHasBody((Class<T>) t.getClass(), dataTransformer, equalTo(t));
     }
 
@@ -325,7 +324,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a matcher
      */
     @SafeVarargs
-    public static <T> Matcher<HarEntry> requestHasBody(Class<T> tClass, Matcher<? super T>... bodyMatchers) {
+    public static <T> Matcher<HttpTraffic> requestHasBody(Class<T> tClass, Matcher<? super T>... bodyMatchers) {
         return requestHasBody(tClass, PROXIED_TRAFFIC_BODY_TRANSFORMER.get(), bodyMatchers);
     }
 
@@ -338,7 +337,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a matcher
      */
     @SuppressWarnings("unchecked")
-    public static <T> Matcher<HarEntry> requestHasBody(Class<T> tClass, Matcher<? super T> bodyMatcher) {
+    public static <T> Matcher<HttpTraffic> requestHasBody(Class<T> tClass, Matcher<? super T> bodyMatcher) {
         return requestHasBody(tClass, new Matcher[]{bodyMatcher});
     }
 
@@ -349,7 +348,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @param <T>    is a type of a value of deserialized string body
      * @return a matcher
      */
-    public static <T> Matcher<HarEntry> requestHasBody(Class<T> tClass) {
+    public static <T> Matcher<HttpTraffic> requestHasBody(Class<T> tClass) {
         return requestHasBody(tClass, anything());
     }
 
@@ -360,7 +359,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @param <T> is a type of a value of deserialized string body
      * @return a matcher
      */
-    public static <T> Matcher<HarEntry> requestHasBody(T t) {
+    public static <T> Matcher<HttpTraffic> requestHasBody(T t) {
         return requestHasBody(t, PROXIED_TRAFFIC_BODY_TRANSFORMER.get());
     }
 
@@ -375,7 +374,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a matcher
      */
     @SafeVarargs
-    public static <T> Matcher<HarEntry> requestHasBody(TypeReference<T> tTypeReference, DataTransformer dataTransformer, Matcher<? super T>... bodyMatchers) {
+    public static <T> Matcher<HttpTraffic> requestHasBody(TypeReference<T> tTypeReference, DataTransformer dataTransformer, Matcher<? super T>... bodyMatchers) {
         checkNotNull(tTypeReference);
         checkNotNull(dataTransformer);
         return new HasContentMatcher(new RecordedRequest(), all(bodyMatchers), dataTransformer, null, tTypeReference);
@@ -391,7 +390,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a matcher
      */
     @SuppressWarnings("unchecked")
-    public static <T> Matcher<HarEntry> requestHasBody(TypeReference<T> tTypeReference, DataTransformer dataTransformer, Matcher<? super T> bodyMatcher) {
+    public static <T> Matcher<HttpTraffic> requestHasBody(TypeReference<T> tTypeReference, DataTransformer dataTransformer, Matcher<? super T> bodyMatcher) {
         return requestHasBody(tTypeReference, dataTransformer, new Matcher[]{bodyMatcher});
     }
 
@@ -403,7 +402,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @param <T>             is a type of a value of deserialized string body
      * @return a matcher
      */
-    public static <T> Matcher<HarEntry> requestHasBody(TypeReference<T> tTypeReference, DataTransformer dataTransformer) {
+    public static <T> Matcher<HttpTraffic> requestHasBody(TypeReference<T> tTypeReference, DataTransformer dataTransformer) {
         return requestHasBody(tTypeReference, dataTransformer, anything());
     }
 
@@ -417,7 +416,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a matcher
      */
     @SafeVarargs
-    public static <T> Matcher<HarEntry> requestHasBody(TypeReference<T> tTypeReference, Matcher<? super T>... bodyMatchers) {
+    public static <T> Matcher<HttpTraffic> requestHasBody(TypeReference<T> tTypeReference, Matcher<? super T>... bodyMatchers) {
         return requestHasBody(tTypeReference, PROXIED_TRAFFIC_BODY_TRANSFORMER.get(), bodyMatchers);
     }
 
@@ -430,7 +429,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a matcher
      */
     @SuppressWarnings("unchecked")
-    public static <T> Matcher<HarEntry> requestHasBody(TypeReference<T> tTypeReference, Matcher<? super T> bodyMatcher) {
+    public static <T> Matcher<HttpTraffic> requestHasBody(TypeReference<T> tTypeReference, Matcher<? super T> bodyMatcher) {
         return requestHasBody(tTypeReference, new Matcher[]{bodyMatcher});
     }
 
@@ -441,7 +440,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @param <T>            is a type of a value of deserialized string body
      * @return a matcher
      */
-    public static <T> Matcher<HarEntry> requestHasBody(TypeReference<T> tTypeReference) {
+    public static <T> Matcher<HttpTraffic> requestHasBody(TypeReference<T> tTypeReference) {
         return requestHasBody(tTypeReference, anything());
     }
 
@@ -453,7 +452,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a new instance of {@link HasContentMatcher}
      */
     @SafeVarargs
-    public static Matcher<HarEntry> requestHasRawBody(Matcher<? super String>... bodyMatchers) {
+    public static Matcher<HttpTraffic> requestHasRawBody(Matcher<? super String>... bodyMatchers) {
         return new HasContentMatcher(new RecordedRequest(), all(bodyMatchers), null, null, null);
     }
 
@@ -464,7 +463,7 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @return a new instance of {@link HasContentMatcher}
      */
     @SuppressWarnings("unchecked")
-    public static Matcher<HarEntry> requestHasRawBody(Matcher<? super String> bodyMatcher) {
+    public static Matcher<HttpTraffic> requestHasRawBody(Matcher<? super String> bodyMatcher) {
         return requestHasRawBody(new Matcher[]{bodyMatcher});
     }
 
@@ -474,17 +473,17 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
      * @param body is the expected body of the request
      * @return a new instance of {@link HasContentMatcher}
      */
-    public static Matcher<HarEntry> requestHasRawBody(String body) {
+    public static Matcher<HttpTraffic> requestHasRawBody(String body) {
         return requestHasRawBody(equalTo(body));
     }
 
     @Override
-    protected boolean featureMatches(HarEntry toMatch) {
+    protected boolean featureMatches(HttpTraffic toMatch) {
         String body;
         if (getFrom instanceof RecordedResponse) {
-            body = ofNullable(toMatch.getResponse().getContent()).map(HarContent::getText).orElse(null);
+            body = ofNullable(toMatch.getBody()).map(Network.GetResponseBodyResponse::getBody).orElse(null);
         } else {
-            body = ofNullable(toMatch.getRequest().getPostData()).map(HarPostData::getText).orElse(null);
+            body = toMatch.getRequest().getRequest().getPostData().orElse(null);
         }
 
         if (body == null) {
@@ -492,7 +491,6 @@ public final class HasContentMatcher extends NeptuneFeatureMatcher<HarEntry> {
             return false;
         }
 
-        Object toCheck;
         if (transformer != null) {
             try {
                 Object o;

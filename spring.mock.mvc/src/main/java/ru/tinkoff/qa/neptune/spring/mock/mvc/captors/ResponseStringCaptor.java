@@ -7,7 +7,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Description("Response")
-public class ResponseStringCaptor extends StringCaptor<MockHttpServletResponse> {
+public final class ResponseStringCaptor extends StringCaptor<MockHttpServletResponse> {
 
     @Override
     public MockHttpServletResponse getCaptured(Object toBeCaptured) {

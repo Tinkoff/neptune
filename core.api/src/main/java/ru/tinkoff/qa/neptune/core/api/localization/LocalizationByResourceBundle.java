@@ -5,32 +5,27 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.*;
 
-import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.core.api.localization.LocalizationBundlePartition.getKnownPartitions;
 import static ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator.getKey;
 import static ru.tinkoff.qa.neptune.core.api.localization.TemplateParameter.buildTextByTemplate;
 
 public final class LocalizationByResourceBundle implements StepLocalization {
 
-    private static final Map<Locale, List<Map<String, String>>> RESOURCE_BUNDLES = new HashMap<>();
+    private static final Map<Locale, Map<String, String>> RESOURCE_BUNDLES = new HashMap<>();
 
     public static String getFromResourceBundles(Locale locale, AnnotatedElement e) {
-        List<Map<String, String>> bundles;
+        Map<String, String> bundles;
         synchronized (RESOURCE_BUNDLES) {
-            bundles = RESOURCE_BUNDLES.computeIfAbsent(locale,
-                    l -> getKnownPartitions().stream().map(p -> p.getResourceBundle(locale))
-                            .filter(Objects::nonNull)
-                            .collect(toList()));
+            bundles = RESOURCE_BUNDLES.computeIfAbsent(locale, l -> {
+                var map = new HashMap<String, String>();
+                getKnownPartitions().stream().map(p -> p.getResourceBundle(locale))
+                        .filter(Objects::nonNull)
+                        .forEach(map::putAll);
+                return map;
+            });
         }
 
-        var key = getKey(e);
-        for (var rb : bundles) {
-            if (rb.containsKey(key)) {
-                return rb.get(key);
-            }
-        }
-
-        return null;
+        return bundles.get(getKey(e));
     }
 
     @Override

@@ -12,41 +12,54 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import java.util.List;
 
 import static java.util.Comparator.comparing;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
-import static ru.tinkoff.qa.neptune.core.api.localization.AttachmentsBundleFilter.ATTACHMENTS;
-import static ru.tinkoff.qa.neptune.core.api.localization.CriteriaBundleFilter.CRITERIA;
-import static ru.tinkoff.qa.neptune.core.api.localization.MatchedObjectsBundleFilter.MATCHED_OBJECTS;
-import static ru.tinkoff.qa.neptune.core.api.localization.MatchersBundleFilter.MATCHERS;
-import static ru.tinkoff.qa.neptune.core.api.localization.MismatchDescriptionBundleFilter.MISMATCH_DESCRIPTIONS;
-import static ru.tinkoff.qa.neptune.core.api.localization.ParameterPojoBundleFilter.PARAMETER_POJOS;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepBundleFilter.STEPS;
+import static ru.tinkoff.qa.neptune.core.api.localization.AttachmentsBundleFilter.getAttachments;
+import static ru.tinkoff.qa.neptune.core.api.localization.CriteriaBundleFilter.getCriteria;
+import static ru.tinkoff.qa.neptune.core.api.localization.MatchedObjectsBundleFilter.getMatchedObjects;
+import static ru.tinkoff.qa.neptune.core.api.localization.MatchersBundleFilter.getMatchers;
+import static ru.tinkoff.qa.neptune.core.api.localization.MismatchDescriptionBundleFilter.getMismatchDescriptions;
+import static ru.tinkoff.qa.neptune.core.api.localization.ParameterPojoBundleFilter.getParameterPojos;
+import static ru.tinkoff.qa.neptune.core.api.localization.StepBundleFilter.getStepClasses;
 
 final class OtherObjectsBundleFilter extends DefaultAbstractBundleFiller {
 
-    final static List<Class<?>> OTHER = new ClassGraph()
-            .enableAllInfo()
-            .scan()
-            .getClassesWithAnnotation(Description.class.getName())
-            .loadClasses(true)
-            .stream()
-            .filter(c -> !STEPS.contains(c) &&
-                    !ATTACHMENTS.contains(c) &&
-                    !CRITERIA.contains(c) &&
-                    !MATCHERS.contains(c) &&
-                    !MISMATCH_DESCRIPTIONS.contains(c) &&
-                    !MATCHED_OBJECTS.contains(c) &&
-                    !PARAMETER_POJOS.contains(c) &&
-                    !Captor.class.isAssignableFrom(c) &&
-                    !NeptuneFeatureMatcher.class.isAssignableFrom(c) &&
-                    !MismatchDescriber.class.isAssignableFrom(c) &&
-                    !MatchObjectName.class.isAssignableFrom(c) &&
-                    !SequentialGetStepSupplier.class.isAssignableFrom(c) &&
-                    !SequentialActionSupplier.class.isAssignableFrom(c))
-            .map(cls -> (Class<?>) cls)
-            .sorted(comparing(Class::getName))
-            .collect(toList());
+    private static List<Class<?>> other;
 
     protected OtherObjectsBundleFilter(LocalizationBundlePartition p) {
-        super(p, OTHER, "OTHER");
+        super(p, getOther(), "OTHER");
+    }
+
+    public static synchronized List<Class<?>> getOther() {
+        if (nonNull(other)) {
+            return other;
+        }
+
+        other = new ClassGraph()
+                .enableClassInfo()
+                .enableAnnotationInfo()
+                .ignoreClassVisibility()
+                .scan()
+                .getClassesWithAnnotation(Description.class.getName())
+                .loadClasses(true)
+                .stream()
+                .filter(c -> !getStepClasses().contains(c) &&
+                        !getAttachments().contains(c) &&
+                        !getCriteria().contains(c) &&
+                        !getMatchers().contains(c) &&
+                        !getMismatchDescriptions().contains(c) &&
+                        !getMatchedObjects().contains(c) &&
+                        !getParameterPojos().contains(c) &&
+                        !Captor.class.isAssignableFrom(c) &&
+                        !NeptuneFeatureMatcher.class.isAssignableFrom(c) &&
+                        !MismatchDescriber.class.isAssignableFrom(c) &&
+                        !MatchObjectName.class.isAssignableFrom(c) &&
+                        !SequentialGetStepSupplier.class.isAssignableFrom(c) &&
+                        !SequentialActionSupplier.class.isAssignableFrom(c))
+                .map(cls -> (Class<?>) cls)
+                .sorted(comparing(Class::getName))
+                .collect(toList());
+
+        return other;
     }
 }

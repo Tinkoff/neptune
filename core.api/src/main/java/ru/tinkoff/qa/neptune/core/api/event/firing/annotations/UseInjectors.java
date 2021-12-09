@@ -41,7 +41,8 @@ public @interface UseInjectors {
 
         private static Map<Class<?>, List<Class<CapturedDataInjector>>> mapOfAbstractInjectors() {
             var children = new ClassGraph()
-                    .enableAllInfo()
+                    .enableClassInfo()
+                    .ignoreClassVisibility()
                     .scan()
                     .getClassesImplementing(CapturedDataInjector.class.getName())
                     .loadClasses(CapturedDataInjector.class);

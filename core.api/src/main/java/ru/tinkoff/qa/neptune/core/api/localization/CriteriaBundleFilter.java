@@ -9,24 +9,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Comparator.comparing;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toCollection;
 
 final class CriteriaBundleFilter extends DefaultAbstractBundleFiller {
 
-    final static List<Class<?>> CRITERIA = new ClassGraph()
-            .enableAllInfo()
-            .scan()
-            .getClassesWithMethodAnnotation(Description.class.getName())
-            .loadClasses(true)
-            .stream()
-            .filter(classClass ->
-                    !SequentialActionSupplier.class.isAssignableFrom(classClass)
-                            &&
-                            !SequentialGetStepSupplier.class.isAssignableFrom(classClass))
-            .sorted(comparing(Class::getName))
-            .collect(toCollection(ArrayList::new));
+    private static List<Class<?>> criteria;
 
-    protected CriteriaBundleFilter(LocalizationBundlePartition p) {
-        super(p, CRITERIA, "CRITERIA");
+    CriteriaBundleFilter(LocalizationBundlePartition p) {
+        super(p, getCriteria(), "CRITERIA");
+    }
+
+    public static synchronized List<Class<?>> getCriteria() {
+        if (nonNull(criteria)) {
+            return criteria;
+        }
+
+        criteria = new ClassGraph()
+                .enableClassInfo()
+                .ignoreClassVisibility()
+                .enableMethodInfo()
+                .ignoreMethodVisibility()
+                .enableAnnotationInfo()
+                .scan()
+                .getClassesWithMethodAnnotation(Description.class.getName())
+                .loadClasses(true)
+                .stream()
+                .filter(classClass ->
+                        !SequentialActionSupplier.class.isAssignableFrom(classClass)
+                                &&
+                                !SequentialGetStepSupplier.class.isAssignableFrom(classClass))
+                .sorted(comparing(Class::getName))
+                .collect(toCollection(ArrayList::new));
+
+        return criteria;
     }
 }

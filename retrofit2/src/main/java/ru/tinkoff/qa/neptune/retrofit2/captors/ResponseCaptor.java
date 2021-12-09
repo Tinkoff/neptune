@@ -7,7 +7,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import static java.lang.String.join;
 
 @Description("Response")
-public class ResponseCaptor extends StringCaptor<Response> {
+public final class ResponseCaptor extends StringCaptor<Response> {
 
     @Override
     public Response getCaptured(Object toBeCaptured) {

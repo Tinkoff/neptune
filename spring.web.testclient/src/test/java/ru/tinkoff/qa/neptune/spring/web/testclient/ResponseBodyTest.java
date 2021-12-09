@@ -3,45 +3,30 @@ package ru.tinkoff.qa.neptune.spring.web.testclient;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
-import org.springframework.test.web.reactive.server.ExchangeResult;
 import org.springframework.test.web.reactive.server.StatusAssertions;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.openMocks;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
-import static org.springframework.test.web.reactive.server.MockAssertionsCreator.createHeaderAssertion;
-import static org.springframework.test.web.reactive.server.MockAssertionsCreator.createStatusAssertion;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.SendRequestAction.send;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.WebTestClientContext.webTestClient;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
-public class ResponseBodyTest {
-
-    @Mock
-    private WebTestClient client;
-
-    @Mock
-    private WebTestClient.RequestHeadersUriSpec uriSpec;
-
-    @Mock
-    private WebTestClient.ResponseSpec responseSpec;
-
-    @Mock
-    private ExchangeResult result;
-
-    @Mock
-    private WebTestClient.BodyContentSpec bodyContentSpec;
+@SuppressWarnings({"unchecked"})
+public class ResponseBodyTest extends BaseTest {
 
     @Mock
     private WebTestClient.BodySpec<Dto, ?> dtoBodySpec;
@@ -51,26 +36,34 @@ public class ResponseBodyTest {
 
     @BeforeClass
     public void setUpBeforeClass() {
-        openMocks(this);
-        when(client.get()).thenReturn(uriSpec);
-        when(uriSpec.uri("https://google.com/api/request/1")).thenReturn(uriSpec);
-        when(uriSpec.exchange()).thenReturn(responseSpec);
+        super.setUpBeforeClass();
 
-        when(responseSpec.expectStatus()).thenReturn(createStatusAssertion(result, responseSpec));
-        when(responseSpec.expectHeader()).thenReturn(createHeaderAssertion(result, responseSpec));
+        var requestHeaders = new HttpHeaders();
+        requestHeaders.setContentType(MediaType.APPLICATION_JSON);
+        requestHeaders.setContentLength(50);
 
-        when(result.getRawStatusCode()).thenReturn(200);
-        when(result.getResponseHeaders()).thenReturn(new HttpHeaders());
-        doNothing().when(result).assertWithDiagnostics(any(Runnable.class));
-
-        when(responseSpec.expectBody()).thenReturn(bodyContentSpec);
+        var responseHeaders = new HttpHeaders();
+        responseHeaders.setContentType(TEXT_PLAIN);
+        responseHeaders.setContentLength(50);
 
         Mockito.<WebTestClient.BodySpec<Dto, ?>>when(responseSpec.expectBody(Dto.class)).thenReturn(dtoBodySpec);
-        when(dtoBodySpec.returnResult()).thenReturn(dtoResult);
+        doAnswer(invocation -> {
+            var consumer = invocation.getArgument(0, Consumer.class);
+            consumer.accept(dtoResult);
+            return dtoBodySpec;
+        }).when(dtoBodySpec).consumeWith(any(Consumer.class));
         when(dtoResult.getResponseBody()).thenReturn(new Dto()
                 .setStringValue("ABCD")
                 .setArrayValue1(new ArrayList<>(of("a", "b", "c", "d")))
                 .setArrayValue2(new Integer[]{1, 2, 3, 4}));
+
+        when(dtoResult.getUrl()).thenReturn(URI.create("https://google.com/api/request/1"));
+        when(dtoResult.getMethod()).thenReturn(HttpMethod.GET);
+        when(dtoResult.getRequestHeaders()).thenReturn(requestHeaders);
+        when(dtoResult.getRequestBodyContent()).thenReturn("Hello".getBytes());
+        when(dtoResult.getResponseBodyContent()).thenReturn("Hi".getBytes());
+        when(dtoResult.getRawStatusCode()).thenReturn(200);
+        when(dtoResult.getResponseHeaders()).thenReturn(responseHeaders);
     }
 
     @Test
@@ -136,7 +129,7 @@ public class ResponseBodyTest {
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
                 .bodyAs(Dto.class)
-                .thenGetIterable("List from 'getArrayValue1'", Dto::getArrayValue1)
+                .thenGetList("List from 'getArrayValue1'", Dto::getArrayValue1)
                 .criteria("not contains 'E'", s -> !s.contains("E")));
 
         assertThat(value, hasSize(4));
@@ -149,7 +142,7 @@ public class ResponseBodyTest {
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
                 .bodyAs(Dto.class)
-                .thenGetIterable("List from 'getArrayValue1'", Dto::getArrayValue1)
+                .thenGetList("List from 'getArrayValue1'", Dto::getArrayValue1)
                 .criteria("contains 'E'", s -> s.contains("E")));
 
         assertThat(value, emptyIterable());

@@ -18,7 +18,7 @@ import static ru.tinkoff.qa.neptune.selenium.captors.ElementPhotographer.merge;
  */
 @Beta
 @Description("Screenshot taken from the list of elements")
-public class ListOfWebElementImageCaptor extends ImageCaptor<List<ElementPhotographer>> {
+public final class ListOfWebElementImageCaptor extends ImageCaptor<List<ElementPhotographer>> {
 
     @Override
     public List<ElementPhotographer> getCaptured(Object toBeCaptured) {

@@ -6,7 +6,9 @@ Neptune имеет свой собственный механизм внедре
 Но бывает так, что механизм / логика / условия заполнения некоторых из этих полей всегда одни и те же, что ведет к 
 дублированию кода в `@Before*`-методах или чрезмерному использованию механизма наследования. 
 
-Чтобы этого избежать, можно поступить следующим образом
+Чтобы этого избежать, можно поступить следующим образом:
+
+- создать класс
 
 ```java
 package org.my.pack;
@@ -34,7 +36,19 @@ public class MyDependencyInjector implements DependencyInjector {
 }
 ```
 
-Больше ничего делать не нужно.
+- Настроить [SPI](https://docs.oracle.com/javase/tutorial/ext/basics/spi.html). В `resources` директорий `main` или `test`
+  создать следующие директории и файлы
+
+```
+    META-INF
+    |
+    +---- services
+             |
+             +----ru.tinkoff.qa.neptune.core.api.dependency.injection.DependencyInjector
+```
+
+- В файл `ru.tinkoff.qa.neptune.core.api.dependency.injection.DependencyInjector` внести запись
+  `org.my.pack.MyDependencyInjector`
 
 Данный механизм используют:
 - [TestNG](./../../../testng.integration/doc/rus/README.MD#Внедрение-зависимостей)

@@ -16,9 +16,6 @@
     - [WEB_DRIVER_CAPABILITY_BROWSER_VERSION](#web_driver_capability_browser_version)
 - [Параметры сессии](#Параметры-сессии)
   - [FIND_ONLY_VISIBLE_ELEMENTS](#find_only_visible_elements)
-  - [Проксирование трафика браузера](#Проксирование-трафика-браузера)
-    - [USE_BROWSER_PROXY](#use_browser_proxy)
-    - [PROXY_URL_PROPERTY](#proxy_url_property)    
   - [KEEP_WEB_DRIVER_SESSION_OPENED](#keep_web_driver_session_opened)
   - [FORCE_WINDOW_MAXIMIZING_ON_START](#force_window_maximizing_on_start)
 - [BASE_WEB_DRIVER_URL](#base_web_driver_url)
@@ -192,9 +189,6 @@ public class SomeClass {
 
 #### WEB_DRIVER_CAPABILITY_BROWSER_NAME
 
-
-  
-
 Указывает значение `browserName` для тех случаев, когда `WEB_DRIVER_TO_LAUNCH=REMOTE_DRIVER`. Во всех остальных случаях
 настройка/свойство игнорируется.
 
@@ -341,82 +335,6 @@ public class SomeClass {
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-
-
-### Проксирование трафика браузера
-
-#### USE_BROWSER_PROXY
-
-
-  
-
-Настройка указывает на необходимость использовать локальный автоматически запущенный прокси-сервер для отслеживания 
-трафика браузера. Доступные значения - `true` или `false`. Если значение `true`, то будет происходить запись трафика, 
-`false` - запись трафика происходить не будет.
-
-Пример настройки:
-
-```properties
-#Значение свойства указывается так
-USE_BROWSER_PROXY=true
-```
-
-```java
-import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.USE_BROWSER_PROXY;
-
-public class SomeClass {
-    
-    public void someVoid() {
-        //пример доступа до значения свойства
-        boolean useProxy = USE_BROWSER_PROXY.get();
-    }
-}
-```
-
-Если свойство не заполнено, то значение по умолчанию `false`.
-
-[Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-Boolean)
-
-[О работе с записанным трафиком](./BROWSER_PROXY.MD)
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
-
-#### PROXY_URL_PROPERTY
-
-
-  
-
-Http-адрес удаленного прокси-сервера, через который должен идти трафик браузера. Данная настройка опциональна и имеет смысл, 
-если [USE_BROWSER_PROXY](#use_browser_proxy)=`true` и через [настройки Capabilities](#Настройки-Capabilities) не передается
-объект [org.openqa.selenium.Proxy](https://www.selenium.dev/documentation/en/webdriver/http_proxies/). При такой конфигурации
-локальный прокси-сервер встает первым в очередь указанных прокси-серверов. 
-
-Пример настройки:
-
-```properties
-#Значение свойства указывается так
-PROXY_URL_PROPERTY=http://somehost:2222
-```
-
-```java
-import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.PROXY_URL_PROPERTY;
-
-public class SomeClass {
-    
-    public void someVoid() {
-        //пример доступа до значения свойства
-        URL externalProxyURL = PROXY_URL_PROPERTY.get();
-    }
-}
-```
-
-[Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов-URL)
-
-[О работе с записанным трафиком](./BROWSER_PROXY.MD)
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
 ### KEEP_WEB_DRIVER_SESSION_OPENED
 
 Настройка указывает на необходимость сохранять открытой сессию WebDriver'а настолько долго, насколько это возможно. Доступные 
@@ -531,12 +449,9 @@ public class SomeClass {
 
 ## REMOTE_WEB_DRIVER_URL
 
-
-  
-
 [Важная информация](#web_driver_to_launch)
 
-Настройка указывает URL хаба `Selenium Grid` или `Selenoid`, который используется для открытия браузера на удаленном окружении.
+Настройка указывает URL хаба `Selenium Grid` или `Selenoid`, который используется для открытия браузера на удаленном устройстве.
 Данное свойство/настройка используется тогда, когда `WEB_DRIVER_TO_LAUNCH=REMOTE_DRIVER`, в остальных случаях игнорируется.
 
 Пример настройки:
@@ -560,9 +475,6 @@ public class SomeClass {
 }
 ```
 
-Если свойство не указано, и `WEB_DRIVER_TO_LAUNCH=REMOTE_DRIVER`, тогда происходит локальный старт Selenium-сервера (`org.openqa.selenium.remote.server.SeleniumServer`), 
-и неявно используются адрес, по которому доступен локальный хаб.
-
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов-URL)
 
 [Selenium Grid](https://www.selenium.dev/documentation/en/grid/)
@@ -575,9 +487,6 @@ public class SomeClass {
 ## Время ожидания по умолчанию
 
 ### Ожидание элемента(ов)
-
-
-  
 
 Свойства `WAITING_FOR_ELEMENTS_TIME_UNIT` и `WAITING_FOR_ELEMENTS_TIME` определяют время ожидания появления элементов страницы 
 по умолчанию. Для свойства `WAITING_FOR_ELEMENTS_TIME_UNIT` следует указать значение, соответствующее одному из элементов 

@@ -1,29 +1,28 @@
 package ru.tinkoff.qa.neptune.core.api.event.firing;
 
-import io.github.classgraph.ClassGraph;
+import ru.tinkoff.qa.neptune.core.api.event.firing.console.DefaultConsoleEventLogger;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.StreamSupport;
 
-import static java.lang.reflect.Modifier.isAbstract;
 import static java.util.Optional.ofNullable;
+import static java.util.ServiceLoader.load;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toUnmodifiableList;
 
 public class StaticEventFiring {
 
     private static final ThreadLocal<List<EventLogger>> LIST_THREAD_LOCAL_EVENT_LOGGERS = new ThreadLocal<>();
-    private static final List<Class<? extends EventLogger>> LOGGERS = getEventLoggerClasses();
 
-    private static List<Class<? extends EventLogger>> getEventLoggerClasses() {
-        return new ClassGraph()
-                .enableAllInfo()
-                .scan().getClassesImplementing(EventLogger.class.getName())
-                .loadClasses(EventLogger.class)
-                .stream()
-                .filter(c -> !isAbstract(c.getModifiers()))
-                .collect(toUnmodifiableList());
+    private static List<EventLogger> getEventLoggers() {
+        var result = new LinkedList<EventLogger>();
+        result.addFirst(new DefaultConsoleEventLogger());
+        var iterator = load(EventLogger.class).iterator();
+        Iterable<EventLogger> iterable = () -> iterator;
+        result.addAll(StreamSupport.stream(iterable.spliterator(), false).collect(toList()));
+        return result;
     }
 
 
@@ -45,18 +44,7 @@ public class StaticEventFiring {
     private static List<EventLogger> initEventLoggersIfNecessary() {
         return ofNullable(LIST_THREAD_LOCAL_EVENT_LOGGERS.get())
                 .orElseGet(() -> {
-                    var loggers = LOGGERS
-                            .stream()
-                            .filter(c -> !isAbstract(c.getModifiers()))
-                            .map(c -> {
-                                try {
-                                    var constructor = c.getConstructor();
-                                    constructor.setAccessible(true);
-                                    return (EventLogger) constructor.newInstance();
-                                } catch (Exception e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }).collect(toList());
+                    var loggers = getEventLoggers();
                     LIST_THREAD_LOCAL_EVENT_LOGGERS.set(loggers);
                     return loggers;
                 });

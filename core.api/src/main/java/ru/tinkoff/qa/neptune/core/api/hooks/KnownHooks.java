@@ -1,15 +1,14 @@
 package ru.tinkoff.qa.neptune.core.api.hooks;
 
-import io.github.classgraph.ClassGraph;
-
-import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
 
 import static java.lang.String.format;
 import static java.util.Map.Entry.comparingByValue;
 import static java.util.Optional.ofNullable;
+import static java.util.ServiceLoader.load;
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.StreamSupport.stream;
 
 final class KnownHooks {
 
@@ -17,13 +16,11 @@ final class KnownHooks {
     private static final List<ExecutionHook> HOOKS = new LinkedList<>();
 
     static void initHooks() {
-        new ClassGraph()
-                .enableAllInfo()
-                .scan().getClassesImplementing(ExecutionHook.class.getName())
-                .loadClasses(ExecutionHook.class)
-                .stream()
-                .collect(toMap(executionHookClass -> executionHookClass, executionHookClass -> {
-                    var cls = (Class<?>) executionHookClass;
+        var iterator = load(ExecutionHook.class).iterator();
+        Iterable<ExecutionHook> iterable = () -> iterator;
+        stream(iterable.spliterator(), false)
+                .collect(toMap(executionHook -> executionHook, executionHook -> {
+                    var cls = executionHook.getClass();
                     var a = cls.getAnnotation(HookOrder.class);
                     return ofNullable(a).map(hookOrder -> {
                         var priority = hookOrder.priority();
@@ -38,17 +35,9 @@ final class KnownHooks {
                 .stream()
                 .sorted(comparingByValue())
                 .forEachOrdered(x -> {
-                    var cls = x.getKey();
-                    try {
-                        var constructor = cls.getConstructor();
-                        constructor.setAccessible(true);
-                        HOOKS.add(constructor.newInstance());
-                    } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                        throw new RuntimeException(e);
-                    }
+                    var hook = x.getKey();
+                    HOOKS.add(hook);
                 });
-
-
     }
 
     static List<ExecutionHook> getKnownHooks() {

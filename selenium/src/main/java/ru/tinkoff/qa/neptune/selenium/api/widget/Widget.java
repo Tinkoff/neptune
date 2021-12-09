@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.api.widget;
 
 import org.openqa.selenium.*;
-import org.openqa.selenium.internal.WrapsElement;
 
 import java.util.List;
 

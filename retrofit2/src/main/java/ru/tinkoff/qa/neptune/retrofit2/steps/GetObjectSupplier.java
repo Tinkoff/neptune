@@ -8,6 +8,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.retrofit2.RetrofitContext;
+import ru.tinkoff.qa.neptune.retrofit2.criteria.ResponseCriteria;
 
 import java.time.Duration;
 import java.util.Objects;
@@ -27,7 +28,8 @@ import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getRespons
 @SuppressWarnings("unchecked")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Result criteria")
 public abstract class GetObjectSupplier<M, R, S extends GetObjectSupplier<M, R, S>> extends SequentialGetStepSupplier
-        .GetObjectChainedStepSupplier<RetrofitContext, R, RequestExecutionResult<M, R>, S> {
+        .GetObjectChainedStepSupplier<RetrofitContext, R, RequestExecutionResult<M, R>, S>
+        implements DefinesResponseCriteria<S> {
 
     private Criteria<R> derivedValueCriteria;
 
@@ -97,6 +99,7 @@ public abstract class GetObjectSupplier<M, R, S extends GetObjectSupplier<M, R, 
         return body(new CallBodySupplier<>(call));
     }
 
+    @Override
     public S retryTimeOut(Duration timeOut) {
         ((SendRequestAndGet<M, R>) getFrom()).timeOut(timeOut);
         return (S) this;
@@ -108,29 +111,48 @@ public abstract class GetObjectSupplier<M, R, S extends GetObjectSupplier<M, R, 
         return (S) this;
     }
 
+    /**
+     * Defines criteria for expected response
+     *
+     * @param criteria criteria for expected response
+     * @return self-reference
+     * @see ResponseCriteria
+     * @see Criteria#condition(String, Predicate)
+     */
+    @Override
     public S responseCriteria(Criteria<Response> criteria) {
         ((SendRequestAndGet<M, R>) getFrom()).criteria(resultResponseCriteria(criteria));
         return (S) this;
     }
 
+
+    @Override
     public S responseCriteria(String description, Predicate<Response> predicate) {
         return responseCriteria(condition(description, predicate));
     }
 
-    public S responseCriteriaOr(Criteria<Response>... criteria) {
+
+    @Override
+    @SafeVarargs
+    public final S responseCriteriaOr(Criteria<Response>... criteria) {
         ((SendRequestAndGet<M, R>) getFrom()).criteria(resultResponseCriteria(OR(criteria)));
         return (S) this;
     }
 
-    public S responseCriteriaOnlyOne(Criteria<Response>... criteria) {
+    @Override
+    @SafeVarargs
+    public final S responseCriteriaOnlyOne(Criteria<Response>... criteria) {
         ((SendRequestAndGet<M, R>) getFrom()).criteria(resultResponseCriteria(ONLY_ONE(criteria)));
         return (S) this;
     }
 
-    public S responseCriteriaNot(Criteria<Response>... criteria) {
+    @Override
+    @SafeVarargs
+    public final S responseCriteriaNot(Criteria<Response>... criteria) {
         ((SendRequestAndGet<M, R>) getFrom()).criteria(resultResponseCriteria(NOT(criteria)));
         return (S) this;
     }
+
 
     private void criteriaForDerivedValue(Criteria<? super R> criteria) {
         derivedValueCriteria = ofNullable(derivedValueCriteria)

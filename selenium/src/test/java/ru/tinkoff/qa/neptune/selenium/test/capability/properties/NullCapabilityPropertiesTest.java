@@ -52,7 +52,7 @@ public class NullCapabilityPropertiesTest {
         assertThat("Browser version info", capabilities, not(hasEntry("browserVersion", "60")));
         assertThat("Chrome options info", capabilities, hasKey("goog:chromeOptions"));
 
-        assertThat("arguments", capabilitiesAsIs.getCapability("goog:chromeOptions"), nullValue());
+        assertThat("arguments", capabilitiesAsIs.getCapability("goog:chromeOptions"), notNullValue());
 
         FirefoxOptions firefoxOptions = (FirefoxOptions) FIREFOX.get();
         assertThat("Browser info", firefoxOptions.getBrowserName(), is(BrowserType.FIREFOX));
@@ -61,6 +61,6 @@ public class NullCapabilityPropertiesTest {
                 is( true));
         assertThat("Browser version info", firefoxOptions.getCapability("browserVersion"),
                 not(is("60")));
-        assertThat("Firefox profile", firefoxOptions.getProfile(), nullValue());
+        assertThat("Firefox profile", firefoxOptions.getProfile(), notNullValue());
     }
 }

@@ -1,13 +1,15 @@
 package ru.tinkoff.qa.neptune.core.api.dependency.injection;
 
-import io.github.classgraph.ClassGraph;
-
 import java.lang.reflect.Field;
+import java.util.List;
+import java.util.stream.StreamSupport;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.reflect.Modifier.isFinal;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
+import static java.util.ServiceLoader.load;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.ArrayUtils.addAll;
 
 /**
@@ -15,6 +17,14 @@ import static org.apache.commons.lang3.ArrayUtils.addAll;
  * It is recommended to implement by classes which have no declared constructor/constructor without parameters.
  */
 public interface DependencyInjector {
+
+    List<DependencyInjector> dependencyInjectors = getDependencyInjectors();
+
+    private static List<DependencyInjector> getDependencyInjectors() {
+        var iterator = load(DependencyInjector.class).iterator();
+        Iterable<DependencyInjector> iterable = () -> iterator;
+        return StreamSupport.stream(iterable.spliterator(), false).collect(toList());
+    }
 
     /**
      * Fills fields of an object with values
@@ -37,35 +47,22 @@ public interface DependencyInjector {
 
         var fields2 = fields1;
 
-        new ClassGraph()
-                .enableAllInfo()
-                .scan().getClassesImplementing(DependencyInjector.class.getName())
-                .loadClasses(DependencyInjector.class)
-                .forEach(i -> {
-                    try {
-                        var c = i.getConstructor();
-                        c.setAccessible(true);
+        dependencyInjectors.forEach(injector -> {
+            stream(fields2).forEach(f -> {
+                var m = f.getModifiers();
+                f.setAccessible(true);
+                var type = f.getType();
 
-                        var injector = c.newInstance();
-                        stream(fields2).forEach(f -> {
-                            var m = f.getModifiers();
-                            f.setAccessible(true);
-                            var type = f.getType();
-
-                            try {
-                                var val = f.get(o);
-                                if (!isStatic(m) && !isFinal(m) && injector.toSet(f) && (type.isPrimitive() || val == null)) {
-                                    f.set(o, injector.getValueToSet(f));
-                                }
-                            } catch (IllegalAccessException e) {
-                                throw new RuntimeException(e);
-                            }
-                        });
-
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
+                try {
+                    var val = f.get(o);
+                    if (!isStatic(m) && !isFinal(m) && injector.toSet(f) && (type.isPrimitive() || val == null)) {
+                        f.set(o, injector.getValueToSet(f));
                     }
-                });
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        });
     }
 
     /**

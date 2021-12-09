@@ -29,12 +29,12 @@ public final class SpringWebTestClientExecutionHook implements ExecutionHook {
         if (isNull(webClientField)) {
             getContext().setDefault(null);
         } else {
-            WebTestClient webClient;
+            WebTestClient webClient = null;
             webClientField.setAccessible(true);
             try {
                 if (isStatic(webClientField.getModifiers())) {
                     webClient = (WebTestClient) webClientField.get(currentClazz);
-                } else {
+                } else if (!(on instanceof Class)) {
                     webClient = (WebTestClient) webClientField.get(on);
                 }
             } catch (Exception e) {

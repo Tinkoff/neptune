@@ -4,7 +4,9 @@
 окружения для этого теста. Но бывает так, что механизм / логика некоторых из этих действий всегда одни и те же, что ведет к
 дублированию кода в `@Before*`-методах или чрезмерному использованию механизма наследования.
 
-Чтобы этого избежать, можно поступить следующим образом
+Чтобы этого избежать, можно поступить следующим образом:
+
+- создать класс
 
 ```java
 package org.my.pack;
@@ -33,7 +35,19 @@ public class MyHook implements ExecutionHook {
 }
 ```
 
-Больше ничего делать не нужно.
+- Настроить [SPI](https://docs.oracle.com/javase/tutorial/ext/basics/spi.html). В `resources` директорий `main` или `test`
+  создать следующие директории и файлы
+
+```
+    META-INF
+    |
+    +---- services
+             |
+             +----ru.tinkoff.qa.neptune.core.api.hooks.ExecutionHook
+```
+
+- В файл `ru.tinkoff.qa.neptune.core.api.hooks.ExecutionHook` внести запись
+  `org.my.pack.MyHook`
 
 Данный механизм используют:
 - [TestNG](./../../../testng.integration/doc/rus/README.MD)

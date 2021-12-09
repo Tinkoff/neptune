@@ -25,7 +25,8 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
 
     private static final FindByBuilder BUILDER = new FindByBuilder();
     private static final List<Class<? extends Widget>> SCAN_RESULT = new ArrayList<>(new ClassGraph()
-            .enableAllInfo()
+            .enableClassInfo()
+            .ignoreClassVisibility()
             .scan()
             .getSubclasses(Widget.class.getName())
             .loadClasses(Widget.class));

@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.testng.integration;
 import com.google.common.collect.Iterables;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
+import org.testng.ITestListener;
 import org.testng.ITestResult;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
@@ -26,7 +27,7 @@ import static ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable.REFRESH
 import static ru.tinkoff.qa.neptune.core.api.hooks.ExecutionHook.getHooks;
 import static ru.tinkoff.qa.neptune.testng.integration.properties.TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
 
-public final class DefaultTestRunningListener implements IInvokedMethodListener {
+public final class DefaultTestRunningListener implements IInvokedMethodListener, ITestListener {
 
     private final ThreadLocal<Method> previouslyRefreshed = new ThreadLocal<>();
     private final List<ExecutionHook> hooks = getHooks();

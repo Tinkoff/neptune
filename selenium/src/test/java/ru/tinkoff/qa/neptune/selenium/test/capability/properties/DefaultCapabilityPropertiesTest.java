@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.test.capability.properties;
 
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.testng.annotations.AfterClass;
@@ -81,7 +82,7 @@ public class DefaultCapabilityPropertiesTest {
     public void testOfCommonCapabilityProperties() {
         assertThat(format("Property %s", BROWSER_NAME.getName()),
                 BROWSER_NAME.get(),
-                is(BrowserType.FIREFOX));
+                is(Browser.FIREFOX.browserName()));
 
         assertThat(format("Property %s", PLATFORM_NAME.getName()),
                 PLATFORM_NAME.get(),
@@ -117,13 +118,13 @@ public class DefaultCapabilityPropertiesTest {
         assertThat("binary", args.get("binary"), equalTo("path/to/file"));
 
         FirefoxOptions firefoxOptions = (FirefoxOptions) FIREFOX.get();
-        assertThat("Browser info", firefoxOptions.getBrowserName(), is(BrowserType.FIREFOX));
+        assertThat("Browser info", firefoxOptions.getBrowserName(), is(Browser.FIREFOX.browserName()));
         assertThat("Platform info", firefoxOptions.getPlatform(), is(LINUX));
         assertThat("Java script enabled info", firefoxOptions.getCapability("javascriptEnabled"),
                 is( false));
         assertThat("Browser version info", firefoxOptions.getCapability("browserVersion"),
                 is("60"));
-        assertThat("Firefox profile", firefoxOptions.getProfile(), nullValue());
+        assertThat("Firefox profile", firefoxOptions.getProfile(), not(nullValue()));
     }
 
     @AfterClass

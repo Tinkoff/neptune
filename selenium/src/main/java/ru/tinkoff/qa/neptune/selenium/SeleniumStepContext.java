@@ -1,8 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium;
 
-import com.browserup.bup.BrowserUpProxy;
-import com.browserup.harreader.model.HarEntry;
 import org.openqa.selenium.*;
+import org.openqa.selenium.devtools.DevTools;
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
@@ -11,6 +10,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 import ru.tinkoff.qa.neptune.selenium.api.widget.*;
 import ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyGetStepSupplier;
+import ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.HttpTraffic;
 import ru.tinkoff.qa.neptune.selenium.functions.cookies.AddCookiesActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.cookies.GetSeleniumCookieSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.expand.CollapseActionSupplier;
@@ -40,8 +40,8 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.asList;
+import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.selenium.BrowserProxy.getCurrentProxy;
 import static ru.tinkoff.qa.neptune.selenium.content.management.ContentManagementCommand.getCurrentCommand;
 import static ru.tinkoff.qa.neptune.selenium.functions.click.ClickActionSupplier.on;
 import static ru.tinkoff.qa.neptune.selenium.functions.cookies.RemoveCookiesActionSupplier.deleteCookies;
@@ -72,6 +72,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
 
     private static final SeleniumStepContext context = getInstance(SeleniumStepContext.class);
     private final WrappedWebDriver wrappedWebDriver;
+    private HttpProxy proxy;
 
     public SeleniumStepContext(SupportedWebDrivers supportedWebDriver) {
         this.wrappedWebDriver = new WrappedWebDriver(supportedWebDriver);
@@ -79,6 +80,10 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
 
     public static SeleniumStepContext inBrowser() {
         return context;
+    }
+
+    private HttpProxy getProxy() {
+        return proxy;
     }
 
     private void changeContentIfNecessary() {
@@ -276,7 +281,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @param browserProxyGetStepSupplier is description of traffic to be returned
      * @return list of proxied requests
      */
-    public List<HarEntry> get(BrowserProxyGetStepSupplier browserProxyGetStepSupplier) {
+    public List<HttpTraffic> get(BrowserProxyGetStepSupplier browserProxyGetStepSupplier) {
         checkArgument(Objects.nonNull(browserProxyGetStepSupplier), "Browser proxy supplier is not defined");
         changeContentIfNecessary();
         return super.get(browserProxyGetStepSupplier);
@@ -287,13 +292,30 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      *
      * @return self-reference
      */
+    @Deprecated(forRemoval = true)
     public SeleniumStepContext resetProxyRecording() {
-        ofNullable(getCurrentProxy()).ifPresent(BrowserProxy::newHar);
+        enableAndRefreshNetwork();
         return this;
+    }
+
+    public SeleniumStepContext enableAndRefreshNetwork() {
+        if (isNull(proxy)) {
+            proxy = new HttpProxy(getDevTools());
+            proxy.listen();
+        } else {
+            proxy.clearDump();
+        }
+        return this;
+    }
+
+    public DevTools getDevTools() {
+        return wrappedWebDriver.getDevTools();
     }
 
     @Override
     public void refreshContext() {
+        ofNullable(proxy).ifPresent(HttpProxy::disabledNetwork);
+        proxy = null;
         wrappedWebDriver.refreshContext();
     }
 
@@ -1576,20 +1598,15 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
         }
     }
 
-    public static final class GetProxy implements Function<SeleniumStepContext, BrowserUpProxy> {
+    public static final class GetHttpProxy implements Function<SeleniumStepContext, HttpProxy> {
 
-        public static Function<SeleniumStepContext, BrowserUpProxy> getBrowserProxy() {
-            return new GetProxy();
+        public static Function<SeleniumStepContext, HttpProxy> getBrowserProxy() {
+            return new GetHttpProxy();
         }
 
         @Override
-        public BrowserUpProxy apply(SeleniumStepContext seleniumSteps) {
-            return ofNullable(getCurrentProxy())
-                    .map(browserProxy -> {
-                        browserProxy.createProxy();
-                        return browserProxy.getProxy();
-                    })
-                    .orElse(null);
+        public HttpProxy apply(SeleniumStepContext seleniumSteps) {
+            return ofNullable(seleniumSteps.getProxy()).orElse(null);
         }
     }
 }

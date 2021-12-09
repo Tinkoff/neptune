@@ -32,7 +32,8 @@ public final class WebElementBundleFillerExtension extends BundleFillerExtension
 
     private static List<Class<?>> prepareClasses() {
         var result = new ClassGraph()
-                .enableAllInfo()
+                .enableClassInfo()
+                .ignoreClassVisibility()
                 .scan()
                 .getSubclasses(Widget.class.getName())
                 .loadClasses(Widget.class)

@@ -8,23 +8,35 @@ import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 import java.util.List;
 
 import static java.util.Comparator.comparing;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
 final class ParameterPojoBundleFilter extends DefaultAbstractBundleFiller {
 
-    final static List<Class<?>> PARAMETER_POJOS = new ClassGraph()
-            .enableAllInfo()
-            .scan()
-            .getClassesImplementing(StepParameterPojo.class.getName())
-            .loadClasses(StepParameterPojo.class)
-            .stream()
-            .filter(c -> !SequentialGetStepSupplier.class.isAssignableFrom(c) &&
-                    !SequentialActionSupplier.class.isAssignableFrom(c))
-            .map(cls -> (Class<?>) cls)
-            .sorted(comparing(Class::getName))
-            .collect(toList());
+    private static List<Class<?>> parameterPajos;
 
     protected ParameterPojoBundleFilter(LocalizationBundlePartition p) {
-        super(p, PARAMETER_POJOS, "PARAMETER WRAPPERS");
+        super(p, getParameterPojos(), "PARAMETER WRAPPERS");
+    }
+
+    public static synchronized List<Class<?>> getParameterPojos() {
+        if (nonNull(parameterPajos)) {
+            return parameterPajos;
+        }
+
+        parameterPajos = new ClassGraph()
+                .enableClassInfo()
+                .ignoreClassVisibility()
+                .scan()
+                .getClassesImplementing(StepParameterPojo.class.getName())
+                .loadClasses(StepParameterPojo.class)
+                .stream()
+                .filter(c -> !SequentialGetStepSupplier.class.isAssignableFrom(c) &&
+                        !SequentialActionSupplier.class.isAssignableFrom(c))
+                .map(cls -> (Class<?>) cls)
+                .sorted(comparing(Class::getName))
+                .collect(toList());
+
+        return parameterPajos;
     }
 }
