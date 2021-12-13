@@ -152,7 +152,11 @@ public final class SendRequestAction<B> extends SequentialActionSupplier<WebTest
      * @return self-reference
      */
     public SendRequestAction<B> expectBodyJson(String expectedJson) {
-        return addExpectation(spec -> spec.expectBody().json(expectedJson), new ExpectedBodyJson(expectedJson).toString());
+        return addExpectation(spec -> {
+            var bodySpec = spec.expectBody();
+            bodySpec.consumeWith(r -> bodySpec.json(expectedJson));
+            return true;
+        }, new ExpectedBodyJson(expectedJson).toString());
     }
 
     /**
@@ -167,7 +171,11 @@ public final class SendRequestAction<B> extends SequentialActionSupplier<WebTest
      * @return self-reference
      */
     public SendRequestAction<B> expectBodyXml(String expectedXml) {
-        return addExpectation(spec -> spec.expectBody().xml(expectedXml), new ExpectedBodyXml(expectedXml).toString());
+        return addExpectation(spec -> {
+            var bodySpec = spec.expectBody();
+            bodySpec.consumeWith(r -> bodySpec.xml(expectedXml));
+            return true;
+        }, new ExpectedBodyXml(expectedXml).toString());
     }
 
     /**
@@ -180,8 +188,11 @@ public final class SendRequestAction<B> extends SequentialActionSupplier<WebTest
      * @return self-reference
      */
     public <T> SendRequestAction<B> expectBodyJsonPath(String expression, Function<JsonPathAssertions, T> assertion, Object... args) {
-        return addExpectation(spec -> assertion.apply(spec.expectBody().jsonPath(expression, args)),
-                new ExpectJsonPath(expression, args).toString());
+        return addExpectation(spec -> {
+            var bodySpec = spec.expectBody();
+            bodySpec.consumeWith(r -> assertion.apply(bodySpec.jsonPath(expression, args)));
+            return true;
+        }, new ExpectJsonPath(expression, args).toString());
     }
 
     /**
@@ -196,8 +207,11 @@ public final class SendRequestAction<B> extends SequentialActionSupplier<WebTest
     public <T> SendRequestAction<B> expectBodyXpath(String expression,
                                                     Function<XpathAssertions, T> assertion,
                                                     Object... args) {
-        return addExpectation(spec -> assertion.apply(spec.expectBody().xpath(expression, args)),
-                new ExpectXpath(expression, null, args).toString());
+        return addExpectation(spec -> {
+            var bodySpec = spec.expectBody();
+            bodySpec.consumeWith(r -> assertion.apply(bodySpec.xpath(expression, args)));
+            return true;
+        }, new ExpectXpath(expression, null, args).toString());
     }
 
     /**
@@ -214,8 +228,11 @@ public final class SendRequestAction<B> extends SequentialActionSupplier<WebTest
                                                     Function<XpathAssertions, T> assertion,
                                                     Map<String, String> namespaces,
                                                     Object... args) {
-        return addExpectation(spec -> assertion.apply(spec.expectBody().xpath(expression, namespaces, args)),
-                new ExpectXpath(expression, namespaces, args).toString());
+        return addExpectation(spec -> {
+            var bodySpec = spec.expectBody();
+            bodySpec.consumeWith(r -> assertion.apply(bodySpec.xpath(expression, namespaces, args)));
+            return true;
+        }, new ExpectXpath(expression, namespaces, args).toString());
     }
 
     private <T> SendRequestAction<T> setBodyFormatSupplier(Supplier<BodySpecFunction<T, ?>> s) {

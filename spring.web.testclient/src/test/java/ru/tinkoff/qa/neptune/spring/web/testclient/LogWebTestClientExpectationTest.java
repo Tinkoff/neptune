@@ -1,7 +1,5 @@
 package ru.tinkoff.qa.neptune.spring.web.testclient;
 
-import org.mockito.Mock;
-import org.springframework.test.web.reactive.server.ExchangeResult;
 import org.springframework.test.web.reactive.server.StatusAssertions;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testng.annotations.AfterMethod;
@@ -17,33 +15,16 @@ import static org.apache.commons.lang3.LocaleUtils.toLocale;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.openMocks;
-import static org.springframework.test.web.reactive.server.MockAssertionsCreator.*;
+import static org.springframework.test.web.reactive.server.MockAssertionsCreator.createJsonPathAssertions;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.localization.DefaultLocaleProperty.DEFAULT_LOCALE_PROPERTY;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.localization.DefaultLocalizationEngine.DEFAULT_LOCALIZATION_ENGINE;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.DescribedConsumerBuilder.describeConsumer;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.LogWebTestClientExpectation.logExpectation;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.SendRequestAction.send;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
-public class LogWebTestClientExpectationTest {
+public class LogWebTestClientExpectationTest extends BaseTest {
 
     private final static Locale RUSSIAN = toLocale("ru_RU");
-
-    @Mock
-    private WebTestClient client;
-
-    @Mock
-    private WebTestClient.ResponseSpec mockedSpec;
-
-    @Mock
-    private ExchangeResult result;
-
-    @Mock
-    private WebTestClient.RequestHeadersUriSpec uriSpec;
-
-    @Mock
-    private WebTestClient.BodyContentSpec bodyContentSpec;
 
     @DataProvider
     public static Object[][] data() {
@@ -86,14 +67,9 @@ public class LogWebTestClientExpectationTest {
     }
 
     @BeforeClass
-    public void prepareClass() {
-        openMocks(this);
-
-        when(client.get()).thenReturn(uriSpec);
-        when(uriSpec.exchange()).thenReturn(mockedSpec);
-        when(mockedSpec.expectStatus()).thenReturn(createStatusAssertion(result, mockedSpec));
-        when(mockedSpec.expectHeader()).thenReturn(createHeaderAssertion(result, mockedSpec));
-        when(mockedSpec.expectBody()).thenReturn(bodyContentSpec);
+    @Override
+    public void setUpBeforeClass() {
+        super.setUpBeforeClass();
         when(bodyContentSpec.jsonPath("some.path", "1", "2", "3", "4"))
                 .thenReturn(createJsonPathAssertions(bodyContentSpec, "", "some.path", "1", "2", "3", "4"));
     }
@@ -110,7 +86,7 @@ public class LogWebTestClientExpectationTest {
                 .expectStatus(StatusAssertions::isOk)
                 .assertions.getFirst();
 
-        expectation.verify(mockedSpec);
+        expectation.verify(responseSpec);
         assertThat(logExpectation(expectation).toString(), is(expected));
     }
 
@@ -126,7 +102,7 @@ public class LogWebTestClientExpectationTest {
                 .expectHeader(headerAssertions -> headerAssertions.doesNotExist("Fake-Header"))
                 .assertions.getFirst();
 
-        expectation.verify(mockedSpec);
+        expectation.verify(responseSpec);
         assertThat(logExpectation(expectation).toString(), is(expected));
     }
 
@@ -142,7 +118,7 @@ public class LogWebTestClientExpectationTest {
                 .expectHeader(headerAssertions -> headerAssertions.valueEquals("Test-Header", "1", "2", "3"))
                 .assertions.getFirst();
 
-        expectation.verify(mockedSpec);
+        expectation.verify(responseSpec);
         assertThat(logExpectation(expectation).toString(), is(expected));
     }
 
@@ -163,7 +139,7 @@ public class LogWebTestClientExpectationTest {
                         "1", "2", "3", "4")
                 .assertions.getFirst();
 
-        expectation.verify(mockedSpec);
+        expectation.verify(responseSpec);
         assertThat(logExpectation(expectation).toString(), is(expected));
     }
 
@@ -180,7 +156,7 @@ public class LogWebTestClientExpectationTest {
                 .expectBodyJson("{}")
                 .assertions.getFirst();
 
-        expectation.verify(mockedSpec);
+        expectation.verify(responseSpec);
         assertThat(logExpectation(expectation).toString(), is(expected));
     }
 
