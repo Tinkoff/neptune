@@ -12,7 +12,6 @@ import ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
@@ -63,7 +62,7 @@ public class SuccessfulResponseTest extends BaseTest {
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
                 .thenGetBody());
 
-        assertThat(body, arrayWithSize(20));
+        assertThat(body.length, is(20));
     }
 
     @Test(description = "successful with empty body", dependsOnMethods = "successfulTestWithoutBodySpec")
@@ -74,10 +73,10 @@ public class SuccessfulResponseTest extends BaseTest {
                 .uri("https://google.com/api/request/1"))
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                .emptyBody()
+                .expectEmptyBody()
                 .thenGetBody());
 
-        assertThat(body, nullValue());
+        assertThat(body.length, is(0));
     }
 
     @Test(description = "successful with empty body", dependsOnMethods = "successfulTestWithoutBodySpec")
@@ -88,7 +87,7 @@ public class SuccessfulResponseTest extends BaseTest {
                 .uri("https://google.com/api/request/1"))
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                .emptyBody()
+                .expectEmptyBody()
                 .thenGetBody());
 
         assertThat(body, nullValue());
@@ -100,19 +99,19 @@ public class SuccessfulResponseTest extends BaseTest {
                 .uri("https://google.com/api/request/1"))
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                .hasBody()
                 .thenGetBody());
 
-        assertThat(body, arrayWithSize(20));
+        assertThat(body.length, is(20));
     }
 
     @Test(description = "successful with class body", dependsOnMethods = "successfulTestWithoutBodySpec")
     public void successfulBodyByClass() {
         var body = webTestClient(send(client, w -> w.get()
-                .uri("https://google.com/api/request/1"))
+                        .uri("https://google.com/api/request/1"),
+                Integer.class)
+                .expectBody(lessThan(2))
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                .bodyAs(Integer.class)
                 .thenGetBody());
 
         assertThat(body, is(1));
@@ -121,39 +120,15 @@ public class SuccessfulResponseTest extends BaseTest {
     @Test(description = "successful with type body", dependsOnMethods = "successfulTestWithoutBodySpec")
     public void successfulBodyByType() {
         var body = webTestClient(send(client, w -> w.get()
-                .uri("https://google.com/api/request/1"))
+                        .uri("https://google.com/api/request/1"),
+                new ParameterizedTypeReference<List<Integer>>() {
+                })
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                .bodyAs(new ParameterizedTypeReference<List<Integer>>() {
-                })
+                .expectBody(hasSize(greaterThan(2)))
                 .thenGetBody());
 
         assertThat(body, contains(1, 2, 3));
-    }
-
-    @Test(description = "successful with list body", dependsOnMethods = "successfulTestWithoutBodySpec")
-    public void successfulListBodyByClass() {
-        var body = webTestClient(send(client, w -> w.get()
-                .uri("https://google.com/api/request/1"))
-                .expectStatus(StatusAssertions::isOk)
-                .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                .bodyAsListOf(Integer.class)
-                .thenGetBody());
-
-        assertThat(body, contains(1, 2, 3));
-    }
-
-    @Test(description = "successful with list body by type", dependsOnMethods = "successfulTestWithoutBodySpec")
-    public void successfulListBodyByType() {
-        var body = webTestClient(send(client, w -> w.get()
-                .uri("https://google.com/api/request/1"))
-                .expectStatus(StatusAssertions::isOk)
-                .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                .bodyAsListOf(new ParameterizedTypeReference<List<Integer>>() {
-                })
-                .thenGetBody());
-
-        assertThat(body, contains(of(1, 2, 3), of(1, 2, 3), of(1, 2, 3)));
     }
 
     @Test(dependsOnMethods = "successfulTestWithoutBodySpec", dataProvider = "data")

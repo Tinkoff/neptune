@@ -31,7 +31,7 @@ public class WebTestClientContext extends Context<WebTestClientContext> {
      * @param sending is specification of request
      * @return self-reference
      */
-    public static WebTestClientContext webTestClient(SendRequestAction<?> sending) {
+    public static WebTestClientContext webTestClient(SendRequestAction<?, ?, ?> sending) {
         var context = getContext();
         return context.perform(sending);
     }

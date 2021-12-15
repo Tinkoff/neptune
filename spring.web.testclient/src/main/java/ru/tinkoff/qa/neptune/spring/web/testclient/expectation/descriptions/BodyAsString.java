@@ -4,8 +4,8 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
-@Description("Not null or empty body")
-public final class ExpectAnyBody {
+@Description("Response body as string")
+public final class BodyAsString {
 
     @Override
     public String toString() {

@@ -20,12 +20,11 @@ public class PseudoTest {
         return WebTestClientContext.getContext().getDefaultWebTestClient();
     }
 
-    public Byte[] test2() {
+    public byte[] test2() {
         return webTestClient(send(w -> w.get()
                 .uri("https://google.com/api/request/1"))
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                .hasBody()
                 .thenGetBody());
     }
 }
