@@ -22,6 +22,7 @@ import static ru.tinkoff.qa.neptune.hibernate.select.GetArrayFromEntity.getArray
 import static ru.tinkoff.qa.neptune.hibernate.select.GetItemOfArrayFromEntity.getArrayItemFromEntity;
 import static ru.tinkoff.qa.neptune.hibernate.select.GetItemOfIterableFromEntity.getIterableItemFromEntity;
 import static ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntity.getIterableFromEntity;
+import static ru.tinkoff.qa.neptune.hibernate.select.GetListFromEntity.getListFromEntity;
 import static ru.tinkoff.qa.neptune.hibernate.select.GetObjectFromEntity.getObjectFromEntity;
 
 @SuppressWarnings("unchecked")
@@ -102,5 +103,9 @@ public abstract class SelectOneStepSupplier<R>
 
     public <S> GetItemOfArrayFromEntity<S, R> thenGetArrayItem(Function<R, S[]> f) {
         return getArrayItemFromEntity(this, f);
+    }
+
+    public <ITEM, S extends Iterable<ITEM>> GetListFromEntity<ITEM, S, R> thenGetList(Function<R, S> f) {
+        return getListFromEntity(this, f);
     }
 }

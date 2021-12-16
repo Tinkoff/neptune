@@ -156,6 +156,14 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
         return impl.setDescription(translate(description));
     }
 
+    private static <ITEM, S extends Iterable<ITEM>, R> GetListFromEntity.GetListFromEntityImpl<ITEM, S, R>
+    setDescription(String description,
+                   GetListFromEntity<ITEM, S, R> toGet) {
+        checkArgument(isNotBlank(description), "Description should be defined");
+        var impl = (GetListFromEntity.GetListFromEntityImpl<ITEM, S, R>) toGet;
+        return impl.setDescription(translate(description));
+    }
+
     private static <ITEM, R> GetIterableFromEntities.GetIterableFromEntitiesImpl<ITEM, R>
     setDescription(String description,
                    GetIterableFromEntities<ITEM, R> toGet) {
@@ -169,6 +177,14 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
                    GetIterableItemFromEntities<ITEM, R> toGet) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var impl = (GetIterableItemFromEntities.GetIterableItemFromEntitiesImpl<ITEM, R>) toGet;
+        return impl.setDescription(translate(description));
+    }
+
+    private static <ITEM, R> GetListFromEntities.GetListFromEntitiesImpl<ITEM, R>
+    setDescription(String description,
+                   GetListFromEntities<ITEM, R> toGet) {
+        checkArgument(isNotBlank(description), "Description should be defined");
+        var impl = (GetListFromEntities.GetListFromEntitiesImpl<ITEM, R>) toGet;
         return impl.setDescription(translate(description));
     }
 
@@ -205,6 +221,11 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
         return select(setDescription(description, toGet));
     }
 
+    public <ITEM, S extends Iterable<ITEM>, R> List<ITEM> select(String description,
+                                                                 GetListFromEntity<ITEM, S, R> toGet) {
+        return select(setDescription(description, toGet));
+    }
+
     public <ITEM, R> List<ITEM> select(String description,
                                        GetIterableFromEntities<ITEM, R> toGet) {
         return select(setDescription(description, toGet));
@@ -212,6 +233,11 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
 
     public <ITEM, R> ITEM select(String description,
                                  GetIterableItemFromEntities<ITEM, R> toGet) {
+        return select(setDescription(description, toGet));
+    }
+
+    public <ITEM, R> List<ITEM> select(String description,
+                                       GetListFromEntities<ITEM, R> toGet) {
         return select(setDescription(description, toGet));
     }
 

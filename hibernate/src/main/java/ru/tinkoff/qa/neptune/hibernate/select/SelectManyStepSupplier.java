@@ -21,6 +21,7 @@ import static ru.tinkoff.qa.neptune.hibernate.properties.HibernateWaitingSelecte
 import static ru.tinkoff.qa.neptune.hibernate.properties.HibernateWaitingSelectedResultDuration.HIBERNATE_WAITING_FOR_SELECTION_RESULT_TIME;
 import static ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntities.getIterableFromEntities;
 import static ru.tinkoff.qa.neptune.hibernate.select.GetIterableItemFromEntities.getIterableItemFromEntities;
+import static ru.tinkoff.qa.neptune.hibernate.select.GetListFromEntities.getListFromEntities;
 
 @SuppressWarnings("unchecked")
 @MaxDepthOfReporting(0)
@@ -88,5 +89,9 @@ public abstract class SelectManyStepSupplier<R>
 
     public <ITEM> GetIterableItemFromEntities<ITEM, R> thenGetIterableItem(Function<R, ITEM> f) {
         return getIterableItemFromEntities(this, f);
+    }
+
+    public <ITEM> GetListFromEntities<ITEM, R> thenGetList(Function<R, ITEM> f) {
+        return getListFromEntities(this, f);
     }
 }
