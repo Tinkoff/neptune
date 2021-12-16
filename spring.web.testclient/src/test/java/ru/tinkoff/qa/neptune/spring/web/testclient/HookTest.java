@@ -4,7 +4,6 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.is;
 import static org.testng.Assert.fail;
 
@@ -40,6 +39,6 @@ public class HookTest extends BaseTest {
     public void test3(boolean isTest) throws Exception {
         PSEUDO_TEST.setWebTestClient(client);
         HOOK.executeMethodHook(PseudoTest.class.getDeclaredMethod("test1"), PSEUDO_TEST, isTest);
-        assertThat(PSEUDO_TEST.test2(), arrayWithSize(20));
+        assertThat(PSEUDO_TEST.test2().length, is(20));
     }
 }

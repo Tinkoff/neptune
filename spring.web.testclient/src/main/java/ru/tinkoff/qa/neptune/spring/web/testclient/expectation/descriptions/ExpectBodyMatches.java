@@ -1,18 +1,19 @@
 package ru.tinkoff.qa.neptune.spring.web.testclient.expectation.descriptions;
 
+import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
-@Description("Non null list body. Class of list item '{class}'")
-public final class ExpectedBodyListOfClass {
+@Description("Body matches: {matcher}")
+public final class ExpectBodyMatches {
 
-    @DescriptionFragment("class")
-    final Class<?> aClass;
+    @DescriptionFragment("matcher")
+    final Matcher<?> matcher;
 
-    public ExpectedBodyListOfClass(Class<?> aClass) {
-        this.aClass = aClass;
+    public ExpectBodyMatches(Matcher<?> matcher) {
+        this.matcher = matcher;
     }
 
     @Override

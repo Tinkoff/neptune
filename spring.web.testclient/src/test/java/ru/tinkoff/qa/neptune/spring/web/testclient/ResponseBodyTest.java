@@ -69,10 +69,9 @@ public class ResponseBodyTest extends BaseTest {
     @Test
     public void bodyTest() {
         var body = webTestClient(send(client, w -> w.get()
-                .uri("https://google.com/api/request/1"))
+                .uri("https://google.com/api/request/1"), Dto.class)
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                .bodyAs(Dto.class)
                 .thenGetBody()
                 .criteria("stringValue = 'ABCD'", dto -> dto.getStringValue().equals("ABCD"))
                 .criteria("arrayValue1 size greater then 1", dto -> dto.getArrayValue1().size() > 1)
@@ -84,10 +83,9 @@ public class ResponseBodyTest extends BaseTest {
     @Test
     public void bodyTest2() {
         var body = webTestClient(send(client, w -> w.get()
-                .uri("https://google.com/api/request/1"))
+                .uri("https://google.com/api/request/1"), Dto.class)
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                .bodyAs(Dto.class)
                 .thenGetBody()
                 .criteria("stringValue = 'ABCD'", dto -> dto.getStringValue().equals("ABCD"))
                 .criteria("arrayValue1 size greater then 5", dto -> dto.getArrayValue1().size() > 5)
@@ -99,10 +97,9 @@ public class ResponseBodyTest extends BaseTest {
     @Test
     public void valueTest() {
         var value = webTestClient(send(client, w -> w.get()
-                .uri("https://google.com/api/request/1"))
+                .uri("https://google.com/api/request/1"), Dto.class)
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                .bodyAs(Dto.class)
                 .thenGetValue("Value of the field 'stringValue'", Dto::getStringValue)
                 .criteria("contains 'A'", s -> s.contains("A")));
 
@@ -112,10 +109,9 @@ public class ResponseBodyTest extends BaseTest {
     @Test
     public void valueTest2() {
         var value = webTestClient(send(client, w -> w.get()
-                .uri("https://google.com/api/request/1"))
+                .uri("https://google.com/api/request/1"), Dto.class)
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                .bodyAs(Dto.class)
                 .thenGetValue("Value of the field 'stringValue'", Dto::getStringValue)
                 .criteria("contains 'E'", s -> s.contains("E")));
 
@@ -125,10 +121,9 @@ public class ResponseBodyTest extends BaseTest {
     @Test
     public void iterableTest() {
         var value = webTestClient(send(client, w -> w.get()
-                .uri("https://google.com/api/request/1"))
+                .uri("https://google.com/api/request/1"), Dto.class)
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                .bodyAs(Dto.class)
                 .thenGetList("List from 'getArrayValue1'", Dto::getArrayValue1)
                 .criteria("not contains 'E'", s -> !s.contains("E")));
 
@@ -138,10 +133,9 @@ public class ResponseBodyTest extends BaseTest {
     @Test
     public void iterableTest2() {
         var value = webTestClient(send(client, w -> w.get()
-                .uri("https://google.com/api/request/1"))
+                .uri("https://google.com/api/request/1"), Dto.class)
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                .bodyAs(Dto.class)
                 .thenGetList("List from 'getArrayValue1'", Dto::getArrayValue1)
                 .criteria("contains 'E'", s -> s.contains("E")));
 
@@ -151,10 +145,9 @@ public class ResponseBodyTest extends BaseTest {
     @Test
     public void iterableItemTest() {
         var value = webTestClient(send(client, w -> w.get()
-                .uri("https://google.com/api/request/1"))
+                .uri("https://google.com/api/request/1"), Dto.class)
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                .bodyAs(Dto.class)
                 .thenGetValueFromIterable("Value from List from 'getArrayValue1'", Dto::getArrayValue1)
                 .criteria("not contains 'E'", s -> !s.contains("E")));
 
@@ -164,10 +157,9 @@ public class ResponseBodyTest extends BaseTest {
     @Test
     public void iterableItemTest2() {
         var value = webTestClient(send(client, w -> w.get()
-                .uri("https://google.com/api/request/1"))
+                .uri("https://google.com/api/request/1"), Dto.class)
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                .bodyAs(Dto.class)
                 .thenGetValueFromIterable("Value from List from 'getArrayValue1'", Dto::getArrayValue1)
                 .criteria("contains 'E'", s -> s.contains("E")));
 
@@ -177,10 +169,9 @@ public class ResponseBodyTest extends BaseTest {
     @Test
     public void arrayTest() {
         var value = webTestClient(send(client, w -> w.get()
-                .uri("https://google.com/api/request/1"))
+                .uri("https://google.com/api/request/1"), Dto.class)
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                .bodyAs(Dto.class)
                 .thenGetArray("Array of int", Dto::getArrayValue2)
                 .criteria("lesser than 5", i -> i < 5));
 
@@ -190,10 +181,9 @@ public class ResponseBodyTest extends BaseTest {
     @Test
     public void arrayTest2() {
         var value = webTestClient(send(client, w -> w.get()
-                .uri("https://google.com/api/request/1"))
+                .uri("https://google.com/api/request/1"), Dto.class)
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                .bodyAs(Dto.class)
                 .thenGetArray("Array of int", Dto::getArrayValue2)
                 .criteria("greater than 5", i -> i > 5));
 
@@ -203,10 +193,9 @@ public class ResponseBodyTest extends BaseTest {
     @Test
     public void arrayItemTest() {
         var value = webTestClient(send(client, w -> w.get()
-                .uri("https://google.com/api/request/1"))
+                .uri("https://google.com/api/request/1"), Dto.class)
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                .bodyAs(Dto.class)
                 .thenGetValueFromArray("Array of int", Dto::getArrayValue2)
                 .criteria("lesser than 5", i -> i < 5));
 
@@ -216,13 +205,23 @@ public class ResponseBodyTest extends BaseTest {
     @Test
     public void arrayItemTest2() {
         var value = webTestClient(send(client, w -> w.get()
-                .uri("https://google.com/api/request/1"))
+                .uri("https://google.com/api/request/1"), Dto.class)
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                .bodyAs(Dto.class)
                 .thenGetValueFromArray("Array of int", Dto::getArrayValue2)
                 .criteria("greater than 5", i -> i > 5));
 
         assertThat(value, nullValue());
+    }
+
+    @Test
+    public void stringBodyTest() {
+        var value = webTestClient(send(client, w -> w.get()
+                .uri("https://google.com/api/request/1"))
+                .expectStatus(StatusAssertions::isOk)
+                .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
+                .thenGetBodyAsString());
+
+        assertThat(value, not(emptyOrNullString()));
     }
 }

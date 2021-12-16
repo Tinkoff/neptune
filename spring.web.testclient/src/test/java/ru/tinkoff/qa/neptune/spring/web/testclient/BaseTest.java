@@ -23,8 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
-import static org.springframework.test.web.reactive.server.MockAssertionsCreator.createHeaderAssertion;
-import static org.springframework.test.web.reactive.server.MockAssertionsCreator.createStatusAssertion;
+import static org.springframework.test.web.reactive.server.MockAssertionsCreator.*;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class BaseTest {
@@ -196,6 +195,9 @@ public class BaseTest {
             return listOfListBodySpec;
         }).when(listOfListBodySpec).consumeWith(any(Consumer.class));
         when(listListResult.getResponseBody()).thenReturn(of(of(1, 2, 3), of(1, 2, 3), of(1, 2, 3)));
+
+        when(bodyContentSpec.jsonPath("some.path", "1", "2", "3", "4"))
+                .thenReturn(createJsonPathAssertions(bodyContentSpec, "", "some.path", "1", "2", "3", "4"));
     }
 
     void setByteSupplier(Supplier<byte[]> supplier) {

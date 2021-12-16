@@ -94,6 +94,7 @@ dependencies {
     testImplementation('io.projectreactor:reactor-test:3.4.12')
     testImplementation('org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.5.2-native-mt')
     testImplementation(group: 'org.springframework', name: 'spring-webflux', version: springVersion)
+    testCompileClasspath(group: 'org.springframework', name: 'spring-test', version: springVersion)
 }
 
 publishing {

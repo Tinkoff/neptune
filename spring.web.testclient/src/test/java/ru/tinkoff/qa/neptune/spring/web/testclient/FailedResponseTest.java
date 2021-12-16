@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.spring.web.testclient;
 
 import org.hamcrest.Matcher;
 import org.mockito.Mockito;
+import org.springframework.test.web.reactive.server.JsonPathAssertions;
 import org.springframework.test.web.reactive.server.StatusAssertions;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testng.annotations.*;
@@ -54,6 +55,8 @@ public class FailedResponseTest extends BaseTest {
         }).when(integerBodySpec).consumeWith(any(Consumer.class));
         when(intResult.getResponseBody()).thenThrow(new RuntimeException("Test parse exception") {
         });
+
+        when(bodyContentSpec.isEmpty()).thenThrow(new AssertionError("Body is not empty"));
     }
 
     @Test
@@ -63,7 +66,7 @@ public class FailedResponseTest extends BaseTest {
                     .uri("https://google.com/api/request/1"))
                     .expectStatus(StatusAssertions::isOk)
                     .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                    .emptyBody());
+                    .expectEmptyBody());
         } catch (AssertionError e) {
             assertThat(e.getCause(), nullValue());
             mapEntry("Request and response", notOf(emptyOrNullString()));
@@ -81,7 +84,7 @@ public class FailedResponseTest extends BaseTest {
                     .uri("https://google.com/api/request/1"))
                     .expectStatus(StatusAssertions::isOk)
                     .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                    .hasBody());
+                    .expectBodyJsonPath("some.path", JsonPathAssertions::exists, "1", "2", "3", "4"));
         } catch (AssertionError e) {
             assertThat(e.getCause(), nullValue());
             mapEntry("Request and response", notOf(emptyOrNullString()));
@@ -99,7 +102,7 @@ public class FailedResponseTest extends BaseTest {
                     .uri("https://google.com/api/request/1"))
                     .expectStatus(StatusAssertions::isOk)
                     .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                    .hasBody());
+                    .expectBodyJsonPath("some.path", JsonPathAssertions::exists, "1", "2", "3", "4"));
         } catch (AssertionError e) {
             assertThat(e.getCause(), nullValue());
             mapEntry("Request and response", notOf(emptyOrNullString()));
@@ -119,7 +122,7 @@ public class FailedResponseTest extends BaseTest {
                     .uri("https://google.com/api/request/1"))
                     .expectStatus(StatusAssertions::isOk)
                     .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                    .hasBody());
+                    .expectBodyJsonPath("some.path", JsonPathAssertions::exists, "1", "2", "3", "4"));
         } catch (AssertionError e) {
             assertThat(e.getCause(), nullValue());
             mapEntry("Request and response", notOf(emptyOrNullString()));
@@ -133,10 +136,10 @@ public class FailedResponseTest extends BaseTest {
     public void failedTest5() {
         try {
             webTestClient(send(client, w -> w.get()
-                    .uri("https://google.com/api/request/1"))
+                            .uri("https://google.com/api/request/1"),
+                    Integer.class)
                     .expectStatus(StatusAssertions::isOk)
                     .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                    .bodyAs(Integer.class)
                     .thenGetBody());
         } catch (AssertionError e) {
             mapEntry("Request and response", notOf(emptyOrNullString()));
@@ -162,7 +165,7 @@ public class FailedResponseTest extends BaseTest {
                     .uri("https://google.com/api/request/1"))
                     .expectStatus(StatusAssertions::isOk)
                     .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                    .emptyBody()
+                    .expectEmptyBody()
                     .thenGetBody());
         } catch (Throwable ignored) {
         }
