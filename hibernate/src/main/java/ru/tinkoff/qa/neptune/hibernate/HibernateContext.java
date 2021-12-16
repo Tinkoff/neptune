@@ -37,7 +37,7 @@ import static ru.tinkoff.qa.neptune.hibernate.properties.UseJpaConfig.USE_JPA_CO
 public class HibernateContext extends AbstractDatabaseStepContext<HibernateContext> {
 
     private static final HibernateContext context = getInstance(HibernateContext.class);
-    private Set<SessionFactory> sessionFactorySet = getSessionFactories();
+    private Set<SessionFactory> sessionFactorySet;
 
     public static HibernateContext hibernate() {
         return context;
