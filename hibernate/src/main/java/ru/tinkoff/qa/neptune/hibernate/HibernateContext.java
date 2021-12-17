@@ -256,7 +256,7 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
         return this;
     }
 
-    private <R> HibernateContext delete(String description, R... toDelete) {
+    public <R> HibernateContext delete(String description, R... toDelete) {
         checkNotNull(toDelete);
         if (toDelete.length == 1) {
             delete(DeleteByQueryStepSupplier.delete(description, toDelete[0]));
@@ -266,12 +266,12 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
         return this;
     }
 
-    private <R> HibernateContext delete(String description, Iterable<R> toDelete) {
+    public <R> HibernateContext delete(String description, Iterable<R> toDelete) {
         delete(DeleteByQueryStepSupplier.delete(description, toDelete));
         return this;
     }
 
-    private HibernateContext deleteAllFrom(Class<?> entityCls) {
+    public HibernateContext deleteAllFrom(Class<?> entityCls) {
         delete(DeleteAllFromStepSupplier.deleteAllRecords(entityCls));
         return this;
     }

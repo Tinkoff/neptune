@@ -6,12 +6,12 @@ import java.util.function.Function;
 import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.getSessionFactoryByEntity;
 
 @SuppressWarnings("unchecked")
-abstract class SaveFunction<INPUT, RESULT> implements Function<INPUT, RESULT> {
+public abstract class SaveFunction<INPUT, RESULT> implements Function<INPUT, RESULT> {
 
     private SaveFunction() {
     }
 
-    protected <R> R saveObject(R toSave) {
+    public static <R> R saveObject(R toSave) {
         var sessionFactory = getSessionFactoryByEntity(toSave.getClass());
 
         var session = sessionFactory.getCurrentSession();
