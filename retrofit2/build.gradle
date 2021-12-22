@@ -2,10 +2,6 @@ plugins {
     id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     api project(':core.api')
     inpath(project(":core.api")) {

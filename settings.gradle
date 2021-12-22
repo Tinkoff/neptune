@@ -17,4 +17,7 @@ include 'database.abstractions'
 include 'spring.mock.mvc'
 include 'spring.data'
 include 'spring.web.testclient'
+include 'neptune-spring-boot-starter'
+include 'neptune-spring-boot-starter-mockmvc'
+include 'neptune-spring-boot-starter-webtest-client'
 

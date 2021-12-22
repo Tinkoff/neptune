@@ -1,20 +1,7 @@
-plugins {
-    id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
-}
-
-configurations {
-    agent
-}
-
 dependencies {
-    implementation group: 'org.objenesis', name: 'objenesis', version: '3.2'
-    implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.12.6'
-    inpath(group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion)  {
-        transitive = false
-    }
-    api group: 'org.aspectj', name: 'aspectjrt', version: '1.9.6'
-    api group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.6'
-    agent group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.6'
+    api project(':neptune-spring-boot-starter')
+    compileClasspath group: 'org.springframework.boot', name: 'spring-boot', version: springBootVersion
+    compileClasspath group: 'org.springframework', name: 'spring-test', version: springVersion
 }
 
 java {
@@ -22,30 +9,10 @@ java {
     withSourcesJar()
 }
 
-task generateBundle(type: JavaExec)  {
-    classpath sourceSets.main.runtimeClasspath
-    main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
-    args "ru_RU",
-            "$projectDir/src/main/resources"
-}
-
-processResources {
-    doLast {
-        generateBundle.exec()
-    }
-}
-
-test {
-    useTestNG() {
-        // runlist to executed. path is relative to current folder
-        suites 'src/test/resources/suite.xml'
-    }
-}
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = 'core.api'
+            artifactId = 'neptune-spring-boot-starter-webtest-client'
             from components.java
             repositories {
                 maven {
@@ -55,7 +22,7 @@ publishing {
             }
             pom {
                 packaging = 'jar'
-                name = 'core.api'
+                name = 'neptune-spring-boot-starter-webtest-client'
                 version = version
                 url = 'https://github.com/TinkoffCreditSystems/neptune'
                 licenses {
@@ -85,7 +52,7 @@ publishing {
 javadoc {
     destinationDir = file("${buildDir}/../../../neptune.documentation/javadocs/$project.name")
 
-    title = "Neptune Core API. v$globalVersion"
+    title = "Utils for Spring WebTestClient v$globalVersion"
     options.author true
     options.links 'http://download.oracle.com/javase/9/docs/api/'
     options.addStringOption 'Xdoclint:none', '-quiet'

@@ -38,6 +38,7 @@ processResources {
 
 dependencies {
     api project(':core.api')
+    api project(':neptune-spring-boot-starter')
     inpath(project(":core.api")) {
         transitive = false
     }

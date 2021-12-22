@@ -3,25 +3,38 @@ package ru.tinkoff.qa.neptune.spring.web.testclient;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
+import ru.tinkoff.qa.neptune.spring.boot.starter.web.testclient.WebTestClientProvider;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.nonNull;
+import static java.util.ServiceLoader.load;
+import static java.util.stream.StreamSupport.stream;
 
 public class WebTestClientContext extends Context<WebTestClientContext> {
 
     private static final WebTestClientContext context = getInstance(WebTestClientContext.class);
-    private WebTestClient defaultWebTestClient;
+    private final WebTestClientProvider defaultWebTestClientProvider;
+
+    public WebTestClientContext() {
+        var iterator = load(WebTestClientProvider.class).iterator();
+        Iterable<WebTestClientProvider> iterable = () -> iterator;
+        this.defaultWebTestClientProvider = stream(iterable.spliterator(), false)
+                .findFirst()
+                .orElse(null);
+    }
 
     static WebTestClientContext getContext() {
         return context;
     }
 
-    void setDefault(WebTestClient defaultWebTestClient) {
-        this.defaultWebTestClient = defaultWebTestClient;
-    }
-
     WebTestClient getDefaultWebTestClient() {
-        checkState(nonNull(defaultWebTestClient), "There is no field of type WebTestClient that has a non-null value");
+        checkState(nonNull(defaultWebTestClientProvider), "There is no provider of service " + WebTestClientProvider.class);
+        var defaultWebTestClient = defaultWebTestClientProvider.provide();
+        checkState(nonNull(defaultWebTestClient), "The instance of provider "
+                + defaultWebTestClientProvider.getClass()
+                + " of service "
+                + WebTestClientProvider.class
+                + " returned null");
         return defaultWebTestClient;
     }
 
