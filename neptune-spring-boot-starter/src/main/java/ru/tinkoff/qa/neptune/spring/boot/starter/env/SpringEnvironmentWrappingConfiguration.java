@@ -5,8 +5,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import static ru.tinkoff.qa.neptune.spring.boot.starter.application.contexts.CurrentApplicationContextTestExecutionListener.getCurrentApplicationContext;
 
@@ -16,7 +16,7 @@ import static ru.tinkoff.qa.neptune.spring.boot.starter.application.contexts.Cur
 @Configuration
 public class SpringEnvironmentWrappingConfiguration {
 
-    private final static List<SpringEnvironmentWrappingConfiguration> ENVIRONMENT_WRAPPERS = new CopyOnWriteArrayList<>();
+    private final static Set<SpringEnvironmentWrappingConfiguration> ENVIRONMENT_WRAPPERS = new CopyOnWriteArraySet<>();
 
     @Autowired
     Environment environment;

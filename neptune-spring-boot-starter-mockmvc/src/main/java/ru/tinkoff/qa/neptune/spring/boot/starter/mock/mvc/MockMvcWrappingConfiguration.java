@@ -5,15 +5,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import static ru.tinkoff.qa.neptune.spring.boot.starter.application.contexts.CurrentApplicationContextTestExecutionListener.getCurrentApplicationContext;
 
 @Configuration
 public class MockMvcWrappingConfiguration {
 
-    private final static List<MockMvcWrappingConfiguration> MOCKMVC_WRAPPERS = new CopyOnWriteArrayList<>();
+    private final static Set<MockMvcWrappingConfiguration> MOCKMVC_WRAPPERS = new CopyOnWriteArraySet<>();
 
     @Autowired
     MockMvc mockMvc;

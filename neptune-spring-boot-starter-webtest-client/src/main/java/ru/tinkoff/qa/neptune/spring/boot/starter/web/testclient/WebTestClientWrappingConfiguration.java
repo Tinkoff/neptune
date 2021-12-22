@@ -5,15 +5,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import static ru.tinkoff.qa.neptune.spring.boot.starter.application.contexts.CurrentApplicationContextTestExecutionListener.getCurrentApplicationContext;
 
 @Configuration
 public class WebTestClientWrappingConfiguration {
 
-    private final static List<WebTestClientWrappingConfiguration> WEB_TEST_CLIENT_WRAPPERS = new CopyOnWriteArrayList<>();
+    private final static Set<WebTestClientWrappingConfiguration> WEB_TEST_CLIENT_WRAPPERS = new CopyOnWriteArraySet<>();
 
     @Autowired
     WebTestClient webTestClient;
