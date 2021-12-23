@@ -58,7 +58,7 @@ dependencies {
     compileClasspath('javax.websocket:javax.websocket-client-api:1.1')
     compileClasspath('org.mortbay.jetty:jsp-api-2.0:6.1.26')
     compileClasspath('org.apache.ant:ant:1.10.11')
-    compileClasspath('io.netty:netty-buffer:4.1.70.Final')
+    compileClasspath('io.netty:netty-buffer:4.1.72.Final')
     compileClasspath('io.projectreactor.tools:blockhound:1.0.6.RELEASE')
     compileClasspath(group: 'org.springframework', name: 'spring-orm', version: springVersion)
     compileClasspath(group: 'org.springframework', name: 'spring-tx', version: springVersion)
@@ -73,12 +73,12 @@ dependencies {
     compileClasspath('jakarta.xml.bind:jakarta.xml.bind-api:3.0.1')
     compileClasspath('jakarta.websocket:jakarta.websocket-api:2.0.0')
     compileClasspath('junit:junit:4.13.2')
-    compileClasspath('org.apache.tomcat.embed:tomcat-embed-core:10.0.12')
+    compileClasspath('org.apache.tomcat.embed:tomcat-embed-core:10.0.14')
     compileClasspath(group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version)
     compileClasspath('org.testng:testng:7.4.0')
     compileClasspath('org.codehaus.groovy:groovy:3.0.8')
     compileClasspath('org.hamcrest:hamcrest:2.2')
-    compileClasspath('net.sourceforge.htmlunit:htmlunit:2.55.0')
+    compileClasspath('net.sourceforge.htmlunit:htmlunit:2.56.0')
     compileClasspath('org.seleniumhq.selenium:htmlunit-driver:2.55.0') {
         exclude group: "net.bytebuddy", module: "byte-buddy"
     }
