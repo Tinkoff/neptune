@@ -53,7 +53,7 @@ dependencies {
     compileClasspath('com.jayway.jsonpath:json-path:2.6.0')
     compileClasspath('org.jetbrains.kotlin:kotlin-reflect:1.6.0')
     compileClasspath('org.jetbrains.kotlin:kotlin-stdlib:1.6.0')
-    compileClasspath('io.projectreactor:reactor-test:3.4.12')
+    compileClasspath('io.projectreactor:reactor-test:3.4.13')
     compileClasspath('org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt')
     compileClasspath('org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.5.2-native-mt')
     testCompileClasspath(group: 'org.springframework', name: 'spring-test', version: springVersion)
