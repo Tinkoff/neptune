@@ -37,6 +37,9 @@
     - [Логирование шагов](#Логирование-шагов)
       - [DO_CAPTURES_OF](#do_captures_of)
       - [TO_LIMIT_REPORT_DEPTH](#to_limit_report_depth)
+  - [Повторное использование настроек](#Повторное-использование-настроек)
+    - [Повторное использование настроек, указанных в `neptune.global.properties` и `neptune.properties`](#Повторное-использование-настроек-указанных-в-neptuneglobalproperties-и-neptuneproperties)
+    - [Повторное использование настроек сторонних инструментов](#Повторное-использование-настроек-сторонних-инструментов)
 
 ## `neptune.global.properties` и `neptune.properties`
 
@@ -232,9 +235,6 @@ public enum MyPropertyEnum implements PropertySupplier<T, R> {
 
 ### Свойства для возврата строки
 
-
-  
-
 ```java
 package org.my.pack;
 
@@ -276,14 +276,9 @@ public class MyUseCase {
 
 ```
 
-
-
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ### Свойства для возврата Boolean
-
-
-  
 
 ```java
 package org.my.pack;
@@ -324,15 +319,11 @@ public class MyUseCase {
 }
 ```
 
-
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ### Свойства для возврата чисел
 
 #### Byte
-
-
-  
 
 ```java
 package org.my.pack;
@@ -378,9 +369,6 @@ public class MyUseCase {
 
 #### Double
 
-
-  
-
 ```java
 package org.my.pack;
 
@@ -424,9 +412,6 @@ public class MyUseCase {
 
 
 #### Float
-
-
-  
 
 ```java
 package org.my.pack;
@@ -472,9 +457,6 @@ public class MyUseCase {
 
 
 #### Integer
-
-
-  
 
 ```java
 package org.my.pack;
@@ -522,9 +504,6 @@ public class MyUseCase {
 
 #### Long
 
-
-  
-
 ```java
 package org.my.pack;
 
@@ -570,9 +549,6 @@ public class MyUseCase {
 
 #### Short
 
-
-  
-
 ```java
 package org.my.pack;
 
@@ -614,13 +590,7 @@ public class MyUseCase {
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
 ### Свойства для создания и возврата объектов URL
-
-
-  
 
 ```java
 package org.my.pack;
@@ -661,7 +631,6 @@ public class MyUseCase {
 }
 ```
 
-
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ### Свойства для возврата объектов перечислений
@@ -681,9 +650,6 @@ public enum MyEnum {
 ```
 
 #### Возврат одиночного объекта перечисления
-
-
-  
 
 ```java
 package org.my.pack;
@@ -730,9 +696,6 @@ public class MyUseCase {
 
 #### Возврат множества объектов перечисления
 
-
-  
-
 ```java
 package org.my.pack;
 
@@ -775,13 +738,7 @@ public class MyUseCase {
 ```
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
 ### Свойства для возврата величины продолжительности
-
-
-  
 
 - Нужно создать описание свойства / переменной окружения, которое конвертирует значение в элемент перечисления в
   элемент `java.time.temporal.ChronoUnit`. См [Возврат одиночного объекта перечисления](#Возврат-одиночного-объекта-перечисления).
@@ -866,8 +823,6 @@ public class MyUseCase {
 }
 ```
 
-
-
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ### Свойства для создания и возврата объектов
@@ -937,9 +892,6 @@ public class MyExtendedObject extends MyObject{
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 #### Создание и возврат одного объекта
-
-
-  
 
 Описание свойства / переменной окружения должно возвращать созданный объект заданного класса или наследников этого 
 класса.
@@ -1079,9 +1031,6 @@ public class MyUseCase {
 
 #### Создание и возврат коллекции объектов
 
-
-  
-
 Можно воспользоваться способом, описанным в [Создание и возврат одного объекта](#Создание-и-возврат-одного-объекта), если
 рассматривать результирующую коллекцию как объект.
 
@@ -1175,9 +1124,6 @@ public class MyUseCase {
   }
 }
 ```
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -1305,15 +1251,14 @@ DEFAULT_LOCALIZATION_ENGINE=
 - [Neptune. Retrofit 2.0](./../../../retrofit2/doc/rus/SETTINGS.MD)
 - [Neptune. TestNG](./../../../testng.integration/doc/rus/README.MD#Настройки)
 - [JUnit5](./../../../jupiter.integration/doc/rus/README.MD#Настройки)
+- [Spring Mock MVC](./../../../spring.mock.mvc/doc/rus/SETTINGS.MD)
+- [Spring Data](./../../../spring.data/doc/rus/README.MD#Настройки)
 
 ### Освобождение ресурсов
 
 См. [Сброс/Остановка](./REFRESHING_STOPPING.MD#сброс--остановка)
 
 ##### TO_FREE_RESOURCES_ON_INACTIVITY
-
-
-    
 
 Настройка указывает на необходимость освобождать ресурсы (подключения к базам данных, открытые браузеры и т.д) при простое. 
 Доступные значения - `true` (рекомендуемое для прогона тестов в несколько потоков) или `false`.
@@ -1341,10 +1286,7 @@ public class SomeClass {
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 
-##### Время 
-
-
-    
+##### Время
 
 Свойства `TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT` и `TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE` определяют 
 допустимое время простоя ресурсов (подключения к базам данных, открытые браузеры и т.д). Для свойства 
@@ -1377,17 +1319,11 @@ public class SomeClass {
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
 ### Локализация
 
 [Основная статья](./LOCALIZATION.MD)
 
 ##### DEFAULT_LOCALE
-
-
-    
 
 Определяет языковой стандарт по умолчанию
 
@@ -1416,9 +1352,6 @@ public class SomeClass {
 
 ##### DEFAULT_LOCALIZATION_ENGINE
 
-
-    
-
 Определяет какой механизм перевода будет использоваться
 
 ```properties
@@ -1444,17 +1377,11 @@ public class SomeClass {
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
 ### Логирование шагов
 
 ##### DO_CAPTURES_OF
 
 [Основная статья](EVENTS.MD#Когда-следует-создавать-аттачи-в-отчете-о-прохождении)
-
-
-    
 
 Настройка указывает, в каких случаях следует делать аттачи к отчету о тестах. Объекты перечисления 
 `ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents`. Доступные значения:
@@ -1492,9 +1419,6 @@ public class SomeClass {
 
 [Основная статья](STEPS.MD#Вложенность--глубина-шагов)
 
-
-    
-
 Определяет, нужно ли ограничить логирование/вывод в отчет о тестировании шагов в зависимости от их глубины. Значение по
 умолчанию (рекомендуемое) `true`.
 
@@ -1518,5 +1442,72 @@ public class SomeClass {
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
+## Повторное использование настроек
+
+### Повторное использование настроек, указанных в `neptune.global.properties` и `neptune.properties`
+
+```properties
+# Пример настройки, значение которой повторно используется
+DEFAULT_APPLICATION_HOST_PROPERTY=my.app.host
+
+## Пример повторного использования настройки
+SOME_PATH_URL_PROPERTY = http://${DEFAULT_APPLICATION_HOST_PROPERTY}/path/to/something
+```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+### Повторное использование настроек сторонних инструментов
+
+Многие сторонние инструменты для разработки приложений и их тестирования имеют свои наборы настроек, которые Neptune может
+повторно использовать. Для этого нужно:
+
+- создать класс
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.properties.PropertySource;
+
+public class MyPropertySource implements PropertySource {
+
+    @Override
+    public String getProperty(String property) {
+        // Описываем то, как мы извлекаем значение сторонней настройки / свойства / переменной окружения
+    }
+
+    @Override
+    public boolean isPropertyDefined(String property) {
+        //Описываем то, то как мы определяем, задана ли сторонняя настройка / свойство / переменная окружения
+    }
+}
+```
+
+- Настроить [SPI](https://docs.oracle.com/javase/tutorial/ext/basics/spi.html). В `resources` директорий `main` или `test`
+  создать следующие директории и файлы
+
+```
+    META-INF
+    |
+    +---- services
+             |
+             +----ru.tinkoff.qa.neptune.core.api.properties.PropertySource
+```
+
+- В файл `ru.tinkoff.qa.neptune.core.api.properties.PropertySource` внести запись
+  `org.my.pack.MyPropertySource`
+
+После этого у Neptune появляется доступ до сторонних настроек.
+
+Для понимания примера ниже см. [предыдущий пункт](#Повторное_использование_настроек_указанных_в_neptuneglobalproperties_neptuneproperties`)
+
+```properties
+## Пример повторного использования значения сторонней настройки в 
+# файлах neptune.global.properties или neptune.properties, или в переменных окружения
+SOME_PATH_URL_PROPERTY = http://${third.party.host.property}/path/to/something
+```
+
+Так же после описанных выше действий [стандартные свойства Neptune](#Основной-набор-настроексвойств) можно будет определять
+во внешних настройках. Указанные там значения будут использованы вместо тех, что перечислены в `neptune.global.properties` 
+или `neptune.properties`.
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)

@@ -78,7 +78,7 @@ dependencies {
     compileClasspath('org.testng:testng:7.4.0')
     compileClasspath('org.codehaus.groovy:groovy:3.0.8')
     compileClasspath('org.hamcrest:hamcrest:2.2')
-    compileClasspath('net.sourceforge.htmlunit:htmlunit:2.56.0')
+    compileClasspath('net.sourceforge.htmlunit:htmlunit:2.56].0')
     compileClasspath('org.seleniumhq.selenium:htmlunit-driver:2.55.0') {
         exclude group: "net.bytebuddy", module: "byte-buddy"
     }
