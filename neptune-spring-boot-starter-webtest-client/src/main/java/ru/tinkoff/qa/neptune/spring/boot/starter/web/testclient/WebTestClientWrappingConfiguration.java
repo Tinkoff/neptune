@@ -15,7 +15,7 @@ public class WebTestClientWrappingConfiguration {
 
     private final static Set<WebTestClientWrappingConfiguration> WEB_TEST_CLIENT_WRAPPERS = new CopyOnWriteArraySet<>();
 
-    @Autowired
+    @Autowired(required = false)
     WebTestClient webTestClient;
 
     @Autowired

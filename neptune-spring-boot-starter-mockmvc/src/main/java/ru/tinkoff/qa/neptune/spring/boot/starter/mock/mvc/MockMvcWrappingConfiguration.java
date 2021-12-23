@@ -15,7 +15,7 @@ public class MockMvcWrappingConfiguration {
 
     private final static Set<MockMvcWrappingConfiguration> MOCKMVC_WRAPPERS = new CopyOnWriteArraySet<>();
 
-    @Autowired
+    @Autowired(required = false)
     MockMvc mockMvc;
 
     @Autowired
