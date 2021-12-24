@@ -10,7 +10,7 @@
 
 ## Пишем первый тест
 
-Класс, описывающий тест, должен наследоваться от `BaseTestNgTest`
+Класс, описывающий тест, может быть унаследован от `BaseTestNgTest`
 
 ```java
 import org.testng.annotations.Test;
@@ -24,6 +24,41 @@ public class MyTest extends BaseTestNgTest {
     }
 }
 ```
+
+Если наследование не подходит, то можно:
+
+- подключить лисенер к тесту в коде
+
+```java
+import org.testng.annotations.Test;
+import org.testng.annotations.Listeners;
+
+import ru.tinkoff.qa.neptune.testng.integration.DefaultTestRunningListener;
+
+@Listeners(DefaultTestRunningListener.class)
+public class MyTest {
+    
+    @Test
+    public test() {
+      //some checks
+    }
+}
+```
+
+- включить лисенер для всех тестов используя [SPI](https://docs.oracle.com/javase/tutorial/ext/basics/spi.html).
+
+  - В `resources` директорий `main` или `test` создать следующие директории и файлы
+
+    ```
+        META-INF
+        |
+        +---- services
+                 |
+                 +----org.testng.ITestNGListener
+    ```
+
+  - В файл `org.testng.ITestNGListener` внести запись
+    `ru.tinkoff.qa.neptune.testng.integration.DefaultTestRunningListener`
 
 [к оглавлению документа](#Оглавление)
 
