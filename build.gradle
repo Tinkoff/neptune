@@ -1,5 +1,5 @@
 ext {
-    globalVersion = '0.20.17-ALPHA'
+    globalVersion = '0.20.18-ALPHA'
 }
 
 subprojects {
@@ -32,10 +32,10 @@ subprojects {
         hamcrestVersion = '2.2'
         seleniumVersion = '4.1.0'
         allureVersion = '2.17.2'
-        jacksonVersion = '2.13.0'
-        mockitoVersion = '4.1.0'
-        springVersion = '5.3.13'
-        springBootVersion = '2.6.1'
+        jacksonVersion = '2.13.1'
+        mockitoVersion = '4.2.0'
+        springVersion = '5.3.14'
+        springBootVersion = '2.6.2'
         globalVersion = version
     }
 
@@ -51,7 +51,7 @@ subprojects {
         api group: 'commons-validator', name: 'commons-validator', version: '1.7'
         api group: 'commons-io', name: 'commons-io', version: '2.11.0'
         api group: 'com.google.code.gson', name: 'gson', version: '2.8.9'
-        api group: 'io.github.classgraph', name: 'classgraph', version: '4.8.137'
+        api group: 'io.github.classgraph', name: 'classgraph', version: '4.8.138'
         testImplementation group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion
     }
 

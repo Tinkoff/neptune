@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=ru.tinkoff.qa.neptune.spring.boot.starter.env.SpringEnvironmentWrappingConfiguration
+org.springframework.test.context.TestExecutionListener = ru.tinkoff.qa.neptune.spring.boot.starter.application.contexts.CurrentApplicationContextTestExecutionListener

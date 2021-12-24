@@ -1,0 +1,62 @@
+dependencies {
+    api project(':neptune-spring-boot-starter')
+    compileClasspath group: 'org.springframework.boot', name: 'spring-boot', version: springBootVersion
+    compileClasspath group: 'org.springframework', name: 'spring-test', version: springVersion
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'neptune-spring-boot-starter-mockmvc'
+            from components.java
+            repositories {
+                maven {
+                    credentials(PasswordCredentials)
+                    url = 'https://nexus-new.tcsbank.ru/repository/mvn-bigops-qa'
+                }
+            }
+            pom {
+                packaging = 'jar'
+                name = 'neptune-spring-boot-starter-mockmvc'
+                version = version
+                url = 'https://github.com/TinkoffCreditSystems/neptune'
+                licenses {
+                    license {
+                        name = 'Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution = 'repo'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'TikhomirovSergey'
+                        name = 'Sergey Tikhomirov'
+                        email = 'tichomirovsergey@gmail.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
+                    url = 'https://github.com/TinkoffCreditSystems/neptune'
+                }
+            }
+        }
+    }
+}
+
+javadoc {
+    destinationDir = file("${buildDir}/../../../neptune.documentation/javadocs/$project.name")
+
+    title = "Utils for Spring MockMvc v$globalVersion"
+    options.author true
+    options.links 'http://download.oracle.com/javase/9/docs/api/'
+    options.addStringOption 'Xdoclint:none', '-quiet'
+    options.memberLevel = JavadocMemberLevel.PROTECTED
+    options.bottom = "Copyright &copy; 2021 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+    options.addBooleanOption('html5', true)
+}

@@ -4,14 +4,25 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
+import ru.tinkoff.qa.neptune.spring.boot.starter.mock.mvc.MockMvcProvider;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.nonNull;
+import static java.util.ServiceLoader.load;
+import static java.util.stream.StreamSupport.stream;
 
 public class MockMvcContext extends Context<MockMvcContext> {
 
     private static final MockMvcContext context = getInstance(MockMvcContext.class);
-    private MockMvc defaultMockMvc;
+    private final MockMvcProvider defaultMockMvcProvider;
+
+    public MockMvcContext() {
+        var iterator = load(MockMvcProvider.class).iterator();
+        Iterable<MockMvcProvider> iterable = () -> iterator;
+        this.defaultMockMvcProvider = stream(iterable.spliterator(), false)
+                .findFirst()
+                .orElse(null);
+    }
 
     static MockMvcContext getContext() {
         return context;
@@ -39,12 +50,14 @@ public class MockMvcContext extends Context<MockMvcContext> {
         return context.get(specification);
     }
 
-    void setDefault(MockMvc defaultMockMvc) {
-        this.defaultMockMvc = defaultMockMvc;
-    }
-
     MockMvc getDefaultMockMvc() {
-        checkState(nonNull(defaultMockMvc), "There is no field of type MockMvc that has a non-null value");
+        checkState(nonNull(defaultMockMvcProvider), "There is no provider of service " + MockMvcProvider.class);
+        var defaultMockMvc = defaultMockMvcProvider.provide();
+        checkState(nonNull(defaultMockMvc), "The instance of provider "
+                + defaultMockMvcProvider.getClass()
+                + " of service "
+                + MockMvcProvider.class
+                + " returned null");
         return defaultMockMvc;
     }
 }

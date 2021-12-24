@@ -14,11 +14,14 @@ import ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static java.lang.String.valueOf;
 import static java.lang.Thread.currentThread;
 import static java.util.Arrays.stream;
+import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -27,12 +30,14 @@ import static org.testng.ITestResult.*;
 import static ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable.REFRESHABLE_CONTEXTS;
 import static ru.tinkoff.qa.neptune.core.api.concurrency.BusyThreads.setBusy;
 import static ru.tinkoff.qa.neptune.core.api.concurrency.BusyThreads.setFree;
+import static ru.tinkoff.qa.neptune.core.api.dependency.injection.DependencyInjector.injectValues;
 import static ru.tinkoff.qa.neptune.core.api.hooks.ExecutionHook.getHooks;
 import static ru.tinkoff.qa.neptune.testng.integration.properties.TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
 
 public final class DefaultTestRunningListener implements IInvokedMethodListener, ITestListener {
 
     private final ThreadLocal<Method> previouslyRefreshed = new ThreadLocal<>();
+    private final ThreadLocal<Set<Object>> populated = new ThreadLocal<>();
     private final List<ExecutionHook> hooks = getHooks();
 
     private static boolean isIgnored(Method method) {
@@ -80,8 +85,19 @@ public final class DefaultTestRunningListener implements IInvokedMethodListener,
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
         setBusy(currentThread());
         var reflectionMethod = method.getTestMethod().getConstructorOrMethod().getMethod();
-        ofNullable(testResult.getInstance()).ifPresent(o ->
-                refreshIfNecessary(reflectionMethod));
+        ofNullable(testResult.getInstance()).ifPresent(o -> {
+                refreshIfNecessary(reflectionMethod);
+                var populatedSet = populated.get();
+                if (isNull(populatedSet)) {
+                    populatedSet = new HashSet<>();
+                    populated.set(populatedSet);
+                }
+
+                if (!populatedSet.contains(o)) {
+                    injectValues(o);
+                    populatedSet.add(o);
+                }
+        });
 
         if (method.isTestMethod()) {
             previouslyRefreshed.remove();

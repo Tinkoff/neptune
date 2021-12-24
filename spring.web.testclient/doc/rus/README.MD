@@ -26,8 +26,9 @@
 
 ### Получение ответа без десериализации его тела
 
+Если к проекту подключена зависимость от модуля [neptune-spring-boot-starter-webtest-client](./../../../neptune-spring-boot-starter-webtest-client/README.md)
+
 ```java
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 
@@ -39,10 +40,6 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient.WebTestClientContext.w
 @SpringBootTest
 @AutoConfigureWebTestClient
 public class MyTest {
-
-    @Autowired //Или любой другой вариант
-    private WebTestClient client; //при котором данное поле будет 
-    //заполнено на момент начала теста
 
     @Test
     public void myTest() {
@@ -68,11 +65,10 @@ public class MyTest {
 }
 ```
 
-Так же можно обойтись
-без [механизма внедрения зависимостей Spring](https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-dependencies)
-или какой-либо другой предварительной инициализации полей.
+в противном случае
 
 ```java
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 
@@ -82,15 +78,16 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient.SendRequestAction.send
 import static ru.tinkoff.qa.neptune.spring.web.testclient.WebTestClientContext.webTestClient;
 
 @SpringBootTest
+@AutoConfigureWebTestClient
 public class MyTest {
+
+    @Autowired //Или любой другой вариант
+    private WebTestClient client; //при котором данное поле будет заполнено
 
     @Test
     public void myTest() {
-        var client = WebTestClient.bindToController(new TestController())
-                /*указываем прочие параметры*/
-                .build();
-
-        webTestClient(send(client, //явная передача инстанса
+        webTestClient(send(
+                client, //явная передача инстанса
                 webClient -> webClient.post().uri("/some/path"))
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN)));
@@ -102,9 +99,10 @@ public class MyTest {
 
 ### Получение ответа с десериализацией его тела
 
+Если к проекту подключена зависимость от модуля [neptune-spring-boot-starter-webtest-client](./../../../neptune-spring-boot-starter-webtest-client/README.md)
+
 ```java
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 
@@ -119,10 +117,6 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient.WebTestClientContext.w
 @SpringBootTest
 @AutoConfigureWebTestClient
 public class MyTest {
-
-    @Autowired //Или любой другой вариант
-    private WebTestClient client; //при котором данное поле будет 
-    //заполнено на момент начала теста
 
     @Test
     public void myTest() {
@@ -159,40 +153,7 @@ public class MyTest {
 }
 ```
 
-Так же можно обойтись
-без [механизма внедрения зависимостей Spring](https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-dependencies)
-или какой-либо другой предварительной инициализации полей.
-
-```java
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
-
-import org.springframework.test.web.reactive.server.WebTestClient;
-
-import static ru.tinkoff.qa.neptune.spring.web.testclient.SendRequestAction.send;
-import static ru.tinkoff.qa.neptune.spring.web.testclient.WebTestClientContext.webTestClient;
-
-@SpringBootTest
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var client = WebTestClient.bindToController(new TestController())
-                /*указываем прочие параметры*/
-                .build();
-
-        webTestClient(send(client, //явная передача инстанса
-                webClient -> webClient.post().uri("/some/path"),
-                Dto.class)
-                .expectStatus(StatusAssertions::isOk)
-                .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN)));
-    }
-}
-```
-
-[к оглавлению документа](#Оглавление)
-
-## Получение данных тела ответа
+в противном случае
 
 ```java
 import org.springframework.beans.factory.annotation.Autowired;
@@ -206,12 +167,41 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient.WebTestClientContext.w
 
 @SpringBootTest
 @AutoConfigureWebTestClient
+public class MyTest {
+
+    @Autowired //Или любой другой вариант
+    private WebTestClient client; //при котором данное поле будет заполнено
+
+    @Test
+    public void myTest() {
+        webTestClient(send(
+                client, //явная передача инстанса
+                webClient -> webClient.post().uri("/some/path"),
+                Dto.class)
+                .expectStatus(StatusAssertions::isOk)
+                .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN)));
+    }
+}
+```
+
+[к оглавлению документа](#Оглавление)
+
+## Получение данных тела ответа
+
+```java
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
+
+import org.springframework.test.web.reactive.server.WebTestClient;
+
+import static ru.tinkoff.qa.neptune.spring.web.testclient.SendRequestAction.send;
+import static ru.tinkoff.qa.neptune.spring.web.testclient.WebTestClientContext.webTestClient;
+
+@SpringBootTest
+@AutoConfigureWebTestClient
 public class MyTest { //когда не указано, в какие объекты должна 
 //происходить десериализация тела ответа
   
-    @Autowired
-    private WebTestClient client;
-
     @Test
     public void myTest() {
         //по умолчанию тело ответа представляется как массив байтов
@@ -235,7 +225,6 @@ public class MyTest { //когда не указано, в какие объек
 ```
 
 ```java
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 
@@ -247,9 +236,6 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient.WebTestClientContext.w
 @SpringBootTest
 @AutoConfigureWebTestClient
 public class MyTest {//случай с десериализацией тела ответа
-
-    @Autowired
-    private WebTestClient client;
 
     @Test
     public void myTest() {
@@ -269,7 +255,6 @@ public class MyTest {//случай с десериализацией тела �
 ### Получение данных тела ответа как Java-объект
 
 ```java
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 
@@ -281,9 +266,6 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient.WebTestClientContext.w
 @SpringBootTest
 @AutoConfigureWebTestClient
 public class MyTest {
-
-    @Autowired
-    private WebTestClient client;
 
     @Test
     public void myTest() {
@@ -310,7 +292,6 @@ public class MyTest {
 ### Получение данных тела ответа как List
 
 ```java
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 
@@ -324,9 +305,6 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient.WebTestClientContext.w
 @SpringBootTest
 @AutoConfigureWebTestClient
 public class MyTest {
-
-    @Autowired
-    private WebTestClient client;
 
     @Test
     public void myTest() {
@@ -355,7 +333,6 @@ public class MyTest {
 ### Получение данных тела ответа в виде массива
 
 ```java
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 
@@ -367,9 +344,6 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient.WebTestClientContext.w
 @SpringBootTest
 @AutoConfigureWebTestClient
 public class MyTest {
-
-    @Autowired
-    private WebTestClient client;
 
     @Test
     public void myTest() {
@@ -399,7 +373,6 @@ public class MyTest {
 ### Получение данных тела ответа как Java-объект из Iterable
 
 ```java
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 
@@ -411,9 +384,6 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient.WebTestClientContext.w
 @SpringBootTest
 @AutoConfigureWebTestClient
 public class MyTest {
-
-    @Autowired
-    private WebTestClient client;
 
     @Test
     public void myTest() {
@@ -442,7 +412,6 @@ public class MyTest {
 ### Получение данных тела ответа как Java-объект из массива
 
 ```java
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 
@@ -454,9 +423,6 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient.WebTestClientContext.w
 @SpringBootTest
 @AutoConfigureWebTestClient
 public class MyTest {
-
-    @Autowired
-    private WebTestClient client;
 
     @Test
     public void myTest() {
