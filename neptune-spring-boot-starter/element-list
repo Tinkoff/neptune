@@ -1,0 +1,5 @@
+ru.tinkoff.qa.neptune.spring.boot.starter.application.contexts
+ru.tinkoff.qa.neptune.spring.boot.starter.env
+ru.tinkoff.qa.neptune.spring.boot.starter.mock.mvc
+ru.tinkoff.qa.neptune.spring.boot.starter.test
+ru.tinkoff.qa.neptune.spring.boot.starter.web.testclient
