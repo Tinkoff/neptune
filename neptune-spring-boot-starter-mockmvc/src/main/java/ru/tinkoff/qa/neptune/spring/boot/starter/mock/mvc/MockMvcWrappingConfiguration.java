@@ -8,6 +8,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.spring.boot.starter.application.contexts.CurrentApplicationContextTestExecutionListener.getCurrentApplicationContext;
 
 @Configuration
@@ -37,7 +39,21 @@ public class MockMvcWrappingConfiguration {
     }
 
     private MockMvc getMockMvc() {
-        return mockMvc;
+        return ofNullable(mockMvc)
+                .orElseGet(() -> {
+                    var beans = context.getBeanNamesForType(MockMvc.class);
+                    for (var bean : beans) {
+                        try {
+                            var result = context.getBean(bean);
+                            if (nonNull(result)) {
+                                return (MockMvc) result;
+                            }
+                        } catch (Throwable e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    return null;
+                });
     }
 
     private ApplicationContext getContext() {

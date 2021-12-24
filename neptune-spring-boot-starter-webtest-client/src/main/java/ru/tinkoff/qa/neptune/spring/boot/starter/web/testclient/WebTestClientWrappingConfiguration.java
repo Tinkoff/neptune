@@ -8,6 +8,8 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.spring.boot.starter.application.contexts.CurrentApplicationContextTestExecutionListener.getCurrentApplicationContext;
 
 @Configuration
@@ -37,7 +39,21 @@ public class WebTestClientWrappingConfiguration {
     }
 
     private WebTestClient getWebTestClient() {
-        return webTestClient;
+        return ofNullable(webTestClient)
+                .orElseGet(() -> {
+                    var beans = context.getBeanNamesForType(WebTestClient.class);
+                    for (var bean : beans) {
+                        try {
+                            var result = context.getBean(bean);
+                            if (nonNull(result)) {
+                                return (WebTestClient) result;
+                            }
+                        } catch (Throwable e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    return null;
+                });
     }
 
     private ApplicationContext getContext() {
