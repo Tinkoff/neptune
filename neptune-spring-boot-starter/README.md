@@ -29,8 +29,10 @@ of  [Spring Boot](https://spring.io/guides/gs/spring-boot/) for the testing.
 This module is provided as a transitive dependency when
 
 - there is a dependency on [Spring Data](./../spring.data/README.md)
-- there are dependencies on both [Spring MockMvc](./../spring.mock.mvc/README.md) and [neptune-spring-boot-starter-mockmvc](./../neptune-spring-boot-starter-mockmvc/README.md)
-- there are dependencies on both [Spring WebTestClient](./../spring.web.testclient/README.md) and [neptune-spring-boot-starter-mockmvc](./../neptune-spring-boot-starter-webtest-client/README.md)
+- there is a dependency on [Spring MockMvc](./../spring.mock.mvc/README.md) 
+- there is a dependency on [neptune-spring-boot-starter-mockmvc](./../neptune-spring-boot-starter-mockmvc/README.md)
+- there is a dependency on [Spring WebTestClient](./../spring.web.testclient/README.md) 
+- there is a dependency on [neptune-spring-boot-starter-mockmvc](./../neptune-spring-boot-starter-webtest-client/README.md)
 
 [Краткая документация на русском](./doc/rus/README.MD)
 
