@@ -9,17 +9,17 @@ public class SpringBootPropertySource implements PropertySource {
 
     @Override
     public String getProperty(String property) {
-        var env = getCurrentApplicationContext().getEnvironment();
-        return ofNullable(env)
-                .map(environment -> environment.getProperty(property))
+        var context = getCurrentApplicationContext();
+        return ofNullable(context)
+                .map(c -> c.getEnvironment().getProperty(property))
                 .orElse(null);
     }
 
     @Override
     public boolean isPropertyDefined(String property) {
-        var env = getCurrentApplicationContext().getEnvironment();
-        return ofNullable(env)
-                .map(environment -> environment.containsProperty(property))
+        var context = getCurrentApplicationContext();
+        return ofNullable(context)
+                .map(c -> c.getEnvironment().containsProperty(property))
                 .orElse(false);
     }
 }
