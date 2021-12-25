@@ -10,6 +10,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static org.springframework.beans.factory.BeanFactoryUtils.beanNamesForTypeIncludingAncestors;
 import static ru.tinkoff.qa.neptune.spring.boot.starter.application.contexts.CurrentApplicationContextTestExecutionListener.getCurrentApplicationContext;
 
 @Configuration
@@ -41,7 +42,7 @@ public class MockMvcWrappingConfiguration {
     private MockMvc getMockMvc() {
         return ofNullable(mockMvc)
                 .orElseGet(() -> {
-                    var beans = context.getBeanNamesForType(MockMvc.class);
+                    var beans = beanNamesForTypeIncludingAncestors(context, MockMvc.class);
                     for (var bean : beans) {
                         try {
                             var result = context.getBean(bean);
