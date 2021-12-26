@@ -3,7 +3,6 @@ package ru.tinkoff.qa.neptune.spring.web.testclient;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
-import ru.tinkoff.qa.neptune.spring.boot.starter.web.testclient.WebTestClientProvider;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.nonNull;

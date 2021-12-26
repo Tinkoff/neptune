@@ -4,7 +4,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
-import ru.tinkoff.qa.neptune.spring.boot.starter.mock.mvc.MockMvcProvider;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.nonNull;
