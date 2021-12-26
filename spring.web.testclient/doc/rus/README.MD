@@ -26,8 +26,6 @@
 
 ### Получение ответа без десериализации его тела
 
-Если к проекту подключена зависимость от модуля [neptune-spring-boot-starter-webtest-client](./../../../neptune-spring-boot-starter-webtest-client/README.md)
-
 ```java
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -65,7 +63,7 @@ public class MyTest {
 }
 ```
 
-в противном случае
+Так же можно передавать значения `@Autowired`- полей или переменных пипа `WebTestClient`
 
 ```java
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,10 +79,10 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient.WebTestClientContext.w
 @AutoConfigureWebTestClient
 public class MyTest {
 
-    @Autowired //Или любой другой вариант
-    private WebTestClient client; //при котором данное поле будет заполнено
+  @Autowired //Или любой другой вариант
+  private WebTestClient client; //инициализации поля или переменной
 
-    @Test
+  @Test
     public void myTest() {
         webTestClient(send(
                 client, //явная передача инстанса
@@ -98,8 +96,6 @@ public class MyTest {
 [к оглавлению документа](#Оглавление)
 
 ### Получение ответа с десериализацией его тела
-
-Если к проекту подключена зависимость от модуля [neptune-spring-boot-starter-webtest-client](./../../../neptune-spring-boot-starter-webtest-client/README.md)
 
 ```java
 import org.springframework.core.ParameterizedTypeReference;
@@ -153,7 +149,7 @@ public class MyTest {
 }
 ```
 
-в противном случае
+Так же можно передавать значения `@Autowired`- полей или переменных пипа `WebTestClient`
 
 ```java
 import org.springframework.beans.factory.annotation.Autowired;
@@ -169,10 +165,10 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient.WebTestClientContext.w
 @AutoConfigureWebTestClient
 public class MyTest {
 
-    @Autowired //Или любой другой вариант
-    private WebTestClient client; //при котором данное поле будет заполнено
+  @Autowired //Или любой другой вариант
+  private WebTestClient client; //инициализации поля или переменной
 
-    @Test
+  @Test
     public void myTest() {
         webTestClient(send(
                 client, //явная передача инстанса

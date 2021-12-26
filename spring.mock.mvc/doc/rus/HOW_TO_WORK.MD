@@ -20,8 +20,6 @@
 
 ## Получение ответа
 
-Если к проекту подключена зависимость от модуля [neptune-spring-boot-starter-mockmvc](./../../../neptune-spring-boot-starter-mockmvc/README.md)
-
 ```java
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -54,7 +52,7 @@ public class MyTest {
 }
 ```
 
-в противном случае
+Так же можно передавать значения `@Autowired`- полей или переменных пипа `MockMvc`
 
 ```java
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,11 +70,10 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-    @Autowired //Или любой другой вариант
-    private MockMvc mockMvc; //при котором данное поле будет 
-    //заполнено
+  @Autowired //Или любой другой вариант
+  private MockMvc mockMvc; //инициализации поля или переменной
 
-    @Test
+  @Test
     public void myTest() {
 
         MockHttpServletResponse response = mockMvcGet(response(

@@ -4,9 +4,6 @@
 
 - [Работа со свойствами / настройками тестируемого приложения и Neptune](#Работа-со-свойствами--настройками-тестируемого-приложения-и-neptune)
 - [Если для тестирования используется не Junit5](#Если-для-тестирования-используется-не-junit5)
-- [Провайдеры](#Провайдеры)
-    - [MockMvc](#mockmvc)
-    - [WebTestClient](#webtestclient)
 
 ## Работа со свойствами / настройками тестируемого приложения и Neptune
 
@@ -94,91 +91,5 @@ public class MyBootTest2 extends AbstractTestNGSpringContextTests
   }
 }
 ```
-
-[к оглавлению документа](#Оглавление)
-
-## Провайдеры
-
-### MockMvc 
-
-Данный механизм позволяет неявно инициализировать объект `org.springframework.test.web.servlet.MockMvc` вне теста, 
-основываясь на текущем контексте приложения, и в дальнейшем его использовать.
-
-Для этого нужно:
-
-- создать класс
-
-```java
-package org.my.pack;
-
-import org.springframework.test.web.servlet.MockMvc;
-import ru.tinkoff.qa.neptune.spring.boot.starter.mock.mvc.MockMvcProvider;
-
-public class MyMockMvcProviderImpl implements MockMvcProvider {
-
-  @Override
-  public MockMvc provide() {
-    //описываем, как получаем объект MockMvc
-  }
-}
-```
-
-- Настроить [SPI](https://docs.oracle.com/javase/tutorial/ext/basics/spi.html). В `resources` директорий `main` или `test`
-  создать следующие директории и файлы
-
-```
-    META-INF
-    |
-    +---- services
-             |
-             +----ru.tinkoff.qa.neptune.spring.boot.starter.mock.mvc.MockMvcProvider
-```
-
-- В файл `ru.tinkoff.qa.neptune.spring.boot.starter.mock.mvc.MockMvcProvider` внести запись
-  `org.my.pack.MyMockMvcProviderImpl`
-
-Рекомендуется воспользоваться готовой реализацией из модуля [neptune-spring-boot-starter-mockmvc](./../../../neptune-spring-boot-starter-mockmvc/README.md) 
-
-[к оглавлению документа](#Оглавление)
-
-### WebTestClient
-
-Данный механизм позволяет неявно инициализировать объект `org.springframework.test.web.reactive.server.WebTestClient` вне теста,
-основываясь на текущем контексте приложения, и в дальнейшем его использовать.
-
-Для этого нужно:
-
-- создать класс
-
-```java
-package org.my.pack;
-
-import org.springframework.test.web.reactive.server.WebTestClient;
-import ru.tinkoff.qa.neptune.spring.boot.starter.web.testclient.WebTestClientProvider;
-
-public class MyWebTestClientProviderImpl implements WebTestClientProvider {
-
-  @Override
-  public WebTestClient provide() {
-    //описываем, как получаем объект WebTestClient
-  }
-}
-```
-
-- Настроить [SPI](https://docs.oracle.com/javase/tutorial/ext/basics/spi.html). В `resources` директорий `main` или `test`
-  создать следующие директории и файлы
-
-```
-    META-INF
-    |
-    +---- services
-             |
-             +----ru.tinkoff.qa.neptune.spring.boot.starter.web.testclient.WebTestClientProvider
-```
-
-- В файл `ru.tinkoff.qa.neptune.spring.boot.starter.web.testclient.WebTestClientProvider` внести запись
-  `org.my.pack.MyWebTestClientProviderImpl`
-
-Рекомендуется воспользоваться готовой реализацией из модуля [neptune-spring-boot-starter-webtest-client](./../../../neptune-spring-boot-starter-webtest-client/README.md)
 
 [к оглавлению документа](#Оглавление)

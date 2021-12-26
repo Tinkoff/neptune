@@ -8,8 +8,6 @@ import ru.tinkoff.qa.neptune.spring.boot.starter.mock.mvc.MockMvcProvider;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.nonNull;
-import static java.util.ServiceLoader.load;
-import static java.util.stream.StreamSupport.stream;
 
 public class MockMvcContext extends Context<MockMvcContext> {
 
@@ -17,11 +15,7 @@ public class MockMvcContext extends Context<MockMvcContext> {
     private final MockMvcProvider defaultMockMvcProvider;
 
     public MockMvcContext() {
-        var iterator = load(MockMvcProvider.class).iterator();
-        Iterable<MockMvcProvider> iterable = () -> iterator;
-        this.defaultMockMvcProvider = stream(iterable.spliterator(), false)
-                .findFirst()
-                .orElse(null);
+        defaultMockMvcProvider = new MockMvcProvider();
     }
 
     static MockMvcContext getContext() {
@@ -51,11 +45,8 @@ public class MockMvcContext extends Context<MockMvcContext> {
     }
 
     MockMvc getDefaultMockMvc() {
-        checkState(nonNull(defaultMockMvcProvider), "There is no provider of service " + MockMvcProvider.class);
         var defaultMockMvc = defaultMockMvcProvider.provide();
-        checkState(nonNull(defaultMockMvc), "The instance of provider "
-                + defaultMockMvcProvider.getClass()
-                + " of service "
+        checkState(nonNull(defaultMockMvc), "The instance of "
                 + MockMvcProvider.class
                 + " returned null");
         return defaultMockMvc;

@@ -2,14 +2,31 @@ package ru.tinkoff.qa.neptune.spring.boot.starter.web.testclient;
 
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import static java.util.Objects.nonNull;
+import static org.springframework.beans.factory.BeanFactoryUtils.beanNamesForTypeIncludingAncestors;
+import static ru.tinkoff.qa.neptune.spring.boot.starter.application.contexts.CurrentApplicationContextTestExecutionListener.getCurrentApplicationContext;
+
 /**
- * Provides an instance of {@link WebTestClient}. Instance of {WebTestClientProvider}
- * is considered to be loaded by SPI {@link java.util.ServiceLoader}
+ * Provides an instance of {@link WebTestClient}
  */
-public interface WebTestClientProvider {
+public class WebTestClientProvider {
 
     /**
      * @return instance of {@link WebTestClient}
      */
-    WebTestClient provide();
+    public WebTestClient provide() {
+        var context = getCurrentApplicationContext();
+        var beans = beanNamesForTypeIncludingAncestors(context, WebTestClient.class);
+        for (var bean : beans) {
+            try {
+                var result = context.getBean(bean);
+                if (nonNull(result)) {
+                    return (WebTestClient) result;
+                }
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 }

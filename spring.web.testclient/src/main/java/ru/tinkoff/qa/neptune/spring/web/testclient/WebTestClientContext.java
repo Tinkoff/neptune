@@ -7,8 +7,6 @@ import ru.tinkoff.qa.neptune.spring.boot.starter.web.testclient.WebTestClientPro
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.nonNull;
-import static java.util.ServiceLoader.load;
-import static java.util.stream.StreamSupport.stream;
 
 public class WebTestClientContext extends Context<WebTestClientContext> {
 
@@ -16,11 +14,7 @@ public class WebTestClientContext extends Context<WebTestClientContext> {
     private final WebTestClientProvider defaultWebTestClientProvider;
 
     public WebTestClientContext() {
-        var iterator = load(WebTestClientProvider.class).iterator();
-        Iterable<WebTestClientProvider> iterable = () -> iterator;
-        this.defaultWebTestClientProvider = stream(iterable.spliterator(), false)
-                .findFirst()
-                .orElse(null);
+        defaultWebTestClientProvider = new WebTestClientProvider();
     }
 
     static WebTestClientContext getContext() {
@@ -28,11 +22,8 @@ public class WebTestClientContext extends Context<WebTestClientContext> {
     }
 
     WebTestClient getDefaultWebTestClient() {
-        checkState(nonNull(defaultWebTestClientProvider), "There is no provider of service " + WebTestClientProvider.class);
         var defaultWebTestClient = defaultWebTestClientProvider.provide();
-        checkState(nonNull(defaultWebTestClient), "The instance of provider "
-                + defaultWebTestClientProvider.getClass()
-                + " of service "
+        checkState(nonNull(defaultWebTestClient), "The instance of "
                 + WebTestClientProvider.class
                 + " returned null");
         return defaultWebTestClient;

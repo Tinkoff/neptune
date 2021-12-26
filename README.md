@@ -56,6 +56,7 @@ For Spring projects:
 - [Integration of Neptune with Spring MockMvc](spring.mock.mvc/README.md)
 - [Integration of Neptune with Spring WebTestClient](spring.web.testclient/README.md)
 - [Integration of Neptune with Spring Data](spring.data/README.md)
+- [Additional Auto-Configuration Spring Boot Module](neptune-spring-boot-starter/README.md)
 
 For test runners:
 - [Integration of Neptune with TestNG framework](testng.integration/README.md)
