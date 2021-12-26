@@ -1,1 +1,0 @@
-typeSearchIndex = [{"l":"All Classes","u":"allclasses-index.html"},{"p":"ru.tinkoff.qa.neptune.spring.boot.starter.web.testclient","l":"WebTestClientProviderDefaultImpl"},{"p":"ru.tinkoff.qa.neptune.spring.boot.starter.web.testclient","l":"WebTestClientWrappingConfiguration"}];updateSearchResults();

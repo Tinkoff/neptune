@@ -1,1 +1,0 @@
-typeSearchIndex = [{"l":"All Classes","u":"allclasses-index.html"},{"p":"ru.tinkoff.qa.neptune.spring.boot.starter.mock.mvc","l":"MockMvcProviderDefaultImpl"},{"p":"ru.tinkoff.qa.neptune.spring.boot.starter.mock.mvc","l":"MockMvcWrappingConfiguration"}];updateSearchResults();

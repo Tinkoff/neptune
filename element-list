@@ -165,9 +165,7 @@ ru.tinkoff.qa.neptune.selenium.localization
 ru.tinkoff.qa.neptune.selenium.properties
 ru.tinkoff.qa.neptune.spring.boot.starter.application.contexts
 ru.tinkoff.qa.neptune.spring.boot.starter.env
-ru.tinkoff.qa.neptune.spring.boot.starter.mock.mvc
 ru.tinkoff.qa.neptune.spring.boot.starter.test
-ru.tinkoff.qa.neptune.spring.boot.starter.web.testclient
 ru.tinkoff.qa.neptune.spring.data
 ru.tinkoff.qa.neptune.spring.data.delete
 ru.tinkoff.qa.neptune.spring.data.dictionary
