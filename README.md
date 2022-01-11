@@ -18,7 +18,7 @@
 [version-badge]: https://img.shields.io/github/v/tag/Tinkoff/neptune?label=release
 [version-link]: https://github.com/Tinkoff/neptune/releases
 
-[commitsince-badge]: https://img.shields.io/github/commits-since/Tinkoff/neptune/0.12.1-ALPHA
+[commitsince-badge]: https://img.shields.io/github/commits-since/Tinkoff/neptune/0.20.0-ALPHA
 [commitsince-link]: https://github.com/Tinkoff/neptune/compare/0.20.0-ALPHA...master
 
 [commit-badge]: https://img.shields.io/github/last-commit/Tinkoff/neptune/master?color=blue
