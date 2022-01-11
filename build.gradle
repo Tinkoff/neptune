@@ -1,5 +1,5 @@
 ext {
-    globalVersion = '0.20.20-ALPHA'
+    globalVersion = '0.20.21-ALPHA'
 }
 
 subprojects {
@@ -26,11 +26,11 @@ subprojects {
     }
 
     ext {
-        testNGVersion = '7.4.0'
+        testNGVersion = '7.5'
         junit5Version = '5.8.2'
         junit5PlatformVersion = '1.8.2'
         hamcrestVersion = '2.2'
-        seleniumVersion = '4.1.0'
+        seleniumVersion = '4.1.1'
         allureVersion = '2.17.2'
         jacksonVersion = '2.13.1'
         mockitoVersion = '4.2.0'
@@ -53,6 +53,7 @@ subprojects {
         api group: 'com.google.code.gson', name: 'gson', version: '2.8.9'
         api group: 'io.github.classgraph', name: 'classgraph', version: '4.8.138'
         testImplementation group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion
+        compileClasspath group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion
     }
 
     test {
@@ -73,7 +74,7 @@ task aggregatedJavadocs(type: Javadoc, description: 'Generate javadocs from all 
     options.addStringOption 'Xdoclint:none', '-quiet'
     destinationDir  = file("${buildDir}/../../neptune.documentation/javadocs/")
     options.memberLevel = JavadocMemberLevel.PROTECTED
-    options.bottom = "Copyright &copy; 2021 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+    options.bottom = "Copyright &copy; 2022 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
 
     subprojects.each { proj ->
         proj.tasks.withType(Javadoc).each { javadocTask ->
