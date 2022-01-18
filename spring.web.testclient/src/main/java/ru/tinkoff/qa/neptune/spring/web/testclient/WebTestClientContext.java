@@ -10,18 +10,21 @@ import static java.util.Objects.nonNull;
 public class WebTestClientContext extends Context<WebTestClientContext> {
 
     private static final WebTestClientContext context = getInstance(WebTestClientContext.class);
-    private WebTestClient defaultWebTestClient;
+    private final WebTestClientProvider defaultWebTestClientProvider;
+
+    public WebTestClientContext() {
+        defaultWebTestClientProvider = new WebTestClientProvider();
+    }
 
     static WebTestClientContext getContext() {
         return context;
     }
 
-    void setDefault(WebTestClient defaultWebTestClient) {
-        this.defaultWebTestClient = defaultWebTestClient;
-    }
-
     WebTestClient getDefaultWebTestClient() {
-        checkState(nonNull(defaultWebTestClient), "There is no field of type WebTestClient that has a non-null value");
+        var defaultWebTestClient = defaultWebTestClientProvider.provide();
+        checkState(nonNull(defaultWebTestClient), "The instance of "
+                + WebTestClientProvider.class
+                + " returned null");
         return defaultWebTestClient;
     }
 
@@ -31,7 +34,7 @@ public class WebTestClientContext extends Context<WebTestClientContext> {
      * @param sending is specification of request
      * @return self-reference
      */
-    public static WebTestClientContext webTestClient(SendRequestAction<?> sending) {
+    public static WebTestClientContext webTestClient(SendRequestAction<?, ?, ?> sending) {
         var context = getContext();
         return context.perform(sending);
     }

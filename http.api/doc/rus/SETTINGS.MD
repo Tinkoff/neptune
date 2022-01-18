@@ -669,7 +669,7 @@ import java.text.DateFormatSymbols;
 import java.util.function.Supplier;
 
 //Создаем поставщика, который будет поставлять объекты класса java.text.DateFormatSymbols
-public class MySslContextSupplier implements Supplier<DateFormatSymbols> {
+public class DateFormatSymbols implements Supplier<DateFormatSymbols> {
 
     @Override
     public DateFormatSymbols get() {
@@ -680,7 +680,7 @@ public class MySslContextSupplier implements Supplier<DateFormatSymbols> {
 
 ```properties
 #Значение свойства указывается так
-API_DATE_FORMAT_SYMBOLS=org.my.pack.MySslContextSupplier
+API_DATE_FORMAT_SYMBOLS=org.my.pack.DateFormatSymbols
 ```
 
 ```java

@@ -3,17 +3,32 @@ package ru.tinkoff.qa.neptune.spring.data.dictionary;
 import org.springframework.data.repository.Repository;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
-import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
+import java.lang.reflect.Proxy;
+
+import static java.util.Arrays.stream;
 
 public class RepositoryParameterValueGetter implements ParameterValueGetter<Repository<?, ?>> {
 
     @Override
     public String getParameterValue(Repository<?, ?> fieldValue) {
-        var repoClass = fieldValue.getClass();
-        var stBuilder = new StringBuilder(repoClass.getName());
-        if (isLoggable(fieldValue)) {
-            stBuilder.append("; ").append(fieldValue);
+        Class<?> repoClass;
+        if (fieldValue instanceof Proxy) {
+            repoClass = stream(fieldValue.getClass().getInterfaces())
+                    .min((o1, o2) -> {
+                        if (o1.equals(o2)) {
+                            return 0;
+                        }
+
+                        if (o1.isAssignableFrom(o2)) {
+                            return 1;
+                        }
+
+                        return -1;
+                    }).orElseGet(fieldValue::getClass);
+        } else {
+            repoClass = fieldValue.getClass();
         }
-        return stBuilder.toString();
+
+        return repoClass.getName();
     }
 }

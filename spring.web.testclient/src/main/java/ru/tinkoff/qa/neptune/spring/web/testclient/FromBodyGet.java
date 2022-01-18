@@ -4,10 +4,10 @@ import java.util.function.Function;
 
 final class FromBodyGet<T, R> implements Function<WebTestClientContext, T> {
 
-    private final SendRequestAction<R> send;
+    private final SendRequestAction<R, ?, ?> send;
     private final Function<R, T> converter;
 
-    FromBodyGet(SendRequestAction<R> send, Function<R, T> converter) {
+    FromBodyGet(SendRequestAction<R, ?, ?> send, Function<R, T> converter) {
         this.send = send;
         this.converter = converter;
     }

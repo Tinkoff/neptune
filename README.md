@@ -1,6 +1,6 @@
 # Neptune
 
-[![Neptune-master Status](https://github.com/TinkoffCreditSystems/neptune/workflows/gradle-ci/badge.svg)](https://github.com/TinkoffCreditSystems/neptune/actions)
+[![Neptune-master Status](https://github.com/Tinkoff/neptune/workflows/gradle-ci/badge.svg)](https://github.com/TinkoffCreditSystems/neptune/actions)
 
 [![License][license-badge]][license-link]
 
@@ -12,28 +12,28 @@
 [![Commit][commit-badge]][commit-link]
 
 
-[build-badge]: https://travis-ci.com/TinkoffCreditSystems/neptune.svg?branch=master
-[build-link]: https://travis-ci.com/TinkoffCreditSystems/neptune
+[build-badge]: https://travis-ci.com/Tinkoff/neptune.svg?branch=master
+[build-link]: https://travis-ci.com/Tinkoff/neptune
 
-[version-badge]: https://img.shields.io/github/v/tag/TinkoffCreditSystems/neptune?label=release
-[version-link]: https://github.com/TinkoffCreditSystems/neptune/releases
+[version-badge]: https://img.shields.io/github/v/tag/Tinkoff/neptune?label=release
+[version-link]: https://github.com/Tinkoff/neptune/releases
 
-[commitsince-badge]: https://img.shields.io/github/commits-since/TinkoffCreditSystems/neptune/0.12.1-ALPHA
-[commitsince-link]: https://github.com/TinkoffCreditSystems/neptune/compare/0.12.1-ALPHA...master
+[commitsince-badge]: https://img.shields.io/github/commits-since/Tinkoff/neptune/0.20.0-ALPHA
+[commitsince-link]: https://github.com/Tinkoff/neptune/compare/0.20.0-ALPHA...master
 
-[commit-badge]: https://img.shields.io/github/last-commit/TinkoffCreditSystems/neptune/master?color=blue
-[commit-link]: https://github.com/TinkoffCreditSystems/neptune/commits/master
+[commit-badge]: https://img.shields.io/github/last-commit/Tinkoff/neptune/master?color=blue
+[commit-link]: https://github.com/Tinkoff/neptune/commits/master
 
-[license-badge]: https://img.shields.io/github/license/TinkoffCreditSystems/neptune?color=9cf
-[license-link]: https://github.com/TinkoffCreditSystems/neptune/blob/master/LICENSE
+[license-badge]: https://img.shields.io/github/license/Tinkoff/neptune?color=9cf
+[license-link]: https://github.com/Tinkoff/neptune/blob/master/LICENSE
 
-[reposize-badge]: https://img.shields.io/github/repo-size/TinkoffCreditSystems/neptune?color=9cf
+[reposize-badge]: https://img.shields.io/github/repo-size/Tinkoff/neptune?color=9cf
 
-[openissues-badge]: https://img.shields.io/github/issues-raw/TinkoffCreditSystems/neptune
-[openissues-link]: https://github.com/TinkoffCreditSystems/neptune/issues?q=is%3Aopen+is%3Aissue
+[openissues-badge]: https://img.shields.io/github/issues-raw/Tinkoff/neptune
+[openissues-link]: https://github.com/Tinkoff/neptune/issues?q=is%3Aopen+is%3Aissue
 
-[closedissues-badge]: https://img.shields.io/github/issues-closed-raw/TinkoffCreditSystems/neptune
-[closedissues-link]: https://github.com/TinkoffCreditSystems/neptune/issues?q=is%3Aissue+is%3Aclosed
+[closedissues-badge]: https://img.shields.io/github/issues-closed-raw/Tinkoff/neptune
+[closedissues-link]: https://github.com/Tinkoff/neptune/issues?q=is%3Aissue+is%3Aclosed
 
 Test automation framework for automation of E2E/system/integrating testing.
 
@@ -56,6 +56,7 @@ For Spring projects:
 - [Integration of Neptune with Spring MockMvc](spring.mock.mvc/README.md)
 - [Integration of Neptune with Spring WebTestClient](spring.web.testclient/README.md)
 - [Integration of Neptune with Spring Data](spring.data/README.md)
+- [Additional Auto-Configuration Spring Boot Module](neptune-spring-boot-starter/README.md)
 
 For test runners:
 - [Integration of Neptune with TestNG framework](testng.integration/README.md)
@@ -63,11 +64,11 @@ For test runners:
 - [Integration of Neptune with JUnit5](jupiter.integration/README.md)
 - [Neptune + JUnit5 + Allure](allure.jupiter.bridge/README.md)
 
-[Overview of all packages](https://tinkoffcreditsystems.github.io/neptune/overview-summary.html)
+[Overview of all packages](https://tinkoff.github.io/neptune/overview-summary.html)
 
-[Issues to be fixed/Requred features](https://github.com/TinkoffCreditSystems/neptune/issues)
+[Issues to be fixed/Requred features](https://github.com/Tinkoff/neptune/issues)
 
-[Change list](https://github.com/TinkoffCreditSystems/neptune/releases)
+[Change list](https://github.com/Tinkoff/neptune/releases)
 
 Owners: [@TikhomirovSergey](https://github.com/TikhomirovSergey), [@ArisAgnew](https://github.com/ArisAgnew), [@AndrewCharykov](https://github.com/AndrewCharykov), [@Burnouttt](https://github.com/Burnouttt)
 

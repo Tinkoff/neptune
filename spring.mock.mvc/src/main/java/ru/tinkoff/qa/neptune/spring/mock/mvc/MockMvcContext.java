@@ -11,7 +11,11 @@ import static java.util.Objects.nonNull;
 public class MockMvcContext extends Context<MockMvcContext> {
 
     private static final MockMvcContext context = getInstance(MockMvcContext.class);
-    private MockMvc defaultMockMvc;
+    private final MockMvcProvider defaultMockMvcProvider;
+
+    public MockMvcContext() {
+        defaultMockMvcProvider = new MockMvcProvider();
+    }
 
     static MockMvcContext getContext() {
         return context;
@@ -39,12 +43,11 @@ public class MockMvcContext extends Context<MockMvcContext> {
         return context.get(specification);
     }
 
-    void setDefault(MockMvc defaultMockMvc) {
-        this.defaultMockMvc = defaultMockMvc;
-    }
-
     MockMvc getDefaultMockMvc() {
-        checkState(nonNull(defaultMockMvc), "There is no field of type MockMvc that has a non-null value");
+        var defaultMockMvc = defaultMockMvcProvider.provide();
+        checkState(nonNull(defaultMockMvc), "The instance of "
+                + MockMvcProvider.class
+                + " returned null");
         return defaultMockMvc;
     }
 }

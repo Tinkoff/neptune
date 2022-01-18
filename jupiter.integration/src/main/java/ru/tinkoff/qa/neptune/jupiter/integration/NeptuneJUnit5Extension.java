@@ -7,8 +7,11 @@ import ru.tinkoff.qa.neptune.core.api.hooks.ExecutionHook;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import static java.lang.Thread.currentThread;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable.REFRESHABLE_CONTEXTS;
+import static ru.tinkoff.qa.neptune.core.api.concurrency.BusyThreads.setBusy;
+import static ru.tinkoff.qa.neptune.core.api.concurrency.BusyThreads.setFree;
 import static ru.tinkoff.qa.neptune.core.api.dependency.injection.DependencyInjector.injectValues;
 import static ru.tinkoff.qa.neptune.core.api.hooks.ExecutionHook.getHooks;
 import static ru.tinkoff.qa.neptune.jupiter.integration.properties.Junit5RefreshStrategyProperty.*;
@@ -49,10 +52,15 @@ public final class NeptuneJUnit5Extension implements TestInstancePostProcessor,
     private <T> T invokeHooksAndProceed(InvocationInterceptor.Invocation<T> invocation,
                                         ReflectiveInvocationContext<Method> invocationContext,
                                         boolean isTest) throws Throwable {
-        hooks.forEach(executionHook -> executionHook.executeMethodHook(invocationContext.getExecutable(),
-                invocationContext.getTarget().orElseGet(invocationContext::getTargetClass),
-                isTest));
-        return invocation.proceed();
+        try {
+            setBusy(currentThread());
+            hooks.forEach(executionHook -> executionHook.executeMethodHook(invocationContext.getExecutable(),
+                    invocationContext.getTarget().orElseGet(invocationContext::getTargetClass),
+                    isTest));
+            return invocation.proceed();
+        } finally {
+            setFree(currentThread());
+        }
     }
 
     @Override

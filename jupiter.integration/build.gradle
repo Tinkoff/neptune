@@ -3,8 +3,7 @@ dependencies {
     api group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit5Version
     api group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit5Version
-    testImplementation group: 'org.junit.platform', name: 'junit-platform-launcher', version: junit5PlatformVersion
-    implementation group: 'org.junit.platform', name: 'junit-platform-suite-engine', version: junit5PlatformVersion
+    api group: 'org.junit.platform', name: 'junit-platform-launcher', version: junit5PlatformVersion
 }
 
 task testJUnit(type: Test){
@@ -72,6 +71,6 @@ javadoc {
     options.links 'http://download.oracle.com/javase/9/docs/api/'
     options.addStringOption 'Xdoclint:none', '-quiet'
     options.memberLevel = JavadocMemberLevel.PROTECTED
-    options.bottom = "Copyright &copy; 2021 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+    options.bottom = "Copyright &copy; 2022 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
     options.addBooleanOption('html5', true)
 }

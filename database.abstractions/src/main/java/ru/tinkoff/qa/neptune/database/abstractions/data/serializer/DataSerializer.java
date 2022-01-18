@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.database.abstractions.data.serializer;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -26,6 +27,7 @@ public abstract class DataSerializer<T, RESULT> {
 
     private DataSerializer(JsonInclude.Include toInclude) {
         this.mapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule())
                 .setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:S"))
                 .setSerializationInclusion(toInclude);
     }

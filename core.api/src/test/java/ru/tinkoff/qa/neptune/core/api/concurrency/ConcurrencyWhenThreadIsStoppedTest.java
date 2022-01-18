@@ -1,15 +1,14 @@
 package ru.tinkoff.qa.neptune.core.api.concurrency;
 
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
-import static java.lang.System.*;
+import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.sleep;
 import static java.time.Duration.ofSeconds;
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -19,17 +18,11 @@ import static ru.tinkoff.qa.neptune.core.api.properties.general.resorces.FreeRes
 import static ru.tinkoff.qa.neptune.core.api.properties.general.resorces.FreeResourcesOnInactivityAfter.FreeResourcesOnInactivityAfterTimeUnit.FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.resorces.FreeResourcesOnInactivityAfter.FreeResourcesOnInactivityAfterTimeValue.FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE;
 
-public class ConcurrencyTest {
+public class ConcurrencyWhenThreadIsStoppedTest extends BaseConcurrencyTest {
 
-
-    private Thread thread1;
-    private Thread thread2;
-
-    @BeforeMethod
-    public void runThreads() throws Exception {
-        containers.clear();
-
-        thread1 = new Thread(() -> {
+    @Override
+    Thread createThread1() {
+        return new Thread(() -> {
             while (true) {
                 getContext().doSomething();
                 try {
@@ -39,28 +32,15 @@ public class ConcurrencyTest {
                 }
             }
         });
-        thread1.start();
+    }
 
-        sleep(500);
-
-        thread2 = new Thread(() -> {
+    @Override
+    Thread createThread2() {
+        return new Thread(() -> {
             while (true) {
                 getContext().getSomething();
             }
         });
-        thread2.start();
-
-        sleep(1000);
-    }
-
-    @AfterMethod(alwaysRun = true)
-    public void clearAfter() {
-        thread1.stop();
-        thread2.stop();
-
-        clearProperty(TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.getName());
-        clearProperty(FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT.getName());
-        clearProperty(FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE.getName());
     }
 
     @Test(groups = "basic")
@@ -111,7 +91,7 @@ public class ConcurrencyTest {
 
     @Test(dependsOnGroups = "basic", priority = 1)
     public void resourcesFreeByDefaultTest() throws Exception {
-        setProperty(TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.getName(), "true");
+        TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.accept(true);
         thread2.stop();
         sleep(1000);
 
@@ -136,9 +116,10 @@ public class ConcurrencyTest {
 
     @Test(dependsOnGroups = "basic", priority = 1)
     public void resourcesFreeAfterDefinedTimeTest() throws Exception {
-        setProperty(TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.getName(), "true");
-        setProperty(FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT.getName(), "SECONDS");
-        setProperty(FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE.getName(), "5");
+        TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.accept(true);
+        FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT.accept(SECONDS);
+        FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE.accept(5L);
+
         thread2.stop();
         sleep(1000);
 
@@ -163,9 +144,9 @@ public class ConcurrencyTest {
 
     @Test(dependsOnMethods = {"resourcesFreeByDefaultTest", "resourcesFreeAfterDefinedTimeTest", "resourcesStillBusyTest"})
     public void resourcesAreBusyAgain() throws Exception {
-        setProperty(TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.getName(), "true");
-        setProperty(FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT.getName(), "SECONDS");
-        setProperty(FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE.getName(), "1");
+        TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.accept(true);
+        FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT.accept(SECONDS);
+        FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE.accept(1L);
 
         thread2.stop();
         sleep(1500);
@@ -178,11 +159,7 @@ public class ConcurrencyTest {
 
         assertThat(freeObject.isActive(), is(false));
 
-        thread2 = new Thread(() -> {
-            while (true) {
-                getContext().getSomething();
-            }
-        });
+        thread2 = createThread2();
         thread2.start();
         sleep(1000);
 
