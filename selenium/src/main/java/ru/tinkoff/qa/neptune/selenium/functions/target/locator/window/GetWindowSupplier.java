@@ -11,6 +11,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 
+import java.net.URL;
 import java.time.Duration;
 import java.util.LinkedList;
 import java.util.List;
@@ -104,6 +105,78 @@ public final class GetWindowSupplier extends SequentialGetStepSupplier
     public static GetWindowSupplier currentWindow() {
         return new GetWindowSupplier(webDriver -> of(new DefaultWindow(webDriver.getWindowHandle(), webDriver)))
                 .from(currentContent());
+    }
+
+    public GetWindowSupplier title(String title) {
+        return criteria(WindowCriteria.title(title));
+    }
+
+    public GetWindowSupplier titleMatches(String expression) {
+        return criteria(WindowCriteria.titleMatches(expression));
+    }
+
+    public GetWindowSupplier pageAt(String url) {
+        return criteria(WindowCriteria.pageAt(url));
+    }
+
+    public GetWindowSupplier pageAt(URL url) {
+        return criteria(WindowCriteria.pageAt(url));
+    }
+
+    public GetWindowSupplier urlMatches(String expression) {
+        return criteria(WindowCriteria.urlMatches(expression));
+    }
+
+    public GetWindowSupplier urlHost(String host) {
+        return criteria(WindowCriteria.urlHost(host));
+    }
+
+    public GetWindowSupplier urlHostMatches(String expression) {
+        return criteria(WindowCriteria.urlHostMatches(expression));
+    }
+
+    public GetWindowSupplier urlProtocol(String protocol) {
+        return criteria(WindowCriteria.urlProtocol(protocol));
+    }
+
+    public GetWindowSupplier urlProtocolMatches(String expression) {
+        return criteria(WindowCriteria.urlProtocolMatches(expression));
+    }
+
+    public GetWindowSupplier urlRef(String reference) {
+        return criteria(WindowCriteria.urlRef(reference));
+    }
+
+    public GetWindowSupplier urlRefMatches(String expression) {
+        return criteria(WindowCriteria.urlRefMatches(expression));
+    }
+
+    public GetWindowSupplier urlQuery(String query) {
+        return criteria(WindowCriteria.urlQuery(query));
+    }
+
+    public GetWindowSupplier urlQueryMatches(String expression) {
+        return criteria(WindowCriteria.urlQueryMatches(expression));
+    }
+
+    public GetWindowSupplier urlUserInfo(String userInfo) {
+        return criteria(WindowCriteria.urlUserInfo(userInfo));
+    }
+
+    public GetWindowSupplier urlUserInfoMatches(String expression) {
+        return criteria(WindowCriteria.urlUserInfoMatches(expression));
+    }
+
+    public GetWindowSupplier urlPath(String path) {
+        return criteria(WindowCriteria.urlPath(path));
+    }
+
+    public GetWindowSupplier urlPathMatches(String expression) {
+        return criteria(WindowCriteria.urlPathMatches(expression));
+    }
+
+    public GetWindowSupplier urlPort(int port) {
+        return criteria(WindowCriteria.urlPort(port));
     }
 
     @Override
