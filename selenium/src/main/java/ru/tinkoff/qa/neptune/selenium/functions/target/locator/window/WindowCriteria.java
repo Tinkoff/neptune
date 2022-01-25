@@ -4,6 +4,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.function.Function;
@@ -102,7 +103,14 @@ public final class WindowCriteria {
                                                           @DescriptionFragment("expression") String expression,
                                                           Function<URL, String> getPart) {
         checkArgument(isNotBlank(expression), format("expression of url %s should not be defined as a blank/null string", description));
-        return condition(window -> checkByStringContainingOrRegExp(expression).test(window.getCurrentUrl()));
+        return condition(window -> {
+            try {
+                return checkByStringContainingOrRegExp(expression).test(getPart.apply(new URL(window.getCurrentUrl())));
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                return false;
+            }
+        });
     }
 
     /**
