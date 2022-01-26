@@ -10,6 +10,7 @@ import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupp
 import static org.openqa.selenium.WindowType.TAB;
 import static org.openqa.selenium.WindowType.WINDOW;
 
+@SequentialGetStepSupplier.DefineGetImperativeParameterName("Open:")
 @MaxDepthOfReporting(0)
 public class GetNewWindowSupplier extends SequentialGetStepSupplier.GetSimpleStepSupplier<SeleniumStepContext, Window, GetNewWindowSupplier>
         implements TargetLocatorSupplier<Window> {
