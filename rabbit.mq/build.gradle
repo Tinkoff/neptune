@@ -8,7 +8,7 @@ dependencies {
     inpath(project(":core.api")) {
         transitive = false
     }
-    api group: 'com.rabbitmq', name: 'amqp-client', version: '5.14.0'
+    api group: 'com.rabbitmq', name: 'amqp-client', version: '5.14.1'
     testImplementation  group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockitoVersion
 }

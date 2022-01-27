@@ -13,17 +13,16 @@ configurations {
 dependencies {
     api(project(":database.abstractions"))
     api project(':core.api')
-    api project(':neptune-spring-boot-starter')
     inpath(project(":core.api")) {
         transitive = false
     }
-    api group: 'org.springframework.data', name: 'spring-data-commons', version: '2.6.0'
+    compileClasspath('org.springframework.data:spring-data-commons:2.6.1')
     testImplementation  group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockitoVersion
     compileClasspath(group: 'org.springframework', name: 'spring-context', version: springVersion)
     compileClasspath(group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.21')
     compileClasspath('io.projectreactor.tools:blockhound:1.0.6.RELEASE')
-    compileClasspath('io.projectreactor:reactor-test:3.4.13')
+    compileClasspath('io.projectreactor:reactor-test:3.4.14')
     compileClasspath(group: 'io.micrometer', name: 'micrometer-core', version: '1.7.5')
     compileClasspath(group: 'io.reactivex.rxjava3', name: 'rxjava', version: '3.1.2')
     compileClasspath(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
@@ -37,6 +36,8 @@ dependencies {
     testImplementation(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
 
     bundleGeneration(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
+    testImplementation(group: 'io.micrometer', name: 'micrometer-core', version: '1.7.5')
+    testImplementation('org.springframework.data:spring-data-commons:2.6.1')
 }
 
 java {
