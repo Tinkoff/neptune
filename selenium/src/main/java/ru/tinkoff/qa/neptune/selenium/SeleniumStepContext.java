@@ -25,6 +25,7 @@ import ru.tinkoff.qa.neptune.selenium.functions.target.locator.content.DefaultCo
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.Frame;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.GetFrameSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.parent.ParentFrameSupplier;
+import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetNewWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 import ru.tinkoff.qa.neptune.selenium.functions.windows.*;
@@ -1016,6 +1017,17 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
+     * Performs the switching to the new window/tab.
+     *
+     * @param getNewWindow is how to get the new window/tab
+     * @return self-reference
+     */
+    public SeleniumStepContext switchTo(GetNewWindowSupplier getNewWindow) {
+        changeContentIfNecessary();
+        return perform(to(getNewWindow));
+    }
+
+    /**
      * Performs the switching to the frame.
      *
      * @param frame is the frame to switch to
@@ -1568,6 +1580,17 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     public Frame get(GetFrameSupplier getFrame) {
         changeContentIfNecessary();
         return super.get(getFrame);
+    }
+
+    /**
+     * Returns {@link Window} as as a representation of new window/tab
+     *
+     * @param getNewWindow is how to get the new window/tab
+     * @return an instance of {@link Window}
+     */
+    public Window get(GetNewWindowSupplier getNewWindow) {
+        changeContentIfNecessary();
+        return super.get(getNewWindow);
     }
 
 

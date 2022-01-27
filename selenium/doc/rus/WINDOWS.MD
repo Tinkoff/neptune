@@ -23,6 +23,7 @@
   - [Заголовок окна](#Заголовок-окна)
   - [Ссылка загруженной страницы](#Ссылка-загруженной-страницы)
   - [Закрытие окна](#Закрытие-окна)
+  - [Открытие нового окна или вкладки](#Открытие-нового-окна-или-вкладки)
 
 ## Получение окна для дальнейшей работы
 
@@ -32,8 +33,6 @@ import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.currentWindow;
-
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.WindowCriteria.*;
 
 public class Tezzt {
 
@@ -45,9 +44,9 @@ public class Tezzt {
 
         var w3 = inBrowser().get(window(1)); //получение окна по его индексу, начиная с 0
         var w4 = inBrowser().get(window() //будет взято окно/вкладка, удовлетворяющая некоторому критерию
-                .criteria(titleMatches("^.*\\b(Github)\\b.*$")) //например то, что заголовок страницы соответствует 
+                .titleMatches("^.*\\b(Github)\\b.*$") //например то, что заголовок страницы соответствует 
                 // регулярному выражению или содержит подстроку
-                .criteria(urlMatches("^.*\\b(github)\\b.*$"))) //и загруженная ссылка соответствует
+                .urlMatches("^.*\\b(github)\\b.*$")) //и загруженная ссылка соответствует
                 // регулярному выражению или содержит подстроку
                 ;
 
@@ -55,15 +54,15 @@ public class Tezzt {
         //получить второе окно/вкладку при условии, что в нем загружено что-то похожее на 
         //github.com
         var w5 = inBrowser().get(window(1)
-                .criteria(titleMatches("^.*\\b(Github)\\b.*$"))
-                .criteria(urlMatches("^.*\\b(github)\\b.*$")));
+                .titleMatches("^.*\\b(Github)\\b.*$")
+                .urlMatches("^.*\\b(github)\\b.*$"));
 
         //тот же самый случай, что и w5, но дополненный временем ожидания.
         //Ситуация: нужно некоторое время, пока откроется второе окно и в нем загрузится что-то похожее на 
         //github.com
         var w6 = inBrowser().get(window(1)
-                .criteria(titleMatches("^.*\\b(Github)\\b.*$"))
-                .criteria(urlMatches("^.*\\b(github)\\b.*$"))
+                .titleMatches("^.*\\b(Github)\\b.*$")
+                .urlMatches("^.*\\b(github)\\b.*$")
                 .timeOut(ofSeconds(5)));
 
         //Во всех описанных выше случаях переключение в окно/вкладку не происходит,
@@ -262,13 +261,34 @@ public class Tezzt {
     
     @Test
     public void test() {
-        inBrowser().closeWindow(); //закрытие текущего окна
-        inBrowser().closeWindow(window()); //закрытие окна, указанного в виде алгоритма поиска     
-        
-        //Можно заранее найти окно/вкладку
-        var w = inBrowser().get(window());
-        inBrowser().closeWindow(w); //и закрыть его
+      inBrowser().closeWindow(); //закрытие текущего окна
+      inBrowser().closeWindow(window()); //закрытие окна, указанного в виде алгоритма поиска     
+
+      //Можно заранее найти окно/вкладку
+      var w = inBrowser().get(window());
+      inBrowser().closeWindow(w); //и закрыть его
     }
 }
 ```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+## Открытие нового окна или вкладки
+
+```java
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
+import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetNewWindowSupplier.*;
+
+public class Tezzt {
+    
+    @Test
+    public void test() {
+        //В результате откроется и вернется новое окно
+        var newWindow = inBrowser().get(newWindow());
+        //В результате откроется и вернется новая вкладка
+        var newTab = inBrowser().get(newTab()); 
+    }
+}
+```
+
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
