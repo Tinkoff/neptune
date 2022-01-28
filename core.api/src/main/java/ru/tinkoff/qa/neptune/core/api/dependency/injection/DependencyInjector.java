@@ -47,22 +47,20 @@ public interface DependencyInjector {
 
         var fields2 = fields1;
 
-        dependencyInjectors.forEach(injector -> {
-            stream(fields2).forEach(f -> {
-                var m = f.getModifiers();
-                f.setAccessible(true);
-                var type = f.getType();
+        dependencyInjectors.forEach(injector -> stream(fields2).forEach(f -> {
+            var m = f.getModifiers();
+            f.setAccessible(true);
+            var type = f.getType();
 
-                try {
-                    var val = f.get(o);
-                    if (!isStatic(m) && !isFinal(m) && injector.toSet(f) && (type.isPrimitive() || val == null)) {
-                        f.set(o, injector.getValueToSet(f));
-                    }
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
+            try {
+                var val = f.get(o);
+                if (!isStatic(m) && !isFinal(m) && injector.toSet(f) && (type.isPrimitive() || val == null)) {
+                    f.set(o, injector.getValueToSet(f));
                 }
-            });
-        });
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }));
     }
 
     /**
