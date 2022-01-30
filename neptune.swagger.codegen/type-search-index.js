@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes","u":"allclasses-index.html"},{"p":"io.swagger.codegen.v3","l":"DefaultGenerator"},{"p":"ru.tinkoff.qa.neptune.swagger.v3","l":"NeptuneGenerator"}];updateSearchResults();
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"io.swagger.codegen.v3","l":"DefaultGenerator"},{"p":"ru.tinkoff.qa.neptune.swagger.v3","l":"NeptuneGenerator"}];updateSearchResults();
