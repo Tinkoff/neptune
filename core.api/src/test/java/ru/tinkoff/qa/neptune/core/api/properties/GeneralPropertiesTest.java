@@ -12,6 +12,7 @@ public class GeneralPropertiesTest {
     public void clear() {
         System.clearProperty("propertyA");
         System.clearProperty("propertyB");
+        System.clearProperty("propertyС");
         System.clearProperty("ConcatenatedProperty");
     }
 
@@ -26,7 +27,8 @@ public class GeneralPropertiesTest {
 
     @Test
     public void reusePropertiesTest() {
-        System.setProperty("ConcatenatedProperty", "${propertyA}+${propertyB}");
-        assertThat(new ConcatenatedProperty().get(), is("A+B"));
+        System.setProperty("propertyС", "с");
+        System.setProperty("ConcatenatedProperty", "${propertyA}+${propertyB}+${propertyС}");
+        assertThat(new ConcatenatedProperty().get(), is("A+B+с"));
     }
 }

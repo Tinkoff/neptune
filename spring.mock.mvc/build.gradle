@@ -2,6 +2,10 @@ plugins {
     id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
 }
 
+configurations {
+    bundleGeneration
+}
+
 dependencies {
     api project(':core.api')
     api project(':neptune-spring-boot-starter')
@@ -11,13 +15,13 @@ dependencies {
     api(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion) {
         exclude(group: 'org.springframework', module: 'spring-test')
     }
-    inpath (group: 'org.springframework', name: 'spring-test', version: springVersion) {
+    inpath(group: 'org.springframework', name: 'spring-test', version: springVersion) {
         transitive = false
     }
     implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
-    api group: 'org.springframework', name: 'spring-web', version: springVersion
-    api group: 'org.springframework', name: 'spring-webmvc', version: springVersion
-    testImplementation  group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+    compileClasspath(group: 'org.springframework', name: 'spring-web', version: springVersion)
+    compileClasspath(group: 'org.springframework', name: 'spring-webmvc', version: springVersion)
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockitoVersion
 
     compileClasspath('javax.websocket:javax.websocket-api:1.1')
@@ -41,22 +45,28 @@ dependencies {
     compileClasspath('junit:junit:4.13.2')
     compileClasspath('org.apache.tomcat.embed:tomcat-embed-core:10.0.14')
     compileClasspath(group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version)
-    compileClasspath('org.testng:testng:7.4.0')
+    compileClasspath('org.testng:testng:7.5')
     compileClasspath('org.codehaus.groovy:groovy:3.0.8')
     compileClasspath('org.hamcrest:hamcrest:2.2')
     compileClasspath('net.sourceforge.htmlunit:htmlunit:2.56.0')
-    compileClasspath('org.seleniumhq.selenium:htmlunit-driver:2.55.0') {
+    compileClasspath('org.seleniumhq.selenium:htmlunit-driver:3.56.0') {
         exclude group: "net.bytebuddy", module: "byte-buddy"
     }
-    compileClasspath('org.xmlunit:xmlunit-matchers:2.8.3')
+    compileClasspath('org.xmlunit:xmlunit-matchers:2.8.4')
     compileClasspath('org.skyscreamer:jsonassert:1.5.0')
     compileClasspath('com.jayway.jsonpath:json-path:2.6.0')
     compileClasspath('org.jetbrains.kotlin:kotlin-reflect:1.6.0')
     compileClasspath('org.jetbrains.kotlin:kotlin-stdlib:1.6.0')
-    compileClasspath('io.projectreactor:reactor-test:3.4.13')
-    compileClasspath('org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt')
-    compileClasspath('org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.5.2-native-mt')
+    compileClasspath('io.projectreactor:reactor-test:3.4.14')
+    compileClasspath('org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0-native-mt')
+    compileClasspath('org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.6.0-native-mt')
     testCompileClasspath(group: 'org.springframework', name: 'spring-test', version: springVersion)
+
+    bundleGeneration(group: 'org.springframework', name: 'spring-web', version: springVersion)
+    bundleGeneration(group: 'org.springframework', name: 'spring-webmvc', version: springVersion)
+
+    testImplementation(group: 'org.springframework', name: 'spring-web', version: springVersion)
+    testImplementation(group: 'org.springframework', name: 'spring-webmvc', version: springVersion)
 }
 
 test {
@@ -69,6 +79,7 @@ java {
 }
 
 task generateDefaultBundle(type: JavaExec)  {
+    classpath = configurations.bundleGeneration + sourceSets.main.compileClasspath
     classpath sourceSets.main.runtimeClasspath
     main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
     args Locale.US.toString(),
@@ -78,7 +89,7 @@ task generateDefaultBundle(type: JavaExec)  {
 }
 
 task generateBundle(type: JavaExec)  {
-    dependsOn generateDefaultBundle
+    classpath = configurations.bundleGeneration + sourceSets.main.compileClasspath
     classpath sourceSets.main.runtimeClasspath
     main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
     args "ru_RU",
