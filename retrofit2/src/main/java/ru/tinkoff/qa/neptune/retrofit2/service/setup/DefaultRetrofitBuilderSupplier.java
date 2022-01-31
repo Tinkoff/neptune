@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.retrofit2.service.setup;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
-public final class DefaultRetrofitBuilderSupplier extends RetrofitBuilderSupplier {
+public class DefaultRetrofitBuilderSupplier extends RetrofitBuilderSupplier {
 
     @Override
     protected Retrofit.Builder prepareRetrofitBuilder() {
