@@ -8,7 +8,6 @@ import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -21,7 +20,7 @@ import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindByBuilder.g
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.ToStringFormer.getMultipleToString;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.WidgetPriorityComparator.widgetPriorityComparator;
 
-class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> {
+class FindWidgets<R extends Widget> extends FindElementsBuilder<R, List<R>> {
 
     private static final FindByBuilder BUILDER = new FindByBuilder();
     private static final List<Class<? extends Widget>> SCAN_RESULT = new ArrayList<>(new ClassGraph()
@@ -95,7 +94,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
                 return getMultipleToString(this);
             }
         };
-
+        //TODO информация о классах и их By должна инициализироваться до момента выполнения функции
         classesToInstantiate.forEach(clazz -> {
             var by = BUILDER.buildIt(clazz);
             result.addAll(searchContext.findElements(by).stream()
@@ -103,5 +102,9 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
                     .collect(toList()));
         });
         return result;
+    }
+
+    @Override
+    protected void buildLocator(SearchContext searchContext) {
     }
 }

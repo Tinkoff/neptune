@@ -18,7 +18,6 @@ import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.function.Function;
 
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.OR;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
@@ -37,8 +36,11 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMEN
 public final class MultipleSearchSupplier<R extends SearchContext> extends
         SequentialGetStepSupplier.GetListChainedStepSupplier<Object, List<R>, SearchContext, R, MultipleSearchSupplier<R>> {
 
-    private MultipleSearchSupplier(Function<SearchContext, List<R>> originalFunction) {
+    private final FindElementsBuilder<?, ?> findBuilder;
+
+    private MultipleSearchSupplier(FindElementsBuilder<R, List<R>> originalFunction) {
         super(originalFunction);
+        findBuilder = originalFunction;
         from(new SearchingInitialFunction());
         timeOut(ELEMENT_WAITING_DURATION.get());
         addIgnored(StaleElementReferenceException.class);
@@ -684,6 +686,36 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
     @Override
     public MultipleSearchSupplier<R> timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
+    }
+
+    public MultipleSearchSupplier<R> above(Object by) {
+        findBuilder.above(by);
+        return this;
+    }
+
+    public MultipleSearchSupplier<R> below(Object by) {
+        findBuilder.below(by);
+        return this;
+    }
+
+    public MultipleSearchSupplier<R> toLeftOf(Object by) {
+        findBuilder.toLeftOf(by);
+        return this;
+    }
+
+    public MultipleSearchSupplier<R> toRightOf(Object by) {
+        findBuilder.toRightOf(by);
+        return this;
+    }
+
+    public MultipleSearchSupplier<R> near(Object by) {
+        findBuilder.near(by);
+        return this;
+    }
+
+    public MultipleSearchSupplier<R> near(Object by, Integer distance) {
+        findBuilder.near(by, distance);
+        return this;
     }
 
     @Override

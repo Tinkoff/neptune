@@ -14,7 +14,6 @@ import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
 
 import java.time.Duration;
-import java.util.function.Function;
 
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.OR;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
@@ -36,8 +35,11 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMEN
 public final class SearchSupplier<R extends SearchContext>
         extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<Object, R, SearchContext, SearchSupplier<R>> {
 
-    private <S extends Iterable<R>> SearchSupplier(Function<SearchContext, S> originalFunction) {
+    private final FindElementsBuilder<?, ?> findBuilder;
+
+    private <S extends Iterable<R>> SearchSupplier(FindElementsBuilder<R, S> originalFunction) {
         super(originalFunction);
+        findBuilder = originalFunction;
         from(new SearchingInitialFunction());
         timeOut(ELEMENT_WAITING_DURATION.get());
         addIgnored(StaleElementReferenceException.class);
@@ -679,6 +681,36 @@ public final class SearchSupplier<R extends SearchContext>
     @Override
     public SearchSupplier<R> timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
+    }
+
+    public SearchSupplier<R> above(Object by) {
+        findBuilder.above(by);
+        return this;
+    }
+
+    public SearchSupplier<R> below(Object by) {
+        findBuilder.below(by);
+        return this;
+    }
+
+    public SearchSupplier<R> toLeftOf(Object by) {
+        findBuilder.toLeftOf(by);
+        return this;
+    }
+
+    public SearchSupplier<R> toRightOf(Object by) {
+        findBuilder.toRightOf(by);
+        return this;
+    }
+
+    public SearchSupplier<R> near(Object by) {
+        findBuilder.near(by);
+        return this;
+    }
+
+    public SearchSupplier<R> near(Object by, Integer distance) {
+        findBuilder.near(by, distance);
+        return this;
     }
 
     @Override
