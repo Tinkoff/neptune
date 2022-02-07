@@ -7,6 +7,7 @@ import com.querydsl.core.types.Predicate;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.database.abstractions.dictionary.OrderSpec;
 import ru.tinkoff.qa.neptune.database.abstractions.dictionary.PredicateParameterValueGetter;
+import ru.tinkoff.qa.neptune.hibernate.HibernateContext;
 import ru.tinkoff.qa.neptune.hibernate.select.SelectManyStepSupplier;
 import ru.tinkoff.qa.neptune.hibernate.select.querydsl.by.SelectByOrderedFunction;
 import ru.tinkoff.qa.neptune.hibernate.select.querydsl.by.SelectByPredicateFunction;
@@ -24,11 +25,11 @@ import static ru.tinkoff.qa.neptune.database.abstractions.data.serializer.DataSe
 public abstract class SelectManyByOrderSpecifiersSupplier<R, S extends SelectManyByOrderSpecifiersSupplier<R, S>>
         extends SelectManyStepSupplier<R> {
 
-    final Function<Class<R>, Iterable<R>> f;
+    final Function<HibernateContext, Iterable<R>> f;
     OrderSpecifier<?>[] orderSpecifiers = new OrderSpecifier[]{};
 
-    protected SelectManyByOrderSpecifiersSupplier(Class<R> entity, Function<Class<R>, Iterable<R>> f) {
-        super(entity, f);
+    protected SelectManyByOrderSpecifiersSupplier(Function<HibernateContext, Iterable<R>> f) {
+        super(f);
         this.f = f;
     }
 
@@ -65,8 +66,8 @@ public abstract class SelectManyByOrderSpecifiersSupplier<R, S extends SelectMan
         @StepParameter(value = "Predicate", makeReadableBy = PredicateParameterValueGetter.class, doNotReportNullValues = true)
         private Predicate predicate;
 
-        protected SelectManyByPredicateAndOrderSpecifiersSupplier(Class<R> entity, SelectByOrderedFunction<R> f) {
-            super(entity, f);
+        protected SelectManyByPredicateAndOrderSpecifiersSupplier(SelectByOrderedFunction<R> f) {
+            super(f);
         }
 
         public SelectManyByPredicateAndOrderSpecifiersSupplier<R> predicate(Predicate predicate) {
@@ -75,8 +76,10 @@ public abstract class SelectManyByOrderSpecifiersSupplier<R, S extends SelectMan
         }
 
         @Override
-        protected void onStart(Class<R> t) {
-            ((SelectByOrderedFunction<R>) f).setPredicate(predicate);
+        protected void onStart(HibernateContext context) {
+            if (predicate != null) {
+                ((SelectByOrderedFunction<R>) f).setPredicate(predicate);
+            }
             ((SelectByOrderedFunction<R>) f).setOrderSpecifiers(orderSpecifiers);
         }
     }
@@ -92,8 +95,8 @@ public abstract class SelectManyByOrderSpecifiersSupplier<R, S extends SelectMan
         @StepParameter("offset")
         int offset;
 
-        protected SelectManyByPredicateAndPageableSupplier(Class<R> entity, SelectByPredicateFunction.SelectManyByPredicateAndPagination<R> f) {
-            super(entity, f);
+        protected SelectManyByPredicateAndPageableSupplier(SelectByPredicateFunction.SelectManyByPredicateAndPagination<R> f) {
+            super(f);
             this.predicate = f.getPredicate();
         }
 
@@ -108,7 +111,7 @@ public abstract class SelectManyByOrderSpecifiersSupplier<R, S extends SelectMan
         }
 
         @Override
-        protected void onStart(Class<R> t) {
+        protected void onStart(HibernateContext context) {
             ((SelectByPredicateFunction.SelectManyByPredicateAndPagination<R>) f)
                     .setLimitOffset(limit, offset);
         }

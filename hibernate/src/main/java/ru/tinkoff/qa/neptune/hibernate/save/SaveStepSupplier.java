@@ -6,7 +6,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.database.abstractions.InsertQuery;
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
@@ -14,8 +13,6 @@ import ru.tinkoff.qa.neptune.database.abstractions.UpdateAction;
 import ru.tinkoff.qa.neptune.database.abstractions.captors.DataCaptor;
 import ru.tinkoff.qa.neptune.database.abstractions.dictionary.Update;
 import ru.tinkoff.qa.neptune.hibernate.HibernateContext;
-import ru.tinkoff.qa.neptune.hibernate.dictionary.EntityParameterValueGetter;
-import ru.tinkoff.qa.neptune.hibernate.select.HasEntityInfo;
 import ru.tinkoff.qa.neptune.hibernate.select.SelectManyStepSupplier;
 import ru.tinkoff.qa.neptune.hibernate.select.SelectOneStepSupplier;
 import ru.tinkoff.qa.neptune.hibernate.select.SetsDescription;
@@ -31,22 +28,21 @@ import static java.util.List.of;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
-@SuppressWarnings("unchecked")
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Save:")
 @CaptureOnSuccess(by = DataCaptor.class)
 public abstract class SaveStepSupplier<INPUT, RESULT, R>
-        extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<HibernateContext, RESULT, INPUT, SaveStepSupplier<INPUT, RESULT, R>>
+        extends SequentialGetStepSupplier.GetObjectStepSupplier<HibernateContext, RESULT, SaveStepSupplier<INPUT, RESULT, R>>
         implements InsertQuery<RESULT>,
         SelectQuery<RESULT> {
 
-    @StepParameter(value = "Entity", makeReadableBy = EntityParameterValueGetter.class)
-    Class<R> entity;
+    protected SaveFunction<R, RESULT> f;
+    protected INPUT toSave;
 
     List<UpdateAction<R>> updates = of();
 
-    protected SaveStepSupplier(Class<R> entity, SaveFunction<INPUT, RESULT> originalFunction) {
+    protected SaveStepSupplier(SaveFunction<R, RESULT> originalFunction) {
         super(originalFunction);
-        this.entity = entity;
+        this.f = originalFunction;
     }
 
     public static <R> SaveStepSupplier<R, R, R> save(
@@ -54,11 +50,9 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R>
             SelectOneStepSupplier<R> select) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var translated = translate(description);
-        var entity = ((HasEntityInfo<R>) select).getEntity();
         ((SetsDescription) select).changeDescription(translated);
-        return new SaveOneStepSupplier<>(entity)
-                .setDescription(translated)
-                .from(select);
+        return new SaveOneStepSupplier<>(select)
+                .setDescription(translated);
     }
 
     @Description("{description}")
@@ -69,7 +63,7 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R>
             R toSave) {
         checkArgument(isNotBlank(description), "Description should be defined");
         checkNotNull(toSave);
-        return new SaveOneStepSupplier<>((Class<R>) toSave.getClass()).from(toSave);
+        return new SaveOneStepSupplier<>(toSave);
     }
 
     public static <R> SaveStepSupplier<Iterable<R>, Iterable<R>, R> save(
@@ -77,11 +71,9 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R>
             SelectManyStepSupplier<R> select) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var translated = translate(description);
-        var entity = ((HasEntityInfo<R>) select).getEntity();
         ((SetsDescription) select).changeDescription(translated);
-        return new SaveManyStepSupplier<>(entity)
-                .setDescription(translated)
-                .from(select);
+        return new SaveManyStepSupplier<>(select)
+                .setDescription(translated);
     }
 
     @Description("{description}")
@@ -93,7 +85,7 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R>
         checkArgument(isNotBlank(description), "Description should be defined");
         checkNotNull(toSave);
         checkArgument(Iterables.size(toSave) > 0, "At leas one item to save should be defined");
-        return new SaveManyStepSupplier<>((Class<R>) toSave.iterator().next().getClass()).from(toSave);
+        return new SaveManyStepSupplier<>(toSave);
     }
 
     @Override
@@ -118,28 +110,53 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R>
     @IncludeParamsOfInnerGetterStep
     private static class SaveOneStepSupplier<R> extends SaveStepSupplier<R, R, R> {
 
-        protected SaveOneStepSupplier(Class<R> entity) {
-            super(entity, new SaveFunction.SaveOne<>());
+        protected SelectOneStepSupplier<R> select;
+
+        protected SaveOneStepSupplier(R toSave) {
+            super(new SaveFunction.SaveOne<>());
+            this.toSave = toSave;
+        }
+
+        protected SaveOneStepSupplier(SelectOneStepSupplier<R> select) {
+            super(new SaveFunction.SaveOne<>());
+            this.select = select;
         }
 
         @Override
-        protected void onStart(R r) {
-            updates.forEach(u -> u.performUpdate(of(r)));
-            super.onStart(r);
+        protected void onStart(HibernateContext context) {
+            if (select != null) {
+                toSave = select.get().apply(context);
+            }
+            f.setToSave(List.of(toSave));
+
+            updates.forEach(u -> u.performUpdate(of(toSave)));
+            super.onStart(context);
         }
     }
 
     @IncludeParamsOfInnerGetterStep
     private static class SaveManyStepSupplier<R> extends SaveStepSupplier<Iterable<R>, Iterable<R>, R> {
 
-        protected SaveManyStepSupplier(Class<R> entity) {
-            super(entity, new SaveFunction.SaveMany<>());
+        protected SelectManyStepSupplier<R> select;
+
+        protected SaveManyStepSupplier(Iterable<R> toSave) {
+            super(new SaveFunction.SaveMany<>());
+            this.toSave = toSave;
+        }
+
+        protected SaveManyStepSupplier(SelectManyStepSupplier<R> select) {
+            super(new SaveFunction.SaveMany<>());
+            this.select = select;
         }
 
         @Override
-        protected void onStart(Iterable<R> rs) {
-            updates.forEach(u -> u.performUpdate(newArrayList(rs)));
-            super.onStart(rs);
+        protected void onStart(HibernateContext context) {
+            if (select != null) {
+                toSave = select.get().apply(context);
+            }
+            f.setToSave(toSave);
+
+            updates.forEach(u -> u.performUpdate(newArrayList(toSave)));
         }
     }
 }

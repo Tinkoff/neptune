@@ -16,6 +16,7 @@ import ru.tinkoff.qa.neptune.hibernate.select.*;
 
 import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.metamodel.EntityType;
 import java.time.Duration;
 import java.util.HashSet;
@@ -81,7 +82,11 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
         return getSessionFactoryByEntity(entityCls).getCriteriaBuilder();
     }
 
-    public static SessionFactory getSessionFactoryByEntity(Class<?> entityCls) {
+    public <R> CriteriaQuery<R> getCriteriaQuery(Class<R> entityCls) {
+        return getSessionFactoryByEntity(entityCls).getCriteriaBuilder().createQuery(entityCls);
+    }
+
+    public SessionFactory getSessionFactoryByEntity(Class<?> entityCls) {
         for (var sessionFactory : context.getSessionFactories()) {
             var entities = sessionFactory.getMetamodel()
                     .getEntities()
@@ -96,7 +101,7 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
         }
 
         throw new UnknownEntityTypeException("SessionFactory for entity " + entityCls.getName() +
-                "not found");
+                " not found");
     }
 
     @Override
@@ -287,44 +292,44 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
     }
 
     @SafeVarargs
-    public final <R> R save(String description,
-                            SelectOneStepSupplier<R> select,
-                            UpdateAction<R>... updateActions) {
+    public final <R> R saveByQuery(String description,
+                                   SelectOneStepSupplier<R> select,
+                                   UpdateAction<R>... updateActions) {
         return update(SaveStepSupplier.save(description, select), updateActions);
     }
 
     @SafeVarargs
-    public final <R> Iterable<R> save(String description,
-                                      SelectManyStepSupplier<R> select,
-                                      UpdateAction<R>... updateActions) {
+    public final <R> Iterable<R> saveAllByQuery(String description,
+                                                SelectManyStepSupplier<R> select,
+                                                UpdateAction<R>... updateActions) {
         return update(SaveStepSupplier.save(description, select), updateActions);
     }
 
-
-    public <R> R save(String description, R toSave) {
+    public <R> R saveOne(String description, R toSave) {
         return insert(SaveStepSupplier.save(description, toSave));
     }
 
-    public <R> Iterable<R> save(String description, Iterable<R> toSave) {
+    public <R> Iterable<R> saveAll(String description, Iterable<R> toSave) {
         return insert(SaveStepSupplier.save(description, toSave));
     }
 
-    public <R> Iterable<R> save(String description, R... toSave) {
+    @SafeVarargs
+    public final <R> Iterable<R> saveAll(String description, R... toSave) {
         checkNotNull(toSave);
-        return save(description, asList(toSave));
+        return saveAll(description, asList(toSave));
     }
 
     @SafeVarargs
-    public final <R> R save(String description,
-                            R toSave,
-                            UpdateAction<R>... updateActions) {
+    public final <R> R saveOne(String description,
+                               R toSave,
+                               UpdateAction<R>... updateActions) {
         return update(SaveStepSupplier.save(description, toSave), updateActions);
     }
 
     @SafeVarargs
-    public final <R> Iterable<R> save(String description,
-                                      Iterable<R> toSave,
-                                      UpdateAction<R>... updateActions) {
+    public final <R> Iterable<R> saveAll(String description,
+                                         Iterable<R> toSave,
+                                         UpdateAction<R>... updateActions) {
         return update(SaveStepSupplier.save(description, toSave), updateActions);
     }
 

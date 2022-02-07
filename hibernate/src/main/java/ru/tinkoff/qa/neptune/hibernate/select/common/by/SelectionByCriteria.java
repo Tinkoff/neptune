@@ -1,20 +1,21 @@
 package ru.tinkoff.qa.neptune.hibernate.select.common.by;
 
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.hibernate.HibernateContext;
+import ru.tinkoff.qa.neptune.hibernate.HibernateFunction;
 
 import javax.persistence.criteria.CriteriaQuery;
-import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
-import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.getSessionFactoryByEntity;
 
 @Description("by JPA criteria")
-public abstract class SelectionByCriteria<R, RESULT> implements Function<Class<R>, RESULT> {
+public abstract class SelectionByCriteria<R, RESULT> extends HibernateFunction<R, RESULT> {
 
     final CriteriaQuery<R> criteriaQuery;
 
-    public SelectionByCriteria(CriteriaQuery<R> criteriaQuery) {
+    public SelectionByCriteria(Class<R> entity, CriteriaQuery<R> criteriaQuery) {
+        super(entity);
         checkNotNull(criteriaQuery);
         this.criteriaQuery = criteriaQuery;
     }
@@ -24,23 +25,23 @@ public abstract class SelectionByCriteria<R, RESULT> implements Function<Class<R
         return translate(this);
     }
 
-    public static <R> SelectASingleByCriteria<R> getSingleByCriteria(CriteriaQuery<R> criteriaQuery) {
-        return new SelectASingleByCriteria<>(criteriaQuery);
+    public static <R> SelectASingleByCriteria<R> getSingleByCriteria(Class<R> entity, CriteriaQuery<R> criteriaQuery) {
+        return new SelectASingleByCriteria<>(entity, criteriaQuery);
     }
 
-    public static <R> SelectIterableByCriteria<R> getIterableByCriteria(CriteriaQuery<R> criteriaQuery) {
-        return new SelectIterableByCriteria<>(criteriaQuery);
+    public static <R> SelectIterableByCriteria<R> getIterableByCriteria(Class<R> entity, CriteriaQuery<R> criteriaQuery) {
+        return new SelectIterableByCriteria<>(entity, criteriaQuery);
     }
 
     private static final class SelectASingleByCriteria<R> extends SelectionByCriteria<R, R> {
 
-        private SelectASingleByCriteria(CriteriaQuery<R> criteriaQuery) {
-            super(criteriaQuery);
+        private SelectASingleByCriteria(Class<R> entity, CriteriaQuery<R> criteriaQuery) {
+            super(entity, criteriaQuery);
         }
 
         @Override
-        public R apply(Class<R> t) {
-            var sessionFactory = getSessionFactoryByEntity(t);
+        public R apply(HibernateContext context) {
+            var sessionFactory = context.getSessionFactoryByEntity(entity);
             var session = sessionFactory.getCurrentSession();
 
             return session.createQuery(criteriaQuery).getSingleResult();
@@ -49,13 +50,13 @@ public abstract class SelectionByCriteria<R, RESULT> implements Function<Class<R
 
     private static final class SelectIterableByCriteria<R> extends SelectionByCriteria<R, Iterable<R>> {
 
-        private SelectIterableByCriteria(CriteriaQuery<R> criteriaQuery) {
-            super(criteriaQuery);
+        private SelectIterableByCriteria(Class<R> entity, CriteriaQuery<R> criteriaQuery) {
+            super(entity, criteriaQuery);
         }
 
         @Override
-        public Iterable<R> apply(Class<R> t) {
-            var sessionFactory = getSessionFactoryByEntity(t);
+        public Iterable<R> apply(HibernateContext context) {
+            var sessionFactory = context.getSessionFactoryByEntity(entity);
             var session = sessionFactory.getCurrentSession();
 
             return session.createQuery(criteriaQuery).getResultList();

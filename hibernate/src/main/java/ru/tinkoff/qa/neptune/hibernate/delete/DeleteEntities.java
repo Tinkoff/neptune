@@ -1,43 +1,51 @@
 package ru.tinkoff.qa.neptune.hibernate.delete;
 
-import java.util.function.Function;
+import com.google.common.base.Function;
+import ru.tinkoff.qa.neptune.hibernate.HibernateContext;
 
-import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.getSessionFactoryByEntity;
 
-abstract class DeleteEntities<INPUT> implements Function<INPUT, Void> {
+abstract class DeleteEntities<R, INPUT> implements Function<HibernateContext, Void> {
+
+    protected INPUT toDelete;
 
     private DeleteEntities() {
     }
 
-    static class DeleteOne<R> extends DeleteEntities<R> {
+    public void setToDelete(INPUT toDelete) {
+        this.toDelete = toDelete;
+    }
+
+    static class DeleteOne<R> extends DeleteEntities<R, R> {
 
         DeleteOne() {
+            super();
         }
 
         @Override
-        public Void apply(R entity) {
-            var sessionFactory = getSessionFactoryByEntity(entity.getClass());
+        public Void apply(HibernateContext context) {
+            var sessionFactory = context.getSessionFactoryByEntity(toDelete.getClass());
             var session = sessionFactory.getCurrentSession();
             session.beginTransaction();
-            session.delete(entity);
+            session.delete(toDelete);
             session.getTransaction().commit();
 
             return null;
         }
     }
 
-    static class DeleteMany<R> extends DeleteEntities<Iterable<R>> {
+    static class DeleteMany<R> extends DeleteEntities<R, Iterable<R>> {
 
         DeleteMany() {
+            super();
         }
 
         @Override
-        public Void apply(Iterable<R> entities) {
-            entities.forEach(entity -> {
-                var sessionFactory = getSessionFactoryByEntity(entity.getClass());
+        public Void apply(HibernateContext context) {
+            toDelete.forEach(toDeleteSingle -> {
+                var sessionFactory = context.getSessionFactoryByEntity(toDeleteSingle.getClass());
                 var session = sessionFactory.getCurrentSession();
                 session.beginTransaction();
-                session.delete(entity);
+                session.delete(toDeleteSingle);
                 session.getTransaction().commit();
             });
 

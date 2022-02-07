@@ -1,12 +1,8 @@
 package ru.tinkoff.qa.neptune.hibernate.select.querydsl;
 
-import com.querydsl.core.types.Expression;
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.*;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.database.abstractions.dictionary.PredicateParameterValueGetter;
-import ru.tinkoff.qa.neptune.hibernate.select.HasEntityInfo;
 import ru.tinkoff.qa.neptune.hibernate.select.SelectManyStepSupplier;
 import ru.tinkoff.qa.neptune.hibernate.select.SelectOneStepSupplier;
 import ru.tinkoff.qa.neptune.hibernate.select.SetsDescription;
@@ -19,55 +15,48 @@ public final class QueryDSLSelectStepFactory {
         super();
     }
 
-    public static <R> SelectOneStepSupplier<R> byPredicate(Class<R> entity, Predicate predicate) {
-        return new QueryDSLSelectOneStepSupplierImpl<>(entity,
-                new SelectByPredicateFunction.SelectOneByPredicate<>(predicate));
+    public static <R> SelectOneStepSupplier<R> byPredicate(Class<R> entity, EntityPath<?> entityPath, Predicate predicate) {
+        return new QueryDSLSelectOneStepSupplierImpl<>(new SelectByPredicateFunction.SelectOneByPredicate<>(entity, entityPath, predicate));
     }
 
-    public static <R> SelectManyStepSupplier<R> allByPredicate(Class<R> entity, Predicate predicate) {
-        return new QueryDSLSelectManyStepSupplierImpl<>(entity,
-                new SelectByPredicateFunction.SelectManyByPredicate<>(predicate));
+    public static <R> SelectManyStepSupplier<R> allByPredicate(Class<R> entity, EntityPath<?> entityPath, Predicate predicate) {
+        return new QueryDSLSelectManyStepSupplierImpl<>(new SelectByPredicateFunction.SelectManyByPredicate<>(entity, entityPath, predicate));
     }
 
     public static <R> SelectManyByOrderSpecifiersSupplier.SelectManyByPredicateAndOrderSpecifiersSupplier<R>
-    allOrdered(Class<R> entity, OrderSpecifier<?> orderSpecifier) {
-        return new SelectManyByPredicateAndOrderSpecifiersSupplierImpl<R>(entity).orderSpecifier(orderSpecifier);
+    allOrdered(Class<R> entity, EntityPath<?> entityPath, OrderSpecifier<?> orderSpecifier) {
+        return new SelectManyByPredicateAndOrderSpecifiersSupplierImpl<>(entity, entityPath).orderSpecifier(orderSpecifier);
     }
 
     public static <C extends Comparable<?>, R>
     SelectManyByOrderSpecifiersSupplier.SelectManyByPredicateAndOrderSpecifiersSupplier<R>
-    allOrdered(Class<R> entity, Order order, Expression<C> target, OrderSpecifier.NullHandling handling) {
-        return allOrdered(entity, new OrderSpecifier<>(order, target, handling));
+    allOrdered(Class<R> entity, EntityPath<?> entityPath, Order order, Expression<C> target, OrderSpecifier.NullHandling handling) {
+        return allOrdered(entity, entityPath, new OrderSpecifier<>(order, target, handling));
     }
 
     public static <C extends Comparable<?>, R>
     SelectManyByOrderSpecifiersSupplier.SelectManyByPredicateAndOrderSpecifiersSupplier<R>
-    allOrdered(Class<R> entity, Order order, Expression<C> target) {
-        return allOrdered(entity, new OrderSpecifier<>(order, target));
+    allOrdered(Class<R> entity, EntityPath<?> entityPath, Order order, Expression<C> target) {
+        return allOrdered(entity, entityPath, new OrderSpecifier<>(order, target));
     }
 
     public static <R>
     SelectManyByOrderSpecifiersSupplier.SelectManyByPredicateAndPageableSupplier<R>
-    asAPageByPredicate(Class<R> entity, Predicate predicate) {
-        return new SelectManyByPredicateAndPageableSupplierImpl<>(entity,
-                new SelectByPredicateFunction.SelectManyByPredicateAndPagination<>(predicate));
+    asAPageByPredicate(Class<R> entity, EntityPath<?> entityPath, Predicate predicate) {
+        return new SelectManyByPredicateAndPageableSupplierImpl<>(
+                new SelectByPredicateFunction.SelectManyByPredicateAndPagination<>(entity, entityPath, predicate));
     }
 
     private static final class QueryDSLSelectOneStepSupplierImpl<R> extends
             SelectOneStepSupplier<R>
-            implements SetsDescription, HasEntityInfo<R> {
+            implements SetsDescription {
 
         @StepParameter(value = "Predicate", makeReadableBy = PredicateParameterValueGetter.class)
         final Predicate predicate;
 
-        private QueryDSLSelectOneStepSupplierImpl(Class<R> entity, SelectByPredicateFunction<R, R> f) {
-            super(entity, f);
+        private QueryDSLSelectOneStepSupplierImpl(SelectByPredicateFunction<R, R> f) {
+            super(f);
             predicate = f.getPredicate();
-        }
-
-        @Override
-        public Class<R> getEntity() {
-            return HasEntityInfo.super.getEntity();
         }
 
         @Override
@@ -78,19 +67,14 @@ public final class QueryDSLSelectStepFactory {
 
     private static final class QueryDSLSelectManyStepSupplierImpl<R>
             extends SelectManyStepSupplier<R>
-            implements SetsDescription, HasEntityInfo<R> {
+            implements SetsDescription {
 
         @StepParameter(value = "Predicate", makeReadableBy = PredicateParameterValueGetter.class)
         final Predicate predicate;
 
-        private QueryDSLSelectManyStepSupplierImpl(Class<R> entity, SelectByPredicateFunction<R, Iterable<R>> select) {
-            super(entity, select);
+        private QueryDSLSelectManyStepSupplierImpl(SelectByPredicateFunction<R, Iterable<R>> select) {
+            super(select);
             predicate = select.getPredicate();
-        }
-
-        @Override
-        public Class<R> getEntity() {
-            return HasEntityInfo.super.getEntity();
         }
 
         @Override
@@ -101,16 +85,11 @@ public final class QueryDSLSelectStepFactory {
 
     private static class SelectManyByPredicateAndOrderSpecifiersSupplierImpl<R>
             extends SelectManyByOrderSpecifiersSupplier.SelectManyByPredicateAndOrderSpecifiersSupplier<R>
-            implements SetsDescription, HasEntityInfo<R> {
+            implements SetsDescription {
 
 
-        protected SelectManyByPredicateAndOrderSpecifiersSupplierImpl(Class<R> entity) {
-            super(entity, new SelectByOrderedFunction<>());
-        }
-
-        @Override
-        public Class<R> getEntity() {
-            return HasEntityInfo.super.getEntity();
+        protected SelectManyByPredicateAndOrderSpecifiersSupplierImpl(Class<R> entity, EntityPath<?> entityPath) {
+            super(new SelectByOrderedFunction<>(entity, entityPath));
         }
 
         @Override
@@ -121,17 +100,11 @@ public final class QueryDSLSelectStepFactory {
 
     private static class SelectManyByPredicateAndPageableSupplierImpl<R>
             extends SelectManyByOrderSpecifiersSupplier.SelectManyByPredicateAndPageableSupplier<R>
-            implements SetsDescription, HasEntityInfo<R> {
+            implements SetsDescription {
 
 
-        protected SelectManyByPredicateAndPageableSupplierImpl(Class<R> entity,
-                                                               SelectByPredicateFunction.SelectManyByPredicateAndPagination<R> f) {
-            super(entity, f);
-        }
-
-        @Override
-        public Class<R> getEntity() {
-            return HasEntityInfo.super.getEntity();
+        protected SelectManyByPredicateAndPageableSupplierImpl(SelectByPredicateFunction.SelectManyByPredicateAndPagination<R> f) {
+            super(f);
         }
 
         @Override

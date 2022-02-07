@@ -1,25 +1,30 @@
 package ru.tinkoff.qa.neptune.hibernate.select.querydsl.by;
 
+import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.hibernate.HibernateQuery;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.hibernate.HibernateContext;
+import ru.tinkoff.qa.neptune.hibernate.HibernateFunction;
 
 import java.util.List;
-import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
-import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.getSessionFactoryByEntity;
 
 @Description("By predicate")
 @SuppressWarnings("unchecked")
-public abstract class SelectByPredicateFunction<R, RESULT> implements Function<Class<R>, RESULT> {
+public abstract class SelectByPredicateFunction<R, RESULT> extends HibernateFunction<R, RESULT> {
 
     final Predicate predicate;
+    final EntityPath<?> entityPath;
 
-    public SelectByPredicateFunction(Predicate predicate) {
+    public SelectByPredicateFunction(Class<R> entity, EntityPath<?> entityPath, Predicate predicate) {
+        super(entity);
+        checkNotNull(entityPath);
         checkNotNull(predicate);
         this.predicate = predicate;
+        this.entityPath = entityPath;
     }
 
     public Predicate getPredicate() {
@@ -33,31 +38,37 @@ public abstract class SelectByPredicateFunction<R, RESULT> implements Function<C
 
     public static final class SelectOneByPredicate<R> extends SelectByPredicateFunction<R, R> {
 
-        public SelectOneByPredicate(Predicate predicate) {
-            super(predicate);
+        public SelectOneByPredicate(Class<R> entity, EntityPath<?> entityPath, Predicate predicate) {
+            super(entity, entityPath, predicate);
         }
 
         @Override
-        public R apply(Class<R> t) {
-            var sessionFactory = getSessionFactoryByEntity(t);
+        public R apply(HibernateContext context) {
+            var sessionFactory = context.getSessionFactoryByEntity(entity);
             var session = sessionFactory.getCurrentSession();
 
-            return (R) new HibernateQuery<>(session).select(predicate).fetchOne();
+            return (R) new HibernateQuery<>(session)
+                    .select(predicate)
+                    .from(entityPath)
+                    .fetchOne();
         }
     }
 
     public static final class SelectManyByPredicate<R> extends SelectByPredicateFunction<R, Iterable<R>> {
 
-        public SelectManyByPredicate(Predicate predicate) {
-            super(predicate);
+        public SelectManyByPredicate(Class<R> entity, EntityPath<?> entityPath, Predicate predicate) {
+            super(entity, entityPath, predicate);
         }
 
         @Override
-        public Iterable<R> apply(Class<R> t) {
-            var sessionFactory = getSessionFactoryByEntity(t);
+        public Iterable<R> apply(HibernateContext context) {
+            var sessionFactory = context.getSessionFactoryByEntity(entity);
             var session = sessionFactory.getCurrentSession();
 
-            return (List<R>) new HibernateQuery<>(session).select(predicate).fetch();
+            return (List<R>) new HibernateQuery<>(session)
+                    .select(predicate)
+                    .from(entityPath)
+                    .fetch();
         }
     }
 
@@ -67,16 +78,21 @@ public abstract class SelectByPredicateFunction<R, RESULT> implements Function<C
         private int limit;
         private int offset;
 
-        public SelectManyByPredicateAndPagination(Predicate predicate) {
-            super(predicate);
+        public SelectManyByPredicateAndPagination(Class<R> entity, EntityPath<?> entityPath, Predicate predicate) {
+            super(entity, entityPath, predicate);
         }
 
         @Override
-        public Iterable<R> apply(Class<R> t) {
-            var sessionFactory = getSessionFactoryByEntity(t);
+        public Iterable<R> apply(HibernateContext context) {
+            var sessionFactory = context.getSessionFactoryByEntity(entity);
             var session = sessionFactory.getCurrentSession();
 
-            return (List<R>) new HibernateQuery<>(session).select(predicate).limit(limit).offset(offset).fetch();
+            return (List<R>) new HibernateQuery<>(session)
+                    .select(predicate)
+                    .from(entityPath)
+                    .limit(limit)
+                    .offset(offset)
+                    .fetch();
         }
 
 

@@ -7,13 +7,10 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
 import ru.tinkoff.qa.neptune.database.abstractions.captors.DataCaptor;
 import ru.tinkoff.qa.neptune.hibernate.HibernateContext;
-import ru.tinkoff.qa.neptune.hibernate.dictionary.EntityParameterValueGetter;
-import ru.tinkoff.qa.neptune.hibernate.select.HasEntityInfo;
 import ru.tinkoff.qa.neptune.hibernate.select.SelectManyStepSupplier;
 import ru.tinkoff.qa.neptune.hibernate.select.SelectOneStepSupplier;
 import ru.tinkoff.qa.neptune.hibernate.select.SetsDescription;
@@ -31,23 +28,22 @@ import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.trans
 import static ru.tinkoff.qa.neptune.database.abstractions.data.serializer.DataSerializer.serializeObject;
 import static ru.tinkoff.qa.neptune.database.abstractions.data.serializer.DataSerializer.serializeObjects;
 
-@SuppressWarnings("unchecked")
 @IncludeParamsOfInnerGetterStep
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Delete:")
-public final class DeleteByQueryStepSupplier<R, TO_DELETE>
-        extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<HibernateContext, Void, TO_DELETE, DeleteByQueryStepSupplier<R, TO_DELETE>>
+public abstract class DeleteByQueryStepSupplier<R, TO_DELETE>
+        extends SequentialGetStepSupplier.GetObjectStepSupplier<HibernateContext, Void, DeleteByQueryStepSupplier<R, TO_DELETE>>
         implements SelectQuery<Void> {
 
-    @StepParameter(value = "Entity", makeReadableBy = EntityParameterValueGetter.class)
-    Class<R> entity;
+    protected DeleteEntities<R, TO_DELETE> f;
+    protected TO_DELETE toDelete;
 
     @CaptureOnSuccess(by = DataCaptor.class)
     @CaptureOnFailure(by = DataCaptor.class)
     List<String> deleted;
 
-    private DeleteByQueryStepSupplier(Class<R> entity, DeleteEntities<TO_DELETE> f) {
+    private DeleteByQueryStepSupplier(DeleteEntities<R, TO_DELETE> f) {
         super(f);
-        this.entity = entity;
+        this.f = f;
     }
 
     public static <R> DeleteByQueryStepSupplier<R, R> delete(
@@ -55,11 +51,9 @@ public final class DeleteByQueryStepSupplier<R, TO_DELETE>
             SelectOneStepSupplier<R> select) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var translated = translate(description);
-        var entity = ((HasEntityInfo<R>) select).getEntity();
         ((SetsDescription) select).changeDescription(translated);
-        return new DeleteByQueryStepSupplier<R, R>(entity, new DeleteEntities.DeleteOne<>())
-                .setDescription(translated)
-                .from(select);
+        return new DeleteOneStepSupplier<>(select)
+                .setDescription(translated);
     }
 
     @Description("{description}")
@@ -70,8 +64,7 @@ public final class DeleteByQueryStepSupplier<R, TO_DELETE>
             R toDelete) {
         checkArgument(isNotBlank(description), "Description should be defined");
         checkNotNull(toDelete);
-        return new DeleteByQueryStepSupplier<R, R>((Class<R>) toDelete.getClass(), new DeleteEntities.DeleteOne<>())
-                .from(toDelete);
+        return new DeleteOneStepSupplier<>(toDelete);
     }
 
     public static <R> DeleteByQueryStepSupplier<R, Iterable<R>> delete(
@@ -79,11 +72,9 @@ public final class DeleteByQueryStepSupplier<R, TO_DELETE>
             SelectManyStepSupplier<R> select) {
         checkArgument(isNotBlank(description), "Description should be defined");
         var translated = translate(description);
-        var entity = ((HasEntityInfo<R>) select).getEntity();
         ((SetsDescription) select).changeDescription(translated);
-        return new DeleteByQueryStepSupplier<R, Iterable<R>>(entity, new DeleteEntities.DeleteMany<>())
-                .setDescription(translated)
-                .from(select);
+        return new DeleteManyStepSupplier<>(select)
+                .setDescription(translated);
     }
 
     @Description("{description}")
@@ -95,13 +86,63 @@ public final class DeleteByQueryStepSupplier<R, TO_DELETE>
         checkArgument(isNotBlank(description), "Description should be defined");
         checkNotNull(toDelete);
         checkArgument(Iterables.size(toDelete) > 0, "At leas one item to delete should be defined");
-        return new DeleteByQueryStepSupplier<R, Iterable<R>>((Class<R>) toDelete.iterator().next().getClass(),
-                new DeleteEntities.DeleteMany<>())
-                .from(toDelete);
+        return new DeleteManyStepSupplier<>(toDelete);
+    }
+
+    @IncludeParamsOfInnerGetterStep
+    private static class DeleteOneStepSupplier<R> extends DeleteByQueryStepSupplier<R, R> {
+
+        protected SelectOneStepSupplier<R> select;
+
+        protected DeleteOneStepSupplier(R toDelete) {
+            super(new DeleteEntities.DeleteOne<>());
+            this.toDelete = toDelete;
+        }
+
+        protected DeleteOneStepSupplier(SelectOneStepSupplier<R> select) {
+            super(new DeleteEntities.DeleteOne<>());
+            this.select = select;
+        }
+
+        @Override
+        protected void onStart(HibernateContext context) {
+            if (select != null) {
+                toDelete = select.get().apply(context);
+            }
+            f.setToDelete(toDelete);
+
+            super.onStart(context);
+        }
+    }
+
+    @IncludeParamsOfInnerGetterStep
+    private static class DeleteManyStepSupplier<R> extends DeleteByQueryStepSupplier<R, Iterable<R>> {
+
+        protected SelectManyStepSupplier<R> select;
+
+        protected DeleteManyStepSupplier(Iterable<R> toDelete) {
+            super(new DeleteEntities.DeleteMany<>());
+            this.toDelete = toDelete;
+        }
+
+        protected DeleteManyStepSupplier(SelectManyStepSupplier<R> select) {
+            super(new DeleteEntities.DeleteMany<>());
+            this.select = select;
+        }
+
+        @Override
+        protected void onStart(HibernateContext context) {
+            if (select != null) {
+                toDelete = select.get().apply(context);
+            }
+            f.setToDelete(toDelete);
+
+            super.onStart(context);
+        }
     }
 
     @Override
-    protected void onStart(TO_DELETE toDelete) {
+    protected void onStart(HibernateContext context) {
         if (isNull(toDelete)) {
             return;
         }

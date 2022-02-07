@@ -1,16 +1,16 @@
 package ru.tinkoff.qa.neptune.hibernate.select.common.by;
 
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
-
-import java.util.function.Function;
+import ru.tinkoff.qa.neptune.hibernate.HibernateContext;
+import ru.tinkoff.qa.neptune.hibernate.HibernateFunction;
 
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
-import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.getSessionFactoryByEntity;
 
 @Description("all")
-public final class SelectAll<R> implements Function<Class<R>, Iterable<R>> {
+public final class SelectAll<R> extends HibernateFunction<R, Iterable<R>> {
 
-    public SelectAll() {
+    public SelectAll(Class<R> entity) {
+        super(entity);
     }
 
     @Override
@@ -19,10 +19,10 @@ public final class SelectAll<R> implements Function<Class<R>, Iterable<R>> {
     }
 
     @Override
-    public Iterable<R> apply(Class<R> t) {
-        var sessionFactory = getSessionFactoryByEntity(t);
+    public Iterable<R> apply(HibernateContext context) {
+        var sessionFactory = context.getSessionFactoryByEntity(entity);
         var session = sessionFactory.getCurrentSession();
-        var criteria = sessionFactory.getCriteriaBuilder().createQuery(t);
+        var criteria = session.getCriteriaBuilder().createQuery(entity);
 
         return session.createQuery(criteria).getResultList();
     }

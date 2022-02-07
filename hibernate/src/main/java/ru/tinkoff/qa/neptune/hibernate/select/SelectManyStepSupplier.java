@@ -7,11 +7,9 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
 import ru.tinkoff.qa.neptune.database.abstractions.captors.DataCaptor;
 import ru.tinkoff.qa.neptune.hibernate.HibernateContext;
-import ru.tinkoff.qa.neptune.hibernate.dictionary.EntityParameterValueGetter;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -23,43 +21,28 @@ import static ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntities.get
 import static ru.tinkoff.qa.neptune.hibernate.select.GetIterableItemFromEntities.getIterableItemFromEntities;
 import static ru.tinkoff.qa.neptune.hibernate.select.GetListFromEntities.getListFromEntities;
 
-@SuppressWarnings("unchecked")
 @MaxDepthOfReporting(0)
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Select:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time to select required entities")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Entity criteria")
 @CaptureOnSuccess(by = DataCaptor.class)
 public abstract class SelectManyStepSupplier<R>
-        extends SequentialGetStepSupplier.GetListChainedStepSupplier<HibernateContext, Iterable<R>, Class<R>, R, SelectManyStepSupplier<R>>
-        implements SelectQuery<List<R>> {
+        extends SequentialGetStepSupplier.GetListStepSupplier<HibernateContext, Iterable<R>, R,
+        SelectManyStepSupplier<R>> implements SelectQuery<List<R>> {
 
-    @StepParameter(value = "Entity", makeReadableBy = EntityParameterValueGetter.class)
-    Class<R> entity;
+    final Function<HibernateContext, Iterable<R>> f;
 
     @StepParameter(value = "selected by")
-    final Function<Class<R>, Iterable<R>> select;
+    final String select;
 
-    private final SelectionAdditionalArgumentsFactory additionalArgumentsFactory;
-
-    public SelectManyStepSupplier(Class<R> entity, Function<Class<R>, Iterable<R>> select) {
+    public SelectManyStepSupplier(Function<HibernateContext, Iterable<R>> select) {
         super(select);
         checkNotNull(select);
-        this.select = select;
-        additionalArgumentsFactory = new SelectionAdditionalArgumentsFactory(select);
+        this.select = select.toString();
+        this.f = select;
         addIgnored(Throwable.class);
         timeOut(HIBERNATE_WAITING_FOR_SELECTION_RESULT_TIME.get());
         pollingInterval(HIBERNATE_SLEEPING_TIME.get());
-        from(entity);
-    }
-
-    @Override
-    protected SelectManyStepSupplier<R> from(Class<R> from) {
-        entity = from;
-        return super.from(from);
-    }
-
-    Class<R> getEntity() {
-        return (Class<R>) getFrom();
     }
 
     @Override
@@ -76,11 +59,6 @@ public abstract class SelectManyStepSupplier<R>
     @Override
     public SelectManyStepSupplier<R> pollingInterval(Duration pollingTime) {
         return super.pollingInterval(pollingTime);
-    }
-
-    @Override
-    protected Map<String, String> additionalParameters() {
-        return additionalArgumentsFactory.getAdditionalParameters();
     }
 
     public <ITEM> GetIterableFromEntities<ITEM, R> thenGetIterable(Function<R, ITEM> f) {

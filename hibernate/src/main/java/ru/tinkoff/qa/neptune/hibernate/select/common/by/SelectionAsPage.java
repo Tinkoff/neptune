@@ -1,22 +1,23 @@
 package ru.tinkoff.qa.neptune.hibernate.select.common.by;
 
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.hibernate.HibernateContext;
+import ru.tinkoff.qa.neptune.hibernate.HibernateFunction;
 
 import javax.persistence.criteria.Order;
 import java.util.List;
-import java.util.function.Function;
 
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
-import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.getSessionFactoryByEntity;
 
 @Description("As page")
-public final class SelectionAsPage<R> implements Function<Class<R>, Iterable<R>> {
+public final class SelectionAsPage<R> extends HibernateFunction<R, Iterable<R>> {
 
     private int limit;
     private int offset;
     private List<Order> orders;
 
-    public SelectionAsPage() {
+    public SelectionAsPage(Class<R> entity) {
+        super(entity);
     }
 
     @Override
@@ -25,12 +26,12 @@ public final class SelectionAsPage<R> implements Function<Class<R>, Iterable<R>>
     }
 
     @Override
-    public Iterable<R> apply(Class<R> t) {
-        var sessionFactory = getSessionFactoryByEntity(t);
+    public Iterable<R> apply(HibernateContext context) {
+        var sessionFactory = context.getSessionFactoryByEntity(entity);
         var session = sessionFactory.getCurrentSession();
         var criteriaBuilder = session.getCriteriaBuilder();
 
-        var criteria = criteriaBuilder.createQuery(t);
+        var criteria = criteriaBuilder.createQuery(entity);
 
         if (orders != null) {
             orders.forEach(order -> criteria.orderBy(orders));

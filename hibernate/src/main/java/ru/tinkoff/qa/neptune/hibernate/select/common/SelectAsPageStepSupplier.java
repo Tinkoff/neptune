@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.hibernate.select.common;
 
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.hibernate.HibernateContext;
 import ru.tinkoff.qa.neptune.hibernate.select.SelectManyStepSupplier;
 import ru.tinkoff.qa.neptune.hibernate.select.common.by.SelectionAsPage;
 
@@ -19,8 +20,8 @@ public abstract class SelectAsPageStepSupplier<R> extends SelectManyStepSupplier
     @StepParameter("orders")
     List<Order> orders;
 
-    protected SelectAsPageStepSupplier(Class<R> entity, SelectionAsPage<R> select) {
-        super(entity, select);
+    protected SelectAsPageStepSupplier(SelectionAsPage<R> select) {
+        super(select);
         this.select = select;
     }
 
@@ -45,13 +46,12 @@ public abstract class SelectAsPageStepSupplier<R> extends SelectManyStepSupplier
     }
 
     @Override
-    protected void onStart(Class<R> t) {
+    protected void onStart(HibernateContext context) {
         if (nonNull(orders)) {
             select.setLimitOffset(limit, offset, orders);
         } else {
             select.setLimitOffset(limit, offset);
         }
-        super.onStart(t);
+        super.onStart(context);
     }
-
 }

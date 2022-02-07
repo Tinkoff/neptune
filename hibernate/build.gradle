@@ -20,8 +20,10 @@ dependencies {
     compileClasspath(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
     compileClasspath(group: 'com.querydsl', name: 'querydsl-jpa', version: '5.0.0')
 
-    testImplementation(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
-    testImplementation(group: 'com.querydsl', name: 'querydsl-jpa', version: '5.0.0')
+    testImplementation group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0'
+    testImplementation group: 'com.querydsl', name: 'querydsl-jpa', version: '5.0.0'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.3.1'
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: '4.3.1'
 
     bundleGeneration(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
 }

@@ -1,12 +1,11 @@
 package ru.tinkoff.qa.neptune.hibernate.select.common;
 
-import ru.tinkoff.qa.neptune.hibernate.select.HasEntityInfo;
+import ru.tinkoff.qa.neptune.hibernate.HibernateContext;
 import ru.tinkoff.qa.neptune.hibernate.select.SelectManyStepSupplier;
 import ru.tinkoff.qa.neptune.hibernate.select.SelectOneStepSupplier;
 import ru.tinkoff.qa.neptune.hibernate.select.SetsDescription;
 import ru.tinkoff.qa.neptune.hibernate.select.common.by.SelectAll;
 import ru.tinkoff.qa.neptune.hibernate.select.common.by.SelectionAsPage;
-import ru.tinkoff.qa.neptune.hibernate.select.common.by.SelectionByMethod;
 import ru.tinkoff.qa.neptune.hibernate.select.common.by.SelectionByOrder;
 
 import javax.persistence.criteria.CriteriaQuery;
@@ -30,20 +29,20 @@ public final class CommonSelectStepFactory {
     }
 
     public static <R, ID extends Serializable> SelectOneStepSupplier<R> byId(Class<R> entity, ID id) {
-        return new CommonSelectOneStepSupplierImpl<>(entity, getSingleById(id));
+        return new CommonSelectOneStepSupplierImpl<>(getSingleById(entity, id));
     }
 
     public static <R, ID extends Serializable> SelectManyStepSupplier<R> byIds(Class<R> entity, ID... ids) {
-        return new CommonSelectManyStepSupplierImpl<>(entity, getIterableByIds(ids));
+        return new CommonSelectManyStepSupplierImpl<>(getIterableByIds(entity, ids));
     }
 
     public static <R> SelectManyStepSupplier<R> all(Class<R> entity) {
-        return new CommonSelectManyStepSupplierImpl<>(entity, new SelectAll<>());
+        return new CommonSelectManyStepSupplierImpl<>(new SelectAll<>(entity));
     }
 
     public static <R> SelectManyStepSupplier<R> allByOrder(Class<R> entity,
                                                            List<Order> orders) {
-        return new CommonSelectManyStepSupplierImpl<>(entity, new SelectionByOrder<>(orders));
+        return new CommonSelectManyStepSupplierImpl<>(new SelectionByOrder<>(entity, orders));
     }
 
     public static <R> SelectManyStepSupplier<R> allByOrder(Class<R> entity,
@@ -52,44 +51,31 @@ public final class CommonSelectStepFactory {
     }
 
     public static <R> SelectAsPageStepSupplier<R> asAPage(Class<R> entity) {
-        return new CommonSelectAsPageStepSupplier<>(entity, new SelectionAsPage<>());
-    }
-
-    public static <R> SelectOneStepSupplier<R> byInvocation(Class<R> entity, Function<Class<R>, R> f) {
-        return new CommonSelectOneStepSupplierImpl<>(entity, new SelectionByMethod<>(f));
-    }
-
-    public static <R, S extends Iterable<R>> SelectManyStepSupplier<R> allByInvocation(Class<R> entity, Function<Class<R>, S> f) {
-        return new CommonSelectManyStepSupplierImpl<>(entity, new SelectionByMethod<>((Function<Class<R>, Iterable<R>>) f));
+        return new CommonSelectAsPageStepSupplier<>(new SelectionAsPage<>(entity));
     }
 
     public static <R> SelectOneStepSupplier<R> byCriteria(Class<R> entity, CriteriaQuery<R> criteriaQuery) {
-        return new CommonSelectOneStepSupplierImpl<>(entity, getSingleByCriteria(criteriaQuery));
+        return new CommonSelectOneStepSupplierImpl<>(getSingleByCriteria(entity, criteriaQuery));
     }
 
     public static <R> SelectManyStepSupplier<R> allByCriteria(Class<R> entity, CriteriaQuery<R> criteriaQuery) {
-        return new CommonSelectManyStepSupplierImpl<>(entity, getIterableByCriteria(criteriaQuery));
+        return new CommonSelectManyStepSupplierImpl<>(getIterableByCriteria(entity, criteriaQuery));
     }
 
     public static <R> SelectOneStepSupplier<R> byQuery(Class<R> entity, String query, Object... parameters) {
-        return new CommonSelectOneStepSupplierImpl<>(entity, getSingleByQuery(query, parameters));
+        return new CommonSelectOneStepSupplierImpl<>(getSingleByQuery(entity, query, parameters));
     }
 
     public static <R> SelectManyStepSupplier<R> allByQuery(Class<R> entity, String query, Object... parameters) {
-        return new CommonSelectManyStepSupplierImpl<>(entity, getIterableByQuery(query, parameters));
+        return new CommonSelectManyStepSupplierImpl<>(getIterableByQuery(entity, query, parameters));
     }
 
     private static final class CommonSelectOneStepSupplierImpl<R> extends
             SelectOneStepSupplier<R>
-            implements SetsDescription, HasEntityInfo<R> {
+            implements SetsDescription {
 
-        private CommonSelectOneStepSupplierImpl(Class<R> entity, Function<Class<R>, R> select) {
-            super(entity, select);
-        }
-
-        @Override
-        public Class<R> getEntity() {
-            return HasEntityInfo.super.getEntity();
+        private CommonSelectOneStepSupplierImpl(Function<HibernateContext, R> select) {
+            super(select);
         }
 
         @Override
@@ -100,15 +86,10 @@ public final class CommonSelectStepFactory {
 
     private static final class CommonSelectManyStepSupplierImpl<R>
             extends SelectManyStepSupplier<R>
-            implements SetsDescription, HasEntityInfo<R> {
+            implements SetsDescription {
 
-        private CommonSelectManyStepSupplierImpl(Class<R> entity, Function<Class<R>, Iterable<R>> select) {
-            super(entity, select);
-        }
-
-        @Override
-        public Class<R> getEntity() {
-            return HasEntityInfo.super.getEntity();
+        private CommonSelectManyStepSupplierImpl(Function<HibernateContext, Iterable<R>> select) {
+            super(select);
         }
 
         @Override
@@ -119,15 +100,10 @@ public final class CommonSelectStepFactory {
 
     private static final class CommonSelectAsPageStepSupplier<R>
             extends SelectAsPageStepSupplier<R>
-            implements SetsDescription, HasEntityInfo<R> {
+            implements SetsDescription {
 
-        private CommonSelectAsPageStepSupplier(Class<R> entity, SelectionAsPage<R> select) {
-            super(entity, select);
-        }
-
-        @Override
-        public Class<R> getEntity() {
-            return HasEntityInfo.super.getEntity();
+        private CommonSelectAsPageStepSupplier(SelectionAsPage<R> select) {
+            super(select);
         }
 
         @Override

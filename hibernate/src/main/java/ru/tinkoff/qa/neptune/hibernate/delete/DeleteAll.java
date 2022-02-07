@@ -1,20 +1,21 @@
 package ru.tinkoff.qa.neptune.hibernate.delete;
 
-import java.util.function.Function;
+import ru.tinkoff.qa.neptune.hibernate.HibernateContext;
+import ru.tinkoff.qa.neptune.hibernate.HibernateFunction;
 
-import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.getSessionFactoryByEntity;
 
-public final class DeleteAll<R> implements Function<Class<R>, Void> {
+public final class DeleteAll<R> extends HibernateFunction<R, Void> {
 
-    DeleteAll() {
+    DeleteAll(Class<R> entity) {
+        super(entity);
     }
 
     @Override
-    public Void apply(Class<R> entityCls) {
-        var sessionFactory = getSessionFactoryByEntity(entityCls);
+    public Void apply(HibernateContext context) {
+        var sessionFactory = context.getSessionFactoryByEntity(entity);
         var session = sessionFactory.getCurrentSession();
         session.beginTransaction();
-        var criteriaDelete = session.getCriteriaBuilder().createCriteriaDelete(entityCls);
+        var criteriaDelete = session.getCriteriaBuilder().createCriteriaDelete(entity);
         session.createQuery(criteriaDelete).executeUpdate();
         session.getTransaction().commit();
 

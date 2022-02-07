@@ -1,59 +1,76 @@
 package ru.tinkoff.qa.neptune.hibernate.save;
 
-import java.util.ArrayList;
-import java.util.function.Function;
+import com.google.common.base.Function;
+import org.hibernate.Session;
+import ru.tinkoff.qa.neptune.hibernate.HibernateContext;
 
-import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.getSessionFactoryByEntity;
+import java.util.ArrayList;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 @SuppressWarnings("unchecked")
-public abstract class SaveFunction<INPUT, RESULT> implements Function<INPUT, RESULT> {
+public abstract class SaveFunction<R, RESULT> implements Function<HibernateContext, RESULT> {
+
+    protected Iterable<R> listToSave;
 
     private SaveFunction() {
     }
 
-    public static <R> R saveObject(R toSave) {
-        var sessionFactory = getSessionFactoryByEntity(toSave.getClass());
+    public void setToSave(Iterable<R> listToSave) {
+        checkNotNull(listToSave);
+        this.listToSave = listToSave;
+    }
 
-        var session = sessionFactory.getCurrentSession();
-        var persistenceUnitUtil = sessionFactory.getPersistenceUnitUtil();
-        session.beginTransaction();
+    public void saveObjects(HibernateContext context) {
+        var savedList = new ArrayList<R>();
+        var sessions = new ArrayList<Session>();
 
-        if (persistenceUnitUtil.getIdentifier(toSave) != null) {
-            session.saveOrUpdate(toSave);
-        } else {
-            var id = session.save(toSave);
-            toSave = (R) session.get(toSave.getClass(), id);
+        for (var toSave : listToSave) {
+            var sessionFactory = context.getSessionFactoryByEntity(toSave.getClass());
+            var session = sessionFactory.getCurrentSession();
+            sessions.add(session);
+            var persistenceUnitUtil = sessionFactory.getPersistenceUnitUtil();
+            session.beginTransaction();
+
+            if (persistenceUnitUtil.getIdentifier(toSave) != null) {
+                session.saveOrUpdate(toSave);
+            } else {
+                var id = session.save(toSave);
+                toSave = (R) session.get(toSave.getClass(), id);
+            }
+            savedList.add(toSave);
         }
 
-        session.getTransaction().commit();
-        return toSave;
+        for (var session : sessions) {
+            session.getTransaction().commit();
+        }
+
+        listToSave = savedList;
     }
 
     static class SaveOne<R> extends SaveFunction<R, R> {
 
         SaveOne() {
+            super();
         }
 
         @Override
-        public R apply(R toSave) {
-            return saveObject(toSave);
+        public R apply(HibernateContext context) {
+            saveObjects(context);
+            return listToSave.iterator().next();
         }
     }
 
-    static class SaveMany<R> extends SaveFunction<Iterable<R>, Iterable<R>> {
+    static class SaveMany<R> extends SaveFunction<R, Iterable<R>> {
 
         SaveMany() {
+            super();
         }
 
         @Override
-        public Iterable<R> apply(Iterable<R> toSave) {
-            var savedList = new ArrayList<R>();
-
-            for (var objToSave : toSave) {
-                savedList.add(saveObject(objToSave));
-            }
-
-            return savedList;
+        public Iterable<R> apply(HibernateContext context) {
+            saveObjects(context);
+            return listToSave;
         }
     }
 }

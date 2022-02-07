@@ -7,10 +7,8 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
 import ru.tinkoff.qa.neptune.database.abstractions.captors.DataCaptor;
 import ru.tinkoff.qa.neptune.hibernate.HibernateContext;
-import ru.tinkoff.qa.neptune.hibernate.dictionary.EntityParameterValueGetter;
 
 import java.time.Duration;
-import java.util.Map;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -25,43 +23,28 @@ import static ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntity.getIt
 import static ru.tinkoff.qa.neptune.hibernate.select.GetListFromEntity.getListFromEntity;
 import static ru.tinkoff.qa.neptune.hibernate.select.GetObjectFromEntity.getObjectFromEntity;
 
-@SuppressWarnings("unchecked")
 @MaxDepthOfReporting(0)
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Select:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time to select required entity")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Entity criteria")
 @CaptureOnSuccess(by = DataCaptor.class)
 public abstract class SelectOneStepSupplier<R>
-        extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<HibernateContext, R, Class<R>, SelectOneStepSupplier<R>>
+        extends SequentialGetStepSupplier.GetObjectStepSupplier<HibernateContext, R, SelectOneStepSupplier<R>>
         implements SelectQuery<R> {
 
-    @StepParameter(value = "Entity", makeReadableBy = EntityParameterValueGetter.class)
-    Class<R> entity;
+    final Function<HibernateContext, R> f;
 
     @StepParameter(value = "selected by")
-    final Function<Class<R>, R> select;
+    final String select;
 
-    private final SelectionAdditionalArgumentsFactory additionalArgumentsFactory;
-
-    protected SelectOneStepSupplier(Class<R> entity, Function<Class<R>, R> select) {
+    protected SelectOneStepSupplier(Function<HibernateContext, R> select) {
         super(select);
         checkNotNull(select);
-        this.select = select;
-        additionalArgumentsFactory = new SelectionAdditionalArgumentsFactory(select);
+        this.select = select.toString();
+        this.f = select;
         addIgnored(Throwable.class);
         timeOut(HIBERNATE_WAITING_FOR_SELECTION_RESULT_TIME.get());
         pollingInterval(HIBERNATE_SLEEPING_TIME.get());
-        from(entity);
-    }
-
-    @Override
-    protected SelectOneStepSupplier<R> from(Class<R> from) {
-        entity = from;
-        return super.from(from);
-    }
-
-    Class<R> getEntity() {
-        return (Class<R>) getFrom();
     }
 
     @Override
@@ -78,11 +61,6 @@ public abstract class SelectOneStepSupplier<R>
     @Override
     public SelectOneStepSupplier<R> pollingInterval(Duration pollingTime) {
         return super.pollingInterval(pollingTime);
-    }
-
-    @Override
-    protected Map<String, String> additionalParameters() {
-        return additionalArgumentsFactory.getAdditionalParameters();
     }
 
     public <S> GetObjectFromEntity<S, R> thenGetObject(Function<R, S> f) {
