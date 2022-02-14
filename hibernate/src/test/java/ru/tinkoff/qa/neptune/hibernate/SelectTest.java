@@ -4,13 +4,14 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.hibernate.HibernateQuery;
 import org.hibernate.query.Query;
-import org.mockito.Mock;
 import org.mockito.MockedConstruction;
+import org.mockito.Mockito;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.hibernate.model.QTestEntity;
 import ru.tinkoff.qa.neptune.hibernate.model.TestEntity;
 
+import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
@@ -21,45 +22,51 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.when;
 import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate;
 import static ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.*;
-import static ru.tinkoff.qa.neptune.hibernate.select.querydsl.QueryDSLSelectStepFactory.*;
+import static ru.tinkoff.qa.neptune.hibernate.select.querydsl.QueryDSLSelectStepFactory.allByPredicate;
+import static ru.tinkoff.qa.neptune.hibernate.select.querydsl.QueryDSLSelectStepFactory.allOrdered;
+import static ru.tinkoff.qa.neptune.hibernate.select.querydsl.QueryDSLSelectStepFactory.asAPageByPredicate;
+import static ru.tinkoff.qa.neptune.hibernate.select.querydsl.QueryDSLSelectStepFactory.byPredicate;
 
 @SuppressWarnings("rawtypes, unchecked")
 public class SelectTest extends BaseHibernateTest {
 
     private static final List<TestEntity> TEST_ENTITIES_COPY = new ArrayList<>(List.copyOf(TEST_ENTITIES));
 
-    @Mock
     private CriteriaQuery<TestEntity> orderedCriteriaQuery;
-    @Mock
     private Query<TestEntity> selectAllQuery;
-    @Mock
     private Query<TestEntity> selectSingleQuery;
-    @Mock
     private Query<TestEntity> selectMultipleQuery;
-    @Mock
     private Query<TestEntity> selectOrderedQuery;
-    @Mock
     private Root<TestEntity> root;
-    @Mock
     private Path<Object> idPath;
-    @Mock
     private Path<Object> namePath;
-    @Mock
     private Predicate expression;
-    @Mock
     private javax.persistence.criteria.Order order;
-    @Mock
     private HibernateQuery returnOneQuery;
-    @Mock
     private HibernateQuery returnManyQuery;
 
+    @Override
     @BeforeClass
     public void prepareClass() {
         super.prepareClass();
+
+        orderedCriteriaQuery = mock(CriteriaQuery.class);
+        selectAllQuery = mock(Query.class);
+        selectSingleQuery = mock(Query.class);
+        selectMultipleQuery = mock(Query.class);
+        selectOrderedQuery = mock(Query.class);
+        root = mock(Root.class);
+        idPath = mock(Path.class);
+        namePath = mock(Path.class);
+        expression = mock(Predicate.class);
+        order = mock(javax.persistence.criteria.Order.class);
+        returnOneQuery = mock(HibernateQuery.class);
+        returnManyQuery = mock(HibernateQuery.class);
 
         when(criteriaBuilder.createQuery(TestEntity.class)).thenReturn(criteriaQuery);
         when(criteriaQuery.from(TestEntity.class)).thenReturn(root);
@@ -93,190 +100,246 @@ public class SelectTest extends BaseHibernateTest {
 
     @Test
     public void selectByIdTest() {
-        var entity = hibernate().select("Test entity",
-                byId(TestEntity.class, 1L));
+        try (var mockedStatic = Mockito.mockStatic(Persistence.class)) {
+            mockPersistence(mockedStatic);
 
-        assertThat(entity, is(TEST_ENTITIES.get(0)));
-    }
-
-    @Test
-    public void selectByIdsTest() {
-        var entities = hibernate().select("Test entities",
-                byIds(TestEntity.class, 1L, 2L));
-
-        assertThat(entities, is(TEST_ENTITIES));
-    }
-
-    @Test
-    public void selectByPageableTest() {
-        var entities = hibernate().select("Test entities", asAPage(TestEntity.class)
-                .limit(0)
-                .offset(5));
-        assertThat(entities, is(TEST_ENTITIES));
-    }
-
-    @Test
-    public void selectByPredicateTest() {
-        var q = QTestEntity.qTestEntity;
-        var predicate = q.id.eq(1L)
-                .and(q.name.eq("Test name"))
-                .and(q.listData.contains("A"));
-
-        try (MockedConstruction<HibernateQuery> ignored = mockConstruction(HibernateQuery.class, (mock, context) ->
-                when(mock.select(predicate)).thenReturn(returnOneQuery))) {
             var entity = hibernate().select("Test entity",
-                    byPredicate(TestEntity.class, q, predicate));
+                    byId(TestEntity.class, 1L));
 
             assertThat(entity, is(TEST_ENTITIES.get(0)));
         }
     }
 
     @Test
-    public void selectAllByPredicateTest() {
-        var q = QTestEntity.qTestEntity;
-        var predicate = q.id.eq(1L)
-                .and(q.name.eq("Test name"))
-                .and(q.listData.contains("A"));
+    public void selectByIdsTest() {
+        try (var mockedStatic = Mockito.mockStatic(Persistence.class)) {
+            mockPersistence(mockedStatic);
 
-        try (MockedConstruction<HibernateQuery> ignored = mockConstruction(HibernateQuery.class, (mock, context) ->
-                when(mock.select(predicate)).thenReturn(returnManyQuery))) {
             var entities = hibernate().select("Test entities",
-                    allByPredicate(TestEntity.class, q, predicate));
+                    byIds(TestEntity.class, 1L, 2L));
 
             assertThat(entities, is(TEST_ENTITIES));
+        }
+    }
+
+    @Test
+    public void selectByPageableTest() {
+        try (var mockedStatic = Mockito.mockStatic(Persistence.class)) {
+            mockPersistence(mockedStatic);
+
+            var entities = hibernate().select("Test entities", asAPage(TestEntity.class)
+                    .limit(0)
+                    .offset(5));
+            assertThat(entities, is(TEST_ENTITIES));
+        }
+    }
+
+    @Test
+    public void selectByPredicateTest() {
+        try (var mockedStatic = Mockito.mockStatic(Persistence.class)) {
+            mockPersistence(mockedStatic);
+
+            var q = QTestEntity.qTestEntity;
+            var predicate = q.id.eq(1L)
+                    .and(q.name.eq("Test name"))
+                    .and(q.listData.contains("A"));
+
+            try (MockedConstruction<HibernateQuery> ignored = mockConstruction(HibernateQuery.class, (mock, context) ->
+                    when(mock.select(predicate)).thenReturn(returnOneQuery))) {
+                var entity = hibernate().select("Test entity",
+                        byPredicate(TestEntity.class, q, predicate));
+
+                assertThat(entity, is(TEST_ENTITIES.get(0)));
+            }
+        }
+    }
+
+    @Test
+    public void selectAllByPredicateTest() {
+        try (var mockedStatic = Mockito.mockStatic(Persistence.class)) {
+            mockPersistence(mockedStatic);
+
+            var q = QTestEntity.qTestEntity;
+            var predicate = q.id.eq(1L)
+                    .and(q.name.eq("Test name"))
+                    .and(q.listData.contains("A"));
+
+            try (MockedConstruction<HibernateQuery> ignored = mockConstruction(HibernateQuery.class, (mock, context) ->
+                    when(mock.select(predicate)).thenReturn(returnManyQuery))) {
+                var entities = hibernate().select("Test entities",
+                        allByPredicate(TestEntity.class, q, predicate));
+
+                assertThat(entities, is(TEST_ENTITIES));
+            }
         }
     }
 
     @Test
     public void selectAllOrderedTest() {
-        var q = QTestEntity.qTestEntity;
+        try (var mockedStatic = Mockito.mockStatic(Persistence.class)) {
+            mockPersistence(mockedStatic);
 
-        try (MockedConstruction<HibernateQuery> ignored = mockConstruction(HibernateQuery.class, (mock, context) -> {
-                    when(mock.from(q)).thenReturn(returnManyQuery);
-                    when(returnManyQuery.orderBy(new OrderSpecifier<>(Order.ASC, q.id),
-                            new OrderSpecifier<>(Order.DESC, q.name),
-                            new OrderSpecifier<>(Order.ASC, q.arrayData))).thenReturn(returnManyQuery);
-                }
-        )) {
-            var entities = hibernate().select("Test entities",
-                    allOrdered(TestEntity.class, q, Order.ASC, q.id)
-                            .orderSpecifier(Order.DESC, q.name)
-                            .orderSpecifier(Order.ASC, q.arrayData));
+            var q = QTestEntity.qTestEntity;
 
-            assertThat(entities, is(TEST_ENTITIES));
+            try (MockedConstruction<HibernateQuery> ignored = mockConstruction(HibernateQuery.class, (mock, context) -> {
+                        when(mock.from(q)).thenReturn(returnManyQuery);
+                        when(returnManyQuery.orderBy(new OrderSpecifier<>(Order.ASC, q.id),
+                                new OrderSpecifier<>(Order.DESC, q.name),
+                                new OrderSpecifier<>(Order.ASC, q.arrayData))).thenReturn(returnManyQuery);
+                    }
+            )) {
+                var entities = hibernate().select("Test entities",
+                        allOrdered(TestEntity.class, q, Order.ASC, q.id)
+                                .orderSpecifier(Order.DESC, q.name)
+                                .orderSpecifier(Order.ASC, q.arrayData));
+
+                assertThat(entities, is(TEST_ENTITIES));
+            }
         }
     }
 
     @Test
     public void selectAllOrderedTest2() {
-        var q = QTestEntity.qTestEntity;
-        var predicate = q.id.eq(1L)
-                .and(q.name.eq("Test name"))
-                .and(q.listData.contains("A"));
+        try (var mockedStatic = Mockito.mockStatic(Persistence.class)) {
+            mockPersistence(mockedStatic);
 
-        try (MockedConstruction<HibernateQuery> ignored = mockConstruction(HibernateQuery.class, (mock, context) -> {
-            when(mock.from(q)).thenReturn(returnManyQuery);
-            when(returnManyQuery.select(predicate)).thenReturn(returnManyQuery);
-            when(returnManyQuery.orderBy(new OrderSpecifier<>(Order.ASC, q.id),
-                    new OrderSpecifier<>(Order.DESC, q.name),
-                    new OrderSpecifier<>(Order.ASC, q.arrayData))).thenReturn(returnManyQuery);
-        })) {
-            var entities = hibernate().select("Test entities",
-                    allOrdered(TestEntity.class, q, Order.ASC, q.id)
-                            .orderSpecifier(Order.DESC, q.name)
-                            .orderSpecifier(Order.ASC, q.arrayData)
-                            .predicate(predicate));
+            var q = QTestEntity.qTestEntity;
+            var predicate = q.id.eq(1L)
+                    .and(q.name.eq("Test name"))
+                    .and(q.listData.contains("A"));
 
-            assertThat(entities, is(TEST_ENTITIES));
+            try (MockedConstruction<HibernateQuery> ignored = mockConstruction(HibernateQuery.class, (mock, context) -> {
+                when(mock.from(q)).thenReturn(returnManyQuery);
+                when(returnManyQuery.select(predicate)).thenReturn(returnManyQuery);
+                when(returnManyQuery.orderBy(new OrderSpecifier<>(Order.ASC, q.id),
+                        new OrderSpecifier<>(Order.DESC, q.name),
+                        new OrderSpecifier<>(Order.ASC, q.arrayData))).thenReturn(returnManyQuery);
+            })) {
+                var entities = hibernate().select("Test entities",
+                        allOrdered(TestEntity.class, q, Order.ASC, q.id)
+                                .orderSpecifier(Order.DESC, q.name)
+                                .orderSpecifier(Order.ASC, q.arrayData)
+                                .predicate(predicate));
+
+                assertThat(entities, is(TEST_ENTITIES));
+            }
         }
     }
 
     @Test
     public void selectAllAsPageByPredicateTest() {
-        var q = QTestEntity.qTestEntity;
-        var predicate = q.id.eq(1L)
-                .and(q.name.eq("Test name"))
-                .and(q.listData.contains("A"));
+        try (var mockedStatic = Mockito.mockStatic(Persistence.class)) {
+            mockPersistence(mockedStatic);
 
-        try (MockedConstruction<HibernateQuery> ignored = mockConstruction(HibernateQuery.class, (mock, context) -> {
-            when(mock.select(predicate)).thenReturn(returnManyQuery);
-            when(returnManyQuery.orderBy(new OrderSpecifier<>(Order.DESC, q.name),
-                    new OrderSpecifier<>(Order.ASC, q.arrayData))).thenReturn(returnManyQuery);
-            when(returnManyQuery.limit(5)).thenReturn(returnManyQuery);
-            when(returnManyQuery.offset(0)).thenReturn(returnManyQuery);
-        })) {
+            var q = QTestEntity.qTestEntity;
+            var predicate = q.id.eq(1L)
+                    .and(q.name.eq("Test name"))
+                    .and(q.listData.contains("A"));
+
+            try (MockedConstruction<HibernateQuery> ignored = mockConstruction(HibernateQuery.class, (mock, context) -> {
+                when(mock.select(predicate)).thenReturn(returnManyQuery);
+                when(returnManyQuery.orderBy(new OrderSpecifier<>(Order.DESC, q.name),
+                        new OrderSpecifier<>(Order.ASC, q.arrayData))).thenReturn(returnManyQuery);
+                when(returnManyQuery.limit(5)).thenReturn(returnManyQuery);
+                when(returnManyQuery.offset(0)).thenReturn(returnManyQuery);
+            })) {
+                var entities = hibernate().select("Test entities",
+                        asAPageByPredicate(TestEntity.class, q, predicate)
+                                .limit(5)
+                                .offset(0)
+                                .orderSpecifier(Order.DESC, q.name)
+                                .orderSpecifier(Order.ASC, q.arrayData));
+
+                assertThat(entities, is(TEST_ENTITIES));
+            }
+        }
+    }
+
+    @Test
+    public void selectAllTest() {
+        try (var mockedStatic = Mockito.mockStatic(Persistence.class)) {
+            mockPersistence(mockedStatic);
+
             var entities = hibernate().select("Test entities",
-                    asAPageByPredicate(TestEntity.class, q, predicate)
-                            .limit(5)
-                            .offset(0)
-                            .orderSpecifier(Order.DESC, q.name)
-                            .orderSpecifier(Order.ASC, q.arrayData));
+                    all(TestEntity.class));
 
             assertThat(entities, is(TEST_ENTITIES));
         }
     }
 
     @Test
-    public void selectAllTest() {
-        var entities = hibernate().select("Test entities",
-                all(TestEntity.class));
-
-        assertThat(entities, is(TEST_ENTITIES));
-    }
-
-    @Test
     public void selectByQueryTest() {
-        var entity = hibernate().select("Test entity",
-                byQuery(TestEntity.class, "select e from test_entities e where id = 1"));
+        try (var mockedStatic = Mockito.mockStatic(Persistence.class)) {
+            mockPersistence(mockedStatic);
 
-        assertThat(entity, is(TEST_ENTITIES.get(0)));
+            var entity = hibernate().select("Test entity",
+                    byQuery(TestEntity.class, "select e from test_entities e where id = 1"));
+
+            assertThat(entity, is(TEST_ENTITIES.get(0)));
+        }
     }
 
     @Test
     public void selectAllByQueryTest() {
-        var entities = hibernate().select("Test entities",
-                allByQuery(TestEntity.class, "select e from test_entities e"));
+        try (var mockedStatic = Mockito.mockStatic(Persistence.class)) {
+            mockPersistence(mockedStatic);
 
-        assertThat(entities, is(TEST_ENTITIES));
+            var entities = hibernate().select("Test entities",
+                    allByQuery(TestEntity.class, "select e from test_entities e"));
+
+            assertThat(entities, is(TEST_ENTITIES));
+        }
     }
 
     @Test
     public void selectByCriteriaTest() {
-        var cb = hibernate().getCriteriaBuilder(TestEntity.class);
-        var cq = hibernate().getCriteriaQuery(TestEntity.class);
-        var root = cq.from(TestEntity.class);
+        try (var mockedStatic = Mockito.mockStatic(Persistence.class)) {
+            mockPersistence(mockedStatic);
 
-        var entity = hibernate().select("Test entity",
-                byCriteria(TestEntity.class, cq.where(
-                        cb.ge(root.get("id"), 1L)
-                )));
+            var cb = hibernate().getCriteriaBuilder(TestEntity.class);
+            var cq = hibernate().getCriteriaQuery(TestEntity.class);
+            var root = cq.from(TestEntity.class);
 
-        assertThat(entity, is(TEST_ENTITIES.get(0)));
+            var entity = hibernate().select("Test entity",
+                    byCriteria(TestEntity.class, cq.where(
+                            cb.ge(root.get("id"), 1L)
+                    )));
+
+            assertThat(entity, is(TEST_ENTITIES.get(0)));
+        }
     }
 
     @Test
     public void selectAllByCriteriaTest() {
-        var cb = hibernate().getCriteriaBuilder(TestEntity.class);
-        var cq = hibernate().getCriteriaQuery(TestEntity.class);
-        var root = cq.from(TestEntity.class);
+        try (var mockedStatic = Mockito.mockStatic(Persistence.class)) {
+            mockPersistence(mockedStatic);
 
-        var entities = hibernate().select("Test entities",
-                allByCriteria(TestEntity.class, cq.where(
-                        cb.ge(root.get("id"), 1L)
-                )));
+            var cb = hibernate().getCriteriaBuilder(TestEntity.class);
+            var cq = hibernate().getCriteriaQuery(TestEntity.class);
+            var root = cq.from(TestEntity.class);
 
-        assertThat(entities, is(TEST_ENTITIES));
+            var entities = hibernate().select("Test entities",
+                    allByCriteria(TestEntity.class, cq.where(
+                            cb.ge(root.get("id"), 1L)
+                    )));
+
+            assertThat(entities, is(TEST_ENTITIES));
+        }
     }
 
     @Test
     public void selectCriteriaOrderedTest() {
-        var cb = hibernate().getCriteriaBuilder(TestEntity.class);
-        var cq = hibernate().getCriteriaQuery(TestEntity.class);
-        var root = cq.from(TestEntity.class);
+        try (var mockedStatic = Mockito.mockStatic(Persistence.class)) {
+            mockPersistence(mockedStatic);
 
-        var entities = hibernate().select("Test entities",
-                allByOrder(TestEntity.class, cb.desc(root.get("name"))));
+            var cb = hibernate().getCriteriaBuilder(TestEntity.class);
+            var cq = hibernate().getCriteriaQuery(TestEntity.class);
+            var root = cq.from(TestEntity.class);
 
-        assertThat(entities, is(TEST_ENTITIES_COPY));
+            var entities = hibernate().select("Test entities",
+                    allByOrder(TestEntity.class, cb.desc(root.get("name"))));
+
+            assertThat(entities, is(TEST_ENTITIES_COPY));
+        }
     }
 }

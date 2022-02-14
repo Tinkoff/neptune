@@ -38,7 +38,7 @@ import static ru.tinkoff.qa.neptune.hibernate.properties.UseJpaConfig.USE_JPA_CO
 public class HibernateContext extends AbstractDatabaseStepContext<HibernateContext> {
 
     private static final HibernateContext context = getInstance(HibernateContext.class);
-    private Set<SessionFactory> sessionFactorySet;
+    private final Set<SessionFactory> sessionFactorySet = new HashSet<>();
 
     public static HibernateContext hibernate() {
         return context;
@@ -50,8 +50,7 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
     }
 
     public Set<SessionFactory> getSessionFactories() {
-        if (sessionFactorySet == null) {
-            sessionFactorySet = new HashSet<>();
+        if (sessionFactorySet.size() == 0) {
             if (USE_JPA_CONFIG.get()) {
                 if (PERSISTENCE_UNITS.get() != null) {
                     PERSISTENCE_UNITS.get().forEach(unit -> {

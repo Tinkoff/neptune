@@ -7,9 +7,8 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeTest;
 import ru.tinkoff.qa.neptune.hibernate.model.TestEntity;
 
 import javax.persistence.EntityManagerFactory;
@@ -43,37 +42,34 @@ public class BaseHibernateTest {
                     .setListData(new ArrayList<>(of("E", "F", "G", "H")))
     ));
 
-    MockedStatic<Persistence> mockedStatic;
+    @Mock
+    static EntityManagerFactory entityManagerFactory;
+    @Mock
+    static SessionFactory sessionFactory;
+    @Mock
+    static Metamodel metamodel;
+    @Mock
+    static EntityType<TestEntity> entityType;
+    @Mock
+    static Session session;
+    @Mock
+    static Transaction transaction;
+    @Mock
+    static CriteriaBuilder criteriaBuilder;
+    @Mock
+    static CriteriaQuery<TestEntity> criteriaQuery;
+    @Mock
+    static Query<TestEntity> query;
 
-    @Mock
-    EntityManagerFactory entityManagerFactory;
-    @Mock
-    SessionFactory sessionFactory;
-    @Mock
-    Metamodel metamodel;
-    @Mock
-    EntityType<TestEntity> entityType;
-    @Mock
-    Session session;
-    @Mock
-    Transaction transaction;
-    @Mock
-    CriteriaBuilder criteriaBuilder;
-    @Mock
-    CriteriaQuery<TestEntity> criteriaQuery;
-    @Mock
-    Query<TestEntity> query;
+    @BeforeTest
+    public void initMocks() {
+        openMocks(this);
+    }
 
     @BeforeClass
     public void prepareClass() {
         setProperty(USE_JPA_CONFIG.getName(), "true");
         setProperty(PERSISTENCE_UNITS.getName(), "testUnit");
-
-        openMocks(this);
-
-        mockedStatic = Mockito.mockStatic(Persistence.class);
-        mockedStatic.when(() -> Persistence.createEntityManagerFactory("testUnit"))
-                .thenReturn(entityManagerFactory);
 
         when(entityManagerFactory.unwrap(SessionFactory.class)).thenReturn(sessionFactory);
         when(sessionFactory.getMetamodel()).thenReturn(metamodel);
@@ -96,8 +92,8 @@ public class BaseHibernateTest {
         when(query.getSingleResult()).thenReturn(TEST_ENTITIES.get(0));
     }
 
-    @AfterClass
-    public void closeMock() {
-        mockedStatic.close();
+    void mockPersistence(MockedStatic<Persistence> mockedStatic) {
+        mockedStatic.when(() -> Persistence.createEntityManagerFactory("testUnit"))
+                .thenReturn(entityManagerFactory);
     }
 }

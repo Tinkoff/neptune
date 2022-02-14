@@ -1,30 +1,33 @@
 package ru.tinkoff.qa.neptune.hibernate;
 
-import org.hibernate.query.Query;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.hibernate.model.TestEntity;
 
+import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaDelete;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate;
 import static ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byId;
 import static ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byIds;
 
+@SuppressWarnings("unchecked")
 public class DeleteTest extends BaseHibernateTest {
 
-    @Mock
     private CriteriaDelete<TestEntity> criteriaDelete;
-    @Mock
-    private Query<TestEntity> query;
 
+    @Override
     @BeforeClass
     public void prepareClass() {
         super.prepareClass();
+
+        criteriaDelete = mock(CriteriaDelete.class);
 
         when(criteriaBuilder.createCriteriaDelete(TestEntity.class)).thenReturn(criteriaDelete);
         when(session.createQuery(criteriaDelete)).thenReturn(query);
@@ -32,41 +35,65 @@ public class DeleteTest extends BaseHibernateTest {
 
     @Test
     public void deleteOneByQueryTest() {
-        hibernate().delete("Test entity", byId(TestEntity.class, 1L));
-        verify(session, times(1)).delete(TEST_ENTITIES.get(0));
+        try (var mockedStatic = Mockito.mockStatic(Persistence.class)) {
+            mockPersistence(mockedStatic);
+
+            hibernate().delete("Test entity", byId(TestEntity.class, 1L));
+            verify(session, times(1)).delete(TEST_ENTITIES.get(0));
+        }
     }
 
     @Test
     public void deleteAllByQueryTest() {
-        hibernate().delete("Test entities", byIds(TestEntity.class, 1L, 2L));
-        verify(session, times(1)).delete(TEST_ENTITIES.get(0));
-        verify(session, times(1)).delete(TEST_ENTITIES.get(1));
+        try (var mockedStatic = Mockito.mockStatic(Persistence.class)) {
+            mockPersistence(mockedStatic);
+
+            hibernate().delete("Test entities", byIds(TestEntity.class, 1L, 2L));
+            verify(session, times(1)).delete(TEST_ENTITIES.get(0));
+            verify(session, times(1)).delete(TEST_ENTITIES.get(1));
+        }
     }
 
     @Test
     public void deleteOneTest() {
-        hibernate().delete("Test entity", TEST_ENTITIES.get(0));
-        verify(session, times(1)).delete(TEST_ENTITIES.get(0));
+        try (var mockedStatic = Mockito.mockStatic(Persistence.class)) {
+            mockPersistence(mockedStatic);
+
+            hibernate().delete("Test entity", TEST_ENTITIES.get(0));
+            verify(session, times(1)).delete(TEST_ENTITIES.get(0));
+        }
     }
 
     @Test
     public void deleteVarArgTest() {
-        hibernate().delete("Test entities", TEST_ENTITIES.get(0), TEST_ENTITIES.get(1));
-        verify(session, times(1)).delete(TEST_ENTITIES.get(0));
-        verify(session, times(1)).delete(TEST_ENTITIES.get(1));
+        try (var mockedStatic = Mockito.mockStatic(Persistence.class)) {
+            mockPersistence(mockedStatic);
+
+            hibernate().delete("Test entities", TEST_ENTITIES.get(0), TEST_ENTITIES.get(1));
+            verify(session, times(1)).delete(TEST_ENTITIES.get(0));
+            verify(session, times(1)).delete(TEST_ENTITIES.get(1));
+        }
     }
 
     @Test
     public void deleteIterableTest() {
-        hibernate().delete("Test entities", TEST_ENTITIES);
-        verify(session, times(1)).delete(TEST_ENTITIES.get(0));
-        verify(session, times(1)).delete(TEST_ENTITIES.get(1));
+        try (var mockedStatic = Mockito.mockStatic(Persistence.class)) {
+            mockPersistence(mockedStatic);
+
+            hibernate().delete("Test entities", TEST_ENTITIES);
+            verify(session, times(1)).delete(TEST_ENTITIES.get(0));
+            verify(session, times(1)).delete(TEST_ENTITIES.get(1));
+        }
     }
 
     @Test
     public void deleteAllTest() {
-        hibernate().deleteAllFrom(TestEntity.class);
-        verify(session, times(1)).createQuery(criteriaDelete);
+        try (var mockedStatic = Mockito.mockStatic(Persistence.class)) {
+            mockPersistence(mockedStatic);
+
+            hibernate().deleteAllFrom(TestEntity.class);
+            verify(session, times(1)).createQuery(criteriaDelete);
+        }
     }
 
     @AfterMethod(alwaysRun = true)
