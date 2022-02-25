@@ -1,12 +1,5 @@
-plugins {
-    id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
-}
-
 dependencies {
     api project(':core.api')
-    inpath(project(":core.api")) {
-        transitive = false
-    }
     api group: 'org.jsoup', name: 'jsoup', version: '1.14.3'
     api group: 'com.fasterxml.jackson.module', name: 'jackson-module-parameter-names', version: jacksonVersion
     api group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: jacksonVersion

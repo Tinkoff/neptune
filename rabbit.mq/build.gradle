@@ -1,14 +1,6 @@
-plugins {
-    id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
-}
-
 dependencies {
     api project(':core.api')
-
-    inpath(project(":core.api")) {
-        transitive = false
-    }
-    api group: 'com.rabbitmq', name: 'amqp-client', version: '5.14.1'
+    api group: 'com.rabbitmq', name: 'amqp-client', version: '5.14.2'
     testImplementation  group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockitoVersion
 }

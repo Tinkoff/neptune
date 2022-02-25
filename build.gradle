@@ -1,8 +1,21 @@
+plugins {
+    id 'java'
+    id 'jacoco'
+    id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
+}
+
 ext {
-    globalVersion = '0.20.23-ALPHA'
+    globalVersion = '0.20.24-ALPHA'
+}
+
+repositories {
+    maven {
+        url "https://repo1.maven.org/maven2/"
+    }
 }
 
 subprojects {
+
     group 'ru.tinkoff.qa.neptune'
     version globalVersion
 
@@ -11,13 +24,13 @@ subprojects {
     apply plugin: 'project-report'
     apply plugin: 'java-library'
     apply plugin: 'signing'
+    apply plugin: 'jacoco'
+    apply plugin: "io.freefair.aspectj.post-compile-weaving"
 
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
 
     [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-
-    apply plugin: "java"
 
     repositories {
         maven {
@@ -30,19 +43,23 @@ subprojects {
         junit5Version = '5.8.2'
         junit5PlatformVersion = '1.8.2'
         hamcrestVersion = '2.2'
-        seleniumVersion = '4.1.1'
-        allureVersion = '2.17.2'
+        seleniumVersion = '4.1.2'
+        allureVersion = '2.17.3'
         jacksonVersion = '2.13.1'
         mockitoVersion = '4.3.1'
-        springVersion = '5.3.15'
+        springVersion = '5.3.16'
         springBootVersion = '2.6.3'
         globalVersion = version
     }
 
+    configurations {
+        agent
+    }
+
     dependencies {
         api group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
-        api group: 'com.google.guava', name: 'guava', version: '30.1.1-jre'
-        testImplementation  group: 'org.testng', name: 'testng', version: testNGVersion
+        api group: 'com.google.guava', name: 'guava', version: '31.0.1-jre'
+        testImplementation group: 'org.testng', name: 'testng', version: testNGVersion
         api group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
         api group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
         api group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: jacksonVersion
@@ -50,10 +67,14 @@ subprojects {
         api group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion
         api group: 'commons-validator', name: 'commons-validator', version: '1.7'
         api group: 'commons-io', name: 'commons-io', version: '2.11.0'
-        api group: 'com.google.code.gson', name: 'gson', version: '2.8.9'
-        api group: 'io.github.classgraph', name: 'classgraph', version: '4.8.138'
+        api group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
+        api group: 'io.github.classgraph', name: 'classgraph', version: '4.8.139'
         testImplementation group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion
         compileClasspath group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion
+
+        implementation group: 'org.aspectj', name: 'aspectjrt', version: '1.9.6'
+        implementation group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.6'
+        agent group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.6'
     }
 
     test {
@@ -64,15 +85,83 @@ subprojects {
             exceptionFormat "full"
             showStackTraces true
         }
+
+        finalizedBy jacocoTestReport
+
+        jacoco {
+            excludes += [
+                    'org.springframework.*',
+                    'org.hamcrest.*'
+            ]
+        }
+    }
+
+    jacocoTestReport {
+
+        dependsOn test
+
+        reports {
+            xml.enabled true
+            html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+        }
+
+        classDirectories.setFrom(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: [
+                            '**/org/springframework/**',
+                            '**/org/hamcrest/**',
+                            '**/**AjcClosure**'
+                    ]
+            )
+        })
     }
 }
+
+configure(subprojects.findAll {
+    it.name != 'core.api'
+            && it.name != 'allure.integration'
+            && it.name != 'allure.jupiter.bridge'
+            && it.name != 'allure.testng.bridge'
+            && it.name != 'neptune.swagger.codegen'
+            && it.name != 'testng.integration'
+}) {
+    dependencies {
+        aspect(project(":core.api"))
+    }
+}
+
+task jacocoOverallReport(type: JacocoReport, group: 'Coverage reports') {
+    description = 'Generates an aggregate report from all subprojects'
+    dependsOn(subprojects.test)
+
+    additionalSourceDirs.from = files(subprojects.sourceSets.main.allSource.srcDirs)
+    sourceDirectories.from = files(subprojects.sourceSets.main.allSource.srcDirs)
+    classDirectories.from = files(subprojects.sourceSets.main.output).files.collect {
+        fileTree(dir: it,
+                exclude: [
+                        '**/org/springframework/**',
+                        '**/org/hamcrest/**',
+                        '**/**AjcClosure**'
+                ]
+        )
+    }
+    executionData.from = files(subprojects.jacocoTestReport.executionData)
+
+    reports {
+        html.enabled true
+        xml.enabled true
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+}
+
+check.dependsOn jacocoOverallReport
 
 task aggregatedJavadocs(type: Javadoc, description: 'Generate javadocs from all child projects as if it was a single project', group: 'Documentation') {
     title = "Neptune API Documentation. v$globalVersion"
     options.author true
     options.links 'http://download.oracle.com/javase/9/docs/api/'
     options.addStringOption 'Xdoclint:none', '-quiet'
-    destinationDir  = file("${buildDir}/../../neptune.documentation/javadocs/")
+    destinationDir = file("${buildDir}/../../neptune.documentation/javadocs/")
     options.memberLevel = JavadocMemberLevel.PROTECTED
     options.bottom = "Copyright &copy; 2022 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
 
