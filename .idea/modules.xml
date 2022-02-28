@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ru.tinkoff.qa.neptune.iml" filepath="$PROJECT_DIR$/.idea/modules/ru.tinkoff.qa.neptune.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/allure.integration/ru.tinkoff.qa.neptune.allure.integration.iml" filepath="$PROJECT_DIR$/.idea/modules/allure.integration/ru.tinkoff.qa.neptune.allure.integration.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/allure.integration/ru.tinkoff.qa.neptune.allure.integration.main.iml" filepath="$PROJECT_DIR$/.idea/modules/allure.integration/ru.tinkoff.qa.neptune.allure.integration.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/allure.integration/ru.tinkoff.qa.neptune.allure.integration.test.iml" filepath="$PROJECT_DIR$/.idea/modules/allure.integration/ru.tinkoff.qa.neptune.allure.integration.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/allure.jupiter.bridge/ru.tinkoff.qa.neptune.allure.jupiter.bridge.iml" filepath="$PROJECT_DIR$/.idea/modules/allure.jupiter.bridge/ru.tinkoff.qa.neptune.allure.jupiter.bridge.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/allure.jupiter.bridge/ru.tinkoff.qa.neptune.allure.jupiter.bridge.main.iml" filepath="$PROJECT_DIR$/.idea/modules/allure.jupiter.bridge/ru.tinkoff.qa.neptune.allure.jupiter.bridge.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/allure.jupiter.bridge/ru.tinkoff.qa.neptune.allure.jupiter.bridge.test.iml" filepath="$PROJECT_DIR$/.idea/modules/allure.jupiter.bridge/ru.tinkoff.qa.neptune.allure.jupiter.bridge.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/allure.testng.bridge/ru.tinkoff.qa.neptune.allure.testng.bridge.iml" filepath="$PROJECT_DIR$/.idea/modules/allure.testng.bridge/ru.tinkoff.qa.neptune.allure.testng.bridge.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/allure.testng.bridge/ru.tinkoff.qa.neptune.allure.testng.bridge.main.iml" filepath="$PROJECT_DIR$/.idea/modules/allure.testng.bridge/ru.tinkoff.qa.neptune.allure.testng.bridge.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/allure.testng.bridge/ru.tinkoff.qa.neptune.allure.testng.bridge.test.iml" filepath="$PROJECT_DIR$/.idea/modules/allure.testng.bridge/ru.tinkoff.qa.neptune.allure.testng.bridge.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/check/ru.tinkoff.qa.neptune.check.iml" filepath="$PROJECT_DIR$/.idea/modules/check/ru.tinkoff.qa.neptune.check.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/check/ru.tinkoff.qa.neptune.check.main.iml" filepath="$PROJECT_DIR$/.idea/modules/check/ru.tinkoff.qa.neptune.check.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/check/ru.tinkoff.qa.neptune.check.test.iml" filepath="$PROJECT_DIR$/.idea/modules/check/ru.tinkoff.qa.neptune.check.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core.api/ru.tinkoff.qa.neptune.core.api.iml" filepath="$PROJECT_DIR$/.idea/modules/core.api/ru.tinkoff.qa.neptune.core.api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core.api/ru.tinkoff.qa.neptune.core.api.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core.api/ru.tinkoff.qa.neptune.core.api.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core.api/ru.tinkoff.qa.neptune.core.api.test.iml" filepath="$PROJECT_DIR$/.idea/modules/core.api/ru.tinkoff.qa.neptune.core.api.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/data.base.api/ru.tinkoff.qa.neptune.data.base.api.iml" filepath="$PROJECT_DIR$/.idea/modules/data.base.api/ru.tinkoff.qa.neptune.data.base.api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/data.base.api/ru.tinkoff.qa.neptune.data.base.api.main.iml" filepath="$PROJECT_DIR$/.idea/modules/data.base.api/ru.tinkoff.qa.neptune.data.base.api.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/data.base.api/ru.tinkoff.qa.neptune.data.base.api.test.iml" filepath="$PROJECT_DIR$/.idea/modules/data.base.api/ru.tinkoff.qa.neptune.data.base.api.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/database.abstractions/ru.tinkoff.qa.neptune.database.abstractions.iml" filepath="$PROJECT_DIR$/.idea/modules/database.abstractions/ru.tinkoff.qa.neptune.database.abstractions.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/database.abstractions/ru.tinkoff.qa.neptune.database.abstractions.main.iml" filepath="$PROJECT_DIR$/.idea/modules/database.abstractions/ru.tinkoff.qa.neptune.database.abstractions.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/database.abstractions/ru.tinkoff.qa.neptune.database.abstractions.test.iml" filepath="$PROJECT_DIR$/.idea/modules/database.abstractions/ru.tinkoff.qa.neptune.database.abstractions.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/http.api/ru.tinkoff.qa.neptune.http.api.iml" filepath="$PROJECT_DIR$/.idea/modules/http.api/ru.tinkoff.qa.neptune.http.api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/http.api/ru.tinkoff.qa.neptune.http.api.main.iml" filepath="$PROJECT_DIR$/.idea/modules/http.api/ru.tinkoff.qa.neptune.http.api.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/http.api/ru.tinkoff.qa.neptune.http.api.test.iml" filepath="$PROJECT_DIR$/.idea/modules/http.api/ru.tinkoff.qa.neptune.http.api.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jupiter.integration/ru.tinkoff.qa.neptune.jupiter.integration.iml" filepath="$PROJECT_DIR$/.idea/modules/jupiter.integration/ru.tinkoff.qa.neptune.jupiter.integration.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jupiter.integration/ru.tinkoff.qa.neptune.jupiter.integration.main.iml" filepath="$PROJECT_DIR$/.idea/modules/jupiter.integration/ru.tinkoff.qa.neptune.jupiter.integration.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jupiter.integration/ru.tinkoff.qa.neptune.jupiter.integration.test.iml" filepath="$PROJECT_DIR$/.idea/modules/jupiter.integration/ru.tinkoff.qa.neptune.jupiter.integration.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/kafka/ru.tinkoff.qa.neptune.kafka.iml" filepath="$PROJECT_DIR$/.idea/modules/kafka/ru.tinkoff.qa.neptune.kafka.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/kafka/ru.tinkoff.qa.neptune.kafka.main.iml" filepath="$PROJECT_DIR$/.idea/modules/kafka/ru.tinkoff.qa.neptune.kafka.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/kafka/ru.tinkoff.qa.neptune.kafka.test.iml" filepath="$PROJECT_DIR$/.idea/modules/kafka/ru.tinkoff.qa.neptune.kafka.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ru.tinkoff.qa.neptune.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ru.tinkoff.qa.neptune.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/neptune-spring-boot-starter/ru.tinkoff.qa.neptune.neptune-spring-boot-starter.iml" filepath="$PROJECT_DIR$/.idea/modules/neptune-spring-boot-starter/ru.tinkoff.qa.neptune.neptune-spring-boot-starter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/neptune-spring-boot-starter/ru.tinkoff.qa.neptune.neptune-spring-boot-starter.main.iml" filepath="$PROJECT_DIR$/.idea/modules/neptune-spring-boot-starter/ru.tinkoff.qa.neptune.neptune-spring-boot-starter.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/neptune-spring-boot-starter/ru.tinkoff.qa.neptune.neptune-spring-boot-starter.test.iml" filepath="$PROJECT_DIR$/.idea/modules/neptune-spring-boot-starter/ru.tinkoff.qa.neptune.neptune-spring-boot-starter.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/neptune.swagger.codegen/ru.tinkoff.qa.neptune.neptune.swagger.codegen.iml" filepath="$PROJECT_DIR$/.idea/modules/neptune.swagger.codegen/ru.tinkoff.qa.neptune.neptune.swagger.codegen.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/neptune.swagger.codegen/ru.tinkoff.qa.neptune.neptune.swagger.codegen.main.iml" filepath="$PROJECT_DIR$/.idea/modules/neptune.swagger.codegen/ru.tinkoff.qa.neptune.neptune.swagger.codegen.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/neptune.swagger.codegen/ru.tinkoff.qa.neptune.neptune.swagger.codegen.test.iml" filepath="$PROJECT_DIR$/.idea/modules/neptune.swagger.codegen/ru.tinkoff.qa.neptune.neptune.swagger.codegen.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/rabbit.mq/ru.tinkoff.qa.neptune.rabbit.mq.iml" filepath="$PROJECT_DIR$/.idea/modules/rabbit.mq/ru.tinkoff.qa.neptune.rabbit.mq.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/rabbit.mq/ru.tinkoff.qa.neptune.rabbit.mq.main.iml" filepath="$PROJECT_DIR$/.idea/modules/rabbit.mq/ru.tinkoff.qa.neptune.rabbit.mq.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/rabbit.mq/ru.tinkoff.qa.neptune.rabbit.mq.test.iml" filepath="$PROJECT_DIR$/.idea/modules/rabbit.mq/ru.tinkoff.qa.neptune.rabbit.mq.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/retrofit2/ru.tinkoff.qa.neptune.retrofit2.iml" filepath="$PROJECT_DIR$/.idea/modules/retrofit2/ru.tinkoff.qa.neptune.retrofit2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/retrofit2/ru.tinkoff.qa.neptune.retrofit2.main.iml" filepath="$PROJECT_DIR$/.idea/modules/retrofit2/ru.tinkoff.qa.neptune.retrofit2.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/retrofit2/ru.tinkoff.qa.neptune.retrofit2.test.iml" filepath="$PROJECT_DIR$/.idea/modules/retrofit2/ru.tinkoff.qa.neptune.retrofit2.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/selenium/ru.tinkoff.qa.neptune.selenium.iml" filepath="$PROJECT_DIR$/.idea/modules/selenium/ru.tinkoff.qa.neptune.selenium.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/selenium/ru.tinkoff.qa.neptune.selenium.main.iml" filepath="$PROJECT_DIR$/.idea/modules/selenium/ru.tinkoff.qa.neptune.selenium.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/selenium/ru.tinkoff.qa.neptune.selenium.test.iml" filepath="$PROJECT_DIR$/.idea/modules/selenium/ru.tinkoff.qa.neptune.selenium.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spring.data/ru.tinkoff.qa.neptune.spring.data.iml" filepath="$PROJECT_DIR$/.idea/modules/spring.data/ru.tinkoff.qa.neptune.spring.data.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spring.data/ru.tinkoff.qa.neptune.spring.data.main.iml" filepath="$PROJECT_DIR$/.idea/modules/spring.data/ru.tinkoff.qa.neptune.spring.data.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spring.data/ru.tinkoff.qa.neptune.spring.data.test.iml" filepath="$PROJECT_DIR$/.idea/modules/spring.data/ru.tinkoff.qa.neptune.spring.data.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spring.mock.mvc/ru.tinkoff.qa.neptune.spring.mock.mvc.iml" filepath="$PROJECT_DIR$/.idea/modules/spring.mock.mvc/ru.tinkoff.qa.neptune.spring.mock.mvc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spring.mock.mvc/ru.tinkoff.qa.neptune.spring.mock.mvc.main.iml" filepath="$PROJECT_DIR$/.idea/modules/spring.mock.mvc/ru.tinkoff.qa.neptune.spring.mock.mvc.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spring.mock.mvc/ru.tinkoff.qa.neptune.spring.mock.mvc.test.iml" filepath="$PROJECT_DIR$/.idea/modules/spring.mock.mvc/ru.tinkoff.qa.neptune.spring.mock.mvc.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spring.web.testclient/ru.tinkoff.qa.neptune.spring.web.testclient.iml" filepath="$PROJECT_DIR$/.idea/modules/spring.web.testclient/ru.tinkoff.qa.neptune.spring.web.testclient.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spring.web.testclient/ru.tinkoff.qa.neptune.spring.web.testclient.main.iml" filepath="$PROJECT_DIR$/.idea/modules/spring.web.testclient/ru.tinkoff.qa.neptune.spring.web.testclient.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spring.web.testclient/ru.tinkoff.qa.neptune.spring.web.testclient.test.iml" filepath="$PROJECT_DIR$/.idea/modules/spring.web.testclient/ru.tinkoff.qa.neptune.spring.web.testclient.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ru.tinkoff.qa.neptune.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ru.tinkoff.qa.neptune.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/testng.integration/ru.tinkoff.qa.neptune.testng.integration.iml" filepath="$PROJECT_DIR$/.idea/modules/testng.integration/ru.tinkoff.qa.neptune.testng.integration.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/testng.integration/ru.tinkoff.qa.neptune.testng.integration.main.iml" filepath="$PROJECT_DIR$/.idea/modules/testng.integration/ru.tinkoff.qa.neptune.testng.integration.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/testng.integration/ru.tinkoff.qa.neptune.testng.integration.test.iml" filepath="$PROJECT_DIR$/.idea/modules/testng.integration/ru.tinkoff.qa.neptune.testng.integration.test.iml" />
+    </modules>
+  </component>
+</project>
