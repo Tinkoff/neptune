@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.http.HttpClient;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
@@ -207,7 +208,8 @@ public class CustomRequestBodyTest extends BaseHttpTest {
                         bodyPart(new byte[]{1, 2, 3}, "testBytes").setContentTransferEncoding(BINARY),
                         bodyPart(new FileInputStream(TEST_FILE), "testFile2", TEST_FILE.getName()).setContentType("text/plain"),
                         bodyPart(BODY_OBJECT, JSON, "testJson").setContentType("application/json"))
-                        .header("Content-Type", "multipart/form-data"),
+                        .header("Content-Type", "multipart/form-data")
+                        .version(HttpClient.Version.HTTP_1_1),
                         MULTIPART_SUCCESSFULLY_POSTED}
 
         };

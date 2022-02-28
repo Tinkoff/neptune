@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'jacoco'
     id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
+    id "org.sonarqube" version "3.3"
 }
 
 ext {
@@ -154,7 +155,16 @@ task jacocoOverallReport(type: JacocoReport, group: 'Coverage reports') {
     }
 }
 
-check.dependsOn jacocoOverallReport
+sonarqube {
+    properties {
+        property "sonar.organization", "neptune"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.coverage.jacoco.xmlReportPaths", "$buildDir/reports/jacoco/jacocoOverallReport/jacocoOverallReport.xml"
+        property "sonar.qualitygate.wait", "true"
+    }
+}
+
+check.dependsOn jacocoOverallReport, sonarqube
 
 task aggregatedJavadocs(type: Javadoc, description: 'Generate javadocs from all child projects as if it was a single project', group: 'Documentation') {
     title = "Neptune API Documentation. v$globalVersion"
