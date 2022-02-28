@@ -161,7 +161,8 @@ sonarqube {
         property "sonar.projectKey", "neptune"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.coverage.jacoco.xmlReportPaths", "$buildDir/reports/jacoco/jacocoOverallReport/jacocoOverallReport.xml"
-        property "sonar.qualitygate.wait", "true"
+        //property "sonar.qualitygate.wait", "true"
+        property "sonar.pullrequest.base", "master"
     }
 }
 
