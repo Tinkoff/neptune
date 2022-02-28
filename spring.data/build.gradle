@@ -1,7 +1,3 @@
-plugins {
-    id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
-}
-
 test {
     useTestNG()
 }
@@ -13,9 +9,6 @@ configurations {
 dependencies {
     api(project(":database.abstractions"))
     api project(':core.api')
-    inpath(project(":core.api")) {
-        transitive = false
-    }
     compileClasspath('org.springframework.data:spring-data-commons:2.6.1')
     testImplementation  group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockitoVersion
