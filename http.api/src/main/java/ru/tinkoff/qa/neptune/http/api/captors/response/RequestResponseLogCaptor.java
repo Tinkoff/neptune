@@ -33,12 +33,17 @@ public final class RequestResponseLogCaptor extends FileCaptor<List<RequestRespo
                     .append(logMessageFormatter.format(logRecord))
                     .append(LINE_SEPARATOR));
         }
+
+        File tmpFile;
         try {
-            var tmpFile = createTempFile(randomUUID, ".txt");
-            var writer = new FileWriter(tmpFile);
-            writer.write(result.toString());
-            writer.close();
+            tmpFile = createTempFile(randomUUID, ".txt");
             tmpFile.deleteOnExit();
+        } catch (IOException e) {
+            return null;
+        }
+
+        try (var writer = new FileWriter(tmpFile)) {
+            writer.write(result.toString());
             return tmpFile;
         } catch (IOException e) {
             return null;
@@ -56,7 +61,7 @@ public final class RequestResponseLogCaptor extends FileCaptor<List<RequestRespo
             return null;
         }
 
-        if (result.size() > 0) {
+        if (!result.isEmpty()) {
             return result;
         } else {
             return null;
