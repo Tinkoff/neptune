@@ -10,6 +10,7 @@ import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
+@SuppressWarnings("rawtypes")
 public interface ContextRefreshable {
 
     List<Class<? extends Context>> REFRESHABLE_CONTEXTS = new ClassGraph()
@@ -30,7 +31,7 @@ public interface ContextRefreshable {
      *
      * @param toBeRefreshed
      */
-    static void refreshContext(Class<? extends Context> toBeRefreshed) {
+    static void refreshContext(Class<? extends Context> toBeRefreshed) throws Throwable {
         if (!ContextRefreshable.class.isAssignableFrom(toBeRefreshed)) {
             return;
         }
@@ -51,12 +52,8 @@ public interface ContextRefreshable {
         }
 
         field.setAccessible(true);
-        try {
-            var value = field.get(toBeRefreshed);
-            ofNullable(value).ifPresent(o -> ((ContextRefreshable) o).refreshContext());
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        var value = field.get(toBeRefreshed);
+        ofNullable(value).ifPresent(o -> ((ContextRefreshable) o).refreshContext());
     }
 
     void refreshContext();

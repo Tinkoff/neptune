@@ -1,21 +1,21 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
-import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable.refreshContext;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyCollectionOf;
+import static ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable.refreshContext;
 
 public class RefreshTest {
 
     @Test
-    public void checkRefreshTest() {
+    public void checkRefreshTest() throws Throwable {
         RefreshableStep.refreshable.getListToRefresh().add(1);
         RefreshableStep.refreshable.getListToRefresh().add(true);
         RefreshableStep.refreshable.getListToRefresh().add("String");

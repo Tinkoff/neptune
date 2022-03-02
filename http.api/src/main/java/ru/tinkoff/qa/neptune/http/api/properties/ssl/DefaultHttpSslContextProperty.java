@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.http.api.properties.ssl;
 
-import ru.tinkoff.qa.neptune.core.api.properties.PropertyDefaultValue;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertyDescription;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
 import ru.tinkoff.qa.neptune.core.api.properties.object.ObjectPropertySupplier;
