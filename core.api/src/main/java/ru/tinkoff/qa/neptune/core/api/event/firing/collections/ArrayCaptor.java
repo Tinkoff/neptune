@@ -34,7 +34,7 @@ public class ArrayCaptor extends IterableCaptor<List<?>> {
                 })
                 .collect(toList());
 
-        if (result.size() == 0) {
+        if (result.isEmpty()) {
             return null;
         }
 

@@ -19,7 +19,7 @@ public class DefaultConsoleEventLogger implements EventLogger {
         successful = true;
         steps.addLast(message);
         System.out.println(DATE_FORMAT.format(new Date()) + " STEP HAS BEEN STARTED: " + message);
-        if (parameters.size() == 0) {
+        if (parameters.isEmpty()) {
             return;
         }
         System.out.println("PARAMETERS:");
@@ -40,7 +40,7 @@ public class DefaultConsoleEventLogger implements EventLogger {
 
     @Override
     public void fireEventFinishing() {
-        if (steps.size() > 0) {
+        if (!steps.isEmpty()) {
             var step = steps.getLast();
             if (successful) {
                 System.out.println(DATE_FORMAT.format(new Date()) + " STEP HAS FINISHED SUCCESSFULLY: " + step);

@@ -67,7 +67,7 @@ public class MapCaptor extends StringCaptor<Map<?, ?>> {
                     || Map.class.isAssignableFrom(valueClazz));
         }).collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        if (result.size() == 0) {
+        if (result.isEmpty()) {
             return null;
         }
 

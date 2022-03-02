@@ -12,7 +12,6 @@ import java.util.function.Supplier;
         "supply instances of javax.net.ssl.SSLContext"},
         section = "Http client. General")
 @PropertyName("DEFAULT_HTTP_SSL_CONTEXT")
-@PropertyDefaultValue("ru.tinkoff.qa.neptune.http.api.properties.ssl.AllTrustedSslContextSupplier")
 public final class DefaultHttpSslContextProperty implements ObjectPropertySupplier<SSLContext, DefaultHttpSslContextProperty.SslContextSupplier> {
     /**
      * This instance reads value of the property {@code 'DEFAULT_HTTP_SSL_CONTEXT'} and returns a {@link SSLContext}.

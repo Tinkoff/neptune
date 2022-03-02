@@ -53,7 +53,7 @@ public abstract class AbstractResponseBodyObjectsCaptor<T, R> extends Captor<Lis
                                     }
                                 }
 
-                                if (result.size() == 0) {
+                                if (result.isEmpty()) {
                                     return null;
                                 }
 

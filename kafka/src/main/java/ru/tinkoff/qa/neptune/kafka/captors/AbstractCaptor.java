@@ -21,7 +21,7 @@ public abstract class AbstractCaptor extends StringCaptor<List<String>> {
                 .map(o -> (String) o)
                 .collect(toList());
 
-        if (result.size() == 0) {
+        if (result.isEmpty()) {
             return null;
         }
 

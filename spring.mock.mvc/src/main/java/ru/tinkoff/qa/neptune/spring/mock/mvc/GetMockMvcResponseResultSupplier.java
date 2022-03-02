@@ -1083,7 +1083,7 @@ public final class GetMockMvcResponseResultSupplier extends SequentialGetStepSup
                     }
                 });
 
-                if (errors.size() == 0) {
+                if (errors.isEmpty()) {
                     return result.andReturn().getResponse();
                 }
 

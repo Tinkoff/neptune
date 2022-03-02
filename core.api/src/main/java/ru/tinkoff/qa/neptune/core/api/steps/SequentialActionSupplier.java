@@ -156,13 +156,13 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
             var get = (SequentialGetStepSupplier<?, ?, ?, ?, ?>) toBePerformedOn;
             var additional = get.calculatedParameters();
 
-            if (additional.size() > 0) {
+            if (!additional.isEmpty()) {
                 result.putAll(additional);
             }
         }
 
         var additional = additionalParameters();
-        if (nonNull(additional) && additional.size() > 0) {
+        if (nonNull(additional) && !additional.isEmpty()) {
             result.putAll(additional);
         }
         return result;

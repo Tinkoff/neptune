@@ -223,7 +223,7 @@ public final class BodyParameterAnnotationReader {
                         }
                     }
 
-                    if (form.size() > 0) {
+                    if (!form.isEmpty()) {
                         return body(form.toArray(new FormParameter[]{}));
                     }
                     return null;
@@ -355,7 +355,7 @@ public final class BodyParameterAnnotationReader {
                                         });
                     }
 
-                    if (partList.size() > 0) {
+                    if (!partList.isEmpty()) {
                         return body(randomAlphanumeric(15), partList.toArray(new BodyPart[]{}));
                     }
                     return null;

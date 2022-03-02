@@ -55,7 +55,7 @@ public interface ContextRefreshable {
             var value = field.get(toBeRefreshed);
             ofNullable(value).ifPresent(o -> ((ContextRefreshable) o).refreshContext());
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

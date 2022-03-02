@@ -93,7 +93,7 @@ public final class HasChildElementsMatcher<T extends SearchContext> extends Nept
     @Override
     protected boolean featureMatches(SearchContext toMatch) {
         var found = search.get().apply(toMatch);
-        if (found.size() == 0) {
+        if (found.isEmpty()) {
             appendMismatchDescription(new ElementNotFoundMismatch(search));
             return false;
         }

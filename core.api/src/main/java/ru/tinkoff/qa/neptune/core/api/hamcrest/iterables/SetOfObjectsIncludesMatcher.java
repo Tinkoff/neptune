@@ -222,7 +222,7 @@ public abstract class SetOfObjectsIncludesMatcher<S, R, T extends Iterable<R>> e
                 continue;
             }
 
-            if (alreadyChecked.size() > 0) {
+            if (!alreadyChecked.isEmpty()) {
                 appendMismatchDescription(new OutOfItemsOrderMismatch(m,
                         alreadyChecked.getLast(),
                         alreadyChecked.size() - 1,

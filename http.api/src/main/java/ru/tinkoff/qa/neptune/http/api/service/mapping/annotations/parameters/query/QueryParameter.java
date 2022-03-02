@@ -106,7 +106,7 @@ public @interface QueryParameter {
                             resultList.addAll(queryPart);
                         }
 
-                        if (resultList.size() > 0) {
+                        if (!resultList.isEmpty()) {
                             return resultList;
                         }
 

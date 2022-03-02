@@ -2215,7 +2215,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
         headersMap.forEach((s, strings) -> {
             var valueList = new ArrayList<>(strings);
             if (equalsIgnoreCase(s, "Content-Type")
-                    && valueList.size() > 0
+                    && !valueList.isEmpty()
                     && (body != null && body instanceof MultiPartBody)) {
                 var val = valueList.get(0);
                 valueList.set(0, val + ";boundary=" + ((MultiPartBody) body).getBoundary());

@@ -359,13 +359,13 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
             var get = (SequentialGetStepSupplier<?, ?, ?, ?, ?>) from;
             var additional = get.calculatedParameters();
 
-            if (additional.size() > 0) {
+            if (!additional.isEmpty()) {
                 result.putAll(additional);
             }
         }
 
         var additional = additionalParameters();
-        if (nonNull(additional) && additional.size() > 0) {
+        if (nonNull(additional) && !additional.isEmpty()) {
             result.putAll(additional);
         }
         return result;

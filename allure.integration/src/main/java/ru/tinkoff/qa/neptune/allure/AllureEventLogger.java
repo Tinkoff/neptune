@@ -41,7 +41,7 @@ public class AllureEventLogger implements EventLogger {
                                 .setValue(e.getValue()))
                         .collect(toList()));
 
-        if (stepUIIDs.size() == 0) {
+        if (stepUIIDs.isEmpty()) {
             allureLifecycle.startStep(uuid, result);
         } else {
             allureLifecycle.startStep(stepUIIDs.getLast(), uuid, result);
@@ -52,7 +52,7 @@ public class AllureEventLogger implements EventLogger {
 
     @Override
     public void fireThrownException(Throwable throwable) {
-        if (stepUIIDs.size() == 0) {
+        if (stepUIIDs.isEmpty()) {
             return;
         }
 
@@ -71,7 +71,7 @@ public class AllureEventLogger implements EventLogger {
 
     @Override
     public void fireReturnedValue(String resultDescription, Object returned) {
-        if (stepUIIDs.size() == 0) {
+        if (stepUIIDs.isEmpty()) {
             return;
         }
 
@@ -86,7 +86,7 @@ public class AllureEventLogger implements EventLogger {
 
     @Override
     public void fireEventFinishing() {
-        if (stepUIIDs.size() == 0) {
+        if (stepUIIDs.isEmpty()) {
             return;
         }
 
@@ -102,7 +102,7 @@ public class AllureEventLogger implements EventLogger {
 
     @Override
     public void addParameters(Map<String, String> parameters) {
-        if (stepUIIDs.size() == 0) {
+        if (stepUIIDs.isEmpty()) {
             return;
         }
 

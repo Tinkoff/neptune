@@ -32,7 +32,7 @@ public class CollectionCaptor extends IterableCaptor<List<?>> {
                             || Map.class.isAssignableFrom(aClass)).orElse(false);
                 }).collect(toList());
 
-        if (result.size() == 0) {
+        if (result.isEmpty()) {
             return null;
         }
 

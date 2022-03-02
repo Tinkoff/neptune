@@ -27,7 +27,7 @@ final class RequestParameters implements StepParameterPojo {
         params.put("Http Method", request.method());
 
         var headerMap = request.headers().map();
-        if (headerMap.size() > 0) {
+        if (!headerMap.isEmpty()) {
             params.put("Http request Headers", headerMap.toString());
         }
 
