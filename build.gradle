@@ -92,7 +92,8 @@ subprojects {
         jacoco {
             excludes += [
                     'org.springframework.*',
-                    'org.hamcrest.*'
+                    'org.hamcrest.*',
+                    'ru.tinkoff.qa.neptune.data.base.api.*'
             ]
         }
     }
@@ -111,7 +112,8 @@ subprojects {
                     exclude: [
                             '**/org/springframework/**',
                             '**/org/hamcrest/**',
-                            '**/**AjcClosure**'
+                            '**/**AjcClosure**',
+                            '**/data/base/api/**'
                     ]
             )
         })
@@ -142,7 +144,8 @@ task jacocoOverallReport(type: JacocoReport, group: 'Coverage reports') {
                 exclude: [
                         '**/org/springframework/**',
                         '**/org/hamcrest/**',
-                        '**/**AjcClosure**'
+                        '**/**AjcClosure**',
+                        '**/data/base/api/**',
                 ]
         )
     }
@@ -161,6 +164,8 @@ sonarqube {
         property "sonar.projectKey", "neptune"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.coverage.jacoco.xmlReportPaths", "$buildDir/reports/jacoco/jacocoOverallReport/jacocoOverallReport.xml"
+        //property "sonar.qualitygate.wait", "true"
+        property "sonar.exclusions", "**/data/base/api/**"
     }
 }
 
