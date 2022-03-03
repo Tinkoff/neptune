@@ -49,8 +49,6 @@ Temporary Items
 build/
 toy.constructor.iml
 .gradle
-.gradle/*
-gradle/
 */out/*
 */*.log
 */test-output
