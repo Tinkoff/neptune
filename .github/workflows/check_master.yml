@@ -22,24 +22,14 @@ jobs:
       with:
         java-version: 11
     - name: Test with Gradle
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
         export DISPLAY=:99
         chromedriver --url-base=/wd/hub &
         sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
         gradle clean check
     - name: SonarCloud Scan
-      uses: sonarsource/sonarcloud-github-action@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      with:
-        args: >
-          -Dsonar.organization=neptune
-          -Dsonar.projectKey=neptune
-          -Dsonar.host.url=https://sonarcloud.io
-          -Dsonar.coverage.jacoco.xmlReportPaths=./build/reports/jacoco/jacocoOverallReport/jacocoOverallReport.xml
-          -Dsonar.qualitygate.wait=true
-          -Dsonar.login=${{ env.SONAR_TOKEN }}
+      run: |
+        gradle sonarqube -x test -Psonar.login=${{ env.SONAR_TOKEN }} 
