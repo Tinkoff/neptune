@@ -20,13 +20,13 @@ import static java.util.Collections.synchronizedSet;
 import static java.util.List.of;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
 import static ru.tinkoff.qa.neptune.data.base.api.data.operations.DataOperation.*;
 
 @Deprecated(forRemoval = true)
 @SuppressWarnings("unchecked")
 public class DataBaseStepContext extends Context<DataBaseStepContext> implements Stoppable {
 
-    private static final DataBaseStepContext context = getInstance(DataBaseStepContext.class);
     private final Set<JDOPersistenceManager> jdoPersistenceManagerSet = synchronizedSet(new HashSet<>());
 
     private static  <T> T returnSingleWhenNecessary(List<T> ts) {
@@ -37,7 +37,7 @@ public class DataBaseStepContext extends Context<DataBaseStepContext> implements
     }
 
     public static DataBaseStepContext inDataBase() {
-        return context;
+        return getCreatedContextOrCreate(DataBaseStepContext.class);
     }
 
     public JDOPersistenceManager getManager(DBConnection connection) {

@@ -12,12 +12,12 @@ final class AdditionalParameterSupplier implements Supplier<Map<String, String>>
 
     private final Object calculateBy;
     private final boolean includeParametersOfInnerSteps;
-    private final Supplier<Map<String, String>> additionalParameterSupplier;
+    private final Supplier<Map<String, String>> extraParameterSupplier;
 
     AdditionalParameterSupplier(Object calculateBy, Object calculateFor, Supplier<Map<String, String>> additionalParameterSupplier) {
         this.calculateBy = calculateBy;
         includeParametersOfInnerSteps = calculateFor.getClass().getAnnotation(IncludeParamsOfInnerGetterStep.class) != null;
-        this.additionalParameterSupplier = additionalParameterSupplier;
+        this.extraParameterSupplier = additionalParameterSupplier;
     }
 
     @Override
@@ -34,7 +34,7 @@ final class AdditionalParameterSupplier implements Supplier<Map<String, String>>
             }
         }
 
-        var additional = additionalParameterSupplier.get();
+        var additional = extraParameterSupplier.get();
         if (nonNull(additional) && !additional.isEmpty()) {
             result.putAll(additional);
         }

@@ -84,7 +84,7 @@ public class TestNgTestFinishingTest {
         assertThat(getAllObjects(ContextClass1.class, objectContainer -> true), hasSize(6));
     }
 
-    @Test(priority = 2)
+    @Test
     public void hookTest() {
         TestHook.count = 0;
         runBeforeTheChecking();

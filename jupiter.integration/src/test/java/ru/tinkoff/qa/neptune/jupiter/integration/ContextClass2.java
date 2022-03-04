@@ -7,7 +7,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 @CreateWith(provider = ABParameterProvider.class)
 public class ContextClass2 extends Context implements ContextRefreshable {
 
-    static final ContextClass2 context = getInstance(ContextClass2.class);
     private static int refreshCount;
     private final int a;
     private final int b;

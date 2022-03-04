@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.binding.RabbitMqBindSupplier.bindAction;
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.binding.RabbitMqUnBindSupplier.unBindAction;
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.declare.DeclareActionSupplier.declareAction;
@@ -26,7 +27,6 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperti
 @CreateWith(provider = RabbitMqParameterProvider.class)
 public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
 
-    private static final RabbitMqStepContext context = getInstance(RabbitMqStepContext.class);
     private final Channel channel;
 
     public RabbitMqStepContext(Channel channel) throws IOException, TimeoutException {
@@ -34,7 +34,7 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
     }
 
     public static RabbitMqStepContext rabbitMq() {
-        return context;
+        return getCreatedContextOrCreate(RabbitMqStepContext.class);
     }
 
     public Channel getChannel() {

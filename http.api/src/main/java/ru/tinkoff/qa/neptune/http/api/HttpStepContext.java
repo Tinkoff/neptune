@@ -21,6 +21,7 @@ import static java.net.http.HttpResponse.BodyHandlers.discarding;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
 import static ru.tinkoff.qa.neptune.http.api.cookies.AddHttpCookiesActionSupplier.addHttpCookies;
 import static ru.tinkoff.qa.neptune.http.api.cookies.DeleteHttpCookiesActionSupplier.deleteCookies;
 import static ru.tinkoff.qa.neptune.http.api.cookies.GetHttpCookiesSupplier.httpCookies;
@@ -29,8 +30,6 @@ import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSuppl
 @CreateWith(provider = HttpStepsParameterProvider.class)
 public class HttpStepContext extends Context<HttpStepContext> {
 
-    private static final HttpStepContext context = getInstance(HttpStepContext.class);
-
     private final HttpClient client;
 
     public HttpStepContext(HttpClient.Builder clientBuilder) {
@@ -38,7 +37,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
     }
 
     public static HttpStepContext http() {
-        return context;
+        return getCreatedContextOrCreate(HttpStepContext.class);
     }
 
     public HttpClient getCurrentClient() {

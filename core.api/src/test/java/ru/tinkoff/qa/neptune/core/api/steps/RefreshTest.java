@@ -11,6 +11,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyCollectionOf;
 import static ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable.refreshContext;
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
 
 public class RefreshTest {
 
@@ -32,7 +33,7 @@ public class RefreshTest {
 
     private static class RefreshableStep extends Context<RefreshableStep> implements ContextRefreshable {
 
-        static final RefreshableStep refreshable = getInstance(RefreshableStep.class);
+        static final RefreshableStep refreshable = getCreatedContextOrCreate(RefreshableStep.class);
 
         private final List<Object> listToRefresh = new ArrayList<>();
 

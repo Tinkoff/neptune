@@ -7,14 +7,13 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
 
 public class CalculatorSteps extends Context<CalculatorSteps> implements Supplier<Double> {
-
-    private static final CalculatorSteps calculator = getInstance(CalculatorSteps.class);
     private Double calculated = 0D;
 
     public static CalculatorSteps calculator() {
-        return calculator;
+        return getCreatedContextOrCreate(CalculatorSteps.class);
     }
 
     @Override
