@@ -47,12 +47,8 @@ Temporary Items
 .apdisk
 .idea
 build/
-gradlew.bat
 toy.constructor.iml
-gradlew
 .gradle
-.gradle/*
-gradle/
 */out/*
 */*.log
 */test-output

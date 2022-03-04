@@ -35,7 +35,7 @@
 [closedissues-badge]: https://img.shields.io/github/issues-closed-raw/Tinkoff/neptune
 [closedissues-link]: https://github.com/Tinkoff/neptune/issues?q=is%3Aissue+is%3Aclosed
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=neptune&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=neptune)
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=neptune)](https://sonarcloud.io/summary/new_code?id=neptune)
 
 Test automation framework for automation of E2E/system/integrating testing.
 

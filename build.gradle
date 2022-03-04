@@ -92,7 +92,8 @@ subprojects {
         jacoco {
             excludes += [
                     'org.springframework.*',
-                    'org.hamcrest.*'
+                    'org.hamcrest.*',
+                    'ru.tinkoff.qa.neptune.data.base.api.*'
             ]
         }
     }
@@ -111,7 +112,8 @@ subprojects {
                     exclude: [
                             '**/org/springframework/**',
                             '**/org/hamcrest/**',
-                            '**/**AjcClosure**'
+                            '**/**AjcClosure**',
+                            '**/data/base/api/**'
                     ]
             )
         })
@@ -142,7 +144,8 @@ task jacocoOverallReport(type: JacocoReport, group: 'Coverage reports') {
                 exclude: [
                         '**/org/springframework/**',
                         '**/org/hamcrest/**',
-                        '**/**AjcClosure**'
+                        '**/**AjcClosure**',
+                        '**/data/base/api/**',
                 ]
         )
     }
@@ -161,12 +164,12 @@ sonarqube {
         property "sonar.projectKey", "neptune"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.coverage.jacoco.xmlReportPaths", "$buildDir/reports/jacoco/jacocoOverallReport/jacocoOverallReport.xml"
-        property "sonar.qualitygate.wait", "true"
-        //property "sonar.pullrequest.base", "master"
+        //property "sonar.qualitygate.wait", "true"
+        property "sonar.exclusions", "**/data/base/api/**"
     }
 }
 
-check.dependsOn jacocoOverallReport, project.tasks["sonarqube"]
+check.dependsOn jacocoOverallReport
 
 task aggregatedJavadocs(type: Javadoc, description: 'Generate javadocs from all child projects as if it was a single project', group: 'Documentation') {
     title = "Neptune API Documentation. v$globalVersion"
