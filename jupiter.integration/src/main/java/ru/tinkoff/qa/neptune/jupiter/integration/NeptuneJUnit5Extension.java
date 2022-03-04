@@ -37,7 +37,7 @@ public final class NeptuneJUnit5Extension implements TestInstancePostProcessor,
         isRefreshed.set(false);
     }
 
-    private void refresh(boolean condition) throws Throwable {
+    private void refresh(boolean condition) {
         if (!isRefreshed() && condition) {
             for (var rc : REFRESHABLE_CONTEXTS) {
                 refreshContext(rc);

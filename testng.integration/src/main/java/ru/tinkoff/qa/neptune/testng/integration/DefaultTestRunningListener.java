@@ -1,9 +1,13 @@
 package ru.tinkoff.qa.neptune.testng.integration;
 
 import com.google.common.collect.Iterables;
-import org.testng.*;
+import org.testng.IInvokedMethod;
+import org.testng.IInvokedMethodListener;
+import org.testng.ITestListener;
+import org.testng.ITestResult;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.core.api.hooks.ExecutionHook;
 import ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore;
 
@@ -24,7 +28,6 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.testng.ITestResult.*;
 import static ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable.REFRESHABLE_CONTEXTS;
-import static ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable.refreshContext;
 import static ru.tinkoff.qa.neptune.core.api.concurrency.BusyThreads.setBusy;
 import static ru.tinkoff.qa.neptune.core.api.concurrency.BusyThreads.setFree;
 import static ru.tinkoff.qa.neptune.core.api.dependency.injection.DependencyInjector.injectValues;
@@ -72,13 +75,8 @@ public final class DefaultTestRunningListener implements IInvokedMethodListener,
                 .ifPresentOrElse(method1 -> {}, () -> {
                     if (stream(method.getAnnotations()).anyMatch(annotation -> annotationToRefreshBefore
                             .contains(annotation.annotationType()))) {
-                        for (var rc : REFRESHABLE_CONTEXTS) {
-                            try {
-                                refreshContext(rc);
-                            } catch (Throwable e) {
-                                throw new TestException(e);
-                            }
-                        }
+
+                        REFRESHABLE_CONTEXTS.forEach(ContextRefreshable::refreshContext);
                         previouslyRefreshed.set(method);
                     }
                 });
