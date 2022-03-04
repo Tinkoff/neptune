@@ -27,7 +27,7 @@ public class ParameterProviderTest {
         private static final EmptyStepClass context = getCreatedContextOrCreate(EmptyStepClass.class);
     }
 
-    private static class ParameterizedParameterProvider implements ParameterProvider {
+    public static class ParameterizedParameterProvider implements ParameterProvider {
         @Override
         public Object[] provide() {
             return new Object[]{FIVE};
