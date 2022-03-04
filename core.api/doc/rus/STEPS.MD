@@ -59,6 +59,8 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
+
 @CreateWith(provider = MyParameterProvider.class) //<-- Формирует параметры вызова конструктора
 //Предполагается, что для этого используются значения различных переменных окружения
 //среды, в которой выполняются тесты
@@ -70,11 +72,8 @@ public class MyTestContext extends Context<MyTestContext> { //generic сигна
     //объекты данного класса
 
     //Рекомендуемый способ доступа до объектов контекста.
-    //Тут все параметры передаются неявно.
-    //Если для данного потока выполнения (Thread) уже был создан 
-    //объект данного класса - вернется этот объект.
     public static MyTestContext myTestContext() {
-        return getInstance(MyTestContext.class);
+        return getCreatedContextOrCreate(MyTestContext.class);
     }
 
     //Конструктор может содержать параметры
@@ -1490,11 +1489,13 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
+
 @CreateWith(provider = MyParameterProvider.class)
 public class MyTestContext extends Context<MyTestContext> {
 
     public static MyTestContext myTestContext() {
-        return getInstance(MyTestContext.class);
+        return getCreatedContextOrCreate(MyTestContext.class);
     }
 
     //Конструктор может содержать параметры
@@ -1600,11 +1601,13 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 
 import java.time.Duration;
 
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
+
 @CreateWith(provider = MyParameterProvider.class)
 public class MyTestContext extends Context<MyTestContext> {
 
     public static MyTestContext myTestContext() {
-        return getInstance(MyTestContext.class);
+        return getCreatedContextOrCreate(MyTestContext.class);
     }
 
     //Конструктор может содержать параметры
