@@ -1,16 +1,12 @@
-package ru.tinkoff.qa.neptune.core.api.steps;
+package ru.tinkoff.qa.neptune.core.api.steps.parameters;
 
 import org.hamcrest.Matcher;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 
-import java.time.Duration;
 import java.util.Map;
-import java.util.function.Function;
 
 import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
@@ -19,10 +15,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.ONLY_ONE;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
-import static ru.tinkoff.qa.neptune.core.api.steps.StepParametersTest.TestActionStepSupplier.getTestActionStepSupplier;
-import static ru.tinkoff.qa.neptune.core.api.steps.StepParametersTest.TestActionStepSupplier2.getTestActionStepSupplier2;
-import static ru.tinkoff.qa.neptune.core.api.steps.StepParametersTest.TestGetStepSupplier.getTestGetStepSupplier;
-import static ru.tinkoff.qa.neptune.core.api.steps.StepParametersTest.TestGetStepSupplier2.getTestGetStepSupplier2;
+import static ru.tinkoff.qa.neptune.core.api.steps.parameters.TestActionStepSupplier.getTestActionStepSupplier;
+import static ru.tinkoff.qa.neptune.core.api.steps.parameters.TestActionStepSupplier2.getTestActionStepSupplier2;
+import static ru.tinkoff.qa.neptune.core.api.steps.parameters.TestGetStepSupplier.getTestGetStepSupplier;
+import static ru.tinkoff.qa.neptune.core.api.steps.parameters.TestGetStepSupplier2.getTestGetStepSupplier2;
 
 public class StepParametersTest {
 
@@ -187,11 +183,24 @@ public class StepParametersTest {
                       String timeName,
                       String sleepName,
                       Matcher<Map<?, ?>> entryMatcher) {
-        var p = s.timeOut(ofSeconds(5))
-                .pollingInterval(ofMillis(500))
-                .criteria("Some criteria 1", o -> true)
-                .criteria(ONLY_ONE(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)))
-                .getParameters();
+
+        Map<String, String> p = null;
+        if (s instanceof TestGetStepSupplier) {
+            p = ((TestGetStepSupplier) s).timeOut(ofSeconds(5))
+                    .pollingInterval(ofMillis(500))
+                    .criteria("Some criteria 1", o -> true)
+                    .criteria(ONLY_ONE(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)))
+                    .getParameters();
+        }
+
+        if (s instanceof TestGetStepSupplier2) {
+            p = ((TestGetStepSupplier2) s).timeOut(ofSeconds(5))
+                    .pollingInterval(ofMillis(500))
+                    .criteria("Some criteria 1", o -> true)
+                    .criteria(ONLY_ONE(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)))
+                    .getParameters();
+        }
+
         assertThat(p, hasEntry(equalTo(criteriaName), equalTo("Some criteria 1")));
         assertThat(p, hasEntry(equalTo(criteriaName + " 2"), equalTo("(Some criteria 2) xor (Some criteria 3)")));
         assertThat(p, hasEntry(equalTo(timeName), equalTo("00:00:05.000")));
@@ -227,15 +236,15 @@ public class StepParametersTest {
                       String timeName,
                       String sleepName,
                       Matcher<Map<?, ?>> entryMatcher) {
-        s.timeOut(ofSeconds(5))
-                .pollingInterval(ofMillis(500))
-                .criteria("Some criteria 1", o -> true)
-                .criteria(ONLY_ONE(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)));
 
         if (s instanceof TestGetStepSupplier) {
             ((TestGetStepSupplier) s).setParam1(true)
                     .setParam2("ABC")
                     .setParam3(5)
+                    .timeOut(ofSeconds(5))
+                    .pollingInterval(ofMillis(500))
+                    .criteria("Some criteria 1", o -> true)
+                    .criteria(ONLY_ONE(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)))
                     .setParamObj(new ParamObj()
                             .setParam1(true)
                             .setParam1(true)
@@ -248,6 +257,10 @@ public class StepParametersTest {
             ((TestGetStepSupplier2) s).setParam1(true)
                     .setParam2("ABC")
                     .setParam3(5)
+                    .timeOut(ofSeconds(5))
+                    .pollingInterval(ofMillis(500))
+                    .criteria("Some criteria 1", o -> true)
+                    .criteria(ONLY_ONE(condition("Some criteria 2", o -> true), condition("Some criteria 3", o -> true)))
                     .setParamObj(new ParamObj()
                             .setParam1(true)
                             .setParam1(true)
@@ -369,354 +382,5 @@ public class StepParametersTest {
         var params = supplier.getParameters();
 
         stream(matchers).forEach(matcher -> assertThat(params, matcher));
-    }
-
-    @SequentialGetStepSupplier.DefineCriteriaParameterName
-    @SequentialGetStepSupplier.DefinePollingTimeParameterName
-    @SequentialGetStepSupplier.DefineTimeOutParameterName
-    @SequentialGetStepSupplier.DefineFromParameterName
-    @IncludeParamsOfInnerGetterStep
-    static class TestGetStepSupplier extends SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier<Object, Object, Object, TestGetStepSupplier> {
-
-        @StepParameter("Parameter 1")
-        private Boolean param1;
-        private ParamObj paramObj;
-        @StepParameter(value = "Parameter 2", doNotReportNullValues = true)
-        private String param2;
-        private Integer param3;
-
-        protected TestGetStepSupplier() {
-            super(o -> new Object[]{});
-        }
-
-        @Description("getTestGetStepSupplier")
-        public static TestGetStepSupplier getTestGetStepSupplier() {
-            return new TestGetStepSupplier();
-        }
-
-        @Override
-        protected TestGetStepSupplier from(Object from) {
-            return super.from(from);
-        }
-
-        @Override
-        protected TestGetStepSupplier from(Function<Object, ?> from) {
-            return super.from(from);
-        }
-
-        @Override
-        protected TestGetStepSupplier from(SequentialGetStepSupplier<Object, ?, ?, ?, ?> from) {
-            return super.from(from);
-        }
-
-        @Override
-        protected TestGetStepSupplier pollingInterval(Duration pollingTime) {
-            return super.pollingInterval(pollingTime);
-        }
-
-        @Override
-        protected TestGetStepSupplier timeOut(Duration timeOut) {
-            return super.timeOut(timeOut);
-        }
-
-        public Boolean getParam1() {
-            return param1;
-        }
-
-        public TestGetStepSupplier setParam1(Boolean param1) {
-            this.param1 = param1;
-            return this;
-        }
-
-        public String getParam2() {
-            return param2;
-        }
-
-        public TestGetStepSupplier setParam2(String param2) {
-            this.param2 = param2;
-            return this;
-        }
-
-        public Integer getParam3() {
-            return param3;
-        }
-
-        public TestGetStepSupplier setParam3(Integer param3) {
-            this.param3 = param3;
-            return this;
-        }
-
-        public ParamObj getParamObj() {
-            return paramObj;
-        }
-
-        public TestGetStepSupplier setParamObj(ParamObj paramObj) {
-            this.paramObj = paramObj;
-            return this;
-        }
-    }
-
-    @SequentialGetStepSupplier.DefineTimeOutParameterName("Custom Time out")
-    @SequentialGetStepSupplier.DefineCriteriaParameterName("Custom criteria")
-    @SequentialGetStepSupplier.DefinePollingTimeParameterName("Custom sleeping")
-    @SequentialGetStepSupplier.DefineFromParameterName("Custom from")
-    @Description("getTestGetStepSupplier2")
-    static class TestGetStepSupplier2 extends SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier<Object, Object, Object, TestGetStepSupplier2> {
-
-        @StepParameter("Parameter 11")
-        private Boolean param1;
-        private ParamObj paramObj;
-        @StepParameter(value = "Parameter 21", doNotReportNullValues = true)
-        private String param2;
-        private Integer param3;
-
-
-        protected TestGetStepSupplier2() {
-            super(o -> new Object[]{});
-        }
-
-        public static TestGetStepSupplier2 getTestGetStepSupplier2() {
-            return new TestGetStepSupplier2();
-        }
-
-        @Override
-        protected TestGetStepSupplier2 from(Object from) {
-            return super.from(from);
-        }
-
-        @Override
-        protected TestGetStepSupplier2 from(Function<Object, ?> from) {
-            return super.from(from);
-        }
-
-        @Override
-        protected TestGetStepSupplier2 from(SequentialGetStepSupplier<Object, ?, ?, ?, ?> from) {
-            return super.from(from);
-        }
-
-        @Override
-        protected TestGetStepSupplier2 pollingInterval(Duration pollingTime) {
-            return super.pollingInterval(pollingTime);
-        }
-
-        @Override
-        protected TestGetStepSupplier2 timeOut(Duration timeOut) {
-            return super.timeOut(timeOut);
-        }
-
-        public Boolean getParam1() {
-            return param1;
-        }
-
-        public TestGetStepSupplier2 setParam1(Boolean param1) {
-            this.param1 = param1;
-            return this;
-        }
-
-        public String getParam2() {
-            return param2;
-        }
-
-        public TestGetStepSupplier2 setParam2(String param2) {
-            this.param2 = param2;
-            return this;
-        }
-
-        public Integer getParam3() {
-            return param3;
-        }
-
-        public TestGetStepSupplier2 setParam3(Integer param3) {
-            this.param3 = param3;
-            return this;
-        }
-
-        public ParamObj getParamObj() {
-            return paramObj;
-        }
-
-        public TestGetStepSupplier2 setParamObj(ParamObj paramObj) {
-            this.paramObj = paramObj;
-            return this;
-        }
-    }
-
-    @Description("Test action")
-    @SequentialActionSupplier.DefinePerformOnParameterName
-    @IncludeParamsOfInnerGetterStep
-    static class TestActionStepSupplier extends SequentialActionSupplier<Object, Object, TestActionStepSupplier> {
-
-        @StepParameter("Action Parameter 1")
-        private Boolean param1;
-        private ParamObj paramObj;
-        @StepParameter(value = "Action Parameter 2", doNotReportNullValues = true)
-        private String param2;
-        private Integer param3;
-
-        protected TestActionStepSupplier() {
-            super();
-        }
-
-        public static TestActionStepSupplier getTestActionStepSupplier() {
-            return new TestActionStepSupplier();
-        }
-
-        @Override
-        protected TestActionStepSupplier performOn(Object value) {
-            return super.performOn(value);
-        }
-
-        @Override
-        protected TestActionStepSupplier performOn(Function<Object, ?> function) {
-            return super.performOn(function);
-        }
-
-        @Override
-        protected TestActionStepSupplier performOn(SequentialGetStepSupplier<Object, ?, ?, ?, ?> supplier) {
-            return super.performOn(supplier);
-        }
-
-        @Override
-        protected void howToPerform(Object value) {
-        }
-
-        public TestActionStepSupplier setParam1(Boolean param1) {
-            this.param1 = param1;
-            return this;
-        }
-
-        public String getParam2() {
-            return param2;
-        }
-
-        public TestActionStepSupplier setParam2(String param2) {
-            this.param2 = param2;
-            return this;
-        }
-
-        public Integer getParam3() {
-            return param3;
-        }
-
-        public TestActionStepSupplier setParam3(Integer param3) {
-            this.param3 = param3;
-            return this;
-        }
-
-        public ParamObj getParamObj() {
-            return paramObj;
-        }
-
-        public TestActionStepSupplier setParamObj(ParamObj paramObj) {
-            this.paramObj = paramObj;
-            return this;
-        }
-    }
-
-    @SequentialActionSupplier.DefinePerformOnParameterName("Perform on custom")
-    @Description("TestActionStepSupplier2")
-    static class TestActionStepSupplier2 extends SequentialActionSupplier<Object, Object, TestActionStepSupplier2> {
-
-        @StepParameter("Action Parameter 1")
-        private Boolean param1;
-        private ParamObj paramObj;
-        @StepParameter(value = "Action Parameter 2", doNotReportNullValues = true)
-        private String param2;
-        private Integer param3;
-
-        protected TestActionStepSupplier2() {
-            super();
-        }
-
-        public static TestActionStepSupplier2 getTestActionStepSupplier2() {
-            return new TestActionStepSupplier2();
-        }
-
-        @Override
-        protected TestActionStepSupplier2 performOn(Object value) {
-            return super.performOn(value);
-        }
-
-        @Override
-        protected TestActionStepSupplier2 performOn(Function<Object, ?> function) {
-            return super.performOn(function);
-        }
-
-        @Override
-        protected TestActionStepSupplier2 performOn(SequentialGetStepSupplier<Object, ?, ?, ?, ?> supplier) {
-            return super.performOn(supplier);
-        }
-
-        @Override
-        protected void howToPerform(Object value) {
-        }
-
-        public TestActionStepSupplier2 setParam1(Boolean param1) {
-            this.param1 = param1;
-            return this;
-        }
-
-        public String getParam2() {
-            return param2;
-        }
-
-        public TestActionStepSupplier2 setParam2(String param2) {
-            this.param2 = param2;
-            return this;
-        }
-
-        public Integer getParam3() {
-            return param3;
-        }
-
-        public TestActionStepSupplier2 setParam3(Integer param3) {
-            this.param3 = param3;
-            return this;
-        }
-
-        public ParamObj getParamObj() {
-            return paramObj;
-        }
-
-        public TestActionStepSupplier2 setParamObj(ParamObj paramObj) {
-            this.paramObj = paramObj;
-            return this;
-        }
-    }
-
-    private static class ParamObj implements StepParameterPojo {
-
-        @StepParameter("Pojo Parameter 1")
-        private Boolean param1;
-        @StepParameter(value = "Pojo Parameter 2", doNotReportNullValues = true)
-        private String param2;
-        private Integer param3;
-
-        public Boolean getParam1() {
-            return param1;
-        }
-
-        public ParamObj setParam1(Boolean param1) {
-            this.param1 = param1;
-            return this;
-        }
-
-        public String getParam2() {
-            return param2;
-        }
-
-        public ParamObj setParam2(String param2) {
-            this.param2 = param2;
-            return this;
-        }
-
-        public Integer getParam3() {
-            return param3;
-        }
-
-        public ParamObj setParam3(Integer param3) {
-            this.param3 = param3;
-            return this;
-        }
     }
 }
