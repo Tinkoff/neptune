@@ -1,0 +1,15 @@
+{
+  "stringValue": "ABCD",
+  "arrayValue1": [
+    "a",
+    "b",
+    "c",
+    "d"
+  ],
+  "arrayValue2": [
+    1,
+    2,
+    3,
+    4
+  ]
+}
