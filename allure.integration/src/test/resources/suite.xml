@@ -4,6 +4,7 @@
     <test name="successful lifecycle test">
         <classes>
             <class name="ru.tinkoff.qa.neptune.allure.SuccessfulStepLifeCycleTest"/>
+            <class name="ru.tinkoff.qa.neptune.allure.SuccessfulReturningValueTest"/>
         </classes>
     </test>
 

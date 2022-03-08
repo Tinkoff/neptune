@@ -14,7 +14,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.*;
 
-public class SuccessfulStepLifeCycleTest extends AbstractAllureTest {
+public class SuccessfulStepLifeCycleTest extends AbstractAllurePreparations {
 
 
     private final LinkedHashMap<String, String> params = new LinkedHashMap<>() {
@@ -115,5 +115,11 @@ public class SuccessfulStepLifeCycleTest extends AbstractAllureTest {
         assertThat(step.getStop(), instanceOf(Long.class));
         assertThat(step.getStage(), is(FINISHED));
         assertThat(step.getStatus(), is(Status.PASSED));
+    }
+
+    @Test(dependsOnMethods = "finishOfRootStep")
+    public void stepFinishWhenNoStepIsActive() {
+        fireEventFinishing();
+        assertThat(lifeCycle.getCurrentTestCaseOrStep().get(), is(testCaseUUID.toString()));
     }
 }

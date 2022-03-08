@@ -11,7 +11,7 @@ import java.util.UUID;
 import static io.qameta.allure.Allure.getLifecycle;
 import static java.util.UUID.randomUUID;
 
-public class AbstractAllureTest {
+public class AbstractAllurePreparations {
 
     final AllureLifecycle lifeCycle = getLifecycle();
     final UUID testCaseUUID = randomUUID();

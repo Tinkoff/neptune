@@ -12,7 +12,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.*;
 
-public class FailedStepLifeCycleTest extends AbstractAllureTest {
+public class FailedStepLifeCycleTest extends AbstractAllurePreparations {
 
     @DataProvider
     public static Object[][] data1() {

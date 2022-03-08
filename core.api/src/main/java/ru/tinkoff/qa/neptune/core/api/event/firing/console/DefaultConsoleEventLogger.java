@@ -47,9 +47,9 @@ public class DefaultConsoleEventLogger implements EventLogger {
             } else {
                 System.err.println(DATE_FORMAT.format(new Date()) + " STEP HAS FAILED: " + step);
             }
+            steps.removeLast();
         }
         successful = true;
-        steps.removeLast();
     }
 
     @Override
