@@ -15,27 +15,31 @@ public class CollectionCaptor extends IterableCaptor<List<?>> {
 
     @Override
     public List<?> getCaptured(Object toBeCaptured) {
-        if (!Collection.class.isAssignableFrom(toBeCaptured.getClass())) {
-            return null;
-        }
+        return ofNullable(toBeCaptured)
+                .map(capture -> {
+                    if (!Collection.class.isAssignableFrom(capture.getClass())) {
+                        return null;
+                    }
 
-        var result = ((Collection<?>) toBeCaptured)
-                .stream()
-                .filter(o -> {
-                    var clazz = ofNullable(o)
-                            .map(Object::getClass)
-                            .orElse(null);
+                    var result = ((Collection<?>) capture)
+                            .stream()
+                            .filter(o -> {
+                                var clazz = ofNullable(o)
+                                        .map(Object::getClass)
+                                        .orElse(null);
 
-                    return isLoggable(o)
-                            || ofNullable(clazz).map(aClass -> aClass.isArray()
-                            || Iterable.class.isAssignableFrom(aClass)
-                            || Map.class.isAssignableFrom(aClass)).orElse(false);
-                }).collect(toList());
+                                return isLoggable(o)
+                                        || ofNullable(clazz).map(aClass -> aClass.isArray()
+                                        || Iterable.class.isAssignableFrom(aClass)
+                                        || Map.class.isAssignableFrom(aClass)).orElse(false);
+                            }).collect(toList());
 
-        if (result.isEmpty()) {
-            return null;
-        }
+                    if (result.isEmpty()) {
+                        return null;
+                    }
 
-        return result;
+                    return result;
+                })
+                .orElse(null);
     }
 }
