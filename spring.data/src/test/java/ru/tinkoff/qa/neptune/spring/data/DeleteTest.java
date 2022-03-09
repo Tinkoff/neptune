@@ -13,7 +13,7 @@ import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
 import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byId;
 import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byIds;
 
-public class DeleteTest extends BaseSpringDataTest {
+public class DeleteTest extends BaseSpringDataPreparing {
 
     @Mock
     private Mono<Void> mockOneVoidMono;

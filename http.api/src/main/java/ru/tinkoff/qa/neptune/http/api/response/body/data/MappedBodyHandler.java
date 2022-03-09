@@ -3,7 +3,6 @@ package ru.tinkoff.qa.neptune.http.api.response.body.data;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import javax.xml.parsers.DocumentBuilder;
 import java.net.http.HttpResponse;
 import java.util.function.Function;
 
@@ -64,25 +63,6 @@ public class MappedBodyHandler<S, T> implements HttpResponse.BodyHandler<T> {
     public static <T> MappedBodyHandler<String, T> xml(TypeReference<T> toReturn) {
         return deserialized(toReturn, XML.getMapper());
     }
-
-    public static MappedBodyHandler<String, org.w3c.dom.Document> w3cDocument() {
-        return mapped(ofString(), new W3CDocument());
-    }
-
-    public static MappedBodyHandler<String, org.w3c.dom.Document> w3cDocument(DocumentBuilder documentBuilder) {
-        return mapped(ofString(), new W3CDocument(documentBuilder));
-    }
-
-    /**
-     * Creates a new body handler to convert a response body to a {@link org.jsoup.nodes.Document}.
-     * It is considered that response has a body of xml or html format.
-     *
-     * @return a new {@link MappedBodyHandler}
-     */
-    public static MappedBodyHandler<String, org.jsoup.nodes.Document> jsoupDocument() {
-        return mapped(ofString(), new JSoupDocument());
-    }
-
 
     @Override
     public HttpResponse.BodySubscriber<T> apply(HttpResponse.ResponseInfo responseInfo) {

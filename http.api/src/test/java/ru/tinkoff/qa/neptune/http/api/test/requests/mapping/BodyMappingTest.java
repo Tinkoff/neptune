@@ -2,8 +2,6 @@ package ru.tinkoff.qa.neptune.http.api.test.requests.mapping;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.xml.sax.InputSource;
@@ -63,24 +61,6 @@ public class BodyMappingTest {
     private static final BodyObject BODY_OBJECT = new BodyObject().setA("Some String")
             .setB(666)
             .setC(true);
-
-    private static final Document JSOUP_DOCUMENT = Jsoup.parse("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n" +
-            "<html>\n" +
-            "    <head>\n" +
-            "        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">\n" +
-            "        <title>Login Page</title>\n" +
-            "    </head>\n" +
-            "    <body>\n" +
-            "        <div id=\"login\" class=\"simple\" >\n" +
-            "            <form action=\"login.do\">\n" +
-            "                Username : <input id=\"username\" type=\"text\" /><br>\n" +
-            "                Password : <input id=\"password\" type=\"password\" /><br>\n" +
-            "                <input id=\"submit\" type=\"submit\" />\n" +
-            "                <input id=\"reset\" type=\"reset\" />\n" +
-            "            </form>\n" +
-            "        </div>\n" +
-            "    </body>\n" +
-            "</html>");
 
     private static final Map<String, Object> SOME_MAP = new LinkedHashMap<>() {
         {
@@ -184,8 +164,6 @@ public class BodyMappingTest {
                 {methodMappingAPI.postByteBody("ABC".getBytes()), ByteArrayBody.class},
                 {methodMappingAPI.postFileBody(TEST_FILE), FileBody.class},
                 {methodMappingAPI.postFileBody(TEST_FILE.toPath()), FileBody.class},
-                {methodMappingAPI.postJsoupBody(JSOUP_DOCUMENT), JSoupDocumentBody.class},
-                {methodMappingAPI.postW3CBody(W3C_DOCUMENT), W3CDocumentBody.class},
                 {methodMappingAPI.postForm(formParameter("param1", SPACE, false, 1, 2),
                         formParameter("param2", true, 3, 4, 5)),
                         URLEncodedForm.class},
@@ -615,12 +593,6 @@ public class BodyMappingTest {
 
         @HttpMethod(httpMethod = POST)
         RequestBuilder postFileBody(@Body Path body);
-
-        @HttpMethod(httpMethod = POST)
-        RequestBuilder postJsoupBody(@Body org.jsoup.nodes.Document body);
-
-        @HttpMethod(httpMethod = POST)
-        RequestBuilder postW3CBody(@Body org.w3c.dom.Document body);
 
         @HttpMethod(httpMethod = POST)
         RequestBuilder postForm(@Body FormParameter... body);

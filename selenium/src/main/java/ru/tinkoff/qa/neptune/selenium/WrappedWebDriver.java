@@ -16,7 +16,6 @@ import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static ru.tinkoff.qa.neptune.core.api.utils.ConstructorUtil.findSuitableConstructor;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FORCE_WINDOW_MAXIMIZING_ON_START;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.KEEP_WEB_DRIVER_SESSION_OPENED;
@@ -63,8 +62,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
                 driver.manage().window().maximize();
             }
 
-            driver.manage().timeouts().pageLoadTimeout(WAITING_FOR_PAGE_LOADED_DURATION.get().toMillis(),
-                    MILLISECONDS);
+            driver.manage().timeouts().pageLoadTimeout(WAITING_FOR_PAGE_LOADED_DURATION.get());
 
             authenticationPerformer.performAuthentication(driver, true);
 
