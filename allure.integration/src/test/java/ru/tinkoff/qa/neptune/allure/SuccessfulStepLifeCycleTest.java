@@ -122,4 +122,10 @@ public class SuccessfulStepLifeCycleTest extends AbstractAllurePreparations {
         fireEventFinishing();
         assertThat(lifeCycle.getCurrentTestCaseOrStep().get(), is(testCaseUUID.toString()));
     }
+
+    @Test(dependsOnMethods = "finishOfRootStep")
+    public void addAdditionalParametersWhenNoActiveSteps() {
+        fireAdditionalParameters(Map.of("additional 1", "value 1"));
+        assertThat(lifeCycle.getCurrentTestCaseOrStep().get(), is(testCaseUUID.toString()));
+    }
 }
