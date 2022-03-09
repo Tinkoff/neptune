@@ -15,7 +15,7 @@ import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
 import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.*;
 import static ru.tinkoff.qa.neptune.spring.data.select.querydsl.QueryDSLSelectStepFactory.*;
 
-public class SelectTest extends BaseSpringDataTest {
+public class SelectTest extends BaseSpringDataPreparing {
 
     @Test
     public void selectByIdTest() {

@@ -13,7 +13,6 @@ dependencies {
     }
     testImplementation  group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
     implementation group: 'cglib', name: 'cglib', version: '3.3.0'
-    implementation group: 'org.jsoup', name: 'jsoup', version: '1.14.3'
     implementation group: 'org.objenesis', name: 'objenesis', version: '3.2'
 }
 

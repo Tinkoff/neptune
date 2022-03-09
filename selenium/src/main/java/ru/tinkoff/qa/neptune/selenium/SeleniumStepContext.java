@@ -43,6 +43,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.asList;
 import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
 import static ru.tinkoff.qa.neptune.selenium.content.management.ContentManagementCommand.getCurrentCommand;
 import static ru.tinkoff.qa.neptune.selenium.functions.click.ClickActionSupplier.on;
 import static ru.tinkoff.qa.neptune.selenium.functions.cookies.RemoveCookiesActionSupplier.deleteCookies;
@@ -71,7 +72,6 @@ import static ru.tinkoff.qa.neptune.selenium.functions.windows.SetWindowSizeSupp
 public class SeleniumStepContext extends Context<SeleniumStepContext> implements WrapsDriver, ContextRefreshable,
         TakesScreenshot, Stoppable {
 
-    private static final SeleniumStepContext context = getInstance(SeleniumStepContext.class);
     private final WrappedWebDriver wrappedWebDriver;
     private HttpProxy proxy;
 
@@ -80,7 +80,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     public static SeleniumStepContext inBrowser() {
-        return context;
+        return getCreatedContextOrCreate(SeleniumStepContext.class);
     }
 
     private HttpProxy getProxy() {

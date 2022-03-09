@@ -53,6 +53,12 @@ publishing {
     }
 }
 
+test {
+    useTestNG() {
+        suites 'src/test/resources/suite.xml'
+    }
+}
+
 javadoc {
     destinationDir = file("${buildDir}/../../../neptune.documentation/javadocs/$project.name")
 

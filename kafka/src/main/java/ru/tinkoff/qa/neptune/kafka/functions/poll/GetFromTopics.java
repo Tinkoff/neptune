@@ -69,7 +69,7 @@ final class GetFromTopics<T> implements Function<KafkaStepContext, List<T>>, Ste
         ConsumerRecords<String, String> consumerRecords = consumer.poll(ofNanos(1));
         Set<TopicPartition> partitions = consumerRecords.partitions();
 
-        if (partitions.size() == 0) {
+        if (partitions.isEmpty()) {
             return new ArrayList<>();
         }
 

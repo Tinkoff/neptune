@@ -14,6 +14,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 import static ru.tinkoff.qa.neptune.core.api.concurrency.ObjectContainer.getAllObjects;
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
 import static ru.tinkoff.qa.neptune.jupiter.integration.properties.Junit5RefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
 
 public abstract class Junit5IntegrationTest {
@@ -54,6 +55,8 @@ public abstract class Junit5IntegrationTest {
     @Test(dataProvider = "data", groups = "refresh")
     public void refreshTest(List<RefreshEachTimeBefore> strategies, int expected) {
         REFRESH_STRATEGY_PROPERTY.accept(strategies);
+        getCreatedContextOrCreate(ContextClass2.class);
+        getCreatedContextOrCreate(ContextClass1.class);
         runBeforeTheChecking();
         assertThat(ContextClass2.getRefreshCount(), is(expected));
     }

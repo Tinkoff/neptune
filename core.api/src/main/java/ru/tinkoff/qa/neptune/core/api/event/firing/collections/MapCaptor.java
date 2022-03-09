@@ -5,13 +5,16 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toMap;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
+import static ru.tinkoff.qa.neptune.core.api.utils.ToArrayUtil.toArray;
 
 @Description("Resulted map")
 public class MapCaptor extends StringCaptor<Map<?, ?>> {
@@ -24,11 +27,11 @@ public class MapCaptor extends StringCaptor<Map<?, ?>> {
                     var clazz = o1.getClass();
 
                     if (Iterable.class.isAssignableFrom(clazz)) {
-                        return format("%s%s", Iterables.toString((Iterable<?>) o1), LINE_SEPARATOR);
+                        return Iterables.toString((Iterable<?>) o1);
                     }
 
                     if (clazz.isArray()) {
-                        return format("%s%s", Arrays.toString((Object[]) o1), LINE_SEPARATOR);
+                        return Arrays.toString(toArray(o1));
                     }
 
                     return o1.toString();
@@ -48,29 +51,36 @@ public class MapCaptor extends StringCaptor<Map<?, ?>> {
 
     @Override
     public Map<?, ?> getCaptured(Object toBeCaptured) {
-        if (!Map.class.isAssignableFrom(toBeCaptured.getClass())) {
-            return null;
-        }
+        return ofNullable(toBeCaptured)
+                .map(capture -> {
+                    if (!Map.class.isAssignableFrom(capture.getClass())) {
+                        return null;
+                    }
 
-        var result = ((Map<?, ?>) toBeCaptured).entrySet().stream().filter(entry -> {
-            var key = entry.getKey();
-            var value = entry.getValue();
-            Class<?> keyClazz;
-            Class<?> valueClazz;
-            return (isLoggable(key)
-                    || (isLoggable(value))
-                    || (keyClazz = key.getClass()).isArray()
-                    || Iterable.class.isAssignableFrom(keyClazz)
-                    || Map.class.isAssignableFrom(keyClazz)
-                    || (valueClazz = value.getClass()).isArray()
-                    || Iterable.class.isAssignableFrom(valueClazz)
-                    || Map.class.isAssignableFrom(valueClazz));
-        }).collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+                    var list = ((Map<?, ?>) capture).entrySet().stream().filter(entry -> {
+                        var key = entry.getKey();
+                        var value = entry.getValue();
+                        Class<?> keyClazz;
+                        Class<?> valueClazz;
+                        return (isLoggable(key)
+                                || (isLoggable(value))
+                                || (keyClazz = key.getClass()).isArray()
+                                || Iterable.class.isAssignableFrom(keyClazz)
+                                || Map.class.isAssignableFrom(keyClazz)
+                                || (valueClazz = value.getClass()).isArray()
+                                || Iterable.class.isAssignableFrom(valueClazz)
+                                || Map.class.isAssignableFrom(valueClazz));
+                    }).collect(Collectors.toCollection(LinkedList::new));
 
-        if (result.size() == 0) {
-            return null;
-        }
+                    Map<Object, Object> result = new LinkedHashMap<>();
+                    list.forEach(e -> result.put(e.getKey(), e.getValue()));
 
-        return result;
+                    if (result.isEmpty()) {
+                        return null;
+                    }
+
+                    return result;
+                })
+                .orElse(null);
     }
 }

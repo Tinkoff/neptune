@@ -59,7 +59,7 @@ public class ObjectContainer<T> {
     public static synchronized <T> ObjectContainer<T> setObjectBusy(Class<T> tClass) {
         var freeObjects = getAllObjects(tClass, objectContainer ->
                 !objectContainer.isBusy());
-        if (freeObjects.size() == 0) {
+        if (freeObjects.isEmpty()) {
             return null;
         }
         var result = freeObjects.get(0);

@@ -28,7 +28,7 @@ public final class AddHttpCookiesActionSupplier extends SequentialActionSupplier
     private AddHttpCookiesActionSupplier(URI uri, List<HttpCookie> cookies) {
         super();
         this.uri = uri;
-        checkArgument(nonNull(cookies) && cookies.size() > 0,
+        checkArgument(nonNull(cookies) && !cookies.isEmpty(),
                 "Should be defined at least one cookie");
         performOn(cookies);
     }

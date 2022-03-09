@@ -9,7 +9,6 @@ public class ContextClass2 extends Context implements ContextRefreshable {
 
     private final int a;
     private final int b;
-    static final ContextClass2 context = getInstance(ContextClass2.class);
     private static int refreshCount;
 
     public ContextClass2(int a, int b) {

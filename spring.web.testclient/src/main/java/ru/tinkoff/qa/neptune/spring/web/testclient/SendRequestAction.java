@@ -209,7 +209,7 @@ public abstract class SendRequestAction<B, F extends BodySpecFunction<B, ?, ?>, 
         });
 
         result = bodyFormat.exchangeResult();
-        if (errors.size() == 0) {
+        if (errors.isEmpty()) {
             return;
         }
 

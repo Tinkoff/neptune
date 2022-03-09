@@ -6,15 +6,15 @@ import ru.tinkoff.qa.neptune.retrofit2.steps.*;
 
 import java.util.List;
 
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
+
 /**
  * This is just entry point to invoke some action on retrofit
  */
 public class RetrofitContext extends Context<RetrofitContext> {
 
-    private static final RetrofitContext context = getInstance(RetrofitContext.class);
-
     public static RetrofitContext retrofit() {
-        return context;
+        return getCreatedContextOrCreate(RetrofitContext.class);
     }
 
     public <M, R> R get(GetObjectSupplier<M, R, ?> what) {

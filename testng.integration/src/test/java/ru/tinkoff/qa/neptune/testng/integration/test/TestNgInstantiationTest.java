@@ -4,18 +4,17 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
 
 public class TestNgInstantiationTest extends BaseTestNgIntegrationTest {
 
     @Test
     public void instantiationTest() {
-        assertThat(ContextClass1.context, not(nullValue()));
-        assertThat(ContextClass2.context, not(nullValue()));
-        assertThat(ContextClass2.context.getA(), is(1));
-        assertThat(ContextClass2.context.getB(), is(2));
+        assertThat(getCreatedContextOrCreate(ContextClass1.class), not(nullValue()));
+        assertThat(getCreatedContextOrCreate(ContextClass2.class), not(nullValue()));
+        assertThat(getCreatedContextOrCreate(ContextClass2.class).getA(), is(1));
+        assertThat(getCreatedContextOrCreate(ContextClass2.class).getB(), is(2));
     }
 
     @DataProvider(parallel = true)
@@ -31,7 +30,7 @@ public class TestNgInstantiationTest extends BaseTestNgIntegrationTest {
 
     @Test(dataProvider = "dataProvider")
     public void instantiationTest2(Integer integer) {
-        assertThat(ContextClass2.context.getA() + integer, is(1 + integer));
-        assertThat(ContextClass2.context.getB() + integer, is(2 + integer));
+        assertThat(getCreatedContextOrCreate(ContextClass2.class).getA() + integer, is(1 + integer));
+        assertThat(getCreatedContextOrCreate(ContextClass2.class).getB() + integer, is(2 + integer));
     }
 }

@@ -27,14 +27,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
 
 @SuppressWarnings("unchecked")
 public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataContext> {
 
-    private static final SpringDataContext context = getInstance(SpringDataContext.class);
-
     public static SpringDataContext springData() {
-        return context;
+        return getCreatedContextOrCreate(SpringDataContext.class);
     }
 
     @Override

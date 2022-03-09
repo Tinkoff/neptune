@@ -1,11 +1,8 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper;
 
 import java.util.Date;
-import java.util.Optional;
 
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
@@ -70,20 +67,6 @@ public enum BodyDataFormat {
                             throw new RuntimeException(e);
                         }
                     })
-                    .orElse(null);
-        }
-    },
-
-    /**
-     * This item is designed to return {@link Document}. It is created
-     * when it is necessary to pass objects that differ from {@link Document}
-     * as html/xml bodies of http requests.
-     */
-    HTML {
-        @Override
-        public Document format(Object object, Class<?>... ignored) {
-            return ofNullable(object).flatMap(o -> Optional.of(o)
-                    .map(o1 -> Jsoup.parse(String.valueOf(o))))
                     .orElse(null);
         }
     };

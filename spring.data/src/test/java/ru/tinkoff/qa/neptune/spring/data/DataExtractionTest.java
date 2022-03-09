@@ -11,7 +11,7 @@ import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
 import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byId;
 import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byIds;
 
-public class DataExtractionTest extends BaseSpringDataTest {
+public class DataExtractionTest extends BaseSpringDataPreparing {
 
     @Test
     public void getObjectFromEntityTest() {

@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 @SuppressWarnings("unchecked")
-public class BaseSpringDataTest {
+public class BaseSpringDataPreparing {
     static final List<TestEntity> TEST_ENTITIES = new ArrayList<>(of(
             new TestEntity().setId(1L)
                     .setName("Test Name 1")

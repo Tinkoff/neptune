@@ -42,7 +42,7 @@ public abstract class BundleFillerExtension {
     protected abstract List<Method> addMethods(Class<?> clazz);
 
     final void fill(BufferedWriter output, Properties properties) throws IOException {
-        if (toAdd.size() > 0) {
+        if (!toAdd.isEmpty()) {
             output.newLine();
             output.newLine();
             output.write("#============================================ "
