@@ -54,7 +54,7 @@ public class FailedStepLifeCycleTest extends AbstractAllurePreparations {
         assertThat(nestedResult.getStop(), instanceOf(Long.class));
     }
 
-    @Test
+    @Test(priority = -1)
     public void failedWhenNoActiveStep() {
         fireThrownException(new AssertionError("Test assertion error"));
         assertThat(lifeCycle.getCurrentTestCaseOrStep().get(), is(testCaseUUID.toString()));
