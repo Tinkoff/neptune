@@ -1,10 +1,8 @@
 package ru.tinkoff.qa.neptune.spring.data.select.common.by;
 
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.data.repository.reactive.ReactiveSortingRepository;
 import org.springframework.data.repository.reactive.RxJava2CrudRepository;
 import org.springframework.data.repository.reactive.RxJava3CrudRepository;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
@@ -30,11 +28,11 @@ public final class SelectAll<R, ID, T extends Repository<R, ID>> extends SpringD
 
     @Override
     public Iterable<R> apply(T t) {
-        if (t instanceof PagingAndSortingRepository) {
+        if (t instanceof CrudRepository) {
             return ((CrudRepository<R, ID>) t).findAll();
         }
 
-        if (t instanceof ReactiveSortingRepository) {
+        if (t instanceof ReactiveCrudRepository) {
             return ((ReactiveCrudRepository<R, ID>) t).findAll().collectList().block();
         }
 
