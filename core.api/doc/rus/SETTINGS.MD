@@ -1145,12 +1145,14 @@ public class MyUseCase {
       <executions>
         <execution>
           <id>generate properties</id>
-          <phase>compile</phase>
+          <phase>test-compile</phase>
+          <!--<phase>compile</phase> тоже можно-->
           <goals>
             <goal>java</goal>
           </goals>
           <configuration>
             <mainClass>ru.tinkoff.qa.neptune.core.api.properties.NeptunePropertyGenerator</mainClass>
+            <classpathScope>test</classpathScope> <!--необходимо, если настройки генерируются для тестовых классов-->
             <arguments>
               <!--генерировать neptune.properties (false), или neptune.global.properties (true)-->
               <!--neptune.global.properties рекомендуется, если создается общий модуль-кастомизация Neptune
