@@ -30,6 +30,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
 import static ru.tinkoff.qa.neptune.hibernate.properties.HibernateConfigFilenames.HIBERNATE_CONFIG_FILENAMES;
 import static ru.tinkoff.qa.neptune.hibernate.properties.PersistenceUnits.PERSISTENCE_UNITS;
 import static ru.tinkoff.qa.neptune.hibernate.properties.UseJpaConfig.USE_JPA_CONFIG;
@@ -37,7 +38,7 @@ import static ru.tinkoff.qa.neptune.hibernate.properties.UseJpaConfig.USE_JPA_CO
 @SuppressWarnings("unchecked")
 public class HibernateContext extends AbstractDatabaseStepContext<HibernateContext> {
 
-    private static final HibernateContext context = getInstance(HibernateContext.class);
+    private static final HibernateContext context = getCreatedContextOrCreate(HibernateContext.class);
     private final Set<SessionFactory> sessionFactorySet = new HashSet<>();
 
     public static HibernateContext hibernate() {
