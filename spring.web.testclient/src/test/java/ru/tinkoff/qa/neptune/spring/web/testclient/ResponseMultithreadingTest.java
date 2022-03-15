@@ -4,8 +4,8 @@ import org.springframework.test.web.reactive.server.StatusAssertions;
 import org.testng.annotations.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.not.NotMatcher.notOf;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.MapEntryMatcher.mapEntry;
@@ -35,10 +35,9 @@ public class ResponseMultithreadingTest extends BaseTest {
                 .uri("https://google.com/api/request/1"))
                 .expectStatus(StatusAssertions::isOk)
                 .expectHeader(headerAssertions -> headerAssertions.contentType(TEXT_PLAIN))
-                .hasBody()
                 .thenGetBody());
 
-        assertThat(body, arrayWithSize(20));
+        assertThat(body.length, is(20));
 
         assertThat(getMessages(),
                 mapOf(

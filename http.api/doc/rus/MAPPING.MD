@@ -608,10 +608,6 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
     @HttpMethod(httpMethod = POST)
     RequestBuilder postFileBody(@Body Path body);
 
-    //передача объекта org.jsoup.nodes.Document в качестве тела POST-запроса
-    @HttpMethod(httpMethod = POST)
-    RequestBuilder postJsoupBody(@Body org.jsoup.nodes.Document body);
-
     //передача объекта org.w3c.dom.Document в качестве тела POST-запроса
     @HttpMethod(httpMethod = POST)
     RequestBuilder postW3CBody(@Body org.w3c.dom.Document body);

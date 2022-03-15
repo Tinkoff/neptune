@@ -41,7 +41,7 @@ public final class ResponseCaptor extends StringCaptor<HttpResponse<?>> {
                 .append(LINE_SEPARATOR);
 
         var headerMap = caught.headers().map();
-        if (headerMap.size() > 0) {
+        if (!headerMap.isEmpty()) {
             stringBuilder.append("Response headers: ")
                     .append(headerMap)
                     .append(LINE_SEPARATOR);

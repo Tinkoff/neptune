@@ -6,6 +6,7 @@ import net.bytebuddy.implementation.bind.annotation.RuntimeType;
 import net.bytebuddy.implementation.bind.annotation.This;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
 import ru.tinkoff.qa.neptune.core.api.concurrency.ObjectContainer;
+import ru.tinkoff.qa.neptune.core.api.steps.context.ParameterProvider;
 import ru.tinkoff.qa.neptune.core.api.utils.ConstructorUtil;
 
 import java.lang.reflect.Constructor;
@@ -15,15 +16,15 @@ import java.lang.reflect.Method;
 import static java.lang.Runtime.getRuntime;
 import static java.util.Optional.ofNullable;
 
-public class MethodInterceptor<T> {
+public final class MethodInterceptor<T> {
 
     private final Class<T> classToInstantiate;
-    private final Object[] constructorParameters;
+    private final ParameterProvider provider;
     private final ThreadLocal<ObjectContainer<T>> threadLocal;
 
-    public MethodInterceptor(Class<T> classToInstantiate, Object[] constructorParameters) {
+    public MethodInterceptor(Class<T> classToInstantiate, ParameterProvider provider) {
         this.classToInstantiate = classToInstantiate;
-        this.constructorParameters = constructorParameters;
+        this.provider = provider;
         threadLocal = new ThreadLocal<>();
     }
 
@@ -39,6 +40,7 @@ public class MethodInterceptor<T> {
                     }).orElseGet(() -> {
                         Constructor<T> c;
 
+                        var constructorParameters = provider.provide();
                         try {
                             c = ConstructorUtil.findSuitableConstructor(classToInstantiate, constructorParameters);
                         } catch (Exception e) {

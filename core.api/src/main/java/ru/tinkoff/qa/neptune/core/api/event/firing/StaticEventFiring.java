@@ -74,7 +74,7 @@ public class StaticEventFiring {
             return;
         }
 
-        if (addParameters.size() == 0) {
+        if (addParameters.isEmpty()) {
             return;
         }
         initEventLoggersIfNecessary().forEach(eventLogger -> eventLogger.addParameters(addParameters));

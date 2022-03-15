@@ -1,12 +1,5 @@
-plugins {
-    id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
-}
-
 dependencies {
     api project(':core.api')
-    inpath(project(":core.api")) {
-        transitive = false
-    }
     compileClasspath(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
 }
 
@@ -71,7 +64,7 @@ javadoc {
     options.links 'https://download.oracle.com/javase/9/docs/api/'
     options.addStringOption 'Xdoclint:none', '-quiet'
     options.memberLevel = JavadocMemberLevel.PROTECTED
-    options.bottom = "Copyright &copy; 2021 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+    options.bottom = "Copyright &copy; 2022 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
     options.addBooleanOption('html5', true)
 }
 

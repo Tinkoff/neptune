@@ -17,7 +17,7 @@ Integration of Neptune with [Spring MockMvc](https://spring.getdocs.org/en-US/sp
 
 ```groovy
     dependencies {
-        testImplementation  group: 'ru.tinkoff.qa.neptune', name: 'spring.mock.mvc', version: LATEST_RELEASE_OR_BETA_VERSION    
+        testImplementation  group: 'ru.tinkoff.qa.neptune', name: 'spring.mock.mvc', version: LATEST_RELEASE_OR_BETA_VERSION
     }
 ```
 

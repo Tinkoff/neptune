@@ -368,7 +368,7 @@ public final class CommonElementCriteria {
     public static <T extends SearchContext> Criteria<T> nested(@DescriptionFragment("howToFind") MultipleSearchSupplier<?> howToFind) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
         var func = turnReportingOff(howToFind.clone().timeOut(ofMillis(0))).get();
-        return condition(t -> func.apply(t).size() > 0);
+        return condition(t -> !func.apply(t).isEmpty());
     }
 
     /**

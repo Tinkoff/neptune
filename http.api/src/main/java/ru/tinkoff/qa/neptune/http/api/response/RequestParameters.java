@@ -2,7 +2,9 @@ package ru.tinkoff.qa.neptune.http.api.response;
 
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 import ru.tinkoff.qa.neptune.http.api.request.NeptuneHttpRequestImpl;
-import ru.tinkoff.qa.neptune.http.api.request.body.*;
+import ru.tinkoff.qa.neptune.http.api.request.body.MultiPartBody;
+import ru.tinkoff.qa.neptune.http.api.request.body.SerializedBody;
+import ru.tinkoff.qa.neptune.http.api.request.body.StringBody;
 import ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.URLEncodedForm;
 
 import java.util.LinkedHashMap;
@@ -27,7 +29,7 @@ final class RequestParameters implements StepParameterPojo {
         params.put("Http Method", request.method());
 
         var headerMap = request.headers().map();
-        if (headerMap.size() > 0) {
+        if (!headerMap.isEmpty()) {
             params.put("Http request Headers", headerMap.toString());
         }
 
@@ -42,11 +44,9 @@ final class RequestParameters implements StepParameterPojo {
         ofNullable(request.body())
                 .ifPresent(b -> {
                     var cls = b.getClass();
-                    if (!cls.equals(JSoupDocumentBody.class)
-                            && !cls.equals(SerializedBody.class)
+                    if (!cls.equals(SerializedBody.class)
                             && !cls.equals(StringBody.class)
                             && !cls.equals(URLEncodedForm.class)
-                            && !cls.equals(W3CDocumentBody.class)
                             && !cls.equals(MultiPartBody.class)) {
                         params.put("Http Request body", b.toString());
                         return;

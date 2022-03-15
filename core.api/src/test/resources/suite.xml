@@ -36,4 +36,10 @@
             <package name="ru.tinkoff.qa.neptune.core.api.hamcrest.*"/>
         </packages>
     </test>
+
+    <test name="Default tests">
+        <packages>
+            <package name="ru.tinkoff.qa.neptune.core.api.captors.*"/>
+        </packages>
+    </test>
 </suite>

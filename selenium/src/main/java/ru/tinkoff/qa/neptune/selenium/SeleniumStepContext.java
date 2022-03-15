@@ -25,6 +25,7 @@ import ru.tinkoff.qa.neptune.selenium.functions.target.locator.content.DefaultCo
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.Frame;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.GetFrameSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.parent.ParentFrameSupplier;
+import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetNewWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 import ru.tinkoff.qa.neptune.selenium.functions.windows.*;
@@ -42,6 +43,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.asList;
 import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
 import static ru.tinkoff.qa.neptune.selenium.content.management.ContentManagementCommand.getCurrentCommand;
 import static ru.tinkoff.qa.neptune.selenium.functions.click.ClickActionSupplier.on;
 import static ru.tinkoff.qa.neptune.selenium.functions.cookies.RemoveCookiesActionSupplier.deleteCookies;
@@ -70,7 +72,6 @@ import static ru.tinkoff.qa.neptune.selenium.functions.windows.SetWindowSizeSupp
 public class SeleniumStepContext extends Context<SeleniumStepContext> implements WrapsDriver, ContextRefreshable,
         TakesScreenshot, Stoppable {
 
-    private static final SeleniumStepContext context = getInstance(SeleniumStepContext.class);
     private final WrappedWebDriver wrappedWebDriver;
     private HttpProxy proxy;
 
@@ -79,7 +80,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     public static SeleniumStepContext inBrowser() {
-        return context;
+        return getCreatedContextOrCreate(SeleniumStepContext.class);
     }
 
     private HttpProxy getProxy() {
@@ -1016,6 +1017,17 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
+     * Performs the switching to the new window/tab.
+     *
+     * @param getNewWindow is how to get the new window/tab
+     * @return self-reference
+     */
+    public SeleniumStepContext switchTo(GetNewWindowSupplier getNewWindow) {
+        changeContentIfNecessary();
+        return perform(to(getNewWindow));
+    }
+
+    /**
      * Performs the switching to the frame.
      *
      * @param frame is the frame to switch to
@@ -1568,6 +1580,17 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     public Frame get(GetFrameSupplier getFrame) {
         changeContentIfNecessary();
         return super.get(getFrame);
+    }
+
+    /**
+     * Returns {@link Window} as as a representation of new window/tab
+     *
+     * @param getNewWindow is how to get the new window/tab
+     * @return an instance of {@link Window}
+     */
+    public Window get(GetNewWindowSupplier getNewWindow) {
+        changeContentIfNecessary();
+        return super.get(getNewWindow);
     }
 
 

@@ -3,12 +3,12 @@ package ru.tinkoff.qa.neptune.core.api.concurrency;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
+
 public class TestContext extends Context<TestContext> implements Stoppable {
 
-    private static final TestContext context = getInstance(TestContext.class);
-
     public static TestContext getContext() {
-        return context;
+        return getCreatedContextOrCreate(TestContext.class);
     }
 
     private boolean isActive = true;

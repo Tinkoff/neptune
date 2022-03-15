@@ -21,7 +21,6 @@
 ## Получение ответа
 
 ```java
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
@@ -35,10 +34,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MyTest {
-
-    @Autowired //Или любой другой вариант
-    private MockMvc mockMvc; //при котором данное поле будет 
-    //заполнено на момент начала теста
 
     @Test
     public void myTest() {
@@ -57,33 +52,32 @@ public class MyTest {
 }
 ```
 
-Так же можно обойтись без [механизма внедрения зависимостей Spring](https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-dependencies)
-или какой-либо другой предварительной инициализации полей.
+Так же можно передавать значения `@Autowired`- полей или переменных пипа `MockMvc`
 
 ```java
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
-
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.spring.mock.mvc.GetMockMvcResponseResultSupplier.response;
 import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 
 @SpringBootTest
+@AutoConfigureMockMvc
 public class MyTest {
 
-    @Test
+  @Autowired //Или любой другой вариант
+  private MockMvc mockMvc; //инициализации поля или переменной
+
+  @Test
     public void myTest() {
-        var mockMvc = MockMvcBuilders
-                .webAppContextSetup(/*параметры*/)
-                /*указываем прочие параметры*/
-                .build();
-        
-        var response = mockMvcGet(response(
-                mockMvc, //явная передача инстанса MockMvc
+
+        MockHttpServletResponse response = mockMvcGet(response(
+                mockMvc, //явная передача объекта MockMvc
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
@@ -148,9 +142,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
     @Test
     public void myTest() {
         String body = mockMvcGet(response(
@@ -186,9 +177,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
     @Test
     public void myTest() {
         var transformer = new MyDataTransformer();
@@ -219,9 +207,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MyTest {
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @Test
     public void myTest() {
@@ -255,9 +240,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
     @Test
     public void myTest() {
         var transformer = new MyDataTransformer();
@@ -289,9 +271,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MyTest {
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @Test
     public void myTest() {
@@ -329,9 +308,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
     @Test
     public void myTest() {
         
@@ -360,9 +336,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MyTest {
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @Test
     public void myTest() {
@@ -394,9 +367,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
     @Test
     public void myTest() {
         
@@ -426,9 +396,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MyTest {
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @Test
     public void myTest() {
@@ -468,9 +435,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-  @Autowired
-  private MockMvc mockMvc;
-
   @Test
   public void myTest() {
     var transformer = new MyDataTransformer();
@@ -507,9 +471,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MyTest {
-
-  @Autowired
-  private MockMvc mockMvc;
 
   @Test
   public void myTest() {
@@ -548,9 +509,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
     @Test
     public void myTest() {
         var transformer = new MyDataTransformer();
@@ -587,9 +545,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MyTest {
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @Test
     public void myTest() {
@@ -632,9 +587,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-  @Autowired
-  private MockMvc mockMvc;
-
   @Test
   public void myTest() {
 
@@ -669,9 +621,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MyTest {
-
-  @Autowired
-  private MockMvc mockMvc;
 
   @Test
   public void myTest() {
@@ -709,9 +658,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
     @Test
     public void myTest() {
         
@@ -746,9 +692,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MyTest {
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @Test
     public void myTest() {
@@ -791,9 +734,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
     @Test
     public void myTest() {
         var transformer = new MyDataTransformer();
@@ -827,9 +767,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MyTest {
-
-  @Autowired
-  private MockMvc mockMvc;
 
   @Test
   public void myTest() {
@@ -866,9 +803,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
     @Test
     public void myTest() {
         var transformer = new MyDataTransformer();
@@ -903,9 +837,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MyTest {
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @Test
     public void myTest() {
@@ -946,9 +877,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-  @Autowired
-  private MockMvc mockMvc;
-
   @Test
   public void myTest() {
 
@@ -980,9 +908,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MyTest {
-
-  @Autowired
-  private MockMvc mockMvc;
 
   @Test
   public void myTest() {
@@ -1017,9 +942,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
     @Test
     public void myTest() {
         
@@ -1052,9 +974,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MyTest {
-
-  @Autowired
-  private MockMvc mockMvc;
 
   @Test
   public void myTest() {
@@ -1097,9 +1016,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
     @Test
     public void myTest() {
         var transformer = new MyDataTransformer();
@@ -1137,9 +1053,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-  @Autowired
-  private MockMvc mockMvc;
-
   @Test
   public void myTest() {
       var transformer = new MyDataTransformer();
@@ -1174,9 +1087,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MyTest {
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @Test
     public void myTest() {
@@ -1214,9 +1124,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MyTest {
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @Test
     public void myTest() {
@@ -1257,9 +1164,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
     @Test
     public void myTest() {
         
@@ -1295,9 +1199,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-  @Autowired
-  private MockMvc mockMvc;
-
   @Test
   public void myTest() {
 
@@ -1330,9 +1231,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MyTest {
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @Test
     public void myTest() {
@@ -1368,9 +1266,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MyTest {
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @Test
     public void myTest() {
@@ -1412,9 +1307,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
     @Test
     public void myTest() {
         var transformer = new MyDataTransformer();
@@ -1451,9 +1343,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-  @Autowired
-  private MockMvc mockMvc;
-
   @Test
   public void myTest() {
       var transformer = new MyDataTransformer();
@@ -1488,9 +1377,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MyTest {
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @Test
     public void myTest() {
@@ -1528,9 +1414,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MyTest {
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @Test
     public void myTest() {
@@ -1571,9 +1454,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
     @Test
     public void myTest() {
 
@@ -1609,9 +1489,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @AutoConfigureMockMvc
 public class MyTest {
 
-  @Autowired
-  private MockMvc mockMvc;
-
   @Test
   public void myTest() {
 
@@ -1645,9 +1522,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MyTest {
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @Test
     public void myTest() {
@@ -1684,9 +1558,6 @@ import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MyTest {
-
-  @Autowired
-  private MockMvc mockMvc;
 
   @Test
   public void myTest() {

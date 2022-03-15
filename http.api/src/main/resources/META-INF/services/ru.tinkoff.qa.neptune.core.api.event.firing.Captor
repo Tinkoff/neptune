@@ -7,8 +7,6 @@ ru.tinkoff.qa.neptune.http.api.captors.response.ResponseCaptor
 ru.tinkoff.qa.neptune.http.api.captors.response.ResponseDTOCaptor
 ru.tinkoff.qa.neptune.http.api.captors.response.ResponseDTOs
 ru.tinkoff.qa.neptune.http.api.captors.response.ResponseFileCaptor
-ru.tinkoff.qa.neptune.http.api.captors.response.ResponseJSoupDocumentCaptor
 ru.tinkoff.qa.neptune.http.api.captors.response.ResponseMapBodyCaptor
 ru.tinkoff.qa.neptune.http.api.captors.response.ResponseObjectsBodyCaptor
 ru.tinkoff.qa.neptune.http.api.captors.response.ResponseStringCaptor
-ru.tinkoff.qa.neptune.http.api.captors.response.ResponseW3CDocumentCaptor

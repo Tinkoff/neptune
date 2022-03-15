@@ -89,7 +89,7 @@ public abstract class MappedDiagnosticFeatureMatcher<T, K, V> extends NeptuneFea
                 .filter(entryMatcher::matches)
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        if (found.size() == 0) {
+        if (found.isEmpty()) {
             appendMismatchDescription(new ObjectIsNotPresentMismatch(getDescriptionOnKeyAbsence(), keyMatcher));
             return false;
         }

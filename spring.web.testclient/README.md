@@ -17,7 +17,7 @@ Integration of Neptune with [Spring WebTestClient](https://spring.getdocs.org/en
 
 ```groovy
     dependencies {
-        testImplementation  group: 'ru.tinkoff.qa.neptune', name: 'spring.web.testclient', version: LATEST_RELEASE_OR_BETA_VERSION    
+        testImplementation  group: 'ru.tinkoff.qa.neptune', name: 'spring.web.testclient', version: LATEST_RELEASE_OR_BETA_VERSION
     }
 ```
 

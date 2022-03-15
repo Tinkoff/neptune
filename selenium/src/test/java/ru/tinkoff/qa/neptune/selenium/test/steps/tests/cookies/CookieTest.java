@@ -48,7 +48,7 @@ public class CookieTest extends BaseWebDriverTest {
                 .criteria(cookieDomain("paypal.com"))
                 .criteria(cookieIsSecure()));
 
-        assert cookies.size() > 0;
+        assert !cookies.isEmpty();
 
         var cookies2 = seleniumSteps.removeCookies(
                 cookieDomain("paypal.com"),
