@@ -23,8 +23,6 @@
   + [Строка/Текст](#СтрокаТекст)
   + [Поток данных. InputStream.](#Поток-данных-InputStream)
   + [Форма. application/x-www-form-urlencoded.](#Форма-applicationx-www-form-urlencoded)
-  + [org.w3c.dom.Document.](#orgw3cdomDocument)
-  + [org.jsoup.nodes.Document.](#orgjsoupnodesDocument)
   + [Сериализованные объекты](#Сериализованные-объекты)
   + [Multipart](#multipart)
     - [Форматы](#Форматы)
@@ -35,8 +33,6 @@
   + [Формат тела ответа на примере POST](#Формат-тела-ответа-на-примере-POST)
     - [Объекты, десериализованные из JSON-строки](#Объекты-десериализованные-из-JSON-строки)
     - [Объекты, десериализованные из XML-строки](#Объекты-десериализованные-из-XML-строки)
-    - [Тело ответа как org.w3c.dom.Document](#Тело-ответа-как-orgw3cdomdocument)
-    - [Тело ответа как org.jsoup.nodes.Document](#Тело-ответа-как-orgjsoupnodesdocument)
     - [Описание своего формата](#Описание-своего-формата)
   + [Варианты получения данных тела ответа на примере GET](#Варианты-получения-данных-тела-ответа-на-примере-GET)
     - [Получение данных тела ответа как Java-объект](#Получение-данных-тела-ответа-как-Java-объект)
@@ -1265,88 +1261,7 @@ public class MyTest {
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 
-### org.w3c.dom.Document.
-
-
-  
-
-```java
-import org.w3c.dom.Document;
-
-import java.net.URI;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        Document doc; //Считаем что значение как-то инициализируется
-        http().responseOf(POST(endPoint, doc));
-    }
-}
-
-```
-
-```java
-import org.w3c.dom.Document;
-
-import javax.xml.transform.Transformer;
-import java.net.URI;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        Document doc; //Считаем что значение как-то инициализируется
-        Transformer transformer; //Считаем что значение как-то инициализируется
-        http().responseOf(POST(endPoint, doc, transformer));
-    }
-}
-
-```
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
-
-### org.jsoup.nodes.Document.
-
-
-  
-
-```java
-import org.jsoup.nodes.Document;
-
-import java.net.URI;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        Document doc; //Считаем что значение как-то инициализируется
-        http().responseOf(POST(endPoint, doc));
-    }
-}
-
-```
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
-
 ### Сериализованные объекты
-
-
-  
 
 Объекты, как правило, сериализуются в JSON или XML строки, чтобы быть переданными в качестве тела запроса
 
@@ -2398,99 +2313,6 @@ public class MyTest {
 прочитать [XML DEFAULT_XML_MAPPER](./SETTINGS.MD#XML-DEFAULT_XML_MAPPER)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
-
-#### Тело ответа как org.w3c.dom.Document
-
-```java
-import java.net.URI;
-import java.net.http.HttpResponse;
-
-import org.w3c.dom.Document;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.w3cDocument;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        HttpResponse<Document> response = http().responseOf(POST(endPoint, "String body"),
-                //Предполагается, что тело ответа может быть прочитано как строка,
-                //которую можно преобразовать в org.w3c.dom.Document
-                w3cDocument());
-
-        Document body = response.body();
-    }
-}
-```
-
-или
-
-```java
-import java.net.URI;
-import java.net.http.HttpResponse;
-
-import org.w3c.dom.Document;
-
-import javax.xml.parsers.DocumentBuilder;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.w3cDocument;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        DocumentBuilder builder; //Представим, что значение присвоено 
-
-        HttpResponse<Document> response = http().responseOf(POST(endPoint, "String body"),
-                //Предполагается, что тело ответа может быть прочитано как строка,
-                //которую можно преобразовать в org.w3c.dom.Document
-                //Объект DocumentBuilder нужен для уточнения алгоритма преобразования
-                w3cDocument(builder));
-
-        Document body = response.body();
-    }
-}
-```
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
-
-#### Тело ответа как org.jsoup.nodes.Document
-
-```java
-import java.net.URI;
-import java.net.http.HttpResponse;
-
-import org.jsoup.nodes.Document;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.jsoupDocument;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        HttpResponse<Document> response = http().responseOf(POST(endPoint, "String body"),
-                //Предполагается, что тело ответа может быть прочитано как строка,
-                //которую можно преобразовать в org.jsoup.nodes.Document
-                jsoupDocument());
-
-        Document body = response.body();
-    }
-}
-```
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
 
 #### Описание своего формат
 

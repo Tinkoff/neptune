@@ -180,7 +180,7 @@ public abstract class KafkaPollIterableSupplier<T, S extends KafkaPollIterableSu
     protected void onSuccess(List<T> tList) {
         var mss = getFromTopics.getSuccessMessages();
 
-        if (tList != null && tList.size() > 0) {
+        if (tList != null && !tList.isEmpty()) {
             tList.forEach(item -> successMessages.add(mss.get(item)));
         } else {
             messages = getFromTopics.getMessages();

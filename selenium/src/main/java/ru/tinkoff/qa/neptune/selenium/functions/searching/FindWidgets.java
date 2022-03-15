@@ -71,7 +71,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
     List<Class<? extends R>> getSubclasses() {
         var resultList = findSubclasses(classOfAWidget, classPredicate);
 
-        if (resultList.size() > 0) {
+        if (!resultList.isEmpty()) {
             return resultList;
         }
         throw new IllegalArgumentException(String.format("There is no any non-abstract subclass of %s that " +
@@ -88,7 +88,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
         var result = new ArrayList<R>() {
             @Override
             public String toString() {
-                if (this.size() == 0) {
+                if (this.isEmpty()) {
                     return "<...>";
                 }
 

@@ -6,6 +6,7 @@ import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.trans
 
 @Description("Body string content")
 public final class StringContent {
+
     @Override
     public String toString() {
         return translate(this);

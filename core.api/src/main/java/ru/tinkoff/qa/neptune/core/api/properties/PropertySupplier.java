@@ -7,11 +7,11 @@ import java.util.function.Supplier;
 import static java.lang.String.format;
 import static java.lang.System.clearProperty;
 import static java.lang.System.setProperty;
+import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.arePropertiesRead;
-import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.refreshProperties;
+import static org.apache.commons.lang3.StringUtils.substringsBetween;
+import static ru.tinkoff.qa.neptune.core.api.properties.PropertySource.isPropertyKeyPresent;
 
 /**
  * Interface to construct classes which read property values
@@ -39,28 +39,33 @@ public interface PropertySupplier<T, R> extends Supplier<T>, Consumer<R> {
         return ofNullable(property.getPropertyValue());
     }
 
+    private static String preparePropertyValue(String rawValue) {
+        var patterns = substringsBetween(rawValue, "${", "}");
+        if (isNull(patterns) || patterns.length == 0) {
+            return rawValue;
+        }
+
+        var result = rawValue;
+        for (var p : patterns) {
+            var propertyValue = PropertySource.getPropertyValue(p);
+            if (isBlank(propertyValue)) {
+                throw new IllegalStateException(p + " is not defined");
+            }
+            result = result.replace("${" + p + "}", propertyValue);
+        }
+
+        return result;
+    }
+
     private String getPropertyValue() {
         var property = getName();
 
-        if (!arePropertiesRead()) {
-            refreshProperties();
-        }
-
-        var value = System.getenv(property);
+        var value = PropertySource.getPropertyValue(property);
         if (isBlank(value)) {
-            value = System.getProperty(property);
+            return null;
         }
 
-        if (isNotBlank(value)) {
-            return value;
-        }
-
-        return null;
-    }
-
-    private boolean isPropertyDefined() {
-        var property = getName();
-        return System.getenv().containsKey(property) || System.getProperties().containsKey(property);
+        return preparePropertyValue(value);
     }
 
     /**
@@ -74,7 +79,10 @@ public interface PropertySupplier<T, R> extends Supplier<T>, Consumer<R> {
     }
 
     /**
-     * Sets a new value of some system property
+     * Sets a new value of some system property.
+     * <p></p>
+     * WARNING!!! When there are some additional {@link PropertySource}'s and they provide a value of
+     * the same property then the accepted value is ignored in favor of externally provided.
      *
      * @param value is the new value
      */
@@ -122,7 +130,7 @@ public interface PropertySupplier<T, R> extends Supplier<T>, Consumer<R> {
         return returnOptionalFromEnvironment(this)
                 .map(this::parse)
                 .orElseGet(() -> {
-                    if (isPropertyDefined()) {
+                    if (isPropertyKeyPresent(getName())) {
                         return returnIfNull();
                     }
 

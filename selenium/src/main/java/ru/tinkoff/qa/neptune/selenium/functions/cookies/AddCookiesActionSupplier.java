@@ -27,7 +27,7 @@ public final class AddCookiesActionSupplier extends SequentialActionSupplier<Sel
     private AddCookiesActionSupplier(Collection<Cookie> cookies) {
         super();
         checkArgument(nonNull(cookies), "Cookies to be added should not be a null value");
-        checkArgument(cookies.size() > 0, "At least one cookie should be defined for the adding");
+        checkArgument(!cookies.isEmpty(), "At least one cookie should be defined for the adding");
         this.cookies = cookies;
         performOn(currentContent());
     }

@@ -8,12 +8,14 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Supplier;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static java.lang.String.format;
 import static java.lang.invoke.MethodHandles.lookup;
 import static java.lang.invoke.MethodHandles.privateLookupIn;
 import static java.util.Arrays.asList;
+import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpServiceBindReader.getRequestTuners;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod.HttpMethodFactory.createRequestBuilder;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.BodyParameterAnnotationReader.readBodies;
@@ -24,18 +26,19 @@ class HttpAPIProxyHandler implements InvocationHandler {
     private static final String USE_FOR_REQUEST_BUILDING = "useForRequestBuilding";
 
     private final List<Object> requestTuners = new LinkedList<>();
-    private final URI rootURI;
+    private final Supplier<URI> uriSupplier;
 
-    HttpAPIProxyHandler(URI rootURI, Class<? extends HttpAPI<?>> getBoundTunersFrom) {
-        checkNotNull(rootURI);
-        this.rootURI = rootURI;
-        requestTuners.addAll(getRequestTuners(getBoundTunersFrom));
+    HttpAPIProxyHandler(Supplier<URI> uriSupplier, Class<? extends HttpAPI<?>> httpAPIClazz) {
+        this.uriSupplier = uriSupplier;
+        requestTuners.addAll(getRequestTuners(httpAPIClazz));
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
+        var rootURI = uriSupplier.get();
+        checkState(nonNull(rootURI), "Root URI is not defined");
         method.setAccessible(true);
 
         var paramTypes = method.getParameterTypes();

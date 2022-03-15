@@ -7,7 +7,6 @@ import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.selenium.SeleniumParameterProvider;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.HttpTraffic;
-import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.RequestHasUrl;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeSettingsSupplierForProxy;
 
@@ -23,6 +22,7 @@ import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsEachItemMatcher.eachOfIterable;
 import static ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyGetStepSupplier.proxiedRequests;
 import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.RequestHasMethod.requestHasMethod;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.RequestHasUrl.requestHasStringUrl;
 import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.ResponseHasStatusCode.responseHasStatusCode;
 import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CHROME;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
@@ -74,7 +74,7 @@ public class BrowserProxyStepTest {
         assertThat("Captured entries have GET HTTP, status code 200 and same url", requests,
                 eachOfIterable(requestHasMethod(GET),
                         responseHasStatusCode(200),
-                        RequestHasUrl.requestHasStringUrl(containsString("https://www.google.com")))
+                        requestHasStringUrl(containsString("https://www.google.com")))
         );
     }
 

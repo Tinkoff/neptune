@@ -1,21 +1,9 @@
-plugins {
-    id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
-}
-
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     api project(':core.api')
-    inpath(project(":core.api")) {
-        transitive = false
-    }
     api group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.9.0'
-    api group: 'org.apache.tika', name: 'tika-core', version: '2.1.0'
     testImplementation  group: 'com.squareup.retrofit2', name: 'converter-gson', version: '2.9.0'
     testImplementation  group: 'com.squareup.retrofit2', name: 'converter-scalars', version: '2.9.0'
-    testImplementation  group: 'com.github.tomakehurst', name: 'wiremock-jre8-standalone', version: '2.29.0'
+    testImplementation group: 'com.github.tomakehurst', name: 'wiremock-jre8-standalone', version: '2.32.0'
 }
 
 test {
@@ -90,6 +78,6 @@ javadoc {
     options.links 'http://download.oracle.com/javase/9/docs/api/'
     options.addStringOption 'Xdoclint:none', '-quiet'
     options.memberLevel = JavadocMemberLevel.PROTECTED
-    options.bottom = "Copyright &copy; 2021 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+    options.bottom = "Copyright &copy; 2022 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
     options.addBooleanOption('html5', true)
 }

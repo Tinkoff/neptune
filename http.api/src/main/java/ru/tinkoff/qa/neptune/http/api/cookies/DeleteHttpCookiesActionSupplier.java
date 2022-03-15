@@ -96,7 +96,7 @@ public abstract class DeleteHttpCookiesActionSupplier<R, S extends DeleteHttpCoo
 
         private DeleteDefinedHttpCookies(Collection<HttpCookie> toDelete) {
             super();
-            checkArgument(nonNull(toDelete) && toDelete.size() > 0,
+            checkArgument(nonNull(toDelete) && !toDelete.isEmpty(),
                     "Should be defined at least one cookie");
             performOn(toDelete);
         }

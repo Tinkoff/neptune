@@ -7,6 +7,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.ParameterProvider;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
 
 public class ParameterProviderTest {
 
@@ -23,10 +24,10 @@ public class ParameterProviderTest {
     }
 
     private static class EmptyStepClass extends Context<EmptyStepClass> {
-        private static final EmptyStepClass context = getInstance(EmptyStepClass.class);
+        private static final EmptyStepClass context = getCreatedContextOrCreate(EmptyStepClass.class);
     }
 
-    private static class ParameterizedParameterProvider implements ParameterProvider {
+    public static class ParameterizedParameterProvider implements ParameterProvider {
         @Override
         public Object[] provide() {
             return new Object[]{FIVE};
@@ -37,7 +38,7 @@ public class ParameterProviderTest {
     private static class ParameterizedStep extends Context<ParameterizedStep> {
         private final int number;
 
-        private static final ParameterizedStep context = getInstance(ParameterizedStep.class);
+        private static final ParameterizedStep context = getCreatedContextOrCreate(ParameterizedStep.class);
 
         protected ParameterizedStep(int number) {
             this.number = number;

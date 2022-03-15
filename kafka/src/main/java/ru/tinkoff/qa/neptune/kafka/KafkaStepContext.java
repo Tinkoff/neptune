@@ -11,11 +11,12 @@ import ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier
 
 import java.util.List;
 
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
+
 
 @CreateWith(provider = KafkaParameterProvider.class)
 @SuppressWarnings("unchecked")
 public class KafkaStepContext extends Context<KafkaStepContext> {
-    private static final KafkaStepContext context = getInstance(KafkaStepContext.class);
     private final KafkaProducer<String, String> producer;
     private final KafkaConsumer<String, String> consumer;
 
@@ -25,7 +26,7 @@ public class KafkaStepContext extends Context<KafkaStepContext> {
     }
 
     public static KafkaStepContext kafka() {
-        return context;
+        return getCreatedContextOrCreate(KafkaStepContext.class);
     }
 
     public KafkaProducer<String, String> getProducer() {

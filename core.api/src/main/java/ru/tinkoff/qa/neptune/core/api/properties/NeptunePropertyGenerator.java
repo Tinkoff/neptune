@@ -174,7 +174,7 @@ public class NeptunePropertyGenerator {
         return propertyMap
                 .entrySet()
                 .stream()
-                .filter(e -> e.getValue().size() > 0)
+                .filter(e -> !e.getValue().isEmpty())
                 .sorted(comparingByKey())
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
     }

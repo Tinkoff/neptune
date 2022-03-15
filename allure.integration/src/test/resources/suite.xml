@@ -1,0 +1,23 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="Core test suite">
+
+    <test name="successful lifecycle test">
+        <classes>
+            <class name="ru.tinkoff.qa.neptune.allure.SuccessfulStepLifeCycleTest"/>
+            <class name="ru.tinkoff.qa.neptune.allure.SuccessfulReturningValueTest"/>
+        </classes>
+    </test>
+
+    <test name="failed lifecycle test">
+        <classes>
+            <class name="ru.tinkoff.qa.neptune.allure.FailedStepLifeCycleTest"/>
+        </classes>
+    </test>
+
+
+    <test name="attachment test">
+        <classes>
+            <class name="ru.tinkoff.qa.neptune.allure.AttachmentTest"/>
+        </classes>
+    </test>
+</suite>

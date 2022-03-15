@@ -130,7 +130,7 @@ public abstract class RemoveCookiesActionSupplier<T>
 
         private RemoveDefinedCookies(Collection<Cookie> toBeRemoved) {
             super();
-            checkArgument(nonNull(toBeRemoved) && toBeRemoved.size() > 0,
+            checkArgument(nonNull(toBeRemoved) && !toBeRemoved.isEmpty(),
                     "It is necessary to define at least one cookie for removal");
             cookies = toBeRemoved;
             performOn(currentContent());

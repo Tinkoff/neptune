@@ -6,22 +6,25 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.nonNull;
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
 
 public class WebTestClientContext extends Context<WebTestClientContext> {
 
-    private static final WebTestClientContext context = getInstance(WebTestClientContext.class);
-    private WebTestClient defaultWebTestClient;
+    private final WebTestClientProvider defaultWebTestClientProvider;
 
-    static WebTestClientContext getContext() {
-        return context;
+    public WebTestClientContext() {
+        defaultWebTestClientProvider = new WebTestClientProvider();
     }
 
-    void setDefault(WebTestClient defaultWebTestClient) {
-        this.defaultWebTestClient = defaultWebTestClient;
+    static WebTestClientContext getContext() {
+        return getCreatedContextOrCreate(WebTestClientContext.class);
     }
 
     WebTestClient getDefaultWebTestClient() {
-        checkState(nonNull(defaultWebTestClient), "There is no field of type WebTestClient that has a non-null value");
+        var defaultWebTestClient = defaultWebTestClientProvider.provide();
+        checkState(nonNull(defaultWebTestClient), "The instance of "
+                + WebTestClientProvider.class
+                + " returned null");
         return defaultWebTestClient;
     }
 
@@ -31,7 +34,7 @@ public class WebTestClientContext extends Context<WebTestClientContext> {
      * @param sending is specification of request
      * @return self-reference
      */
-    public static WebTestClientContext webTestClient(SendRequestAction<?> sending) {
+    public static WebTestClientContext webTestClient(SendRequestAction<?, ?, ?> sending) {
         var context = getContext();
         return context.perform(sending);
     }

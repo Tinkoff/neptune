@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.valueOf;
 import static java.util.Collections.list;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -134,8 +133,8 @@ public final class GetMockMvcResponseResultSupplier extends SequentialGetStepSup
 
         var result = new LinkedHashMap<String, String>();
 
-        result.put("Request URL", request.getRequestURL().toString());
-        result.put("Port", valueOf(request.getRemotePort()));
+        result.put("Request URI", request.getRequestURI());
+        result.put("Protocol", request.getProtocol());
         result.put("Method", request.getMethod());
 
         var names = request.getHeaderNames();
@@ -1084,7 +1083,7 @@ public final class GetMockMvcResponseResultSupplier extends SequentialGetStepSup
                     }
                 });
 
-                if (errors.size() == 0) {
+                if (errors.isEmpty()) {
                     return result.andReturn().getResponse();
                 }
 
