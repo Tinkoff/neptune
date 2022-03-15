@@ -9,9 +9,6 @@ configurations {
 dependencies {
     api(project(":database.abstractions"))
     api project(':core.api')
-    inpath(project(":core.api")) {
-        transitive = false
-    }
     api group: 'org.hibernate', name: 'hibernate-core', version: '5.6.0.Final'
     compileClasspath(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
     compileClasspath(group: 'com.querydsl', name: 'querydsl-jpa', version: '5.0.0')
