@@ -94,14 +94,30 @@ public class ResourceBundleGenerator {
             output.write("#Values for translation of steps, their parameters, matchers and their descriptions," +
                     " and attachments are defined here. Format key = value");
 
-            new StepBundleFilter(partition).fill(output, properties);
-            new CriteriaBundleFilter(partition).fill(output, properties);
-            new AttachmentsBundleFilter(partition).fill(output, properties);
-            new MatchersBundleFilter(partition).fill(output, properties);
-            new MismatchDescriptionBundleFilter(partition).fill(output, properties);
-            new MatchedObjectsBundleFilter(partition).fill(output, properties);
-            new ParameterPojoBundleFilter(partition).fill(output, properties);
-            new OtherObjectsBundleFilter(partition).fill(output, properties);
+            var stepBundleFilter = new StepBundleFilter(partition);
+            var criteriaBundleFilter = new CriteriaBundleFilter(partition);
+            var attachmentsBundleFilter = new AttachmentsBundleFilter(partition);
+            var matchersBundleFilter = new MatchersBundleFilter(partition);
+            var mismatchDescriptionBundleFilter = new MismatchDescriptionBundleFilter(partition);
+            var matchedObjectsBundleFilter = new MatchedObjectsBundleFilter(partition);
+            var parameterPojoBundleFilter = new ParameterPojoBundleFilter(partition);
+
+            var processedClasses = new ArrayList<Class<?>>();
+            processedClasses.addAll(stepBundleFilter.getProcessedClasses());
+            processedClasses.addAll(criteriaBundleFilter.getProcessedClasses());
+            processedClasses.addAll(attachmentsBundleFilter.getProcessedClasses());
+            processedClasses.addAll(matchersBundleFilter.getProcessedClasses());
+            processedClasses.addAll(mismatchDescriptionBundleFilter.getProcessedClasses());
+            processedClasses.addAll(matchedObjectsBundleFilter.getProcessedClasses());
+            processedClasses.addAll(parameterPojoBundleFilter.getProcessedClasses());
+
+            stepBundleFilter.fill(output, properties);
+            criteriaBundleFilter.fill(output, properties);
+            attachmentsBundleFilter.fill(output, properties);
+            matchersBundleFilter.fill(output, properties);
+            mismatchDescriptionBundleFilter.fill(output, properties);
+            matchedObjectsBundleFilter.fill(output, properties);
+            parameterPojoBundleFilter.fill(output, properties);
 
             new ClassGraph().enableAllInfo()
                     .enableClassInfo()
@@ -124,12 +140,15 @@ public class ResourceBundleGenerator {
                     .forEach(cls -> {
                         try {
                             var c = cls.getConstructor();
-                            c.setAccessible(true);
-                            c.newInstance().fill(output, properties);
+                            var instance = c.newInstance();
+                            processedClasses.addAll(instance.getProcessedClasses());
+                            instance.fill(output, properties);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
                     });
+
+            new OtherObjectsBundleFilter(processedClasses, partition).fill(output, properties);
         }
     }
 

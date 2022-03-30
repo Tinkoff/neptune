@@ -1,10 +1,9 @@
-package ru.tinkoff.qa.neptune.spring.mock.mvc.aspect;
+package ru.tinkoff.qa.neptune.spring.mock.mvc.result.matchers.proxy;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 class NeptuneMethodInvocationInfo implements MvcUriComponentsBuilder.MethodInvocationInfo {
 

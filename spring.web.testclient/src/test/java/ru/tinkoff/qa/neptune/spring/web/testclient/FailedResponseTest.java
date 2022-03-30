@@ -28,7 +28,7 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient.TestStringInjector.get
 import static ru.tinkoff.qa.neptune.spring.web.testclient.WebTestClientContext.webTestClient;
 
 @SuppressWarnings({"unchecked"})
-public class FailedResponseTest extends BaseTest {
+public class FailedResponseTest extends BaseTestPreparation {
 
     @DataProvider
     public static Object[][] data() {

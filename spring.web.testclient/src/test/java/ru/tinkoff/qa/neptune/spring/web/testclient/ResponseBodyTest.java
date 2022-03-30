@@ -26,7 +26,7 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient.SendRequestAction.send
 import static ru.tinkoff.qa.neptune.spring.web.testclient.WebTestClientContext.webTestClient;
 
 @SuppressWarnings({"unchecked"})
-public class ResponseBodyTest extends BaseTest {
+public class ResponseBodyTest extends BaseTestPreparation {
 
     @Mock
     private WebTestClient.BodySpec<Dto, ?> dtoBodySpec;

@@ -23,7 +23,7 @@ publishing {
                 packaging = 'jar'
                 name = 'testng.integration'
                 version = version
-                url = 'https://github.com/TinkoffCreditSystems/neptune'
+                url = 'https://github.com/tinkoff/neptune'
                 licenses {
                     license {
                         name = 'Apache License, Version 2.0'
@@ -39,9 +39,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
-                    developerConnection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
-                    url = 'https://github.com/TinkoffCreditSystems/neptune'
+                    connection = 'scm:git:ssh://git@github.com:tinkoff/neptune.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:tinkoff/neptune.git'
+                    url = 'https://github.com/tinkoff/neptune'
                 }
             }
         }

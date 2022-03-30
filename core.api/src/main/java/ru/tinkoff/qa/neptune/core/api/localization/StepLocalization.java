@@ -59,6 +59,7 @@ public interface StepLocalization {
 
     /**
      * Makes a translation
+     *
      * @param originalTemplate is original string template which may be used for auxiliary purposes
      * @param method           is a method which may be used for auxiliary purposes
      * @param args             objects which may be used for auxiliary purposes
@@ -75,10 +76,31 @@ public interface StepLocalization {
         return engine.methodTranslation(method, originalTemplate, templateParameters, locale);
     }
 
+    /**
+     * Makes a translation
+     *
+     * @param object an object to be translated
+     * @param <T>    is a type of the object
+     * @return translated text
+     */
     static <T> String translate(T object) {
         var engine = DEFAULT_LOCALIZATION_ENGINE.get();
         var locale = DEFAULT_LOCALE_PROPERTY.get();
         return translateByClass(object, engine, locale);
+    }
+
+    /**
+     * Makes a translation
+     *
+     * @param template is original string template which may be used for auxiliary purposes
+     * @param object   an object to be translated
+     * @param <T>      is a type of the object
+     * @return translated text
+     */
+    static <T> String translate(String template, T object) {
+        var engine = DEFAULT_LOCALIZATION_ENGINE.get();
+        var locale = DEFAULT_LOCALE_PROPERTY.get();
+        return translateByClass(template, object, object.getClass(), engine, locale);
     }
 
     static String translate(Field f) {
@@ -93,6 +115,19 @@ public interface StepLocalization {
         return translateMember(f, engine, locale);
     }
 
+    private static <T> String translateByClass(String originalTemplate,
+                                               T toBeTranslated,
+                                               Class<?> clazz,
+                                               StepLocalization localization,
+                                               Locale locale) {
+        var templateParameters = getTemplateParameters(originalTemplate, toBeTranslated);
+        if (localization == null || locale == null) {
+            return buildTextByTemplate(originalTemplate, templateParameters);
+        }
+
+        return localization.classTranslation(clazz, originalTemplate, templateParameters, locale);
+    }
+
     private static <T> String translateByClass(T toBeTranslated,
                                                StepLocalization localization,
                                                Locale locale) {
@@ -103,14 +138,7 @@ public interface StepLocalization {
 
         var cls2 = clazz;
         return ofNullable(cls2.getAnnotation(Description.class))
-                .map(description -> {
-                    var templateParameters = getTemplateParameters(description.value(), toBeTranslated);
-                    if (localization == null || locale == null) {
-                        return buildTextByTemplate(description.value(), templateParameters);
-                    }
-
-                    return localization.classTranslation(cls2, description.value(), templateParameters, locale);
-                })
+                .map(description -> translateByClass(description.value(), toBeTranslated, cls2, localization, locale))
                 .orElse(null);
     }
 
