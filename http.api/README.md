@@ -25,4 +25,4 @@ Integration of Neptune with native http client of Java (since v11)
 
 [Brief documentation in English](./doc/eng/README.MD)
 
-[API overview](https://tinkoffcreditsystems.github.io/neptune/http.api/index.html)
+[API overview](https://tinkoff.github.io/neptune/http.api/index.html)

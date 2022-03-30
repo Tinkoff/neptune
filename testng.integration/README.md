@@ -25,4 +25,4 @@ Integration of Neptune with [TestNG framework](https://testng.org/doc/)
 
 [Brief documentation in English](./doc/eng/README.MD)
 
-[API overview](https://tinkoffcreditsystems.github.io/neptune/testng.integration/index.html)
+[API overview](https://tinkoff.github.io/neptune/testng.integration/index.html)

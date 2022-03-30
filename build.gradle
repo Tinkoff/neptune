@@ -46,7 +46,8 @@ subprojects {
         hamcrestVersion = '2.2'
         seleniumVersion = '4.1.3'
         allureVersion = '2.17.3'
-        jacksonVersion = '2.13.2.2'
+        jacksonVersion = '2.13.2'
+        jacksonVersion2 = '2.13.2.2'
         mockitoVersion = '4.3.1'
         springVersion = '5.3.17'
         springBootVersion = '2.6.5'
@@ -63,7 +64,7 @@ subprojects {
         api group: 'com.google.guava', name: 'guava', version: '31.0.1-jre'
         testImplementation group: 'org.testng', name: 'testng', version: testNGVersion
         api group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
-        api group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
+        api group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion2
         api group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: jacksonVersion
         api group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: jacksonVersion
         api group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion

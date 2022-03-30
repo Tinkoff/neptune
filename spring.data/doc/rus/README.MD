@@ -127,7 +127,7 @@ public class SomeClass {
 ## Шаги
 
 - О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст).
-  Объект [контекста для работы со Spring Data](https://tinkoffcreditsystems.github.io/neptune/spring.data/ru/tinkoff/qa/neptune/spring/data/SpringDataContext.html)
+  Объект [контекста для работы со Spring Data](https://tinkoff.github.io/neptune/spring.data/ru/tinkoff/qa/neptune/spring/data/SpringDataContext.html)
   в примерах ниже вызывается статическим методом `springData`
 
 - О принципах работы шагов, которые возвращают результат, можно

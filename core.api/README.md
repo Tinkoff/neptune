@@ -66,4 +66,4 @@ dependencies {
 
 [Brief documentation in English](./doc/eng/README.MD)
 
-[API overview](https://tinkoffcreditsystems.github.io/neptune/core.api/index.html)
+[API overview](https://tinkoff.github.io/neptune/core.api/index.html)
