@@ -20,7 +20,7 @@ final class OtherObjectsBundleFilter extends DefaultAbstractBundleFiller {
         super(p, getOther(toExclude), "OTHER");
     }
 
-    public static synchronized List<Class<?>> getOther(List<Class<?>> toExclude) {
+    private static synchronized List<Class<?>> getOther(List<Class<?>> toExclude) {
         return new ClassGraph()
                 .enableClassInfo()
                 .enableAnnotationInfo()

@@ -28,7 +28,7 @@ public interface ToIncludeClassDescription {
      */
     String description(Class<?> clazz);
 
-    static final class DefaultToIncludeClassDescriptionImpl implements ToIncludeClassDescription {
+    final class DefaultToIncludeClassDescriptionImpl implements ToIncludeClassDescription {
 
         @Override
         public boolean toIncludeClass(Class<?> clazz) {
