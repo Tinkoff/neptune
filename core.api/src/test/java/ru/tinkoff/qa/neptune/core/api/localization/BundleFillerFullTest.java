@@ -3,13 +3,20 @@ package ru.tinkoff.qa.neptune.core.api.localization;
 import org.hamcrest.Matcher;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.localization.bundle.extensions.TestExtension;
-import ru.tinkoff.qa.neptune.core.api.localization.bundle.partitions.AllPackagePartition;
-import ru.tinkoff.qa.neptune.core.api.localization.hamcrest.SomeMatchedObject;
-import ru.tinkoff.qa.neptune.core.api.localization.hamcrest.SomeMatcher;
-import ru.tinkoff.qa.neptune.core.api.localization.hamcrest.SomeMismatch;
-import ru.tinkoff.qa.neptune.core.api.localization.steps.*;
+import ru.tinkoff.qa.neptune.core.api.localization.data.generation.ClassA;
+import ru.tinkoff.qa.neptune.core.api.localization.data.generation.ClassB;
+import ru.tinkoff.qa.neptune.core.api.localization.data.generation.ClassC;
+import ru.tinkoff.qa.neptune.core.api.localization.data.generation.ClassD;
+import ru.tinkoff.qa.neptune.core.api.localization.data.generation.bundle.extensions.TestExtension;
+import ru.tinkoff.qa.neptune.core.api.localization.data.generation.bundle.partitions.AllPackagePartition;
+import ru.tinkoff.qa.neptune.core.api.localization.data.generation.hamcrest.SomeMatchedObject;
+import ru.tinkoff.qa.neptune.core.api.localization.data.generation.hamcrest.SomeMatcher;
+import ru.tinkoff.qa.neptune.core.api.localization.data.generation.hamcrest.SomeMismatch;
+import ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.*;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -17,21 +24,40 @@ import java.util.LinkedList;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import static java.io.File.createTempFile;
+import static java.nio.file.Files.readAllLines;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableInOrder;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsIncludesMatcher.iterableIncludesInOrder;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsItemsMatcher.iterableHasItems;
 
 public class BundleFillerFullTest {
 
-    private final ResourceBundleGenerator.BundleFiller bundleFiller =
-            new ResourceBundleGenerator.BundleFiller(new AllPackagePartition(), null, new Properties());
+    private final ResourceBundleGenerator.BundleFiller bundleFiller;
+    private final File propertyFile;
+
+    public BundleFillerFullTest() throws IOException {
+        propertyFile = createTempFile(randomAlphanumeric(15), ".properties");
+        propertyFile.deleteOnExit();
+
+        Properties properties = new Properties();
+        properties.setProperty("A", "AValue");
+        properties.setProperty("B", "BValue");
+
+        try (var fileOutput = new FileOutputStream(propertyFile)) {
+            properties.store(fileOutput, "");
+        }
+
+        bundleFiller = new ResourceBundleGenerator.BundleFiller(new AllPackagePartition(),
+                propertyFile,
+                properties);
+    }
 
     @DataProvider
     public static Object[][] data() {
         return new Object[][]{
-                {StepBundleFilter.class, iterableIncludesInOrder(
+                {StepBundleFilter.class, iterableInOrder(
                         SomeChildSequentialActionWithAnnotations.class,
                         SomeChildSequentialActionWithoutAnnotations.class,
                         SomeChildSequentialStepSupplierWithAnnotations.class,
@@ -78,24 +104,24 @@ public class BundleFillerFullTest {
                 {
                         TestExtension.class,
                         iterableInOrder(
-                                ru.tinkoff.qa.neptune.core.api.localization.additional.classes.ClassA.class,
-                                ru.tinkoff.qa.neptune.core.api.localization.additional.classes.ClassB.class,
-                                ru.tinkoff.qa.neptune.core.api.localization.additional.classes.ClassD.class,
-                                ru.tinkoff.qa.neptune.core.api.localization.some.classes.ClassA.class,
-                                ru.tinkoff.qa.neptune.core.api.localization.some.classes.ClassB.class,
-                                ru.tinkoff.qa.neptune.core.api.localization.some.classes.other.classes.ClassD.class,
-                                ru.tinkoff.qa.neptune.core.api.localization.ClassA.class,
-                                ru.tinkoff.qa.neptune.core.api.localization.ClassB.class,
-                                ru.tinkoff.qa.neptune.core.api.localization.ClassD.class
+                                ru.tinkoff.qa.neptune.core.api.localization.data.generation.additional.classes.ClassA.class,
+                                ru.tinkoff.qa.neptune.core.api.localization.data.generation.additional.classes.ClassB.class,
+                                ru.tinkoff.qa.neptune.core.api.localization.data.generation.additional.classes.ClassD.class,
+                                ru.tinkoff.qa.neptune.core.api.localization.data.generation.some.classes.ClassA.class,
+                                ru.tinkoff.qa.neptune.core.api.localization.data.generation.some.classes.ClassB.class,
+                                ru.tinkoff.qa.neptune.core.api.localization.data.generation.some.classes.other.classes.ClassD.class,
+                                ClassA.class,
+                                ClassB.class,
+                                ClassD.class
                         ),
                 },
 
                 {
                         OtherObjectsBundleFilter.class,
                         iterableInOrder(
-                                ru.tinkoff.qa.neptune.core.api.localization.ClassC.class,
-                                ru.tinkoff.qa.neptune.core.api.localization.additional.classes.described.ClassC.class,
-                                ru.tinkoff.qa.neptune.core.api.localization.some.classes.other.classes.described.ClassC.class
+                                ClassC.class,
+                                ru.tinkoff.qa.neptune.core.api.localization.data.generation.additional.classes.described.ClassC.class,
+                                ru.tinkoff.qa.neptune.core.api.localization.data.generation.some.classes.other.classes.described.ClassC.class
                         ),
                 },
         };
@@ -104,34 +130,31 @@ public class BundleFillerFullTest {
     @DataProvider
     public static Object[][] data2() {
         return new Object[][]{
-                {StepBundleFilter.class, iterableIncludesInOrder(
-                        "class ru.tinkoff.qa.neptune.core.api.localization.BasicLocalizationTest$TestGetStepSupplier.criteria",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.OtherLocalisationEngineTest$GetStepSupplier.from",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.TranslateByResourceBundleTest$GetStepSupplier.criteria",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeChildSequentialActionWithAnnotations.imperative",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeChildSequentialActionWithAnnotations.performOn",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeChildSequentialActionWithAnnotations.c",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeChildSequentialStepSupplierWithAnnotations.imperative",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeChildSequentialStepSupplierWithAnnotations.from",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeChildSequentialStepSupplierWithAnnotations.pollingTime",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeChildSequentialStepSupplierWithAnnotations.timeOut",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeChildSequentialStepSupplierWithAnnotations.criteria",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeChildSequentialStepSupplierWithAnnotations.resultDescription",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeChildSequentialStepSupplierWithAnnotations.errorMessageStartingOnEmptyResult",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeChildSequentialStepSupplierWithAnnotations.c",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeSequentialAction.imperative",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeSequentialAction.performOn",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeSequentialAction.a",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeSequentialAction.b",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeSequentialStepSupplier.imperative",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeSequentialStepSupplier.from",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeSequentialStepSupplier.pollingTime",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeSequentialStepSupplier.timeOut",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeSequentialStepSupplier.criteria",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeSequentialStepSupplier.resultDescription",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeSequentialStepSupplier.errorMessageStartingOnEmptyResult",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeSequentialStepSupplier.a",
-                        "class ru.tinkoff.qa.neptune.core.api.localization.steps.SomeSequentialStepSupplier.b"
+                {StepBundleFilter.class, iterableInOrder(
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeChildSequentialActionWithAnnotations.imperative",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeChildSequentialActionWithAnnotations.performOn",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeChildSequentialActionWithAnnotations.c",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeChildSequentialStepSupplierWithAnnotations.imperative",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeChildSequentialStepSupplierWithAnnotations.from",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeChildSequentialStepSupplierWithAnnotations.pollingTime",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeChildSequentialStepSupplierWithAnnotations.timeOut",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeChildSequentialStepSupplierWithAnnotations.criteria",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeChildSequentialStepSupplierWithAnnotations.resultDescription",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeChildSequentialStepSupplierWithAnnotations.errorMessageStartingOnEmptyResult",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeChildSequentialStepSupplierWithAnnotations.c",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeSequentialAction.imperative",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeSequentialAction.performOn",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeSequentialAction.a",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeSequentialAction.b",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeSequentialStepSupplier.imperative",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeSequentialStepSupplier.from",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeSequentialStepSupplier.pollingTime",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeSequentialStepSupplier.timeOut",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeSequentialStepSupplier.criteria",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeSequentialStepSupplier.resultDescription",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeSequentialStepSupplier.errorMessageStartingOnEmptyResult",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeSequentialStepSupplier.a",
+                        "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.SomeSequentialStepSupplier.b"
                 )},
 
                 {
@@ -161,9 +184,9 @@ public class BundleFillerFullTest {
 
                 {
                         ParameterPojoBundleFilter.class,
-                        iterableIncludesInOrder(
-                                "class ru.tinkoff.qa.neptune.core.api.localization.steps.AggregatedParams.a",
-                                "class ru.tinkoff.qa.neptune.core.api.localization.steps.AggregatedParams.b"
+                        iterableInOrder(
+                                "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.AggregatedParams.a",
+                                "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.steps.AggregatedParams.b"
                         ),
                 },
 
@@ -174,10 +197,10 @@ public class BundleFillerFullTest {
 
                 {
                         OtherObjectsBundleFilter.class,
-                        iterableIncludesInOrder(
-                                "class ru.tinkoff.qa.neptune.core.api.localization.ClassC.stepParameter",
-                                "class ru.tinkoff.qa.neptune.core.api.localization.additional.classes.described.ClassC.stepParameter",
-                                "class ru.tinkoff.qa.neptune.core.api.localization.some.classes.other.classes.described.ClassC.stepParameter"
+                        iterableInOrder(
+                                "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.ClassC.stepParameter",
+                                "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.additional.classes.described.ClassC.stepParameter",
+                                "class ru.tinkoff.qa.neptune.core.api.localization.data.generation.some.classes.other.classes.described.ClassC.stepParameter"
                         ),
                 },
 
@@ -188,7 +211,7 @@ public class BundleFillerFullTest {
     public static Object[][] data3() {
         return new Object[][]{
                 {StepBundleFilter.class,
-                        iterableIncludesInOrder(
+                        iterableInOrder(
                                 endsWith("SomeChildSequentialActionWithAnnotations.actionStep()"),
                                 endsWith("SomeChildSequentialStepSupplierWithAnnotations.getAnotherStep(java.util.function.Function)"),
                                 endsWith("SomeSequentialAction.actionStep()"),
@@ -198,7 +221,7 @@ public class BundleFillerFullTest {
 
                 {
                         CriteriaBundleFilter.class,
-                        iterableIncludesInOrder(
+                        iterableInOrder(
                                 endsWith("SpecificCriteria.someCriteria()"),
                                 endsWith("SpecificCriteria.someCriteria2()")
                         ),
@@ -231,16 +254,16 @@ public class BundleFillerFullTest {
 
                 {
                         TestExtension.class,
-                        iterableIncludesInOrder(
-                                endsWith("localization.additional.classes.ClassA.doSomething(java.lang.String[])"),
-                                endsWith("localization.additional.classes.ClassB.doSomething(java.lang.String[])"),
-                                endsWith("localization.additional.classes.ClassD.doSomething(java.lang.String[])"),
-                                endsWith("localization.some.classes.ClassA.doSomething(java.lang.String[])"),
-                                endsWith("localization.some.classes.ClassB.doSomething(java.lang.String[])"),
-                                endsWith("localization.some.classes.other.classes.ClassD.doSomething(java.lang.String[])"),
-                                endsWith("localization.ClassA.doSomething(java.lang.String[])"),
-                                endsWith("localization.ClassB.doSomething(java.lang.String[])"),
-                                endsWith("localization.ClassD.doSomething(java.lang.String[])")
+                        iterableInOrder(
+                                endsWith("localization.data.generation.additional.classes.ClassA.doSomething(java.lang.String[])"),
+                                endsWith("localization.data.generation.additional.classes.ClassB.doSomething(java.lang.String[])"),
+                                endsWith("localization.data.generation.additional.classes.ClassD.doSomething(java.lang.String[])"),
+                                endsWith("localization.data.generation.some.classes.ClassA.doSomething(java.lang.String[])"),
+                                endsWith("localization.data.generation.some.classes.ClassB.doSomething(java.lang.String[])"),
+                                endsWith("localization.data.generation.some.classes.other.classes.ClassD.doSomething(java.lang.String[])"),
+                                endsWith("localization.data.generation.ClassA.doSomething(java.lang.String[])"),
+                                endsWith("localization.data.generation.ClassB.doSomething(java.lang.String[])"),
+                                endsWith("localization.data.generation.ClassD.doSomething(java.lang.String[])")
                         ),
                 },
 
@@ -322,5 +345,15 @@ public class BundleFillerFullTest {
                         .map(Method::toString)
                         .collect(Collectors.toList()),
                 matcher);
+    }
+
+    @Test
+    public void fillTest() throws Exception {
+        bundleFiller.fillFile();
+
+        var generated = readAllLines(propertyFile.toPath());
+        var expected = readAllLines(new File("src/test/resources/generated_properties_to_compare").toPath());
+
+        assertThat(generated, iterableInOrder(expected.toArray(new String[]{})));
     }
 }

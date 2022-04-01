@@ -3,8 +3,12 @@ package ru.tinkoff.qa.neptune.core.api.localization;
 import org.hamcrest.Matcher;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.localization.bundle.extensions.TestExtension;
-import ru.tinkoff.qa.neptune.core.api.localization.bundle.partitions.DefinedPackagesPartition;
+import ru.tinkoff.qa.neptune.core.api.localization.data.generation.ClassA;
+import ru.tinkoff.qa.neptune.core.api.localization.data.generation.ClassB;
+import ru.tinkoff.qa.neptune.core.api.localization.data.generation.ClassD;
+import ru.tinkoff.qa.neptune.core.api.localization.data.generation.additional.classes.described.ClassC;
+import ru.tinkoff.qa.neptune.core.api.localization.data.generation.bundle.extensions.TestExtension;
+import ru.tinkoff.qa.neptune.core.api.localization.data.generation.bundle.partitions.DefinedPackagesPartition;
 
 import java.util.Properties;
 
@@ -56,12 +60,12 @@ public class BundleFillerPartialTest {
                 {
                         TestExtension.class,
                         iterableInOrder(
-                                ru.tinkoff.qa.neptune.core.api.localization.additional.classes.ClassA.class,
-                                ru.tinkoff.qa.neptune.core.api.localization.additional.classes.ClassB.class,
-                                ru.tinkoff.qa.neptune.core.api.localization.additional.classes.ClassD.class,
-                                ru.tinkoff.qa.neptune.core.api.localization.some.classes.ClassA.class,
-                                ru.tinkoff.qa.neptune.core.api.localization.some.classes.ClassB.class,
-                                ru.tinkoff.qa.neptune.core.api.localization.some.classes.other.classes.ClassD.class,
+                                ru.tinkoff.qa.neptune.core.api.localization.data.generation.additional.classes.ClassA.class,
+                                ru.tinkoff.qa.neptune.core.api.localization.data.generation.additional.classes.ClassB.class,
+                                ru.tinkoff.qa.neptune.core.api.localization.data.generation.additional.classes.ClassD.class,
+                                ru.tinkoff.qa.neptune.core.api.localization.data.generation.some.classes.ClassA.class,
+                                ru.tinkoff.qa.neptune.core.api.localization.data.generation.some.classes.ClassB.class,
+                                ru.tinkoff.qa.neptune.core.api.localization.data.generation.some.classes.other.classes.ClassD.class,
                                 ClassA.class,
                                 ClassB.class,
                                 ClassD.class
@@ -71,8 +75,8 @@ public class BundleFillerPartialTest {
                 {
                         OtherObjectsBundleFilter.class,
                         iterableInOrder(
-                                ru.tinkoff.qa.neptune.core.api.localization.additional.classes.described.ClassC.class,
-                                ru.tinkoff.qa.neptune.core.api.localization.some.classes.other.classes.described.ClassC.class
+                                ClassC.class,
+                                ru.tinkoff.qa.neptune.core.api.localization.data.generation.some.classes.other.classes.described.ClassC.class
                         ),
                 },
         };
