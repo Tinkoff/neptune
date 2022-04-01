@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.core.api.localization.bundle.extensions;
 
 import ru.tinkoff.qa.neptune.core.api.localization.ToIncludeClassDescription;
 
-public class ToIncludeClassDescriptionTest implements ToIncludeClassDescription {
+public class TrestingToIncludeClassDescription implements ToIncludeClassDescription {
 
     @Override
     public boolean toIncludeClass(Class<?> clazz) {

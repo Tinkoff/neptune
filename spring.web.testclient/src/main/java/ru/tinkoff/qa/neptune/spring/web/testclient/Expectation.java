@@ -101,10 +101,10 @@ abstract class Expectation<T> {
         @Override
         @SuppressWarnings("unchecked")
         public T apply(WebTestClient.ResponseSpec responseSpec) {
-            var assertion = getObject.apply(responseSpec);
+            var checking = getObject.apply(responseSpec);
 
-            var builder = new ByteBuddy().subclass(assertion.getClass());
-            var interceptor = new AssertionMethodInterceptor<>(assertion);
+            var builder = new ByteBuddy().subclass(checking.getClass());
+            var interceptor = new AssertionMethodInterceptor<>(checking);
 
             Class<R> proxyClass;
             try {
@@ -112,14 +112,14 @@ abstract class Expectation<T> {
                         .intercept(to(interceptor))
                         .make()
                         .load(getSystemClassLoader(), ClassLoadingStrategy.UsingLookup.of(MethodHandles
-                                .privateLookupIn(assertion.getClass(), MethodHandles.lookup())))
+                                .privateLookupIn(checking.getClass(), MethodHandles.lookup())))
                         .getLoaded();
             } catch (Exception e) {
                 throw new ExpectationCreationException(e);
             }
 
             var objenesis = new ObjenesisStd();
-            var proxy = (R) objenesis.newInstance(proxyClass);
+            var proxy = objenesis.newInstance(proxyClass);
             try {
                 return this.assertion.apply(proxy);
             } finally {
@@ -133,7 +133,7 @@ abstract class Expectation<T> {
         }
     }
 
-    public final static class AssertionMethodInterceptor<T> {
+    public static final class AssertionMethodInterceptor<T> {
 
         private static final Locale DEFAULT_LOCALE = US;
 

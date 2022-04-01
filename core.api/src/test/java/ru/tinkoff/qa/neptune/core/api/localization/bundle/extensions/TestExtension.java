@@ -29,7 +29,7 @@ public class TestExtension extends BundleFillerExtension {
                 ru.tinkoff.qa.neptune.core.api.localization.ClassA.class,
                 ru.tinkoff.qa.neptune.core.api.localization.ClassB.class,
                 ru.tinkoff.qa.neptune.core.api.localization.ClassD.class
-        ), "TEST OBJECTS", new ToIncludeClassDescriptionTest());
+        ), "TEST OBJECTS", new TrestingToIncludeClassDescription());
     }
 
     @Override

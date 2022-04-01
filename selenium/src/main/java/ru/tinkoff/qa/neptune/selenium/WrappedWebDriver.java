@@ -51,19 +51,19 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
 
             var webDriverClass = supportedWebDriver.getWebDriverClass();
             var webDriverConstructor = webDriverClass.getConstructor(c.getParameterTypes());
-            var driver = (WebDriver) webDriverConstructor.newInstance(parameters);
+            var createdWebDriver = (WebDriver) webDriverConstructor.newInstance(parameters);
 
             ofNullable(BASE_WEB_DRIVER_URL_PROPERTY.get())
-                    .ifPresent(url -> driver.get(url.toString()));
+                    .ifPresent(url -> createdWebDriver.get(url.toString()));
             if (FORCE_WINDOW_MAXIMIZING_ON_START.get()) {
-                driver.manage().window().maximize();
+                createdWebDriver.manage().window().maximize();
             }
 
-            driver.manage().timeouts().pageLoadTimeout(WAITING_FOR_PAGE_LOADED_DURATION.get());
+            createdWebDriver.manage().timeouts().pageLoadTimeout(WAITING_FOR_PAGE_LOADED_DURATION.get());
 
-            authenticationPerformer.performAuthentication(driver, true);
+            authenticationPerformer.performAuthentication(createdWebDriver, true);
 
-            this.driver = driver;
+            this.driver = createdWebDriver;
             return true;
         } catch (Exception e) {
             throw new WebDriverCreationException(e);

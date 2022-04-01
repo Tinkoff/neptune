@@ -10,7 +10,11 @@ import static java.lang.ClassLoader.getSystemClassLoader;
 import static net.bytebuddy.implementation.MethodDelegation.to;
 import static net.bytebuddy.matcher.ElementMatchers.any;
 
-class SearchProxyBuilder {
+final class SearchProxyBuilder {
+
+    private SearchProxyBuilder() {
+        super();
+    }
 
     /**
      * Creates a proxy object using the binding of CGLIB and Objenesis

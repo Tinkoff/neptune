@@ -24,17 +24,17 @@ import static ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerato
 
 public abstract class BundleFillerExtension {
 
-    private final List<? extends Class<?>> toAdd;
+    private final List<Class<?>> toAdd;
     private final String sectionName;
     private final ToIncludeClassDescription toIncludeClassDescription;
 
-    protected BundleFillerExtension(List<? extends Class<?>> toAdd, String sectionName, ToIncludeClassDescription toIncludeClassDescription) {
+    protected BundleFillerExtension(List<Class<?>> toAdd, String sectionName, ToIncludeClassDescription toIncludeClassDescription) {
         this.toAdd = toAdd;
         this.sectionName = sectionName;
         this.toIncludeClassDescription = toIncludeClassDescription;
     }
 
-    protected BundleFillerExtension(List<? extends Class<?>> toAdd, String sectionName) {
+    protected BundleFillerExtension(List<Class<?>> toAdd, String sectionName) {
         this(toAdd, sectionName, new ToIncludeClassDescription.DefaultToIncludeClassDescriptionImpl());
     }
 
@@ -65,7 +65,7 @@ public abstract class BundleFillerExtension {
         }
     }
 
-    List<? extends Class<?>> getProcessedClasses() {
+    List<Class<?>> getProcessedClasses() {
         return toAdd;
     }
 
@@ -92,16 +92,13 @@ public abstract class BundleFillerExtension {
             var description = toIncludeClassDescription.description(clazz);
 
 
-            if (toIncludeClassDescription.toIncludeClass(clazz)) {
+            if (toIncludeClassDescription.toIncludeClass(clazz) && description != null) {
+                var key = getKey(clazz);
+                var value = ofNullable(properties)
+                        .map(p -> p.get(key))
+                        .orElse(description);
 
-                if (description != null) {
-                    var key = getKey(clazz);
-                    var value = ofNullable(properties)
-                            .map(p -> p.get(key))
-                            .orElse(description);
-
-                    newLine(description, key, value);
-                }
+                newLine(description, key, value);
             }
         }
 
