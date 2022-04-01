@@ -17,13 +17,13 @@ import static java.util.stream.Collectors.toList;
 
 public abstract class AbstractResultMatcherBundleExtension extends BundleFillerExtension {
 
-    protected AbstractResultMatcherBundleExtension(List<? extends Class<?>> toAdd,
+    protected AbstractResultMatcherBundleExtension(List<Class<?>> toAdd,
                                                    String name,
                                                    ToIncludeClassDescription toIncludeClassDescription) {
         super(toAdd, name, toIncludeClassDescription);
     }
 
-    protected AbstractResultMatcherBundleExtension(List<? extends Class<?>> toAdd,
+    protected AbstractResultMatcherBundleExtension(List<Class<?>> toAdd,
                                                    String name) {
         super(toAdd, name);
     }
