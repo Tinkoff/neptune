@@ -50,11 +50,11 @@ dependencies {
     testImplementation('io.projectreactor:reactor-test:3.4.15')
     testImplementation('org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.6.0-native-mt')
     testImplementation(group: 'org.springframework', name: 'spring-webflux', version: springVersion)
-    testCompileClasspath(group: 'org.springframework', name: 'spring-test', version: springVersion)
 
     bundleGeneration(group: 'org.springframework', name: 'spring-web', version: springVersion)
     bundleGeneration(group: 'org.springframework', name: 'spring-webmvc', version: springVersion)
 
+    testImplementation(group: 'org.springframework', name: 'spring-test', version: springVersion)
     testImplementation(group: 'org.springframework', name: 'spring-web', version: springVersion)
     testImplementation(group: 'org.springframework', name: 'spring-webmvc', version: springVersion)
     testImplementation('com.jayway.jsonpath:json-path:2.7.0')
