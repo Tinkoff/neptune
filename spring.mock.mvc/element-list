@@ -1,5 +1,6 @@
 ru.tinkoff.qa.neptune.spring.mock.mvc
-ru.tinkoff.qa.neptune.spring.mock.mvc.aspect
 ru.tinkoff.qa.neptune.spring.mock.mvc.captors
 ru.tinkoff.qa.neptune.spring.mock.mvc.localization
 ru.tinkoff.qa.neptune.spring.mock.mvc.properties
+ru.tinkoff.qa.neptune.spring.mock.mvc.result.matchers
+ru.tinkoff.qa.neptune.spring.mock.mvc.result.matchers.proxy
