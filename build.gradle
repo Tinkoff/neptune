@@ -170,7 +170,7 @@ sonarqube {
     }
 }
 
-check.dependsOn jacocoOverallReport
+check.dependsOn test, jacocoOverallReport
 
 task aggregatedJavadocs(type: Javadoc, description: 'Generate javadocs from all child projects as if it was a single project', group: 'Documentation') {
     title = "Neptune API Documentation. v$globalVersion"
