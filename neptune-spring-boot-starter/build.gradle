@@ -1,7 +1,7 @@
 dependencies {
     compileClasspath project(':core.api')
-    implementation group: 'org.springframework.boot', name: 'spring-boot', version: springBootVersion
-    implementation group: 'org.springframework', name: 'spring-test', version: springVersion
+    compileClasspath group: 'org.springframework.boot', name: 'spring-boot', version: springBootVersion
+    compileClasspath group: 'org.springframework', name: 'spring-test', version: springVersion
 }
 
 java {
