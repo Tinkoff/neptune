@@ -1,7 +1,9 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
+import net.bytebuddy.implementation.bind.annotation.AllArguments;
+import net.bytebuddy.implementation.bind.annotation.Origin;
+import net.bytebuddy.implementation.bind.annotation.RuntimeType;
+import net.bytebuddy.implementation.bind.annotation.This;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsDriver;
@@ -13,7 +15,7 @@ import java.lang.reflect.Method;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.selenium.properties.DefaultScrollerProperty.DEFAULT_SCROLLER_PROPERTY;
 
-abstract class AbstractElementInterceptor implements MethodInterceptor {
+public abstract class AbstractElementInterceptor {
 
     final WebElement element;
 
@@ -44,7 +46,8 @@ abstract class AbstractElementInterceptor implements MethodInterceptor {
                 });
     }
 
-    public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
+    @RuntimeType
+    public Object intercept(@This Object obj, @Origin Method method, @AllArguments Object[] args) throws Throwable {
         realObject = ofNullable(realObject).orElseGet(this::createRealObject);
 
         Class<?>[] parameters;
@@ -56,7 +59,6 @@ abstract class AbstractElementInterceptor implements MethodInterceptor {
                 result = ofNullable(args[0])
                         .map(o -> o.equals(realObject))
                         .orElse(false);
-                //(boolean) proxy.invokeSuper(obj, args);
             }
             return result;
         }

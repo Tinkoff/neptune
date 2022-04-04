@@ -10,12 +10,12 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.not.NotMatcher.notOf;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.MapEntryMatcher.mapEntry;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableInOrder;
@@ -140,15 +140,15 @@ public class ResponseMultithreadingTest {
     @Test(threadPoolSize = 10, invocationCount = 10)
     public void test() {
         var r = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
-                        iterableInOrder("1",
-                                "2",
-                                "String 1",
-                                "true"
-                        )))
-                .expect(content().string(containsString("SUCCESS")))
-                .expect(forwardedUrl("https://google.com/api/request/1")));
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1", iterableInOrder(
+                        "1",
+                        "2",
+                        "String 1",
+                        "true"
+                ))
+                .expectContent("SUCCESS")
+                .expectForward("https://google.com/api/request/1"));
 
         assertThat(r, equalTo(response1));
 

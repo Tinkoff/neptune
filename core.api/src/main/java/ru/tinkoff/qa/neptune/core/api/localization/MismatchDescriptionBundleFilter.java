@@ -7,23 +7,16 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import java.util.List;
 
 import static java.util.Comparator.comparing;
-import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
 final class MismatchDescriptionBundleFilter extends DefaultAbstractBundleFiller {
 
-    private static List<Class<?>> mismatchDescriptions;
-
-    protected MismatchDescriptionBundleFilter(LocalizationBundlePartition p) {
+    MismatchDescriptionBundleFilter(LocalizationBundlePartition p) {
         super(p, getMismatchDescriptions(), "MISMATCH DESCRIPTIONS");
     }
 
-    public static synchronized List<Class<?>> getMismatchDescriptions() {
-        if (nonNull(mismatchDescriptions)) {
-            return mismatchDescriptions;
-        }
-
-        mismatchDescriptions = new ClassGraph()
+    private static List<Class<?>> getMismatchDescriptions() {
+        return new ClassGraph()
                 .enableClassInfo()
                 .ignoreClassVisibility()
                 .scan()
@@ -34,7 +27,5 @@ final class MismatchDescriptionBundleFilter extends DefaultAbstractBundleFiller 
                 .map(cls -> (Class<?>) cls)
                 .sorted(comparing(Class::getName))
                 .collect(toList());
-
-        return mismatchDescriptions;
     }
 }

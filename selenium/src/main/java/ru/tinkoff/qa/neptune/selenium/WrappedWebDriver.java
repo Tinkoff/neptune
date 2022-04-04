@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-import net.sf.cglib.proxy.Enhancer;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -50,26 +49,24 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
                 isWebDriverInstalled = true;
             }
 
-            var enhancer = new Enhancer();
-            enhancer.setSuperclass(supportedWebDriver.getWebDriverClass());
-            enhancer.setCallback(new WebDriverMethodInterceptor());
-
-            var driver = (WebDriver) enhancer.create(c.getParameterTypes(), parameters);
+            var webDriverClass = supportedWebDriver.getWebDriverClass();
+            var webDriverConstructor = webDriverClass.getConstructor(c.getParameterTypes());
+            var createdWebDriver = (WebDriver) webDriverConstructor.newInstance(parameters);
 
             ofNullable(BASE_WEB_DRIVER_URL_PROPERTY.get())
-                    .ifPresent(url -> driver.get(url.toString()));
+                    .ifPresent(url -> createdWebDriver.get(url.toString()));
             if (FORCE_WINDOW_MAXIMIZING_ON_START.get()) {
-                driver.manage().window().maximize();
+                createdWebDriver.manage().window().maximize();
             }
 
-            driver.manage().timeouts().pageLoadTimeout(WAITING_FOR_PAGE_LOADED_DURATION.get());
+            createdWebDriver.manage().timeouts().pageLoadTimeout(WAITING_FOR_PAGE_LOADED_DURATION.get());
 
-            authenticationPerformer.performAuthentication(driver, true);
+            authenticationPerformer.performAuthentication(createdWebDriver, true);
 
-            this.driver = driver;
+            this.driver = createdWebDriver;
             return true;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new WebDriverCreationException(e);
         }
     }
 
@@ -137,7 +134,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             }
         });
     }
-    
+
     public DevTools getDevTools() {
         return ofNullable(devTools)
                 .map(dt -> {
@@ -155,5 +152,11 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
                     }
                 });
 
+    }
+
+    private static final class WebDriverCreationException extends RuntimeException {
+        private WebDriverCreationException(Throwable cause) {
+            super(cause);
+        }
     }
 }

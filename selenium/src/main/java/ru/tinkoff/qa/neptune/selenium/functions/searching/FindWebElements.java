@@ -11,7 +11,7 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CGLibProxyBuilder.createProxy;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchProxyBuilder.createProxy;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.ToStringFormer.getMultipleToString;
 
 final class FindWebElements implements Function<SearchContext, List<WebElement>> {

@@ -18,21 +18,14 @@ import static java.util.stream.Collectors.toList;
 @BindToPartition("spring.web.testclient")
 public final class SpringWebTestClientMatcherBundleExtension extends BundleFillerExtension {
 
-    private final static List<Class<?>> CLASSES = of(
-            StatusAssertions.class,
-            HeaderAssertions.class,
-            CookieAssertions.class,
-            JsonPathAssertions.class,
-            XpathAssertions.class
-    );
-
     public SpringWebTestClientMatcherBundleExtension() {
-        super(CLASSES, "SPRING WEB TEST CLIENT CRITERIA");
-    }
-
-
-    public static List<Class<?>> getFactoryClasses() {
-        return CLASSES;
+        super(of(
+                StatusAssertions.class,
+                HeaderAssertions.class,
+                CookieAssertions.class,
+                JsonPathAssertions.class,
+                XpathAssertions.class
+        ), "SPRING WEB TEST CLIENT CRITERIA");
     }
 
     @Override

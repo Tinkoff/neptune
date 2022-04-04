@@ -4,7 +4,7 @@
 форматы передачи информации в теле запроса и форматы получения информации в теле ответа.
 
 - О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст). 
-  Объект [контекста для работы с http протоколом](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/HttpStepContext.html)
+  Объект [контекста для работы с http протоколом](https://tinkoff.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/HttpStepContext.html)
   в примерах ниже вызывается статическим методом `ru.tinkoff.qa.neptune.http.api.HttpStepContext#http`
 
 - О принципах работы шагов, которые возвращают результат, можно
@@ -2502,7 +2502,7 @@ public class BodyObject {
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
-[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
+[Критерии для получения подходящего http ответа](https://tinkoff.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
 
 ```java
 import java.net.URI;
@@ -2652,7 +2652,7 @@ public class MyTest {
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
-[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
+[Критерии для получения подходящего http ответа](https://tinkoff.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
 
 
 ```java
@@ -2825,7 +2825,7 @@ public class MyTest {
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
-[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
+[Критерии для получения подходящего http ответа](https://tinkoff.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
 
 ```java
 import java.net.URI;
@@ -2995,7 +2995,7 @@ public class MyTest {
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
-[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
+[Критерии для получения подходящего http ответа](https://tinkoff.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
 
 ```java
 import java.net.URI;
@@ -3165,7 +3165,7 @@ public class MyTest {
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
-Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
+Критерии для получения подходящего http ответа](https://tinkoff.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
 
 ```java
 import java.net.URI;

@@ -1,0 +1,222 @@
+#Values for translation of steps, their parameters, matchers and their descriptions, and attachments are defined here. Format key = value
+
+#============================================ STEPS ============================================ 
+
+######################## core.api.localization.data.generation.steps.SomeChildSequentialActionWithAnnotations #
+#_________________________________Parameters_____________________________________
+#Original text = Child Do:
+core.api.localization.data.generation.steps.SomeChildSequentialActionWithAnnotations.imperative=Child Do:
+#Original text = Child On:
+core.api.localization.data.generation.steps.SomeChildSequentialActionWithAnnotations.performOn=Child On:
+#Original text = C
+core.api.localization.data.generation.steps.SomeChildSequentialActionWithAnnotations.c=C
+#__________________________________ Methods _______________________________________
+#Original text = Some another custom description
+core.api.localization.data.generation.steps.SomeChildSequentialActionWithAnnotations.actionStep()=Some another custom description
+
+######################## core.api.localization.data.generation.steps.SomeChildSequentialStepSupplierWithAnnotations #
+#Original text = Default child description
+core.api.localization.data.generation.steps.SomeChildSequentialStepSupplierWithAnnotations=Default child description
+#_________________________________Parameters_____________________________________
+#Original text = child Fetch:
+core.api.localization.data.generation.steps.SomeChildSequentialStepSupplierWithAnnotations.imperative=child Fetch:
+#Original text = child Use
+core.api.localization.data.generation.steps.SomeChildSequentialStepSupplierWithAnnotations.from=child Use
+#Original text = child Sleep:
+core.api.localization.data.generation.steps.SomeChildSequentialStepSupplierWithAnnotations.pollingTime=child Sleep:
+#Original text = child Wait:
+core.api.localization.data.generation.steps.SomeChildSequentialStepSupplierWithAnnotations.timeOut=child Wait:
+#Original text = child Condition:
+core.api.localization.data.generation.steps.SomeChildSequentialStepSupplierWithAnnotations.criteria=child Condition:
+#Original text = child Returned:
+core.api.localization.data.generation.steps.SomeChildSequentialStepSupplierWithAnnotations.resultDescription=child Returned:
+#Original text = No data fetched
+core.api.localization.data.generation.steps.SomeChildSequentialStepSupplierWithAnnotations.errorMessageStartingOnEmptyResult=No data fetched
+#Original text = C
+core.api.localization.data.generation.steps.SomeChildSequentialStepSupplierWithAnnotations.c=C
+#__________________________________ Methods _______________________________________
+#Original text = Some another custom step name
+core.api.localization.data.generation.steps.SomeChildSequentialStepSupplierWithAnnotations.getAnotherStep(java.util.function.Function<M,R[]>)=Some another custom step name
+
+######################## core.api.localization.data.generation.steps.SomeSequentialAction #
+#_________________________________Parameters_____________________________________
+#Original text = Do:
+core.api.localization.data.generation.steps.SomeSequentialAction.imperative=Do:
+#Original text = On:
+core.api.localization.data.generation.steps.SomeSequentialAction.performOn=On:
+#Original text = A
+core.api.localization.data.generation.steps.SomeSequentialAction.a=A
+#Original text = B
+core.api.localization.data.generation.steps.SomeSequentialAction.b=B
+#__________________________________ Methods _______________________________________
+#Original text = Some custom description
+core.api.localization.data.generation.steps.SomeSequentialAction.actionStep()=Some custom description
+
+######################## core.api.localization.data.generation.steps.SomeSequentialStepSupplier #
+#Original text = Default description
+core.api.localization.data.generation.steps.SomeSequentialStepSupplier=Default description
+#_________________________________Parameters_____________________________________
+#Original text = Fetch:
+core.api.localization.data.generation.steps.SomeSequentialStepSupplier.imperative=Fetch:
+#Original text = Use
+core.api.localization.data.generation.steps.SomeSequentialStepSupplier.from=Use
+#Original text = Sleep:
+core.api.localization.data.generation.steps.SomeSequentialStepSupplier.pollingTime=Sleep:
+#Original text = Wait:
+core.api.localization.data.generation.steps.SomeSequentialStepSupplier.timeOut=Wait:
+#Original text = Condition:
+core.api.localization.data.generation.steps.SomeSequentialStepSupplier.criteria=Condition:
+#Original text = Returned:
+core.api.localization.data.generation.steps.SomeSequentialStepSupplier.resultDescription=Returned:
+#Original text = No data fetched
+core.api.localization.data.generation.steps.SomeSequentialStepSupplier.errorMessageStartingOnEmptyResult=No data fetched
+#Original text = A
+core.api.localization.data.generation.steps.SomeSequentialStepSupplier.a=A
+#Original text = B
+core.api.localization.data.generation.steps.SomeSequentialStepSupplier.b=B
+#__________________________________ Methods _______________________________________
+#Original text = Some custom step name
+core.api.localization.data.generation.steps.SomeSequentialStepSupplier.getStep(java.util.function.Function<M,R[]>)=Some custom step name
+
+#============================================ CRITERIA ============================================ 
+
+######################## core.api.localization.data.generation.steps.SpecificCriteria #
+#__________________________________ Methods _______________________________________
+#Original text = Some criteria
+core.api.localization.data.generation.steps.SpecificCriteria.someCriteria()=Some criteria
+#Original text = Some criteria 2
+core.api.localization.data.generation.steps.SpecificCriteria.someCriteria2()=Some criteria 2
+
+#============================================ ATTACHMENTS ============================================ 
+
+######################## core.api.localization.data.generation.steps.SomeCaptor #
+#Original text = Some captor
+core.api.localization.data.generation.steps.SomeCaptor=Some captor
+
+######################## core.api.localization.data.generation.steps.SomeChildCaptorWithAnnotations #
+#Original text = Some child captor
+core.api.localization.data.generation.steps.SomeChildCaptorWithAnnotations=Some child captor
+
+#============================================ MATCHERS ============================================ 
+
+######################## core.api.localization.data.generation.hamcrest.SomeMatcher #
+#Original text = Match something
+core.api.localization.data.generation.hamcrest.SomeMatcher=Match something
+
+#============================================ MISMATCH DESCRIPTIONS ============================================ 
+
+######################## core.api.localization.data.generation.hamcrest.SomeMismatch #
+#Original text = Some mismatch
+core.api.localization.data.generation.hamcrest.SomeMismatch=Some mismatch
+
+#============================================ MATCHED OBJECTS ============================================ 
+
+######################## core.api.localization.data.generation.hamcrest.SomeMatchedObject #
+#Original text = Some object
+core.api.localization.data.generation.hamcrest.SomeMatchedObject=Some object
+
+#============================================ PARAMETER WRAPPERS ============================================ 
+
+######################## core.api.localization.data.generation.steps.AggregatedParams #
+#_________________________________Parameters_____________________________________
+#Original text = A
+core.api.localization.data.generation.steps.AggregatedParams.a=A
+#Original text = B
+core.api.localization.data.generation.steps.AggregatedParams.b=B
+
+#============================================ TEST OBJECTS ============================================ 
+
+######################## core.api.localization.data.generation.additional.classes.ClassA #
+#__________________________________ Methods _______________________________________
+#Original text = 
+core.api.localization.data.generation.additional.classes.ClassA.doSomething(java.lang.String[])=
+
+######################## core.api.localization.data.generation.additional.classes.ClassB #
+#__________________________________ Methods _______________________________________
+#Original text = 
+core.api.localization.data.generation.additional.classes.ClassB.doSomething(java.lang.String[])=
+
+######################## core.api.localization.data.generation.additional.classes.ClassD #
+#Original text = Some test class
+core.api.localization.data.generation.additional.classes.ClassD=Some test class
+#__________________________________ Methods _______________________________________
+#Original text = Do something {0}
+core.api.localization.data.generation.additional.classes.ClassD.doSomething(java.lang.String[])=Do something {0}
+
+######################## core.api.localization.data.generation.some.classes.ClassA #
+#__________________________________ Methods _______________________________________
+#Original text = 
+core.api.localization.data.generation.some.classes.ClassA.doSomething(java.lang.String[])=
+
+######################## core.api.localization.data.generation.some.classes.ClassB #
+#__________________________________ Methods _______________________________________
+#Original text = 
+core.api.localization.data.generation.some.classes.ClassB.doSomething(java.lang.String[])=
+
+######################## core.api.localization.data.generation.some.classes.other.classes.ClassD #
+#Original text = Some test class
+core.api.localization.data.generation.some.classes.other.classes.ClassD=Some test class
+#__________________________________ Methods _______________________________________
+#Original text = Do something {0}
+core.api.localization.data.generation.some.classes.other.classes.ClassD.doSomething(java.lang.String[])=Do something {0}
+
+######################## core.api.localization.data.generation.ClassA #
+#__________________________________ Methods _______________________________________
+#Original text = 
+core.api.localization.data.generation.ClassA.doSomething(java.lang.String[])=
+
+######################## core.api.localization.data.generation.ClassB #
+#__________________________________ Methods _______________________________________
+#Original text = 
+core.api.localization.data.generation.ClassB.doSomething(java.lang.String[])=
+
+######################## core.api.localization.data.generation.ClassD #
+#Original text = Some test class
+core.api.localization.data.generation.ClassD=Some test class
+#__________________________________ Methods _______________________________________
+#Original text = Do something {0}
+core.api.localization.data.generation.ClassD.doSomething(java.lang.String[])=Do something {0}
+
+#============================================ OTHER ============================================ 
+
+######################## core.api.localization.data.generation.ClassC #
+#Original text = Some description
+core.api.localization.data.generation.ClassC=Some description
+#_________________________________Parameters_____________________________________
+#Original text = someField
+core.api.localization.data.generation.ClassC.stepParameter=someField
+#__________________________________ Methods _______________________________________
+#Original text = Do something
+core.api.localization.data.generation.ClassC.doSomething()=Do something
+#Original text = Do something {0}
+core.api.localization.data.generation.ClassC.doSomething(java.lang.String)=Do something {0}
+#Original text = Do something {0}
+core.api.localization.data.generation.ClassC.doSomething(java.lang.String[])=Do something {0}
+
+######################## core.api.localization.data.generation.additional.classes.described.ClassC #
+#Original text = Some description
+core.api.localization.data.generation.additional.classes.described.ClassC=Some description
+#_________________________________Parameters_____________________________________
+#Original text = someField
+core.api.localization.data.generation.additional.classes.described.ClassC.stepParameter=someField
+#__________________________________ Methods _______________________________________
+#Original text = Do something
+core.api.localization.data.generation.additional.classes.described.ClassC.doSomething()=Do something
+#Original text = Do something {0}
+core.api.localization.data.generation.additional.classes.described.ClassC.doSomething(java.lang.String)=Do something {0}
+#Original text = Do something {0}
+core.api.localization.data.generation.additional.classes.described.ClassC.doSomething(java.lang.String[])=Do something {0}
+
+######################## core.api.localization.data.generation.some.classes.other.classes.described.ClassC #
+#Original text = Some description
+core.api.localization.data.generation.some.classes.other.classes.described.ClassC=Some description
+#_________________________________Parameters_____________________________________
+#Original text = someField
+core.api.localization.data.generation.some.classes.other.classes.described.ClassC.stepParameter=someField
+#__________________________________ Methods _______________________________________
+#Original text = Do something
+core.api.localization.data.generation.some.classes.other.classes.described.ClassC.doSomething()=Do something
+#Original text = Do something {0}
+core.api.localization.data.generation.some.classes.other.classes.described.ClassC.doSomething(java.lang.String)=Do something {0}
+#Original text = Do something {0}
+core.api.localization.data.generation.some.classes.other.classes.described.ClassC.doSomething(java.lang.String[])=Do something {0}

@@ -6,7 +6,7 @@ plugins {
 }
 
 ext {
-    globalVersion = '0.20.26-ALPHA'
+    globalVersion = '0.21.0-ALPHA'
 }
 
 repositories {
@@ -44,12 +44,14 @@ subprojects {
         junit5Version = '5.8.2'
         junit5PlatformVersion = '1.8.2'
         hamcrestVersion = '2.2'
-        seleniumVersion = '4.1.2'
+        seleniumVersion = '4.1.3'
         allureVersion = '2.17.3'
-        jacksonVersion = '2.13.1'
+        jacksonVersion = '2.13.2'
+        jacksonVersion2 = '2.13.2.2'
         mockitoVersion = '4.3.1'
-        springVersion = '5.3.16'
-        springBootVersion = '2.6.3'
+        springVersion = '5.3.17'
+        springBootVersion = '2.6.5'
+        bytybuddyVersion = '1.12.8'
         globalVersion = version
     }
 
@@ -62,7 +64,7 @@ subprojects {
         api group: 'com.google.guava', name: 'guava', version: '31.0.1-jre'
         testImplementation group: 'org.testng', name: 'testng', version: testNGVersion
         api group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
-        api group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
+        api group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion2
         api group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: jacksonVersion
         api group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: jacksonVersion
         api group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion
@@ -76,6 +78,8 @@ subprojects {
         implementation group: 'org.aspectj', name: 'aspectjrt', version: '1.9.6'
         implementation group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.6'
         agent group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.6'
+        implementation group: 'org.objenesis', name: 'objenesis', version: '3.2'
+        implementation group: 'net.bytebuddy', name: 'byte-buddy', version: bytybuddyVersion
     }
 
     test {
@@ -91,7 +95,6 @@ subprojects {
 
         jacoco {
             excludes += [
-                    'org.springframework.*',
                     'org.hamcrest.*',
                     'ru.tinkoff.qa.neptune.data.base.api.*'
             ]
@@ -110,7 +113,6 @@ subprojects {
         classDirectories.setFrom(classDirectories.files.collect {
             fileTree(dir: it,
                     exclude: [
-                            '**/org/springframework/**',
                             '**/org/hamcrest/**',
                             '**/**AjcClosure**',
                             '**/data/base/api/**'
@@ -142,7 +144,6 @@ task jacocoOverallReport(type: JacocoReport, group: 'Coverage reports') {
     classDirectories.from = files(subprojects.sourceSets.main.output).files.collect {
         fileTree(dir: it,
                 exclude: [
-                        '**/org/springframework/**',
                         '**/org/hamcrest/**',
                         '**/**AjcClosure**',
                         '**/data/base/api/**',

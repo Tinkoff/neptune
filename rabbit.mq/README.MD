@@ -25,4 +25,4 @@ Integration of Neptune with [rabbitmq](https://www.rabbitmq.com/).
 
 [Brief documentation in English](./doc/eng/README.MD)
 
-[API overview](https://tinkoffcreditsystems.github.io/neptune/rabbit.mq/index.html)
+[API overview](https://tinkoff.github.io/neptune/rabbit.mq/index.html)

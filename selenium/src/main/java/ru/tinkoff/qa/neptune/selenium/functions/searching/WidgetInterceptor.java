@@ -1,6 +1,9 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
-import net.sf.cglib.proxy.MethodProxy;
+import net.bytebuddy.implementation.bind.annotation.AllArguments;
+import net.bytebuddy.implementation.bind.annotation.Origin;
+import net.bytebuddy.implementation.bind.annotation.RuntimeType;
+import net.bytebuddy.implementation.bind.annotation.This;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.DefaultElementLocatorFactory;
@@ -13,13 +16,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static java.lang.String.format;
+import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
+import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static org.openqa.selenium.support.PageFactory.initElements;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CGLibProxyBuilder.createProxy;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchProxyBuilder.createProxy;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.ToStringFormer.widgetToString;
 
-class WidgetInterceptor extends AbstractElementInterceptor {
+public final class WidgetInterceptor extends AbstractElementInterceptor {
 
     private final Class<? extends Widget> widgetClass;
     private final Set<Class<?>> plainClassSet = new HashSet<>();
@@ -38,24 +43,14 @@ class WidgetInterceptor extends AbstractElementInterceptor {
         }
     }
 
-    @Override
-    public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
-
-        if ("toString".equals(method.getName()) &&
-                method.getParameterTypes().length == 0
-                && String.class.equals(method.getReturnType())) {
-            return widgetToString((Widget) createRealObject());
-        }
-
-        if ("getWrappedElement".equals(method.getName())
-                && method.getParameterTypes().length == 0
-                && WebElement.class.equals(method.getReturnType())) {
-            realObject = ofNullable(realObject)
-                    .orElseGet(this::createRealObject);
-            return createProxy(element.getClass(), new WebElementInterceptor(element, by));
-        }
-
-        return super.intercept(obj, method, args, proxy);
+    private static Method findScrollableSuperMethod(Method method, Class<?> findFrom) {
+        return stream(findFrom.getDeclaredMethods())
+                .filter(m -> m.getName().equals(method.getName())
+                        && m.getParameterCount() == method.getParameterCount()
+                        && (!isStatic(m.getModifiers())) && !isStatic(method.getModifiers())
+                        && areClassArraysCompatible(method, m))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
@@ -79,6 +74,40 @@ class WidgetInterceptor extends AbstractElementInterceptor {
         }
     }
 
+    private static boolean areClassArraysCompatible(Method currentMethod, Method overridden) {
+        var params = currentMethod.getParameterTypes();
+        var params2 = overridden.getParameterTypes();
+        var i = 0;
+        var result = true;
+        for (var c : params) {
+            if (!params2[i].isAssignableFrom(c)) {
+                result = false;
+                break;
+            }
+        }
+        return result;
+    }
+
+    @Override
+    @RuntimeType
+    public Object intercept(@This Object obj, @Origin Method method, @AllArguments Object[] args) throws Throwable {
+
+        if ("toString".equals(method.getName()) &&
+                method.getParameterTypes().length == 0
+                && String.class.equals(method.getReturnType())) {
+            return widgetToString((Widget) createRealObject());
+        }
+
+        if ("getWrappedElement".equals(method.getName())
+                && method.getParameterTypes().length == 0
+                && WebElement.class.equals(method.getReturnType())) {
+            realObject = ofNullable(realObject)
+                    .orElseGet(this::createRealObject);
+            return createProxy(element.getClass(), new WebElementInterceptor(element, by));
+        }
+
+        return super.intercept(obj, method, args);
+    }
 
     @Override
     boolean toPerformTheScrolling(Method method) {
@@ -87,10 +116,9 @@ class WidgetInterceptor extends AbstractElementInterceptor {
         }
 
         for (Class<?> c : plainClassSet) {
-            Method found;
-            try {
-                found = c.getMethod(method.getName(), method.getParameterTypes());
-            } catch (NoSuchMethodException e) {
+            var found = findScrollableSuperMethod(method, c);
+
+            if (isNull(found)) {
                 continue;
             }
 

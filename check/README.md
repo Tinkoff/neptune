@@ -25,4 +25,4 @@ Integration of Neptune with [Hamcrest matchers](http://hamcrest.org/JavaHamcrest
 
 [Brief documentation in English](./doc/eng/README.MD)
 
-[API overview](https://tinkoffcreditsystems.github.io/neptune/check/index.html)
+[API overview](https://tinkoff.github.io/neptune/check/index.html)

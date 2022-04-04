@@ -14,6 +14,10 @@ Neptune предоставляет свое расширение библиот�
     - [Матчеры String](#Матчеры-string)
     - [Объединения матчеров AND, OR, XOR, NOT](#Объединения-матчеров-and-or-xor-not)
     - [Матчер для POJO](#Матчер-для-pojo)
+- [Проверка класса объекта](#Проверка-класса-объекта)
+- [Проверка объектов Throwable](#Проверка-объектов-Throwable)
+    - [Проверка сообщения](#Проверка-сообщения)
+    - [Проверка причины](#Проверка-причины)  
 - [Другие матчеры, которые предоставляет Neptune](#Другие-матчеры-которые-предоставляет-neptune)
 
 ## Как создать матчер
@@ -991,6 +995,117 @@ public class MyTest {
                 getterReturns("getA", startsWith("A"), endsWith("B")))); //можно проверять на 
         // соответствие переданным критериям
     }
+}
+```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+## Проверка класса объекта
+
+```java
+package org.mypack;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.ofclass.OfClassMatcher.isObjectOfClass;
+
+//пример использования
+public class MyTest {
+
+    @Test(description = "Проверка того, что класс объекта равен ожидаемому классу")
+    public void test() {
+        var someObject = //инициализация или получение
+
+        assertThat(someObject, isObjectOfClass(SomeClass.class)); 
+    }
+}
+```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+## Проверка объектов Throwable
+
+### Проверка сообщения
+
+```java
+package org.mypack;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.throwable.ThrowableMessageMatcher.throwableHasMessage;
+import static org.hamcrest.Matchers.*;
+
+//пример использования
+public class MyTest {
+
+    @Test(description = "Проверка сообщения выброшенного исключения")
+    public void test() {
+        Exception someException = //ловим исключение
+        
+        //проверка сообщения на строгое соответствие        
+        assertThat(someException, throwableHasMessage("Some message"));
+
+        //проверка сообщения на соответствие одному-нескольким переданным критериям     
+        assertThat(someException, startsWith("Some"), endsWith("message"));
+    }
+}
+```
+
+[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+### Проверка причины
+
+```java
+package org.mypack;
+
+import java.io.IOException;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.throwable.ThrowableIsCausedByMatcher.hasRootCause;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.throwable.ThrowableIsCausedByMatcher.hasPrimaryCause;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.throwable.ThrowableMessageMatcher.throwableHasMessage;
+import static org.hamcrest.Matchers.*;
+
+//пример использования
+public class MyTest {
+
+  @Test(description = "Проверка самой первой (взятой методом .getCause()) причины возникновения исключения")
+  public void test() {
+    Exception someException = //ловим исключение
+
+    //проверка соответствия причины выброшенного исключения 
+    //одному-нескольким переданным критериям
+    assertThat(someException, hasPrimaryCause(
+            instanceOf(IOException.class), 
+            throwableHasMessage("Some message")
+    ));
+
+    //проверка класса причины выброшенного исключения
+    assertThat(someException, hasPrimaryCause(IOException.class));
+
+    //проверка класса и сообщения причины выброшенного исключения
+    assertThat(someException, hasPrimaryCause(IOException.class, "Some message"));
+
+    //проверка класса и соответствия одному-нескольким переданным критериям сообщения 
+    //причины выброшенного исключения
+    assertThat(someException, hasPrimaryCause(IOException.class, startsWith("Some"), endsWith("message")));
+  }
+
+  @Test(description = "Аналогично примеру выше. Проверяется, что среди исключений, " +
+          "полученных последовательным вызовом .getCause(), есть то, которое удовлетворяет " +
+          "переданным критериям")
+  public void test2() {
+    Exception someException = //ловим исключение
+            
+    assertThat(someException, hasRootCause(
+            instanceOf(IOException.class),
+            throwableHasMessage("Some message")
+    ));
+    
+    assertThat(someException, hasRootCause(IOException.class));
+    
+    assertThat(someException, hasRootCause(IOException.class, "Some message"));
+    
+    assertThat(someException, hasRootCause(IOException.class, startsWith("Some"), endsWith("message")));
+  }
 }
 ```
 

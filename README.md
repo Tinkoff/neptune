@@ -1,6 +1,6 @@
 # Neptune
 
-[![Neptune-master Status](https://github.com/Tinkoff/neptune/workflows/gradle-ci/badge.svg)](https://github.com/TinkoffCreditSystems/neptune/actions)
+[![Neptune-master Status](https://github.com/Tinkoff/neptune/workflows/gradle-ci/badge.svg)](https://github.com/tinkoff/neptune/actions)
 
 [![License][license-badge]][license-link]
 

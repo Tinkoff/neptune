@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.browser.proxy;
 
 import io.netty.handler.codec.http.HttpMethod;
-import org.openqa.selenium.devtools.v95.network.Network;
+import org.openqa.selenium.devtools.v99.network.Network;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;

@@ -24,4 +24,4 @@ Database abstractions for Neptune (compatible with both ORM and repository patte
 
 [Brief documentation in English](./doc/eng/README.md)
 
-[API overview](https://tinkoffcreditsystems.github.io/neptune/database.abstractions/index.html)
+[API overview](https://tinkoff.github.io/neptune/database.abstractions/index.html)

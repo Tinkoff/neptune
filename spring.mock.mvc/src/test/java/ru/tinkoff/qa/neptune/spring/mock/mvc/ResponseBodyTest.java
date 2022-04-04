@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableInOrder;
 import static ru.tinkoff.qa.neptune.spring.mock.mvc.GetMockMvcResponseResultSupplier.response;
 import static ru.tinkoff.qa.neptune.spring.mock.mvc.MockMvcContext.mockMvcGet;
@@ -254,14 +253,14 @@ public class ResponseBodyTest {
     @Test
     public void stringBodyTest() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
-                        iterableInOrder("1",
-                                "2",
-                                "String 1",
-                                "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1", iterableInOrder(
+                        "1",
+                        "2",
+                        "String 1",
+                        "true"
+                ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetStringContent()
                 .criteria("Contains String 'ABC'", s -> s.contains("ABC")));
 
@@ -271,14 +270,14 @@ public class ResponseBodyTest {
     @Test
     public void stringBodyTest2() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
-                        iterableInOrder("1",
-                                "2",
-                                "String 1",
-                                "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1", iterableInOrder(
+                        "1",
+                        "2",
+                        "String 1",
+                        "true"
+                ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetStringContent()
                 .criteria("Contains String 'DEF'", s -> s.contains("DEF")));
 
@@ -289,14 +288,14 @@ public class ResponseBodyTest {
     @Test
     public void bodyTest() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
-                        iterableInOrder("1",
-                                "2",
-                                "String 1",
-                                "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1", iterableInOrder(
+                        "1",
+                        "2",
+                        "String 1",
+                        "true"
+                ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetBody(BoundedDto.class)
                 .criteria("stringValue = 'ABCD'", dto -> dto.getStringValue().equals("ABCD"))
                 .criteria("arrayValue1 size greater then 1", dto -> dto.getArrayValue1().size() > 1)
@@ -309,14 +308,14 @@ public class ResponseBodyTest {
     @Test
     public void bodyTest2() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
-                        iterableInOrder("1",
-                                "2",
-                                "String 1",
-                                "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1", iterableInOrder(
+                        "1",
+                        "2",
+                        "String 1",
+                        "true"
+                ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetBody(new TypeReference<GenericDto<String[], List<Integer>>>() {
                 })
                 .criteria("stringValue = 'ABCD'", dto -> dto.getStringValue().equals("ABCD"))
@@ -330,14 +329,14 @@ public class ResponseBodyTest {
     @Test
     public void bodyTest3() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
-                        iterableInOrder("1",
-                                "2",
-                                "String 1",
-                                "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1", iterableInOrder(
+                        "1",
+                        "2",
+                        "String 1",
+                        "true"
+                ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetBody(BoundedDto.class)
                 .criteria("stringValue = 'ABCD'", dto -> dto.getStringValue().equals("ABCD"))
                 .criteria("arrayValue1 size greater then 5", dto -> dto.getArrayValue1().size() > 5)
@@ -350,14 +349,14 @@ public class ResponseBodyTest {
     @Test
     public void bodyTest4() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
-                        iterableInOrder("1",
-                                "2",
-                                "String 1",
-                                "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1", iterableInOrder(
+                        "1",
+                        "2",
+                        "String 1",
+                        "true"
+                ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetBody(new TypeReference<GenericDto<String[], List<Integer>>>() {
                 })
                 .criteria("stringValue = 'ABCD'", dto -> dto.getStringValue().equals("ABCD"))
@@ -371,14 +370,14 @@ public class ResponseBodyTest {
     @Test
     public void valueTest() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
-                        iterableInOrder("1",
-                                "2",
-                                "String 1",
-                                "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1", iterableInOrder(
+                        "1",
+                        "2",
+                        "String 1",
+                        "true"
+                ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetValue("Value of the field 'stringValue'",
                         BoundedDto.class,
                         GenericDto::getStringValue)
@@ -391,14 +390,14 @@ public class ResponseBodyTest {
     @Test
     public void valueTest2() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
-                        iterableInOrder("1",
-                                "2",
-                                "String 1",
-                                "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1", iterableInOrder(
+                        "1",
+                        "2",
+                        "String 1",
+                        "true"
+                ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetValue("Value of the field 'stringValue'",
                         new TypeReference<GenericDto<String[], List<Integer>>>() {
                         },
@@ -412,14 +411,13 @@ public class ResponseBodyTest {
     @Test
     public void valueTest3() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
-                        iterableInOrder("1",
-                                "2",
-                                "String 1",
-                                "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1", iterableInOrder("1",
+                        "2",
+                        "String 1",
+                        "true"
+                ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetValue("Value of the field 'stringValue'",
                         BoundedDto.class,
                         GenericDto::getStringValue)
@@ -432,14 +430,14 @@ public class ResponseBodyTest {
     @Test
     public void valueTest4() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
-                        iterableInOrder("1",
-                                "2",
-                                "String 1",
-                                "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1", iterableInOrder(
+                        "1",
+                        "2",
+                        "String 1",
+                        "true"
+                ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetValue("Value of the field 'stringValue'",
                         new TypeReference<GenericDto<String[], List<Integer>>>() {
                         },
@@ -454,14 +452,14 @@ public class ResponseBodyTest {
     @Test
     public void iterableTest() {
         var body = mockMvcGet(response(mockMvc, builder2)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetList("List of int", IntList.class)
                 .criteria("lesser than 5", i -> i < 5)
         );
@@ -472,14 +470,14 @@ public class ResponseBodyTest {
     @Test
     public void iterableTest2() {
         var body = mockMvcGet(response(mockMvc, builder2)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetList("List of int", new TypeReference<List<Integer>>() {
                 })
                 .criteria("lesser than 5", i -> i < 5)
@@ -491,14 +489,14 @@ public class ResponseBodyTest {
     @Test
     public void iterableTest3() {
         var body = mockMvcGet(response(mockMvc, builder2)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetList("List of int", IntList.class)
                 .criteria("greater than 6", i -> i > 6)
         );
@@ -509,14 +507,14 @@ public class ResponseBodyTest {
     @Test
     public void iterableTest4() {
         var body = mockMvcGet(response(mockMvc, builder2)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetList("List of int", new TypeReference<List<Integer>>() {
                 })
                 .criteria("greater than 6", i -> i > 6)
@@ -528,14 +526,14 @@ public class ResponseBodyTest {
     @Test
     public void iterableValueTest() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetList("Value of the field 'arrayValue1'",
                         BoundedDto.class,
                         GenericDto::getArrayValue1)
@@ -548,14 +546,14 @@ public class ResponseBodyTest {
     @Test
     public void iterableValueTest2() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetList("Value of the field 'arrayValue2'",
                         new TypeReference<GenericDto<String[], List<Integer>>>() {
                         },
@@ -569,14 +567,14 @@ public class ResponseBodyTest {
     @Test
     public void iterableValueTest3() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetList("Value of the field 'arrayValue1'",
                         BoundedDto.class,
                         GenericDto::getArrayValue1)
@@ -589,14 +587,14 @@ public class ResponseBodyTest {
     @Test
     public void iterableValueTest4() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetList("Value of the field 'arrayValue2'",
                         new TypeReference<GenericDto<String[], List<Integer>>>() {
                         },
@@ -610,14 +608,14 @@ public class ResponseBodyTest {
     @Test
     public void iterableItemTest() {
         var body = mockMvcGet(response(mockMvc, builder2)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetValueFromIterable("int", IntList.class)
                 .criteria("lesser than 5", i -> i < 5)
         );
@@ -628,14 +626,14 @@ public class ResponseBodyTest {
     @Test
     public void iterableItemTest2() {
         var body = mockMvcGet(response(mockMvc, builder2)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetValueFromIterable("int", new TypeReference<List<Integer>>() {
                 })
                 .criteria("lesser than 5", i -> i < 5)
@@ -647,14 +645,14 @@ public class ResponseBodyTest {
     @Test
     public void iterableItemTest3() {
         var body = mockMvcGet(response(mockMvc, builder2)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetValueFromIterable("int", IntList.class)
                 .criteria("greater than 6", i -> i > 6)
         );
@@ -665,14 +663,14 @@ public class ResponseBodyTest {
     @Test
     public void iterableItemTest4() {
         var body = mockMvcGet(response(mockMvc, builder2)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetValueFromIterable("int", new TypeReference<List<Integer>>() {
                 })
                 .criteria("greater than 6", i -> i > 6)
@@ -684,14 +682,14 @@ public class ResponseBodyTest {
     @Test
     public void iterableItemValueTest() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetValueFromIterable("Value from the field 'arrayValue1'",
                         BoundedDto.class,
                         GenericDto::getArrayValue1)
@@ -704,14 +702,14 @@ public class ResponseBodyTest {
     @Test
     public void iterableItemValueTest2() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetValueFromIterable("Value from the field 'arrayValue2'",
                         new TypeReference<GenericDto<String[], List<Integer>>>() {
                         },
@@ -725,14 +723,14 @@ public class ResponseBodyTest {
     @Test
     public void iterableItemValueTest3() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetValueFromIterable("Value from the field 'arrayValue1'",
                         BoundedDto.class,
                         GenericDto::getArrayValue1)
@@ -745,14 +743,14 @@ public class ResponseBodyTest {
     @Test
     public void iterableItemValueTest4() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetValueFromIterable("Value from the field 'arrayValue2'",
                         new TypeReference<GenericDto<String[], List<Integer>>>() {
                         },
@@ -767,14 +765,14 @@ public class ResponseBodyTest {
     @Test
     public void arrayTest() {
         var body = mockMvcGet(response(mockMvc, builder2)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetArray("Array of int", Integer[].class)
                 .criteria("lesser than 5", i -> i < 5)
         );
@@ -785,14 +783,14 @@ public class ResponseBodyTest {
     @Test
     public void arrayTest2() {
         var body = mockMvcGet(response(mockMvc, builder2)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetArray("Array of int", Integer[].class)
                 .criteria("greater than 6", i -> i > 6)
         );
@@ -803,14 +801,14 @@ public class ResponseBodyTest {
     @Test
     public void arrayValueTest() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetArray("Value of the field 'arrayValue2'",
                         BoundedDto.class,
                         GenericDto::getArrayValue2)
@@ -823,14 +821,14 @@ public class ResponseBodyTest {
     @Test
     public void arrayValueTest2() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetArray("Value of the field 'arrayValue2'",
                         new TypeReference<GenericDto<String[], Integer[]>>() {
                         },
@@ -844,14 +842,14 @@ public class ResponseBodyTest {
     @Test
     public void arrayValueTest3() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetArray("Value of the field 'arrayValue2'",
                         BoundedDto.class,
                         GenericDto::getArrayValue2)
@@ -864,14 +862,14 @@ public class ResponseBodyTest {
     @Test
     public void arrayValueTest4() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetArray("Value of the field 'arrayValue2'",
                         new TypeReference<GenericDto<String[], Integer[]>>() {
                         },
@@ -885,14 +883,14 @@ public class ResponseBodyTest {
     @Test
     public void arrayItemTest() {
         var body = mockMvcGet(response(mockMvc, builder2)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetValueFromArray("int", Integer[].class)
                 .criteria("lesser than 5", i -> i < 5)
         );
@@ -903,14 +901,14 @@ public class ResponseBodyTest {
     @Test
     public void arrayItemTest2() {
         var body = mockMvcGet(response(mockMvc, builder2)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetValueFromArray("int", Integer[].class)
                 .criteria("greater than 6", i -> i > 6)
         );
@@ -921,14 +919,14 @@ public class ResponseBodyTest {
     @Test
     public void arrayItemValueTest() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetValueFromArray("Value from the field 'arrayValue1'",
                         BoundedDto.class,
                         GenericDto::getArrayValue2)
@@ -941,14 +939,14 @@ public class ResponseBodyTest {
     @Test
     public void arrayItemValueTest2() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetValueFromArray("Value from the field 'arrayValue2'",
                         new TypeReference<GenericDto<String[], Integer[]>>() {
                         },
@@ -962,14 +960,14 @@ public class ResponseBodyTest {
     @Test
     public void arrayItemValueTest3() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetValueFromArray("Value from the field 'arrayValue1'",
                         BoundedDto.class,
                         GenericDto::getArrayValue2)
@@ -982,14 +980,14 @@ public class ResponseBodyTest {
     @Test
     public void arrayItemValueTest4() {
         var body = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1",
                         iterableInOrder("1",
                                 "2",
                                 "String 1",
                                 "true"
-                        )))
-                .expect(forwardedUrl("https://google.com/api/request/1"))
+                        ))
+                .expectForward("https://google.com/api/request/1")
                 .thenGetValueFromArray("Value from the field 'arrayValue2'",
                         new TypeReference<GenericDto<String[], Integer[]>>() {
                         },

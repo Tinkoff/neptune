@@ -1,12 +1,10 @@
 package ru.tinkoff.qa.neptune.selenium.test;
 
-import net.sf.cglib.proxy.Enhancer;
 import org.mockito.Mock;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
-import ru.tinkoff.qa.neptune.selenium.WebDriverMethodInterceptor;
 import ru.tinkoff.qa.neptune.selenium.WrappedWebDriver;
 
 import java.time.Duration;
@@ -59,11 +57,7 @@ public abstract class BaseWebDriverTest {
         start = 0;
         end = 0;
 
-        Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(MockWebDriver.class);
-        enhancer.setCallback(new WebDriverMethodInterceptor());
-        WebDriver driver = (WebDriver) enhancer.create();
-        when(wrappedWebDriver.getWrappedDriver()).thenReturn(driver);
+        when(wrappedWebDriver.getWrappedDriver()).thenReturn(new MockWebDriver());
         seleniumSteps = new SeleniumStepContext(CHROME_DRIVER) {
             @Override
             public WebDriver getWrappedDriver() {

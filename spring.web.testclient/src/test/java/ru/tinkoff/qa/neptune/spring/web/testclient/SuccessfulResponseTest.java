@@ -24,7 +24,7 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient.SendRequestAction.send
 import static ru.tinkoff.qa.neptune.spring.web.testclient.TestStringInjector.getMessages;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.WebTestClientContext.webTestClient;
 
-public class SuccessfulResponseTest extends BaseTest {
+public class SuccessfulResponseTest extends BaseTestPreparation {
 
     @DataProvider
     public static Object[][] data() {

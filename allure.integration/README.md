@@ -23,4 +23,4 @@ Integration of Neptune with [Allure test reporting framework](https://docs.qamet
 
 ...and there is nothing special to do.
 
-[API overview](https://tinkoffcreditsystems.github.io/neptune/allure.integration/index.html)
+[API overview](https://tinkoff.github.io/neptune/allure.integration/index.html)

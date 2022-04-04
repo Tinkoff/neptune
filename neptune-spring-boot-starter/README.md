@@ -36,4 +36,4 @@ This module is provided as a transitive dependency when
 
 [Brief documentation in English](./doc/eng/README.MD)
 
-[API overview](https://tinkoffcreditsystems.github.io/neptune/neptune-spring-boot-starter/index.html)
+[API overview](https://tinkoff.github.io/neptune/neptune-spring-boot-starter/index.html)
