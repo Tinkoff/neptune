@@ -6,7 +6,7 @@ plugins {
 }
 
 ext {
-    globalVersion = '0.21.0-ALPHA'
+    globalVersion = '0.21.1-ALPHA'
 }
 
 repositories {
