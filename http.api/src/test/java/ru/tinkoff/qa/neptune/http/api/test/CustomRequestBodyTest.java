@@ -23,7 +23,7 @@ import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasBody.hasBody;
 import static ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper.JSON;
 import static ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper.XML;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
 import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.ContentTransferEncoding.BINARY;
 import static ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.FormParameter.formParameter;
@@ -108,22 +108,22 @@ public class CustomRequestBodyTest extends BaseHttpTest {
                         .withHeader("Content-Type", containing("application/octet-stream"))
                         .withBody(binaryEqualTo(readAllBytes(TEST_FILE.toPath())))).
 
-                        withMultipartRequestBody(aMultipart()
-                                .withName("testFile2")
-                                .withHeader("Content-Disposition", containing("filename=\"" + TEST_FILE.getName() + "\""))
-                                .withHeader("Content-Type", equalTo("text/plain"))
-                                .withBody(binaryEqualTo(readAllBytes(TEST_FILE.toPath())))).
+                withMultipartRequestBody(aMultipart()
+                        .withName("testFile2")
+                        .withHeader("Content-Disposition", containing("filename=\"" + TEST_FILE.getName() + "\""))
+                        .withHeader("Content-Type", equalTo("text/plain"))
+                        .withBody(binaryEqualTo(readAllBytes(TEST_FILE.toPath())))).
 
-                        withMultipartRequestBody(aMultipart()
-                                .withName("testBytes")
-                                .withHeader("Content-Type", containing("application/octet-stream"))
-                                .withHeader("Content-Transfer-Encoding", equalTo(BINARY.toString()))
-                                .withBody(binaryEqualTo(new byte[]{1, 2, 3}))).
+                withMultipartRequestBody(aMultipart()
+                        .withName("testBytes")
+                        .withHeader("Content-Type", containing("application/octet-stream"))
+                        .withHeader("Content-Transfer-Encoding", equalTo(BINARY.toString()))
+                        .withBody(binaryEqualTo(new byte[]{1, 2, 3}))).
 
-                        withMultipartRequestBody(aMultipart()
-                                .withName("testJson")
-                                .withHeader("Content-Type", containing("application/json"))
-                                .withBody(containing(JSON.getMapper().writeValueAsString(BODY_OBJECT))))
+                withMultipartRequestBody(aMultipart()
+                        .withName("testJson")
+                        .withHeader("Content-Type", containing("application/json"))
+                        .withBody(containing(JSON.getMapper().writeValueAsString(BODY_OBJECT))))
                 .willReturn(aResponse().withBody(MULTIPART_SUCCESSFULLY_POSTED)));
     }
 
@@ -131,32 +131,34 @@ public class CustomRequestBodyTest extends BaseHttpTest {
     public static Object[][] data() throws Exception {
 
         return new Object[][]{
-                {POST(REQUEST_URI + PATH_TO_GSON, JSON, BODY_OBJECT)
+                {POST(JSON, BODY_OBJECT)
+                        .endPoint(REQUEST_URI + PATH_TO_GSON)
                         .header("Content-Type", "application/json"),
                         JSON_HAS_BEEN_SUCCESSFULLY_POSTED},
 
-                {POST(REQUEST_URI + PATH_TO_XML, XML, BODY_OBJECT)
+                {POST(XML, BODY_OBJECT)
+                        .endPoint(REQUEST_URI + PATH_TO_XML)
                         .header("Content-Type", "application/xml"),
                         JACKSON_XML_HAS_BEEN_SUCCESSFULLY_POSTED},
 
-                {POST(REQUEST_URI + PATH_URL_UNLOADED,
-                        formParameter("param1", false, "value1"),
+                {POST(formParameter("param1", false, "value1"),
                         formParameter("param2", false, "value2"))
+                        .endPoint(REQUEST_URI + PATH_URL_UNLOADED)
                         .header("Content-Type", "application/x-www-form-urlencoded"),
                         FORM_HAS_BEEN_SUCCESSFULLY_POSTED},
 
-                {POST(REQUEST_URI + PATH_URL_UNLOADED,
-                        formParameter("chip&dale", false, "rescue rangers"),
+                {POST(formParameter("chip&dale", false, "rescue rangers"),
                         formParameter("how to get water", false, "2H2 + O2 = 2H2O"))
+                        .endPoint(REQUEST_URI + PATH_URL_UNLOADED)
                         .header("Content-Type", "application/x-www-form-urlencoded"),
                         FORM_HAS_BEEN_SUCCESSFULLY_POSTED},
 
-                {POST(REQUEST_URI + PATH_MULTI_PART,
-                        bodyPart(TEST_FILE, "testFile", "test_file.txt", false),
+                {POST(bodyPart(TEST_FILE, "testFile", "test_file.txt", false),
                         bodyPart(TEST_FILE, "testFile2", true, true),
                         bodyPart(new byte[]{1, 2, 3}, "testBytes").setContentTransferEncoding(BINARY),
                         bodyPart(new FileInputStream(TEST_FILE), "testFile2", TEST_FILE.getName()).setContentType("text/plain"),
                         bodyPart(BODY_OBJECT, JSON, "testJson").setContentType("application/json"))
+                        .endPoint(REQUEST_URI + PATH_MULTI_PART)
                         .header("Content-Type", "multipart/form-data")
                         .version(HttpClient.Version.HTTP_1_1),
                         MULTIPART_SUCCESSFULLY_POSTED}

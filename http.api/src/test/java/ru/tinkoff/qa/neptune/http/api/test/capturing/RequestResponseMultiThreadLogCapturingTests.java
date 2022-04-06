@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.hasItems;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.SUCCESS;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
 import static ru.tinkoff.qa.neptune.http.api.test.capturing.LogInjector.clearLogs;
 import static ru.tinkoff.qa.neptune.http.api.test.capturing.LogInjector.getLog;
 
@@ -42,7 +42,10 @@ public class RequestResponseMultiThreadLogCapturingTests extends BaseHttpTest {
     @Test(threadPoolSize = 6, invocationCount = 6)
     public void test() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
-        http().responseOf(GET(CORRECT_URI), ofString());
+        http().responseOf(GET()
+                        .endPoint(CORRECT_URI),
+                ofString());
+
         assertThat(getLog(), hasItems(
                 containsString("Logs that have been captured during the sending of a request"),
                 containsString("Response\n" +

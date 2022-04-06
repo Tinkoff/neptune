@@ -1066,7 +1066,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder PUT(URL endPointUrl, String body, Charset encoding) {
-        return PUT(toURI(endPointUrl), body);
+        return PUT(toURI(endPointUrl), body, encoding);
     }
 
     /**

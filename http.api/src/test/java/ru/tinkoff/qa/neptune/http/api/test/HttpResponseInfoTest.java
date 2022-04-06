@@ -23,8 +23,8 @@ import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasPreviousRespon
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasStatusCode.hasStatusCode;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasURI.hasURI;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasVersion.hasVersion;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 
 public class HttpResponseInfoTest extends BaseHttpTest {
 
@@ -33,7 +33,9 @@ public class HttpResponseInfoTest extends BaseHttpTest {
         stubFor(get(urlPathEqualTo("/testStatus.html"))
                 .willReturn(aResponse().withBody("SUCCESS")));
 
-        assertThat(http().responseOf(GET(REQUEST_URI + "/testStatus.html"), ofString()),
+        assertThat(
+                http().responseOf(GET().endPoint(REQUEST_URI + "/testStatus.html"),
+                        ofString()),
                 hasStatusCode(200));
     }
 
@@ -43,7 +45,8 @@ public class HttpResponseInfoTest extends BaseHttpTest {
         stubFor(post(urlPathEqualTo("/header2.html"))
                 .willReturn(aResponse().withBody("SUCCESS")));
 
-        assertThat(http().responseOf(POST(REQUEST_URI + "/header2.html", "Request body")),
+        assertThat(
+                http().responseOf(POST("Request body").endPoint(REQUEST_URI + "/header2.html")),
                 all(
                         hasHeader("matched-stub-id", notOf(emptyIterable())),
                         hasHeader("vary", iterableInOrder("Accept-Encoding, User-Agent"))
@@ -55,7 +58,8 @@ public class HttpResponseInfoTest extends BaseHttpTest {
         stubFor(get(urlPathEqualTo("/body2.html"))
                 .willReturn(aResponse().withBody("SUCCESS")));
 
-        assertThat(http().responseOf(GET(format("%s/body2.html", REQUEST_URI)), ofString()),
+        assertThat(
+                http().responseOf(GET().endPoint(format("%s/body2.html", REQUEST_URI)), ofString()),
                 hasBody("SUCCESS"));
     }
 
@@ -64,7 +68,7 @@ public class HttpResponseInfoTest extends BaseHttpTest {
         stubFor(get(urlPathEqualTo("/uri.html"))
                 .willReturn(aResponse().withBody("SUCCESS")));
 
-        assertThat(http().responseOf(GET(format("%s/uri.html", REQUEST_URI))),
+        assertThat(http().responseOf(GET().endPoint(format("%s/uri.html", REQUEST_URI))),
                 hasURI(allOf(uriHasScheme("http"),
                         uriHasHost("127.0.0.1"),
                         uriHasPort(8089),
@@ -78,7 +82,7 @@ public class HttpResponseInfoTest extends BaseHttpTest {
         stubFor(get(urlPathEqualTo("/version.html"))
                 .willReturn(aResponse().withBody("SUCCESS")));
 
-        assertThat(http().responseOf(GET(format("%s/version.html", REQUEST_URI))),
+        assertThat(http().responseOf(GET().endPoint(format("%s/version.html", REQUEST_URI))),
                 hasVersion(HTTP_2));
     }
 
@@ -88,7 +92,7 @@ public class HttpResponseInfoTest extends BaseHttpTest {
         stubFor(get(urlPathEqualTo("/version2.html"))
                 .willReturn(aResponse().withBody("SUCCESS")));
 
-        assertThat(http().responseOf(GET(format("%s/version2.html", REQUEST_URI))),
+        assertThat(http().responseOf(GET().endPoint(format("%s/version2.html", REQUEST_URI))),
                 not(hasPreviousResponse()));
     }
 }
