@@ -235,9 +235,6 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
 ### Путь
 
-
-  
-
 ```java
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
@@ -404,9 +401,6 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
 ### Запрос
 
-
-  
-
 ```java
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
@@ -561,9 +555,6 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 О поддерживаемых форматах тел http-запросов можно прочитать [тут](REQUEST_RESPONSE.MD#Тело-запроса-на-примере-POST).
 Мэппинг поддерживает все описанные форматы, кроме пользовательских.
 Задача: [#211](https://github.com/tinkoff/neptune/issues/211)
-
-
-  
 
 Любое тело запроса, кроме `multipart/form-data` можно представить в модели следующим образом
 
