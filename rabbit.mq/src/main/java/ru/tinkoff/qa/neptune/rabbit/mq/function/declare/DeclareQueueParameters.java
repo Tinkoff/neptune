@@ -2,7 +2,6 @@ package ru.tinkoff.qa.neptune.rabbit.mq.function.declare;
 
 import com.rabbitmq.client.Channel;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArguments;
 import ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties;
@@ -14,10 +13,10 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
 
-@Description("Queue '{queue}'")
+@Description("Queue")
 public final class DeclareQueueParameters extends DeclareParameters<DeclareQueueParameters> {
 
-    @DescriptionFragment("queue")
+    @StepParameter("queue")
     private final String queue;
 
     @StepParameter("exclusive")
