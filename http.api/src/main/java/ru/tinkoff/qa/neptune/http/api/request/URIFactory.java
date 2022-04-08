@@ -35,14 +35,23 @@ final class URIFactory {
             return prepareValidURI(EMPTY);
         }
 
+        var result = getURIIfValid(uriOrPart);
+        if (nonNull(result)) {
+            return returnURIIfValid(result);
+        }
+
+        return prepareValidURI(uriOrPart);
+    }
+
+    private static URI getURIIfValid(String uriOrPart) {
         try {
             var uri = URI.create(uriOrPart);
-            if (isValidURI(uri, false)) {
+            if (nonNull(uri.getScheme())) {
                 return uri;
             }
-            return prepareValidURI(uriOrPart);
+            return null;
         } catch (Exception e) {
-            return prepareValidURI(uriOrPart);
+            return null;
         }
     }
 
@@ -60,16 +69,14 @@ final class URIFactory {
 
         if (fragment.startsWith("/") || fragment.startsWith("?") || fragment.startsWith("#")) {
             var resultURI = URI.create(uri + fragment);
-            isValidURI(resultURI, true);
-            return resultURI;
+            return returnURIIfValid(resultURI);
         }
 
         var resultURI = URI.create(uri + "/" + fragment);
-        isValidURI(resultURI, true);
-        return resultURI;
+        return returnURIIfValid(resultURI);
     }
 
-    private static boolean isValidURI(URI uri, boolean toThrowExceptionIfInvalid) {
+    private static URI returnURIIfValid(URI uri) {
         var result = true;
         var reasons = new StringBuilder();
 
@@ -88,14 +95,14 @@ final class URIFactory {
                 });
 
         if (uri.getHost() == null) {
-            reasons.append("unsupported URI ").append(uri).append(";");
+            reasons.append("empty host URI ").append(uri).append(";");
             result = false;
         }
 
-        if (!result && toThrowExceptionIfInvalid) {
+        if (!result) {
             throw new IllegalArgumentException("Invalid URI " + uri + ". " + reasons);
         }
 
-        return result;
+        return uri;
     }
 }
