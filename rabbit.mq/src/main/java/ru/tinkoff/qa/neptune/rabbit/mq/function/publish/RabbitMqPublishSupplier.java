@@ -5,7 +5,6 @@ import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 import ru.tinkoff.qa.neptune.rabbit.mq.captors.MessageCaptor;
@@ -30,15 +29,15 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaultDataTran
 
 @SequentialActionSupplier.DefinePerformImperativeParameterName("Publish:")
 @MaxDepthOfReporting(0)
-@Description("message. exchange = '{exchange}', routingKey = '{routingKey}'")
+@Description("message")
 @SuppressWarnings("unchecked")
 public abstract class RabbitMqPublishSupplier<T extends RabbitMqPublishSupplier<T>> extends SequentialActionSupplier<RabbitMqStepContext, RabbitMqStepContext, T> {
 
     private final Map<String, Object> headers = new LinkedHashMap<>();
     String body;
-    @DescriptionFragment("exchange")
+    @StepParameter("exchange")
     private String exchange = "";
-    @DescriptionFragment("routingKey")
+    @StepParameter("routingKey")
     private String routingKey = "";
     @StepParameter("mandatory")
     private boolean mandatory;

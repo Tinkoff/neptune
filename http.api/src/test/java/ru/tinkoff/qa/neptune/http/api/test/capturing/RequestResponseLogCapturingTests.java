@@ -24,7 +24,7 @@ import static org.testng.Assert.fail;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
 import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.asIs;
 import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.asObject;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.bodyMatches;
@@ -128,7 +128,8 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
     @Test(dataProvider = "data1")
     public void test1(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
-        http().responseOf(GET(CORRECT_URI), ofString());
+        http().responseOf(GET().baseURI(CORRECT_URI),
+                ofString());
         assertThat(getLog(), matcher);
     }
 
@@ -136,7 +137,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
     public void test2(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
         try {
-            http().responseOf(GET(INCORRECT_URI).timeout(ofSeconds(1)),
+            http().responseOf(GET().baseURI(INCORRECT_URI).timeout(ofSeconds(1)),
                     ofString());
         } catch (Throwable t) {
             assertThat(getLog(), matcher);
@@ -149,7 +150,9 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
     @Test(dataProvider = "data1")
     public void test3(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
-        http().bodyData(asIs(GET(CORRECT_URI), ofString()));
+        http().bodyData(asIs(GET()
+                        .baseURI(CORRECT_URI),
+                ofString()));
         assertThat(getLog(), matcher);
     }
 
@@ -157,7 +160,8 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
     public void test4(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
-        http().bodyData(asIs(GET(CORRECT_URI), ofString())
+        http().bodyData(asIs(GET().baseURI(CORRECT_URI),
+                ofString())
                 .responseCriteria(bodyMatches("equals FAILURE", "FAILURE"::equals))
                 .retryTimeOut(ofSeconds(5)));
 
@@ -169,7 +173,9 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
         try {
-            http().bodyData(asIs(GET(CORRECT_URI), ofString())
+            http().bodyData(asIs(GET()
+                            .baseURI(CORRECT_URI),
+                    ofString())
                     .responseCriteria(bodyMatches("equals FAILURE", "FAILURE"::equals))
                     .retryTimeOut(ofSeconds(5))
                     .throwOnNoResult());
@@ -185,7 +191,8 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
         try {
-            http().bodyData(asIs(GET(CORRECT_URI), ofString())
+            http().bodyData(asIs(GET().baseURI(CORRECT_URI),
+                    ofString())
                     .retryTimeOut(ofSeconds(5))
                     .responseCriteria(statusCode(404))
                     .throwOnNoResult());
@@ -200,7 +207,9 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
     public void test7(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
-        http().bodyData(asIs(GET(INCORRECT_URI).timeout(ofSeconds(1)),
+        http().bodyData(asIs(GET()
+                        .baseURI(INCORRECT_URI)
+                        .timeout(ofSeconds(1)),
                 ofString()));
 
         assertThat(getLog(), matcher);
@@ -210,8 +219,8 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
     public void test8(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
-        http().bodyData(asObject("Number value",
-                GET(CORRECT_URI),
+        http().bodyData(asObject("Number value", GET()
+                        .baseURI(CORRECT_URI),
                 ofString(),
                 Integer::parseInt)
                 .retryTimeOut(ofSeconds(5)));
@@ -224,7 +233,10 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
         try {
-            http().bodyData(asObject("Number value", GET(CORRECT_URI), ofString(), Integer::parseInt)
+            http().bodyData(asObject("Number value", GET()
+                            .baseURI(CORRECT_URI),
+                    ofString(),
+                    Integer::parseInt)
                     .retryTimeOut(ofSeconds(5))
                     .throwOnNoResult());
         } catch (Throwable t) {
@@ -239,7 +251,10 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
     public void test10(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
         try {
-            http().bodyData(asIs(GET(INCORRECT_URI).timeout(ofSeconds(1)), ofString())
+            http().bodyData(asIs(GET()
+                            .baseURI(INCORRECT_URI)
+                            .timeout(ofSeconds(1)),
+                    ofString())
                     .retryTimeOut(ofSeconds(5))
                     .throwOnNoResult());
         } catch (Throwable t) {

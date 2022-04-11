@@ -97,7 +97,7 @@ public class QueryMappingTest {
     private static Object[][] prepareDataForQueryMapping(QueryMapping someMappedAPI) {
         return new Object[][]{
                 {someMappedAPI.getSomethingWithQuery("val1", 3, "Hello world", true),
-                        equalTo("/"),
+                        equalTo(""),
                         equalTo("param1=val1&param1=3&param1=Hello+world&param2=true")},
 
                 {someMappedAPI.getSomethingWithQueryAndPath("val1", 3, "Hello world", true),
@@ -106,7 +106,7 @@ public class QueryMappingTest {
 
 
                 {someMappedAPI.getSomethingWithQuery(of("val1", 3, "Hello world"), true),
-                        equalTo("/"),
+                        equalTo(""),
                         equalTo("param1=val1&param1=3&param1=Hello+world&param2=true")},
 
                 {someMappedAPI.getSomethingWithQueryAndPath(of("val1", 3, "Hello world"), true),
@@ -114,7 +114,7 @@ public class QueryMappingTest {
                         equalTo("param1=val1&param1=3&param1=Hello+world&param2=true")},
 
                 {someMappedAPI.getSomethingWithQuery(new Object[]{"val1", 3, "Hello world"}, true),
-                        equalTo("/"),
+                        equalTo(""),
                         equalTo("param1=val1&param1=3&param1=Hello+world&param2=true")},
 
                 {someMappedAPI.getSomethingWithQueryAndPath(new Object[]{"val1", 3, "Hello world"}, true),
@@ -122,7 +122,7 @@ public class QueryMappingTest {
                         equalTo("param1=val1&param1=3&param1=Hello+world&param2=true")},
 
                 {someMappedAPI.getSomethingWithQuery(new int[]{1, 2, 3}, true),
-                        equalTo("/"),
+                        equalTo(""),
                         equalTo("param1=1&param1=2&param1=3&param2=true")},
 
                 {someMappedAPI.getSomethingWithQueryAndPath(new int[]{1, 2, 3}, true),
@@ -229,13 +229,8 @@ public class QueryMappingTest {
     }
 
     @DataProvider
-    public Object[][] data2() throws Exception {
-        try {
-            DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept(new URL("http://127.0.0.1:8089"));
-            return prepareDataForQueryMapping(createAPI(QueryMapping.class));
-        } finally {
-            getProperties().remove(DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.getName());
-        }
+    public Object[][] data2() {
+        return prepareDataForQueryMapping(createAPI(QueryMapping.class));
     }
 
     @Test(dataProvider = "data1")
@@ -249,8 +244,13 @@ public class QueryMappingTest {
     }
 
     @Test(dataProvider = "data2")
-    public void test2(RequestBuilder builder, Matcher<String> pathMatcher, Matcher<String> queryMather) {
-        test1(builder, pathMatcher, queryMather);
+    public void test2(RequestBuilder builder, Matcher<String> pathMatcher, Matcher<String> queryMather) throws Exception {
+        DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept(new URL("http://127.0.0.1:8089"));
+        try {
+            test1(builder, pathMatcher, queryMather);
+        } finally {
+            getProperties().remove(DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.getName());
+        }
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,

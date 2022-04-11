@@ -13,7 +13,7 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.*;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.METHOD;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.METHOD;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.DefaultHttpMethods.NON_DEFINED;
 
 /**
@@ -79,17 +79,34 @@ public @interface HttpMethod {
                                     toRead));
                         }
 
-                        var requestURI = ofNullable(path)
-                                .map(s -> URI.create(uri.toString() + (path.startsWith("/") ? path: "/" + path)))
-                                .orElse(uri);
+                        var handledPath = ofNullable(path)
+                                .map(s -> {
+                                    if (isBlank(s)) {
+                                        return EMPTY;
+                                    }
+                                    return s;
+                                })
+                                .orElse(EMPTY);
 
+                        RequestBuilder builder;
                         if (methodEnum != NON_DEFINED) {
-                            return methodEnum.prepareRequestBuilder(requestURI, body);
+                            builder = methodEnum.prepareRequestBuilder(body);
+                        } else {
+                            builder = ofNullable(body)
+                                    .map(b -> METHOD(methodStr, b))
+                                    .orElseGet(() -> METHOD(methodStr));
                         }
 
-                        return ofNullable(body)
-                                .map(b -> METHOD(methodStr, requestURI, b))
-                                .orElseGet(() -> METHOD(methodStr, requestURI));
+                        var result = ofNullable(uri)
+                                .map(builder::baseURI)
+                                .orElse(builder);
+
+                        if (isNotBlank(handledPath)) {
+                            return result.relativePath(handledPath);
+                        } else {
+                            return result;
+                        }
+
                     })
                     .orElseThrow(() -> new UnsupportedOperationException(format("Method %s is not annotated " +
                                     "by %s. Can't instantiate %s",

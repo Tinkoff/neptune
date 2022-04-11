@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.rabbit.mq.function.binding;
 
 import com.rabbitmq.client.Channel;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 import ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArguments;
 import ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties;
@@ -20,9 +21,7 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperti
 @SuppressWarnings("unchecked")
 public abstract class BindUnbindParameters<T extends BindUnbindParameters<T>> implements StepParameterPojo {
 
-    static final String ROUTING_KEY = "routingKey";
-
-    @DescriptionFragment(ROUTING_KEY)
+    @StepParameter("routingKey")
     String routingKey = "";
 
     AdditionalArguments arguments;

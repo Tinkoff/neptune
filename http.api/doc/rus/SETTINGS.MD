@@ -587,7 +587,7 @@ public class SomeClass {
 
 ```properties
 #Значение свойства указывается так
-END_POINT_OF_TARGET_API=http://my.api.domain.com:2000
+END_POINT_OF_TARGET_API=http://my.api.domain.com:2000/context/path
 ```
 
 ```java

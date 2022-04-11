@@ -235,9 +235,6 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
 ### Путь
 
-
-  
-
 ```java
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
@@ -404,9 +401,6 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
 ### Запрос
 
-
-  
-
 ```java
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
@@ -561,9 +555,6 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 О поддерживаемых форматах тел http-запросов можно прочитать [тут](REQUEST_RESPONSE.MD#Тело-запроса-на-примере-POST).
 Мэппинг поддерживает все описанные форматы, кроме пользовательских.
 Задача: [#211](https://github.com/tinkoff/neptune/issues/211)
-
-
-  
 
 Любое тело запроса, кроме `multipart/form-data` можно представить в модели следующим образом
 
@@ -958,12 +949,12 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com");
-        //так же endPoint можно передать как String и java.net.URL
+        var baseURI = URI.create("http://my.api.com");
+        //так же baseURI можно передать как String и java.net.URL
         //ВАЖНО: передаваемое значение должно быть следующего вида - `схема\протокол`://`хост`:`порт если есть/фрагмент/пути/если/надо`
 
-        var service1 = createAPI(ServiceAPI1.class, endPoint); //пример инициализации переменных
-        var service2 = createAPI(ServiceAPI2.class, endPoint); //можно инициализировать как поля 
+        var service1 = createAPI(ServiceAPI1.class, baseURI); //пример инициализации переменных
+        var service2 = createAPI(ServiceAPI2.class, baseURI); //можно инициализировать как поля 
 
 
         HttpResponse<String> response1 = http().responseOf(
@@ -972,7 +963,7 @@ public class MyTest {
                 ofString());
 
         HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("endPoint"),
+                service2.getSomething("some param"),
                 //Ответ вернется c телом, интерпретированным/прочитанным как текст
                 ofString());
     }
@@ -999,10 +990,10 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com");
+        var baseURI = URI.create("http://my.api.com");
 
-        var service1 = createAPI(ServiceAPI1.class, endPoint);
-        var service2 = createAPI(ServiceAPI2.class, endPoint);
+        var service1 = createAPI(ServiceAPI1.class, baseURI);
+        var service2 = createAPI(ServiceAPI2.class, baseURI);
 
 
         HttpResponse<String> response1 = http().responseOf(
@@ -1010,7 +1001,7 @@ public class MyTest {
                 ofString());
 
         HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("endPoint").version(HTTP_2),
+                service2.getSomething("some param").version(HTTP_2),
                 ofString());
     }
 }
@@ -1069,13 +1060,13 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com");
+        var baseURI = URI.create("http://my.api.com");
 
         //Через метод useForRequestBuilding можно указать несколько классов, через запятую. Классы можно указывать
         //если они имеют публичные конструкторы без параметров, или не имеют объявленных конструкторов совсем
-        var service1 = createAPI(ServiceAPI1.class, endPoint).useForRequestBuilding(RequestTuner1.class);
+        var service1 = createAPI(ServiceAPI1.class, baseURI).useForRequestBuilding(RequestTuner1.class);
         //В противном случае, можно создавать объекты и передавать объекты классов
-        var service2 = createAPI(ServiceAPI2.class, endPoint).useForRequestBuilding(RequestTuner2.class);
+        var service2 = createAPI(ServiceAPI2.class, baseURI).useForRequestBuilding(RequestTuner2.class);
 
 
         HttpResponse<String> response1 = http().responseOf(
@@ -1083,7 +1074,7 @@ public class MyTest {
                 ofString());
 
         HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("endPoint"),
+                service2.getSomething("some param"),
                 ofString());
     }
 }
@@ -1141,10 +1132,10 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com");
+        var baseURI = URI.create("http://my.api.com");
 
-        var service1 = createAPI(ServiceAPI1.class, endPoint);
-        var service2 = createAPI(ServiceAPI2.class, endPoint);
+        var service1 = createAPI(ServiceAPI1.class, baseURI);
+        var service2 = createAPI(ServiceAPI2.class, baseURI);
 
 
         HttpResponse<String> response1 = http().responseOf(
@@ -1152,7 +1143,7 @@ public class MyTest {
                 ofString());
 
         HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("endPoint"),
+                service2.getSomething("some param"),
                 ofString());
     }
 }
@@ -1180,7 +1171,7 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        //var endPoint = URI.create("http://my.api.com");
+        //var baseURI = URI.create("http://my.api.com");
         //можно больше не указывать
 
         var service1 = createAPI(ServiceAPI1.class);
@@ -1192,7 +1183,7 @@ public class MyTest {
                 ofString());
 
         HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("endPoint"),
+                service2.getSomething("some param"),
                 ofString());
     }
 }
@@ -1254,7 +1245,7 @@ public class MyTest {
                 ofString());
 
         HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("endPoint"),
+                service2.getSomething("some param"),
                 ofString());
     }
 }
@@ -1309,7 +1300,7 @@ public class MyTest {
                 ofString());
 
         HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("endPoint"),
+                service2.getSomething("some param"),
                 ofString());
     }
 }
@@ -1360,7 +1351,7 @@ public class MyTest {
                 ofString());
 
         HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("endPoint"),
+                service2.getSomething("some param"),
                 ofString());
     }
 }
