@@ -30,6 +30,9 @@ public class URITests {
                 {"http://my.api.com/some/path?q1=val1&q2=val2", "http://my.api.com/some/path?q1=val1&q2=val2"},
                 {URI.create("http://my.api.com/some/path?q1=val1&q2=val2"), "http://my.api.com/some/path?q1=val1&q2=val2"},
                 {new URL("http://my.api.com/some/path?q1=val1&q2=val2"), "http://my.api.com/some/path?q1=val1&q2=val2"},
+                {"http://my.api.com/some/path?q1=val1&q2=АБВ", "http://my.api.com/some/path?q1=val1&q2=АБВ"},
+                {URI.create("http://my.api.com/some/path?q1=val1&q2=АБВ"), "http://my.api.com/some/path?q1=val1&q2=АБВ"},
+                {new URL("http://my.api.com/some/path?q1=val1&q2=АБВ"), "http://my.api.com/some/path?q1=val1&q2=АБВ"},
         };
     }
 
