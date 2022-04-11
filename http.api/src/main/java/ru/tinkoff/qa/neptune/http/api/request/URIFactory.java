@@ -8,9 +8,7 @@ import java.util.Locale;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.nonNull;
-import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.*;
 import static ru.tinkoff.qa.neptune.http.api.properties.end.point.DefaultEndPointOfTargetAPIProperty.DEFAULT_END_POINT_OF_TARGET_API_PROPERTY;
 
 final class URIFactory {
@@ -46,7 +44,7 @@ final class URIFactory {
     private static URI getURIIfValid(String uriOrPart) {
         try {
             var uri = URI.create(uriOrPart);
-            if (nonNull(uri.getScheme())) {
+            if (isNotBlank(uri.getScheme())) {
                 return uri;
             }
             return null;
@@ -67,12 +65,18 @@ final class URIFactory {
             return uri;
         }
 
-        if (fragment.startsWith("/") || fragment.startsWith("?") || fragment.startsWith("#")) {
+        if (fragment.startsWith("?") || fragment.startsWith("#")) {
             var resultURI = URI.create(uri + fragment);
             return returnURIIfValid(resultURI);
         }
 
-        var resultURI = URI.create(uri + "/" + fragment);
+        URI resultURI;
+        if (uri.toString().endsWith("/") || fragment.startsWith("/")) {
+            resultURI = URI.create(uri + fragment);
+        } else {
+            resultURI = URI.create(uri + "/" + fragment);
+        }
+
         return returnURIIfValid(resultURI);
     }
 
@@ -80,19 +84,11 @@ final class URIFactory {
         var result = true;
         var reasons = new StringBuilder();
 
-        result = ofNullable(uri.getScheme())
-                .map(s -> {
-                    s = s.toLowerCase(Locale.US);
-                    if (!(s.equals("https") || s.equals("http"))) {
-                        reasons.append("invalid URI scheme ").append(s).append(";");
-                        return false;
-                    }
-                    return true;
-                })
-                .orElseGet(() -> {
-                    reasons.append("URI with undefined scheme;");
-                    return false;
-                });
+        var scheme = uri.getScheme().toLowerCase(Locale.US);
+        if (!(scheme.equals("https") || scheme.equals("http"))) {
+            reasons.append("invalid URI scheme ").append(scheme).append(";");
+            result = false;
+        }
 
         if (uri.getHost() == null) {
             reasons.append("empty host URI ").append(uri).append(";");

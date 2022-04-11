@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.test.requests;
 
 import org.hamcrest.Matcher;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.http.api.request.NeptuneHttpRequestImpl;
@@ -17,6 +18,7 @@ import static java.util.Optional.ofNullable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
+import static ru.tinkoff.qa.neptune.http.api.properties.end.point.DefaultEndPointOfTargetAPIProperty.DEFAULT_END_POINT_OF_TARGET_API_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.*;
 
 public class RawRequestBuildingTest {
@@ -96,5 +98,32 @@ public class RawRequestBuildingTest {
                 hasEntry("header2", of("one more value")),
                 hasEntry("header3", of("one more value again"))));
         assertThat(request.method(), is("PUT"));
+    }
+
+    @DataProvider
+    public static Object[][] data2() {
+        return new Object[][]{
+                {URI.create("https://www.google.com/"), "?param=val1&param=3", "https://www.google.com/?param=val1&param=3"},
+                {URI.create("https://www.google.com"), "?param=val1&param=3", "https://www.google.com/?param=val1&param=3"},
+                {URI.create("https://www.google.com/"), "#fragment", "https://www.google.com/#fragment"},
+                {URI.create("https://www.google.com"), "#fragment", "https://www.google.com/#fragment"},
+        };
+    }
+
+    @Test(dataProvider = "data2")
+    public void partialStringEndpointTest(URI baseURI, String fragment, String expectedURI) throws Exception {
+        DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept(baseURI.toURL());
+
+        var request = PUT()
+                .endPoint(fragment)
+                .build();
+
+        assertThat(request.uri().toString(), is(expectedURI));
+    }
+
+    @AfterMethod
+    public void afterMethod() {
+        DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept(null);
+
     }
 }

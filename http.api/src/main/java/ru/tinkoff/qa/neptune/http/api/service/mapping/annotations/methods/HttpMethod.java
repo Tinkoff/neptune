@@ -11,6 +11,7 @@ import java.net.URI;
 import static java.lang.String.format;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.*;
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.METHOD;
@@ -85,7 +86,15 @@ public @interface HttpMethod {
                                         return EMPTY;
                                     }
 
-                                    return s.startsWith("/") ? s : "/" + s;
+                                    if (isNull(uri)) {
+                                        return s;
+                                    }
+
+                                    if (uri.toString().endsWith("/") || s.startsWith("/")) {
+                                        return s;
+                                    } else {
+                                        return "/" + s;
+                                    }
                                 })
                                 .orElse(EMPTY);
 
