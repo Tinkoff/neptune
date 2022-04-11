@@ -95,7 +95,7 @@ public class CustomResponseBodyTest extends BaseHttpTest {
                                             HttpResponse.BodyHandler<T> handler,
                                             Matcher<? super T> matcher) {
         assertThat(http().responseOf(GET()
-                                .endPoint(REQUEST_URI + urlPath),
+                                .baseURI(REQUEST_URI + urlPath),
                         handler),
                 hasBody(matcher));
     }
@@ -104,7 +104,8 @@ public class CustomResponseBodyTest extends BaseHttpTest {
     public <T> void negativeTest(String urlPath,
                                  HttpResponse.BodyHandler<T> handler) {
         assertThat(http().responseOf(GET()
-                                .endPoint(REQUEST_URI + urlPath),
+                                .baseURI(REQUEST_URI)
+                                .relativePath(urlPath),
                         handler),
                 hasBody(nullValue()));
 

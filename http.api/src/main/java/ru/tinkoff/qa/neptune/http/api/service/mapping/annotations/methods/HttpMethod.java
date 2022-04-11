@@ -11,7 +11,6 @@ import java.net.URI;
 import static java.lang.String.format;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.*;
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.METHOD;
@@ -85,44 +84,35 @@ public @interface HttpMethod {
                                     if (isBlank(s)) {
                                         return EMPTY;
                                     }
-
-                                    if (isNull(uri)) {
-                                        return s;
-                                    }
-
-                                    if (uri.toString().endsWith("/") || s.startsWith("/")) {
-                                        return s;
-                                    } else {
-                                        return "/" + s;
-                                    }
+                                    return s;
                                 })
                                 .orElse(EMPTY);
 
-                        var requestURI = ofNullable(uri)
-                                .map(u -> URI.create(u + handledPath))
-                                .orElse(null);
-
+                        RequestBuilder builder;
                         if (methodEnum != NON_DEFINED) {
-                            return ofNullable(requestURI)
-                                    .map(u -> methodEnum.prepareRequestBuilder(requestURI, body))
-                                    .orElseGet(() -> methodEnum.prepareRequestBuilder(handledPath, body));
+                            builder = methodEnum.prepareRequestBuilder(body);
+                        } else {
+                            builder = ofNullable(body)
+                                    .map(b -> METHOD(methodStr, b))
+                                    .orElseGet(() -> METHOD(methodStr));
                         }
 
-                        return ofNullable(body)
-                                .map(b -> addEndPoint(handledPath, requestURI, METHOD(methodStr, b)))
-                                .orElseGet(() -> addEndPoint(handledPath, requestURI, METHOD(methodStr)));
+                        var result = ofNullable(uri)
+                                .map(builder::baseURI)
+                                .orElse(builder);
+
+                        if (isNotBlank(handledPath)) {
+                            return result.relativePath(handledPath);
+                        } else {
+                            return result;
+                        }
+
                     })
                     .orElseThrow(() -> new UnsupportedOperationException(format("Method %s is not annotated " +
                                     "by %s. Can't instantiate %s",
                             toRead,
                             HttpMethod.class.getName(),
                             RequestBuilder.class.getName())));
-        }
-
-        private static RequestBuilder addEndPoint(String path, URI uri, RequestBuilder requestBuilder) {
-            return ofNullable(uri)
-                    .map(u -> requestBuilder.endPoint(uri))
-                    .orElseGet(() -> requestBuilder.endPoint(path));
         }
     }
 }

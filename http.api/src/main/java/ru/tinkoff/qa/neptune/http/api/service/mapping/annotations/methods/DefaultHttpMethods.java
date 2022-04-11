@@ -1,12 +1,11 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods;
 
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
+import ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory;
 import ru.tinkoff.qa.neptune.http.api.request.body.RequestBody;
 
-import java.net.URI;
-
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.*;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.METHOD;
 
 /**
  * Contains commonly used names of http methods and characteristics of these methods.
@@ -15,7 +14,7 @@ public enum DefaultHttpMethods {
 
     NON_DEFINED("") {
         @Override
-        RequestBuilder prepareRequestBuilder(URI uri, RequestBody<?> body) {
+        RequestBuilder prepareRequestBuilder(RequestBody<?> body) {
             return null;
         }
     },
@@ -24,17 +23,10 @@ public enum DefaultHttpMethods {
      */
     GET("GET") {
         @Override
-        RequestBuilder prepareRequestBuilder(URI uri, RequestBody<?> body) {
+        RequestBuilder prepareRequestBuilder(RequestBody<?> body) {
             return ofNullable(body)
-                    .map(b -> METHOD(this.toString(), b).endPoint(uri))
-                    .orElseGet(() -> GET().endPoint(uri));
-        }
-
-        @Override
-        RequestBuilder prepareRequestBuilder(String uriOrFragment, RequestBody<?> body) {
-            return ofNullable(body)
-                    .map(b -> METHOD(this.toString(), b).endPoint(uriOrFragment))
-                    .orElseGet(() -> GET().endPoint(uriOrFragment));
+                    .map(b -> METHOD(this.toString(), b))
+                    .orElseGet(RequestBuilderFactory::GET);
         }
     },
     /**
@@ -42,17 +34,10 @@ public enum DefaultHttpMethods {
      */
     POST("POST") {
         @Override
-        RequestBuilder prepareRequestBuilder(URI uri, RequestBody<?> body) {
+        RequestBuilder prepareRequestBuilder(RequestBody<?> body) {
             return ofNullable(body)
-                    .map(b -> POST(b).endPoint(uri))
-                    .orElseGet(() -> POST().endPoint(uri));
-        }
-
-        @Override
-        RequestBuilder prepareRequestBuilder(String uriOrFragment, RequestBody<?> body) {
-            return ofNullable(body)
-                    .map(b -> POST(b).endPoint(uriOrFragment))
-                    .orElseGet(() -> POST().endPoint(uriOrFragment));
+                    .map(RequestBuilderFactory::POST)
+                    .orElseGet(RequestBuilderFactory::POST);
         }
     },
     /**
@@ -60,17 +45,10 @@ public enum DefaultHttpMethods {
      */
     PUT("PUT") {
         @Override
-        RequestBuilder prepareRequestBuilder(URI uri, RequestBody<?> body) {
+        RequestBuilder prepareRequestBuilder(RequestBody<?> body) {
             return ofNullable(body)
-                    .map(b -> PUT(b).endPoint(uri))
-                    .orElseGet(() -> PUT().endPoint(uri));
-        }
-
-        @Override
-        RequestBuilder prepareRequestBuilder(String uriOrFragment, RequestBody<?> body) {
-            return ofNullable(body)
-                    .map(b -> PUT(b).endPoint(uriOrFragment))
-                    .orElseGet(() -> PUT().endPoint(uriOrFragment));
+                    .map(RequestBuilderFactory::PUT)
+                    .orElseGet(RequestBuilderFactory::PUT);
         }
     },
     /**
@@ -78,17 +56,10 @@ public enum DefaultHttpMethods {
      */
     DELETE("DELETE") {
         @Override
-        RequestBuilder prepareRequestBuilder(URI uri, RequestBody<?> body) {
+        RequestBuilder prepareRequestBuilder(RequestBody<?> body) {
             return ofNullable(body)
-                    .map(b -> METHOD(this.toString(), b).endPoint(uri))
-                    .orElseGet(() -> DELETE().endPoint(uri));
-        }
-
-        @Override
-        RequestBuilder prepareRequestBuilder(String uriOrFragment, RequestBody<?> body) {
-            return ofNullable(body)
-                    .map(b -> METHOD(this.toString(), b).endPoint(uriOrFragment))
-                    .orElseGet(() -> DELETE().endPoint(uriOrFragment));
+                    .map(b -> METHOD(this.toString(), b))
+                    .orElseGet(RequestBuilderFactory::DELETE);
         }
     },
 
@@ -123,15 +94,9 @@ public enum DefaultHttpMethods {
         return name;
     }
 
-    RequestBuilder prepareRequestBuilder(URI uri, RequestBody<?> body) {
+    RequestBuilder prepareRequestBuilder(RequestBody<?> body) {
         return ofNullable(body)
-                .map(b -> METHOD(toString(), b).endPoint(uri))
-                .orElseGet(() -> METHOD(toString()).endPoint(uri));
-    }
-
-    RequestBuilder prepareRequestBuilder(String uriOrFragment, RequestBody<?> body) {
-        return ofNullable(body)
-                .map(b -> METHOD(toString(), b).endPoint(uriOrFragment))
-                .orElseGet(() -> METHOD(toString()).endPoint(uriOrFragment));
+                .map(b -> METHOD(toString(), b))
+                .orElseGet(() -> METHOD(toString()));
     }
 }

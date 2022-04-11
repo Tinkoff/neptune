@@ -43,7 +43,7 @@ public class RequestResponseMultiThreadLogCapturingTests extends BaseHttpTest {
     public void test() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
         http().responseOf(GET()
-                        .endPoint(CORRECT_URI),
+                        .baseURI(CORRECT_URI),
                 ofString());
 
         assertThat(getLog(), hasItems(

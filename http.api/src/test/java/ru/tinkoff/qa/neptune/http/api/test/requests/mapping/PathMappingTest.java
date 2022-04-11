@@ -219,13 +219,8 @@ public class PathMappingTest {
     }
 
     @DataProvider
-    public Object[][] data2() throws Exception {
-        try {
-            DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept(new URL("http://127.0.0.1:8089"));
-            return prepareDataForPathMapping(createAPI(PathMapping.class));
-        } finally {
-            getProperties().remove(DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.getName());
-        }
+    public Object[][] data2() {
+        return prepareDataForPathMapping(createAPI(PathMapping.class));
     }
 
     @Test(dataProvider = "data1")
@@ -239,8 +234,13 @@ public class PathMappingTest {
     }
 
     @Test(dataProvider = "data2")
-    public void test2(RequestBuilder builder, HasPathMatcher<URI> pathMatcher, String rawPath) {
-        test1(builder, pathMatcher, rawPath);
+    public void test2(RequestBuilder builder, HasPathMatcher<URI> pathMatcher, String rawPath) throws Exception {
+        DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept(new URL("http://127.0.0.1:8089"));
+        try {
+            test1(builder, pathMatcher, rawPath);
+        } finally {
+            getProperties().remove(DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.getName());
+        }
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,

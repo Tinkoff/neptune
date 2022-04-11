@@ -128,7 +128,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
     @Test(dataProvider = "data1")
     public void test1(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
-        http().responseOf(GET().endPoint(CORRECT_URI),
+        http().responseOf(GET().baseURI(CORRECT_URI),
                 ofString());
         assertThat(getLog(), matcher);
     }
@@ -137,7 +137,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
     public void test2(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
         try {
-            http().responseOf(GET().endPoint(INCORRECT_URI).timeout(ofSeconds(1)),
+            http().responseOf(GET().baseURI(INCORRECT_URI).timeout(ofSeconds(1)),
                     ofString());
         } catch (Throwable t) {
             assertThat(getLog(), matcher);
@@ -151,7 +151,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
     public void test3(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
         http().bodyData(asIs(GET()
-                        .endPoint(CORRECT_URI),
+                        .baseURI(CORRECT_URI),
                 ofString()));
         assertThat(getLog(), matcher);
     }
@@ -160,7 +160,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
     public void test4(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
-        http().bodyData(asIs(GET().endPoint(CORRECT_URI),
+        http().bodyData(asIs(GET().baseURI(CORRECT_URI),
                 ofString())
                 .responseCriteria(bodyMatches("equals FAILURE", "FAILURE"::equals))
                 .retryTimeOut(ofSeconds(5)));
@@ -174,7 +174,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
 
         try {
             http().bodyData(asIs(GET()
-                            .endPoint(CORRECT_URI),
+                            .baseURI(CORRECT_URI),
                     ofString())
                     .responseCriteria(bodyMatches("equals FAILURE", "FAILURE"::equals))
                     .retryTimeOut(ofSeconds(5))
@@ -191,7 +191,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
         try {
-            http().bodyData(asIs(GET().endPoint(CORRECT_URI),
+            http().bodyData(asIs(GET().baseURI(CORRECT_URI),
                     ofString())
                     .retryTimeOut(ofSeconds(5))
                     .responseCriteria(statusCode(404))
@@ -208,7 +208,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
         http().bodyData(asIs(GET()
-                        .endPoint(INCORRECT_URI)
+                        .baseURI(INCORRECT_URI)
                         .timeout(ofSeconds(1)),
                 ofString()));
 
@@ -220,7 +220,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
         http().bodyData(asObject("Number value", GET()
-                        .endPoint(CORRECT_URI),
+                        .baseURI(CORRECT_URI),
                 ofString(),
                 Integer::parseInt)
                 .retryTimeOut(ofSeconds(5)));
@@ -234,7 +234,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
 
         try {
             http().bodyData(asObject("Number value", GET()
-                            .endPoint(CORRECT_URI),
+                            .baseURI(CORRECT_URI),
                     ofString(),
                     Integer::parseInt)
                     .retryTimeOut(ofSeconds(5))
@@ -252,7 +252,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch);
         try {
             http().bodyData(asIs(GET()
-                            .endPoint(INCORRECT_URI)
+                            .baseURI(INCORRECT_URI)
                             .timeout(ofSeconds(1)),
                     ofString())
                     .retryTimeOut(ofSeconds(5))

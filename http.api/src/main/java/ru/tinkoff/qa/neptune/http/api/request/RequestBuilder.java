@@ -13,6 +13,7 @@ import ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.FormParameter;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -25,15 +26,15 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.function.Supplier;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.*;
 import static java.lang.String.CASE_INSENSITIVE_ORDER;
+import static java.net.URI.create;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.StreamSupport.stream;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.commons.lang3.StringUtils.*;
-import static ru.tinkoff.qa.neptune.http.api.request.URIFactory.toURI;
+import static ru.tinkoff.qa.neptune.http.api.properties.end.point.DefaultEndPointOfTargetAPIProperty.DEFAULT_END_POINT_OF_TARGET_API_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.request.body.RequestBodyFactory.body;
 
 public abstract class RequestBuilder implements RequestSettings<RequestBuilder> {
@@ -41,12 +42,22 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
     private final QueryBuilder queryBuilder = new QueryBuilder();
     final RequestBody<?> body;
     private final TreeMap<String, List<String>> headersMap = new TreeMap<>(CASE_INSENSITIVE_ORDER);
-    private URI endPoint;
+    private URI baseURI;
+    private String path = EMPTY;
 
     RequestBuilder(RequestBody<?> body) {
         builder = HttpRequest.newBuilder();
         this.body = body;
         defineRequestMethodAndBody();
+    }
+
+    private static URI toURI(URL url) {
+        checkNotNull(url);
+        try {
+            return url.toURI();
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
     }
 
     /**
@@ -65,7 +76,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
             void defineRequestMethodAndBody() {
                 builder.POST(this.body.createPublisher());
             }
-        }.endPoint(endPoint);
+        }.baseURI(endPoint);
     }
 
     /**
@@ -482,7 +493,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder POST(String uriStr, RequestBody<?> body) {
-        return POST(URIFactory.toURI(uriStr), body);
+        return POST(create(uriStr), body);
     }
 
     /**
@@ -494,7 +505,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder POST(String uriStr) {
-        return POST(URIFactory.toURI(uriStr));
+        return POST(create(uriStr));
     }
 
     /**
@@ -507,7 +518,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      * @return a POST request builder.
      */
     public static RequestBuilder POST(String uriStr, byte[] body, int length, int offset) {
-        return POST(URIFactory.toURI(uriStr), body, length, offset);
+        return POST(create(uriStr), body, length, offset);
     }
 
     /**
@@ -520,7 +531,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder POST(String uriStr, byte[] body) {
-        return POST(URIFactory.toURI(uriStr), body);
+        return POST(create(uriStr), body);
     }
 
     /**
@@ -533,7 +544,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder POST(String uriStr, File body) {
-        return POST(URIFactory.toURI(uriStr), body);
+        return POST(create(uriStr), body);
     }
 
     /**
@@ -546,7 +557,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder POST(String uriStr, Path body) {
-        return POST(URIFactory.toURI(uriStr), body);
+        return POST(create(uriStr), body);
     }
 
     /**
@@ -560,7 +571,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder POST(String uriStr, String body, Charset encoding) {
-        return POST(URIFactory.toURI(uriStr), body, encoding);
+        return POST(create(uriStr), body, encoding);
     }
 
     /**
@@ -573,7 +584,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder POST(String uriStr, String body) {
-        return POST(URIFactory.toURI(uriStr), body);
+        return POST(create(uriStr), body);
     }
 
     /**
@@ -586,7 +597,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder POST(String uriStr, InputStream body) {
-        return POST(URIFactory.toURI(uriStr), body);
+        return POST(create(uriStr), body);
     }
 
     /**
@@ -601,7 +612,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder POST(String uriStr, Supplier<InputStream> body) {
-        return POST(URIFactory.toURI(uriStr), body);
+        return POST(create(uriStr), body);
     }
 
     /**
@@ -614,7 +625,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder POST(String uriStr, FormParameter... body) {
-        return POST(URIFactory.toURI(uriStr), body);
+        return POST(create(uriStr), body);
     }
 
     /**
@@ -629,7 +640,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder POST(String uriStr, ObjectMapper mapper, Object body) {
-        return POST(URIFactory.toURI(uriStr), mapper, body);
+        return POST(create(uriStr), mapper, body);
     }
 
     /**
@@ -647,7 +658,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder POST(String uriStr, DefaultMapper mapper, Object body) {
-        return POST(URIFactory.toURI(uriStr), mapper, body);
+        return POST(create(uriStr), mapper, body);
     }
 
     /**
@@ -661,7 +672,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder POST(String uriStr, String boundary, BodyPart... parts) {
-        return POST(URIFactory.toURI(uriStr), boundary, parts);
+        return POST(create(uriStr), boundary, parts);
     }
 
     /**
@@ -674,7 +685,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder POST(String uriStr, BodyPart... parts) {
-        return POST(URIFactory.toURI(uriStr), parts);
+        return POST(create(uriStr), parts);
     }
 
 
@@ -692,7 +703,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
             void defineRequestMethodAndBody() {
                 builder.GET();
             }
-        }.endPoint(endPoint);
+        }.baseURI(endPoint);
     }
 
     /**
@@ -716,7 +727,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder GET(String uriStr) {
-        return GET(URIFactory.toURI(uriStr));
+        return GET(create(uriStr));
     }
 
 
@@ -734,7 +745,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
             void defineRequestMethodAndBody() {
                 builder.DELETE();
             }
-        }.endPoint(endPoint);
+        }.baseURI(endPoint);
     }
 
     /**
@@ -759,7 +770,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder DELETE(String uriStr) {
-        return DELETE(URIFactory.toURI(uriStr));
+        return DELETE(create(uriStr));
     }
 
 
@@ -778,7 +789,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
             void defineRequestMethodAndBody() {
                 builder.PUT(this.body.createPublisher());
             }
-        }.endPoint(endPoint);
+        }.baseURI(endPoint);
     }
 
     /**
@@ -1194,7 +1205,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder PUT(String uriStr, RequestBody<?> body) {
-        return PUT(URIFactory.toURI(uriStr), body);
+        return PUT(create(uriStr), body);
     }
 
     /**
@@ -1206,7 +1217,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder PUT(String uriStr) {
-        return PUT(URIFactory.toURI(uriStr));
+        return PUT(create(uriStr));
     }
 
     /**
@@ -1221,7 +1232,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder PUT(String uriStr, byte[] body, int length, int offset) {
-        return PUT(URIFactory.toURI(uriStr), body, length, offset);
+        return PUT(create(uriStr), body, length, offset);
     }
 
     /**
@@ -1234,7 +1245,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder PUT(String uriStr, byte[] body) {
-        return PUT(URIFactory.toURI(uriStr), body);
+        return PUT(create(uriStr), body);
     }
 
     /**
@@ -1247,7 +1258,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder PUT(String uriStr, File body) {
-        return PUT(URIFactory.toURI(uriStr), body);
+        return PUT(create(uriStr), body);
     }
 
     /**
@@ -1260,7 +1271,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder PUT(String uriStr, Path body) {
-        return PUT(URIFactory.toURI(uriStr), body);
+        return PUT(create(uriStr), body);
     }
 
     /**
@@ -1274,7 +1285,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder PUT(String uriStr, String body, Charset encoding) {
-        return PUT(URIFactory.toURI(uriStr), body, encoding);
+        return PUT(create(uriStr), body, encoding);
     }
 
     /**
@@ -1287,7 +1298,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder PUT(String uriStr, String body) {
-        return PUT(URIFactory.toURI(uriStr), body);
+        return PUT(create(uriStr), body);
     }
 
     /**
@@ -1300,7 +1311,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder PUT(String uriStr, InputStream body) {
-        return PUT(URIFactory.toURI(uriStr), body);
+        return PUT(create(uriStr), body);
     }
 
     /**
@@ -1315,7 +1326,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder PUT(String uriStr, Supplier<InputStream> body) {
-        return PUT(URIFactory.toURI(uriStr), body);
+        return PUT(create(uriStr), body);
     }
 
     /**
@@ -1328,7 +1339,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder PUT(String uriStr, FormParameter... body) {
-        return PUT(URIFactory.toURI(uriStr), body);
+        return PUT(create(uriStr), body);
     }
 
     /**
@@ -1343,7 +1354,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder PUT(String uriStr, ObjectMapper mapper, Object body) {
-        return PUT(URIFactory.toURI(uriStr), mapper, body);
+        return PUT(create(uriStr), mapper, body);
     }
 
     /**
@@ -1361,7 +1372,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder PUT(String uriStr, DefaultMapper mapper, Object body) {
-        return PUT(URIFactory.toURI(uriStr), mapper, body);
+        return PUT(create(uriStr), mapper, body);
     }
 
     /**
@@ -1375,7 +1386,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder PUT(String uriStr, String boundary, BodyPart... parts) {
-        return PUT(URIFactory.toURI(uriStr), boundary, parts);
+        return PUT(create(uriStr), boundary, parts);
     }
 
     /**
@@ -1388,7 +1399,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder PUT(String uriStr, BodyPart... parts) {
-        return PUT(URIFactory.toURI(uriStr), parts);
+        return PUT(create(uriStr), parts);
     }
 
 
@@ -1410,7 +1421,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
                 checkArgument(isNotBlank(method));
                 builder.method(method, this.body.createPublisher());
             }
-        }.endPoint(endPoint);
+        }.baseURI(endPoint);
     }
 
     /**
@@ -1856,7 +1867,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder METHOD(String method, String uriStr, RequestBody<?> body) {
-        return METHOD(method, URIFactory.toURI(uriStr), body);
+        return METHOD(method, create(uriStr), body);
     }
 
     /**
@@ -1869,7 +1880,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder METHOD(String method, String uriStr) {
-        return METHOD(method, URIFactory.toURI(uriStr));
+        return METHOD(method, create(uriStr));
     }
 
     /**
@@ -1885,7 +1896,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder METHOD(String method, String uriStr, byte[] body, int length, int offset) {
-        return METHOD(method, URIFactory.toURI(uriStr), body, length, offset);
+        return METHOD(method, create(uriStr), body, length, offset);
     }
 
     /**
@@ -1899,7 +1910,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder METHOD(String method, String uriStr, byte[] body) {
-        return METHOD(method, URIFactory.toURI(uriStr), body);
+        return METHOD(method, create(uriStr), body);
     }
 
     /**
@@ -1913,7 +1924,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder METHOD(String method, String uriStr, File body) {
-        return METHOD(method, URIFactory.toURI(uriStr), body);
+        return METHOD(method, create(uriStr), body);
     }
 
     /**
@@ -1927,7 +1938,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder METHOD(String method, String uriStr, Path body) {
-        return METHOD(method, URIFactory.toURI(uriStr), body);
+        return METHOD(method, create(uriStr), body);
     }
 
     /**
@@ -1942,7 +1953,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder METHOD(String method, String uriStr, String body, Charset encoding) {
-        return METHOD(method, URIFactory.toURI(uriStr), body, encoding);
+        return METHOD(method, create(uriStr), body, encoding);
     }
 
     /**
@@ -1956,7 +1967,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder METHOD(String method, String uriStr, String body) {
-        return METHOD(method, URIFactory.toURI(uriStr), body);
+        return METHOD(method, create(uriStr), body);
     }
 
     /**
@@ -1970,7 +1981,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder METHOD(String method, String uriStr, InputStream body) {
-        return METHOD(method, URIFactory.toURI(uriStr), body);
+        return METHOD(method, create(uriStr), body);
     }
 
     /**
@@ -1986,7 +1997,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder METHOD(String method, String uriStr, Supplier<InputStream> body) {
-        return METHOD(method, URIFactory.toURI(uriStr), body);
+        return METHOD(method, create(uriStr), body);
     }
 
     /**
@@ -2000,7 +2011,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder METHOD(String method, String uriStr, FormParameter... body) {
-        return METHOD(method, URIFactory.toURI(uriStr), body);
+        return METHOD(method, create(uriStr), body);
     }
 
     /**
@@ -2016,7 +2027,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder METHOD(String method, String uriStr, ObjectMapper mapper, Object body) {
-        return METHOD(method, URIFactory.toURI(uriStr), mapper, body);
+        return METHOD(method, create(uriStr), mapper, body);
     }
 
     /**
@@ -2035,7 +2046,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder METHOD(String method, String uriStr, DefaultMapper mapper, Object body) {
-        return METHOD(method, URIFactory.toURI(uriStr), mapper, body);
+        return METHOD(method, create(uriStr), mapper, body);
     }
 
     /**
@@ -2050,7 +2061,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder METHOD(String method, String uriStr, String boundary, BodyPart... parts) {
-        return METHOD(method, URIFactory.toURI(uriStr), boundary, parts);
+        return METHOD(method, create(uriStr), boundary, parts);
     }
 
     /**
@@ -2064,7 +2075,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     @Deprecated(forRemoval = true)
     public static RequestBuilder METHOD(String method, String uriStr, BodyPart... parts) {
-        return METHOD(method, URIFactory.toURI(uriStr), parts);
+        return METHOD(method, create(uriStr), parts);
     }
 
 
@@ -2104,6 +2115,19 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
     @Override
     public RequestBuilder queryParam(String name, boolean allowReserved, Object... values) {
         queryBuilder.addParameter(name, true, null, allowReserved, values);
+        return this;
+    }
+
+    /**
+     * Sets path relative to URI which is defined by {@link #baseURI(URI)} or {@link #baseURI(URL)}
+     * or {@link #baseURI(String)} or {@link DefaultEndPointOfTargetAPIProperty#DEFAULT_END_POINT_OF_TARGET_API_PROPERTY}
+     *
+     * @param path a path relative to request URI
+     * @return self-reference
+     */
+    public RequestBuilder relativePath(String path) {
+        checkArgument(isNotBlank(path), "Path should not be defined as a null/empty string");
+        this.path = path;
         return this;
     }
 
@@ -2164,7 +2188,18 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
     public HttpRequest build() {
         var newBuilder = builder.copy();
 
-        endPoint = ofNullable(endPoint).orElseGet(() -> URIFactory.toURI(EMPTY));
+        var uri = ofNullable(baseURI).orElseGet(() -> {
+            try {
+                var basesURL = DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.get();
+                checkState(nonNull(basesURL), "Base end point URI and value of the property "
+                        + DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.getName()
+                        + " are not defined");
+                return basesURL.toURI();
+            } catch (URISyntaxException e) {
+                throw new IllegalArgumentException(e);
+            }
+        });
+
 
         headersMap.forEach((s, strings) -> {
             var valueList = new ArrayList<>(strings);
@@ -2178,48 +2213,47 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
             valueList.forEach(s1 -> newBuilder.header(s, s1));
         });
 
-        return new NeptuneHttpRequestImpl(newBuilder.uri(queryBuilder.appendURI(endPoint)).build(), body);
+        var requestURI = new URIBuilder(uri, queryBuilder, path).build();
+        return new NeptuneHttpRequestImpl(newBuilder.uri(requestURI).build(), body);
     }
 
     /**
-     * Defines endpoint URI
+     * Defines base endpoint by URI. There should be URI that consists of scheme, host, port(optionally)
+     * and context path (optionally).
      *
-     * @param uri URI of endpoint
+     * @param uri base URI of endpoint that consists of scheme, host, port(optionally)
+     *            and context path (optionally).
      * @return self-reference
      */
-    public RequestBuilder endPoint(URI uri) {
+    public RequestBuilder baseURI(URI uri) {
         checkArgument(nonNull(uri), "URI is not defined");
-        this.endPoint = uri;
+        this.baseURI = uri;
         return this;
     }
 
     /**
-     * Defines endpoint URL
+     * Defines base endpoint by URL. There should be URL that consists of scheme, host, port(optionally)
+     * and context path (optionally).
      *
-     * @param url URI of endpoint
+     * @param url base URI of endpoint that consists of scheme, host, port(optionally)
+     *            and context path (optionally).
      * @return self-reference
      */
-    public RequestBuilder endPoint(URL url) {
-        return endPoint(toURI(url));
+    public RequestBuilder baseURI(URL url) {
+        return baseURI(toURI(url));
     }
 
     /**
-     * Defines endpoint URI in string format. There should be a string
-     * which could be read as fully-qualified URI or a part of URI relative
-     * to value defined by the {@literal END_POINT_OF_TARGET_API} property
+     * Defines base endpoint URI by a string. There should be a string
+     * which could be read as fully-qualified URI with scheme, host, port(optionally)
+     * and context path (optionally).
      *
-     * @param uriStr a string which could be read as fully-qualified URI or a part of URI relative
-     *               to value defined by the {@literal END_POINT_OF_TARGET_API} property
+     * @param uriStr a string which could be read as fully-qualified URI with scheme, host, port(optionally)
+     *               and context path (optionally)
      * @return self-reference
      * @see DefaultEndPointOfTargetAPIProperty
      */
-    public RequestBuilder endPoint(String uriStr) {
-        return endPoint(URIFactory.toURI(uriStr));
-    }
-
-
-    @Override
-    public String toString() {
-        return build().toString();
+    public RequestBuilder baseURI(String uriStr) {
+        return baseURI(create(uriStr));
     }
 }

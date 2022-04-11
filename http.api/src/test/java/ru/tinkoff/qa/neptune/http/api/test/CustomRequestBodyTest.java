@@ -40,7 +40,6 @@ public class CustomRequestBodyTest extends BaseHttpTest {
     private static final String PATH_TO_GSON = "/gson";
     private static final String PATH_TO_XML = "/jackson_xml";
     private static final String PATH_DOCUMENT_XML = "/document_xml";
-    private static final String PATH_DOCUMENT_HTML = "/document_html";
     private static final String PATH_URL_UNLOADED = "/urlencoded";
     private static final String PATH_MULTI_PART = "/multipart";
 
@@ -132,24 +131,28 @@ public class CustomRequestBodyTest extends BaseHttpTest {
 
         return new Object[][]{
                 {POST(JSON, BODY_OBJECT)
-                        .endPoint(REQUEST_URI + PATH_TO_GSON)
+                        .baseURI(REQUEST_URI)
+                        .relativePath(PATH_TO_GSON)
                         .header("Content-Type", "application/json"),
                         JSON_HAS_BEEN_SUCCESSFULLY_POSTED},
 
                 {POST(XML, BODY_OBJECT)
-                        .endPoint(REQUEST_URI + PATH_TO_XML)
+                        .baseURI(REQUEST_URI)
+                        .relativePath(PATH_TO_XML)
                         .header("Content-Type", "application/xml"),
                         JACKSON_XML_HAS_BEEN_SUCCESSFULLY_POSTED},
 
                 {POST(formParameter("param1", false, "value1"),
                         formParameter("param2", false, "value2"))
-                        .endPoint(REQUEST_URI + PATH_URL_UNLOADED)
+                        .baseURI(REQUEST_URI)
+                        .relativePath(PATH_URL_UNLOADED)
                         .header("Content-Type", "application/x-www-form-urlencoded"),
                         FORM_HAS_BEEN_SUCCESSFULLY_POSTED},
 
                 {POST(formParameter("chip&dale", false, "rescue rangers"),
                         formParameter("how to get water", false, "2H2 + O2 = 2H2O"))
-                        .endPoint(REQUEST_URI + PATH_URL_UNLOADED)
+                        .baseURI(REQUEST_URI)
+                        .relativePath(PATH_URL_UNLOADED)
                         .header("Content-Type", "application/x-www-form-urlencoded"),
                         FORM_HAS_BEEN_SUCCESSFULLY_POSTED},
 
@@ -158,7 +161,8 @@ public class CustomRequestBodyTest extends BaseHttpTest {
                         bodyPart(new byte[]{1, 2, 3}, "testBytes").setContentTransferEncoding(BINARY),
                         bodyPart(new FileInputStream(TEST_FILE), "testFile2", TEST_FILE.getName()).setContentType("text/plain"),
                         bodyPart(BODY_OBJECT, JSON, "testJson").setContentType("application/json"))
-                        .endPoint(REQUEST_URI + PATH_MULTI_PART)
+                        .baseURI(REQUEST_URI)
+                        .relativePath(PATH_MULTI_PART)
                         .header("Content-Type", "multipart/form-data")
                         .version(HttpClient.Version.HTTP_1_1),
                         MULTIPART_SUCCESSFULLY_POSTED}
