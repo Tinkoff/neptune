@@ -56,32 +56,47 @@ public class MyTest {
     @Test(description = "отправка запроса и получение ответа. На примере POST")
     public void myTest() throws Exception {
         //если значение настройки END_POINT_OF_TARGET_API заполнено,
-        //и запрос должен выполниться по этому адресу, то
-        http().responseOf(POST());
+        //и запрос должен выполниться по этому адресу, то достаточно 
+        http().responseOf(POST() //указать, какой метод следует вызвать
+                .relativePath("/some/path") //дополнить запрос значением path (относительно базового URI) 
+                .queryParam("q1", false, "val1") //дополнить запрос 
+                .queryParam("q2", false, "val2")); //параметрами query
         
-        //Можно передать енд поинт в виде строки целиком, 
+        //Можно передать базовый URI в виде строки,
+        //которая включает схему, хост, порт (опционально) 
+        // и контекстный путь (опционально)
         http().responseOf(POST()
-                .endPoint("http://my.api.com/some/path?q1=val1&q2=val2"));
+                .baseURI("http://my.api.com/context/path")
+                .relativePath("/some/path") //дополнить запрос значением path (относительно базового URI) 
+                .queryParam("q1", false, "val1") //дополнить запрос 
+                .queryParam("q2", false, "val2")); //параметрами query
+      
+      
         
-        //либо в виде значения относительно того, что указано в END_POINT_OF_TARGET_API
+        //Так же в качестве базового URI можно передать объекты URL или URI
+        //Объекты должны включать схему, хост, порт (опционально) 
+        // и контекстный путь (опционально)
+        var baseURI = URI.create("http://my.api.com/context/path");
+        var baseURL = new URL("http://my.api.com/context/path");
+
         http().responseOf(POST()
-                .endPoint("/path?q1=val1&q2=val2"));
-        
-        //Так же в качестве адреса можно передать объекты URL или URI
-        var endPointURI = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        var endPointURL = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
+                .baseURI(baseURI)
+                .relativePath("/some/path") 
+                .queryParam("q1", false, "val1") 
+                .queryParam("q2", false, "val2"));
+
         http().responseOf(POST()
-                .endPoint(endPointURI));
-        
-        http().responseOf(POST()
-                .endPoint(endPointURL));
-        
+                .baseURI(basetURL)
+                .relativePath("/some/path")
+                .queryParam("q1", false, "val1")
+                .queryParam("q2", false, "val2"));
+
         //пример передачи http-запроса с телом
         http().responseOf(POST("String body"));
         
         //указание, в каком формате прочитать тело ответа
         //в данным случае тело ответа будет представлено в виде строки
-        HttpResponse<String> response = http().responseOf(POST(),ofString());
+        HttpResponse<String> response = http().responseOf(POST(), ofString());
     }
 }
 
@@ -746,13 +761,16 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        var baseURI = URI.create("http://my.api.com/context/path");
         http().responseOf(GET()
                 //Все перечисленное ниже не является обязательным для каждого отравляемого запроса
-                .endPoint(endPoint)
-                //можно указать заголовок/свойство запроса и передаем множественное значение
+                .baseURI(baseURI)
+                .relativePath("/some/path")
+                .queryParam("q1", false, "val1")
+                .queryParam("q2", false, "val2")
+                //можно указать header запроса и передаем множественное значение
                 .header("header1", "some value", "one more value")
-                //можно указать заголовок/свойство запроса и передаем одиночное значение 
+                //можно указать header запроса и передаем одиночное значение 
                 .header("header2", "some value")
                 //можно указать дополнительный параметр query-части запроса,
                 //передаем множественное значение. Точно так же можем передать и одиночное значение.
