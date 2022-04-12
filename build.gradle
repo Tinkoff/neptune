@@ -6,7 +6,7 @@ plugins {
 }
 
 ext {
-    globalVersion = '0.21.2-MIGRATION-ALPHA'
+    globalVersion = '0.21.2-ALPHA'
 }
 
 repositories {
