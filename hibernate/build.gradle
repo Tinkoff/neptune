@@ -9,16 +9,17 @@ configurations {
 dependencies {
     api(project(":database.abstractions"))
     api project(':core.api')
-    api group: 'org.hibernate', name: 'hibernate-core', version: '5.6.0.Final'
-    compileClasspath(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
-    compileClasspath(group: 'com.querydsl', name: 'querydsl-jpa', version: '5.0.0')
+    compileClasspath group: 'org.hibernate', name: 'hibernate-core', version: '5.6.0.Final'
+    compileClasspath group: 'com.querydsl', name: 'querydsl-core', version: queryDslVersion
+    compileClasspath group: 'com.querydsl', name: 'querydsl-jpa', version: queryDslVersion
 
-    testImplementation group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0'
-    testImplementation group: 'com.querydsl', name: 'querydsl-jpa', version: '5.0.0'
+    testImplementation group: 'org.hibernate', name: 'hibernate-core', version: '5.6.0.Final'
+    testImplementation group: 'com.querydsl', name: 'querydsl-core', version: queryDslVersion
+    testImplementation group: 'com.querydsl', name: 'querydsl-jpa', version: queryDslVersion
     testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockitoVersion
 
-    bundleGeneration(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
+    bundleGeneration(group: 'com.querydsl', name: 'querydsl-core', version: queryDslVersion)
 }
 
 java {

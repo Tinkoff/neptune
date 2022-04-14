@@ -33,7 +33,7 @@ import static ru.tinkoff.qa.neptune.hibernate.select.querydsl.QueryDSLSelectStep
 import static ru.tinkoff.qa.neptune.hibernate.select.querydsl.QueryDSLSelectStepFactory.byPredicate;
 
 @SuppressWarnings("rawtypes, unchecked")
-public class SelectTest extends BaseHibernateTest {
+public class SelectTest extends BaseHibernatePreparations {
 
     private static final List<TestEntity> TEST_ENTITIES_COPY = new ArrayList<>(List.copyOf(TEST_ENTITIES));
 

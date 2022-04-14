@@ -18,7 +18,7 @@ dependencies {
     compileClasspath('io.projectreactor:reactor-test:3.4.14')
     compileClasspath(group: 'io.micrometer', name: 'micrometer-core', version: '1.7.5')
     compileClasspath(group: 'io.reactivex.rxjava3', name: 'rxjava', version: '3.1.2')
-    compileClasspath(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
+    compileClasspath(group: 'com.querydsl', name: 'querydsl-core', version: queryDslVersion)
 
     testImplementation(group: 'org.springframework', name: 'spring-context', version: springVersion)
     testImplementation(group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.21')
@@ -26,9 +26,9 @@ dependencies {
     testImplementation('io.projectreactor:reactor-test:3.4.12')
     testImplementation(group: 'io.micrometer', name: 'micrometer-core', version: '1.7.5')
     testImplementation(group: 'io.reactivex.rxjava3', name: 'rxjava', version: '3.1.2')
-    testImplementation(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
+    testImplementation(group: 'com.querydsl', name: 'querydsl-core', version: queryDslVersion)
 
-    bundleGeneration(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
+    bundleGeneration(group: 'com.querydsl', name: 'querydsl-core', version: queryDslVersion)
     testImplementation(group: 'io.micrometer', name: 'micrometer-core', version: '1.7.5')
     testImplementation('org.springframework.data:spring-data-commons:2.6.1')
 }

@@ -28,7 +28,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 import static ru.tinkoff.qa.neptune.hibernate.properties.PersistenceUnits.PERSISTENCE_UNITS;
 import static ru.tinkoff.qa.neptune.hibernate.properties.UseJpaConfig.USE_JPA_CONFIG;
 
-public class BaseHibernateTest {
+public class BaseHibernatePreparations {
 
     static final List<TestEntity> TEST_ENTITIES = new ArrayList<>(of(
             new TestEntity().setId(1L)

@@ -30,23 +30,23 @@ import static ru.tinkoff.qa.neptune.database.abstractions.data.serializer.DataSe
 
 @IncludeParamsOfInnerGetterStep
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Delete:")
-public abstract class DeleteByQueryStepSupplier<R, TO_DELETE>
-        extends SequentialGetStepSupplier.GetObjectStepSupplier<HibernateContext, Void, DeleteByQueryStepSupplier<R, TO_DELETE>>
+public abstract class DeleteByQueryStepSupplier<R>
+        extends SequentialGetStepSupplier.GetObjectStepSupplier<HibernateContext, Void, DeleteByQueryStepSupplier<R>>
         implements SelectQuery<Void> {
 
-    protected DeleteEntities<R, TO_DELETE> f;
-    protected TO_DELETE toDelete;
+    protected DeleteEntities<R> f;
+    protected R toDelete;
 
     @CaptureOnSuccess(by = DataCaptor.class)
     @CaptureOnFailure(by = DataCaptor.class)
     List<String> deleted;
 
-    private DeleteByQueryStepSupplier(DeleteEntities<R, TO_DELETE> f) {
+    private DeleteByQueryStepSupplier(DeleteEntities<R> f) {
         super(f);
         this.f = f;
     }
 
-    public static <R> DeleteByQueryStepSupplier<R, R> delete(
+    public static <R> DeleteByQueryStepSupplier<R> delete(
             String description,
             SelectOneStepSupplier<R> select) {
         checkArgument(isNotBlank(description), "Description should be defined");
@@ -57,7 +57,7 @@ public abstract class DeleteByQueryStepSupplier<R, TO_DELETE>
     }
 
     @Description("{description}")
-    public static <R> DeleteByQueryStepSupplier<R, R> delete(
+    public static <R> DeleteByQueryStepSupplier<R> delete(
             @DescriptionFragment(value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
                     String description,
@@ -67,7 +67,7 @@ public abstract class DeleteByQueryStepSupplier<R, TO_DELETE>
         return new DeleteOneStepSupplier<>(toDelete);
     }
 
-    public static <R> DeleteByQueryStepSupplier<R, Iterable<R>> delete(
+    public static <R> DeleteByQueryStepSupplier<Iterable<R>> delete(
             String description,
             SelectManyStepSupplier<R> select) {
         checkArgument(isNotBlank(description), "Description should be defined");
@@ -78,7 +78,7 @@ public abstract class DeleteByQueryStepSupplier<R, TO_DELETE>
     }
 
     @Description("{description}")
-    public static <R> DeleteByQueryStepSupplier<R, Iterable<R>> delete(
+    public static <R> DeleteByQueryStepSupplier<Iterable<R>> delete(
             @DescriptionFragment(value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
                     String description,
@@ -90,7 +90,7 @@ public abstract class DeleteByQueryStepSupplier<R, TO_DELETE>
     }
 
     @IncludeParamsOfInnerGetterStep
-    private static class DeleteOneStepSupplier<R> extends DeleteByQueryStepSupplier<R, R> {
+    private static class DeleteOneStepSupplier<R> extends DeleteByQueryStepSupplier<R> {
 
         protected SelectOneStepSupplier<R> select;
 
@@ -116,7 +116,7 @@ public abstract class DeleteByQueryStepSupplier<R, TO_DELETE>
     }
 
     @IncludeParamsOfInnerGetterStep
-    private static class DeleteManyStepSupplier<R> extends DeleteByQueryStepSupplier<R, Iterable<R>> {
+    private static class DeleteManyStepSupplier<R> extends DeleteByQueryStepSupplier<Iterable<R>> {
 
         protected SelectManyStepSupplier<R> select;
 

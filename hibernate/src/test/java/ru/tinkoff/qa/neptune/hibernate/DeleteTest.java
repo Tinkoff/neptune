@@ -18,7 +18,7 @@ import static ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFact
 import static ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byIds;
 
 @SuppressWarnings("unchecked")
-public class DeleteTest extends BaseHibernateTest {
+public class DeleteTest extends BaseHibernatePreparations {
 
     private CriteriaDelete<TestEntity> criteriaDelete;
 

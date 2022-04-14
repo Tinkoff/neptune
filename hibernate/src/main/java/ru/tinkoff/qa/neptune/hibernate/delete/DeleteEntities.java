@@ -4,18 +4,18 @@ import com.google.common.base.Function;
 import ru.tinkoff.qa.neptune.hibernate.HibernateContext;
 
 
-abstract class DeleteEntities<R, INPUT> implements Function<HibernateContext, Void> {
+abstract class DeleteEntities<R> implements Function<HibernateContext, Void> {
 
-    protected INPUT toDelete;
+    protected R toDelete;
 
     private DeleteEntities() {
     }
 
-    public void setToDelete(INPUT toDelete) {
+    public void setToDelete(R toDelete) {
         this.toDelete = toDelete;
     }
 
-    static class DeleteOne<R> extends DeleteEntities<R, R> {
+    static class DeleteOne<R> extends DeleteEntities<R> {
 
         DeleteOne() {
             super();
@@ -33,7 +33,7 @@ abstract class DeleteEntities<R, INPUT> implements Function<HibernateContext, Vo
         }
     }
 
-    static class DeleteMany<R> extends DeleteEntities<R, Iterable<R>> {
+    static class DeleteMany<R> extends DeleteEntities<Iterable<R>> {
 
         DeleteMany() {
             super();

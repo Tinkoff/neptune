@@ -14,7 +14,7 @@ import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate;
 import static ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byId;
 import static ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byIds;
 
-public class DataExtractionTest extends BaseHibernateTest {
+public class DataExtractionTest extends BaseHibernatePreparations {
 
     @Test
     public void getObjectFromEntityTest() {

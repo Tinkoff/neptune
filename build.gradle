@@ -50,6 +50,7 @@ subprojects {
         mockitoVersion = '4.3.1'
         springVersion = '5.3.16'
         springBootVersion = '2.6.3'
+        queryDslVersion = '5.0.0'
         globalVersion = version
     }
 

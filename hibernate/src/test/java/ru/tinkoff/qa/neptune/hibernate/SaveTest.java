@@ -24,7 +24,7 @@ import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate;
 import static ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byId;
 import static ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byIds;
 
-public class SaveTest extends BaseHibernateTest {
+public class SaveTest extends BaseHibernatePreparations {
 
     private final TestEntity updatedEntity = new TestEntity().setId(10L)
             .setName("Test Name 1")
