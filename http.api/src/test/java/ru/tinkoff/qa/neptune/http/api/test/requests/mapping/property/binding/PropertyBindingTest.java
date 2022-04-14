@@ -32,7 +32,7 @@ public class PropertyBindingTest {
     public void test1() {
         var request = createAPI(ServiceAPI.class).post().build();
 
-        assertThat(request.uri(), is(URI.create("http://127.0.0.1:8089/?param=val1&param=3&param=Hello+world")));
+        assertThat(request.uri(), is(URI.create("http://127.0.0.1:8089?param=val1&param=3&param=Hello+world")));
         assertThat(request.version().orElse(null), is(HTTP_2));
         assertThat(request.timeout().orElse(null), is(ofSeconds(2)));
         assertThat(request.expectContinue(), is(true));
@@ -45,7 +45,7 @@ public class PropertyBindingTest {
     public void test2(ServiceAPI2<?> serviceAPI2) {
         var request = serviceAPI2.post().build();
 
-        assertThat(request.uri(), is(URI.create("http://127.0.0.1:8090/?param=val1&param=3&param=Hello+world")));
+        assertThat(request.uri(), is(URI.create("http://127.0.0.1:8090?param=val1&param=3&param=Hello+world")));
         assertThat(request.version().orElse(null), is(HTTP_2));
         assertThat(request.timeout().orElse(null), is(ofSeconds(2)));
         assertThat(request.expectContinue(), is(true));
@@ -78,7 +78,7 @@ public class PropertyBindingTest {
 
         var request = o.getServiceAPI4().post().build();
 
-        assertThat(request.uri(), is(URI.create("http://127.0.0.1:8090/?param=val1&param=3&param=Hello+world")));
+        assertThat(request.uri(), is(URI.create("http://127.0.0.1:8090?param=val1&param=3&param=Hello+world")));
         assertThat(request.version().orElse(null), is(HTTP_2));
         assertThat(request.timeout().orElse(null), is(ofSeconds(2)));
         assertThat(request.expectContinue(), is(true));

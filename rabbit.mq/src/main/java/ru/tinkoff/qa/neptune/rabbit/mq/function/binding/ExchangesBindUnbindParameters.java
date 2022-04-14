@@ -2,23 +2,22 @@ package ru.tinkoff.qa.neptune.rabbit.mq.function.binding;
 
 import com.rabbitmq.client.Channel;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties;
 
 import java.io.IOException;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.rabbit.mq.function.binding.BindUnbindParameters.ROUTING_KEY;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_EXCHANGE_NAME;
 
-@Description("destination exchange = '{destination}', source exchange = '{source}', routingKey = '{" + ROUTING_KEY + "}'")
+@Description("Exchanges")
 public final class ExchangesBindUnbindParameters extends BindUnbindParameters<ExchangesBindUnbindParameters> {
 
-    @DescriptionFragment("source")
+    @StepParameter("source")
     private final String source;
 
-    @DescriptionFragment("destination")
+    @StepParameter("destination")
     private final String destination;
 
     private ExchangesBindUnbindParameters(String source, String destination) {

@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.ExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.test.web.reactive.server.XpathAssertions;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 
@@ -26,7 +27,7 @@ import static org.springframework.http.MediaType.TEXT_PLAIN;
 import static org.springframework.test.web.reactive.server.MockAssertionsCreator.*;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class BaseTest {
+public class BaseTestPreparation {
 
     @Mock
     WebTestClient client;
@@ -72,6 +73,9 @@ public class BaseTest {
 
     @Mock
     EntityExchangeResult<List<List<Integer>>> listListResult;
+
+    @Mock
+    XpathAssertions xpathAssertions;
 
     private Supplier<byte[]> byteSupplier = () -> {
         byte[] b = new byte[20];
@@ -198,6 +202,15 @@ public class BaseTest {
 
         when(bodyContentSpec.jsonPath("some.path", "1", "2", "3", "4"))
                 .thenReturn(createJsonPathAssertions(bodyContentSpec, "", "some.path", "1", "2", "3", "4"));
+
+        when(responseSpec.expectCookie())
+                .thenReturn(createCookieAssertion(result, responseSpec));
+
+        when(bodyContentSpec.xpath(any(), any(), any()))
+                .thenReturn(xpathAssertions);
+
+        when(bodyContentSpec.xpath(any(), any()))
+                .thenReturn(xpathAssertions);
     }
 
     void setByteSupplier(Supplier<byte[]> supplier) {

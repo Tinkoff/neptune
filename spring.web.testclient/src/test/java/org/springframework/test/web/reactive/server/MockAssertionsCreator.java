@@ -13,4 +13,8 @@ public class MockAssertionsCreator {
     public static JsonPathAssertions createJsonPathAssertions(WebTestClient.BodyContentSpec spec, String content, String expression, Object... args) {
         return new JsonPathAssertions(spec, content, expression, args);
     }
+
+    public static CookieAssertions createCookieAssertion(ExchangeResult exchangeResult, WebTestClient.ResponseSpec responseSpec) {
+        return new CookieAssertions(exchangeResult, responseSpec);
+    }
 }

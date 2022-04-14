@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -81,55 +82,7 @@ public class ResourceBundleGenerator {
                 }
             }
 
-            fillFile(p, propFile, currentProperties);
-        }
-    }
-
-    private static void fillFile(LocalizationBundlePartition partition, File file, Properties properties) throws IOException {
-        clearFile(file);
-
-        var writer = new FileWriter(file, true);
-
-        try (var output = new BufferedWriter(writer)) {
-            output.write("#Values for translation of steps, their parameters, matchers and their descriptions," +
-                    " and attachments are defined here. Format key = value");
-
-            new StepBundleFilter(partition).fill(output, properties);
-            new CriteriaBundleFilter(partition).fill(output, properties);
-            new AttachmentsBundleFilter(partition).fill(output, properties);
-            new MatchersBundleFilter(partition).fill(output, properties);
-            new MismatchDescriptionBundleFilter(partition).fill(output, properties);
-            new MatchedObjectsBundleFilter(partition).fill(output, properties);
-            new ParameterPojoBundleFilter(partition).fill(output, properties);
-            new OtherObjectsBundleFilter(partition).fill(output, properties);
-
-            new ClassGraph().enableAllInfo()
-                    .enableClassInfo()
-                    .ignoreClassVisibility()
-                    .scan()
-                    .getSubclasses(BundleFillerExtension.class.getName())
-                    .loadClasses(BundleFillerExtension.class)
-                    .stream()
-                    .filter(cls -> !isAbstract(cls.getModifiers()) &&
-                            !cls.equals(StepBundleFilter.class) &&
-                            !cls.equals(CriteriaBundleFilter.class) &&
-                            !cls.equals(AttachmentsBundleFilter.class) &&
-                            !cls.equals(MatchersBundleFilter.class) &&
-                            !cls.equals(MismatchDescriptionBundleFilter.class) &&
-                            !cls.equals(MatchedObjectsBundleFilter.class) &&
-                            !cls.equals(ParameterPojoBundleFilter.class) &&
-                            !cls.equals(OtherObjectsBundleFilter.class) &&
-                            stream(cls.getAnnotationsByType(BindToPartition.class))
-                                    .anyMatch(a -> a.value().equalsIgnoreCase(partition.getName())))
-                    .forEach(cls -> {
-                        try {
-                            var c = cls.getConstructor();
-                            c.setAccessible(true);
-                            c.newInstance().fill(output, properties);
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
+            new BundleFiller(p, propFile, currentProperties).fillFile();
         }
     }
 
@@ -180,9 +133,78 @@ public class ResourceBundleGenerator {
         return prop;
     }
 
-    private static void clearFile(File file) throws FileNotFoundException {
-        var writer = new PrintWriter(file);
-        writer.print(EMPTY);
-        writer.close();
+    static final class BundleFiller {
+
+        private final File file;
+        private final Properties actual;
+        private final List<BundleFillerExtension> bundleFillerExtensions = new LinkedList<>();
+
+        BundleFiller(LocalizationBundlePartition partition, File file, Properties actual) {
+            this.file = file;
+            this.actual = actual;
+            bundleFillerExtensions.add(new StepBundleFilter(partition));
+            bundleFillerExtensions.add(new CriteriaBundleFilter(partition));
+            bundleFillerExtensions.add(new AttachmentsBundleFilter(partition));
+            bundleFillerExtensions.add(new MatchersBundleFilter(partition));
+            bundleFillerExtensions.add(new MismatchDescriptionBundleFilter(partition));
+            bundleFillerExtensions.add(new MatchedObjectsBundleFilter(partition));
+            bundleFillerExtensions.add(new ParameterPojoBundleFilter(partition));
+
+            new ClassGraph().enableAllInfo()
+                    .enableClassInfo()
+                    .ignoreClassVisibility()
+                    .scan()
+                    .getSubclasses(BundleFillerExtension.class.getName())
+                    .loadClasses(BundleFillerExtension.class)
+                    .stream()
+                    .filter(cls -> !isAbstract(cls.getModifiers()) &&
+                            !cls.equals(StepBundleFilter.class) &&
+                            !cls.equals(CriteriaBundleFilter.class) &&
+                            !cls.equals(AttachmentsBundleFilter.class) &&
+                            !cls.equals(MatchersBundleFilter.class) &&
+                            !cls.equals(MismatchDescriptionBundleFilter.class) &&
+                            !cls.equals(MatchedObjectsBundleFilter.class) &&
+                            !cls.equals(ParameterPojoBundleFilter.class) &&
+                            !cls.equals(OtherObjectsBundleFilter.class) &&
+                            stream(cls.getAnnotationsByType(BindToPartition.class))
+                                    .anyMatch(a -> a.value().equalsIgnoreCase(partition.getName())))
+                    .forEach(cls -> {
+                        try {
+                            var c = cls.getConstructor();
+                            var instance = c.newInstance();
+                            bundleFillerExtensions.add(instance);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+
+            var processedClasses = new ArrayList<Class<?>>();
+            bundleFillerExtensions.forEach(e -> processedClasses.addAll(e.getProcessedClasses()));
+            bundleFillerExtensions.add(new OtherObjectsBundleFilter(processedClasses, partition));
+        }
+
+        List<BundleFillerExtension> getBundleFillerExtensions() {
+            return bundleFillerExtensions;
+        }
+
+        private void clearFile() throws FileNotFoundException {
+            var writer = new PrintWriter(file);
+            writer.print(EMPTY);
+            writer.close();
+        }
+
+        void fillFile() throws IOException {
+            clearFile();
+            var writer = new FileWriter(file, true);
+
+            try (var output = new BufferedWriter(writer)) {
+                output.write("#Values for translation of steps, their parameters, matchers and their descriptions," +
+                        " and attachments are defined here. Format key = value");
+
+                for (var e : getBundleFillerExtensions()) {
+                    e.fill(output, actual);
+                }
+            }
+        }
     }
 }

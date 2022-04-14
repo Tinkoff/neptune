@@ -16,8 +16,8 @@ import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CGLibProxyBuilder.createProxy;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindByBuilder.getAnnotations;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchProxyBuilder.createProxy;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.ToStringFormer.getMultipleToString;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.WidgetPriorityComparator.widgetPriorityComparator;
 

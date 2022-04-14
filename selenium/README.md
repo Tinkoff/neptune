@@ -25,4 +25,4 @@ Integration of Neptune with Selenium WebDriver API
 
 [Brief documentation in English](./doc/eng/README.MD)
 
-[API overview](https://tinkoffcreditsystems.github.io/neptune/selenium/index.html)
+[API overview](https://tinkoff.github.io/neptune/selenium/index.html)

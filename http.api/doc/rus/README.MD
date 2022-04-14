@@ -27,12 +27,8 @@
 
 
 - [Отправка http запросов/получение ответов](./REQUEST_RESPONSE.MD)
-    - [Простая отправка http запроса и получение ответа. На примерах, когда используется только URI](./REQUEST_RESPONSE.MD#Простая-отправка-http-запроса-и-получение-ответа-На-примерах-когда-используется-только-URI)
-        - [POST](./REQUEST_RESPONSE.MD#post)
-        - [GET](./REQUEST_RESPONSE.MD#get)
-        - [PUT](./REQUEST_RESPONSE.MD#put)
-        - [DELETE](./REQUEST_RESPONSE.MD#delete)
-        - [Любой метод](./REQUEST_RESPONSE.MD#Любой-метод)
+
+    - [Простая отправка http запроса и получение ответа](./REQUEST_RESPONSE.MD#Простая-отправка-http-запроса-и-получение-ответа)
     - [Тело запроса на примере POST](./REQUEST_RESPONSE.MD#Тело-запроса-на-примере-POST)
         - [Массив байтов](./REQUEST_RESPONSE.MD#Массив-байтов)
         - [Файл](./REQUEST_RESPONSE.MD#Файл)

@@ -67,21 +67,17 @@ public class MyBootTest {
 
 Для [Junit 5](https://junit.org/junit5/docs/current/user-guide/) ничего особенного делать не надо, 
 чтобы писать тесты. Написание тестов для Spring-приложений с использованием TestNg имеет некоторую 
-особенность, которую необходимо учесть, чтобы поддержать корректную работу [со свойствами / настройками](#Работа-со-свойствами--настройками-тестируемого-приложения-и-Neptune),
-а так же с провайдерами [MockMvc](#MockMvc) или [WebTestClient](#WebTestClient)
+особенность, которую необходимо учесть, чтобы поддержать корректную работу [со свойствами / настройками](#Работа-со-свойствами--настройками-тестируемого-приложения-и-Neptune).
 
 ```java
 package org.my.pack;
 
-
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.spring.boot.starter.test.TestWithKnownCurrentApplicationContext;
 
 @SpringBootTest(properties = {"example.firstProperty=annotation"})
-@AutoConfigureMockMvc
 public class MyBootTest2 extends AbstractTestNGSpringContextTests
         implements TestWithKnownCurrentApplicationContext {//нужно просто имплементить
         //этот интерфейс
@@ -93,3 +89,26 @@ public class MyBootTest2 extends AbstractTestNGSpringContextTests
 ```
 
 [к оглавлению документа](#Оглавление)
+
+
+## Получение текущего контекста приложения
+
+Иногда может возникнуть необходимость иметь доступ до активного в данный момент [контекста приложения](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/ApplicationContext.html).
+В таких случаях:
+
+
+```java
+package org.my.pack;
+
+import org.springframework.context.ApplicationContext;
+
+import static ru.tinkoff.qa.neptune.spring.boot.starter.application.contexts.CurrentApplicationContextTestExecutionListener.getCurrentApplicationContext;
+
+public class SomeClass {
+    
+  public void someMethod() {
+      ApplicationContext context = getCurrentApplicationContext();
+      //дальнейшие действия
+  }
+}
+```

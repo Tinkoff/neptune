@@ -24,16 +24,22 @@ import static ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerato
 
 public abstract class BundleFillerExtension {
 
-    private final List<? extends Class<?>> toAdd;
+    private final List<Class<?>> toAdd;
     private final String sectionName;
+    private final ToIncludeClassDescription toIncludeClassDescription;
 
-    protected BundleFillerExtension(List<? extends Class<?>> toAdd, String sectionName) {
+    protected BundleFillerExtension(List<Class<?>> toAdd, String sectionName, ToIncludeClassDescription toIncludeClassDescription) {
         this.toAdd = toAdd;
         this.sectionName = sectionName;
+        this.toIncludeClassDescription = toIncludeClassDescription;
     }
 
-    private static LocalizationItem getLocalizationItem(Class<?> clazz, BundleFillerExtension ext, BufferedWriter output, Properties properties) {
-        var item = new LocalizationItem(clazz, output, properties);
+    protected BundleFillerExtension(List<Class<?>> toAdd, String sectionName) {
+        this(toAdd, sectionName, new ToIncludeClassDescription.DefaultToIncludeClassDescriptionImpl());
+    }
+
+    private static LocalizationItem getLocalizationItem(Class<?> clazz, ToIncludeClassDescription toIncludeClassDescription, BundleFillerExtension ext, BufferedWriter output, Properties properties) {
+        var item = new LocalizationItem(clazz, toIncludeClassDescription, output, properties);
         return item.addFields(ext.addFields(clazz)).addMethods(ext.addMethods(clazz));
     }
 
@@ -50,7 +56,7 @@ public abstract class BundleFillerExtension {
                     + " ============================================ ");
 
             var items = toAdd.stream()
-                    .map(cls -> getLocalizationItem(cls, this, output, properties))
+                    .map(cls -> getLocalizationItem(cls, toIncludeClassDescription, this, output, properties))
                     .collect(toList());
 
             for (var item : items) {
@@ -59,17 +65,23 @@ public abstract class BundleFillerExtension {
         }
     }
 
+    List<Class<?>> getProcessedClasses() {
+        return toAdd;
+    }
+
     private final static class LocalizationItem {
         private final Class<?> clazz;
         private final BufferedWriter output;
         private final Properties properties;
         private final List<AnnotatedElement> fields = new ArrayList<>();
         private final List<Method> methods = new ArrayList<>();
+        private final ToIncludeClassDescription toIncludeClassDescription;
 
-        private LocalizationItem(Class<?> aClass, BufferedWriter output, Properties properties) {
+        private LocalizationItem(Class<?> aClass, ToIncludeClassDescription toIncludeClassDescription, BufferedWriter output, Properties properties) {
             this.clazz = aClass;
             this.output = output;
             this.properties = properties;
+            this.toIncludeClassDescription = toIncludeClassDescription;
         }
 
         private void addClass() throws IOException {
@@ -77,20 +89,21 @@ public abstract class BundleFillerExtension {
             output.newLine();
             output.write("######################## " + cutPartOfPath(clazz.getName()) + " #");
 
-            var description = clazz.getAnnotation(Description.class);
+            var description = toIncludeClassDescription.description(clazz);
 
-            if (description != null) {
+
+            if (toIncludeClassDescription.toIncludeClass(clazz) && description != null) {
                 var key = getKey(clazz);
                 var value = ofNullable(properties)
                         .map(p -> p.get(key))
-                        .orElse(description.value());
+                        .orElse(description);
 
-                newLine(description.value(), key, value);
+                newLine(description, key, value);
             }
         }
 
         private void fill() throws IOException {
-            if (clazz.getAnnotation(Description.class) == null && fields.isEmpty() && methods.isEmpty()) {
+            if (fields.isEmpty() && methods.isEmpty() && !toIncludeClassDescription.toIncludeClass(clazz)) {
                 return;
             }
 

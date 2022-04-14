@@ -22,9 +22,11 @@ import java.net.URL;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 import static java.lang.ClassLoader.getSystemClassLoader;
 import static java.lang.reflect.Proxy.newProxyInstance;
 import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpServiceBindReader.getDefaultURLProperty;
 
@@ -138,14 +140,20 @@ public interface HttpAPI<T extends HttpAPI<T>> {
      * @return is an instance of an interface that extends {@link HttpAPI}
      */
     static <T extends HttpAPI<T>> T createAPI(Class<T> toCreate, URLValuePropertySupplier urlProperty) {
-        checkArgument(nonNull(urlProperty), "Supplier of root URI is null");
-        return createAPI(toCreate, () -> {
-            try {
-                return urlProperty.get().toURI();
-            } catch (URISyntaxException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        return createAPI(toCreate, () -> ofNullable(urlProperty)
+                .map(s -> {
+                    var url = s.get();
+                    checkState(nonNull(url), "Value of the property "
+                            + s.getName()
+                            + " is not defined");
+
+                    try {
+                        return urlProperty.get().toURI();
+                    } catch (URISyntaxException e) {
+                        throw new IllegalStateException(e);
+                    }
+                })
+                .orElse(null));
     }
 
     /**

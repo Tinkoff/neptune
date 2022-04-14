@@ -4,4 +4,4 @@ Integration of [Neptune Http](./../http.api/README.md) with [Swagger 3.x](https:
 
 [Brief documentation in English](./doc/eng/README.MD)
 
-[API overview](https://tinkoffcreditsystems.github.io/neptune/neptune.swagger.codegen/index.html)
+[API overview](https://tinkoff.github.io/neptune/neptune.swagger.codegen/index.html)

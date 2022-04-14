@@ -7,7 +7,8 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.arrayInOrder;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsItemsMatcher.arrayHasItem;
 
@@ -25,7 +26,8 @@ public final class StringContainsWithSeparator extends NeptuneFeatureMatcher<Str
 
     private StringContainsWithSeparator(Matcher<String[]> toContain, String separator) {
         super(true);
-        checkArgument(isNotBlank(separator), "Separator is blank");
+        checkArgument(nonNull(separator) && !EMPTY.equals(separator),
+                "Separator should not be null or empty string");
         checkNotNull(toContain, "Matcher is not defined");
         this.toContain = toContain;
         this.separator = separator;

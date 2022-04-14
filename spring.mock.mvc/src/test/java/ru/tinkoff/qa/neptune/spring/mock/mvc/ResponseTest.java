@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.*;
 import ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents;
 
+import java.io.IOException;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -19,13 +20,13 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.testng.FileAssert.fail;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.all.AllCriteriaMatcher.all;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.not.NotMatcher.notOf;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.MapEntryMatcher.mapEntry;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableInOrder;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.mapOf;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.throwable.ThrowableMessageMatcher.throwableHasMessage;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
 import static ru.tinkoff.qa.neptune.spring.mock.mvc.GetMockMvcResponseResultSupplier.response;
@@ -42,8 +43,22 @@ public class ResponseTest {
             post("/api/request/2")
                     .contentType(APPLICATION_JSON)
                     .contentType("{\"someString 2\"}");
+
+    private final RequestBuilder builder3 =
+            post("/api/request/3")
+                    .contentType(APPLICATION_JSON)
+                    .contentType("{\"someString 2\"}");
+
+    private final RequestBuilder builder4 =
+            post("/api/request/4")
+                    .contentType(APPLICATION_JSON)
+                    .contentType("{\"someString 2\"}");
+
     private final MockHttpServletRequest request1 = new MockHttpServletRequest();
     private final MockHttpServletRequest request2 = new MockHttpServletRequest();
+    private final MockHttpServletRequest request3 = new MockHttpServletRequest();
+    private final MockHttpServletRequest request4 = new MockHttpServletRequest();
+
     private final MockHttpServletResponse response1 = new MockHttpServletResponse() {
         @Override
         public String getContentAsString() {
@@ -102,6 +117,7 @@ public class ResponseTest {
             return null;
         }
     };
+
     private final MvcResult result2 = new MvcResult() {
         @Override
         public MockHttpServletRequest getRequest() {
@@ -148,6 +164,101 @@ public class ResponseTest {
             return null;
         }
     };
+
+    private final MvcResult result3 = new MvcResult() {
+        @Override
+        public MockHttpServletRequest getRequest() {
+            return request3;
+        }
+
+        @Override
+        public MockHttpServletResponse getResponse() {
+            return response2;
+        }
+
+        @Override
+        public Object getHandler() {
+            return null;
+        }
+
+        @Override
+        public HandlerInterceptor[] getInterceptors() {
+            return new HandlerInterceptor[0];
+        }
+
+        @Override
+        public ModelAndView getModelAndView() {
+            return null;
+        }
+
+        @Override
+        public Exception getResolvedException() {
+            return new IOException("Test IO Exception");
+        }
+
+        @Override
+        public FlashMap getFlashMap() {
+            return null;
+        }
+
+        @Override
+        public Object getAsyncResult() {
+            return null;
+        }
+
+        @Override
+        public Object getAsyncResult(long timeToWait) {
+            return null;
+        }
+    };
+
+    private final MvcResult result4 = new MvcResult() {
+        @Override
+        public MockHttpServletRequest getRequest() {
+            return request4;
+        }
+
+        @Override
+        public MockHttpServletResponse getResponse() {
+            return response2;
+        }
+
+        @Override
+        public Object getHandler() {
+            return null;
+        }
+
+        @Override
+        public HandlerInterceptor[] getInterceptors() {
+            return new HandlerInterceptor[0];
+        }
+
+        @Override
+        public ModelAndView getModelAndView() {
+            return null;
+        }
+
+        @Override
+        public Exception getResolvedException() {
+            return null;
+        }
+
+        @Override
+        public FlashMap getFlashMap() {
+            return null;
+        }
+
+        @Override
+        public Object getAsyncResult() {
+            return null;
+        }
+
+        @Override
+        public Object getAsyncResult(long timeToWait) {
+            return null;
+        }
+    };
+
     @Mock
     private MockMvc mockMvc;
 
@@ -264,6 +375,44 @@ public class ResponseTest {
                 return result2;
             }
         });
+
+        when(mockMvc.perform(builder3)).thenReturn(new ResultActions() {
+            @Override
+            public ResultActions andExpect(ResultMatcher matcher) throws Exception {
+                matcher.match(result3);
+                return this;
+            }
+
+            @Override
+            public ResultActions andDo(ResultHandler handler) throws Exception {
+                handler.handle(result3);
+                return this;
+            }
+
+            @Override
+            public MvcResult andReturn() {
+                return result3;
+            }
+        });
+
+        when(mockMvc.perform(builder4)).thenReturn(new ResultActions() {
+            @Override
+            public ResultActions andExpect(ResultMatcher matcher) throws Exception {
+                matcher.match(result4);
+                return this;
+            }
+
+            @Override
+            public ResultActions andDo(ResultHandler handler) throws Exception {
+                handler.handle(result4);
+                return this;
+            }
+
+            @Override
+            public MvcResult andReturn() {
+                return result4;
+            }
+        });
     }
 
     @AfterMethod
@@ -276,15 +425,15 @@ public class ResponseTest {
     @Test(description = "successful")
     public void successfulTest() {
         var r = mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
-                        iterableInOrder("1",
-                                "2",
-                                "String 1",
-                                "true"
-                        )))
-                .expect(content().string(containsString("SUCCESS")))
-                .expect(forwardedUrl("https://google.com/api/request/1")));
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1", iterableInOrder(
+                        "1",
+                        "2",
+                        "String 1",
+                        "true"
+                ))
+                .expectContent(containsString("SUCCESS"))
+                .expectForward("https://google.com/api/request/1"));
 
         assertThat(r, equalTo(response1));
     }
@@ -293,15 +442,15 @@ public class ResponseTest {
     public void failedTest() {
         try {
             mockMvcGet(response(mockMvc, builder2)
-                    .expect(status().is2xxSuccessful())
-                    .expect(header().stringValues("someHeader1",
+                    .expectStatusIs2xxSuccessful()
+                    .expectHeaderValues("someHeader1",
                             iterableInOrder("1",
                                     "2",
                                     "String 1",
                                     "true"
-                            )))
-                    .expect(content().string(containsString("SUCCESS")))
-                    .expect(forwardedUrl("https://google.com/api/request/1")));
+                            ))
+                    .expectContent(containsString("SUCCESS"))
+                    .expectForward("https://google.com/api/request/1"));
         } catch (AssertionError e) {
             assertThat(e.getMessage(), all(
                     containsString("Mismatches: "),
@@ -320,15 +469,15 @@ public class ResponseTest {
         DO_CAPTURES_OF_INSTANCE.accept(eventType);
 
         mockMvcGet(response(mockMvc, builder1)
-                .expect(status().isOk())
-                .expect(header().stringValues("someHeader1",
-                        iterableInOrder("1",
-                                "2",
-                                "String 1",
-                                "true"
-                        )))
-                .expect(content().string(containsString("SUCCESS")))
-                .expect(forwardedUrl("https://google.com/api/request/1")));
+                .expectStatusIs2xxSuccessful()
+                .expectHeaderValues("someHeader1", iterableInOrder(
+                        "1",
+                        "2",
+                        "String 1",
+                        "true"
+                ))
+                .expectContent(containsString("SUCCESS"))
+                .expectForward("https://google.com/api/request/1"));
 
         assertThat(getMessages(), matcher);
     }
@@ -339,18 +488,95 @@ public class ResponseTest {
 
         try {
             mockMvcGet(response(mockMvc, builder2)
-                    .expect(status().isOk())
-                    .expect(header().stringValues("someHeader1",
-                            iterableInOrder("1",
-                                    "2",
-                                    "String 1",
-                                    "true"
-                            )))
-                    .expect(content().string(containsString("SUCCESS")))
-                    .expect(forwardedUrl("https://google.com/api/request/1")));
+                    .expectStatusIs2xxSuccessful()
+                    .expectHeaderValues("someHeader1", iterableInOrder(
+                            "1",
+                            "2",
+                            "String 1",
+                            "true"
+                    ))
+                    .expectContent("SUCCESS")
+                    .expectForward("https://google.com/api/request/1"));
         } catch (Throwable ignored) {
         }
 
         assertThat(getMessages(), matcher);
+    }
+
+    @Test
+    public void testWhenThereIsNoResolvedException() {
+        mockMvcGet(response(mockMvc, builder4)
+                .expectNoResolvedException());
+    }
+
+    @Test
+    public void testWhenThereIsResolvedException() {
+        mockMvcGet(response(mockMvc, builder3)
+                .expectResolvedException()
+                .expectResolvedException(IOException.class)
+                .expectResolvedException(IOException.class, "Test IO Exception")
+                .expectResolvedException(IOException.class, startsWith("Test"), containsString("IO Exception")));
+    }
+
+    @Test
+    public void failedExpectationOfNoResolvedException() {
+        try {
+            mockMvcGet(response(mockMvc, builder3)
+                    .expectNoResolvedException());
+        } catch (Throwable t) {
+            assertThat(t, instanceOf(AssertionError.class));
+            assertThat(t, throwableHasMessage("Mismatches: \r\n" +
+                    "\r\n" +
+                    "\n" +
+                    "Expected: null\n" +
+                    "     but: was <java.io.IOException: Test IO Exception>"));
+            return;
+        }
+        fail("exception was expected");
+    }
+
+    @Test
+    public void failedExpectationOfResolvedException() {
+        try {
+            mockMvcGet(response(mockMvc, builder4)
+                    .expectResolvedException());
+        } catch (Throwable t) {
+            assertThat(t, instanceOf(AssertionError.class));
+            assertThat(t, throwableHasMessage("Mismatches: \r\n" +
+                    "\r\n" +
+                    "\n" +
+                    "Expected: not null\n" +
+                    "     but: was null"));
+            return;
+        }
+        fail("exception was expected");
+    }
+
+    @Test
+    public void failedExpectationOfNoResolvedException2() {
+        try {
+            mockMvcGet(response(mockMvc, builder3)
+                    .expectResolvedException()
+                    .expectResolvedException(IllegalArgumentException.class)
+                    .expectResolvedException(IOException.class, "Test IllegalArgumentException Exception")
+                    .expectResolvedException(IOException.class, startsWith("Test"), containsString("IllegalArgumentException Exception")));
+        } catch (Throwable t) {
+            assertThat(t, instanceOf(AssertionError.class));
+            assertThat(t, throwableHasMessage("Mismatches: \r\n" +
+                    "\r\n" +
+                    "\n" +
+                    "Expected: is object of class 'class java.lang.IllegalArgumentException'\n" +
+                    "     but: Class of object was <class java.io.IOException>\r\n" +
+                    "\r\n" +
+                    "\n" +
+                    "Expected: is object of class 'class java.io.IOException', throwable has message '\"Test IllegalArgumentException Exception\"'\n" +
+                    "     but: was \"Test IO Exception\"\r\n" +
+                    "\r\n" +
+                    "\n" +
+                    "Expected: is object of class 'class java.io.IOException', throwable has message 'a string starting with \"Test\", a string containing \"IllegalArgumentException Exception\"'\n" +
+                    "     but: was \"Test IO Exception\""));
+            return;
+        }
+        fail("exception was expected");
     }
 }

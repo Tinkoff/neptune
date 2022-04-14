@@ -10,12 +10,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.google.common.base.Preconditions.checkState;
 import static java.lang.String.format;
+import static java.lang.String.valueOf;
 import static java.lang.invoke.MethodHandles.lookup;
 import static java.lang.invoke.MethodHandles.privateLookupIn;
 import static java.util.Arrays.asList;
-import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.http.api.properties.end.point.DefaultEndPointOfTargetAPIProperty.DEFAULT_END_POINT_OF_TARGET_API_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpServiceBindReader.getRequestTuners;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod.HttpMethodFactory.createRequestBuilder;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.BodyParameterAnnotationReader.readBodies;
@@ -36,10 +37,7 @@ class HttpAPIProxyHandler implements InvocationHandler {
     @Override
     @SuppressWarnings("unchecked")
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-
         var rootURI = uriSupplier.get();
-        checkState(nonNull(rootURI), "Root URI is not defined");
-        method.setAccessible(true);
 
         var paramTypes = method.getParameterTypes();
         if (USE_FOR_REQUEST_BUILDING.equals(method.getName()) &&
@@ -54,7 +52,11 @@ class HttpAPIProxyHandler implements InvocationHandler {
         }
 
         if ("toString".equals(method.getName()) && method.getParameterTypes().length == 0) {
-            return method.getDeclaringClass().getSimpleName() + " base URI " + rootURI;
+            return method.getDeclaringClass().getSimpleName()
+                    + " base URI "
+                    + ofNullable(rootURI)
+                    .map(URI::toString)
+                    .orElseGet(() -> valueOf(DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.get()));
         }
 
         if (RequestBuilder.class.isAssignableFrom(method.getReturnType())) {

@@ -52,7 +52,7 @@ import static ru.tinkoff.qa.neptune.http.api.properties.ssl.DefaultHttpSslContex
 import static ru.tinkoff.qa.neptune.http.api.properties.ssl.DefaultHttpSslParametersProperty.DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.time.DefaultConnectTimeOutUnitProperty.DEFAULT_CONNECT_TIME_UNIT_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.time.DefaultConnectTimeOutValueProperty.DEFAULT_CONNECT_TIME_VALUE_PROPERTY;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
 
 public class HttpClientTest extends BaseHttpTest {
 
@@ -184,7 +184,9 @@ public class HttpClientTest extends BaseHttpTest {
         stubFor(get(urlPathEqualTo("/query"))
                 .willReturn(aResponse().withBody("Hello query")));
 
-        var response = http().responseOf(GET(REQUEST_URI + "/query")
+        var response = http().responseOf(GET()
+                .baseURI(REQUEST_URI)
+                .relativePath("/query")
                 .queryParam("date", false, "01-01-1980")
                 .queryParam("some word", false, "Word and word again"), ofString());
 

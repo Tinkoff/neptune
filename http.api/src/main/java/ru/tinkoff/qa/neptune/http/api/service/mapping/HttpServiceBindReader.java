@@ -11,7 +11,6 @@ import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.core.api.binding.Bind.DefaultBindReader.getBoundTo;
-import static ru.tinkoff.qa.neptune.http.api.properties.end.point.DefaultEndPointOfTargetAPIProperty.DEFAULT_END_POINT_OF_TARGET_API_PROPERTY;
 
 /**
  * Finds classes that implement {@link URLValuePropertySupplier}
@@ -70,7 +69,7 @@ public final class HttpServiceBindReader {
                 })
                 .filter(Objects::nonNull)
                 .findFirst()
-                .orElse(DEFAULT_END_POINT_OF_TARGET_API_PROPERTY);
+                .orElse(null);
     }
 
     public static List<Class<RequestTuner>> getRequestTuners(Class<? extends HttpAPI<?>> toBindWith) {

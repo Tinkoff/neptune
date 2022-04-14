@@ -54,6 +54,11 @@ public class PathMappingTest {
                 {someMappedAPI.getSomethingWithConstantPath(),
                         uriHasPath("/path/to/target/end/point"),
                         "/path/to/target/end/point"},
+
+                {someMappedAPI.getSomethingWithConstantPath2(),
+                        uriHasPath("/path/to/target/end/point"),
+                        "/path/to/target/end/point"},
+
                 {someMappedAPI.getSomethingWithVariablePath("Start path", 1.5F, "Кириллический текст"),
                         uriHasPath("/Start path/1.5/and/then/Кириллический текст/end/point"),
                         "/Start%20path/1.5/and/then/%D0%9A%D0%B8%D1%80%D0%B8%D0%BB%D0%BB%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9%20%D1%82%D0%B5%D0%BA%D1%81%D1%82/end/point"},
@@ -214,13 +219,8 @@ public class PathMappingTest {
     }
 
     @DataProvider
-    public Object[][] data2() throws Exception {
-        try {
-            DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept(new URL("http://127.0.0.1:8089"));
-            return prepareDataForPathMapping(createAPI(PathMapping.class));
-        } finally {
-            getProperties().remove(DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.getName());
-        }
+    public Object[][] data2() {
+        return prepareDataForPathMapping(createAPI(PathMapping.class));
     }
 
     @Test(dataProvider = "data1")
@@ -234,8 +234,13 @@ public class PathMappingTest {
     }
 
     @Test(dataProvider = "data2")
-    public void test2(RequestBuilder builder, HasPathMatcher<URI> pathMatcher, String rawPath) {
-        test1(builder, pathMatcher, rawPath);
+    public void test2(RequestBuilder builder, HasPathMatcher<URI> pathMatcher, String rawPath) throws Exception {
+        DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept(new URL("http://127.0.0.1:8089"));
+        try {
+            test1(builder, pathMatcher, rawPath);
+        } finally {
+            getProperties().remove(DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.getName());
+        }
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
@@ -281,6 +286,10 @@ public class PathMappingTest {
         @HttpMethod(httpMethod = GET)
         @URIPath("path/to/target/end/point")
         RequestBuilder getSomethingWithConstantPath();
+
+        @HttpMethod(httpMethod = GET)
+        @URIPath("/path/to/target/end/point")
+        RequestBuilder getSomethingWithConstantPath2();
 
         @HttpMethod(httpMethod = GET)
         @URIPath("{path begin}/{next}/and/then/{third}/end/point")

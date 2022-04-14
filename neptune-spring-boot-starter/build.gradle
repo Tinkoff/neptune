@@ -1,7 +1,7 @@
 dependencies {
     compileClasspath project(':core.api')
-    implementation group: 'org.springframework.boot', name: 'spring-boot', version: springBootVersion
-    implementation group: 'org.springframework', name: 'spring-test', version: springVersion
+    compileClasspath group: 'org.springframework.boot', name: 'spring-boot', version: springBootVersion
+    compileClasspath group: 'org.springframework', name: 'spring-test', version: springVersion
 }
 
 java {
@@ -24,7 +24,7 @@ publishing {
                 packaging = 'jar'
                 name = 'neptune-spring-boot-starter'
                 version = version
-                url = 'https://github.com/TinkoffCreditSystems/neptune'
+                url = 'https://github.com/tinkoff/neptune'
                 licenses {
                     license {
                         name = 'Apache License, Version 2.0'
@@ -40,9 +40,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
-                    developerConnection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
-                    url = 'https://github.com/TinkoffCreditSystems/neptune'
+                    connection = 'scm:git:ssh://git@github.com:tinkoff/neptune.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:tinkoff/neptune.git'
+                    url = 'https://github.com/tinkoff/neptune'
                 }
             }
         }
