@@ -53,6 +53,7 @@ Module documentation:
 - [Integration of Neptune with Kafka](kafka/README.md)
 - [Integration of Neptune with Selenium WebDriver API](selenium/README.md)
 - [Neptune Database abstractions](database.abstractions/README.md)
+- [Neptune Hibernate Integration](hibernate/README.md)
 
 For Spring projects:
 - [Integration of Neptune with Spring MockMvc](spring.mock.mvc/README.md)

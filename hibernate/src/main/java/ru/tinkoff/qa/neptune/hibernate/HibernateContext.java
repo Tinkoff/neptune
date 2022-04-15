@@ -335,115 +335,127 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
         return update(SaveStepSupplier.save(description, toSave), updateActions);
     }
 
-    public <R> boolean presenceOf(String description,
-                                  SelectOneStepSupplier<R> by,
-                                  Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public final <R> boolean presenceOf(String description,
+                                        SelectOneStepSupplier<R> by,
+                                        Class<? extends Throwable>... toIgnore) {
         return super.presenceOf(setDescription(description, by), toIgnore);
     }
 
-    public <R> boolean presenceOfOrThrow(String description,
-                                         SelectOneStepSupplier<R> by,
-                                         Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public final <R> boolean presenceOfOrThrow(String description,
+                                               SelectOneStepSupplier<R> by,
+                                               Class<? extends Throwable>... toIgnore) {
         return super.presenceOfOrThrow(setDescription(description, by), toIgnore);
     }
 
-    public <R> boolean presenceOf(String description,
-                                  SelectManyStepSupplier<R> by,
-                                  Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public final <R> boolean presenceOf(String description,
+                                        SelectManyStepSupplier<R> by,
+                                        Class<? extends Throwable>... toIgnore) {
         return super.presenceOf(setDescription(description, by), toIgnore);
     }
 
-    public <R> boolean presenceOfOrThrow(String description,
-                                         SelectManyStepSupplier<R> by,
-                                         Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public final <R> boolean presenceOfOrThrow(String description,
+                                               SelectManyStepSupplier<R> by,
+                                               Class<? extends Throwable>... toIgnore) {
         return super.presenceOfOrThrow(setDescription(description, by), toIgnore);
     }
 
-
-    public <S, R> boolean presenceOf(String description,
-                                     GetObjectFromEntity<S, R> toGet,
-                                     Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public final <S, R> boolean presenceOf(String description,
+                                           GetObjectFromEntity<S, R> toGet,
+                                           Class<? extends Throwable>... toIgnore) {
         return super.presenceOf(setDescription(description, toGet), toIgnore);
     }
 
-    public <S, R> boolean presenceOfOrThrow(String description,
-                                            GetObjectFromEntity<S, R> toGet,
-                                            Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public final <S, R> boolean presenceOfOrThrow(String description,
+                                                  GetObjectFromEntity<S, R> toGet,
+                                                  Class<? extends Throwable>... toIgnore) {
         return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
     }
 
-
-    public <ITEM, S extends Iterable<ITEM>, R> boolean presenceOf(String description,
-                                                                  GetIterableFromEntity<ITEM, S, R> toGet,
-                                                                  Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public final <ITEM, S extends Iterable<ITEM>, R> boolean presenceOf(String description,
+                                                                        GetIterableFromEntity<ITEM, S, R> toGet,
+                                                                        Class<? extends Throwable>... toIgnore) {
         return super.presenceOf(setDescription(description, toGet), toIgnore);
     }
 
-    public <ITEM, S extends Iterable<ITEM>, R> boolean presenceOfOrThrow(String description,
-                                                                         GetIterableFromEntity<ITEM, S, R> toGet,
-                                                                         Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public final <ITEM, S extends Iterable<ITEM>, R> boolean presenceOfOrThrow(String description,
+                                                                               GetIterableFromEntity<ITEM, S, R> toGet,
+                                                                               Class<? extends Throwable>... toIgnore) {
         return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
     }
 
-
-    public <ITEM, R> boolean presenceOf(String description,
-                                        GetArrayFromEntity<ITEM, R> toGet,
-                                        Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public final <ITEM, R> boolean presenceOf(String description,
+                                              GetArrayFromEntity<ITEM, R> toGet,
+                                              Class<? extends Throwable>... toIgnore) {
         return super.presenceOf(setDescription(description, toGet), toIgnore);
     }
 
-    public <ITEM, R> boolean presenceOfOrThrow(String description,
-                                               GetArrayFromEntity<ITEM, R> toGet,
-                                               Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public final <ITEM, R> boolean presenceOfOrThrow(String description,
+                                                     GetArrayFromEntity<ITEM, R> toGet,
+                                                     Class<? extends Throwable>... toIgnore) {
         return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
     }
 
-
-    public <ITEM, R> boolean presenceOf(String description,
-                                        GetItemOfIterableFromEntity<ITEM, ? extends Iterable<ITEM>, R> toGet,
-                                        Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public final <ITEM, R> boolean presenceOf(String description,
+                                              GetItemOfIterableFromEntity<ITEM, ? extends Iterable<ITEM>, R> toGet,
+                                              Class<? extends Throwable>... toIgnore) {
         return super.presenceOf(setDescription(description, toGet), toIgnore);
     }
 
-    public <ITEM, R> boolean presenceOfOrThrow(String description,
-                                               GetItemOfIterableFromEntity<ITEM, ? extends Iterable<ITEM>, R> toGet,
-                                               Class<? extends Throwable>... toIgnore) {
+    @SafeVarargs
+    public final <ITEM, R> boolean presenceOfOrThrow(String description,
+                                                     GetItemOfIterableFromEntity<ITEM, ? extends Iterable<ITEM>, R> toGet,
+                                                     Class<? extends Throwable>... toIgnore) {
         return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
     }
 
-
-    public <ITEM, R> boolean presenceOf(String description,
+    @SafeVarargs
+    public final <ITEM, R> boolean presenceOf(String description,
                                         GetItemOfArrayFromEntity<ITEM, R> toGet,
                                         Class<? extends Throwable>... toIgnore) {
         return super.presenceOf(setDescription(description, toGet), toIgnore);
     }
 
-    public <ITEM, R> boolean presenceOfOrThrow(String description,
+    @SafeVarargs
+    public final <ITEM, R> boolean presenceOfOrThrow(String description,
                                                GetItemOfArrayFromEntity<ITEM, R> toGet,
                                                Class<? extends Throwable>... toIgnore) {
         return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
     }
 
-
-    public <ITEM, R> boolean presenceOf(String description,
+    @SafeVarargs
+    public final <ITEM, R> boolean presenceOf(String description,
                                         GetIterableFromEntities<ITEM, R> toGet,
                                         Class<? extends Throwable>... toIgnore) {
         return super.presenceOf(setDescription(description, toGet), toIgnore);
     }
 
-    public <ITEM, R> boolean presenceOfOrThrow(String description,
+    @SafeVarargs
+    public final <ITEM, R> boolean presenceOfOrThrow(String description,
                                                GetIterableFromEntities<ITEM, R> toGet,
                                                Class<? extends Throwable>... toIgnore) {
         return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
     }
 
-    public <ITEM, R> boolean presenceOf(String description,
+    @SafeVarargs
+    public final <ITEM, R> boolean presenceOf(String description,
                                         GetIterableItemFromEntities<ITEM, R> toGet,
                                         Class<? extends Throwable>... toIgnore) {
         return super.presenceOf(setDescription(description, toGet), toIgnore);
     }
 
-    public <ITEM, R> boolean presenceOfOrThrow(String description,
+    @SafeVarargs
+    public final <ITEM, R> boolean presenceOfOrThrow(String description,
                                                GetIterableItemFromEntities<ITEM, R> toGet,
                                                Class<? extends Throwable>... toIgnore) {
         return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
