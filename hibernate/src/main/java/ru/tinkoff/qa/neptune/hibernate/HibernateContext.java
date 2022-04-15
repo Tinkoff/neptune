@@ -38,6 +38,8 @@ import static ru.tinkoff.qa.neptune.hibernate.properties.UseJpaConfig.USE_JPA_CO
 @SuppressWarnings("unchecked")
 public class HibernateContext extends AbstractDatabaseStepContext<HibernateContext> {
 
+    public static final String NO_DESC_ERROR_TEXT = "Description should be defined";
+
     private static final HibernateContext context = getCreatedContextOrCreate(HibernateContext.class);
     private final Set<SessionFactory> sessionFactorySet = new HashSet<>();
 
@@ -51,7 +53,7 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
     }
 
     public Set<SessionFactory> getSessionFactories() {
-        if (sessionFactorySet.size() == 0) {
+        if (sessionFactorySet.isEmpty()) {
             if (USE_JPA_CONFIG.get()) {
                 if (PERSISTENCE_UNITS.get() != null) {
                     PERSISTENCE_UNITS.get().forEach(unit -> {
@@ -111,20 +113,20 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
 
     private static <R> SelectOneStepSupplier<R> setDescription(String description,
                                                                SelectOneStepSupplier<R> by) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         ((SetsDescription) by).changeDescription(translate(description));
         return by;
     }
 
     private static <R> SelectManyStepSupplier<R> setDescription(String description, SelectManyStepSupplier<R> by) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         ((SetsDescription) by).changeDescription(translate(description));
         return by;
     }
 
     private static <S, R> GetObjectFromEntity.GetObjectFromEntityImpl<S, R> setDescription(String description,
                                                                                            GetObjectFromEntity<S, R> toGet) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         var impl = (GetObjectFromEntity.GetObjectFromEntityImpl<S, R>) toGet;
         return impl.setDescription(translate(description));
     }
@@ -132,7 +134,7 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
     private static <ITEM, S extends Iterable<ITEM>, R> GetIterableFromEntity.GetIterableFromEntityImpl<ITEM, S, R>
     setDescription(String description,
                    GetIterableFromEntity<ITEM, S, R> toGet) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         var impl = (GetIterableFromEntity.GetIterableFromEntityImpl<ITEM, S, R>) toGet;
         return impl.setDescription(translate(description));
     }
@@ -140,7 +142,7 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
     private static <ITEM, R> GetArrayFromEntity.GetArrayFromEntityImpl<ITEM, R>
     setDescription(String description,
                    GetArrayFromEntity<ITEM, R> toGet) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         var impl = (GetArrayFromEntity.GetArrayFromEntityImpl<ITEM, R>) toGet;
         return impl.setDescription(translate(description));
     }
@@ -148,7 +150,7 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
     private static <ITEM, R> GetItemOfIterableFromEntity.GetItemOfIterableFromEntityImpl<ITEM, ? extends Iterable<ITEM>, R>
     setDescription(String description,
                    GetItemOfIterableFromEntity<ITEM, ? extends Iterable<ITEM>, R> toGet) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         var impl = (GetItemOfIterableFromEntity.GetItemOfIterableFromEntityImpl<ITEM, ? extends Iterable<ITEM>, R>) toGet;
         return impl.setDescription(translate(description));
     }
@@ -156,7 +158,7 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
     private static <ITEM, R> GetItemOfArrayFromEntity.GetItemOfArrayFromEntityImpl<ITEM, R>
     setDescription(String description,
                    GetItemOfArrayFromEntity<ITEM, R> toGet) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         var impl = (GetItemOfArrayFromEntity.GetItemOfArrayFromEntityImpl<ITEM, R>) toGet;
         return impl.setDescription(translate(description));
     }
@@ -164,7 +166,7 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
     private static <ITEM, S extends Iterable<ITEM>, R> GetListFromEntity.GetListFromEntityImpl<ITEM, S, R>
     setDescription(String description,
                    GetListFromEntity<ITEM, S, R> toGet) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         var impl = (GetListFromEntity.GetListFromEntityImpl<ITEM, S, R>) toGet;
         return impl.setDescription(translate(description));
     }
@@ -172,7 +174,7 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
     private static <ITEM, R> GetIterableFromEntities.GetIterableFromEntitiesImpl<ITEM, R>
     setDescription(String description,
                    GetIterableFromEntities<ITEM, R> toGet) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         var impl = (GetIterableFromEntities.GetIterableFromEntitiesImpl<ITEM, R>) toGet;
         return impl.setDescription(translate(description));
     }
@@ -180,7 +182,7 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
     private static <ITEM, R> GetIterableItemFromEntities.GetIterableItemFromEntitiesImpl<ITEM, R>
     setDescription(String description,
                    GetIterableItemFromEntities<ITEM, R> toGet) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         var impl = (GetIterableItemFromEntities.GetIterableItemFromEntitiesImpl<ITEM, R>) toGet;
         return impl.setDescription(translate(description));
     }
@@ -188,7 +190,7 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
     private static <ITEM, R> GetListFromEntities.GetListFromEntitiesImpl<ITEM, R>
     setDescription(String description,
                    GetListFromEntities<ITEM, R> toGet) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         var impl = (GetListFromEntities.GetListFromEntitiesImpl<ITEM, R>) toGet;
         return impl.setDescription(translate(description));
     }

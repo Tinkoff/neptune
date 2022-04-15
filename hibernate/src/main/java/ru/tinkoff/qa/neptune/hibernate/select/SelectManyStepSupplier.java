@@ -35,7 +35,7 @@ public abstract class SelectManyStepSupplier<R>
     @StepParameter(value = "selected by")
     final String select;
 
-    public SelectManyStepSupplier(Function<HibernateContext, Iterable<R>> select) {
+    protected SelectManyStepSupplier(Function<HibernateContext, Iterable<R>> select) {
         super(select);
         checkNotNull(select);
         this.select = select.toString();

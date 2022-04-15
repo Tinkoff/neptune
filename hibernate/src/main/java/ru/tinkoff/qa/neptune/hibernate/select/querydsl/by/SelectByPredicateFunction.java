@@ -19,7 +19,7 @@ public abstract class SelectByPredicateFunction<R, RESULT> extends HibernateFunc
     final Predicate predicate;
     final EntityPath<?> entityPath;
 
-    public SelectByPredicateFunction(Class<R> entity, EntityPath<?> entityPath, Predicate predicate) {
+    protected SelectByPredicateFunction(Class<R> entity, EntityPath<?> entityPath, Predicate predicate) {
         super(entity);
         checkNotNull(entityPath);
         checkNotNull(predicate);

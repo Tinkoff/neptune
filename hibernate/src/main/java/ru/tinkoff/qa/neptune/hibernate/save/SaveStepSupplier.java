@@ -27,6 +27,7 @@ import static java.util.Arrays.asList;
 import static java.util.List.of;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
+import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.NO_DESC_ERROR_TEXT;
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Save:")
 @CaptureOnSuccess(by = DataCaptor.class)
@@ -48,7 +49,7 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R>
     public static <R> SaveStepSupplier<R, R, R> save(
             String description,
             SelectOneStepSupplier<R> select) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         var translated = translate(description);
         ((SetsDescription) select).changeDescription(translated);
         return new SaveOneStepSupplier<>(select)
@@ -61,7 +62,7 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R>
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
                     String description,
             R toSave) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         checkNotNull(toSave);
         return new SaveOneStepSupplier<>(toSave);
     }
@@ -69,7 +70,7 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R>
     public static <R> SaveStepSupplier<Iterable<R>, Iterable<R>, R> save(
             String description,
             SelectManyStepSupplier<R> select) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         var translated = translate(description);
         ((SetsDescription) select).changeDescription(translated);
         return new SaveManyStepSupplier<>(select)
@@ -82,7 +83,7 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R>
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
                     String description,
             Iterable<R> toSave) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         checkNotNull(toSave);
         checkArgument(Iterables.size(toSave) > 0, "At leas one item to save should be defined");
         return new SaveManyStepSupplier<>(toSave);

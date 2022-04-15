@@ -4,6 +4,7 @@ import ru.tinkoff.qa.neptune.core.api.properties.PropertyDescription;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -24,7 +25,7 @@ public final class PersistenceUnits implements PropertySupplier<List<String>, St
     public List<String> parse(String value) {
         var trimmed = value.trim();
         if (isBlank(trimmed)) {
-            return null;
+            return Collections.emptyList();
         }
         return List.of(trimmed.split(","));
     }

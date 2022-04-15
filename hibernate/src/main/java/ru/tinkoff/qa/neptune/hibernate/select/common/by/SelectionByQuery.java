@@ -15,7 +15,7 @@ public abstract class SelectionByQuery<R, RESULT> extends HibernateFunction<R, R
     final String queryString;
     Object[] parameters;
 
-    public SelectionByQuery(Class<R> entity, String queryString, Object... parameters) {
+    protected SelectionByQuery(Class<R> entity, String queryString, Object... parameters) {
         super(entity);
         checkNotNull(queryString);
         this.queryString = queryString;

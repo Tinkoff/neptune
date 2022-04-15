@@ -60,7 +60,7 @@ public abstract class SelectManyByOrderSpecifiersSupplier<R, S extends SelectMan
         return result;
     }
 
-    public static abstract class SelectManyByPredicateAndOrderSpecifiersSupplier<R>
+    public abstract static class SelectManyByPredicateAndOrderSpecifiersSupplier<R>
             extends SelectManyByOrderSpecifiersSupplier<R, SelectManyByPredicateAndOrderSpecifiersSupplier<R>> {
 
         @StepParameter(value = "Predicate", makeReadableBy = PredicateParameterValueGetter.class, doNotReportNullValues = true)
@@ -84,7 +84,7 @@ public abstract class SelectManyByOrderSpecifiersSupplier<R, S extends SelectMan
         }
     }
 
-    public static abstract class SelectManyByPredicateAndPageableSupplier<R>
+    public abstract static class SelectManyByPredicateAndPageableSupplier<R>
             extends SelectManyByOrderSpecifiersSupplier<R, SelectManyByPredicateAndPageableSupplier<R>> {
 
         @StepParameter(value = "Predicate", makeReadableBy = PredicateParameterValueGetter.class, doNotReportNullValues = true)

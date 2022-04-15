@@ -14,7 +14,7 @@ public abstract class SelectionByCriteria<R, RESULT> extends HibernateFunction<R
 
     final CriteriaQuery<R> criteriaQuery;
 
-    public SelectionByCriteria(Class<R> entity, CriteriaQuery<R> criteriaQuery) {
+    protected SelectionByCriteria(Class<R> entity, CriteriaQuery<R> criteriaQuery) {
         super(entity);
         checkNotNull(criteriaQuery);
         this.criteriaQuery = criteriaQuery;

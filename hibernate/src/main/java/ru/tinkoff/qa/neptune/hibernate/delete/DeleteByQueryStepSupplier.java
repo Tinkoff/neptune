@@ -27,6 +27,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.database.abstractions.data.serializer.DataSerializer.serializeObject;
 import static ru.tinkoff.qa.neptune.database.abstractions.data.serializer.DataSerializer.serializeObjects;
+import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.NO_DESC_ERROR_TEXT;
 
 @IncludeParamsOfInnerGetterStep
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Delete:")
@@ -49,7 +50,7 @@ public abstract class DeleteByQueryStepSupplier<R>
     public static <R> DeleteByQueryStepSupplier<R> delete(
             String description,
             SelectOneStepSupplier<R> select) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         var translated = translate(description);
         ((SetsDescription) select).changeDescription(translated);
         return new DeleteOneStepSupplier<>(select)
@@ -62,7 +63,7 @@ public abstract class DeleteByQueryStepSupplier<R>
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
                     String description,
             R toDelete) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         checkNotNull(toDelete);
         return new DeleteOneStepSupplier<>(toDelete);
     }
@@ -70,7 +71,7 @@ public abstract class DeleteByQueryStepSupplier<R>
     public static <R> DeleteByQueryStepSupplier<Iterable<R>> delete(
             String description,
             SelectManyStepSupplier<R> select) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         var translated = translate(description);
         ((SetsDescription) select).changeDescription(translated);
         return new DeleteManyStepSupplier<>(select)
@@ -83,7 +84,7 @@ public abstract class DeleteByQueryStepSupplier<R>
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
                     String description,
             Iterable<R> toDelete) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         checkNotNull(toDelete);
         checkArgument(Iterables.size(toDelete) > 0, "At leas one item to delete should be defined");
         return new DeleteManyStepSupplier<>(toDelete);

@@ -10,7 +10,9 @@ import ru.tinkoff.qa.neptune.hibernate.HibernateFunction;
 
 import java.util.List;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
@@ -52,7 +54,7 @@ public final class SelectByOrderedFunction<R> extends HibernateFunction<R, Itera
             query = query.select(predicate);
         }
 
-        if (orderSpecifiers != null) {
+        if (orderSpecifiers.length != 0) {
             query = query.orderBy(orderSpecifiers);
         }
 
