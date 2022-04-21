@@ -1,0 +1,96 @@
+test {
+    useTestNG()
+}
+
+configurations {
+    bundleGeneration
+}
+
+dependencies {
+    api(project(":database.abstractions"))
+    api project(':core.api')
+    compileClasspath group: 'org.hibernate', name: 'hibernate-core', version: '5.6.0.Final'
+    compileClasspath group: 'com.querydsl', name: 'querydsl-core', version: queryDslVersion
+    compileClasspath group: 'com.querydsl', name: 'querydsl-jpa', version: queryDslVersion
+
+    testImplementation group: 'org.hibernate', name: 'hibernate-core', version: '5.6.0.Final'
+    testImplementation group: 'com.querydsl', name: 'querydsl-core', version: queryDslVersion
+    testImplementation group: 'com.querydsl', name: 'querydsl-jpa', version: queryDslVersion
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockitoVersion
+
+    bundleGeneration(group: 'com.querydsl', name: 'querydsl-core', version: queryDslVersion)
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+task generateBundle(type: JavaExec)  {
+    classpath=configurations.bundleGeneration + sourceSets.main.compileClasspath
+    classpath sourceSets.main.runtimeClasspath
+    main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
+    args "ru_RU",
+            "$projectDir/src/main/resources",
+            "false",
+            "hibernate"
+}
+
+processResources {
+    doLast {
+        generateBundle.exec()
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'hibernate'
+            from components.java
+            repositories {
+                maven {
+                    credentials(PasswordCredentials)
+                    url = 'https://nexus-new.tcsbank.ru/repository/mvn-bigops-qa'
+                }
+            }
+            pom {
+                packaging = 'jar'
+                name = 'hibernate'
+                version = version
+                url = 'https://github.com/TinkoffCreditSystems/neptune'
+                licenses {
+                    license {
+                        name = 'Apache License, Version 2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution = 'repo'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'Burnouttt'
+                        name = 'Denis Prikhodko'
+                        email = 'burnouttt@yandex.ru'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
+                    url = 'https://github.com/TinkoffCreditSystems/neptune'
+                }
+            }
+        }
+    }
+}
+
+javadoc {
+    destinationDir = file("${buildDir}/../../../neptune.documentation/javadocs/$project.name")
+
+    title = "Neptune Hibernate Integration API v$globalVersion"
+    options.author true
+    options.links 'https://download.oracle.com/javase/9/docs/api/'
+    options.addStringOption 'Xdoclint:none', '-quiet'
+    options.memberLevel = JavadocMemberLevel.PROTECTED
+    options.bottom = "Copyright &copy; 2022 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+    options.addBooleanOption('html5', true)
+}

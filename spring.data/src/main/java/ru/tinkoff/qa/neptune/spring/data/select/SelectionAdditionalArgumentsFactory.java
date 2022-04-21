@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.spring.data.select;
 
-import ru.tinkoff.qa.neptune.spring.data.dictionary.Argument;
-import ru.tinkoff.qa.neptune.spring.data.dictionary.InvokedMethod;
+import ru.tinkoff.qa.neptune.database.abstractions.dictionary.Argument;
+import ru.tinkoff.qa.neptune.database.abstractions.dictionary.InvokedMethod;
 import ru.tinkoff.qa.neptune.spring.data.select.common.by.SelectionByMethod;
 
 import java.util.LinkedHashMap;

@@ -52,6 +52,7 @@ subprojects {
         springVersion = '5.3.18'
         springBootVersion = '2.6.6'
         bytybuddyVersion = '1.12.8'
+        queryDslVersion = '5.0.0'
         globalVersion = version
     }
 

@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.spring.data.dictionary;
+package ru.tinkoff.qa.neptune.database.abstractions.dictionary;
 
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
