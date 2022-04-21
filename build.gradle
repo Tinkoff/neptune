@@ -61,10 +61,10 @@ subprojects {
     }
 
     dependencies {
-        api group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
-        api group: 'com.google.guava', name: 'guava', version: '31.0.1-jre'
+        implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+        implementation group: 'com.google.guava', name: 'guava', version: '31.0.1-jre'
         testImplementation group: 'org.testng', name: 'testng', version: testNGVersion
-        api group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+        implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
         api group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion2
         api group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: jacksonVersion
         api group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: jacksonVersion
@@ -72,7 +72,7 @@ subprojects {
         api group: 'commons-validator', name: 'commons-validator', version: '1.7'
         api group: 'commons-io', name: 'commons-io', version: '2.11.0'
         api group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
-        api group: 'io.github.classgraph', name: 'classgraph', version: '4.8.139'
+        implementation group: 'io.github.classgraph', name: 'classgraph', version: '4.8.139'
         testImplementation group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion
         compileClasspath group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion
         implementation group: 'org.apache.tika', name: 'tika-core', version: '2.3.0'
