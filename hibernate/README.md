@@ -59,8 +59,8 @@ Neptune Hibernate Integration API
     }
 ```
 
-[Краткая документация на русском](./doc/rus/README.md)
+[Краткая документация на русском](./doc/rus/README.MD)
 
-[Brief documentation in English](./doc/eng/README.md)
+[Brief documentation in English](./doc/eng/README.MD)
 
 [API overview](https://tinkoff.github.io/neptune/hibernate/index.html)
