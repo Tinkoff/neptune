@@ -5,16 +5,21 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.captors.request.AbstractRequestBodyCaptor;
 import ru.tinkoff.qa.neptune.http.api.captors.response.AbstractResponseBodyObjectCaptor;
 import ru.tinkoff.qa.neptune.http.api.captors.response.AbstractResponseBodyObjectsCaptor;
 import ru.tinkoff.qa.neptune.http.api.captors.response.RequestResponseLogCaptor;
 import ru.tinkoff.qa.neptune.http.api.captors.response.ResponseCaptor;
+import ru.tinkoff.qa.neptune.http.api.request.NeptuneHttpRequestImpl;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 
 import java.net.http.HttpResponse;
+import java.time.Duration;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.getCaptors;
 
@@ -24,22 +29,41 @@ import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil
  * @param <T> is a type of response body
  */
 @CaptureOnSuccess(by = {ResponseCaptor.class, AbstractResponseBodyObjectCaptor.class, AbstractResponseBodyObjectsCaptor.class})
-@MaxDepthOfReporting(0)
 @Description("Http Response")
-public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSupplier.GetSimpleStepSupplier<HttpStepContext, HttpResponse<T>,
-        ResponseSequentialGetSupplier<T>> {
+@MaxDepthOfReporting(1)
+@ThrowWhenNoData(toThrow = ExpectedHttpResponseHasNotBeenReceivedException.class, startDescription = "Not received")
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Response criteria")
+@SequentialGetStepSupplier.DefineTimeOutParameterName("Time to receive expected http response and get the result")
+public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSupplier.GetObjectStepSupplier<HttpStepContext, HttpResponse<T>,
+    ResponseSequentialGetSupplier<T>> {
 
     final RequestParameters parameters;
     @CaptureOnSuccess(by = RequestResponseLogCaptor.class)
     @CaptureOnFailure(by = RequestResponseLogCaptor.class)
     final ResponseExecutionInfo info;
-    private final GetResponseFunction<T, T> f;
+    private final NeptuneHttpRequestImpl request;
 
-    private ResponseSequentialGetSupplier(GetResponseFunction<T, T> f) {
-        super(f.andThen(ResponseExecutionResult::getResponse));
-        this.f = f;
-        info = f.getInfo();
-        parameters = new RequestParameters(f.getRequest());
+    @CaptureOnSuccess(by = {ResponseCaptor.class, AbstractResponseBodyObjectCaptor.class, AbstractResponseBodyObjectsCaptor.class})
+    @CaptureOnFailure(by = {ResponseCaptor.class, AbstractResponseBodyObjectCaptor.class, AbstractResponseBodyObjectsCaptor.class})
+    HttpResponse<?> lastReceived;
+
+    private ResponseSequentialGetSupplier(NeptuneHttpRequestImpl request,
+                                          HttpResponse.BodyHandler<T> bodyHandler,
+                                          ResponseExecutionInfo info) {
+        super(httpStepContext -> {
+            info.setLastReceived(null);
+            try {
+                var response = httpStepContext.getCurrentClient().send(request, bodyHandler);
+                info.setLastReceived(response);
+                return response;
+            } catch (Exception e) {
+                throw new HttpResponseException(e);
+            }
+        });
+        checkNotNull(request);
+        this.request = request;
+        this.info = info;
+        parameters = new RequestParameters(request);
     }
 
     /**
@@ -53,14 +77,44 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
      */
     public static <T> ResponseSequentialGetSupplier<T> response(RequestBuilder requestBuilder,
                                                                 HttpResponse.BodyHandler<T> bodyHandler) {
-        return new ResponseSequentialGetSupplier<>(new GetResponseFunction<>(requestBuilder.build(), bodyHandler, t -> t, null));
+        return new ResponseSequentialGetSupplier<>((NeptuneHttpRequestImpl) requestBuilder.build(), bodyHandler, new ResponseExecutionInfo());
     }
 
     @Override
     @SuppressWarnings("unchecked")
     protected void onStart(HttpStepContext httpStepContext) {
+        info.startExecutionLogging();
         if (toReport) {
-            catchValue(f.getRequest().body(), getCaptors(new Class[]{AbstractRequestBodyCaptor.class}));
+            catchValue(request.body(), getCaptors(new Class[]{AbstractRequestBodyCaptor.class}));
         }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void onSuccess(HttpResponse<T> result) {
+        info.stopExecutionLogging();
+        lastReceived = ofNullable(result)
+            .orElseGet(() -> (HttpResponse<T>) info.getLastReceived());
+    }
+
+    @Override
+    protected void onFailure(HttpStepContext httpStepContext, Throwable throwable) {
+        info.stopExecutionLogging();
+        lastReceived = info.getLastReceived();
+    }
+
+    @Override
+    protected ResponseSequentialGetSupplier<T> timeOut(Duration duration) {
+        return super.timeOut(duration);
+    }
+
+    @Override
+    protected ResponseSequentialGetSupplier<T> pollingInterval(Duration duration) {
+        return super.pollingInterval(duration);
+    }
+
+    @Override
+    protected ResponseSequentialGetSupplier<T> addIgnored(Class<? extends Throwable> toBeIgnored) {
+        return super.addIgnored(toBeIgnored);
     }
 }

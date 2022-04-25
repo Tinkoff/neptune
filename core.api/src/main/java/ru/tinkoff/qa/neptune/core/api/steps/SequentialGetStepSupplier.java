@@ -457,7 +457,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     protected abstract Function<M, R> getEndFunction();
 
-    Criteria<P> getCriteria() {
+    protected Criteria<P> getCriteria() {
         return condition;
     }
 
