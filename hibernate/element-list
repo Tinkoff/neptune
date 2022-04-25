@@ -1,0 +1,11 @@
+ru.tinkoff.qa.neptune.hibernate
+ru.tinkoff.qa.neptune.hibernate.delete
+ru.tinkoff.qa.neptune.hibernate.exception
+ru.tinkoff.qa.neptune.hibernate.localization
+ru.tinkoff.qa.neptune.hibernate.properties
+ru.tinkoff.qa.neptune.hibernate.save
+ru.tinkoff.qa.neptune.hibernate.select
+ru.tinkoff.qa.neptune.hibernate.select.common
+ru.tinkoff.qa.neptune.hibernate.select.common.by
+ru.tinkoff.qa.neptune.hibernate.select.querydsl
+ru.tinkoff.qa.neptune.hibernate.select.querydsl.by
