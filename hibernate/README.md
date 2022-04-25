@@ -63,4 +63,4 @@ Neptune Hibernate Integration API
 
 [Brief documentation in English](./doc/eng/README.md)
 
-[API overview](https://tinkoffcreditsystems.github.io/neptune/hibernate/index.html)
+[API overview](https://tinkoff.github.io/neptune/hibernate/index.html)
