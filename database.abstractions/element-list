@@ -1,4 +1,5 @@
 ru.tinkoff.qa.neptune.database.abstractions
 ru.tinkoff.qa.neptune.database.abstractions.captors
 ru.tinkoff.qa.neptune.database.abstractions.data.serializer
+ru.tinkoff.qa.neptune.database.abstractions.dictionary
 ru.tinkoff.qa.neptune.database.abstractions.localization
