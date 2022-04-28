@@ -8,7 +8,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
-import ru.tinkoff.qa.neptune.http.api.response.dictionary.HasAtLeastOneItem;
 
 import java.net.http.HttpResponse;
 import java.time.Duration;
@@ -21,7 +20,7 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplier.response;
-import static ru.tinkoff.qa.neptune.http.api.response.dictionary.CalculatedResponseDateHasItem.hasResultItem;
+import static ru.tinkoff.qa.neptune.http.api.response.dictionary.AdditionalCriteriaDescription.hasResultItem;
 
 /**
  * It builds a step-function that retrieves an object from array which is retrieved from
@@ -34,12 +33,28 @@ public final class GetObjectFromArrayBodyStepSupplier<T, R>
     extends SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier<HttpStepContext, R, HttpResponse<T>, GetObjectFromArrayBodyStepSupplier<T, R>>
     implements DefinesResponseCriteria<T, GetObjectFromArrayBodyStepSupplier<T, R>> {
 
-    private final Function<T, R[]> calculation;
-
+    @Deprecated(forRemoval = true)
     private GetObjectFromArrayBodyStepSupplier(Function<T, R[]> f) {
         super(httpResponse -> f.apply(httpResponse.body()));
         addIgnored(Exception.class);
-        calculation = f;
+    }
+
+    private GetObjectFromArrayBodyStepSupplier() {
+        super(tHttpResponse -> ((Response<T, R[]>) tHttpResponse).getCalculated());
+        addIgnored(Exception.class);
+    }
+
+    @Description("{description}")
+    static <T, R> GetObjectFromArrayBodyStepSupplier<T, R> asOneOfArray(
+        @DescriptionFragment(
+            value = "description",
+            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+            String description,
+        RequestBuilder<T> requestBuilder,
+        Function<T, R[]> f) {
+        checkArgument(isNotBlank(description), "description of resulted value is not defined");
+        return new GetObjectFromArrayBodyStepSupplier<T, R>()
+            .from(response(requestBuilder, f).addIgnored(Exception.class));
     }
 
     /**
@@ -80,17 +95,18 @@ public final class GetObjectFromArrayBodyStepSupplier<T, R>
      * @return an instance of {@link GetObjectFromArrayBodyStepSupplier}
      */
     @Description("{description}")
+    @Deprecated(forRemoval = true)
     public static <T, R> GetObjectFromArrayBodyStepSupplier<T, R> asOneOfArray(
         @DescriptionFragment(
             value = "description",
             makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
             String description,
-        RequestBuilder requestBuilder,
+        RequestBuilder<?> requestBuilder,
         HttpResponse.BodyHandler<T> handler,
         Function<T, R[]> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectFromArrayBodyStepSupplier<>(f)
-            .from(response(requestBuilder, handler).addIgnored(Exception.class));
+        return new GetObjectFromArrayBodyStepSupplier<T, R>()
+            .from(response(requestBuilder.responseBodyHandler(handler), f).addIgnored(Exception.class));
     }
 
 
@@ -123,7 +139,7 @@ public final class GetObjectFromArrayBodyStepSupplier<T, R>
     @Deprecated(forRemoval = true)
     public static <R> GetObjectFromArrayBodyStepSupplier<R[], R> asOneOfArray(
         String description,
-        RequestBuilder requestBuilder,
+        RequestBuilder<?> requestBuilder,
         HttpResponse.BodyHandler<R[]> handler) {
         return asOneOfArray(description, requestBuilder, handler, rs -> rs);
     }
@@ -137,12 +153,12 @@ public final class GetObjectFromArrayBodyStepSupplier<T, R>
             if (resultCriteria != null) {
                 responseCriteria = condition(
                     hasResultItem(getDescription(), resultCriteria.toString()).toString(),
-                    r -> stream(calculation.apply(r.body())).anyMatch(resultCriteria.get())
+                    r -> stream(((Response<?, R[]>) r).getCalculated()).anyMatch(resultCriteria.get())
                 );
             } else {
                 responseCriteria = condition(
-                    hasResultItem(getDescription(), new HasAtLeastOneItem().toString()).toString(),
-                    r -> calculation.apply(r.body()).length > 0
+                    hasResultItem(getDescription()).toString(),
+                    r -> ((Response<?, R[]>) r).getCalculated().length > 0
                 );
             }
         }
@@ -164,5 +180,4 @@ public final class GetObjectFromArrayBodyStepSupplier<T, R>
     public GetObjectFromArrayBodyStepSupplier<T, R> pollingInterval(Duration timeOut) {
         return DefinesResponseCriteria.super.pollingInterval(timeOut);
     }
-
 }

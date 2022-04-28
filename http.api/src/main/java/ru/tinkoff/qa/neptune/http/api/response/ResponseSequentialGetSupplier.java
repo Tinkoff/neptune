@@ -14,12 +14,13 @@ import ru.tinkoff.qa.neptune.http.api.captors.response.RequestResponseLogCaptor;
 import ru.tinkoff.qa.neptune.http.api.captors.response.ResponseCaptor;
 import ru.tinkoff.qa.neptune.http.api.request.NeptuneHttpRequestImpl;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
+import ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory;
 
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.getCaptors;
 
@@ -28,7 +29,6 @@ import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil
  *
  * @param <T> is a type of response body
  */
-@CaptureOnSuccess(by = {ResponseCaptor.class, AbstractResponseBodyObjectCaptor.class, AbstractResponseBodyObjectsCaptor.class})
 @Description("Http Response")
 @MaxDepthOfReporting(1)
 @ThrowWhenNoData(toThrow = ExpectedHttpResponseHasNotBeenReceivedException.class, startDescription = "Not received")
@@ -38,24 +38,28 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
     ResponseSequentialGetSupplier<T>> {
 
     final RequestParameters parameters;
+
     @CaptureOnSuccess(by = RequestResponseLogCaptor.class)
     @CaptureOnFailure(by = RequestResponseLogCaptor.class)
     final ResponseExecutionInfo info;
+
     private final NeptuneHttpRequestImpl request;
 
     @CaptureOnSuccess(by = {ResponseCaptor.class, AbstractResponseBodyObjectCaptor.class, AbstractResponseBodyObjectsCaptor.class})
     @CaptureOnFailure(by = {ResponseCaptor.class, AbstractResponseBodyObjectCaptor.class, AbstractResponseBodyObjectsCaptor.class})
     HttpResponse<?> lastReceived;
 
-    private ResponseSequentialGetSupplier(NeptuneHttpRequestImpl request,
-                                          HttpResponse.BodyHandler<T> bodyHandler,
-                                          ResponseExecutionInfo info) {
+    private <R> ResponseSequentialGetSupplier(NeptuneHttpRequestImpl request,
+                                              HttpResponse.BodyHandler<T> bodyHandler,
+                                              Function<T, R> additionalCalculation,
+                                              ResponseExecutionInfo info) {
         super(httpStepContext -> {
             info.setLastReceived(null);
             try {
                 var response = httpStepContext.getCurrentClient().send(request, bodyHandler);
                 info.setLastReceived(response);
-                return response;
+                var calculated = additionalCalculation.apply(response.body());
+                return new Response<>(response, calculated);
             } catch (Exception e) {
                 throw new HttpResponseException(e);
             }
@@ -67,17 +71,23 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
     }
 
     /**
-     * Creates an instance that builds a step-function to send an http request and to receive a response
-     * with body.
+     * Creates an instance that builds a step-function to send http request and to receive a response.
      *
-     * @param requestBuilder is a builder of an http request
-     * @param bodyHandler    of a response body
+     * @param requestBuilder is a builder of http request
+     * @param calculation    is an additional calculation to get some value from response body
      * @param <T>            is a type of response body
+     * @param <R>            is a type of value calculated using response body
      * @return an instance of {@link ResponseSequentialGetSupplier}
      */
-    public static <T> ResponseSequentialGetSupplier<T> response(RequestBuilder requestBuilder,
-                                                                HttpResponse.BodyHandler<T> bodyHandler) {
-        return new ResponseSequentialGetSupplier<>((NeptuneHttpRequestImpl) requestBuilder.build(), bodyHandler, new ResponseExecutionInfo());
+    public static <T, R> ResponseSequentialGetSupplier<T> response(RequestBuilder<T> requestBuilder,
+                                                                   Function<T, R> calculation) {
+        checkNotNull(requestBuilder);
+        checkNotNull(calculation);
+        return new ResponseSequentialGetSupplier<>(
+            (NeptuneHttpRequestImpl) requestBuilder.build(),
+            ((RequestBuilderFactory.RequestBuilderWithHandler<T>) requestBuilder).getBodyHandler(),
+            calculation,
+            new ResponseExecutionInfo());
     }
 
     @Override
@@ -90,15 +100,16 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void onSuccess(HttpResponse<T> result) {
-        info.stopExecutionLogging();
-        lastReceived = ofNullable(result)
-            .orElseGet(() -> (HttpResponse<T>) info.getLastReceived());
+        afterExecution();
     }
 
     @Override
     protected void onFailure(HttpStepContext httpStepContext, Throwable throwable) {
+        afterExecution();
+    }
+
+    private void afterExecution() {
         info.stopExecutionLogging();
         lastReceived = info.getLastReceived();
     }

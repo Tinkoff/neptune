@@ -12,18 +12,13 @@ import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
-import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionCriteria.executionResultMatches;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionCriteria.responseResultMatches;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionResultMatches.resultMatches;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplierInternal.responseInternal;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
+import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplier.response;
+import static ru.tinkoff.qa.neptune.http.api.response.dictionary.AdditionalCriteriaDescription.isPossibleToGetExpectedValue;
 
 /**
  * Builds a step-function that retrieves an object from http response body.
@@ -31,16 +26,43 @@ import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSuppl
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of a resulted value")
 @ThrowWhenNoData(toThrow = DesiredDataHasNotBeenReceivedException.class, startDescription = "No data received:")
 @SuppressWarnings("unchecked")
-public abstract class GetObjectFromBodyStepSupplier<T, R, M, S extends GetObjectFromBodyStepSupplier<T, R, M, S>>
-        extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<HttpStepContext, R, M, S> {
+public final class GetObjectFromBodyStepSupplier<T, R>
+    extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<HttpStepContext, R, HttpResponse<T>, GetObjectFromBodyStepSupplier<T, R>>
+    implements DefinesResponseCriteria<T, GetObjectFromBodyStepSupplier<T, R>> {
 
-    private GetObjectFromBodyStepSupplier(Function<M, R> f) {
-        super(f);
+    @Deprecated(forRemoval = true)
+    private GetObjectFromBodyStepSupplier(Function<T, R> f) {
+        super(httpResponse -> f.apply(httpResponse.body()));
         addIgnored(Exception.class);
     }
 
+    private GetObjectFromBodyStepSupplier() {
+        super(httpResponse -> ((Response<T, R>) httpResponse).getCalculated());
+        addIgnored(Exception.class);
+    }
+
+    @Description("{description}")
+    static <T, R> GetObjectFromBodyStepSupplier<T, R> asObject(
+        @DescriptionFragment(
+            value = "description",
+            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+            String description,
+        RequestBuilder<T> requestBuilder,
+        Function<T, R> f) {
+        checkArgument(isNotBlank(description), "description of resulted value is not defined");
+        return new GetObjectFromBodyStepSupplier<T, R>()
+            .from(response(requestBuilder, f).addIgnored(Exception.class));
+    }
+
+    @Description("Body of http response")
+    static <T> GetObjectFromBodyStepSupplier<T, T> body(
+        RequestBuilder<T> requestBuilder) {
+        return new GetObjectFromBodyStepSupplier<T, T>()
+            .from(response(requestBuilder, t -> t).addIgnored(Exception.class));
+    }
+
     /**
-     * Creates an instance of {@link GetObjectWhenResponseReceived}. It builds a step-function that retrieves
+     * Creates an instance of {@link GetObjectFromBodyStepSupplier}. It builds a step-function that retrieves
      * an object from http response body.
      *
      * @param description is a description of resulted object
@@ -48,34 +70,36 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, M, S extends GetObject
      * @param f           is a function that describes how to get resulted object from a body of http response
      * @param <T>         is a type of response body
      * @param <R>         is a type of resulted object
-     * @return an instance of {@link GetObjectWhenResponseReceived}
+     * @return an instance of {@link GetObjectFromBodyStepSupplier}
      */
     @Description("{description}")
-    public static <T, R> GetObjectWhenResponseReceived<T, R> asObject(
-            @DescriptionFragment(
-                    value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class) String description,
-            HttpResponse<T> received,
-            Function<T, R> f) {
+    @Deprecated(forRemoval = true)
+    public static <T, R> GetObjectFromBodyStepSupplier<T, R> asObject(
+        @DescriptionFragment(
+            value = "description",
+            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class) String description,
+        HttpResponse<T> received,
+        Function<T, R> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectWhenResponseReceived<>(received, f);
+        return new GetObjectFromBodyStepSupplier<>(f).from(received);
     }
 
     /**
-     * Creates an instance of {@link GetObjectWhenResponseReceived}. It builds a step-function that retrieves
+     * Creates an instance of {@link GetObjectFromBodyStepSupplier}. It builds a step-function that retrieves
      * a body of http response.
      *
      * @param received is a received http response
      * @param <T>      is a type of response body
-     * @return an instance of {@link GetObjectWhenResponseReceived}
+     * @return an instance of {@link GetObjectFromBodyStepSupplier}
      */
     @Description("Body of http response")
-    public static <T> GetObjectWhenResponseReceived<T, T> asIs(HttpResponse<T> received) {
-        return new GetObjectWhenResponseReceived<>(received, t -> t);
+    @Deprecated(forRemoval = true)
+    public static <T> GetObjectFromBodyStepSupplier<T, T> asIs(HttpResponse<T> received) {
+        return new GetObjectFromBodyStepSupplier<T, T>(t -> t).from(received);
     }
 
     /**
-     * Creates an instance of {@link GetObjectWhenResponseReceiving}. It builds a step-function that retrieves
+     * Creates an instance of {@link GetObjectFromBodyStepSupplier}. It builds a step-function that retrieves
      * an object from http response body.
      *
      * @param description    is a description of resulted object
@@ -84,189 +108,69 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, M, S extends GetObject
      * @param f              is a function that describes how to get resulted object from a body of http response
      * @param <T>            is a type of response body
      * @param <R>            is a type of resulted object
-     * @return an instance of {@link GetObjectWhenResponseReceiving}
+     * @return an instance of {@link GetObjectFromBodyStepSupplier}
      */
     @Description("{description}")
-    public static <T, R> GetObjectWhenResponseReceiving<T, R> asObject(
-            @DescriptionFragment(
-                    value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
-                    String description,
-            RequestBuilder requestBuilder,
-            HttpResponse.BodyHandler<T> handler,
-            Function<T, R> f) {
+    @Deprecated(forRemoval = true)
+    public static <T, R> GetObjectFromBodyStepSupplier<T, R> asObject(
+        @DescriptionFragment(
+            value = "description",
+            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
+            String description,
+        RequestBuilder<?> requestBuilder,
+        HttpResponse.BodyHandler<T> handler,
+        Function<T, R> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectWhenResponseReceiving<>(responseInternal(translate(description), requestBuilder, handler, f, r -> true));
+        return new GetObjectFromBodyStepSupplier<T, R>()
+            .from(response(requestBuilder.responseBodyHandler(handler), f).addIgnored(Exception.class));
     }
 
     /**
-     * Creates an instance of {@link GetObjectWhenResponseReceiving}. It builds a step-function that retrieves
+     * Creates an instance of {@link GetObjectFromBodyStepSupplier}. It builds a step-function that retrieves
      * a body of http response.
      *
      * @param requestBuilder describes a request to be sent
      * @param handler        is a response body handler
      * @param <T>            is a type of response body
-     * @return an instance of {@link GetObjectWhenResponseReceiving}
+     * @return an instance of {@link GetObjectFromBodyStepSupplier}
      */
     @Description("Body of http response")
-    public static <T> GetObjectWhenResponseReceiving<T, T> asIs(RequestBuilder requestBuilder,
-                                                                HttpResponse.BodyHandler<T> handler) {
-        return new GetObjectWhenResponseReceiving<>(responseInternal(requestBuilder, handler));
+    @Deprecated(forRemoval = true)
+    public static <T> GetObjectFromBodyStepSupplier<T, T> asIs(RequestBuilder<?> requestBuilder,
+                                                               HttpResponse.BodyHandler<T> handler) {
+        return new GetObjectFromBodyStepSupplier<T, T>()
+            .from(response(requestBuilder.responseBodyHandler(handler), t -> t).addIgnored(Exception.class));
     }
 
-    /**
-     * Returns an object from a body of http response which is received already.
-     *
-     * @param <T> is a type of response body
-     * @param <R> is a type of resulted object
-     */
-    @SuppressWarnings("unused")
-    @DefineGetImperativeParameterName(value = "From http response get:")
-    @DefineFromParameterName("Response")
-    public static final class GetObjectWhenResponseReceived<T, R>
-            extends GetObjectFromBodyStepSupplier<T, R, HttpResponse<T>, GetObjectWhenResponseReceived<T, R>> {
-
-        private GetObjectWhenResponseReceived(HttpResponse<T> response, Function<T, R> f) {
-            super(f.compose(HttpResponse::body));
-            checkNotNull(response);
-            from(response);
+    @Override
+    public GetObjectFromBodyStepSupplier<T, R> throwOnNoResult() {
+        var fromVal = getFrom();
+        if (fromVal instanceof ResponseSequentialGetSupplier) {
+            ((ResponseSequentialGetSupplier<T>) fromVal).throwOnNoResult();
         }
+        return super.throwOnNoResult();
     }
 
-    /**
-     * Returns an object from a body of http response. Response is supposed to be received during the step execution
-     *
-     * @param <T> is a type of response body
-     * @param <R> is a type of resulted object
-     */
-    public static final class GetObjectWhenResponseReceiving<T, R>
-            extends GetObjectFromBodyStepSupplier<T, R, ResponseExecutionResult<T, R>, GetObjectWhenResponseReceiving<T, R>> {
+    @Override
+    public GetObjectFromBodyStepSupplier<T, R> pollingInterval(Duration timeOut) {
+        return DefinesResponseCriteria.super.pollingInterval(timeOut);
+    }
 
-        private Criteria<R> derivedValueCriteria;
-
-        private GetObjectWhenResponseReceiving(ResponseSequentialGetSupplierInternal<T, R> getResponse) {
-            super(ResponseExecutionResult::getResult);
-            from(getResponse.addIgnored(Exception.class));
-        }
-
-        /**
-         * Defines time to receive a response and get desired data.
-         *
-         * @param timeOut is a time duration to receive a response and get desired data
-         * @return self-reference
-         * @see SequentialGetStepSupplier#timeOut(Duration)
-         */
-        public GetObjectWhenResponseReceiving<T, R> retryTimeOut(Duration timeOut) {
-            ((ResponseSequentialGetSupplierInternal<?, ?>) getFrom()).timeOut(timeOut);
-            return this;
-        }
-
-        @Override
-        public GetObjectWhenResponseReceiving<T, R> pollingInterval(Duration pollingTime) {
-            ((ResponseSequentialGetSupplierInternal<?, ?>) getFrom()).pollingInterval(pollingTime);
-            return this;
-        }
-
-        /**
-         * Defines criteria for expected http response.
-         *
-         * @param description criteria description
-         * @param predicate   is how to match http response
-         * @return self-reference
-         */
-        public GetObjectWhenResponseReceiving<T, R> responseCriteria(String description, Predicate<HttpResponse<T>> predicate) {
-            return responseCriteria(condition(description, predicate));
-        }
-
-        /**
-         * Defines criteria for expected http response.
-         *
-         * @param criteria describes how to match http response
-         * @return self-reference
-         */
-        public GetObjectWhenResponseReceiving<T, R> responseCriteria(Criteria<HttpResponse<T>> criteria) {
-            ((ResponseSequentialGetSupplierInternal<T, R>) getFrom()).criteria(responseResultMatches(criteria));
-            return this;
-        }
-
-        /**
-         * Defines OR-expression for expected http response.
-         *
-         * @param criteria describes how to match http response
-         * @return self-reference
-         */
-        public GetObjectWhenResponseReceiving<T, R> responseCriteriaOr(Criteria<HttpResponse<T>>... criteria) {
-            return responseCriteria(OR(criteria));
-        }
-
-        /**
-         * Defines XOR-expression for expected http response.
-         *
-         * @param criteria describes how to match http response
-         * @return self-reference
-         */
-        public GetObjectWhenResponseReceiving<T, R> responseCriteriaOnlyOne(Criteria<HttpResponse<T>>... criteria) {
-            return responseCriteria(ONLY_ONE(criteria));
-        }
-
-        /**
-         * Defines NOT-expression for expected http response.
-         *
-         * @param criteria describes how to match http response
-         * @return self-reference
-         */
-        public GetObjectWhenResponseReceiving<T, R> responseCriteriaNot(Criteria<HttpResponse<T>>... criteria) {
-            return responseCriteria(NOT(criteria));
-        }
-
-        private void criteriaForDerivedValue(Criteria<? super R> criteria) {
-            derivedValueCriteria = ofNullable(derivedValueCriteria)
-                    .map(c -> AND(c, criteria))
-                    .orElse((Criteria<R>) criteria);
-        }
-
-        @Override
-        public GetObjectWhenResponseReceiving<T, R> criteriaOr(Criteria<? super R>... criteria) {
-            criteriaForDerivedValue(OR(criteria));
-            return super.criteriaOr(criteria);
-        }
-
-        @Override
-        public GetObjectWhenResponseReceiving<T, R> criteriaOnlyOne(Criteria<? super R>... criteria) {
-            criteriaForDerivedValue(ONLY_ONE(criteria));
-            return super.criteriaOnlyOne(criteria);
-        }
-
-        @Override
-        public GetObjectWhenResponseReceiving<T, R> criteriaNot(Criteria<? super R>... criteria) {
-            criteriaForDerivedValue(NOT(criteria));
-            return super.criteriaNot(criteria);
-        }
-
-        @Override
-        public GetObjectWhenResponseReceiving<T, R> criteria(Criteria<? super R> criteria) {
-            criteriaForDerivedValue(criteria);
-            return super.criteria(criteria);
-        }
-
-        @Override
-        public GetObjectWhenResponseReceiving<T, R> criteria(String description, Predicate<? super R> criteria) {
-            return criteria(condition(description, criteria));
-        }
-
-        @Override
-        public GetObjectWhenResponseReceiving<T, R> throwOnNoResult() {
-            ((ResponseSequentialGetSupplierInternal<?, ?>) getFrom()).throwOnNoResult();
-            return super.throwOnNoResult();
-        }
-
-        @Override
-        public Function<HttpStepContext, R> get() {
-            if (derivedValueCriteria != null) {
-                ((ResponseSequentialGetSupplierInternal<T, R>) getFrom())
-                        .criteria(executionResultMatches(resultMatches((derivedValueCriteria))));
+    @Override
+    public Function<HttpStepContext, R> get() {
+        var fromVal = getFrom();
+        Criteria<HttpResponse<T>> responseCriteria = null;
+        if (fromVal instanceof ResponseSequentialGetSupplier) {
+            var resultCriteria = getCriteria();
+            if (resultCriteria != null) {
+                responseCriteria = condition(
+                    isPossibleToGetExpectedValue(getDescription(), resultCriteria.toString()).toString(),
+                    r -> resultCriteria.get().test(((Response<?, R>) r).getCalculated())
+                );
             }
-            return super.get();
         }
+
+        ofNullable(responseCriteria).ifPresent(this::responseCriteria);
+        return super.get();
     }
 }

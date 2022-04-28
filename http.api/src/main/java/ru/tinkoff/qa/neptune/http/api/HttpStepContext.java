@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static java.net.HttpCookie.parse;
-import static java.net.http.HttpResponse.BodyHandlers.discarding;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
@@ -45,25 +44,14 @@ public class HttpStepContext extends Context<HttpStepContext> {
     }
 
     /**
-     * Sends http request and receives a response with body
+     * Sends http request and receives a response
      *
      * @param requestBuilder is a builder of http request
-     * @param bodyHandler    is a handler of a response body
      * @param <T>            is a type of response body
      * @return an instance of {@link HttpResponse}
      */
-    public <T> HttpResponse<T> responseOf(RequestBuilder requestBuilder, HttpResponse.BodyHandler<T> bodyHandler) {
-        return get(response(requestBuilder, bodyHandler));
-    }
-
-    /**
-     * Sends http request and receives a response with no body
-     *
-     * @param requestBuilder is a builder of http request
-     * @return an instance of {@link HttpResponse}
-     */
-    public HttpResponse<Void> responseOf(RequestBuilder requestBuilder) {
-        return responseOf(requestBuilder, discarding());
+    public <T> HttpResponse<T> responseOf(RequestBuilder<T> requestBuilder) {
+        return get(response(requestBuilder, t -> t));
     }
 
     /**
@@ -74,7 +62,87 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @param <R>    is a type of an object to get
      * @return an instance of {@code <R>}
      */
-    public <T, R> R bodyData(GetObjectFromBodyStepSupplier<T, R, ?, ?> object) {
+    public <T, R> R responseOf(GetObjectFromBodyStepSupplier<T, R> object) {
+        return get(object);
+    }
+
+    /**
+     * Extracts some object from http response body. Firstly it extracts an array of same type as
+     * expected object and then it returns one of array items.
+     *
+     * @param oneOfArray is description how to get an array from a body of http response
+     * @param <T>        is a type of response body
+     * @param <R>        is a type of item of array which is extracted from a body of http response
+     * @return an instance of {@code <R>}
+     */
+    public <T, R> R responseOf(GetObjectFromArrayBodyStepSupplier<T, R> oneOfArray) {
+        return get(oneOfArray);
+    }
+
+    /**
+     * Extracts some object from http response body. Firstly it extracts an iterable that consists of elements
+     * of same type as expected object and then it returns one of elements.
+     *
+     * @param oneOfIterable is description how to get an {@link Iterable} from a body of http response
+     * @param <T>           is a type of response body
+     * @param <R>           is a type of element of {@link Iterable} which is extracted from a body of http response
+     * @return an instance of {@code <R>}
+     */
+    public <T, R> R responseOf(GetObjectFromIterableBodyStepSupplier<T, R> oneOfIterable) {
+        return get(oneOfIterable);
+    }
+
+    /**
+     * Extracts some array from http response body. Firstly it extracts an array
+     * and then it returns resulted array or sub array.
+     *
+     * @param array is description how to get an array from a body of http response
+     * @param <T>   is a type of response body
+     * @param <R>   is a type of item of array which is extracted from a body of http response
+     * @return an array of {@code <R>}
+     */
+    public <T, R> R[] responseOf(GetObjectsFromArrayBodyStepSupplier<T, R> array) {
+        return get(array);
+    }
+
+    /**
+     * Extracts some {@link Iterable} from http response body. Firstly it extracts an iterable,
+     * and then it returns resulted object or sub iterable as a list.
+     *
+     * @param iterable is description how to get an {@link Iterable} from a body of http response
+     * @param <T>      is a type of response body
+     * @param <R>      is a type of element of {@link Iterable} which is extracted from a body of http response
+     * @param <S>      is a type of {@link Iterable}
+     * @return an instance of {@code <S>}
+     */
+    public <T, R, S extends Iterable<R>> List<R> responseOf(GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
+        return get(iterable);
+    }
+
+    /**
+     * Sends http request and receives a response with body
+     *
+     * @param requestBuilder is a builder of http request
+     * @param bodyHandler    is a handler of a response body
+     * @param <T>            is a type of response body
+     * @return an instance of {@link HttpResponse}
+     * @deprecated use {@link #responseOf(RequestBuilder)}
+     */
+    @Deprecated(forRemoval = true)
+    public <T> HttpResponse<T> responseOf(RequestBuilder<?> requestBuilder, HttpResponse.BodyHandler<T> bodyHandler) {
+        return get(response(requestBuilder.responseBodyHandler(bodyHandler), t -> t));
+    }
+
+    /**
+     * Extracts some object from http response body
+     *
+     * @param object is description how to get an object from a body of http response
+     * @param <T>    is a type of response body
+     * @param <R>    is a type of an object to get
+     * @return an instance of {@code <R>}
+     */
+    @Deprecated(forRemoval = true)
+    public <T, R> R bodyData(GetObjectFromBodyStepSupplier<T, R> object) {
         return get(object);
     }
 
@@ -88,7 +156,8 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @param <R>        is a type of an item of array which is extracted from a body of http response
      * @return an instance of {@code <R>}
      */
-    public <T, R> R bodyData(GetObjectFromArrayBodyStepSupplier<T, R, ?, ?> oneOfArray) {
+    @Deprecated(forRemoval = true)
+    public <T, R> R bodyData(GetObjectFromArrayBodyStepSupplier<T, R> oneOfArray) {
         return get(oneOfArray);
     }
 
@@ -101,7 +170,8 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @param <R>           is a type of an element of {@link Iterable} which is extracted from a body of http response
      * @return an instance of {@code <R>}
      */
-    public <T, R> R bodyData(GetObjectFromIterableBodyStepSupplier<T, R, ?, ?> oneOfIterable) {
+    @Deprecated(forRemoval = true)
+    public <T, R> R bodyData(GetObjectFromIterableBodyStepSupplier<T, R> oneOfIterable) {
         return get(oneOfIterable);
     }
 
@@ -114,7 +184,8 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @param <R>   is a type of an item of array which is extracted from a body of http response
      * @return an array of {@code <R>}
      */
-    public <T, R> R[] bodyData(GetObjectsFromArrayBodyStepSupplier<T, R, ?, ?> array) {
+    @Deprecated(forRemoval = true)
+    public <T, R> R[] bodyData(GetObjectsFromArrayBodyStepSupplier<T, R> array) {
         return get(array);
     }
 
@@ -128,7 +199,8 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @param <S>      is a type of {@link Iterable}
      * @return an instance of {@code <S>}
      */
-    public <T, R, S extends Iterable<R>> List<R> bodyData(GetObjectsFromIterableBodyStepSupplier<T, R, S, ?, ?> iterable) {
+    @Deprecated(forRemoval = true)
+    public <T, R, S extends Iterable<R>> List<R> bodyData(GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
         return get(iterable);
     }
 

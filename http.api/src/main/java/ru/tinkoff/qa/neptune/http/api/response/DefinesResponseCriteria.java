@@ -16,7 +16,9 @@ public interface DefinesResponseCriteria<R, S extends DefinesResponseCriteria<R,
 
     private ResponseSequentialGetSupplier<R> getResponseStep() {
         try {
-            var result = SequentialGetStepSupplier.class.getDeclaredMethod("getFrom").invoke(this);
+            var method = SequentialGetStepSupplier.class.getDeclaredMethod("getFrom");
+            method.setAccessible(true);
+            var result = method.invoke(this);
             if (result instanceof ResponseSequentialGetSupplier) {
                 return (ResponseSequentialGetSupplier<R>) result;
             }

@@ -3,17 +3,20 @@ package ru.tinkoff.qa.neptune.http.api.request;
 import ru.tinkoff.qa.neptune.http.api.properties.end.point.DefaultEndPointOfTargetAPIProperty;
 import ru.tinkoff.qa.neptune.http.api.request.body.MultiPartBody;
 import ru.tinkoff.qa.neptune.http.api.request.body.RequestBody;
+import ru.tinkoff.qa.neptune.http.api.response.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.*;
 import static java.lang.String.CASE_INSENSITIVE_ORDER;
@@ -24,13 +27,14 @@ import static java.util.stream.StreamSupport.stream;
 import static org.apache.commons.lang3.StringUtils.*;
 import static ru.tinkoff.qa.neptune.http.api.properties.end.point.DefaultEndPointOfTargetAPIProperty.DEFAULT_END_POINT_OF_TARGET_API_PROPERTY;
 
-public abstract class RequestBuilder implements RequestSettings<RequestBuilder> {
+public abstract class RequestBuilder<T> implements RequestSettings<RequestBuilder<T>> {
     final HttpRequest.Builder builder;
     private final QueryBuilder queryBuilder = new QueryBuilder();
     final RequestBody<?> body;
     private final TreeMap<String, List<String>> headersMap = new TreeMap<>(CASE_INSENSITIVE_ORDER);
     private URI baseURI;
     private String path = EMPTY;
+    HttpResponse.BodyHandler<T> bodyHandler;
 
     RequestBuilder(RequestBody<?> body) {
         builder = HttpRequest.newBuilder();
@@ -50,38 +54,38 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
     abstract void defineRequestMethodAndBody();
 
     @Override
-    public RequestBuilder expectContinue(boolean enable) {
+    public RequestBuilder<T> expectContinue(boolean enable) {
         builder.expectContinue(enable);
         return this;
     }
 
     @Override
-    public RequestBuilder version(HttpClient.Version version) {
+    public RequestBuilder<T> version(HttpClient.Version version) {
         builder.version(version);
         return this;
     }
 
     @Override
-    public RequestBuilder header(String name, String... values) {
+    public RequestBuilder<T> header(String name, String... values) {
         var list = headersMap.computeIfAbsent(name, k -> new ArrayList<>());
         list.addAll(List.of(values));
         return this;
     }
 
     @Override
-    public RequestBuilder timeout(Duration duration) {
+    public RequestBuilder<T> timeout(Duration duration) {
         builder.timeout(duration);
         return this;
     }
 
     @Override
-    public RequestBuilder queryParam(String name, FormValueDelimiters delimiter, boolean allowReserved, Object... values) {
+    public RequestBuilder<T> queryParam(String name, FormValueDelimiters delimiter, boolean allowReserved, Object... values) {
         queryBuilder.addParameter(name, false, delimiter, allowReserved, values);
         return this;
     }
 
     @Override
-    public RequestBuilder queryParam(String name, boolean allowReserved, Object... values) {
+    public RequestBuilder<T> queryParam(String name, boolean allowReserved, Object... values) {
         queryBuilder.addParameter(name, true, null, allowReserved, values);
         return this;
     }
@@ -93,7 +97,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      * @param path a path relative to request URI
      * @return self-reference
      */
-    public RequestBuilder relativePath(String path) {
+    public RequestBuilder<T> relativePath(String path) {
         checkArgument(isNotBlank(path), "Path should not be defined as a null/empty string");
         this.path = path;
         return this;
@@ -106,7 +110,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      * @param tuners objects that help to prepare resulted http-request
      * @return self-reference
      */
-    public RequestBuilder tuneWith(RequestTuner... tuners) {
+    public RequestBuilder<T> tuneWith(RequestTuner... tuners) {
         checkNotNull(tuners);
         checkArgument(tuners.length > 0, "There is nothing that helps to prepare http request");
         var thisBuilder = this;
@@ -122,20 +126,20 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      * @return self-reference
      */
     @SafeVarargs
-    public final RequestBuilder tuneWith(Class<? extends RequestTuner>... tuners) {
+    public final RequestBuilder<T> tuneWith(Class<? extends RequestTuner>... tuners) {
         checkNotNull(tuners);
         checkArgument(tuners.length > 0, "There is nothing that helps to prepare http request");
         return tuneWith(Arrays.stream(tuners)
-                .distinct()
-                .map(c -> {
-                    try {
-                        var constructor = c.getDeclaredConstructor();
-                        constructor.setAccessible(true);
-                        return constructor.newInstance();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }).toArray(RequestTuner[]::new));
+            .distinct()
+            .map(c -> {
+                try {
+                    var constructor = c.getDeclaredConstructor();
+                    constructor.setAccessible(true);
+                    return constructor.newInstance();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }).toArray(RequestTuner[]::new));
     }
 
     /**
@@ -147,7 +151,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      *               a constructor with no parameter.
      * @return self-reference
      */
-    public RequestBuilder tuneWith(Iterable<RequestTuner> tuners) {
+    public RequestBuilder<T> tuneWith(Iterable<RequestTuner> tuners) {
         checkNotNull(tuners);
         return tuneWith(stream(tuners.spliterator(), false).distinct().toArray(RequestTuner[]::new));
     }
@@ -160,8 +164,8 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
             try {
                 var basesURL = DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.get();
                 checkState(nonNull(basesURL), "Base end point URI and value of the property "
-                        + DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.getName()
-                        + " are not defined");
+                    + DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.getName()
+                    + " are not defined");
                 return basesURL.toURI();
             } catch (URISyntaxException e) {
                 throw new IllegalArgumentException(e);
@@ -172,8 +176,8 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
         headersMap.forEach((s, strings) -> {
             var valueList = new ArrayList<>(strings);
             if (equalsIgnoreCase(s, "Content-Type")
-                    && !valueList.isEmpty()
-                    && (body != null && body instanceof MultiPartBody)) {
+                && !valueList.isEmpty()
+                && (body != null && body instanceof MultiPartBody)) {
                 var val = valueList.get(0);
                 valueList.set(0, val + ";boundary=" + ((MultiPartBody) body).getBoundary());
             }
@@ -193,7 +197,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      *            and context path (optionally).
      * @return self-reference
      */
-    public RequestBuilder baseURI(URI uri) {
+    public RequestBuilder<T> baseURI(URI uri) {
         checkArgument(nonNull(uri), "URI is not defined");
         this.baseURI = uri;
         return this;
@@ -207,7 +211,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      *            and context path (optionally).
      * @return self-reference
      */
-    public RequestBuilder baseURI(URL url) {
+    public RequestBuilder<T> baseURI(URL url) {
         return baseURI(toURI(url));
     }
 
@@ -221,7 +225,90 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      * @return self-reference
      * @see DefaultEndPointOfTargetAPIProperty
      */
-    public RequestBuilder baseURI(String uriStr) {
+    public RequestBuilder<T> baseURI(String uriStr) {
         return baseURI(create(uriStr));
     }
+
+    /**
+     * Defines a handler of response body.
+     *
+     * @param bodyHandler is a handler of response body
+     * @param <R>         is a type of handled response body
+     * @return self-reference
+     */
+    @SuppressWarnings("unchecked")
+    public <R> RequestBuilder<R> responseBodyHandler(HttpResponse.BodyHandler<R> bodyHandler) {
+        var result = (RequestBuilder<R>) this;
+        result.bodyHandler = bodyHandler;
+        return result;
+    }
+
+    /**
+     * Creates an instance of {@link GetObjectFromBodyStepSupplier}. It builds a step-function that retrieves
+     * an object from http response body.
+     *
+     * @param description is a description of resulted object
+     * @param f           is a function that describes how to get resulted object from a body of http response
+     * @param <R>         is a type of resulted object
+     * @return an instance of {@link GetObjectFromBodyStepSupplier}
+     */
+    public abstract <R> GetObjectFromBodyStepSupplier<T, R> sendAndTryToReturn(String description, Function<T, R> f);
+
+    /**
+     * Creates an instance of {@link GetObjectFromBodyStepSupplier}. It builds a step-function that retrieves
+     * a body of http response.
+     *
+     * @return an instance of {@link GetObjectFromBodyStepSupplier}
+     */
+    public abstract GetObjectFromBodyStepSupplier<T, T> sendAndTryToReturnBody();
+
+    /**
+     * Creates an instance of {@link GetObjectsFromIterableBodyStepSupplier}. It builds a step-function that retrieves
+     * a list from http response body.
+     *
+     * @param description is a description of resulted {@link Iterable}
+     * @param f           is a function that describes how to get an {@link Iterable} from a body of http response
+     * @param <R>         is a type of item of resulted list
+     * @param <S>         is a type of calculated iterable
+     * @return an instance of {@link GetObjectsFromIterableBodyStepSupplier}
+     */
+    public abstract <R, S extends Iterable<R>> GetObjectsFromIterableBodyStepSupplier<T, R, S> sendAndTryToReturnList(String description,
+                                                                                                                      Function<T, S> f);
+
+    /**
+     * Creates an instance of {@link GetObjectsFromArrayBodyStepSupplier}. It builds a step-function that retrieves
+     * an array from http response body.
+     *
+     * @param description is a description of resulted array
+     * @param f           is a function that describes how to get an array from a body of http response
+     * @param <R>         is a type of item of resulted array
+     * @return an instance of {@link GetObjectsFromArrayBodyStepSupplier}
+     */
+    public abstract <R> GetObjectsFromArrayBodyStepSupplier<T, R> sendAndTryToReturnArray(String description,
+                                                                                          Function<T, R[]> f);
+
+    /**
+     * Creates an instance of {@link GetObjectFromIterableBodyStepSupplier}. It builds a step-function that retrieves an object from some
+     * {@link Iterable} which is retrieved from http response body.
+     *
+     * @param description is a description of resulted object
+     * @param f           is a function that describes how to get an {@link Iterable} from a body of http response
+     * @param <R>         is a type of resulted object
+     * @param <S>         if a type of {@link Iterable} of R
+     * @return an instance of {@link GetObjectFromIterableBodyStepSupplier}
+     */
+    public abstract <R, S extends Iterable<R>> GetObjectFromIterableBodyStepSupplier<T, R> sendAndTryToReturnItem(String description,
+                                                                                                                  Function<T, S> f);
+
+    /**
+     * Creates an instance of {@link GetObjectFromArrayBodyStepSupplier}. It builds a step-function that retrieves an object from some
+     * array which is retrieved from http response body.
+     *
+     * @param description is a description of resulted object
+     * @param f           is a function that describes how to get an array from a body of http response
+     * @param <R>         is a type of resulted object
+     * @return an instance of {@link GetObjectFromArrayBodyStepSupplier}
+     */
+    public abstract <R> GetObjectFromArrayBodyStepSupplier<T, R> sendAndTryToReturnArrayItem(String description,
+                                                                                             Function<T, R[]> f);
 }
