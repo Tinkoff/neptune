@@ -7,18 +7,24 @@ import ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultXmlObjectMapper;
 import ru.tinkoff.qa.neptune.http.api.request.body.RequestBody;
 import ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart;
 import ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.FormParameter;
+import ru.tinkoff.qa.neptune.http.api.response.*;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.http.HttpResponse;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.net.http.HttpResponse.BodyHandlers.discarding;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.http.api.request.body.RequestBodyFactory.body;
+import static ru.tinkoff.qa.neptune.http.api.response.GetResponseDataStepFactory.*;
 
 /**
  * Creates instances of {@link RequestBuilder}
@@ -35,9 +41,9 @@ public final class RequestBuilderFactory {
      * @param body is a request body
      * @return a POST request builder.
      */
-    public static RequestBuilder POST(RequestBody<?> body) {
+    public static RequestBuilder<Void> POST(RequestBody<?> body) {
         checkNotNull(body);
-        return new RequestBuilder(body) {
+        return new RequestBuilderWithHandler<>(body) {
             @Override
             void defineRequestMethodAndBody() {
                 builder.POST(this.body.createPublisher());
@@ -50,7 +56,7 @@ public final class RequestBuilderFactory {
      *
      * @return a POST request builder.
      */
-    public static RequestBuilder POST() {
+    public static RequestBuilder<Void> POST() {
         return POST(body());
     }
 
@@ -62,7 +68,7 @@ public final class RequestBuilderFactory {
      * @param offset the offset of the first byte
      * @return a POST request builder.
      */
-    public static RequestBuilder POST(byte[] body, int length, int offset) {
+    public static RequestBuilder<Void> POST(byte[] body, int length, int offset) {
         return POST(body(body, length, offset));
     }
 
@@ -72,7 +78,7 @@ public final class RequestBuilderFactory {
      * @param body is a binary array body
      * @return a POST request builder.
      */
-    public static RequestBuilder POST(byte[] body) {
+    public static RequestBuilder<Void> POST(byte[] body) {
         return POST(body(body));
     }
 
@@ -82,7 +88,7 @@ public final class RequestBuilderFactory {
      * @param body is a file to send
      * @return a POST request builder.
      */
-    public static RequestBuilder POST(File body) {
+    public static RequestBuilder<Void> POST(File body) {
         return POST(body(body));
     }
 
@@ -92,7 +98,7 @@ public final class RequestBuilderFactory {
      * @param body is a path to a file to send
      * @return a POST request builder.
      */
-    public static RequestBuilder POST(Path body) {
+    public static RequestBuilder<Void> POST(Path body) {
         return POST(body(body));
     }
 
@@ -103,7 +109,7 @@ public final class RequestBuilderFactory {
      * @param encoding is necessary encoding of of a body
      * @return a POST request builder.
      */
-    public static RequestBuilder POST(String body, Charset encoding) {
+    public static RequestBuilder<Void> POST(String body, Charset encoding) {
         return POST(body(body, encoding));
     }
 
@@ -113,7 +119,7 @@ public final class RequestBuilderFactory {
      * @param body is an original string content
      * @return a POST request builder.
      */
-    public static RequestBuilder POST(String body) {
+    public static RequestBuilder<Void> POST(String body) {
         return POST(body(body));
     }
 
@@ -123,7 +129,7 @@ public final class RequestBuilderFactory {
      * @param body is an input stream body
      * @return a POST request builder.
      */
-    public static RequestBuilder POST(InputStream body) {
+    public static RequestBuilder<Void> POST(InputStream body) {
         return POST(body(body));
     }
 
@@ -135,7 +141,7 @@ public final class RequestBuilderFactory {
      *             at the moment when http request is sent
      * @return a POST request builder.
      */
-    public static RequestBuilder POST(Supplier<InputStream> body) {
+    public static RequestBuilder<Void> POST(Supplier<InputStream> body) {
         return POST(body(body));
     }
 
@@ -146,7 +152,7 @@ public final class RequestBuilderFactory {
      * @param body array of form parameters
      * @return a POST request builder.
      */
-    public static RequestBuilder POST(FormParameter... body) {
+    public static RequestBuilder<Void> POST(FormParameter... body) {
         return POST(body(body));
     }
 
@@ -158,7 +164,7 @@ public final class RequestBuilderFactory {
      * @param body   object to be serialized
      * @return a POST request builder.
      */
-    public static RequestBuilder POST(ObjectMapper mapper, Object body) {
+    public static RequestBuilder<Void> POST(ObjectMapper mapper, Object body) {
         return POST(body(mapper, body));
     }
 
@@ -173,7 +179,7 @@ public final class RequestBuilderFactory {
      * @see DefaultJsonObjectMapper
      * @see DefaultXmlObjectMapper
      */
-    public static RequestBuilder POST(DefaultMapper mapper, Object body) {
+    public static RequestBuilder<Void> POST(DefaultMapper mapper, Object body) {
         return POST(body(mapper, body));
     }
 
@@ -183,7 +189,7 @@ public final class RequestBuilderFactory {
      * @param parts are parts of multipart body
      * @return a POST request builder.
      */
-    public static RequestBuilder POST(BodyPart... parts) {
+    public static RequestBuilder<Void> POST(BodyPart... parts) {
         return POST(body(randomAlphanumeric(15), parts));
     }
 
@@ -192,8 +198,8 @@ public final class RequestBuilderFactory {
      *
      * @return a GET request builder.
      */
-    public static RequestBuilder GET() {
-        return new RequestBuilder(null) {
+    public static RequestBuilder<Void> GET() {
+        return new RequestBuilderWithHandler<>(null) {
             @Override
             void defineRequestMethodAndBody() {
                 builder.GET();
@@ -206,8 +212,8 @@ public final class RequestBuilderFactory {
      *
      * @return a DELETE request builder.
      */
-    public static RequestBuilder DELETE() {
-        return new RequestBuilder(null) {
+    public static RequestBuilder<Void> DELETE() {
+        return new RequestBuilderWithHandler<>(null) {
             @Override
             void defineRequestMethodAndBody() {
                 builder.DELETE();
@@ -221,8 +227,8 @@ public final class RequestBuilderFactory {
      * @param body is a request body
      * @return a PUT request builder.
      */
-    public static RequestBuilder PUT(RequestBody<?> body) {
-        return new RequestBuilder(body) {
+    public static RequestBuilder<Void> PUT(RequestBody<?> body) {
+        return new RequestBuilderWithHandler<>(body) {
             @Override
             void defineRequestMethodAndBody() {
                 builder.PUT(this.body.createPublisher());
@@ -235,7 +241,7 @@ public final class RequestBuilderFactory {
      *
      * @return a PUT request builder.
      */
-    public static RequestBuilder PUT() {
+    public static RequestBuilder<Void> PUT() {
         return PUT(body());
     }
 
@@ -247,7 +253,7 @@ public final class RequestBuilderFactory {
      * @param offset the offset of the first byte
      * @return a PUT request builder.
      */
-    public static RequestBuilder PUT(byte[] body, int length, int offset) {
+    public static RequestBuilder<Void> PUT(byte[] body, int length, int offset) {
         return PUT(body(body, length, offset));
     }
 
@@ -257,7 +263,7 @@ public final class RequestBuilderFactory {
      * @param body is a binary array body
      * @return a PUT request builder.
      */
-    public static RequestBuilder PUT(byte[] body) {
+    public static RequestBuilder<Void> PUT(byte[] body) {
         return PUT(body(body));
     }
 
@@ -267,7 +273,7 @@ public final class RequestBuilderFactory {
      * @param body is a file to send
      * @return a PUT request builder.
      */
-    public static RequestBuilder PUT(File body) {
+    public static RequestBuilder<Void> PUT(File body) {
         return PUT(body(body));
     }
 
@@ -277,7 +283,7 @@ public final class RequestBuilderFactory {
      * @param body is a path to a file to send
      * @return a PUT request builder.
      */
-    public static RequestBuilder PUT(Path body) {
+    public static RequestBuilder<Void> PUT(Path body) {
         return PUT(body(body));
     }
 
@@ -288,7 +294,7 @@ public final class RequestBuilderFactory {
      * @param encoding is necessary encoding of of a body
      * @return a PUT request builder.
      */
-    public static RequestBuilder PUT(String body, Charset encoding) {
+    public static RequestBuilder<Void> PUT(String body, Charset encoding) {
         return PUT(body(body, encoding));
     }
 
@@ -298,7 +304,7 @@ public final class RequestBuilderFactory {
      * @param body is an original string content
      * @return a PUT request builder.
      */
-    public static RequestBuilder PUT(String body) {
+    public static RequestBuilder<Void> PUT(String body) {
         return PUT(body(body));
     }
 
@@ -308,7 +314,7 @@ public final class RequestBuilderFactory {
      * @param body is an input stream body
      * @return a PUT request builder.
      */
-    public static RequestBuilder PUT(InputStream body) {
+    public static RequestBuilder<Void> PUT(InputStream body) {
         return PUT(body(body));
     }
 
@@ -320,7 +326,7 @@ public final class RequestBuilderFactory {
      *             at the moment when http request is sent
      * @return a PUT request builder.
      */
-    public static RequestBuilder PUT(Supplier<InputStream> body) {
+    public static RequestBuilder<Void> PUT(Supplier<InputStream> body) {
         return PUT(body(body));
     }
 
@@ -330,7 +336,7 @@ public final class RequestBuilderFactory {
      * @param body array of form parameters
      * @return a PUT request builder.
      */
-    public static RequestBuilder PUT(FormParameter... body) {
+    public static RequestBuilder<Void> PUT(FormParameter... body) {
         return PUT(body(body));
     }
 
@@ -342,7 +348,7 @@ public final class RequestBuilderFactory {
      * @param body   object to be serialized
      * @return a PUT request builder.
      */
-    public static RequestBuilder PUT(ObjectMapper mapper, Object body) {
+    public static RequestBuilder<Void> PUT(ObjectMapper mapper, Object body) {
         return PUT(body(mapper, body));
     }
 
@@ -357,7 +363,7 @@ public final class RequestBuilderFactory {
      * @see DefaultJsonObjectMapper
      * @see DefaultXmlObjectMapper
      */
-    public static RequestBuilder PUT(DefaultMapper mapper, Object body) {
+    public static RequestBuilder<Void> PUT(DefaultMapper mapper, Object body) {
         return PUT(body(mapper, body));
     }
 
@@ -367,7 +373,7 @@ public final class RequestBuilderFactory {
      * @param parts are parts of multipart body
      * @return a PUT request builder.
      */
-    public static RequestBuilder PUT(BodyPart... parts) {
+    public static RequestBuilder<Void> PUT(BodyPart... parts) {
         return PUT(body(randomAlphanumeric(15), parts));
     }
 
@@ -378,9 +384,9 @@ public final class RequestBuilderFactory {
      * @param body   is a request body
      * @return a fluent http request builder.
      */
-    public static RequestBuilder METHOD(String method, RequestBody<?> body) {
+    public static RequestBuilder<Void> METHOD(String method, RequestBody<?> body) {
         checkNotNull(body);
-        return new RequestBuilder(body) {
+        return new RequestBuilderWithHandler<>(body) {
             @Override
             void defineRequestMethodAndBody() {
                 checkArgument(isNotBlank(method));
@@ -395,7 +401,7 @@ public final class RequestBuilderFactory {
      * @param method is a name of http method
      * @return a fluent http request builder.
      */
-    public static RequestBuilder METHOD(String method) {
+    public static RequestBuilder<Void> METHOD(String method) {
         return METHOD(method, body());
     }
 
@@ -408,7 +414,7 @@ public final class RequestBuilderFactory {
      * @param offset the offset of the first byte
      * @return a fluent http request builder.
      */
-    public static RequestBuilder METHOD(String method, byte[] body, int length, int offset) {
+    public static RequestBuilder<Void> METHOD(String method, byte[] body, int length, int offset) {
         return METHOD(method, body(body, length, offset));
     }
 
@@ -419,7 +425,7 @@ public final class RequestBuilderFactory {
      * @param body   is a binary array body
      * @return a fluent http request builder.
      */
-    public static RequestBuilder METHOD(String method, byte[] body) {
+    public static RequestBuilder<Void> METHOD(String method, byte[] body) {
         return METHOD(method, body(body));
     }
 
@@ -430,7 +436,7 @@ public final class RequestBuilderFactory {
      * @param body   is a file to send
      * @return a fluent http request builder.
      */
-    public static RequestBuilder METHOD(String method, File body) {
+    public static RequestBuilder<Void> METHOD(String method, File body) {
         return METHOD(method, body(body));
     }
 
@@ -441,7 +447,7 @@ public final class RequestBuilderFactory {
      * @param body   is a path to a file to send
      * @return a fluent http request builder.
      */
-    public static RequestBuilder METHOD(String method, Path body) {
+    public static RequestBuilder<Void> METHOD(String method, Path body) {
         return METHOD(method, body(body));
     }
 
@@ -453,7 +459,7 @@ public final class RequestBuilderFactory {
      * @param encoding is necessary encoding of of a body
      * @return a fluent http request builder.
      */
-    public static RequestBuilder METHOD(String method, String body, Charset encoding) {
+    public static RequestBuilder<Void> METHOD(String method, String body, Charset encoding) {
         return METHOD(method, body(body, encoding));
     }
 
@@ -464,7 +470,7 @@ public final class RequestBuilderFactory {
      * @param body   is an original string content
      * @return a fluent http request builder.
      */
-    public static RequestBuilder METHOD(String method, String body) {
+    public static RequestBuilder<Void> METHOD(String method, String body) {
         return METHOD(method, body(body));
     }
 
@@ -475,7 +481,7 @@ public final class RequestBuilderFactory {
      * @param body   is an input stream body
      * @return a fluent http request builder.
      */
-    public static RequestBuilder METHOD(String method, InputStream body) {
+    public static RequestBuilder<Void> METHOD(String method, InputStream body) {
         return METHOD(method, body(body));
     }
 
@@ -488,7 +494,7 @@ public final class RequestBuilderFactory {
      *               at the moment when http request is sent
      * @return a fluent http request builder.
      */
-    public static RequestBuilder METHOD(String method, Supplier<InputStream> body) {
+    public static RequestBuilder<Void> METHOD(String method, Supplier<InputStream> body) {
         return METHOD(method, body(body));
     }
 
@@ -499,7 +505,7 @@ public final class RequestBuilderFactory {
      * @param body   array of form parameters
      * @return a fluent http request builder.
      */
-    public static RequestBuilder METHOD(String method, FormParameter... body) {
+    public static RequestBuilder<Void> METHOD(String method, FormParameter... body) {
         return METHOD(method, body(body));
     }
 
@@ -512,7 +518,7 @@ public final class RequestBuilderFactory {
      * @param body   object to be serialized
      * @return a fluent http request builder.
      */
-    public static RequestBuilder METHOD(String method, ObjectMapper mapper, Object body) {
+    public static RequestBuilder<Void> METHOD(String method, ObjectMapper mapper, Object body) {
         return METHOD(method, body(mapper, body));
     }
 
@@ -528,7 +534,7 @@ public final class RequestBuilderFactory {
      * @see DefaultJsonObjectMapper
      * @see DefaultXmlObjectMapper
      */
-    public static RequestBuilder METHOD(String method, DefaultMapper mapper, Object body) {
+    public static RequestBuilder<Void> METHOD(String method, DefaultMapper mapper, Object body) {
         return METHOD(method, body(mapper, body));
     }
 
@@ -539,8 +545,49 @@ public final class RequestBuilderFactory {
      * @param parts  are parts of multipart body
      * @return a fluent http request builder.
      */
-    public static RequestBuilder METHOD(String method, BodyPart... parts) {
+    public static RequestBuilder<Void> METHOD(String method, BodyPart... parts) {
         return METHOD(method, body(randomAlphanumeric(15), parts));
     }
 
+    public static abstract class RequestBuilderWithHandler<T> extends RequestBuilder<T> {
+
+        RequestBuilderWithHandler(RequestBody<?> body) {
+            super(body);
+        }
+
+        @Override
+        public <R> GetObjectFromBodyStepSupplier<T, R> sendAndTryToReturn(String description, Function<T, R> f) {
+            return getObjectFromResponseBody(description, this, f);
+        }
+
+        @Override
+        public GetObjectFromBodyStepSupplier<T, T> sendAndTryToReturnBody() {
+            return getBody(this);
+        }
+
+        @Override
+        public <R, S extends Iterable<R>> GetObjectsFromIterableBodyStepSupplier<T, R, S> sendAndTryToReturnList(String description, Function<T, S> f) {
+            return getListFromResponseBody(description, this, f);
+        }
+
+        @Override
+        public <R> GetObjectsFromArrayBodyStepSupplier<T, R> sendAndTryToReturnArray(String description, Function<T, R[]> f) {
+            return getArrayFromResponseBody(description, this, f);
+        }
+
+        @Override
+        public <R, S extends Iterable<R>> GetObjectFromIterableBodyStepSupplier<T, R> sendAndTryToReturnItem(String description, Function<T, S> f) {
+            return getItemFromResponseBody(description, this, f);
+        }
+
+        @Override
+        public <R> GetObjectFromArrayBodyStepSupplier<T, R> sendAndTryToReturnArrayItem(String description, Function<T, R[]> f) {
+            return getArrayItemFromResponseBody(description, this, f);
+        }
+
+        @SuppressWarnings("unchecked")
+        public HttpResponse.BodyHandler<T> getBodyHandler() {
+            return ofNullable(bodyHandler).orElseGet(() -> (HttpResponse.BodyHandler<T>) discarding());
+        }
+    }
 }
