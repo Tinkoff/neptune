@@ -93,6 +93,6 @@ public class SearchForWidgetsPositiveTest extends BaseWebDriverTest {
         setEndBenchMark();
         assertThat(list, hasSize(count));
         assertThat(list, everyItem(instanceOf(widgetClass)));
-        assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(150L));
+        assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(250L));
     }
 }

@@ -35,7 +35,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                 .timeOut(ONE_SECOND));
         setEndBenchMark();
         assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-        assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(150L));
+        assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(250L));
         assertThat(webElements.size(), is(0));
     }
 
@@ -48,7 +48,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
             List<WebElement> webElements = seleniumSteps.find(webElements(CLASS_THAT_DOES_NOT_EXIST));
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(150L));
+            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(250L));
             assertThat(webElements.size(), is(0));
         } finally {
             removeProperty(ELEMENT_WAITING_TIME_UNIT.getName());
@@ -65,7 +65,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                     .timeOut(ONE_SECOND));
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(150L));
+            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(250L));
             assertThat(webElements.size(), is(0));
         } finally {
             removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getName());
@@ -82,7 +82,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
             List<WebElement> webElements = seleniumSteps.find(webElements(INVISIBLE_SPAN_BY));
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(150L));
+            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(250L));
             assertThat(webElements.size(), is(0));
         } finally {
             removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getName());
@@ -102,7 +102,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                     .timeOut(ONE_SECOND));
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(150L));
+            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(250L));
             assertThat(webElements.size(), is(0));
         } finally {
             removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getName());
@@ -119,7 +119,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                 .foundFrom(webElement(tagName(BUTTON_TAG))));
         setEndBenchMark();
         assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-        assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(150L));
+        assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(250L));
         assertThat(webElements.size(), is(0));
     }
 
@@ -133,7 +133,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                     .foundFrom(webElement(tagName(BUTTON_TAG))));
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(150L));
+            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(250L));
             assertThat(webElements.size(), is(0));
         } finally {
             removeProperty(ELEMENT_WAITING_TIME_UNIT.getName());
@@ -151,7 +151,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                     .foundFrom(webElement(className(SPREAD_SHEET_CLASS))));
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(150L));
+            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(250L));
             assertThat(webElements.size(), is(0));
         } finally {
             removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getName());
@@ -169,7 +169,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                     .foundFrom(webElement(className(SPREAD_SHEET_CLASS))));
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(150L));
+            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(250L));
             assertThat(webElements.size(), is(0));
         } finally {
             removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getName());
@@ -190,7 +190,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                     .foundFrom(webElement(className(SPREAD_SHEET_CLASS))));
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(150L));
+            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(250L));
             assertThat(webElements.size(), is(0));
         } finally {
             removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getName());
@@ -208,7 +208,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                 .foundFrom(parent));
         setEndBenchMark();
         assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-        assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(150L));
+        assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(250L));
         assertThat(webElements.size(), is(0));
     }
 
@@ -223,7 +223,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                     .foundFrom(parent));
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(150L));
+            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(250L));
             assertThat(webElements.size(), is(0));
         } finally {
             removeProperty(ELEMENT_WAITING_TIME_UNIT.getName());
@@ -242,7 +242,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                     .foundFrom(parent));
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(150L));
+            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(250L));
             assertThat(webElements.size(), is(0));
         } finally {
             removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getName());
@@ -261,7 +261,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                     .foundFrom(parent));
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(150L));
+            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(250L));
             assertThat(webElements.size(), is(0));
         } finally {
             removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getName());
@@ -283,7 +283,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                     .foundFrom(parent));
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(150L));
+            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(250L));
             assertThat(webElements.size(), is(0));
         } finally {
             removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getName());
