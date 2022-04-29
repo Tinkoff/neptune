@@ -16,6 +16,7 @@ import ru.tinkoff.qa.neptune.http.api.request.NeptuneHttpRequestImpl;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory;
 
+import java.io.IOException;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.function.Function;
@@ -60,7 +61,7 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
                 info.setLastReceived(response);
                 var calculated = additionalCalculation.apply(response.body());
                 return new Response<>(response, calculated);
-            } catch (Exception e) {
+            } catch (IOException | InterruptedException e) {
                 throw new HttpResponseException(e);
             }
         });

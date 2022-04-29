@@ -14,19 +14,15 @@ import java.time.Duration;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplier.response;
-import static ru.tinkoff.qa.neptune.http.api.response.dictionary.AdditionalCriteriaDescription.hasResultItem;
 
 /**
  * Builds a step-function that retrieves an array from http response body.
  */
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted array")
 @ThrowWhenNoData(toThrow = DesiredDataHasNotBeenReceivedException.class, startDescription = "No data received:")
-@SuppressWarnings("unchecked")
 public final class GetObjectsFromArrayBodyStepSupplier<T, R>
     extends SequentialGetStepSupplier.GetArrayChainedStepSupplier<HttpStepContext, R, HttpResponse<T>, GetObjectsFromArrayBodyStepSupplier<T, R>>
     implements DefinesResponseCriteria<T, GetObjectsFromArrayBodyStepSupplier<T, R>> {
@@ -65,6 +61,7 @@ public final class GetObjectsFromArrayBodyStepSupplier<T, R>
      * @param <T>         is a type of response body
      * @param <R>         is a type of item of resulted array
      * @return an instance of {@link GetObjectsFromArrayBodyStepSupplier}
+     * @deprecated because it will be removed
      */
     @Description("{description}")
     @Deprecated(forRemoval = true)
@@ -90,6 +87,7 @@ public final class GetObjectsFromArrayBodyStepSupplier<T, R>
      * @param <T>            is a type of response body
      * @param <R>            is a type of item of resulted array
      * @return an instance of {@link GetObjectsFromArrayBodyStepSupplier}
+     * @deprecated because it will be removed
      */
     @Description("{description}")
     @Deprecated(forRemoval = true)
@@ -115,6 +113,7 @@ public final class GetObjectsFromArrayBodyStepSupplier<T, R>
      * @param received    is a received http response
      * @param <R>         is a type of item of array of response body
      * @return an instance of {@link GetObjectsFromArrayBodyStepSupplier}
+     * @deprecated because it will be removed
      */
     @Deprecated(forRemoval = true)
     public static <R> GetObjectsFromArrayBodyStepSupplier<R[], R> asArray(
@@ -132,6 +131,7 @@ public final class GetObjectsFromArrayBodyStepSupplier<T, R>
      * @param handler        is a response body handler
      * @param <R>            is a type of item of array of response body
      * @return an instance of {@link GetObjectsFromArrayBodyStepSupplier}
+     * @deprecated because it will be removed
      */
     @Deprecated(forRemoval = true)
     public static <R> GetObjectsFromArrayBodyStepSupplier<R[], R> asArray(
@@ -144,21 +144,10 @@ public final class GetObjectsFromArrayBodyStepSupplier<T, R>
     @Override
     public Function<HttpStepContext, R[]> get() {
         var fromVal = getFrom();
-        Criteria<HttpResponse<T>> responseCriteria = null;
-        if (fromVal instanceof ResponseSequentialGetSupplier) {
-            var resultCriteria = getCriteria();
-            if (resultCriteria != null) {
-                responseCriteria = condition(
-                    hasResultItem(getDescription(), resultCriteria.toString()).toString(),
-                    r -> stream(((Response<?, R[]>) r).getCalculated()).anyMatch(resultCriteria.get())
-                );
-            } else {
-                responseCriteria = condition(
-                    hasResultItem(getDescription()).toString(),
-                    r -> ((Response<?, R[]>) r).getCalculated().length > 0
-                );
-            }
-        }
+        Criteria<HttpResponse<T>> responseCriteria = DefinesResponseCriteria.getResponseCriteriaForIterables(
+            fromVal,
+            getCriteria(),
+            getDescription());
 
         ofNullable(responseCriteria).ifPresent(this::responseCriteria);
         return super.get();
@@ -166,10 +155,7 @@ public final class GetObjectsFromArrayBodyStepSupplier<T, R>
 
     @Override
     public GetObjectsFromArrayBodyStepSupplier<T, R> throwOnNoResult() {
-        var fromVal = getFrom();
-        if (fromVal instanceof ResponseSequentialGetSupplier) {
-            ((ResponseSequentialGetSupplier<T>) fromVal).throwOnNoResult();
-        }
+        DefinesResponseCriteria.super.throwOnNoResult();
         return super.throwOnNoResult();
     }
 

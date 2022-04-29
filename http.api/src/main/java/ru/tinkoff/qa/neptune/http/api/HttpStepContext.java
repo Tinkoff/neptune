@@ -140,6 +140,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @param <T>    is a type of response body
      * @param <R>    is a type of an object to get
      * @return an instance of {@code <R>}
+     * @deprecated use {@link #responseOf(GetObjectFromBodyStepSupplier)}
      */
     @Deprecated(forRemoval = true)
     public <T, R> R bodyData(GetObjectFromBodyStepSupplier<T, R> object) {
@@ -155,6 +156,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @param <T>        is a type of response body
      * @param <R>        is a type of an item of array which is extracted from a body of http response
      * @return an instance of {@code <R>}
+     * @deprecated use {@link #responseOf(GetObjectFromArrayBodyStepSupplier)}
      */
     @Deprecated(forRemoval = true)
     public <T, R> R bodyData(GetObjectFromArrayBodyStepSupplier<T, R> oneOfArray) {
@@ -169,6 +171,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @param <T>           is a type of response body
      * @param <R>           is a type of an element of {@link Iterable} which is extracted from a body of http response
      * @return an instance of {@code <R>}
+     * @deprecated use {@link #responseOf(GetObjectFromIterableBodyStepSupplier)}
      */
     @Deprecated(forRemoval = true)
     public <T, R> R bodyData(GetObjectFromIterableBodyStepSupplier<T, R> oneOfIterable) {
@@ -183,6 +186,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @param <T>   is a type of response body
      * @param <R>   is a type of an item of array which is extracted from a body of http response
      * @return an array of {@code <R>}
+     * @deprecated use {@link #responseOf(GetObjectsFromArrayBodyStepSupplier)}
      */
     @Deprecated(forRemoval = true)
     public <T, R> R[] bodyData(GetObjectsFromArrayBodyStepSupplier<T, R> array) {
@@ -198,6 +202,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @param <R>      is a type of an element of {@link Iterable} which is extracted from a body of http response
      * @param <S>      is a type of {@link Iterable}
      * @return an instance of {@code <S>}
+     * @deprecated use {@link #responseOf(GetObjectsFromIterableBodyStepSupplier)}
      */
     @Deprecated(forRemoval = true)
     public <T, R, S extends Iterable<R>> List<R> bodyData(GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {

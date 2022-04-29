@@ -15,20 +15,15 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.collect.Streams.stream;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplier.response;
-import static ru.tinkoff.qa.neptune.http.api.response.dictionary.AdditionalCriteriaDescription.hasResultItem;
 
 /**
  * Builds a step-function that retrieves an {@link Iterable} from http response body.
  */
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted iterable")
 @ThrowWhenNoData(toThrow = DesiredDataHasNotBeenReceivedException.class, startDescription = "No data received:")
-@SuppressWarnings("unchecked")
 public final class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Iterable<R>>
     extends SequentialGetStepSupplier.GetListChainedStepSupplier<HttpStepContext, S, HttpResponse<T>, R, GetObjectsFromIterableBodyStepSupplier<T, R, S>>
     implements DefinesResponseCriteria<T, GetObjectsFromIterableBodyStepSupplier<T, R, S>> {
@@ -68,6 +63,7 @@ public final class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Iterab
      * @param <R>         is a type of item of resulted iterable
      * @param <S>         is a type of resulted iterable
      * @return an instance of {@link GetObjectsFromIterableBodyStepSupplier}
+     * @deprecated because it will be removed
      */
     @Description("{description}")
     @Deprecated(forRemoval = true)
@@ -94,6 +90,7 @@ public final class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Iterab
      * @param <R>            is a type of item of resulted iterable
      * @param <S>            is a type of resulted iterable
      * @return an instance of {@link GetObjectsFromIterableBodyStepSupplier}
+     * @deprecated because it will be removed
      */
     @Description("{description}")
     @Deprecated(forRemoval = true)
@@ -120,6 +117,7 @@ public final class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Iterab
      * @param <R>         is a type of element of an iterable of response body
      * @param <S>         if a type of {@link Iterable} of response body
      * @return an instance of {@link GetObjectsFromIterableBodyStepSupplier}
+     * @deprecated because it will be removed
      */
     @Deprecated(forRemoval = true)
     public static <R, S extends Iterable<R>> GetObjectsFromIterableBodyStepSupplier<S, R, S> asIterable(
@@ -138,6 +136,7 @@ public final class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Iterab
      * @param <R>            is a type of element of an iterable of response body
      * @param <S>            if a type of {@link Iterable} of response body
      * @return an instance of {@link GetObjectsFromIterableBodyStepSupplier}
+     * @deprecated because it will be removed
      */
     @Deprecated(forRemoval = true)
     public static <R, S extends Iterable<R>> GetObjectsFromIterableBodyStepSupplier<S, R, S> asIterable(
@@ -149,10 +148,7 @@ public final class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Iterab
 
     @Override
     public GetObjectsFromIterableBodyStepSupplier<T, R, S> throwOnNoResult() {
-        var fromVal = getFrom();
-        if (fromVal instanceof ResponseSequentialGetSupplier) {
-            ((ResponseSequentialGetSupplier<T>) fromVal).throwOnNoResult();
-        }
+        DefinesResponseCriteria.super.throwOnNoResult();
         return super.throwOnNoResult();
     }
 
@@ -164,21 +160,10 @@ public final class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Iterab
     @Override
     public Function<HttpStepContext, List<R>> get() {
         var fromVal = getFrom();
-        Criteria<HttpResponse<T>> responseCriteria = null;
-        if (fromVal instanceof ResponseSequentialGetSupplier) {
-            var resultCriteria = getCriteria();
-            if (resultCriteria != null) {
-                responseCriteria = condition(
-                    hasResultItem(getDescription(), resultCriteria.toString()).toString(),
-                    r -> stream(((Response<?, Iterable<R>>) r).getCalculated()).anyMatch(resultCriteria.get())
-                );
-            } else {
-                responseCriteria = condition(
-                    hasResultItem(getDescription()).toString(),
-                    r -> !isEmpty(((Response<?, Iterable<R>>) r).getCalculated())
-                );
-            }
-        }
+        Criteria<HttpResponse<T>> responseCriteria = DefinesResponseCriteria.getResponseCriteriaForIterables(
+            fromVal,
+            getCriteria(),
+            getDescription());
 
         ofNullable(responseCriteria).ifPresent(this::responseCriteria);
         return super.get();

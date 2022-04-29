@@ -25,7 +25,6 @@ import static ru.tinkoff.qa.neptune.http.api.response.dictionary.AdditionalCrite
  */
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of a resulted value")
 @ThrowWhenNoData(toThrow = DesiredDataHasNotBeenReceivedException.class, startDescription = "No data received:")
-@SuppressWarnings("unchecked")
 public final class GetObjectFromBodyStepSupplier<T, R>
     extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<HttpStepContext, R, HttpResponse<T>, GetObjectFromBodyStepSupplier<T, R>>
     implements DefinesResponseCriteria<T, GetObjectFromBodyStepSupplier<T, R>> {
@@ -71,6 +70,7 @@ public final class GetObjectFromBodyStepSupplier<T, R>
      * @param <T>         is a type of response body
      * @param <R>         is a type of resulted object
      * @return an instance of {@link GetObjectFromBodyStepSupplier}
+     * @deprecated because it will be removed
      */
     @Description("{description}")
     @Deprecated(forRemoval = true)
@@ -91,6 +91,7 @@ public final class GetObjectFromBodyStepSupplier<T, R>
      * @param received is a received http response
      * @param <T>      is a type of response body
      * @return an instance of {@link GetObjectFromBodyStepSupplier}
+     * @deprecated because it will be removed
      */
     @Description("Body of http response")
     @Deprecated(forRemoval = true)
@@ -109,6 +110,7 @@ public final class GetObjectFromBodyStepSupplier<T, R>
      * @param <T>            is a type of response body
      * @param <R>            is a type of resulted object
      * @return an instance of {@link GetObjectFromBodyStepSupplier}
+     * @deprecated because it will be removed
      */
     @Description("{description}")
     @Deprecated(forRemoval = true)
@@ -133,6 +135,7 @@ public final class GetObjectFromBodyStepSupplier<T, R>
      * @param handler        is a response body handler
      * @param <T>            is a type of response body
      * @return an instance of {@link GetObjectFromBodyStepSupplier}
+     * @deprecated because it will be removed
      */
     @Description("Body of http response")
     @Deprecated(forRemoval = true)
@@ -144,10 +147,7 @@ public final class GetObjectFromBodyStepSupplier<T, R>
 
     @Override
     public GetObjectFromBodyStepSupplier<T, R> throwOnNoResult() {
-        var fromVal = getFrom();
-        if (fromVal instanceof ResponseSequentialGetSupplier) {
-            ((ResponseSequentialGetSupplier<T>) fromVal).throwOnNoResult();
-        }
+        DefinesResponseCriteria.super.throwOnNoResult();
         return super.throwOnNoResult();
     }
 
