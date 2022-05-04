@@ -244,27 +244,27 @@ public abstract class RequestBuilder<T> implements RequestSettings<RequestBuilde
     }
 
     /**
-     * Creates an instance of {@link GetObjectFromBodyStepSupplier}. It builds a step-function that retrieves
-     * an object from http response body.
+     * Creates an instance of {@link GetObjectFromBodyStepSupplier}. It builds a step-function that tries
+     * to get an object from http response body.
      *
      * @param description is a description of resulted object
      * @param f           is a function that describes how to get resulted object from a body of http response
      * @param <R>         is a type of resulted object
      * @return an instance of {@link GetObjectFromBodyStepSupplier}
      */
-    public abstract <R> GetObjectFromBodyStepSupplier<T, R> sendAndTryToReturn(String description, Function<T, R> f);
+    public abstract <R> GetObjectFromBodyStepSupplier<T, R> tryToReturn(String description, Function<T, R> f);
 
     /**
-     * Creates an instance of {@link GetObjectFromBodyStepSupplier}. It builds a step-function that retrieves
+     * Creates an instance of {@link GetObjectFromBodyStepSupplier}. It builds a step-function that tries to get
      * a body of http response.
      *
      * @return an instance of {@link GetObjectFromBodyStepSupplier}
      */
-    public abstract GetObjectFromBodyStepSupplier<T, T> sendAndTryToReturnBody();
+    public abstract GetObjectFromBodyStepSupplier<T, T> tryToReturnBody();
 
     /**
-     * Creates an instance of {@link GetObjectsFromIterableBodyStepSupplier}. It builds a step-function that retrieves
-     * a list from http response body.
+     * Creates an instance of {@link GetObjectsFromIterableBodyStepSupplier}. It builds a step-function that tries
+     * to get a list from http response body.
      *
      * @param description is a description of resulted {@link Iterable}
      * @param f           is a function that describes how to get an {@link Iterable} from a body of http response
@@ -272,24 +272,24 @@ public abstract class RequestBuilder<T> implements RequestSettings<RequestBuilde
      * @param <S>         is a type of calculated iterable
      * @return an instance of {@link GetObjectsFromIterableBodyStepSupplier}
      */
-    public abstract <R, S extends Iterable<R>> GetObjectsFromIterableBodyStepSupplier<T, R, S> sendAndTryToReturnList(String description,
-                                                                                                                      Function<T, S> f);
+    public abstract <R, S extends Iterable<R>> GetObjectsFromIterableBodyStepSupplier<T, R, S> tryToReturnList(String description,
+                                                                                                               Function<T, S> f);
 
     /**
-     * Creates an instance of {@link GetObjectsFromArrayBodyStepSupplier}. It builds a step-function that retrieves
-     * an array from http response body.
+     * Creates an instance of {@link GetObjectsFromArrayBodyStepSupplier}. It builds a step-function that tries
+     * to get an array from http response body.
      *
      * @param description is a description of resulted array
      * @param f           is a function that describes how to get an array from a body of http response
      * @param <R>         is a type of item of resulted array
      * @return an instance of {@link GetObjectsFromArrayBodyStepSupplier}
      */
-    public abstract <R> GetObjectsFromArrayBodyStepSupplier<T, R> sendAndTryToReturnArray(String description,
-                                                                                          Function<T, R[]> f);
+    public abstract <R> GetObjectsFromArrayBodyStepSupplier<T, R> tryToReturnArray(String description,
+                                                                                   Function<T, R[]> f);
 
     /**
-     * Creates an instance of {@link GetObjectFromIterableBodyStepSupplier}. It builds a step-function that retrieves an object from some
-     * {@link Iterable} which is retrieved from http response body.
+     * Creates an instance of {@link GetObjectFromIterableBodyStepSupplier}. It builds a step-function that tries to get
+     * an object from some {@link Iterable} which is calculated by http response body.
      *
      * @param description is a description of resulted object
      * @param f           is a function that describes how to get an {@link Iterable} from a body of http response
@@ -297,18 +297,18 @@ public abstract class RequestBuilder<T> implements RequestSettings<RequestBuilde
      * @param <S>         if a type of {@link Iterable} of R
      * @return an instance of {@link GetObjectFromIterableBodyStepSupplier}
      */
-    public abstract <R, S extends Iterable<R>> GetObjectFromIterableBodyStepSupplier<T, R> sendAndTryToReturnItem(String description,
-                                                                                                                  Function<T, S> f);
+    public abstract <R, S extends Iterable<R>> GetObjectFromIterableBodyStepSupplier<T, R> tryToReturnItem(String description,
+                                                                                                           Function<T, S> f);
 
     /**
-     * Creates an instance of {@link GetObjectFromArrayBodyStepSupplier}. It builds a step-function that retrieves an object from some
-     * array which is retrieved from http response body.
+     * Creates an instance of {@link GetObjectFromArrayBodyStepSupplier}. It builds a step-function that tries to get an
+     * object from some  array which is calculated by http response body.
      *
      * @param description is a description of resulted object
      * @param f           is a function that describes how to get an array from a body of http response
      * @param <R>         is a type of resulted object
      * @return an instance of {@link GetObjectFromArrayBodyStepSupplier}
      */
-    public abstract <R> GetObjectFromArrayBodyStepSupplier<T, R> sendAndTryToReturnArrayItem(String description,
-                                                                                             Function<T, R[]> f);
+    public abstract <R> GetObjectFromArrayBodyStepSupplier<T, R> tryToReturnArrayItem(String description,
+                                                                                      Function<T, R[]> f);
 }
