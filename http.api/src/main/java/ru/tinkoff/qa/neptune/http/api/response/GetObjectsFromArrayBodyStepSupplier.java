@@ -4,7 +4,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
@@ -22,16 +21,9 @@ import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSuppl
  * Builds a step-function that retrieves an array from http response body.
  */
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted array")
-@ThrowWhenNoData(toThrow = DesiredDataHasNotBeenReceivedException.class, startDescription = "No data received:")
 public final class GetObjectsFromArrayBodyStepSupplier<T, R>
     extends SequentialGetStepSupplier.GetArrayChainedStepSupplier<HttpStepContext, R, HttpResponse<T>, GetObjectsFromArrayBodyStepSupplier<T, R>>
     implements DefinesResponseCriteria<T, GetObjectsFromArrayBodyStepSupplier<T, R>> {
-
-    @Deprecated(forRemoval = true)
-    private GetObjectsFromArrayBodyStepSupplier(Function<T, R[]> f) {
-        super(httpResponse -> f.apply(httpResponse.body()));
-        addIgnored(Exception.class);
-    }
 
     private GetObjectsFromArrayBodyStepSupplier() {
         super(httpResponse -> ((Response<T, R[]>) httpResponse).getCalculated());
@@ -49,96 +41,6 @@ public final class GetObjectsFromArrayBodyStepSupplier<T, R>
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
         return new GetObjectsFromArrayBodyStepSupplier<T, R>()
             .from(response(requestBuilder, f).addIgnored(Exception.class));
-    }
-
-    /**
-     * Creates an instance of {@link GetObjectsFromArrayBodyStepSupplier}. It builds a step-function that retrieves
-     * an array from http response body.
-     *
-     * @param description is a description of resulted array
-     * @param received    is a received http response
-     * @param f           is a function that describes how to get an array from a body of http response
-     * @param <T>         is a type of response body
-     * @param <R>         is a type of item of resulted array
-     * @return an instance of {@link GetObjectsFromArrayBodyStepSupplier}
-     * @deprecated because it will be removed
-     */
-    @Description("{description}")
-    @Deprecated(forRemoval = true)
-    public static <T, R> GetObjectsFromArrayBodyStepSupplier<T, R> asArray(
-        @DescriptionFragment(
-            value = "description",
-            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
-            String description,
-        HttpResponse<T> received,
-        Function<T, R[]> f) {
-        checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectsFromArrayBodyStepSupplier<>(f).from(received);
-    }
-
-    /**
-     * Creates an instance of {@link GetObjectsFromArrayBodyStepSupplier}. It builds a step-function that retrieves
-     * an array from http response body.
-     *
-     * @param description    is a description of resulted array
-     * @param requestBuilder describes a request to be sent
-     * @param handler        is a response body handler
-     * @param f              is a function that describes how to get an array from a body of http response
-     * @param <T>            is a type of response body
-     * @param <R>            is a type of item of resulted array
-     * @return an instance of {@link GetObjectsFromArrayBodyStepSupplier}
-     * @deprecated because it will be removed
-     */
-    @Description("{description}")
-    @Deprecated(forRemoval = true)
-    public static <T, R> GetObjectsFromArrayBodyStepSupplier<T, R> asArray(
-        @DescriptionFragment(
-            value = "description",
-            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
-            String description,
-        RequestBuilder<?> requestBuilder,
-        HttpResponse.BodyHandler<T> handler,
-        Function<T, R[]> f) {
-        checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectsFromArrayBodyStepSupplier<T, R>()
-            .from(response(requestBuilder.responseBodyHandler(handler), f).addIgnored(Exception.class));
-    }
-
-
-    /**
-     * Creates an instance of {@link GetObjectsFromArrayBodyStepSupplier}. It builds a step-function that retrieves
-     * an array from http response body.
-     *
-     * @param description is a description of resulted array
-     * @param received    is a received http response
-     * @param <R>         is a type of item of array of response body
-     * @return an instance of {@link GetObjectsFromArrayBodyStepSupplier}
-     * @deprecated because it will be removed
-     */
-    @Deprecated(forRemoval = true)
-    public static <R> GetObjectsFromArrayBodyStepSupplier<R[], R> asArray(
-        String description,
-        HttpResponse<R[]> received) {
-        return asArray(description, received, rs -> rs);
-    }
-
-    /**
-     * Creates an instance of {@link GetObjectsFromArrayBodyStepSupplier}. It builds a step-function that retrieves
-     * an array from http response body.
-     *
-     * @param description    is a description of resulted array
-     * @param requestBuilder describes a request to be sent
-     * @param handler        is a response body handler
-     * @param <R>            is a type of item of array of response body
-     * @return an instance of {@link GetObjectsFromArrayBodyStepSupplier}
-     * @deprecated because it will be removed
-     */
-    @Deprecated(forRemoval = true)
-    public static <R> GetObjectsFromArrayBodyStepSupplier<R[], R> asArray(
-        String description,
-        RequestBuilder<?> requestBuilder,
-        HttpResponse.BodyHandler<R[]> handler) {
-        return asArray(description, requestBuilder, handler, rs -> rs);
     }
 
     @Override

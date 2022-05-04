@@ -19,7 +19,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.asIs;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI.createAPI;
 
 public class HeaderMappingTest extends BaseHttpTest {
@@ -36,15 +35,15 @@ public class HeaderMappingTest extends BaseHttpTest {
     };
 
     private final HeaderParameterObject testHeaderObject = new HeaderParameterObject().setSomeString("String value")
-            .setSomeNum(10.1111D)
-            .setSomeBool(true)
-            .setSomeArray(new Object[]{1, "ABC", true});
+        .setSomeNum(10.1111D)
+        .setSomeBool(true)
+        .setSomeArray(new Object[]{1, "ABC", true});
 
     @BeforeClass
     public void prepare() {
         stubFor(any(ANY)
-                .withHeader("header1", containing("abc"))
-                .willReturn(aResponse().withBody("SUCCESS")));
+            .withHeader("header1", containing("abc"))
+            .willReturn(aResponse().withBody("SUCCESS")));
     }
 
     @Test
@@ -53,23 +52,26 @@ public class HeaderMappingTest extends BaseHttpTest {
         var r = rb.build();
 
         assertThat(r.headers().map(), allOf(hasEntry("header1", of("abc", "one more value")),
-                hasEntry("header2", of("one more value")),
-                hasEntry("header3", of("one more value again"))));
+            hasEntry("header2", of("one more value")),
+            hasEntry("header3", of("one more value again"))));
 
-        assertThat(http().bodyData(asIs(methodMappingAPI.postSomethingWithHeaders(), ofString())),
-                is("SUCCESS"));
+        assertThat(http().responseOf(methodMappingAPI
+                .postSomethingWithHeaders()
+                .responseBodyHandler(ofString())
+                .sendAndTryToReturnBody()),
+            is("SUCCESS"));
     }
 
     @Test
     public void test2() {
         var rb = methodMappingAPI.postSomethingWithHeaders("one more value", 1,
-                100, 8.5F,
-                new Object[]{"string value", true, 1},
-                of("string value", true, 1),
-                headerMap,
-                headerMap,
-                testHeaderObject,
-                testHeaderObject);
+            100, 8.5F,
+            new Object[]{"string value", true, 1},
+            of("string value", true, 1),
+            headerMap,
+            headerMap,
+            testHeaderObject,
+            testHeaderObject);
 
         var r = rb.build();
         var headerMap = r.headers().map();
@@ -84,22 +86,24 @@ public class HeaderMappingTest extends BaseHttpTest {
         assertThat(headerMap, hasEntry(Matchers.equalTo("simpleMap"), contains("someString,String value,someNum,10.1111,someBool,true,someArray,1,ABC,true")));
         assertThat(headerMap, hasEntry(Matchers.equalTo("explodedMap"), contains("someString=String value,someNum=10.1111,someBool=true,someArray=1,ABC,true")));
         assertThat(headerMap, hasEntry(Matchers.equalTo("simpleObject"), contains(allOf(
-                containsString("someString,String value"),
-                containsString("someNum,10.1111"),
-                containsString("someBool,true"),
-                containsString("someArray,1,ABC,true"),
-                not(containsString("nullable"))))));
+            containsString("someString,String value"),
+            containsString("someNum,10.1111"),
+            containsString("someBool,true"),
+            containsString("someArray,1,ABC,true"),
+            not(containsString("nullable"))))));
 
         assertThat(headerMap, hasEntry(Matchers.equalTo("explodedObject"),
-                contains(allOf(
-                        containsString("someString=String value"),
-                        containsString("someNum=10.1111"),
-                        containsString("someBool=true"),
-                        containsString("someArray=1,ABC,true"),
-                        not(containsString("nullable"))))));
+            contains(allOf(
+                containsString("someString=String value"),
+                containsString("someNum=10.1111"),
+                containsString("someBool=true"),
+                containsString("someArray=1,ABC,true"),
+                not(containsString("nullable"))))));
 
-        assertThat(http().bodyData(asIs(rb, ofString())),
-                is("SUCCESS"));
+        assertThat(http().responseOf(rb
+                .responseBodyHandler(ofString())
+                .sendAndTryToReturnBody()),
+            is("SUCCESS"));
     }
 
     @Test
@@ -114,13 +118,15 @@ public class HeaderMappingTest extends BaseHttpTest {
         assertThat(headerMap, not(hasKey("notRequired1")));
         assertThat(headerMap, not(hasKey("notRequired2")));
 
-        assertThat(http().bodyData(asIs(rb, ofString())),
-                is("SUCCESS"));
+        assertThat(http().responseOf(rb
+                .responseBodyHandler(ofString())
+                .sendAndTryToReturnBody()),
+            is("SUCCESS"));
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = ".*['Value of the header 'required' is defined " +
-                    "as required, but given value is null']")
+        expectedExceptionsMessageRegExp = ".*['Value of the header 'required' is defined " +
+            "as required, but given value is null']")
     public void test4() {
         methodMappingAPI.postSomethingWithHeaders(null);
         fail("Exception was expected");
@@ -138,8 +144,8 @@ public class HeaderMappingTest extends BaseHttpTest {
     @Test
     public void test6() {
         var rb = createAPI(HeaderMapping.class, REQUEST_URI)
-                .useForRequestBuilding(RequestTuner2.class)
-                .postSomethingWithHeadersDefault();
+            .useForRequestBuilding(RequestTuner2.class)
+            .postSomethingWithHeadersDefault();
 
         var r = rb.build();
         var headerMap = r.headers().map();
@@ -153,8 +159,8 @@ public class HeaderMappingTest extends BaseHttpTest {
     @Test
     public void test7() {
         var rb = createAPI(HeaderMapping.class, REQUEST_URI)
-                .useForRequestBuilding(new RequestTuner2())
-                .postSomethingWithHeadersDefault();
+            .useForRequestBuilding(new RequestTuner2())
+            .postSomethingWithHeadersDefault();
 
         var r = rb.build();
         var headerMap = r.headers().map();

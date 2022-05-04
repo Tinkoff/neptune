@@ -88,13 +88,13 @@ public class HttpClientTest extends BaseHttpTest {
     @BeforeClass
     public void beforeClass() {
         stubFor(get(urlPathEqualTo("/index.html"))
-                .willReturn(aResponse()
-                        .withBody("Hello")
-                        .withHeader("Set-Cookie", "TestCookieName=TestCookieValue")));
+            .willReturn(aResponse()
+                .withBody("Hello")
+                .withHeader("Set-Cookie", "TestCookieName=TestCookieValue")));
     }
 
     @Test
-    public void useHttpClientWithoutProperties() throws Exception {
+    public void useHttpClientWithoutProperties() {
         var client = http().getCurrentClient();
 
         assertThat(client.authenticator().orElse(null), nullValue());
@@ -153,7 +153,7 @@ public class HttpClientTest extends BaseHttpTest {
     @Test
     public void addCookieTest() {
         var httpCookie = new HttpCookie("TestSetUpCookieName",
-                "TestSetUpCookieValue");
+            "TestSetUpCookieValue");
 
         http().addCookies(httpCookie);
         assertThat(http().getCookies(), hasItem(httpCookie));
@@ -162,7 +162,7 @@ public class HttpClientTest extends BaseHttpTest {
     @Test
     public void clearCookiesTest() {
         var httpCookie = new HttpCookie("TestSetUpCookieName",
-                "TestSetUpCookieValue");
+            "TestSetUpCookieValue");
 
         http().addCookies(httpCookie);
         http().removeCookies();
@@ -172,7 +172,7 @@ public class HttpClientTest extends BaseHttpTest {
     @Test
     public void clearCookiesTest2() {
         var httpCookie = new HttpCookie("TestSetUpCookieName",
-                "TestSetUpCookieValue");
+            "TestSetUpCookieValue");
 
         http().addCookies(httpCookie);
         http().removeCookies(httpCookieValue("TestSetUpCookieValue"));
@@ -182,18 +182,19 @@ public class HttpClientTest extends BaseHttpTest {
     @Test
     public void queryParameterTest() throws Throwable {
         stubFor(get(urlPathEqualTo("/query"))
-                .willReturn(aResponse().withBody("Hello query")));
+            .willReturn(aResponse().withBody("Hello query")));
 
         var response = http().responseOf(GET()
-                .baseURI(REQUEST_URI)
-                .relativePath("/query")
-                .queryParam("date", false, "01-01-1980")
-                .queryParam("some word", false, "Word and word again"), ofString());
+            .baseURI(REQUEST_URI)
+            .relativePath("/query")
+            .queryParam("date", false, "01-01-1980")
+            .queryParam("some word", false, "Word and word again")
+            .responseBodyHandler(ofString()));
 
         assertThat(response.body(),
-                Matchers.equalTo("Hello query"));
+            Matchers.equalTo("Hello query"));
         assertThat(response.uri(), equalTo(new URI("http://127.0.0.1:8089/query?date=" + encode("01-01-1980", UTF_8) + "&"
-                + encode("some word", UTF_8) + "=" + encode("Word and word again", UTF_8))));
+            + encode("some word", UTF_8) + "=" + encode("Word and word again", UTF_8))));
     }
 
     public static class TestAuthenticatorSupplier extends DefaultHttpAuthenticatorProperty.AuthenticatorSupplier {

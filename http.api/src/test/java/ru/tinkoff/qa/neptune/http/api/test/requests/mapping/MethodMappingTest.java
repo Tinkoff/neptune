@@ -49,7 +49,7 @@ public class MethodMappingTest {
     }
 
     @Test(dataProvider = "data1")
-    public void test1(RequestBuilder builder, String method, boolean isBodyPresent) {
+    public void test1(RequestBuilder<?> builder, String method, boolean isBodyPresent) {
         var r = builder.build();
         assertThat(r.method(), is(method));
         assertThat(r.uri(), is(URI.create("http://127.0.0.1:8089")));
@@ -65,7 +65,7 @@ public class MethodMappingTest {
     }
 
     @Test(dataProvider = "data2")
-    public void test2(RequestBuilder builder, String method, boolean isBodyPresent) throws Exception {
+    public void test2(RequestBuilder<?> builder, String method, boolean isBodyPresent) throws Exception {
         DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept(new URL("http://127.0.0.1:8089"));
         try {
             test1(builder, method, isBodyPresent);
@@ -77,30 +77,30 @@ public class MethodMappingTest {
     private interface MethodMapping extends HttpAPI<MethodMapping> {
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postSomething();
+        RequestBuilder<?> postSomething();
 
         @HttpMethod(httpMethod = GET)
-        RequestBuilder getSomething();
+        RequestBuilder<?> getSomething();
 
         @HttpMethod(httpMethod = PUT)
-        RequestBuilder putSomething();
+        RequestBuilder<?> putSomething();
 
         @HttpMethod(httpMethod = DELETE)
-        RequestBuilder deleteSomething();
+        RequestBuilder<?> deleteSomething();
 
         @HttpMethod(httpMethod = PATCH)
-        RequestBuilder patchSomething();
+        RequestBuilder<?> patchSomething();
 
         @HttpMethod(httpMethod = HEAD)
-        RequestBuilder headSomething();
+        RequestBuilder<?> headSomething();
 
         @HttpMethod(httpMethod = OPTIONS)
-        RequestBuilder optionsSomething();
+        RequestBuilder<?> optionsSomething();
 
         @HttpMethod(httpMethod = TRACE)
-        RequestBuilder traceSomething();
+        RequestBuilder<?> traceSomething();
 
         @HttpMethod(httpMethodStr = "CUSTOM_METHOD")
-        RequestBuilder customMethod();
+        RequestBuilder<?> customMethod();
     }
 }

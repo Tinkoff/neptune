@@ -95,19 +95,19 @@ public class CustomResponseBodyTest extends BaseHttpTest {
                                             HttpResponse.BodyHandler<T> handler,
                                             Matcher<? super T> matcher) {
         assertThat(http().responseOf(GET()
-                                .baseURI(REQUEST_URI + urlPath),
-                        handler),
-                hasBody(matcher));
+                .baseURI(REQUEST_URI + urlPath)
+                .responseBodyHandler(handler)),
+            hasBody(matcher));
     }
 
     @Test(dataProvider = "data2", expectedExceptions = RuntimeException.class)
     public <T> void negativeTest(String urlPath,
                                  HttpResponse.BodyHandler<T> handler) {
         assertThat(http().responseOf(GET()
-                                .baseURI(REQUEST_URI)
-                                .relativePath(urlPath),
-                        handler),
-                hasBody(nullValue()));
+                .baseURI(REQUEST_URI)
+                .relativePath(urlPath)
+                .responseBodyHandler(handler)),
+            hasBody(nullValue()));
 
         fail("Exception was expected");
     }
