@@ -556,32 +556,32 @@ public final class RequestBuilderFactory {
         }
 
         @Override
-        public <R> GetObjectFromBodyStepSupplier<T, R> sendAndTryToReturn(String description, Function<T, R> f) {
+        public <R> GetObjectFromBodyStepSupplier<T, R> tryToReturn(String description, Function<T, R> f) {
             return getObjectFromResponseBody(description, this, f);
         }
 
         @Override
-        public GetObjectFromBodyStepSupplier<T, T> sendAndTryToReturnBody() {
+        public GetObjectFromBodyStepSupplier<T, T> tryToReturnBody() {
             return getBody(this);
         }
 
         @Override
-        public <R, S extends Iterable<R>> GetObjectsFromIterableBodyStepSupplier<T, R, S> sendAndTryToReturnList(String description, Function<T, S> f) {
+        public <R, S extends Iterable<R>> GetObjectsFromIterableBodyStepSupplier<T, R, S> tryToReturnList(String description, Function<T, S> f) {
             return getListFromResponseBody(description, this, f);
         }
 
         @Override
-        public <R> GetObjectsFromArrayBodyStepSupplier<T, R> sendAndTryToReturnArray(String description, Function<T, R[]> f) {
+        public <R> GetObjectsFromArrayBodyStepSupplier<T, R> tryToReturnArray(String description, Function<T, R[]> f) {
             return getArrayFromResponseBody(description, this, f);
         }
 
         @Override
-        public <R, S extends Iterable<R>> GetObjectFromIterableBodyStepSupplier<T, R> sendAndTryToReturnItem(String description, Function<T, S> f) {
+        public <R, S extends Iterable<R>> GetObjectFromIterableBodyStepSupplier<T, R> tryToReturnItem(String description, Function<T, S> f) {
             return getItemFromResponseBody(description, this, f);
         }
 
         @Override
-        public <R> GetObjectFromArrayBodyStepSupplier<T, R> sendAndTryToReturnArrayItem(String description, Function<T, R[]> f) {
+        public <R> GetObjectFromArrayBodyStepSupplier<T, R> tryToReturnArrayItem(String description, Function<T, R[]> f) {
             return getArrayItemFromResponseBody(description, this, f);
         }
 
