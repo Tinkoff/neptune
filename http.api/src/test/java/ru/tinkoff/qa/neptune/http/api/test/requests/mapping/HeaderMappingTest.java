@@ -58,7 +58,7 @@ public class HeaderMappingTest extends BaseHttpTest {
         assertThat(http().responseOf(methodMappingAPI
                 .postSomethingWithHeaders()
                 .responseBodyHandler(ofString())
-                .sendAndTryToReturnBody()),
+                .tryToReturnBody()),
             is("SUCCESS"));
     }
 
@@ -102,7 +102,7 @@ public class HeaderMappingTest extends BaseHttpTest {
 
         assertThat(http().responseOf(rb
                 .responseBodyHandler(ofString())
-                .sendAndTryToReturnBody()),
+                .tryToReturnBody()),
             is("SUCCESS"));
     }
 
@@ -120,7 +120,7 @@ public class HeaderMappingTest extends BaseHttpTest {
 
         assertThat(http().responseOf(rb
                 .responseBodyHandler(ofString())
-                .sendAndTryToReturnBody()),
+                .tryToReturnBody()),
             is("SUCCESS"));
     }
 

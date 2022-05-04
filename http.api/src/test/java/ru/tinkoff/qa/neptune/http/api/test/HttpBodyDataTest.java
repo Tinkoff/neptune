@@ -38,7 +38,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturn("List of tags <a>", toNodeList("a"))
+            .tryToReturn("List of tags <a>", toNodeList("a"))
             .criteria("Has 1 tag <a>", nodeList -> nodeList.size() == 1));
 
         assertThat(result, hasSize(1));
@@ -50,7 +50,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturn("List of tags <a>", toNodeList("a"))
+            .tryToReturn("List of tags <a>", toNodeList("a"))
             .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2));
 
         assertThat(result, nullValue());
@@ -62,7 +62,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturn("List of tags <a>", toNodeList("a"))
+            .tryToReturn("List of tags <a>", toNodeList("a"))
             .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2)
             .throwOnNoResult());
 
@@ -76,7 +76,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturn("List of tags <a>", toNodeList("a"))
+            .tryToReturn("List of tags <a>", toNodeList("a"))
             .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2)
             .retryTimeOut(ofSeconds(5))
             .pollingInterval(ofMillis(500)));
@@ -94,7 +94,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
                 .baseURI(REQUEST_URI)
                 .relativePath("/data.html")
                 .responseBodyHandler(ofString())
-                .sendAndTryToReturn("List of tags <a>", toNodeList("a"))
+                .tryToReturn("List of tags <a>", toNodeList("a"))
                 .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2)
                 .responseCriteria(statusCode(404))
                 .throwOnNoResult());
@@ -112,7 +112,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturn("List of tags <a>", toNodeList("a"))
+            .tryToReturn("List of tags <a>", toNodeList("a"))
             .criteria("Has 1 tags <a>", nodeList -> nodeList.size() == 1)
             .responseCriteria(statusCode(404)));
 
@@ -126,7 +126,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturn("List of tags <a>", toNodeList("a"))
+            .tryToReturn("List of tags <a>", toNodeList("a"))
             .criteria("Has 1 tags <a>", nodeList -> nodeList.size() == 1)
             .responseCriteria(statusCode(404))
             .retryTimeOut(ofSeconds(5))
@@ -145,7 +145,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/badData.html")
             .responseBodyHandler(mapped(ofString(), toNodeList("a")))
-            .sendAndTryToReturnBody()
+            .tryToReturnBody()
             .retryTimeOut(ofSeconds(5))
             .pollingInterval(ofMillis(500)));
 
@@ -162,7 +162,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
                 .baseURI(REQUEST_URI)
                 .relativePath("/badData.html")
                 .responseBodyHandler(mapped(ofString(), toNodeList("a")))
-                .sendAndTryToReturnBody()
+                .tryToReturnBody()
                 .retryTimeOut(ofSeconds(5))
                 .pollingInterval(ofMillis(500))
                 .throwOnNoResult());
@@ -180,7 +180,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnList("List of tags <a>", toNodeList("a"))
+            .tryToReturnList("List of tags <a>", toNodeList("a"))
             .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, hasSize(1));
@@ -192,7 +192,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnList("List of tags <a>", toNodeList("a"))
+            .tryToReturnList("List of tags <a>", toNodeList("a"))
             .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
         assertThat(result, nullValue());
@@ -204,7 +204,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/badData.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnList("List of tags <a>", toNodeList("a"))
+            .tryToReturnList("List of tags <a>", toNodeList("a"))
             .criteria("Has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, nullValue());
@@ -216,7 +216,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnList("List of tags <a>", toNodeList("a"))
+            .tryToReturnList("List of tags <a>", toNodeList("a"))
             .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
             .throwOnNoResult());
 
@@ -230,7 +230,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnList("List of tags <a>", toNodeList("a"))
+            .tryToReturnList("List of tags <a>", toNodeList("a"))
             .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
             .retryTimeOut(ofSeconds(5))
             .pollingInterval(ofMillis(500)));
@@ -248,7 +248,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
                 .baseURI(REQUEST_URI)
                 .relativePath("/data.html")
                 .responseBodyHandler(ofString())
-                .sendAndTryToReturnList("List of tags <a>", toNodeList("a"))
+                .tryToReturnList("List of tags <a>", toNodeList("a"))
                 .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
                 .responseCriteria(bodyMatches("body != \"<?xml version=\\\"1.0\\\" encoding=\\\"utf-8\\\"?><a><b></b><c></c></a>\"",
                     s -> !s.equals("<?xml version=\"1.0\" encoding=\"utf-8\"?><a><b></b><c></c></a>")))
@@ -268,7 +268,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnList("List of tags <a>", toNodeList("a"))
+            .tryToReturnList("List of tags <a>", toNodeList("a"))
             .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
             .responseCriteria(bodyMatches("body != \"<?xml version=\\\"1.0\\\" encoding=\\\"utf-8\\\"?><a><b></b><c></c></a>\"",
                 s -> !s.equals("<?xml version=\"1.0\" encoding=\"utf-8\"?><a><b></b><c></c></a>"))));
@@ -283,7 +283,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnList("List of tags <a>", toNodeList("a"))
+            .tryToReturnList("List of tags <a>", toNodeList("a"))
             .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
             .responseCriteria(bodyMatches("body != \"<?xml version=\\\"1.0\\\" encoding=\\\"utf-8\\\"?><a><b></b><c></c></a>\"",
                 s -> !s.equals("<?xml version=\"1.0\" encoding=\"utf-8\"?><a><b></b><c></c></a>")))
@@ -303,7 +303,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/badData.html")
             .responseBodyHandler(mapped(ofString(), toNodeList("a")))
-            .sendAndTryToReturnList("List of tags <a>", ts -> ts)
+            .tryToReturnList("List of tags <a>", ts -> ts)
             .retryTimeOut(ofSeconds(5))
             .pollingInterval(ofMillis(500)));
 
@@ -320,7 +320,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
                 .baseURI(REQUEST_URI)
                 .relativePath("/badData.html")
                 .responseBodyHandler(mapped(ofString(), toNodeList("a")))
-                .sendAndTryToReturnList("List of tags <a>", ts -> ts)
+                .tryToReturnList("List of tags <a>", ts -> ts)
                 .retryTimeOut(ofSeconds(5))
                 .pollingInterval(ofMillis(500))
                 .throwOnNoResult());
@@ -338,7 +338,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnArray("Array of tags <a>", toNodeArray("a"))
+            .tryToReturnArray("Array of tags <a>", toNodeArray("a"))
             .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, arrayWithSize(1));
@@ -350,7 +350,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnArray("Array of tags <a>", toNodeArray("a"))
+            .tryToReturnArray("Array of tags <a>", toNodeArray("a"))
             .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
         assertThat(result, nullValue());
@@ -362,7 +362,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/badData.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnArray("Array of tags <a>", toNodeArray("a"))
+            .tryToReturnArray("Array of tags <a>", toNodeArray("a"))
             .criteria("Has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, nullValue());
@@ -374,7 +374,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnArray("Array of tags <a>", toNodeArray("a"))
+            .tryToReturnArray("Array of tags <a>", toNodeArray("a"))
             .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
             .throwOnNoResult());
 
@@ -388,7 +388,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnArray("Array of tags <a>", toNodeArray("a"))
+            .tryToReturnArray("Array of tags <a>", toNodeArray("a"))
             .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
             .retryTimeOut(ofSeconds(5)));
 
@@ -405,7 +405,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
                 .baseURI(REQUEST_URI)
                 .relativePath("/data.html")
                 .responseBodyHandler(ofString())
-                .sendAndTryToReturnArray("Array of tags <a>", toNodeArray("a"))
+                .tryToReturnArray("Array of tags <a>", toNodeArray("a"))
                 .responseCriteria(responseURI(create("https://www.google.com/")))
                 .throwOnNoResult());
         } catch (Exception e) {
@@ -422,7 +422,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnArray("Array of tags <a>", toNodeArray("a"))
+            .tryToReturnArray("Array of tags <a>", toNodeArray("a"))
             .responseCriteria(responseURI(create("https://www.google.com/"))));
 
         assertThat(result, nullValue());
@@ -435,7 +435,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnArray("Array of tags <a>", toNodeArray("a"))
+            .tryToReturnArray("Array of tags <a>", toNodeArray("a"))
             .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
             .responseCriteria(responseURI(create("https://www.google.com/")))
             .retryTimeOut(ofSeconds(5))
@@ -454,7 +454,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/badData.html")
             .responseBodyHandler(mapped(ofString(), toNodeArray("a")))
-            .sendAndTryToReturnArray("Array of tags <a>", ts -> ts)
+            .tryToReturnArray("Array of tags <a>", ts -> ts)
             .retryTimeOut(ofSeconds(5))
             .pollingInterval(ofMillis(500)));
 
@@ -471,7 +471,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
                 .baseURI(REQUEST_URI)
                 .relativePath("/badData.html")
                 .responseBodyHandler(mapped(ofString(), toNodeArray("a")))
-                .sendAndTryToReturnArray("Array of tags <a>", ts -> ts)
+                .tryToReturnArray("Array of tags <a>", ts -> ts)
                 .retryTimeOut(ofSeconds(5))
                 .pollingInterval(ofMillis(500))
                 .throwOnNoResult());
@@ -489,7 +489,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnItem("Tag <a>", toNodeList("a"))
+            .tryToReturnItem("Tag <a>", toNodeList("a"))
             .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, not(nullValue()));
@@ -501,7 +501,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnItem("Tag <a>", toNodeList("a"))
+            .tryToReturnItem("Tag <a>", toNodeList("a"))
             .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
         assertThat(result, nullValue());
@@ -513,7 +513,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/badData.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnItem("Tag <a>", toNodeList("a"))
+            .tryToReturnItem("Tag <a>", toNodeList("a"))
             .criteria("Has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, nullValue());
@@ -525,7 +525,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnItem("Tag <a>", toNodeList("a"))
+            .tryToReturnItem("Tag <a>", toNodeList("a"))
             .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
             .throwOnNoResult());
         fail("Exception was expected");
@@ -539,7 +539,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnItem("Tag <a>", toNodeList("a"))
+            .tryToReturnItem("Tag <a>", toNodeList("a"))
             .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
             .retryTimeOut(ofSeconds(5)));
 
@@ -556,7 +556,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
                 .baseURI(REQUEST_URI)
                 .relativePath("/data.html")
                 .responseBodyHandler(ofString())
-                .sendAndTryToReturnItem("Tag <a>", toNodeList("a"))
+                .tryToReturnItem("Tag <a>", toNodeList("a"))
                 .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
                 .responseCriteria(responseURIPort(200))
                 .throwOnNoResult());
@@ -574,7 +574,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnItem("Tag <a>", toNodeList("a"))
+            .tryToReturnItem("Tag <a>", toNodeList("a"))
             .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
             .responseCriteria(responseURIPort(200)));
 
@@ -588,7 +588,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnItem("Tag <a>", toNodeList("a"))
+            .tryToReturnItem("Tag <a>", toNodeList("a"))
             .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
             .responseCriteria(responseURIPort(200))
             .retryTimeOut(ofSeconds(5))
@@ -607,7 +607,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/badData.html")
             .responseBodyHandler(mapped(ofString(), toNodeList("a")))
-            .sendAndTryToReturnItem("Tag <a>", nodes -> nodes)
+            .tryToReturnItem("Tag <a>", nodes -> nodes)
             .retryTimeOut(ofSeconds(5))
             .pollingInterval(ofMillis(500)));
 
@@ -624,7 +624,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
                 .baseURI(REQUEST_URI)
                 .relativePath("/badData.html")
                 .responseBodyHandler(mapped(ofString(), toNodeList("a")))
-                .sendAndTryToReturnItem("Tag <a>", nodes -> nodes)
+                .tryToReturnItem("Tag <a>", nodes -> nodes)
                 .retryTimeOut(ofSeconds(5))
                 .pollingInterval(ofMillis(500))
                 .throwOnNoResult());
@@ -642,7 +642,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnArrayItem("Tag <a>", toNodeArray("a"))
+            .tryToReturnArrayItem("Tag <a>", toNodeArray("a"))
             .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, not(nullValue()));
@@ -654,7 +654,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnArrayItem("Tag <a>", toNodeArray("a"))
+            .tryToReturnArrayItem("Tag <a>", toNodeArray("a"))
             .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
         assertThat(result, nullValue());
@@ -666,7 +666,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/badData.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnArrayItem("Tag <a>", toNodeArray("a"))
+            .tryToReturnArrayItem("Tag <a>", toNodeArray("a"))
             .criteria("Has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, nullValue());
@@ -678,7 +678,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnArrayItem("Tag <a>", toNodeArray("a"))
+            .tryToReturnArrayItem("Tag <a>", toNodeArray("a"))
             .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
             .throwOnNoResult());
 
@@ -692,7 +692,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnArrayItem("Tag <a>", toNodeArray("a"))
+            .tryToReturnArrayItem("Tag <a>", toNodeArray("a"))
             .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
             .retryTimeOut(ofSeconds(5)));
 
@@ -709,7 +709,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
                 .baseURI(REQUEST_URI)
                 .relativePath("/data.html")
                 .responseBodyHandler(ofString())
-                .sendAndTryToReturnArrayItem("Tag <a>", toNodeArray("a"))
+                .tryToReturnArrayItem("Tag <a>", toNodeArray("a"))
                 .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
                 .responseCriteria(responseURIPort(200))
                 .throwOnNoResult());
@@ -727,7 +727,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnArrayItem("Tag <a>", toNodeArray("a"))
+            .tryToReturnArrayItem("Tag <a>", toNodeArray("a"))
             .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
             .responseCriteria(responseURIPort(200)));
 
@@ -741,7 +741,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnArrayItem("Tag <a>", toNodeArray("a"))
+            .tryToReturnArrayItem("Tag <a>", toNodeArray("a"))
             .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
             .responseCriteria(responseURIPort(200))
             .retryTimeOut(ofSeconds(5))
@@ -760,7 +760,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .baseURI(REQUEST_URI)
             .relativePath("/badData.html")
             .responseBodyHandler(mapped(ofString(), toNodeArray("a")))
-            .sendAndTryToReturnArrayItem("Tag <a>", ts -> ts)
+            .tryToReturnArrayItem("Tag <a>", ts -> ts)
             .retryTimeOut(ofSeconds(5))
             .pollingInterval(ofMillis(500)));
 
@@ -777,7 +777,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
                 .baseURI(REQUEST_URI)
                 .relativePath("/badData.html")
                 .responseBodyHandler(mapped(ofString(), toNodeArray("a")))
-                .sendAndTryToReturnArrayItem("Tag <a>", ts -> ts)
+                .tryToReturnArrayItem("Tag <a>", ts -> ts)
                 .retryTimeOut(ofSeconds(5))
                 .pollingInterval(ofMillis(500))
                 .throwOnNoResult());

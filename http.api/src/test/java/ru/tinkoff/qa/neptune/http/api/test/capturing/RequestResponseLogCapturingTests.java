@@ -154,7 +154,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         http().responseOf(GET()
             .baseURI(CORRECT_URI)
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnBody());
+            .tryToReturnBody());
         assertThat(getLog(), matcher);
     }
 
@@ -165,7 +165,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         http().responseOf(GET()
             .baseURI(CORRECT_URI)
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnBody()
+            .tryToReturnBody()
             .responseCriteria(bodyMatches("equals FAILURE", "FAILURE"::equals))
             .retryTimeOut(ofSeconds(5)));
 
@@ -180,7 +180,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
             http().responseOf(GET()
                 .baseURI(CORRECT_URI)
                 .responseBodyHandler(ofString())
-                .sendAndTryToReturnBody()
+                .tryToReturnBody()
                 .responseCriteria(bodyMatches("equals FAILURE", "FAILURE"::equals))
                 .retryTimeOut(ofSeconds(5))
                 .throwOnNoResult());
@@ -199,7 +199,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
             http().responseOf(GET()
                 .baseURI(CORRECT_URI)
                 .responseBodyHandler(ofString())
-                .sendAndTryToReturnBody()
+                .tryToReturnBody()
                 .retryTimeOut(ofSeconds(5))
                 .responseCriteria(statusCode(404))
                 .throwOnNoResult());
@@ -218,7 +218,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
             .baseURI(INCORRECT_URI)
             .timeout(ofSeconds(1))
             .responseBodyHandler(ofString())
-            .sendAndTryToReturnBody());
+            .tryToReturnBody());
 
         assertThat(getLog(), matcher);
     }
@@ -230,7 +230,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         http().responseOf(GET()
             .baseURI(CORRECT_URI)
             .responseBodyHandler(ofString())
-            .sendAndTryToReturn("Number value", Integer::parseInt)
+            .tryToReturn("Number value", Integer::parseInt)
             .retryTimeOut(ofSeconds(5)));
 
         assertThat(getLog(), matcher);
@@ -244,7 +244,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
             http().responseOf(GET()
                 .baseURI(CORRECT_URI)
                 .responseBodyHandler(ofString())
-                .sendAndTryToReturn("Number value", Integer::parseInt)
+                .tryToReturn("Number value", Integer::parseInt)
                 .retryTimeOut(ofSeconds(5))
                 .throwOnNoResult());
         } catch (Throwable t) {
@@ -263,7 +263,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
                 .baseURI(INCORRECT_URI)
                 .timeout(ofSeconds(1))
                 .responseBodyHandler(ofString())
-                .sendAndTryToReturnBody()
+                .tryToReturnBody()
                 .retryTimeOut(ofSeconds(5))
                 .throwOnNoResult());
         } catch (Throwable t) {
