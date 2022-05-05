@@ -1560,7 +1560,6 @@ import static java.time.Duration.ofSeconds;
 import static java.time.Duration.ofMillis;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectsFromArrayBodyStepSupplier.asArray;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
 
