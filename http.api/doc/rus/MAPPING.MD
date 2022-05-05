@@ -149,9 +149,6 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
 ### Заголовки
 
-
-  
-
 Если метод имеет постоянные заголовки (например Content-Type), то
 
 ```java
@@ -957,15 +954,15 @@ public class MyTest {
         var service2 = createAPI(ServiceAPI2.class, baseURI); //можно инициализировать как поля 
 
 
-        HttpResponse<String> response1 = http().responseOf(
-                service1.postSomething("Some text"),
+        HttpResponse<String> response1 = http().responseOf(service1
+                .postSomething("Some text")
                 //Ответ вернется c телом, интерпретированным/прочитанным как текст
-                ofString());
+                .responseBodyHandler(ofString()));
 
-        HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("some param"),
+        HttpResponse<String> response2 = http().responseOf(service2
+                .getSomething("some param")
                 //Ответ вернется c телом, интерпретированным/прочитанным как текст
-                ofString());
+                .responseBodyHandler(ofString()));
     }
 }
 ```
@@ -996,13 +993,15 @@ public class MyTest {
         var service2 = createAPI(ServiceAPI2.class, baseURI);
 
 
-        HttpResponse<String> response1 = http().responseOf(
-                service1.postSomething("Some text").expectContinue(true),
-                ofString());
+        HttpResponse<String> response1 = http().responseOf(service1
+                .postSomething("Some text")
+                .expectContinue(true)
+                .responseBodyHandler(ofString()));
 
-        HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("some param").version(HTTP_2),
-                ofString());
+        HttpResponse<String> response2 = http().responseOf(service2
+                .getSomething("some param")
+                .version(HTTP_2)
+                .responseBodyHandler(ofString()));
     }
 }
 ```
@@ -1069,13 +1068,13 @@ public class MyTest {
         var service2 = createAPI(ServiceAPI2.class, baseURI).useForRequestBuilding(RequestTuner2.class);
 
 
-        HttpResponse<String> response1 = http().responseOf(
-                service1.postSomething("Some text"),
-                ofString());
+        HttpResponse<String> response1 = http().responseOf(service1
+                .postSomething("Some text")
+                .responseBodyHandler(ofString()));
 
-        HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("some param"),
-                ofString());
+        HttpResponse<String> response2 = http().responseOf(service2
+                .getSomething("some param")
+                .responseBodyHandler(ofString()));
     }
 }
 ```
@@ -1138,13 +1137,13 @@ public class MyTest {
         var service2 = createAPI(ServiceAPI2.class, baseURI);
 
 
-        HttpResponse<String> response1 = http().responseOf(
-                service1.postSomething("Some text"),
-                ofString());
+        HttpResponse<String> response1 = http().responseOf(service1
+                .postSomething("Some text")
+                .responseBodyHandler(ofString()));
 
-        HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("some param"),
-                ofString());
+        HttpResponse<String> response2 = http().responseOf(service2
+                .getSomething("some param")
+                .responseBodyHandler(ofString()));
     }
 }
 ```
@@ -1178,13 +1177,13 @@ public class MyTest {
         var service2 = createAPI(ServiceAPI2.class);
 
 
-        HttpResponse<String> response1 = http().responseOf(
-                service1.postSomething("Some text"),
-                ofString());
+        HttpResponse<String> response1 = http().responseOf(service1
+                .postSomething("Some text")
+                .responseBodyHandler(ofString()));
 
-        HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("some param"),
-                ofString());
+        HttpResponse<String> response2 = http().responseOf(service2
+                .getSomething("some param")
+                .responseBodyHandler(ofString()));
     }
 }
 ```
@@ -1240,13 +1239,13 @@ public class MyTest {
         var service1 = createAPI(ServiceAPI1.class, SERVICE1); //Указываем элементы, 
         var service2 = createAPI(ServiceAPI2.class, SERVICE2); //предоставляющие доступ к новым свойствам.
 
-        HttpResponse<String> response1 = http().responseOf(
-                service1.postSomething("Some text"),
-                ofString());
+        HttpResponse<String> response1 = http().responseOf(service1
+                .postSomething("Some text")
+                .responseBodyHandler(ofString()));
 
-        HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("some param"),
-                ofString());
+        HttpResponse<String> response2 = http().responseOf(service2
+                .getSomething("some param")
+                .responseBodyHandler(ofString()));
     }
 }
 ```
@@ -1295,13 +1294,13 @@ public class MyTest {
         var service1 = createAPI(ServiceAPI1.class);
         var service2 = createAPI(ServiceAPI2.class);
 
-        HttpResponse<String> response1 = http().responseOf(
-                service1.postSomething("Some text"),
-                ofString());
+        HttpResponse<String> response1 = http().responseOf(service1
+                .postSomething("Some text")
+                .responseBodyHandler(ofString()));
 
-        HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("some param"),
-                ofString());
+        HttpResponse<String> response2 = http().responseOf(service2
+                .getSomething("some param")
+                .responseBodyHandler(ofString()));
     }
 }
 ```
@@ -1346,13 +1345,13 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        HttpResponse<String> response1 = http().responseOf(
-                service1.postSomething("Some text"),
-                ofString());
+        HttpResponse<String> response1 = http().responseOf(service1
+                .postSomething("Some text")
+                .responseBodyHandler(ofString()));
 
-        HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("some param"),
-                ofString());
+        HttpResponse<String> response2 = http().responseOf(service2
+                .getSomething("some param")
+                .responseBodyHandler(ofString()));
     }
 }
 ```
