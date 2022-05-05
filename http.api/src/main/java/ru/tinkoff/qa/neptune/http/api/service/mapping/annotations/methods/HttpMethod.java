@@ -54,7 +54,7 @@ public @interface HttpMethod {
          * @param body   is a body of resulted request
          * @return an instance of {@link RequestBuilder}
          */
-        public static RequestBuilder createRequestBuilder(Method toRead,
+        public static RequestBuilder<?> createRequestBuilder(Method toRead,
                                                           URI uri,
                                                           String path,
                                                           RequestBody<?> body) {
@@ -88,7 +88,7 @@ public @interface HttpMethod {
                                 })
                                 .orElse(EMPTY);
 
-                        RequestBuilder builder;
+                        RequestBuilder<?> builder;
                         if (methodEnum != NON_DEFINED) {
                             builder = methodEnum.prepareRequestBuilder(body);
                         } else {
@@ -97,14 +97,12 @@ public @interface HttpMethod {
                                     .orElseGet(() -> METHOD(methodStr));
                         }
 
-                        var result = ofNullable(uri)
-                                .map(builder::baseURI)
-                                .orElse(builder);
+                        ofNullable(uri).ifPresent(builder::baseURI);
 
                         if (isNotBlank(handledPath)) {
-                            return result.relativePath(handledPath);
+                            return builder.relativePath(handledPath);
                         } else {
-                            return result;
+                            return builder;
                         }
 
                     })
