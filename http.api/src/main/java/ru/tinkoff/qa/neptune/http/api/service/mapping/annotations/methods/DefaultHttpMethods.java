@@ -14,7 +14,7 @@ public enum DefaultHttpMethods {
 
     NON_DEFINED("") {
         @Override
-        RequestBuilder prepareRequestBuilder(RequestBody<?> body) {
+        RequestBuilder<?> prepareRequestBuilder(RequestBody<?> body) {
             return null;
         }
     },
@@ -23,7 +23,7 @@ public enum DefaultHttpMethods {
      */
     GET("GET") {
         @Override
-        RequestBuilder prepareRequestBuilder(RequestBody<?> body) {
+        RequestBuilder<?> prepareRequestBuilder(RequestBody<?> body) {
             return ofNullable(body)
                     .map(b -> METHOD(this.toString(), b))
                     .orElseGet(RequestBuilderFactory::GET);
@@ -34,7 +34,7 @@ public enum DefaultHttpMethods {
      */
     POST("POST") {
         @Override
-        RequestBuilder prepareRequestBuilder(RequestBody<?> body) {
+        RequestBuilder<?> prepareRequestBuilder(RequestBody<?> body) {
             return ofNullable(body)
                     .map(RequestBuilderFactory::POST)
                     .orElseGet(RequestBuilderFactory::POST);
@@ -45,7 +45,7 @@ public enum DefaultHttpMethods {
      */
     PUT("PUT") {
         @Override
-        RequestBuilder prepareRequestBuilder(RequestBody<?> body) {
+        RequestBuilder<?> prepareRequestBuilder(RequestBody<?> body) {
             return ofNullable(body)
                     .map(RequestBuilderFactory::PUT)
                     .orElseGet(RequestBuilderFactory::PUT);
@@ -56,7 +56,7 @@ public enum DefaultHttpMethods {
      */
     DELETE("DELETE") {
         @Override
-        RequestBuilder prepareRequestBuilder(RequestBody<?> body) {
+        RequestBuilder<?> prepareRequestBuilder(RequestBody<?> body) {
             return ofNullable(body)
                     .map(b -> METHOD(this.toString(), b))
                     .orElseGet(RequestBuilderFactory::DELETE);
@@ -94,7 +94,7 @@ public enum DefaultHttpMethods {
         return name;
     }
 
-    RequestBuilder prepareRequestBuilder(RequestBody<?> body) {
+    RequestBuilder<?> prepareRequestBuilder(RequestBody<?> body) {
         return ofNullable(body)
                 .map(b -> METHOD(toString(), b))
                 .orElseGet(() -> METHOD(toString()));
