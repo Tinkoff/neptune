@@ -67,7 +67,7 @@ class Response<T, R> implements HttpResponse<T> {
         return translate(this) + " " + response.toString();
     }
 
-    public R getCalculated() {
+    R getCalculated() {
         return calculated;
     }
 }
