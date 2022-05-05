@@ -35,7 +35,7 @@ public abstract class AdditionalCriteriaDescription {
         return translate(this);
     }
 
-    @Description("Response body data has item '{description}': {criteria}")
+    @Description("'{description}' calculated by response body data has/have item: {criteria}")
     static final class CalculatedResponseDateHasItem extends AdditionalCriteriaDescription {
 
         private CalculatedResponseDateHasItem(String description, String criteria) {
