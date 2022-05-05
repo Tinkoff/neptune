@@ -54,17 +54,17 @@ public @interface HttpMethod {
          * @param body   is a body of resulted request
          * @return an instance of {@link RequestBuilder}
          */
-        public static RequestBuilder<?> createRequestBuilder(Method toRead,
-                                                          URI uri,
-                                                          String path,
-                                                          RequestBody<?> body) {
+        public static RequestBuilder<Void> createRequestBuilder(Method toRead,
+                                                                URI uri,
+                                                                String path,
+                                                                RequestBody<?> body) {
             return ofNullable(toRead.getAnnotation(HttpMethod.class))
-                    .map(httpMethod -> {
-                        var methodEnum = httpMethod.httpMethod();
-                        var methodStr = httpMethod.httpMethodStr();
+                .map(httpMethod -> {
+                    var methodEnum = httpMethod.httpMethod();
+                    var methodStr = httpMethod.httpMethodStr();
 
-                        if ((methodEnum != NON_DEFINED) && (isNotBlank(methodStr))) {
-                            throw new UnsupportedOperationException(format("Only one of 'httpMethod' or " +
+                    if ((methodEnum != NON_DEFINED) && (isNotBlank(methodStr))) {
+                        throw new UnsupportedOperationException(format("Only one of 'httpMethod' or " +
                                             "'httpMethodStr' should be defined in %s of " +
                                             "%s",
                                     HttpMethod.class.getName(),
@@ -88,7 +88,7 @@ public @interface HttpMethod {
                                 })
                                 .orElse(EMPTY);
 
-                        RequestBuilder<?> builder;
+                    RequestBuilder<Void> builder;
                         if (methodEnum != NON_DEFINED) {
                             builder = methodEnum.prepareRequestBuilder(body);
                         } else {
