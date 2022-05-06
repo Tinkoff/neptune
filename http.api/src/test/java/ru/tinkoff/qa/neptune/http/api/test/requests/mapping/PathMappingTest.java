@@ -224,7 +224,7 @@ public class PathMappingTest {
     }
 
     @Test(dataProvider = "data1")
-    public void test1(RequestBuilder builder, HasPathMatcher<URI> pathMatcher, String rawPath) {
+    public void test1(RequestBuilder<?> builder, HasPathMatcher<URI> pathMatcher, String rawPath) {
         var uri = builder.build().uri();
         assertThat(uri, uriHasScheme("http"));
         assertThat(uri, uriHasHost("127.0.0.1"));
@@ -234,7 +234,7 @@ public class PathMappingTest {
     }
 
     @Test(dataProvider = "data2")
-    public void test2(RequestBuilder builder, HasPathMatcher<URI> pathMatcher, String rawPath) throws Exception {
+    public void test2(RequestBuilder<?> builder, HasPathMatcher<URI> pathMatcher, String rawPath) throws Exception {
         DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept(new URL("http://127.0.0.1:8089"));
         try {
             test1(builder, pathMatcher, rawPath);
@@ -285,132 +285,132 @@ public class PathMappingTest {
 
         @HttpMethod(httpMethod = GET)
         @URIPath("path/to/target/end/point")
-        RequestBuilder getSomethingWithConstantPath();
+        RequestBuilder<?> getSomethingWithConstantPath();
 
         @HttpMethod(httpMethod = GET)
         @URIPath("/path/to/target/end/point")
-        RequestBuilder getSomethingWithConstantPath2();
+        RequestBuilder<?> getSomethingWithConstantPath2();
 
         @HttpMethod(httpMethod = GET)
         @URIPath("{path begin}/{next}/and/then/{third}/end/point")
-        RequestBuilder getSomethingWithVariablePath(@PathParameter(name = "path begin", required = false) String start,
-                                                    @PathParameter(name = "next") float next,
-                                                    @PathParameter(name = "third") String third);
+        RequestBuilder<?> getSomethingWithVariablePath(@PathParameter(name = "path begin", required = false) String start,
+                                                       @PathParameter(name = "next") float next,
+                                                       @PathParameter(name = "third") String third);
 
         @HttpMethod(httpMethod = GET)
         @URIPath("{path begin}/{next}/and/then/{third}/end/point")
-        RequestBuilder getSomethingWithVariablePath(@PathParameter(name = "path begin", required = false) String start,
-                                                    @PathParameter(name = "next", required = false) String next,
-                                                    @PathParameter(name = "third") float third);
+        RequestBuilder<?> getSomethingWithVariablePath(@PathParameter(name = "path begin", required = false) String start,
+                                                       @PathParameter(name = "next", required = false) String next,
+                                                       @PathParameter(name = "third") float third);
 
         @HttpMethod(httpMethod = GET)
         @URIPath("{path begin}/{next}/and/then/{array}/end/point")
-        RequestBuilder getSomethingWithVariablePathArrayS(@PathParameter(name = "path begin", required = false) String start,
-                                                          @PathParameter(name = "next", required = false) String next,
-                                                          @PathParameter(name = "array") Object[] array);
+        RequestBuilder<?> getSomethingWithVariablePathArrayS(@PathParameter(name = "path begin", required = false) String start,
+                                                             @PathParameter(name = "next", required = false) String next,
+                                                             @PathParameter(name = "array") Object[] array);
 
         @HttpMethod(httpMethod = GET)
         @URIPath("{path begin}/{next}/and/then/{array}/end/point")
-        RequestBuilder getSomethingWithVariablePathArraySE(@PathParameter(name = "path begin", required = false) String start,
-                                                           @PathParameter(name = "next", required = false) String next,
-                                                           @PathParameter(name = "array", explode = true) Object[] array);
+        RequestBuilder<?> getSomethingWithVariablePathArraySE(@PathParameter(name = "path begin", required = false) String start,
+                                                              @PathParameter(name = "next", required = false) String next,
+                                                              @PathParameter(name = "array", explode = true) Object[] array);
 
 
         @HttpMethod(httpMethod = GET)
         @URIPath("{path begin}/{next}/and/then/{array}/end/point")
-        RequestBuilder getSomethingWithVariablePathArrayL(@PathParameter(name = "path begin", required = false) String start,
-                                                          @PathParameter(name = "next", required = false) String next,
-                                                          @PathParameter(name = "array",
-                                                                  style = LABEL) Object[] array);
+        RequestBuilder<?> getSomethingWithVariablePathArrayL(@PathParameter(name = "path begin", required = false) String start,
+                                                             @PathParameter(name = "next", required = false) String next,
+                                                             @PathParameter(name = "array",
+                                                                 style = LABEL) Object[] array);
 
         @HttpMethod(httpMethod = GET)
         @URIPath("{path begin}/{next}/and/then/{array}/end/point")
-        RequestBuilder getSomethingWithVariablePathArrayLE(@PathParameter(name = "path begin", required = false) String start,
-                                                           @PathParameter(name = "next", required = false) String next,
-                                                           @PathParameter(name = "array",
+        RequestBuilder<?> getSomethingWithVariablePathArrayLE(@PathParameter(name = "path begin", required = false) String start,
+                                                              @PathParameter(name = "next", required = false) String next,
+                                                              @PathParameter(name = "array",
+                                                                  style = LABEL,
+                                                                  explode = true) Object[] array);
+
+        @HttpMethod(httpMethod = GET)
+        @URIPath("{path begin}/{next}/and/then/{array}/end/point")
+        RequestBuilder<?> getSomethingWithVariablePathArrayM(@PathParameter(name = "path begin", required = false) String start,
+                                                             @PathParameter(name = "next", required = false) String next,
+                                                             @PathParameter(name = "array",
+                                                                 style = MATRIX) Object[] array);
+
+        @HttpMethod(httpMethod = GET)
+        @URIPath("{path begin}/{next}/and/then/{array}/end/point")
+        RequestBuilder<?> getSomethingWithVariablePathArrayME(@PathParameter(name = "path begin", required = false) String start,
+                                                              @PathParameter(name = "next", required = false) String next,
+                                                              @PathParameter(name = "array",
+                                                                  style = MATRIX,
+                                                                  explode = true) Object[] array);
+
+        @HttpMethod(httpMethod = GET)
+        @URIPath("{path begin}/{next}/and/then/{object}/end/point")
+        RequestBuilder<?> getSomethingWithVariablePathObjectS(@PathParameter(name = "path begin", required = false) String start,
+                                                              @PathParameter(name = "next", required = false) String next,
+                                                              @PathParameter(name = "object") Object object);
+
+        @HttpMethod(httpMethod = GET)
+        @URIPath("{path begin}/{next}/and/then/{object}/end/point")
+        RequestBuilder<?> getSomethingWithVariablePathObjectSE(@PathParameter(name = "path begin", required = false) String start,
+                                                               @PathParameter(name = "next", required = false) String next,
+                                                               @PathParameter(name = "object", explode = true) Object object);
+
+
+        @HttpMethod(httpMethod = GET)
+        @URIPath("{path begin}/{next}/and/then/{object}/end/point")
+        RequestBuilder<?> getSomethingWithVariablePathObjectL(@PathParameter(name = "path begin", required = false) String start,
+                                                              @PathParameter(name = "next", required = false) String next,
+                                                              @PathParameter(name = "object",
+                                                                  style = LABEL) Object object);
+
+        @HttpMethod(httpMethod = GET)
+        @URIPath("{path begin}/{next}/and/then/{object}/end/point")
+        RequestBuilder<?> getSomethingWithVariablePathObjectLE(@PathParameter(name = "path begin", required = false) String start,
+                                                               @PathParameter(name = "next", required = false) String next,
+                                                               @PathParameter(name = "object",
                                                                    style = LABEL,
-                                                                   explode = true) Object[] array);
+                                                                   explode = true) Object object);
 
         @HttpMethod(httpMethod = GET)
-        @URIPath("{path begin}/{next}/and/then/{array}/end/point")
-        RequestBuilder getSomethingWithVariablePathArrayM(@PathParameter(name = "path begin", required = false) String start,
-                                                          @PathParameter(name = "next", required = false) String next,
-                                                          @PathParameter(name = "array",
-                                                                  style = MATRIX) Object[] array);
+        @URIPath("{path begin}/{next}/and/then/{object}/end/point")
+        RequestBuilder<?> getSomethingWithVariablePathObjectM(@PathParameter(name = "path begin", required = false) String start,
+                                                              @PathParameter(name = "next", required = false) String next,
+                                                              @PathParameter(name = "object",
+                                                                  style = MATRIX) Object object);
 
         @HttpMethod(httpMethod = GET)
-        @URIPath("{path begin}/{next}/and/then/{array}/end/point")
-        RequestBuilder getSomethingWithVariablePathArrayME(@PathParameter(name = "path begin", required = false) String start,
-                                                           @PathParameter(name = "next", required = false) String next,
-                                                           @PathParameter(name = "array",
+        @URIPath("{path begin}/{next}/and/then/{object}/end/point")
+        RequestBuilder<?> getSomethingWithVariablePathObjectME(@PathParameter(name = "path begin", required = false) String start,
+                                                               @PathParameter(name = "next", required = false) String next,
+                                                               @PathParameter(name = "object",
                                                                    style = MATRIX,
-                                                                   explode = true) Object[] array);
-
-        @HttpMethod(httpMethod = GET)
-        @URIPath("{path begin}/{next}/and/then/{object}/end/point")
-        RequestBuilder getSomethingWithVariablePathObjectS(@PathParameter(name = "path begin", required = false) String start,
-                                                           @PathParameter(name = "next", required = false) String next,
-                                                           @PathParameter(name = "object") Object object);
-
-        @HttpMethod(httpMethod = GET)
-        @URIPath("{path begin}/{next}/and/then/{object}/end/point")
-        RequestBuilder getSomethingWithVariablePathObjectSE(@PathParameter(name = "path begin", required = false) String start,
-                                                            @PathParameter(name = "next", required = false) String next,
-                                                            @PathParameter(name = "object", explode = true) Object object);
-
-
-        @HttpMethod(httpMethod = GET)
-        @URIPath("{path begin}/{next}/and/then/{object}/end/point")
-        RequestBuilder getSomethingWithVariablePathObjectL(@PathParameter(name = "path begin", required = false) String start,
-                                                           @PathParameter(name = "next", required = false) String next,
-                                                           @PathParameter(name = "object",
-                                                                   style = LABEL) Object object);
-
-        @HttpMethod(httpMethod = GET)
-        @URIPath("{path begin}/{next}/and/then/{object}/end/point")
-        RequestBuilder getSomethingWithVariablePathObjectLE(@PathParameter(name = "path begin", required = false) String start,
-                                                            @PathParameter(name = "next", required = false) String next,
-                                                            @PathParameter(name = "object",
-                                                                    style = LABEL,
-                                                                    explode = true) Object object);
-
-        @HttpMethod(httpMethod = GET)
-        @URIPath("{path begin}/{next}/and/then/{object}/end/point")
-        RequestBuilder getSomethingWithVariablePathObjectM(@PathParameter(name = "path begin", required = false) String start,
-                                                           @PathParameter(name = "next", required = false) String next,
-                                                           @PathParameter(name = "object",
-                                                                   style = MATRIX) Object object);
-
-        @HttpMethod(httpMethod = GET)
-        @URIPath("{path begin}/{next}/and/then/{object}/end/point")
-        RequestBuilder getSomethingWithVariablePathObjectME(@PathParameter(name = "path begin", required = false) String start,
-                                                            @PathParameter(name = "next", required = false) String next,
-                                                            @PathParameter(name = "object",
-                                                                    style = MATRIX,
-                                                                    explode = true) Object object);
+                                                                   explode = true) Object object);
 
 
         @HttpMethod(httpMethod = GET)
         @URIPath("{path begin}/{next}/and/then/{next}/end/point")
-        RequestBuilder getSomethingWithVariablePath(@PathParameter(name = "path begin") String start,
-                                                    @PathParameter(name = "next") String next);
+        RequestBuilder<?> getSomethingWithVariablePath(@PathParameter(name = "path begin") String start,
+                                                       @PathParameter(name = "next") String next);
 
         @HttpMethod(httpMethod = GET)
         @URIPath("{path begin}/{next}/and/then/third/end/point")
-        RequestBuilder getSomethingWithVariablePathFailed(@PathParameter(name = "path begin") String start,
-                                                          @PathParameter(name = "next") float next,
-                                                          @PathParameter(name = "third") String third);
+        RequestBuilder<?> getSomethingWithVariablePathFailed(@PathParameter(name = "path begin") String start,
+                                                             @PathParameter(name = "next") float next,
+                                                             @PathParameter(name = "third") String third);
 
         @HttpMethod(httpMethod = GET)
         @URIPath("{path begin}/{next}/and/then/third/end/point")
-        RequestBuilder getSomethingWithVariablePathFailed(@PathParameter(name = "path begin") String start,
-                                                          @PathParameter(name = "next") float next,
-                                                          @PathParameter(name = "next") boolean third);
+        RequestBuilder<?> getSomethingWithVariablePathFailed(@PathParameter(name = "path begin") String start,
+                                                             @PathParameter(name = "next") float next,
+                                                             @PathParameter(name = "next") boolean third);
 
         @HttpMethod(httpMethod = GET)
         @URIPath("{path begin}/{next}/and/then/{third}/end/point")
-        RequestBuilder getSomethingWithVariablePathFailed(@PathParameter(name = "path begin") String start,
-                                                          @PathParameter(name = "next") float next);
+        RequestBuilder<?> getSomethingWithVariablePathFailed(@PathParameter(name = "path begin") String start,
+                                                             @PathParameter(name = "next") float next);
     }
 
     private static class PathParameterObject extends MappedObject {

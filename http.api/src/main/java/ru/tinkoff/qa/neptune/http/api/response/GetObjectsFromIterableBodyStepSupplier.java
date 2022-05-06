@@ -4,7 +4,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
@@ -23,16 +22,9 @@ import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSuppl
  * Builds a step-function that retrieves an {@link Iterable} from http response body.
  */
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted iterable")
-@ThrowWhenNoData(toThrow = DesiredDataHasNotBeenReceivedException.class, startDescription = "No data received:")
 public final class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Iterable<R>>
     extends SequentialGetStepSupplier.GetListChainedStepSupplier<HttpStepContext, S, HttpResponse<T>, R, GetObjectsFromIterableBodyStepSupplier<T, R, S>>
     implements DefinesResponseCriteria<T, GetObjectsFromIterableBodyStepSupplier<T, R, S>> {
-
-    @Deprecated(forRemoval = true)
-    private GetObjectsFromIterableBodyStepSupplier(Function<T, S> f) {
-        super(httpResponse -> f.apply(httpResponse.body()));
-        addIgnored(Exception.class);
-    }
 
     private GetObjectsFromIterableBodyStepSupplier() {
         super(httpResponse -> ((Response<T, S>) httpResponse).getCalculated());
@@ -50,100 +42,6 @@ public final class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Iterab
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
         return new GetObjectsFromIterableBodyStepSupplier<T, R, S>()
             .from(response(requestBuilder, f).addIgnored(Exception.class));
-    }
-
-    /**
-     * Creates an instance of {@link GetObjectsFromIterableBodyStepSupplier}. It builds a step-function that retrieves
-     * an {@link Iterable} from http response body.
-     *
-     * @param description is a description of resulted {@link Iterable}
-     * @param received    is a received http response
-     * @param f           is a function that describes how to get an {@link Iterable} from a body of http response
-     * @param <T>         is a type of response body
-     * @param <R>         is a type of item of resulted iterable
-     * @param <S>         is a type of resulted iterable
-     * @return an instance of {@link GetObjectsFromIterableBodyStepSupplier}
-     * @deprecated because it will be removed
-     */
-    @Description("{description}")
-    @Deprecated(forRemoval = true)
-    public static <T, R, S extends Iterable<R>> GetObjectsFromIterableBodyStepSupplier<T, R, S> asIterable(
-        @DescriptionFragment(
-            value = "description",
-            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
-            String description,
-        HttpResponse<T> received,
-        Function<T, S> f) {
-        checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectsFromIterableBodyStepSupplier<>(f).from(received);
-    }
-
-    /**
-     * Creates an instance of {@link GetObjectsFromIterableBodyStepSupplier}. It builds a step-function that retrieves
-     * an {@link Iterable} from http response body.
-     *
-     * @param description    is a description of resulted {@link Iterable}
-     * @param requestBuilder describes a request to be sent
-     * @param handler        is a response body handler
-     * @param f              is a function that describes how to get an {@link Iterable} from a body of http response
-     * @param <T>            is a type of response body
-     * @param <R>            is a type of item of resulted iterable
-     * @param <S>            is a type of resulted iterable
-     * @return an instance of {@link GetObjectsFromIterableBodyStepSupplier}
-     * @deprecated because it will be removed
-     */
-    @Description("{description}")
-    @Deprecated(forRemoval = true)
-    public static <T, R, S extends Iterable<R>> GetObjectsFromIterableBodyStepSupplier<T, R, S> asIterable(
-        @DescriptionFragment(
-            value = "description",
-            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class)
-            String description,
-        RequestBuilder<?> requestBuilder,
-        HttpResponse.BodyHandler<T> handler,
-        Function<T, S> f) {
-        checkArgument(isNotBlank(description), "description of resulted value is not defined");
-        return new GetObjectsFromIterableBodyStepSupplier<T, R, S>()
-            .from(response(requestBuilder.responseBodyHandler(handler), f).addIgnored(Exception.class));
-    }
-
-
-    /**
-     * Creates an instance of {@link GetObjectsFromIterableBodyStepSupplier}. It builds a step-function that retrieves
-     * an {@link Iterable} from http response body.
-     *
-     * @param description is a description of resulted {@link Iterable}
-     * @param received    is a received http response
-     * @param <R>         is a type of element of an iterable of response body
-     * @param <S>         if a type of {@link Iterable} of response body
-     * @return an instance of {@link GetObjectsFromIterableBodyStepSupplier}
-     * @deprecated because it will be removed
-     */
-    @Deprecated(forRemoval = true)
-    public static <R, S extends Iterable<R>> GetObjectsFromIterableBodyStepSupplier<S, R, S> asIterable(
-        String description,
-        HttpResponse<S> received) {
-        return asIterable(description, received, rs -> rs);
-    }
-
-    /**
-     * Creates an instance of {@link GetObjectsFromIterableBodyStepSupplier}. It builds a step-function that retrieves
-     * an {@link Iterable} from http response body.
-     *
-     * @param description    is a description of resulted {@link Iterable}
-     * @param requestBuilder describes a request to be sent
-     * @param handler        is a response body handler
-     * @param <R>            is a type of element of an iterable of response body
-     * @param <S>            if a type of {@link Iterable} of response body
-     * @return an instance of {@link GetObjectsFromIterableBodyStepSupplier}
-     * @deprecated because it will be removed
-     */
-    @Deprecated(forRemoval = true)
-    public static <R, S extends Iterable<R>> GetObjectsFromIterableBodyStepSupplier<S, R, S> asIterable(
-        String description,
-        RequestBuilder<?> requestBuilder,
-        HttpResponse.BodyHandler<S> handler) {
-        return asIterable(description, requestBuilder, handler, rs -> rs);
     }
 
     @Override
@@ -169,4 +67,3 @@ public final class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Iterab
         return super.get();
     }
 }
-

@@ -2,7 +2,6 @@ package ru.tinkoff.qa.neptune.http.api.test;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.http.api.response.DesiredDataHasNotBeenReceivedException;
 import ru.tinkoff.qa.neptune.http.api.response.ExpectedHttpResponseHasNotBeenReceivedException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -16,12 +15,6 @@ import static org.hamcrest.Matchers.*;
 import static org.testng.FileAssert.fail;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromArrayBodyStepSupplier.asOneOfArray;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.asIs;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.asObject;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromIterableBodyStepSupplier.asOneOfIterable;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectsFromArrayBodyStepSupplier.asArray;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectsFromIterableBodyStepSupplier.asIterable;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.*;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.mapped;
 import static ru.tinkoff.qa.neptune.http.api.test.FunctionToGetXMLTagArray.toNodeArray;
@@ -32,102 +25,61 @@ public class HttpBodyDataTest extends BaseHttpTest {
     @BeforeClass
     public static void beforeClass() {
         stubFor(get(urlPathEqualTo("/data.html"))
-                .willReturn(aResponse().withBody("<?xml version=\"1.0\" encoding=\"utf-8\"?><a><b></b><c></c></a>")));
+            .willReturn(aResponse().withBody("<?xml version=\"1.0\" encoding=\"utf-8\"?><a><b></b><c></c></a>")));
 
         stubFor(get(urlPathEqualTo("/badData.html"))
-                .willReturn(aResponse().withBody("<?xml version=\"1.0\" encoding=\"utf-8\"?<b></b><c></c></a")));
+            .willReturn(aResponse().withBody("<?xml version=\"1.0\" encoding=\"utf-8\"?<b></b><c></c></a")));
         //malformed xml
     }
 
     @Test
     public void objectFromBodyTest1() {
-        var result = http().bodyData(asObject("List of tags <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeList("a"))
-                .criteria("Has 1 tag <a>", nodeList -> nodeList.size() == 1));
+        var result = http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturn("List of tags <a>", toNodeList("a"))
+            .criteria("Has 1 tag <a>", nodeList -> nodeList.size() == 1));
 
         assertThat(result, hasSize(1));
     }
 
     @Test
     public void objectFromBodyTest2() {
-        var response = http().responseOf(GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString());
-
-        var result = http().bodyData(asObject(
-                "List of tags <a>",
-                response,
-                toNodeList("a"))
-                .criteria("Has 1 tag <a>", nodeList -> nodeList.size() == 1));
-
-        assertThat(result, hasSize(1));
-    }
-
-    @Test
-    public void objectFromBodyTest3() {
-        var result = http().bodyData(asObject("List of tags <a>", GET()
-                        .baseURI(REQUEST_URI)
-                        .relativePath("/data.html"),
-                ofString(),
-                toNodeList("a"))
-                .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2));
-
-        assertThat(result, nullValue());
-    }
-
-    @Test
-    public void objectFromBodyTest4() {
-        var response = http().responseOf(GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString());
-
-        var result = http().bodyData(asObject("List of tags <a>",
-                response,
-                toNodeList("a"))
-                .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2));
+        var result = http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturn("List of tags <a>", toNodeList("a"))
+            .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2));
 
         assertThat(result, nullValue());
     }
 
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
-    public void objectFromBodyTest5() {
-        http().bodyData(asObject("List of tags <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeList("a"))
-                .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2)
-                .throwOnNoResult());
-
-        fail("Exception was expected");
-    }
-
-    @Test(expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
-    public void objectFromBodyTest6() {
-        var response = http().responseOf(GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString());
-
-        http().bodyData(asObject("List of tags <a>",
-                response,
-                toNodeList("a"))
-                .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2)
-                .throwOnNoResult());
+    public void objectFromBodyTest3() {
+        http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturn("List of tags <a>", toNodeList("a"))
+            .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2)
+            .throwOnNoResult());
 
         fail("Exception was expected");
     }
 
     @Test
-    public void objectFromBodyTest7() {
+    public void objectFromBodyTest4() {
         var start = currentTimeMillis();
-        http().bodyData(asObject("List of tags <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeList("a"))
-                .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2)
-                .retryTimeOut(ofSeconds(5))
-                .pollingInterval(ofMillis(500)));
+        http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturn("List of tags <a>", toNodeList("a"))
+            .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2)
+            .retryTimeOut(ofSeconds(5))
+            .pollingInterval(ofMillis(500)));
 
         var stop = currentTimeMillis();
         var time = stop - start;
@@ -136,15 +88,16 @@ public class HttpBodyDataTest extends BaseHttpTest {
     }
 
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
-    public void objectFromBodyTest8() {
+    public void objectFromBodyTest5() {
         try {
-            http().bodyData(asObject("List of tags <a>", GET()
-                            .baseURI(REQUEST_URI + "/data.html"),
-                    ofString(),
-                    toNodeList("a"))
-                    .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2)
-                    .responseCriteria(statusCode(404))
-                    .throwOnNoResult());
+            http().responseOf(GET()
+                .baseURI(REQUEST_URI)
+                .relativePath("/data.html")
+                .responseBodyHandler(ofString())
+                .tryToReturn("List of tags <a>", toNodeList("a"))
+                .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2)
+                .responseCriteria(statusCode(404))
+                .throwOnNoResult());
         } catch (Exception e) {
             assertThat(e.getCause(), nullValue());
             throw e;
@@ -154,28 +107,30 @@ public class HttpBodyDataTest extends BaseHttpTest {
     }
 
     @Test
-    public void objectFromBodyTest9() {
-        var result = http().bodyData(asObject("List of tags <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeList("a"))
-                .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2)
-                .responseCriteria(statusCode(404)));
+    public void objectFromBodyTest6() {
+        var result = http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturn("List of tags <a>", toNodeList("a"))
+            .criteria("Has 1 tags <a>", nodeList -> nodeList.size() == 1)
+            .responseCriteria(statusCode(404)));
 
         assertThat(result, nullValue());
     }
 
     @Test
-    public void objectFromBodyTest10() {
+    public void objectFromBodyTest7() {
         var start = currentTimeMillis();
-        http().bodyData(asObject("List of tags <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeList("a"))
-                .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2)
-                .responseCriteria(statusCode(404))
-                .retryTimeOut(ofSeconds(5))
-                .pollingInterval(ofMillis(500)));
+        http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturn("List of tags <a>", toNodeList("a"))
+            .criteria("Has 1 tags <a>", nodeList -> nodeList.size() == 1)
+            .responseCriteria(statusCode(404))
+            .retryTimeOut(ofSeconds(5))
+            .pollingInterval(ofMillis(500)));
 
         var stop = currentTimeMillis();
         var time = stop - start;
@@ -184,13 +139,15 @@ public class HttpBodyDataTest extends BaseHttpTest {
     }
 
     @Test
-    public void objectFromBodyTest11() {
+    public void objectFromBodyTest8() {
         var start = currentTimeMillis();
-        http().bodyData(asIs(GET()
-                        .baseURI(REQUEST_URI + "/badData.html"),
-                mapped(ofString(), toNodeList("a")))
-                .retryTimeOut(ofSeconds(5))
-                .pollingInterval(ofMillis(500)));
+        http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/badData.html")
+            .responseBodyHandler(mapped(ofString(), toNodeList("a")))
+            .tryToReturnBody()
+            .retryTimeOut(ofSeconds(5))
+            .pollingInterval(ofMillis(500)));
 
         var stop = currentTimeMillis();
         var time = stop - start;
@@ -199,14 +156,16 @@ public class HttpBodyDataTest extends BaseHttpTest {
     }
 
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
-    public void objectFromBodyTest12() {
+    public void objectFromBodyTest9() {
         try {
-            http().bodyData(asIs(GET()
-                            .baseURI(REQUEST_URI + "/badData.html"),
-                    mapped(ofString(), toNodeList("a")))
-                    .retryTimeOut(ofSeconds(5))
-                    .pollingInterval(ofMillis(500))
-                    .throwOnNoResult());
+            http().responseOf(GET()
+                .baseURI(REQUEST_URI)
+                .relativePath("/badData.html")
+                .responseBodyHandler(mapped(ofString(), toNodeList("a")))
+                .tryToReturnBody()
+                .retryTimeOut(ofSeconds(5))
+                .pollingInterval(ofMillis(500))
+                .throwOnNoResult());
         } catch (Exception e) {
             assertThat(e.getCause(), instanceOf(RuntimeException.class));
             throw e;
@@ -217,101 +176,64 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
     @Test
     public void getIterableTest1() {
-        var result = http().bodyData(asIterable("List of tags <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeList("a"))
-                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
+        var result = http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnList("List of tags <a>", toNodeList("a"))
+            .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, hasSize(1));
     }
 
     @Test
     public void getIterableTest2() {
-        var response = http().responseOf(GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString());
-
-        var result = http().bodyData(asIterable("List of tags <a>",
-                response,
-                toNodeList("a"))
-                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
-
-        assertThat(result, hasSize(1));
-    }
-
-    @Test
-    public void getIterableTest3() {
-        var result = http().bodyData(asIterable("List of tags <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeList("a"))
-                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
+        var result = http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnList("List of tags <a>", toNodeList("a"))
+            .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
         assertThat(result, nullValue());
     }
 
     @Test
-    public void getIterableTest4() {
-        var response = http().responseOf(GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString());
-
-        var result = http().bodyData(asIterable("List of tags <a>",
-                response,
-                toNodeList("a"))
-                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
-
-        assertThat(result, emptyIterable());
-    }
-
-    @Test
-    public void getIterableTest5() {
-        var result = http().bodyData(asIterable("List of tags <a>",
-                GET().baseURI(REQUEST_URI + "/badData.html"),
-                ofString(),
-                toNodeList("a"))
-                .criteria("Has children", node -> node.getChildNodes().getLength() > 0));
+    public void getIterableTest3() {
+        var result = http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/badData.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnList("List of tags <a>", toNodeList("a"))
+            .criteria("Has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, nullValue());
     }
 
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
-    public void getIterableTest6() {
-        http().bodyData(asIterable("List of tags <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeList("a"))
-                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
-                .throwOnNoResult());
-
-        fail("Exception was expected");
-    }
-
-    @Test(expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
-    public void getIterableTest7() {
-        var response = http().responseOf(GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString());
-
-        http().bodyData(asIterable("List of tags <a>",
-                response, toNodeList("a"))
-                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
-                .throwOnNoResult());
+    public void getIterableTest4() {
+        http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnList("List of tags <a>", toNodeList("a"))
+            .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+            .throwOnNoResult());
 
         fail("Exception was expected");
     }
 
     @Test
-    public void getIterableTest8() {
+    public void getIterableTest5() {
         var start = currentTimeMillis();
-        http().bodyData(asIterable("List of tags <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeList("a"))
-                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
-                .retryTimeOut(ofSeconds(5))
-                .pollingInterval(ofMillis(500)));
+        http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnList("List of tags <a>", toNodeList("a"))
+            .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+            .retryTimeOut(ofSeconds(5))
+            .pollingInterval(ofMillis(500)));
 
         var stop = currentTimeMillis();
         var time = stop - start;
@@ -320,16 +242,17 @@ public class HttpBodyDataTest extends BaseHttpTest {
     }
 
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
-    public void getIterableTest9() {
+    public void getIterableTest6() {
         try {
-            http().bodyData(asIterable("List of tags <a>", GET()
-                            .baseURI(REQUEST_URI + "/data.html"),
-                    ofString(),
-                    toNodeList("a"))
-                    .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
-                    .responseCriteria(bodyMatches("body != \"<?xml version=\\\"1.0\\\" encoding=\\\"utf-8\\\"?><a><b></b><c></c></a>\"",
-                            s -> !s.equals("<?xml version=\"1.0\" encoding=\"utf-8\"?><a><b></b><c></c></a>")))
-                    .throwOnNoResult());
+            http().responseOf(GET()
+                .baseURI(REQUEST_URI)
+                .relativePath("/data.html")
+                .responseBodyHandler(ofString())
+                .tryToReturnList("List of tags <a>", toNodeList("a"))
+                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
+                .responseCriteria(bodyMatches("body != \"<?xml version=\\\"1.0\\\" encoding=\\\"utf-8\\\"?><a><b></b><c></c></a>\"",
+                    s -> !s.equals("<?xml version=\"1.0\" encoding=\"utf-8\"?><a><b></b><c></c></a>")))
+                .throwOnNoResult());
 
         } catch (Exception e) {
             assertThat(e.getCause(), nullValue());
@@ -340,30 +263,32 @@ public class HttpBodyDataTest extends BaseHttpTest {
     }
 
     @Test
-    public void getIterableTest10() {
-        var result = http().bodyData(asIterable("List of tags <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeList("a"))
-                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
-                .responseCriteria(bodyMatches("body != \"<?xml version=\\\"1.0\\\" encoding=\\\"utf-8\\\"?><a><b></b><c></c></a>\"",
-                        s -> !s.equals("<?xml version=\"1.0\" encoding=\"utf-8\"?><a><b></b><c></c></a>"))));
+    public void getIterableTest7() {
+        var result = http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnList("List of tags <a>", toNodeList("a"))
+            .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
+            .responseCriteria(bodyMatches("body != \"<?xml version=\\\"1.0\\\" encoding=\\\"utf-8\\\"?><a><b></b><c></c></a>\"",
+                s -> !s.equals("<?xml version=\"1.0\" encoding=\"utf-8\"?><a><b></b><c></c></a>"))));
 
         assertThat(result, nullValue());
     }
 
     @Test
-    public void getIterableTest11() {
+    public void getIterableTest8() {
         var start = currentTimeMillis();
-        http().bodyData(asIterable("List of tags <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeList("a"))
-                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
-                .responseCriteria(bodyMatches("body != \"<?xml version=\\\"1.0\\\" encoding=\\\"utf-8\\\"?><a><b></b><c></c></a>\"",
-                        s -> !s.equals("<?xml version=\"1.0\" encoding=\"utf-8\"?><a><b></b><c></c></a>")))
-                .retryTimeOut(ofSeconds(5))
-                .pollingInterval(ofMillis(500)));
+        http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnList("List of tags <a>", toNodeList("a"))
+            .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
+            .responseCriteria(bodyMatches("body != \"<?xml version=\\\"1.0\\\" encoding=\\\"utf-8\\\"?><a><b></b><c></c></a>\"",
+                s -> !s.equals("<?xml version=\"1.0\" encoding=\"utf-8\"?><a><b></b><c></c></a>")))
+            .retryTimeOut(ofSeconds(5))
+            .pollingInterval(ofMillis(500)));
 
         var stop = currentTimeMillis();
         var time = stop - start;
@@ -372,13 +297,15 @@ public class HttpBodyDataTest extends BaseHttpTest {
     }
 
     @Test
-    public void getIterableTest12() {
+    public void getIterableTest9() {
         var start = currentTimeMillis();
-        http().bodyData(asIterable("List of tags <a>",
-                GET().baseURI(REQUEST_URI + "/badData.html"),
-                mapped(ofString(), toNodeList("a")))
-                .retryTimeOut(ofSeconds(5))
-                .pollingInterval(ofMillis(500)));
+        http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/badData.html")
+            .responseBodyHandler(mapped(ofString(), toNodeList("a")))
+            .tryToReturnList("List of tags <a>", ts -> ts)
+            .retryTimeOut(ofSeconds(5))
+            .pollingInterval(ofMillis(500)));
 
         var stop = currentTimeMillis();
         var time = stop - start;
@@ -387,14 +314,16 @@ public class HttpBodyDataTest extends BaseHttpTest {
     }
 
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
-    public void getIterableTest13() {
+    public void getIterableTest110() {
         try {
-            http().bodyData(asIterable("List of tags <a>",
-                    GET().baseURI(REQUEST_URI + "/badData.html"),
-                    mapped(ofString(), toNodeList("a")))
-                    .retryTimeOut(ofSeconds(5))
-                    .pollingInterval(ofMillis(500))
-                    .throwOnNoResult());
+            http().responseOf(GET()
+                .baseURI(REQUEST_URI)
+                .relativePath("/badData.html")
+                .responseBodyHandler(mapped(ofString(), toNodeList("a")))
+                .tryToReturnList("List of tags <a>", ts -> ts)
+                .retryTimeOut(ofSeconds(5))
+                .pollingInterval(ofMillis(500))
+                .throwOnNoResult());
         } catch (Exception e) {
             assertThat(e.getCause(), instanceOf(RuntimeException.class));
             throw e;
@@ -405,101 +334,63 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
     @Test
     public void getArrayTest1() {
-        var result = http().bodyData(asArray("Array of tags <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"), ofString(),
-                toNodeArray("a"))
-                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
+        var result = http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnArray("Array of tags <a>", toNodeArray("a"))
+            .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, arrayWithSize(1));
     }
 
     @Test
     public void getArrayTest2() {
-        var response = http().responseOf(GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString());
-
-        var result = http().bodyData(asArray("Array of tags <a>",
-                response,
-                toNodeArray("a"))
-                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
-
-        assertThat(result, arrayWithSize(1));
-    }
-
-    @Test
-    public void getArrayTest3() {
-        var result = http().bodyData(asArray("Array of tags <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeArray("a"))
-                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
+        var result = http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnArray("Array of tags <a>", toNodeArray("a"))
+            .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
         assertThat(result, nullValue());
     }
 
     @Test
-    public void getArrayTest4() {
-        var response = http().responseOf(GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString());
-
-        var result = http().bodyData(asArray("Array of tags <a>",
-                response,
-                toNodeArray("a"))
-                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
-
-        assertThat(result, emptyArray());
-    }
-
-    @Test
-    public void getArrayTest5() {
-        var result = http().bodyData(asArray("Array of tags <a>",
-                GET().baseURI(REQUEST_URI + "/badData.html"),
-                ofString(),
-                toNodeArray("a"))
-                .criteria("Has children", node -> node.getChildNodes().getLength() > 0));
+    public void getArrayTest3() {
+        var result = http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/badData.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnArray("Array of tags <a>", toNodeArray("a"))
+            .criteria("Has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, nullValue());
     }
 
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
-    public void getArrayTest6() {
-        http().bodyData(asArray("Array of tags <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeArray("a"))
-                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
-                .throwOnNoResult());
+    public void getArrayTest4() {
+        http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnArray("Array of tags <a>", toNodeArray("a"))
+            .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+            .throwOnNoResult());
 
         fail("Exception was expected");
     }
-
-    @Test(expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
-    public void getArrayTest7() {
-        var response = http().responseOf(GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString());
-
-        http().bodyData(asArray("Array of tags <a>",
-                response,
-                toNodeArray("a"))
-                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
-                .throwOnNoResult());
-
-        fail("Exception was expected");
-    }
-
 
     @Test
-    public void getArrayTest8() {
+    public void getArrayTest5() {
         var start = currentTimeMillis();
-        http().bodyData(asArray("Array of tags <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeArray("a"))
-                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
-                .retryTimeOut(ofSeconds(5)));
+        http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnArray("Array of tags <a>", toNodeArray("a"))
+            .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+            .retryTimeOut(ofSeconds(5)));
 
         var stop = currentTimeMillis();
         var time = stop - start;
@@ -508,15 +399,15 @@ public class HttpBodyDataTest extends BaseHttpTest {
     }
 
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
-    public void getArrayTest9() {
+    public void getArrayTest6() {
         try {
-            http().bodyData(asArray("Array of tags <a>", GET()
-                            .baseURI(REQUEST_URI + "/data.html"),
-                    ofString(),
-                    toNodeArray("a"))
-                    .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
-                    .responseCriteria(responseURI(create("https://www.google.com/")))
-                    .throwOnNoResult());
+            http().responseOf(GET()
+                .baseURI(REQUEST_URI)
+                .relativePath("/data.html")
+                .responseBodyHandler(ofString())
+                .tryToReturnArray("Array of tags <a>", toNodeArray("a"))
+                .responseCriteria(responseURI(create("https://www.google.com/")))
+                .throwOnNoResult());
         } catch (Exception e) {
             assertThat(e.getCause(), nullValue());
             throw e;
@@ -526,28 +417,29 @@ public class HttpBodyDataTest extends BaseHttpTest {
     }
 
     @Test
-    public void getArrayTest10() {
-        var result = http().bodyData(asArray("Array of tags <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeArray("a"))
-                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
-                .responseCriteria(responseURI(create("https://www.google.com/"))));
+    public void getArrayTest7() {
+        var result = http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnArray("Array of tags <a>", toNodeArray("a"))
+            .responseCriteria(responseURI(create("https://www.google.com/"))));
 
         assertThat(result, nullValue());
     }
 
     @Test
-    public void getArrayTest11() {
+    public void getArrayTest8() {
         var start = currentTimeMillis();
-        http().bodyData(asArray("Array of tags <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeArray("a"))
-                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
-                .responseCriteria(responseURI(create("https://www.google.com/")))
-                .retryTimeOut(ofSeconds(5))
-                .pollingInterval(ofMillis(500)));
+        http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnArray("Array of tags <a>", toNodeArray("a"))
+            .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
+            .responseCriteria(responseURI(create("https://www.google.com/")))
+            .retryTimeOut(ofSeconds(5))
+            .pollingInterval(ofMillis(500)));
 
         var stop = currentTimeMillis();
         var time = stop - start;
@@ -556,13 +448,15 @@ public class HttpBodyDataTest extends BaseHttpTest {
     }
 
     @Test
-    public void getArrayTest12() {
+    public void getArrayTest9() {
         var start = currentTimeMillis();
-        http().bodyData(asArray("Array of tags <a>",
-                GET().baseURI(REQUEST_URI + "/badData.html"),
-                mapped(ofString(), toNodeArray("a")))
-                .retryTimeOut(ofSeconds(5))
-                .pollingInterval(ofMillis(500)));
+        http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/badData.html")
+            .responseBodyHandler(mapped(ofString(), toNodeArray("a")))
+            .tryToReturnArray("Array of tags <a>", ts -> ts)
+            .retryTimeOut(ofSeconds(5))
+            .pollingInterval(ofMillis(500)));
 
         var stop = currentTimeMillis();
         var time = stop - start;
@@ -571,14 +465,16 @@ public class HttpBodyDataTest extends BaseHttpTest {
     }
 
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
-    public void getArrayTest13() {
+    public void getArrayTest10() {
         try {
-            http().bodyData(asArray("Array of tags <a>",
-                    GET().baseURI(REQUEST_URI + "/badData.html"),
-                    mapped(ofString(), toNodeArray("a")))
-                    .retryTimeOut(ofSeconds(5))
-                    .pollingInterval(ofMillis(500))
-                    .throwOnNoResult());
+            http().responseOf(GET()
+                .baseURI(REQUEST_URI)
+                .relativePath("/badData.html")
+                .responseBodyHandler(mapped(ofString(), toNodeArray("a")))
+                .tryToReturnArray("Array of tags <a>", ts -> ts)
+                .retryTimeOut(ofSeconds(5))
+                .pollingInterval(ofMillis(500))
+                .throwOnNoResult());
         } catch (Exception e) {
             assertThat(e.getCause(), instanceOf(RuntimeException.class));
             throw e;
@@ -589,101 +485,63 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
     @Test
     public void getOneFromIterableTest1() {
-        var result = http().bodyData(asOneOfIterable("Tag <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeList("a"))
-                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
+        var result = http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnItem("Tag <a>", toNodeList("a"))
+            .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, not(nullValue()));
     }
 
     @Test
     public void getOneFromIterableTest2() {
-        var response = http().responseOf(GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString());
+        var result = http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnItem("Tag <a>", toNodeList("a"))
+            .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
-        var result = http().bodyData(asOneOfIterable("Tag <a>",
-                response,
-                toNodeList("a"))
-                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
-
-        assertThat(result, not(nullValue()));
+        assertThat(result, nullValue());
     }
 
     @Test
     public void getOneFromIterableTest3() {
-        var result = http().bodyData(asOneOfIterable("Tag <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeList("a"))
-                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
-
-        assertThat(result, nullValue());
-    }
-
-    @Test
-    public void getOneFromIterableTest4() {
-        var response = http().responseOf(GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString());
-
-        var result = http().bodyData(asOneOfIterable("Tag <a>",
-                response,
-                toNodeList("a"))
-                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
-
-        assertThat(result, nullValue());
-    }
-
-    @Test
-    public void getOneFromIterableTest5() {
-        var result = http().bodyData(asOneOfIterable("Tag <a>",
-                GET().baseURI(REQUEST_URI + "/badData.html"),
-                ofString(),
-                toNodeList("a"))
-                .criteria("Has children", node -> node.getChildNodes().getLength() > 0));
+        var result = http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/badData.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnItem("Tag <a>", toNodeList("a"))
+            .criteria("Has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, nullValue());
     }
 
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
-    public void getOneFromIterableTest6() {
-        http().bodyData(asOneOfIterable("Tag <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeList("a"))
-                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
-                .throwOnNoResult());
-        fail("Exception was expected");
-    }
-
-    @Test(expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
-    public void getOneFromIterableTest7() {
-        var response = http().responseOf(GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString());
-
-        http().bodyData(asOneOfIterable("Tag <a>",
-                response,
-                toNodeList("a"))
-                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
-                .throwOnNoResult());
-
+    public void getOneFromIterableTest4() {
+        http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnItem("Tag <a>", toNodeList("a"))
+            .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+            .throwOnNoResult());
         fail("Exception was expected");
     }
 
     @Test
-    public void getOneFromIterableTest8() {
+    public void getOneFromIterableTest5() {
         var start = currentTimeMillis();
 
-        http().bodyData(asOneOfIterable("Tag <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeList("a"))
-                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
-                .retryTimeOut(ofSeconds(5)));
+        http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnItem("Tag <a>", toNodeList("a"))
+            .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+            .retryTimeOut(ofSeconds(5)));
 
         var stop = currentTimeMillis();
         var time = stop - start;
@@ -692,15 +550,16 @@ public class HttpBodyDataTest extends BaseHttpTest {
     }
 
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
-    public void getOneFromIterableTest9() {
+    public void getOneFromIterableTest6() {
         try {
-            http().bodyData(asOneOfIterable("Tag <a>", GET()
-                            .baseURI(REQUEST_URI + "/data.html"),
-                    ofString(),
-                    toNodeList("a"))
-                    .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
-                    .responseCriteria(responseURIPort(200))
-                    .throwOnNoResult());
+            http().responseOf(GET()
+                .baseURI(REQUEST_URI)
+                .relativePath("/data.html")
+                .responseBodyHandler(ofString())
+                .tryToReturnItem("Tag <a>", toNodeList("a"))
+                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
+                .responseCriteria(responseURIPort(200))
+                .throwOnNoResult());
         } catch (Exception e) {
             assertThat(e.getCause(), nullValue());
             throw e;
@@ -710,28 +569,30 @@ public class HttpBodyDataTest extends BaseHttpTest {
     }
 
     @Test
-    public void getOneFromIterableTest10() {
-        var result = http().bodyData(asOneOfIterable("Tag <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeList("a"))
-                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
-                .responseCriteria(responseURIPort(200)));
+    public void getOneFromIterableTest7() {
+        var result = http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnItem("Tag <a>", toNodeList("a"))
+            .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
+            .responseCriteria(responseURIPort(200)));
 
         assertThat(result, nullValue());
     }
 
     @Test
-    public void getOneFromIterableTest11() {
+    public void getOneFromIterableTest8() {
         var start = currentTimeMillis();
-        http().bodyData(asOneOfIterable("Tag <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeList("a"))
-                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
-                .responseCriteria(responseURIPort(200))
-                .retryTimeOut(ofSeconds(5))
-                .pollingInterval(ofMillis(500)));
+        http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnItem("Tag <a>", toNodeList("a"))
+            .criteria("Node has children", node -> node.getChildNodes().getLength() > 0)
+            .responseCriteria(responseURIPort(200))
+            .retryTimeOut(ofSeconds(5))
+            .pollingInterval(ofMillis(500)));
 
         var stop = currentTimeMillis();
         var time = stop - start;
@@ -740,13 +601,15 @@ public class HttpBodyDataTest extends BaseHttpTest {
     }
 
     @Test
-    public void getOneFromIterableTest12() {
+    public void getOneFromIterableTest9() {
         var start = currentTimeMillis();
-        http().bodyData(asOneOfIterable("Tag <a>",
-                GET().baseURI(REQUEST_URI + "/badData.html"),
-                mapped(ofString(), toNodeList("a")))
-                .retryTimeOut(ofSeconds(5))
-                .pollingInterval(ofMillis(500)));
+        http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/badData.html")
+            .responseBodyHandler(mapped(ofString(), toNodeList("a")))
+            .tryToReturnItem("Tag <a>", nodes -> nodes)
+            .retryTimeOut(ofSeconds(5))
+            .pollingInterval(ofMillis(500)));
 
         var stop = currentTimeMillis();
         var time = stop - start;
@@ -755,14 +618,16 @@ public class HttpBodyDataTest extends BaseHttpTest {
     }
 
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
-    public void getOneFromIterableTest13() {
+    public void getOneFromIterableTest10() {
         try {
-            http().bodyData(asOneOfIterable("Tag <a>",
-                    GET().baseURI(REQUEST_URI + "/badData.html"),
-                    mapped(ofString(), toNodeList("a")))
-                    .retryTimeOut(ofSeconds(5))
-                    .pollingInterval(ofMillis(500))
-                    .throwOnNoResult());
+            http().responseOf(GET()
+                .baseURI(REQUEST_URI)
+                .relativePath("/badData.html")
+                .responseBodyHandler(mapped(ofString(), toNodeList("a")))
+                .tryToReturnItem("Tag <a>", nodes -> nodes)
+                .retryTimeOut(ofSeconds(5))
+                .pollingInterval(ofMillis(500))
+                .throwOnNoResult());
         } catch (Exception e) {
             assertThat(e.getCause(), instanceOf(RuntimeException.class));
             throw e;
@@ -773,100 +638,63 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
     @Test
     public void getOneFromArrayTest1() {
-        var result = http().bodyData(asOneOfArray("Tag <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeArray("a"))
-                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
+        var result = http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnArrayItem("Tag <a>", toNodeArray("a"))
+            .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, not(nullValue()));
     }
 
     @Test
     public void getOneFromArrayTest2() {
-        var response = http().responseOf(GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString());
+        var result = http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnArrayItem("Tag <a>", toNodeArray("a"))
+            .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
-        var result = http().bodyData(asOneOfArray("Tag <a>",
-                response,
-                toNodeArray("a"))
-                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
-
-        assertThat(result, not(nullValue()));
+        assertThat(result, nullValue());
     }
 
     @Test
     public void getOneFromArrayTest3() {
-        var result = http().bodyData(asOneOfArray("Array of tags <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeArray("a"))
-                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
-
-        assertThat(result, nullValue());
-    }
-
-    @Test
-    public void getOneFromArrayTest4() {
-        var response = http().responseOf(GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString());
-
-        var result = http().bodyData(asOneOfArray("Tag <a>",
-                response,
-                toNodeArray("a"))
-                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
-
-        assertThat(result, nullValue());
-    }
-
-    @Test
-    public void getOneFromArrayTest5() {
-        var result = http().bodyData(asOneOfArray("Tag <a>",
-                GET().baseURI(REQUEST_URI + "/badData.html"),
-                ofString(),
-                toNodeArray("a"))
-                .criteria("Has children", node -> node.getChildNodes().getLength() > 0));
+        var result = http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/badData.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnArrayItem("Tag <a>", toNodeArray("a"))
+            .criteria("Has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, nullValue());
     }
 
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
-    public void getOneFromArrayTest6() {
-        http().bodyData(asOneOfArray("Tag <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeArray("a"))
-                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
-                .throwOnNoResult());
+    public void getOneFromArrayTest4() {
+        http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnArrayItem("Tag <a>", toNodeArray("a"))
+            .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+            .throwOnNoResult());
 
-        fail("Exception was expected");
-    }
-
-    @Test(expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
-    public void getOneFromArrayTest7() {
-        var response = http().responseOf(GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString());
-
-        http().bodyData(asOneOfArray("Tag <a>",
-                response,
-                toNodeArray("a"))
-                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
-                .throwOnNoResult());
         fail("Exception was expected");
     }
 
     @Test
-    public void getOneFromArrayTest8() {
+    public void getOneFromArrayTest5() {
         var start = currentTimeMillis();
-        http().bodyData(asOneOfArray("Tag <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeArray("a"))
-                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
-                .retryTimeOut(ofSeconds(5)));
+        http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnArrayItem("Tag <a>", toNodeArray("a"))
+            .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+            .retryTimeOut(ofSeconds(5)));
 
         var stop = currentTimeMillis();
         var time = stop - start;
@@ -875,15 +703,16 @@ public class HttpBodyDataTest extends BaseHttpTest {
     }
 
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
-    public void getOneFromArrayTest9() {
+    public void getOneFromArrayTest6() {
         try {
-            http().bodyData(asOneOfArray("Array of tags <a>", GET()
-                            .baseURI(REQUEST_URI + "/data.html"),
-                    ofString(),
-                    toNodeArray("a"))
-                    .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
-                    .responseCriteria(responseURIPort(200))
-                    .throwOnNoResult());
+            http().responseOf(GET()
+                .baseURI(REQUEST_URI)
+                .relativePath("/data.html")
+                .responseBodyHandler(ofString())
+                .tryToReturnArrayItem("Tag <a>", toNodeArray("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+                .responseCriteria(responseURIPort(200))
+                .throwOnNoResult());
         } catch (Exception e) {
             assertThat(e.getCause(), nullValue());
             throw e;
@@ -893,13 +722,14 @@ public class HttpBodyDataTest extends BaseHttpTest {
     }
 
     @Test
-    public void getOneFromArrayTest10() {
-        var result = http().bodyData(asOneOfArray("Array of tags <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeArray("a"))
-                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
-                .responseCriteria(responseURIPort(200)));
+    public void getOneFromArrayTest7() {
+        var result = http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnArrayItem("Tag <a>", toNodeArray("a"))
+            .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+            .responseCriteria(responseURIPort(200)));
 
         assertThat(result, nullValue());
     }
@@ -907,14 +737,15 @@ public class HttpBodyDataTest extends BaseHttpTest {
     @Test
     public void getOneFromArrayTest11() {
         var start = currentTimeMillis();
-        http().bodyData(asOneOfArray("Array of tags <a>", GET()
-                        .baseURI(REQUEST_URI + "/data.html"),
-                ofString(),
-                toNodeArray("a"))
-                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
-                .responseCriteria(responseURIPort(200))
-                .retryTimeOut(ofSeconds(5))
-                .pollingInterval(ofMillis(500)));
+        http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/data.html")
+            .responseBodyHandler(ofString())
+            .tryToReturnArrayItem("Tag <a>", toNodeArray("a"))
+            .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+            .responseCriteria(responseURIPort(200))
+            .retryTimeOut(ofSeconds(5))
+            .pollingInterval(ofMillis(500)));
 
         var stop = currentTimeMillis();
         var time = stop - start;
@@ -925,11 +756,13 @@ public class HttpBodyDataTest extends BaseHttpTest {
     @Test
     public void getOneFromArrayTest12() {
         var start = currentTimeMillis();
-        http().bodyData(asOneOfArray("Array of tags <a>",
-                GET().baseURI(REQUEST_URI + "/badData.html"),
-                mapped(ofString(), toNodeArray("a")))
-                .retryTimeOut(ofSeconds(5))
-                .pollingInterval(ofMillis(500)));
+        http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/badData.html")
+            .responseBodyHandler(mapped(ofString(), toNodeArray("a")))
+            .tryToReturnArrayItem("Tag <a>", ts -> ts)
+            .retryTimeOut(ofSeconds(5))
+            .pollingInterval(ofMillis(500)));
 
         var stop = currentTimeMillis();
         var time = stop - start;
@@ -940,12 +773,14 @@ public class HttpBodyDataTest extends BaseHttpTest {
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
     public void getOneFromArrayTest13() {
         try {
-            http().bodyData(asOneOfArray("Array of tags <a>", GET()
-                            .baseURI(REQUEST_URI + "/badData.html"),
-                    mapped(ofString(), toNodeArray("a")))
-                    .retryTimeOut(ofSeconds(5))
-                    .pollingInterval(ofMillis(500))
-                    .throwOnNoResult());
+            http().responseOf(GET()
+                .baseURI(REQUEST_URI)
+                .relativePath("/badData.html")
+                .responseBodyHandler(mapped(ofString(), toNodeArray("a")))
+                .tryToReturnArrayItem("Tag <a>", ts -> ts)
+                .retryTimeOut(ofSeconds(5))
+                .pollingInterval(ofMillis(500))
+                .throwOnNoResult());
         } catch (Exception e) {
             assertThat(e.getCause(), instanceOf(RuntimeException.class));
             throw e;

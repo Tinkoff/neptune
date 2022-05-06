@@ -96,7 +96,8 @@ public class MyTest {
         
         //указание, в каком формате прочитать тело ответа
         //в данным случае тело ответа будет представлено в виде строки
-        HttpResponse<String> response = http().responseOf(POST(), ofString());
+        HttpResponse<String> response = http().responseOf(POST()
+                .responseBodyHandler(ofString()));
     }
 }
 
@@ -753,6 +754,7 @@ public class MyTest {
 import java.net.URI;
 
 import static java.net.http.HttpClient.Version.HTTP_2;
+import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static ru.tinkoff.qa.neptune.http.api.request.FormValueDelimiters.PIPE;
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
@@ -765,7 +767,7 @@ public class MyTest {
         http().responseOf(GET()
                 //Все перечисленное ниже не является обязательным для каждого отравляемого запроса
                 .baseURI(baseURI)
-                .relativePath("/some/path")
+                .relativePath("/some/relativePath")
                 .queryParam("q1", false, "val1")
                 .queryParam("q2", false, "val2")
                 //можно указать header запроса и передаем множественное значение
@@ -792,7 +794,11 @@ public class MyTest {
                 .version(HTTP_2)
                 //Ожидать от сервера приложения ответ 100 (Continue) перед полной отправкой 
                 //запроса
-                .expectContinue(true));
+                .expectContinue(true)
+                //указываем, в каком формате должно быть прочитано тело
+                //ответа. Без вызова этого метода, по умолчанию, тело ответа
+                //не читается, т.е. ответ возвращается с пустым телом
+                .responseBodyHandler(ofString()));
     }
 }
 ```
@@ -890,9 +896,9 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        HttpResponse<String> response = http().responseOf(POST("String body"),
+        HttpResponse<String> response = http().responseOf(POST("String body")
                 //Ответ вернется c телом, интерпретированным/прочитанным как текст
-                ofString());
+                .responseBodyHandler(ofString()));
 
         String body = response.body();
     }
@@ -941,11 +947,11 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        HttpResponse<SomeClass> response = http().responseOf(POST( "String body"),
+        HttpResponse<SomeClass> response = http().responseOf(POST( "String body")
                 //Предполагается, что тело ответа может быть прочитано как JSON-строка,
                 //которую можно десериализовать в объект класса SomeClass
                 //При этом используется настроенный и переданный явно объект класса ObjectMapper
-                deserialized(SomeClass.class, new ObjectMapper()));
+                .responseBodyHandler(deserialized(SomeClass.class, new ObjectMapper())));
 
         SomeClass body = response.body();
     }
@@ -968,12 +974,11 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        HttpResponse<SomeClass> response = http().responseOf(POST("String body"),
+        HttpResponse<SomeClass> response = http().responseOf(POST("String body")
                 //Предполагается, что тело ответа может быть прочитано как JSON-строка,
                 //которую можно десериализовать в объект SomeClass.
                 //При этом используется настроенный и переданный явно объект класса ObjectMapper
-                deserialized(new TypeReference<SomeClass>() {
-                }, new ObjectMapper()));
+                .responseBodyHandler(deserialized(new TypeReference<SomeClass>() {}, new ObjectMapper())));
 
         SomeClass body = response.body();
     }
@@ -993,11 +998,11 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        HttpResponse<SomeClass> response = http().responseOf(POST("String body"),
+        HttpResponse<SomeClass> response = http().responseOf(POST("String body")
                 //Предполагается, что тело ответа может быть прочитано как JSON-строка,
                 //которую можно десериализовать в объект класса SomeClass
                 //При этом используется настроенный алгоритм сериализации/десериализации по умолчанию
-                json(SomeClass.class));
+                .responseBodyHandler(json(SomeClass.class)));
 
         SomeClass body = response.body();
     }
@@ -1019,12 +1024,11 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        HttpResponse<SomeClass> response = http().responseOf(POST("String body"),
+        HttpResponse<SomeClass> response = http().responseOf(POST("String body")
                 //Предполагается, что тело ответа может быть прочитано как JSON-строка,
                 //которую можно десериализовать в объект SomeClass
                 //При этом используется настроенный алгоритм сериализации/десериализации по умолчанию
-                json(new TypeReference<SomeClass>() {
-                }));
+                .responseBodyHandler(json(new TypeReference<SomeClass>() {})));
 
         SomeClass body = response.body();
     }
@@ -1053,11 +1057,11 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        HttpResponse<SomeClass> response = http().responseOf(POST("String body"),
+        HttpResponse<SomeClass> response = http().responseOf(POST("String body")
                 //Предполагается, что тело ответа может быть прочитано как XML-строка,
                 //которую можно десериализовать в объект класса SomeClass
                 //При этом используется настроенный и переданный явно объект класса XmlMapper
-                deserialized(SomeClass.class, new XmlMapper()));
+                .responseBodyHandler(deserialized(SomeClass.class, new XmlMapper())));
 
         SomeClass body = response.body();
     }
@@ -1080,12 +1084,11 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        HttpResponse<SomeClass> response = http().responseOf(POST("String body"),
+        HttpResponse<SomeClass> response = http().responseOf(POST("String body")
                 //Предполагается, что тело ответа может быть прочитано как XML-строка,
                 //которую можно десериализовать в объект SomeClass
                 //При этом используется настроенный и переданный явно объект класса XmlMapper
-                deserialized(new TypeReference<SomeClass>() {
-                }, new XmlMapper()));
+                .responseBodyHandler(deserialized(new TypeReference<SomeClass>() {}, new XmlMapper())));
 
         SomeClass body = response.body();
     }
@@ -1105,11 +1108,11 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        HttpResponse<SomeClass> response = http().responseOf(POST("String body"),
+        HttpResponse<SomeClass> response = http().responseOf(POST("String body")
                 //Предполагается, что тело ответа может быть прочитано как XML-строка,
                 //которую можно десериализовать в объект класса SomeClass
                 //При этом используется настроенный алгоритм сериализации/десериализации по умолчанию
-                xml(SomeClass.class));
+                .responseBodyHandler(xml(SomeClass.class)));
 
         SomeClass body = response.body();
     }
@@ -1131,12 +1134,11 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        HttpResponse<SomeClass> response = http().responseOf(POST("String body"),
+        HttpResponse<SomeClass> response = http().responseOf(POST("String body")
                 //Предполагается, что тело ответа может быть прочитано как XML-строка,
                 //которую можно десериализовать в объект SomeClass
                 //При этом используется настроенный алгоритм сериализации/десериализации по умолчанию
-                xml(new TypeReference<SomeClass>() {
-                }));
+                .responseBodyHandler(xml(new TypeReference<SomeClass>() {})));
 
         SomeClass body = response.body();
     }
@@ -1211,11 +1213,11 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        HttpResponse<String> response = http().responseOf(POST("String body"),
+        HttpResponse<String> response = http().responseOf(POST("String body")
                 //Тело ответа десериализуется в BodyObject, потом берется только значение поля `a`
                 //Выглядит результат так, будто тело ответа включает в себя только значение поля `a`,
                 //а не объект целиком
-                mapped(json(BodyObject.class), BodyObject::getA));
+                .responseBodyHandler(mapped(json(BodyObject.class), BodyObject::getA)));
 
         String body = response.body();
     }
@@ -1256,16 +1258,13 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        HttpResponse<String> response = http().responseOf(POST("String body"),
-                bodyFieldA());
+        HttpResponse<String> response = http().responseOf(POST("String body")
+                .responseBodyHandler(bodyFieldA()));
 
         String body = response.body();
     }
 }
 ```
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -1335,7 +1334,6 @@ import static java.time.Duration.ofSeconds;
 import static java.time.Duration.ofMillis;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.asIs;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
 
@@ -1345,11 +1343,13 @@ public class MyTest {
     public void myTest() {
         //Возвращается тело ответа на запрос. Http ответ и его тело должны подходить под указанные критерии.
         //Ответ на начало выполнения еще не получен, указывается тот запрос, который следует отправить.
-        BodyObject o = http().bodyData(asIs(GET(), json(BodyObject.class))
+        BodyObject o = http().responseOf(GET() //запрос и его параметры
+                .responseBodyHandler(json(BodyObject.class)) //в каком формате прочитать тело ответа
+                .tryToReturnBody() //получить прочитанное тело ответа
                 //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
                 .responseCriteria(statusCode(200))
                 //можно указать критерий, которому должно соответствовать тело 
-                .criteria("Поле A содержит ключ 'foo' со значением 'bar'", bodyObject -> bodyObject.getA.get("foo").equals("bar"))
+                .criteria("Поле A содержит ключ 'foo' со значением 'bar'", bodyObject -> bodyObject.getA().get("foo").equals("bar"))
                 //можно указать время на получение ожидаемого результата = 10 секунд
                 //В течение этих 10 секунд запрос будет отправляться до тех пор,
                 //пока не вернется ожидаемый ответ с ожидаемыми данными
@@ -1368,7 +1368,6 @@ import static java.time.Duration.ofSeconds;
 import static java.time.Duration.ofMillis;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.asObject;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
 
 public class MyTest {
@@ -1378,10 +1377,10 @@ public class MyTest {
         //Возвращается объект, получаемый из тела ответа или вычисляемый с использованием данных этого тела.
         //Http ответ и вычисленный объект должны подходить под указанные критерии. 
         // Ответ на начало выполнения еще не получен, указывается тот запрос, который следует отправить.
-        Map<String, String> o = http().bodyData(asObject("Значение поля A", //Описываем, что извлекается. Пойдет в лог/отчет
-                GET(), //запрос и его параметры
-                json(BodyObject.class), //в каком формате прочитать тело
-                BodyObject::getA) //как извлечь из тела ответа нужные данные
+        Map<String, String> o = http().responseOf(GET() //запрос и его параметры
+                .responseBodyHandler(json(BodyObject.class)) //в каком формате прочитать тело ответа
+                // Описываем, что извлекается.        
+                .tryToReturn("Значение поля A", BodyObject::getA) //и как извлечь из тела ответа нужные данные
                 //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
                 .responseCriteria(statusCode(200))
                 //можно указать критерий, которому должны соответствовать результирующие данные
@@ -1393,64 +1392,6 @@ public class MyTest {
                 .retryTimeOut(ofSeconds(10))
                 //можно указать интервал между попытками получить результат в пределах указанных 10 сек
                 .pollingInterval(ofMillis(500))
-                //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
-    }
-}
-```
-
-```java
-import java.net.http.HttpResponse;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.asIs;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        HttpResponse<BodyObject> response = http().responseOf(GET(), json(BodyObject.class));
-
-        //Возвращается тело ответа на запрос. Его тело должно подходить под указанные критерии. 
-        //Ответ на начало выполнения уже получен
-        BodyObject o = http().bodyData(asIs(response) //полученный выше ответ
-                //можно указать критерий, которому должно соответствовать тело 
-                .criteria("Поле A содержит ключ 'foo' со значением 'bar'", bodyObject -> bodyObject.getA.get("foo").equals("bar"))
-                //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
-    }
-}
-```
-
-```java
-import java.net.http.HttpResponse;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.asObject;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        HttpResponse<BodyObject> response = http().responseOf(GET(), json(BodyObject.class));
-
-        //Возвращается объект, получаемый из тела ответа или вычисляемый с использованием данных этого тела.
-        //Вычисленный объект должен подходить под указанные критерии.  
-        //Ответ на начало выполнения уже получен
-        Map<String, String> o = http().bodyData(asObject("Значение поля A", //Описываем, что извлекается. Пойдет в лог/отчет
-                response, //полученный выше ответ
-                BodyObject::getA) //как извлечь из тела ответа нужные данные
-                //можно указать критерий, которому должны соответствовать результирующие данные
-                .criteria("Содержит ключ 'foo' со значением 'bar'", map -> map.get("foo").equals("bar"))
                 //можно указать, что должно быть выброшено исключение, если результат не был получен
                 .throwOnNoResult());
     }
@@ -1471,47 +1412,6 @@ import static java.time.Duration.ofSeconds;
 import static java.time.Duration.ofMillis;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromIterableBodyStepSupplier.asOneOfIterable;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.mapped;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Возвращается элемент коллекции / Iterable. Тело является коллекцией или объектом Iterable.
-        //Http ответ и хотя бы один из элементов коллекция/Iterable должны подходить под указанные критерии.
-        //Из общего тела (Iterable/коллекции) вернется первый подходящий элемент.
-        // 
-        //Ответ на начало выполнения еще не получен, указывается тот запрос, который следует отправить.
-        Integer o = http().bodyData(asOneOfIterable("Число, полученное из ответа", //Описываем, что извлекается. Пойдет в лог/отчет
-                GET(),
-                mapped(json(BodyObject.class), BodyObject::getB)) //представляем, будто в теле вернулась коллекция
-                //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
-                .responseCriteria(statusCode(200))
-                //можно указать критерий, которому должен соответствовать получаемый элемент 
-                .criteria("Положительное число", i -> i.intValue() > 0)
-                //можно указать время на получение ожидаемого результата = 10 секунд
-                //В течение этих 10 секунд запрос будет отправляться до тех пор,
-                //пока не вернется ожидаемый ответ с ожидаемыми данными
-                //т.е. со статусом=200 и непустой коллекцией объектов, в которой хотя бы один элемент 
-                //соответствует переданному критерию
-                .retryTimeOut(ofSeconds(10))
-                //можно указать интервал между попытками получить результат в пределах указанных 10 сек
-                .pollingInterval(ofMillis(500))
-                //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
-    }
-}
-```
-
-```java
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromIterableBodyStepSupplier.asOneOfIterable;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
 
@@ -1525,10 +1425,11 @@ public class MyTest {
     // критерии. Из коллекции вернется первый подходящий элемент.
     // 
     //Ответ на начало выполнения еще не получен, указывается тот запрос, который следует отправить.
-    Integer o = http().bodyData(asOneOfIterable("Значение из поля B", //Описываем, что извлекается. Пойдет в лог/отчет
-            GET(), //запрос и его параметры
-            json(BodyObject.class), //в каком формате прочитать тело
-            BodyObject::getB) //как извлечь из тела ответа нужную промежуточную коллекцию
+    Integer o = http().responseOf(GET() //запрос и его параметры
+            .responseBodyHandler(json(BodyObject.class)) //в каком формате прочитать тело ответа
+            // Описываем, что извлекается.        
+            .tryToReturnItem("Значение из поля B", BodyObject::getB) //и как извлечь из тела ответа коллекцию, 
+            // из которой будет получено результирующее значение
             //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
             .responseCriteria(statusCode(200))
             //можно указать критерий, которому должен соответствовать получаемый элемент 
@@ -1541,77 +1442,9 @@ public class MyTest {
             .retryTimeOut(ofSeconds(10))
             //можно указать интервал между попытками получить результат в пределах указанных 10 сек
             .pollingInterval(ofMillis(500))
-                //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
-    }
-}
-```
-
-```java
-import java.net.http.HttpResponse;
-import java.util.List;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromIterableBodyStepSupplier.asOneOfIterable;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.mapped;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        HttpResponse<List<Integer>> response = http().responseOf(GET(),
-                mapped(json(BodyObject.class), BodyObject::getB)); //представляем, будто в теле вернулась коллекция
-
-        //Возвращается элемент коллекции / Iterable. Тело является коллекцией или объектом Iterable.
-        //Хотя бы один из элементов коллекция/Iterable должен подходить под указанные критерии.
-        //Из общего тела (Iterable/коллекции) вернется первый подходящий элемент.
-        // 
-        //Ответ на начало выполнения уже получен
-        Integer o = http().bodyData(asOneOfIterable("Число, полученное из ответа", //Описываем, что извлекается. Пойдет в лог/отчет
-                response) //полученный выше ответ
-                //можно указать критерий, которому должен соответствовать получаемый элемент 
-                .criteria("Положительное число", i -> i.intValue() > 0)
-                //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
-    }
-}
-```
-
-```java
-import java.net.http.HttpResponse;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromIterableBodyStepSupplier.asOneOfIterable;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-  @Test
-  public void myTest() {
-    HttpResponse<BodyObject> response = http().responseOf(GET(), json(BodyObject.class));
-
-    // Возвращается элемент коллекции / Iterable. Тело необязательно является коллекцией 
-    // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
-    // вычислений. Хотя бы один из элементов коллекция/Iterable должен подходить под указанные критерии.
-    // Из коллекции вернется первый подходящий элемент.
-    // 
-    //Ответ на начало выполнения уже получен
-    Integer o = http().bodyData(asOneOfIterable("Значение из поля B", //Описываем, что извлекается. Пойдет в лог/отчет
-            response, //полученный выше ответ
-            BodyObject::getB) //как извлечь из тела ответа нужные данные
-            //можно указать критерий, которому должен соответствовать получаемый элемент 
-            .criteria("Положительное число", i -> i.intValue() > 0)
             //можно указать, что должно быть выброшено исключение, если результат не был получен
             .throwOnNoResult());
-  }
+    }
 }
 ```
 
@@ -1629,47 +1462,6 @@ import static java.time.Duration.ofSeconds;
 import static java.time.Duration.ofMillis;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromArrayBodyStepSupplier.asOneOfArray;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.mapped;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Возвращается элемент массива. Тело является массивом.
-        //Http ответ и хотя бы один из элементов массива должны подходить под указанные критерии.
-        //Из общего тела-массива вернется первый подходящий элемент.
-        // 
-        //Ответ на начало выполнения еще не получен, указывается тот запрос, который следует отправить.
-        Integer o = http().bodyData(asOneOfArray("Число, полученное из ответа", //Описываем, что извлекается. Пойдет в лог/отчет
-                GET(),
-                mapped(json(BodyObject.class), BodyObject::getС)) //представляем, будто в теле вернулся массив
-                //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
-                .responseCriteria(statusCode(200))
-                //можно указать критерий, которому должен соответствовать получаемый элемент 
-                .criteria("Положительное число", i -> i.intValue() > 0)
-                //можно указать время на получение ожидаемого результата = 10 секунд
-                //В течение этих 10 секунд запрос будет отправляться до тех пор,
-                //пока не вернется ожидаемый ответ с ожидаемыми данными
-                //т.е. со статусом=200 и непустым массивом объектов, в котором хотя бы один элемент 
-                //соответствует переданному критерию
-                .retryTimeOut(ofSeconds(10))
-                //можно указать интервал между попытками получить результат в пределах указанных 10 сек
-                .pollingInterval(ofMillis(500))
-                //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
-    }
-}
-```
-
-```java
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromArrayBodyStepSupplier.asOneOfArray;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
 
@@ -1683,10 +1475,11 @@ public class MyTest {
     // критерии. Из массива вернется первый подходящий элемент.
     // 
     //Ответ на начало выполнения еще не получен, указывается тот запрос, который следует отправить.
-    Integer o = http().bodyData(asOneOfArray("Значение из поля C", //Описываем, что извлекается. Пойдет в лог/отчет
-            GET(), //запрос и его параметры
-            json(BodyObject.class), //в каком формате прочитать тело
-            BodyObject::getC) //как извлечь из тела ответа нужный промежуточный массив
+    Integer o = http().responseOf(GET() //запрос и его параметры
+            .responseBodyHandler(json(BodyObject.class)) //в каком формате прочитать тело ответа
+            // Описываем, что извлекается.        
+            .tryToReturnArrayItem("Значение из поля C", BodyObject::getC) //и как извлечь из тела ответа массив, 
+            // из которого будет получено результирующее значение
             //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
             .responseCriteria(statusCode(200))
             //можно указать критерий, которому должен соответствовать получаемый элемент 
@@ -1699,76 +1492,9 @@ public class MyTest {
             .retryTimeOut(ofSeconds(10))
             //можно указать интервал между попытками получить результат в пределах указанных 10 сек
             .pollingInterval(ofMillis(500))
-                //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
-    }
-}
-```
-
-```java
-import java.net.http.HttpResponse;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromArrayBodyStepSupplier.asOneOfArray;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.mapped;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        HttpResponse<Integer[]> response = http().responseOf(GET(),
-                mapped(json(BodyObject.class), BodyObject::getС)); //представляем, будто в теле вернулся массив
-
-        //Возвращается элемент массива. Тело является массивом.
-        //Хотя бы один из элементов массива должен подходить под указанные критерии.
-        //Из общего тела-массива вернется первый подходящий элемент.
-        // 
-        //Ответ на начало выполнения уже получен
-        Integer o = http().bodyData(asOneOfArray("Число, полученное из ответа", //Описываем, что извлекается. Пойдет в лог/отчет
-                response) //полученный выше ответ
-                //можно указать критерий, которому должен соответствовать получаемый элемент 
-                .criteria("Положительное число", i -> i.intValue() > 0)
-                //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
-    }
-}
-```
-
-```java
-import java.net.http.HttpResponse;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromArrayBodyStepSupplier.asOneOfArray;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-  @Test
-  public void myTest() {
-    HttpResponse<BodyObject> response = http().responseOf(GET(), json(BodyObject.class));
-
-    // Возвращается элемент массива. Тело необязательно является массивом. 
-    // Промежуточный массив получается в ходе дополнительных вычислений. 
-    // Хотя бы один из элементов массива должен подходить под указанные критерии. 
-    // Из массива вернется первый подходящий элемент.
-    // 
-    //Ответ на начало выполнения уже получен
-    Integer o = http().bodyData(asOneOfArray("Значение из поля C", //Описываем, что извлекается. Пойдет в лог/отчет
-            response, //полученный выше ответ
-            BodyObject::getС) //как извлечь из тела ответа нужные данные
-            //можно указать критерий, которому должен соответствовать получаемый элемент 
-            .criteria("Положительное число", i -> i.intValue() > 0)
             //можно указать, что должно быть выброшено исключение, если результат не был получен
             .throwOnNoResult());
-  }
+    }
 }
 ```
 
@@ -1785,46 +1511,6 @@ import static java.time.Duration.ofSeconds;
 import static java.time.Duration.ofMillis;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectsFromIterableBodyStepSupplier.asIterable;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.mapped;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-  @Test
-  public void myTest() {
-    //Возвращается немутабельный лист. Тело является коллекцией/объектом Iterable.
-    //Http ответ и каждый элемент результирующей коллекции должны подходить под указанные критерии.
-    //Из общего тела (Iterable/коллекции) вернется под-множество подходящих элементов.
-    // 
-    //Ответ на начало выполнения еще не получен, указывается тот запрос, который следует отправить.
-    List<Integer> o = http().bodyData(asIterable("Числа, полученные из ответа", //Описываем, что извлекается. Пойдет в лог/отчет
-            GET(),
-            mapped(json(BodyObject.class), BodyObject::getB)) //представляем, будто в теле вернулась коллекция
-            //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
-            .responseCriteria(statusCode(200))
-            //можно указать критерий, которому должен соответствовать каждый элемент результирующей под-коллекции
-            .criteria("Положительное число", i -> i.intValue() > 0)
-            //можно указать время на получение ожидаемого результата = 10 секунд
-            //В течение этих 10 секунд запрос будет отправляться до тех пор,
-            //пока не вернется ожидаемый ответ с ожидаемыми данными
-            //т.е. со статусом=200 и непустой коллекцией объектов, соответствующих переданному критерию
-            .retryTimeOut(ofSeconds(10))
-            //можно указать интервал между попытками получить результат в пределах указанных 10 сек
-            .pollingInterval(ofMillis(500))
-            //можно указать, что должно быть выброшено исключение, если результат не был получен
-            .throwOnNoResult());
-  }
-}
-```
-
-```java
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectsFromIterableBodyStepSupplier.asIterable;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
 
@@ -1838,10 +1524,11 @@ public class MyTest {
     // Из коллекции вернется под-множество подходящих элементов.
     // 
     //Ответ на начало выполнения еще не получен, указывается тот запрос, который следует отправить.
-    List<Integer> o = http().bodyData(asIterable("Значения из поля B", //Описываем, что извлекается. Пойдет в лог/отчет
-            GET(), //запрос и его параметры
-            json(BodyObject.class), //в каком формате прочитать тело
-            BodyObject::getB) //как извлечь из тела ответа нужную промежуточную коллекцию
+    List<Integer> o = http().responseOf(GET() //запрос и его параметры
+            .responseBodyHandler(json(BodyObject.class)) //в каком формате прочитать тело ответа
+            // Описываем, что извлекается.        
+            .tryToReturnList("Значения из поля B", BodyObject::getB) //и как извлечь из тела ответа коллекцию, 
+            // из которой будут получены результирующие значения
             //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
             .responseCriteria(statusCode(200))
             //можно указать критерий, которому должен соответствовать каждый элемент результирующей под-коллекции
@@ -1853,74 +1540,6 @@ public class MyTest {
             .retryTimeOut(ofSeconds(10))
             //можно указать интервал между попытками получить результат в пределах указанных 10 сек
             .pollingInterval(ofMillis(500))
-            //можно указать, что должно быть выброшено исключение, если результат не был получен
-            .throwOnNoResult());
-  }
-}
-```
-
-```java
-import java.net.http.HttpResponse;
-import java.util.List;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectsFromIterableBodyStepSupplier.asIterable;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.mapped;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-  @Test
-  public void myTest() {
-    HttpResponse<List<Integer>> response = http().responseOf(GET(),
-            mapped(json(BodyObject.class), BodyObject::getB)); //представляем, будто в теле вернулась коллекция
-
-    //Возвращается немутабельный лист. Тело является коллекцией или объектом Iterable.
-    //Каждый элемент результирующей коллекции должен подходить под указанные критерии.
-    //Из общего тела (Iterable/коллекции) вернется под-множество подходящих элементов.
-    // 
-    //Ответ на начало выполнения уже получен
-    List<Integer> o = http().bodyData(asIterable("Числа, полученные из ответа", //Описываем, что извлекается. Пойдет в лог/отчет
-            response) //полученный выше ответ
-            //можно указать критерий, которому должен соответствовать каждый элемент результирующей под-коллекции
-            .criteria("Положительное число", i -> i.intValue() > 0)
-            //можно указать, что должно быть выброшено исключение, если результат не был получен
-            .throwOnNoResult());
-  }
-}
-```
-
-```java
-import java.net.http.HttpResponse;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectsFromIterableBodyStepSupplier.asIterable;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-  @Test
-  public void myTest() {
-    HttpResponse<BodyObject> response = http().responseOf(GET(), json(BodyObject.class));
-
-    // Возвращается немутабельный лист. Тело необязательно является коллекцией 
-    // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
-    // вычислений. Каждый элемент результирующей коллекции должен подходить под указанные критерии. 
-    // Из коллекции вернется под-множество подходящих элементов.
-    // 
-    //Ответ на начало выполнения уже получен
-    List<Integer> o = http().bodyData(asIterable("Значения из поля B", //Описываем, что извлекается. Пойдет в лог/отчет
-            response, //полученный выше ответ
-            BodyObject::getB) //как извлечь из тела ответа нужные данные
-            //можно указать критерий, которому должен соответствовать каждый элемент результирующей под-коллекции
-            .criteria("Положительное число", i -> i.intValue() > 0)
             //можно указать, что должно быть выброшено исключение, если результат не был получен
             .throwOnNoResult());
   }
@@ -1941,46 +1560,6 @@ import static java.time.Duration.ofSeconds;
 import static java.time.Duration.ofMillis;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectsFromArrayBodyStepSupplier.asArray;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.mapped;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Возвращается массив. Тело является массивом.
-        //Http ответ и каждый элемент результирующего массива должны подходить под указанные критерии.
-        //Из общего тела - массива вернется под-массив подходящих элементов.
-        // 
-        //Ответ на начало выполнения еще не получен, указывается тот запрос, который следует отправить.
-        Integer o = http().bodyData(asArray("Числа, полученные из ответа", //Описываем, что извлекается. Пойдет в лог/отчет
-                GET(),
-                mapped(json(BodyObject.class), BodyObject::getС)) //представляем, будто в теле вернулся массив
-                //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
-                .responseCriteria(statusCode(200))
-                //можно указать критерий, которому должен соответствовать каждый элемент результирующего под-массива
-                .criteria("Положительное число", i -> i.intValue() > 0)
-                //можно указать время на получение ожидаемого результата = 10 секунд
-                //В течение этих 10 секунд запрос будет отправляться до тех пор,
-                //пока не вернется ожидаемый ответ с ожидаемыми данными
-                //т.е. со статусом=200 и непустым массивом объектов, соответствующих переданному критерию
-                .retryTimeOut(ofSeconds(10))
-                //можно указать интервал между попытками получить результат в пределах указанных 10 сек
-                .pollingInterval(ofMillis(500))
-                //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
-    }
-}
-```
-
-```java
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectsFromArrayBodyStepSupplier.asArray;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
 
@@ -1994,10 +1573,11 @@ public class MyTest {
     // Из массива вернется под-массив подходящих элементов.
     // 
     //Ответ на начало выполнения еще не получен, указывается тот запрос, который следует отправить.
-    Integer o = http().bodyData(asArray("Значения из поля C", //Описываем, что извлекается. Пойдет в лог/отчет
-            GET(), //запрос и его параметры
-            json(BodyObject.class), //в каком формате прочитать тело
-            BodyObject::getC) //как извлечь из тела ответа нужный промежуточный массив
+    Integer o = http().responseOf(GET() //запрос и его параметры
+            .responseBodyHandler(json(BodyObject.class)) //в каком формате прочитать тело ответа
+            // Описываем, что извлекается.        
+            .tryToReturnArray("Значения из поля C", BodyObject::getC) //и как извлечь из тела ответа массив, 
+            // из которого будут получены результирующие значения
             //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
             .responseCriteria(statusCode(200))
             //можно указать критерий, которому должен соответствовать каждый элемент результирующего под-массива
@@ -2010,79 +1590,9 @@ public class MyTest {
             //можно указать интервал между попытками получить результат в пределах указанных 10 сек
             .pollingInterval(ofMillis(500))
             //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
-    }
-}
-```
-
-```java
-import java.net.http.HttpResponse;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectsFromArrayBodyStepSupplier.asArray;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.mapped;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        HttpResponse<Integer[]> response = http().responseOf(GET(),
-                mapped(json(BodyObject.class), BodyObject::getС)); //представляем, будто в теле вернулся массив
-
-        //Возвращается массив. Тело является массивом.
-        //Каждый элемент результирующего массива должен подходить под указанные критерии.
-        //Из общего тела - массива вернется под-массив подходящих элементов.
-        // 
-        //Ответ на начало выполнения уже получен
-        Integer o = http().bodyData(asArray("Числа, полученные из ответа", //Описываем, что извлекается. Пойдет в лог/отчет
-                response) //полученный выше ответ
-                //можно указать критерий, которому должен соответствовать каждый элемент результирующего под-массива 
-                .criteria("Положительное число", i -> i.intValue() > 0)
-                //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
-    }
-}
-```
-
-```java
-import java.net.http.HttpResponse;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectsFromArrayBodyStepSupplier.asArray;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-  @Test
-  public void myTest() {
-    HttpResponse<BodyObject> response = http().responseOf(GET(), json(BodyObject.class));
-
-    // Возвращается массив. Тело необязательно является массивом. 
-    // Промежуточный массив получается в ходе дополнительных 
-    // вычислений. Каждый элемент результирующего массива должен подходить под указанные критерии. 
-    // Из массива вернется под-массив подходящих элементов.
-    // 
-    //Ответ на начало выполнения уже получен
-    Integer o = http().bodyData(asArray("Значения из поля C", //Описываем, что извлекается. Пойдет в лог/отчет
-            response, //полученный выше ответ
-            BodyObject::getС) //как извлечь из тела ответа нужные данные
-            //можно указать критерий, которому должен соответствовать каждый элемент результирующего под-массива
-            .criteria("Положительное число", i -> i.intValue() > 0)
-            //можно указать, что должно быть выброшено исключение, если результат не был получен
             .throwOnNoResult());
-  }
+    }
 }
 ```
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
