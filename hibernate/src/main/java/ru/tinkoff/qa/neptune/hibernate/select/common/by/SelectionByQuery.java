@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.hibernate.select.common.by;
 
+import org.hibernate.Session;
 import org.hibernate.query.Query;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.hibernate.HibernateContext;
@@ -37,9 +38,7 @@ public abstract class SelectionByQuery<R, RESULT> extends HibernateFunction<R, R
         return new SelectIterableByQuery<>(entity, queryString, parameters);
     }
 
-    protected Query<R> formQuery(HibernateContext context) {
-        var sessionFactory = context.getSessionFactoryByEntity(entity);
-        var session = sessionFactory.getCurrentSession();
+    protected Query<R> formQuery(Session session) {
         var query = session.createQuery(queryString, entity);
 
         if (parameters != null) {
@@ -59,9 +58,17 @@ public abstract class SelectionByQuery<R, RESULT> extends HibernateFunction<R, R
 
         @Override
         public R apply(HibernateContext context) {
-            var query = formQuery(context);
+            var sessionFactory = context.getSessionFactoryByEntity(entity);
+            var session = sessionFactory.getCurrentSession();
 
-            return query.getSingleResult();
+            session.beginTransaction();
+
+            var query = formQuery(session);
+            var result = query.getSingleResult();
+
+            session.getTransaction().commit();
+
+            return result;
         }
     }
 
@@ -73,9 +80,17 @@ public abstract class SelectionByQuery<R, RESULT> extends HibernateFunction<R, R
 
         @Override
         public Iterable<R> apply(HibernateContext context) {
-            var query = formQuery(context);
+            var sessionFactory = context.getSessionFactoryByEntity(entity);
+            var session = sessionFactory.getCurrentSession();
 
-            return query.getResultList();
+            session.beginTransaction();
+
+            var query = formQuery(session);
+            var result = query.getResultList();
+
+            session.getTransaction().commit();
+
+            return result;
         }
     }
 }

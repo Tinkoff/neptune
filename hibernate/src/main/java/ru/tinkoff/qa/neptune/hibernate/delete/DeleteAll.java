@@ -14,9 +14,12 @@ public final class DeleteAll<R> extends HibernateFunction<R, Void> {
     public Void apply(HibernateContext context) {
         var sessionFactory = context.getSessionFactoryByEntity(entity);
         var session = sessionFactory.getCurrentSession();
+
         session.beginTransaction();
+
         var criteriaDelete = session.getCriteriaBuilder().createCriteriaDelete(entity);
         session.createQuery(criteriaDelete).executeUpdate();
+
         session.getTransaction().commit();
 
         return null;

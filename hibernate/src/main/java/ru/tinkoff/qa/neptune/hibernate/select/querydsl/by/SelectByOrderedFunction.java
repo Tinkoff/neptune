@@ -48,6 +48,8 @@ public final class SelectByOrderedFunction<R> extends HibernateFunction<R, Itera
         var sessionFactory = context.getSessionFactoryByEntity(entity);
         var session = sessionFactory.getCurrentSession();
 
+        session.beginTransaction();
+
         HibernateQuery<?> query = new HibernateQuery<>(session).from(entityPath);
 
         if (predicate != null) {
@@ -58,7 +60,11 @@ public final class SelectByOrderedFunction<R> extends HibernateFunction<R, Itera
             query = query.orderBy(orderSpecifiers);
         }
 
-        return (List<R>) query.fetch();
+        var result = (List<R>) query.fetch();
+
+        session.getTransaction().commit();
+
+        return result;
     }
 
     @Override

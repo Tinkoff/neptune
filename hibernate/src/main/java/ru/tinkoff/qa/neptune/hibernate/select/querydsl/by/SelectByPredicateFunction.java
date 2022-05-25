@@ -47,10 +47,16 @@ public abstract class SelectByPredicateFunction<R, RESULT> extends HibernateFunc
             var sessionFactory = context.getSessionFactoryByEntity(entity);
             var session = sessionFactory.getCurrentSession();
 
-            return (R) new HibernateQuery<>(session)
+            session.beginTransaction();
+
+            var result = (R) new HibernateQuery<>(session)
                     .select(predicate)
                     .from(entityPath)
                     .fetchOne();
+
+            session.getTransaction().commit();
+
+            return result;
         }
     }
 
@@ -65,10 +71,16 @@ public abstract class SelectByPredicateFunction<R, RESULT> extends HibernateFunc
             var sessionFactory = context.getSessionFactoryByEntity(entity);
             var session = sessionFactory.getCurrentSession();
 
-            return (List<R>) new HibernateQuery<>(session)
+            session.beginTransaction();
+
+            var result = (List<R>) new HibernateQuery<>(session)
                     .select(predicate)
                     .from(entityPath)
                     .fetch();
+
+            session.getTransaction().commit();
+
+            return result;
         }
     }
 
@@ -87,12 +99,18 @@ public abstract class SelectByPredicateFunction<R, RESULT> extends HibernateFunc
             var sessionFactory = context.getSessionFactoryByEntity(entity);
             var session = sessionFactory.getCurrentSession();
 
-            return (List<R>) new HibernateQuery<>(session)
+            session.beginTransaction();
+
+            var result = (List<R>) new HibernateQuery<>(session)
                     .select(predicate)
                     .from(entityPath)
                     .limit(limit)
                     .offset(offset)
                     .fetch();
+
+            session.getTransaction().commit();
+
+            return result;
         }
 
 
