@@ -29,6 +29,9 @@ public final class SelectionAsPage<R> extends HibernateFunction<R, Iterable<R>> 
     public Iterable<R> apply(HibernateContext context) {
         var sessionFactory = context.getSessionFactoryByEntity(entity);
         var session = sessionFactory.getCurrentSession();
+
+        session.beginTransaction();
+
         var criteriaBuilder = session.getCriteriaBuilder();
 
         var criteria = criteriaBuilder.createQuery(entity);
@@ -47,7 +50,11 @@ public final class SelectionAsPage<R> extends HibernateFunction<R, Iterable<R>> 
             query.setFirstResult(offset);
         }
 
-        return query.getResultList();
+        var result = query.getResultList();
+
+        session.getTransaction().commit();
+
+        return result;
     }
 
     public void setLimitOffset(int limit, int offset) {

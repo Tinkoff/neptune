@@ -30,9 +30,16 @@ public final class SelectionByOrder<R> extends HibernateFunction<R, Iterable<R>>
     public Iterable<R> apply(HibernateContext context) {
         var sessionFactory = context.getSessionFactoryByEntity(entity);
         var session = sessionFactory.getCurrentSession();
+
+        session.beginTransaction();
+
         var criteriaBuilder = session.getCriteriaBuilder();
         var criteria = criteriaBuilder.createQuery(entity).orderBy(orders);
 
-        return session.createQuery(criteria).getResultList();
+        var result = session.createQuery(criteria).getResultList();
+
+        session.getTransaction().commit();
+
+        return result;
     }
 }

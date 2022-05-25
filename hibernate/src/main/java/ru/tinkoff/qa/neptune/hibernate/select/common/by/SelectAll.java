@@ -22,8 +22,14 @@ public final class SelectAll<R> extends HibernateFunction<R, Iterable<R>> {
     public Iterable<R> apply(HibernateContext context) {
         var sessionFactory = context.getSessionFactoryByEntity(entity);
         var session = sessionFactory.getCurrentSession();
-        var criteria = session.getCriteriaBuilder().createQuery(entity);
 
-        return session.createQuery(criteria).getResultList();
+        session.beginTransaction();
+
+        var criteria = session.getCriteriaBuilder().createQuery(entity);
+        var result = session.createQuery(criteria).getResultList();
+
+        session.getTransaction().commit();
+
+        return result;
     }
 }

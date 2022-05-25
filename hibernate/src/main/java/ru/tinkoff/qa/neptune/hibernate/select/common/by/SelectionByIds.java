@@ -55,7 +55,14 @@ public abstract class SelectionByIds<R, ID extends Serializable, RESULT> extends
             var id = ids[0];
             var sessionFactory = context.getSessionFactoryByEntity(entity);
             var session = sessionFactory.getCurrentSession();
-            return session.get(entity, id);
+
+            session.beginTransaction();
+
+            var result = session.get(entity, id);
+
+            session.getTransaction().commit();
+
+            return result;
         }
     }
 
@@ -69,13 +76,18 @@ public abstract class SelectionByIds<R, ID extends Serializable, RESULT> extends
         public Iterable<R> apply(HibernateContext context) {
             var sessionFactory = context.getSessionFactoryByEntity(entity);
             var session = sessionFactory.getCurrentSession();
-            var list = new ArrayList<R>();
+
+            session.beginTransaction();
+
+            var result = new ArrayList<R>();
 
             for (var id : ids) {
-                list.add(session.get(entity, id));
+                result.add(session.get(entity, id));
             }
 
-            return list;
+            session.getTransaction().commit();
+
+            return result;
         }
     }
 }

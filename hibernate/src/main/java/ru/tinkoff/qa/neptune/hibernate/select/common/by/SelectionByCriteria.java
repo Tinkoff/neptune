@@ -44,7 +44,13 @@ public abstract class SelectionByCriteria<R, RESULT> extends HibernateFunction<R
             var sessionFactory = context.getSessionFactoryByEntity(entity);
             var session = sessionFactory.getCurrentSession();
 
-            return session.createQuery(criteriaQuery).getSingleResult();
+            session.beginTransaction();
+
+            var result = session.createQuery(criteriaQuery).getSingleResult();
+
+            session.getTransaction().commit();
+
+            return result;
         }
     }
 
@@ -59,7 +65,13 @@ public abstract class SelectionByCriteria<R, RESULT> extends HibernateFunction<R
             var sessionFactory = context.getSessionFactoryByEntity(entity);
             var session = sessionFactory.getCurrentSession();
 
-            return session.createQuery(criteriaQuery).getResultList();
+            session.beginTransaction();
+
+            var result = session.createQuery(criteriaQuery).getResultList();
+
+            session.getTransaction().commit();
+
+            return result;
         }
     }
 }
