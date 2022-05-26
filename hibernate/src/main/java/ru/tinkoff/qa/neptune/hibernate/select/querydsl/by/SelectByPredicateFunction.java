@@ -50,8 +50,9 @@ public abstract class SelectByPredicateFunction<R, RESULT> extends HibernateFunc
             session.beginTransaction();
 
             var result = (R) new HibernateQuery<>(session)
-                    .select(predicate)
+                    .select(entityPath)
                     .from(entityPath)
+                    .where(predicate)
                     .fetchOne();
 
             session.getTransaction().commit();
@@ -74,8 +75,9 @@ public abstract class SelectByPredicateFunction<R, RESULT> extends HibernateFunc
             session.beginTransaction();
 
             var result = (List<R>) new HibernateQuery<>(session)
-                    .select(predicate)
+                    .select(entityPath)
                     .from(entityPath)
+                    .where(predicate)
                     .fetch();
 
             session.getTransaction().commit();
@@ -102,8 +104,9 @@ public abstract class SelectByPredicateFunction<R, RESULT> extends HibernateFunc
             session.beginTransaction();
 
             var result = (List<R>) new HibernateQuery<>(session)
-                    .select(predicate)
+                    .select(entityPath)
                     .from(entityPath)
+                    .where(predicate)
                     .limit(limit)
                     .offset(offset)
                     .fetch();
