@@ -237,7 +237,8 @@ public class SelectTest extends BaseHibernatePreparations {
                     .and(q.listData.contains("A"));
 
             try (MockedConstruction<HibernateQuery> ignored = mockConstruction(HibernateQuery.class, (mock, context) -> {
-                when(mock.select(predicate)).thenReturn(returnManyQuery);
+                when(mock.select(q)).thenReturn(returnManyQuery);
+                when(returnManyQuery.where(predicate)).thenReturn(returnManyQuery);
                 when(returnManyQuery.orderBy(new OrderSpecifier<>(Order.DESC, q.name),
                         new OrderSpecifier<>(Order.ASC, q.arrayData))).thenReturn(returnManyQuery);
                 when(returnManyQuery.limit(5)).thenReturn(returnManyQuery);
