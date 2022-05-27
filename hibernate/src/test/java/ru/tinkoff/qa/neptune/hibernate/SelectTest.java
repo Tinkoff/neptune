@@ -144,8 +144,11 @@ public class SelectTest extends BaseHibernatePreparations {
                     .and(q.name.eq("Test name"))
                     .and(q.listData.contains("A"));
 
-            try (MockedConstruction<HibernateQuery> ignored = mockConstruction(HibernateQuery.class, (mock, context) ->
-                    when(mock.select(predicate)).thenReturn(returnOneQuery))) {
+            try (MockedConstruction<HibernateQuery> ignored = mockConstruction(HibernateQuery.class, (mock, context) -> {
+                when(mock.select(q)).thenReturn(returnOneQuery);
+                when(returnOneQuery.from(q)).thenReturn(returnOneQuery);
+                when(returnOneQuery.where(predicate)).thenReturn(returnOneQuery);
+            })) {
                 var entity = hibernate().select("Test entity",
                         byPredicate(TestEntity.class, q, predicate));
 
@@ -164,8 +167,11 @@ public class SelectTest extends BaseHibernatePreparations {
                     .and(q.name.eq("Test name"))
                     .and(q.listData.contains("A"));
 
-            try (MockedConstruction<HibernateQuery> ignored = mockConstruction(HibernateQuery.class, (mock, context) ->
-                    when(mock.select(predicate)).thenReturn(returnManyQuery))) {
+            try (MockedConstruction<HibernateQuery> ignored = mockConstruction(HibernateQuery.class, (mock, context) -> {
+                    when(mock.select(q)).thenReturn(returnManyQuery);
+                    when(returnManyQuery.from(q)).thenReturn(returnManyQuery);
+                    when(returnOneQuery.where(predicate)).thenReturn(returnManyQuery);
+            })) {
                 var entities = hibernate().select("Test entities",
                         allByPredicate(TestEntity.class, q, predicate));
 
@@ -237,7 +243,9 @@ public class SelectTest extends BaseHibernatePreparations {
                     .and(q.listData.contains("A"));
 
             try (MockedConstruction<HibernateQuery> ignored = mockConstruction(HibernateQuery.class, (mock, context) -> {
-                when(mock.select(predicate)).thenReturn(returnManyQuery);
+                when(mock.select(q)).thenReturn(returnManyQuery);
+                when(returnManyQuery.from(q)).thenReturn(returnManyQuery);
+                when(returnManyQuery.where(predicate)).thenReturn(returnManyQuery);
                 when(returnManyQuery.orderBy(new OrderSpecifier<>(Order.DESC, q.name),
                         new OrderSpecifier<>(Order.ASC, q.arrayData))).thenReturn(returnManyQuery);
                 when(returnManyQuery.limit(5)).thenReturn(returnManyQuery);
