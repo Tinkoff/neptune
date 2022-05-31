@@ -33,7 +33,8 @@ public abstract class SaveFunction<R, RESULT> implements Function<HibernateConte
             session.beginTransaction();
 
             if (persistenceUnitUtil.getIdentifier(toSave) != null) {
-                session.saveOrUpdate(toSave);
+                var obj = session.merge(toSave);
+                session.saveOrUpdate(obj);
             } else {
                 var id = session.save(toSave);
                 toSave = (R) session.get(toSave.getClass(), id);
