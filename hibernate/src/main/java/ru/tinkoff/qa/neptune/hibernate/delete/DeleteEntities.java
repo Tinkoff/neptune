@@ -3,6 +3,8 @@ package ru.tinkoff.qa.neptune.hibernate.delete;
 import com.google.common.base.Function;
 import ru.tinkoff.qa.neptune.hibernate.HibernateContext;
 
+import static java.util.Optional.ofNullable;
+
 
 abstract class DeleteEntities<R> implements Function<HibernateContext, Void> {
 
@@ -23,11 +25,14 @@ abstract class DeleteEntities<R> implements Function<HibernateContext, Void> {
 
         @Override
         public Void apply(HibernateContext context) {
-            var sessionFactory = context.getSessionFactoryByEntity(toDelete.getClass());
-            var session = sessionFactory.getCurrentSession();
-            session.beginTransaction();
-            session.delete(toDelete);
-            session.getTransaction().commit();
+            ofNullable(toDelete).ifPresent(deleteSingle -> {
+                var sessionFactory = context.getSessionFactoryByEntity(deleteSingle.getClass());
+                var session = sessionFactory.getCurrentSession();
+                session.beginTransaction();
+                var obj = session.merge(deleteSingle);
+                session.delete(obj);
+                session.getTransaction().commit();
+            });
 
             return null;
         }
@@ -41,13 +46,14 @@ abstract class DeleteEntities<R> implements Function<HibernateContext, Void> {
 
         @Override
         public Void apply(HibernateContext context) {
-            toDelete.forEach(toDeleteSingle -> {
+            ofNullable(toDelete).ifPresent(toDeleteList -> toDeleteList.forEach(toDeleteSingle -> {
                 var sessionFactory = context.getSessionFactoryByEntity(toDeleteSingle.getClass());
                 var session = sessionFactory.getCurrentSession();
                 session.beginTransaction();
-                session.delete(toDeleteSingle);
+                var obj = session.merge(toDeleteSingle);
+                session.delete(obj);
                 session.getTransaction().commit();
-            });
+            }));
 
             return null;
         }
