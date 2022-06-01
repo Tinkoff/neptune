@@ -29,6 +29,9 @@ public class DeleteTest extends BaseHibernatePreparations {
 
         criteriaDelete = mock(CriteriaDelete.class);
 
+        when(session.merge(TEST_ENTITIES.get(0))).thenReturn(TEST_ENTITIES.get(0));
+        when(session.merge(TEST_ENTITIES.get(1))).thenReturn(TEST_ENTITIES.get(1));
+
         when(criteriaBuilder.createCriteriaDelete(TestEntity.class)).thenReturn(criteriaDelete);
         when(session.createQuery(criteriaDelete)).thenReturn(query);
     }
