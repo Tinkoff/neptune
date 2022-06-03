@@ -25,8 +25,9 @@ public final class SelectAll<R> extends HibernateFunction<R, Iterable<R>> {
 
         session.beginTransaction();
 
-        var criteria = session.getCriteriaBuilder().createQuery(entity);
-        var result = session.createQuery(criteria).getResultList();
+        var criteriaQuery = session.getCriteriaBuilder().createQuery(entity);
+        var root = criteriaQuery.from(entity);
+        var result = session.createQuery(criteriaQuery.select(root)).getResultList();
 
         session.getTransaction().commit();
 
