@@ -59,6 +59,9 @@ public class SaveTest extends BaseHibernatePreparations {
         when(persistenceUtil.getIdentifier(TEST_ENTITIES.get(0))).thenReturn(1L);
         when(persistenceUtil.getIdentifier(TEST_ENTITIES.get(1))).thenReturn(2L);
         when(persistenceUtil.getIdentifier(updatedEntity)).thenReturn(10L);
+        when(session.merge(updatedEntity)).thenReturn(updatedEntity);
+        when(session.merge(TEST_ENTITIES.get(0))).thenReturn(TEST_ENTITIES.get(0));
+        when(session.merge(TEST_ENTITIES.get(1))).thenReturn(TEST_ENTITIES.get(1));
         when(session.save(NO_ID_ENTITY)).thenReturn(3L);
         when(session.get(TestEntity.class, 3L)).thenReturn(NO_ID_ENTITY.setId(3L));
     }

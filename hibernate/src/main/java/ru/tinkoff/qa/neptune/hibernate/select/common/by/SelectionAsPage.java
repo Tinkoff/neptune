@@ -34,13 +34,14 @@ public final class SelectionAsPage<R> extends HibernateFunction<R, Iterable<R>> 
 
         var criteriaBuilder = session.getCriteriaBuilder();
 
-        var criteria = criteriaBuilder.createQuery(entity);
+        var criteriaQuery = criteriaBuilder.createQuery(entity);
+        var root = criteriaQuery.from(entity);
 
         if (orders != null) {
-            orders.forEach(order -> criteria.orderBy(orders));
+            orders.forEach(order -> criteriaQuery.orderBy(orders));
         }
 
-        var query = session.createQuery(criteria);
+        var query = session.createQuery(criteriaQuery.select(root));
 
         if (limit != 0) {
             query.setMaxResults(limit);

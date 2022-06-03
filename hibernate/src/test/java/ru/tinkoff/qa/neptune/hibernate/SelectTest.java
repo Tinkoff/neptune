@@ -70,6 +70,8 @@ public class SelectTest extends BaseHibernatePreparations {
 
         when(criteriaBuilder.createQuery(TestEntity.class)).thenReturn(criteriaQuery);
         when(criteriaQuery.from(TestEntity.class)).thenReturn(root);
+        when(criteriaQuery.select(root)).thenReturn(criteriaQuery);
+        when(orderedCriteriaQuery.from(TestEntity.class)).thenReturn(root);
         when(root.get("id")).thenReturn(idPath);
         when(root.get("name")).thenReturn(namePath);
         when(criteriaBuilder.ge((Path) idPath, 1L)).thenReturn(expression);
@@ -87,6 +89,7 @@ public class SelectTest extends BaseHibernatePreparations {
         when(selectMultipleQuery.getResultList()).thenReturn(TEST_ENTITIES);
 
         when(criteriaQuery.orderBy(List.of(order))).thenReturn(orderedCriteriaQuery);
+        when(orderedCriteriaQuery.select(root)).thenReturn(orderedCriteriaQuery);
         when(session.createQuery(orderedCriteriaQuery)).thenReturn(selectOrderedQuery);
         when(selectOrderedQuery.getResultList()).thenReturn(TEST_ENTITIES_COPY);
 
