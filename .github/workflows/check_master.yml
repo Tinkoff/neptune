@@ -45,3 +45,15 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
         ./gradlew sonarqube -x build --info
+
+    - name: Generate javadoc
+      run: |
+        ./gradlew aggregatedJavadocs javadoc
+
+    - name: Deploy JavaDoc
+      uses: JamesIves/github-pages-deploy-action@4.3.3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        branch: gh-pages
+        clean: true
+        folder: neptune.documentation

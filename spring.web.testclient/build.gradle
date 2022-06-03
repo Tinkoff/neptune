@@ -47,8 +47,8 @@ dependencies {
     compileClasspath(group: 'org.springframework', name: 'spring-webflux', version: springVersion)
 
     testImplementation('io.projectreactor.tools:blockhound:1.0.6.RELEASE')
-    testImplementation('io.projectreactor:reactor-test:3.4.15')
-    testImplementation('org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.6.0-native-mt')
+    testImplementation('io.projectreactor:reactor-test:3.4.18')
+    testImplementation('org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.6.1-native-mt')
     testImplementation(group: 'org.springframework', name: 'spring-webflux', version: springVersion)
 
     bundleGeneration(group: 'org.springframework', name: 'spring-web', version: springVersion)
@@ -101,11 +101,11 @@ publishing {
 }
 
 javadoc {
-    destinationDir = file("${buildDir}/../../../neptune.documentation/javadocs/$project.name")
+    destinationDir = file("${buildDir}/../../neptune.documentation/$project.name")
 
     title = "Neptune Spring WebTestClient Integration API. v$globalVersion"
     options.author true
-    options.links 'http://download.oracle.com/javase/9/docs/api/'
+    options.links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
     options.addStringOption 'Xdoclint:none', '-quiet'
     options.memberLevel = JavadocMemberLevel.PROTECTED
     options.bottom = "Copyright &copy; 2022 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
