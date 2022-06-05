@@ -31,10 +31,6 @@ public class NullCapabilityPropertiesTest {
                 PLATFORM_NAME.get(),
                 nullValue());
 
-        assertThat(format("Property %s", SUPPORTS_JAVASCRIPT.getName()),
-                SUPPORTS_JAVASCRIPT.get(),
-                is(true));
-
         assertThat(format("Property %s", BROWSER_VERSION.getName()),
                 BROWSER_VERSION.get(),
                 nullValue());
@@ -44,11 +40,10 @@ public class NullCapabilityPropertiesTest {
     public void testOfSuppliedCapabilityProperties() {
         ChromeOptions capabilitiesAsIs = (ChromeOptions) CHROME.get();
         Map<String, ?> capabilities = capabilitiesAsIs.asMap();
-        assertThat("Result map size", capabilities.size(), is(3));
+        assertThat("Result map size", capabilities.size(), is(2));
         //IsMapContaining
         assertThat("Browser info", capabilities, hasEntry(CapabilityType.BROWSER_NAME, BrowserType.CHROME));
-        assertThat("Platform info", capabilities, not(hasEntry(CapabilityType.PLATFORM_NAME, "Linux")));
-        assertThat("Java script enabled info", capabilities, hasEntry(CapabilityType.SUPPORTS_JAVASCRIPT, true));
+        assertThat("Platform info", capabilities, not(hasEntry(CapabilityType.PLATFORM_NAME, "LINUX")));
         assertThat("Browser version info", capabilities, not(hasEntry("browserVersion", "60")));
         assertThat("Chrome options info", capabilities, hasKey("goog:chromeOptions"));
 
@@ -57,8 +52,6 @@ public class NullCapabilityPropertiesTest {
         FirefoxOptions firefoxOptions = (FirefoxOptions) FIREFOX.get();
         assertThat("Browser info", firefoxOptions.getBrowserName(), is(BrowserType.FIREFOX));
         assertThat("Platform info", firefoxOptions.getPlatform(), not(is(LINUX)));
-        assertThat("Java script enabled info", firefoxOptions.getCapability("javascriptEnabled"),
-                is( true));
         assertThat("Browser version info", firefoxOptions.getCapability("browserVersion"),
                 not(is("60")));
         assertThat("Firefox profile", firefoxOptions.getProfile(), notNullValue());

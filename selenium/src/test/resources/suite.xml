@@ -36,7 +36,7 @@
         <classes>
             <class name="ru.tinkoff.qa.neptune.selenium.test.capability.properties.DefaultCapabilityPropertiesTest"/>
             <class name="ru.tinkoff.qa.neptune.selenium.test.capability.properties.NullCapabilityPropertiesTest"/>
-            <class name="ru.tinkoff.qa.neptune.selenium.test.capability.properties.WhenCapabilityPropertiesAreDefinedPreviously"/>
+            <class name="ru.tinkoff.qa.neptune.selenium.test.capability.properties.WhenCapabilityPropertiesAreDefinedPreviouslyTest"/>
         </classes>
     </test>
 

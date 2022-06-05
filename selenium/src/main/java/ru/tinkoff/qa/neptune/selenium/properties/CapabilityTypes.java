@@ -5,11 +5,9 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerOptions;
-import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.safari.SafariOptions;
-import ru.tinkoff.qa.neptune.core.api.properties.PropertyDefaultValue;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertyDescription;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
@@ -97,14 +95,6 @@ public enum CapabilityTypes implements PropertySupplier<MutableCapabilities, Cla
     @PropertyName("IE_CAPABILITY_SUPPLIERS")
     IE(InternetExplorerOptions::new),
 
-    @PropertyDescription(description = {"Defines full names of classes that implement CapabilitySettingSupplier<OperaOptions>",
-            "whose instances create and supplement OperaOptions",
-            "for the starting of OperaDriver",
-            "It is possible to define multiple comma-separated value"},
-            section = "Selenium. Capabilities")
-    @PropertyName("OPERA_CAPABILITY_SUPPLIERS")
-    OPERA(OperaOptions::new),
-
     @PropertyDescription(description = {"Defines full names of classes that implement CapabilitySettingSupplier<SafariOptions>",
             "whose instances create and supplement SafariOptions",
             "for the starting of SafariDriver",
@@ -127,9 +117,6 @@ public enum CapabilityTypes implements PropertySupplier<MutableCapabilities, Cla
         var desiredCapabilities = startingCapabilitiesSupplier.get();
         ofNullable(CommonCapabilityProperties.PLATFORM_NAME.get()).ifPresent(o ->
                 desiredCapabilities.setCapability(CapabilityType.PLATFORM_NAME, o));
-
-        desiredCapabilities.setCapability(CapabilityType.SUPPORTS_JAVASCRIPT,
-                CommonCapabilityProperties.SUPPORTS_JAVASCRIPT.get());
 
         ofNullable(CommonCapabilityProperties.BROWSER_VERSION.get()).ifPresent(o ->
                 desiredCapabilities.setCapability(CapabilityType.BROWSER_VERSION, o));
@@ -171,17 +158,6 @@ public enum CapabilityTypes implements PropertySupplier<MutableCapabilities, Cla
                 section = "Selenium. Capabilities")
         @PropertyName("WEB_DRIVER_CAPABILITY_PLATFORM_NAME")
         PLATFORM_NAME,
-
-        @PropertyDescription(description = "Defines the capability 'javascriptEnabled'",
-                section = "Selenium. Capabilities")
-        @PropertyName("WEB_DRIVER_CAPABILITY_SUPPORTS_JAVASCRIPT")
-        @PropertyDefaultValue("true")
-        SUPPORTS_JAVASCRIPT {
-            @Override
-            public Boolean parse(String value) {
-                return Boolean.parseBoolean(value);
-            }
-        },
 
         @PropertyDescription(description = "Defines the capability 'browserVersion'",
                 section = "Selenium. Capabilities")

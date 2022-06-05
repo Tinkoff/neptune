@@ -6,11 +6,9 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.opera.OperaDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 
-import java.net.URL;
 import java.util.function.Supplier;
 
 import static io.github.bonigarcia.wdm.WebDriverManager.*;
@@ -85,16 +83,6 @@ public enum SupportedWebDrivers implements Supplier<Object[]> {
     },
 
     /**
-     * This item describes instantiation of {@link OperaDriver}
-     */
-    OPERA_DRIVER(OperaDriver.class, CapabilityTypes.OPERA, false) {
-        @Override
-        public WebDriverManager getWebDriverManager() {
-            return operadriver();
-        }
-    },
-
-    /**
      * This item describes instantiation of {@link SafariDriver}
      */
     SAFARI_DRIVER(SafariDriver.class, CapabilityTypes.SAFARI, false) {
@@ -122,26 +110,6 @@ public enum SupportedWebDrivers implements Supplier<Object[]> {
 
     public Class<? extends WebDriver> getWebDriverClass() {
         return webDriverClass;
-    }
-
-    /**
-     * Does supported subclass of {@link WebDriver} require an URL of the remote node
-     * to start a new session or not.
-     *
-     * @return true if supported subclass of {@link WebDriver} requires an URL of the remote node
-     * to start a new session.
-     */
-    public boolean requiresRemoteUrl() {
-        return requiresRemoteUrl;
-    }
-
-    /**
-     * Returns an URL where a new remote session should be started.
-     *
-     * @return URL of the node to start a new remote session.
-     */
-    public URL getRemoteURL() {
-        return URLProperties.REMOTE_WEB_DRIVER_URL_PROPERTY.get();
     }
 
     public abstract WebDriverManager getWebDriverManager();

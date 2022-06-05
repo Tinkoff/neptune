@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.test.capability.properties;
 
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.CapabilityType;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -43,7 +43,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeVa
  * For the testing of the case if properties are partially defined before selenium.properties are read.
  */
 @SuppressWarnings("unchecked")
-public class WhenCapabilityPropertiesAreDefinedPreviously {
+public class WhenCapabilityPropertiesAreDefinedPreviouslyTest {
 
     private static final Map<String, String> properties = Map
             .ofEntries(entry(ELEMENT_WAITING_TIME_UNIT.getName(), "MINUTES"),
@@ -58,7 +58,6 @@ public class WhenCapabilityPropertiesAreDefinedPreviously {
                     entry(BASE_WEB_DRIVER_URL_PROPERTY.getName(), "http://www.google.com"),
                     entry(BROWSER_NAME.getName(), "firefox"),
                     entry(PLATFORM_NAME.getName(), "Linux"),
-                    entry(SUPPORTS_JAVASCRIPT.getName(), "false"),
                     entry(BROWSER_VERSION.getName(), "60"),
                     entry(CHROME.getName(), ChromeSettingsSupplierWithExperimentalOption.class.getName()
                             + "," + ChromeSettingsSupplierWithBinary.class.getName()),
@@ -81,7 +80,6 @@ public class WhenCapabilityPropertiesAreDefinedPreviously {
 
         System.setProperty(BROWSER_NAME.getName(), "safari");
         System.setProperty(PLATFORM_NAME.getName(), "Mac");
-        System.setProperty(SUPPORTS_JAVASCRIPT.getName(), "true");
 
         System.setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getName(), "false");
 
@@ -102,15 +100,11 @@ public class WhenCapabilityPropertiesAreDefinedPreviously {
     public void testOfCommonCapabilityProperties() {
         assertThat(format("Property %s", BROWSER_NAME.getName()),
                 BROWSER_NAME.get(),
-                is(BrowserType.SAFARI));
+                is(Browser.SAFARI.browserName()));
 
         assertThat(format("Property %s", PLATFORM_NAME.getName()),
                 PLATFORM_NAME.get(),
                 is("Mac"));
-
-        assertThat(format("Property %s", SUPPORTS_JAVASCRIPT.getName()),
-                SUPPORTS_JAVASCRIPT.get(),
-                is(true));
 
         assertThat(format("Property %s", BROWSER_VERSION.getName()),
                 BROWSER_VERSION.get(),
@@ -121,11 +115,10 @@ public class WhenCapabilityPropertiesAreDefinedPreviously {
     public void testOfSuppliedCapabilityProperties() {
         ChromeOptions capabilitiesAsIs = (ChromeOptions) CHROME.get();
         Map<String, ?> capabilities = capabilitiesAsIs.asMap();
-        assertThat("Result map size", capabilities.size(), is(5));
+        assertThat("Result map size", capabilities.size(), is(4));
         //IsMapContaining
-        assertThat("Browser info", capabilities, hasEntry(CapabilityType.BROWSER_NAME, BrowserType.CHROME));
-        assertThat("Platform info", capabilities, hasEntry(CapabilityType.PLATFORM_NAME, "Mac"));
-        assertThat("Java script enabled info", capabilities, hasEntry(CapabilityType.SUPPORTS_JAVASCRIPT, true));
+        assertThat("Browser info", capabilities, hasEntry(CapabilityType.BROWSER_NAME, Browser.CHROME.browserName()));
+        assertThat("Platform info", capabilities, hasEntry(CapabilityType.PLATFORM_NAME, MAC));
         assertThat("Browser version info", capabilities, hasEntry("browserVersion", "60"));
         assertThat("Chrome options info", capabilities, hasKey("goog:chromeOptions"));
 
@@ -138,10 +131,8 @@ public class WhenCapabilityPropertiesAreDefinedPreviously {
         assertThat("binary", args.get("binary"), equalTo("path/to/file"));
 
         FirefoxOptions firefoxOptions = (FirefoxOptions) FIREFOX.get();
-        assertThat("Browser info", firefoxOptions.getBrowserName(), is(BrowserType.FIREFOX));
+        assertThat("Browser info", firefoxOptions.getBrowserName(), is(Browser.FIREFOX.browserName()));
         assertThat("Platform info", firefoxOptions.getPlatform(), is(MAC));
-        assertThat("Java script enabled info", firefoxOptions.getCapability("javascriptEnabled"),
-                is( true));
         assertThat("Browser version info", firefoxOptions.getCapability("browserVersion"),
                 is("60"));
         assertThat("Firefox profile", firefoxOptions.getProfile(), notNullValue());
