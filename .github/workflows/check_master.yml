@@ -51,7 +51,7 @@ jobs:
         ./gradlew aggregatedJavadocs javadoc
 
     - name: Deploy JavaDoc
-      uses: JamesIves/github-pages-deploy-action@4.3.3
+      uses: JamesIves/github-pages-deploy-action@v4.3.3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         branch: gh-pages
