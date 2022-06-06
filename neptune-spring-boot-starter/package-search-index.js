@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"ru.tinkoff.qa.neptune.spring.boot.starter.application.contexts"},{"l":"ru.tinkoff.qa.neptune.spring.boot.starter.env"},{"l":"ru.tinkoff.qa.neptune.spring.boot.starter.test"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"ru.tinkoff.qa.neptune.spring.boot.starter.application.contexts"},{"l":"ru.tinkoff.qa.neptune.spring.boot.starter.env"},{"l":"ru.tinkoff.qa.neptune.spring.boot.starter.test"}]

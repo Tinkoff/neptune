@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"ru.tinkoff.qa.neptune.jupiter.integration"},{"l":"ru.tinkoff.qa.neptune.jupiter.integration.properties"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"ru.tinkoff.qa.neptune.jupiter.integration"},{"l":"ru.tinkoff.qa.neptune.jupiter.integration.properties"}]

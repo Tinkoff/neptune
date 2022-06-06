@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"io.swagger.codegen.v3"},{"l":"ru.tinkoff.qa.neptune.swagger.v3"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"io.swagger.codegen.v3"},{"l":"ru.tinkoff.qa.neptune.swagger.v3"}]
