@@ -59,3 +59,4 @@ allure-results/*
 */neptune.properties
 */neptune.global.properties
 /neptune.global.properties
+/neptune.documentation/

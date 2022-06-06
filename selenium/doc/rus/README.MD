@@ -10,7 +10,6 @@
     - [Настройки Capabilities](./SETTINGS.MD#Настройки-capabilities)
         - [WEB_DRIVER_CAPABILITY_BROWSER_NAME](./SETTINGS.MD#web_driver_capability_browser_name)
         - [WEB_DRIVER_CAPABILITY_PLATFORM_NAME](./SETTINGS.MD#web_driver_capability_platform_name)
-        - [WEB_DRIVER_CAPABILITY_SUPPORTS_JAVASCRIPT](./SETTINGS.MD#web_driver_capability_supports_javascript)
         - [WEB_DRIVER_CAPABILITY_BROWSER_VERSION](./SETTINGS.MD#web_driver_capability_browser_version)
 - [Параметры сессии](./SETTINGS.MD#Параметры-сессии)
     - [FIND_ONLY_VISIBLE_ELEMENTS](./SETTINGS.MD#find_only_visible_elements)
