@@ -12,10 +12,16 @@ import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.selenium.authentication.AuthenticationPerformer;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 
+import java.lang.reflect.Constructor;
+import java.util.Arrays;
+import java.util.List;
+
 import static java.lang.String.format;
+import static java.util.Arrays.asList;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.core.api.utils.ConstructorUtil.findSuitableConstructor;
+import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FORCE_WINDOW_MAXIMIZING_ON_START;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.KEEP_WEB_DRIVER_SESSION_OPENED;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
@@ -30,6 +36,49 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
 
     public WrappedWebDriver(SupportedWebDrivers supportedWebDriver) {
         this.supportedWebDriver = supportedWebDriver;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Constructor<T> findSuitableConstructor(Class<T> clazz, Object... params) throws Exception {
+        var constructorList = asList(clazz.getDeclaredConstructors());
+        final List<Class<?>> paramTypes = Arrays.stream(params).map(o -> ofNullable(o)
+                .map(Object::getClass)
+                .orElse(null))
+            .collect(toList());
+
+        var foundConstructor = constructorList.stream().filter(constructor -> {
+                var constructorTypes = asList(constructor.getParameterTypes());
+                return constructorTypes.size() == paramTypes.size() && matches(constructorTypes, paramTypes);
+            })
+            .findFirst().orElseThrow(() -> new NoSuchMethodException(
+                format("There is no constructor that convenient to parameter list %s", paramTypes)));
+        foundConstructor.setAccessible(true);
+        return (Constructor<T>) foundConstructor;
+    }
+
+    private static boolean matches(List<Class<?>> constructorTypes,
+                                   List<Class<?>> paramTypes) {
+        var i = -1;
+        for (Class<?> parameter : constructorTypes) {
+            i++;
+            var currentType = paramTypes.get(i);
+            if (isNull(currentType)) {
+                return false;
+            }
+
+            if (parameter.isAssignableFrom(currentType)) {
+                continue;
+            }
+
+            var declaredArrayType = parameter.getComponentType();
+            var currentArrayType = currentType.getComponentType();
+            if (nonNull(declaredArrayType) && nonNull(currentArrayType) &&
+                declaredArrayType.isAssignableFrom(currentArrayType)) {
+                continue;
+            }
+            return false;
+        }
+        return true;
     }
 
     private synchronized boolean isNewSession() {
@@ -70,7 +119,8 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
         }
     }
 
-    private boolean isAlive() {
+
+    boolean isAlive() {
         if (driver == null) {
             return false;
         }

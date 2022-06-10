@@ -3,20 +3,12 @@ package ru.tinkoff.qa.neptune.selenium.test.webdriver.starting;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.testng.annotations.*;
-import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumParameterProvider;
 import ru.tinkoff.qa.neptune.selenium.WrappedWebDriver;
-import ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties;
-import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeSettingsSupplierHeadless;
 
-import java.util.List;
-import java.util.Map;
+import java.net.URL;
 
 import static java.lang.System.setProperty;
-import static java.util.List.of;
-import static java.util.Map.entry;
-import static java.util.Map.ofEntries;
 import static java.util.Optional.ofNullable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -27,30 +19,10 @@ import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers.CHRO
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.WebDriverCredentialsProperty.WEB_DRIVER_CREDENTIALS_PROPERTY;
 
-/**
- * This is the integration test which is supposed to be run on some local environment.
- * Goals:
- *
- * to make sure that {@link WrappedWebDriver#refreshContext()} works as expected
- *
- * to make sure that {@link WrappedWebDriver} doesn't ignore
- * {@link SessionFlagProperties#KEEP_WEB_DRIVER_SESSION_OPENED}
- *
- * to make sure that {@link WrappedWebDriver} doesn't ignore
- *
- * Requirements:
- * Installed Chrome
- */
+@SuppressWarnings("unchecked")
 public class DefaultRefreshingTest {
 
     private final String SELENIUM = "https://github.com/SeleniumHQ/selenium";
-
-    private final Map<String, String> PROPERTIES_TO_SET_BEFORE =
-            ofEntries(entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getName(), CHROME_DRIVER.name()),
-                    entry(BASE_WEB_DRIVER_URL_PROPERTY.getName(), "https://github.com"),
-                    entry(CHROME.getName(), ChromeSettingsSupplierHeadless.class.getName()));
-
-    private final List<PropertySupplier<?, ?>> PROPS = of(KEEP_WEB_DRIVER_SESSION_OPENED, WEB_DRIVER_CREDENTIALS_PROPERTY);
 
     private WrappedWebDriver wrappedWebDriver;
 
@@ -65,8 +37,7 @@ public class DefaultRefreshingTest {
     }
 
     private WebDriver prepareWrappedWebDriver() {
-        wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
-                new SeleniumParameterProvider().provide()[0]);
+        wrappedWebDriver = new WrappedWebDriver(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.get());
         WebDriver toReturn = wrappedWebDriver.getWrappedDriver();
         String GITHUB = "https://github.com/";
         assertThat("Current url",
@@ -82,13 +53,17 @@ public class DefaultRefreshingTest {
     }
 
     @BeforeClass
-    public void setUp() {
-        PROPERTIES_TO_SET_BEFORE.forEach(System::setProperty);
+    public void setUp() throws Exception {
+        SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.accept(CHROME_DRIVER);
+        BASE_WEB_DRIVER_URL_PROPERTY.accept(new URL("https://github.com"));
+        CHROME.accept(new Class[]{ChromeSettingsSupplierHeadless.class});
+
     }
 
     @BeforeMethod
     public void beforeTest() {
-        PROPS.forEach(s -> System.getProperties().remove(s.getName()));
+        KEEP_WEB_DRIVER_SESSION_OPENED.accept(null);
+        WEB_DRIVER_CREDENTIALS_PROPERTY.accept(null);
     }
 
     @Test
@@ -128,7 +103,11 @@ public class DefaultRefreshingTest {
 
     @AfterClass
     public void tearDown() {
-        PROPERTIES_TO_SET_BEFORE.keySet().forEach(s -> System.getProperties().remove(s));
-        PROPS.forEach(s -> System.getProperties().remove(s));
+        SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.accept(null);
+        BASE_WEB_DRIVER_URL_PROPERTY.accept(null);
+        CHROME.accept(null);
+
+        KEEP_WEB_DRIVER_SESSION_OPENED.accept(null);
+        WEB_DRIVER_CREDENTIALS_PROPERTY.accept(null);
     }
 }

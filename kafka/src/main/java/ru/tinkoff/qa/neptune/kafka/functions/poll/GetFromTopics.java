@@ -8,7 +8,6 @@ import org.apache.kafka.common.TopicPartition;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
-import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 
 import java.lang.reflect.Type;
 import java.util.*;
@@ -22,7 +21,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty.DEFAULT_TOPICS_FOR_POLL;
 
-final class GetFromTopics<T> implements Function<KafkaStepContext, List<T>>, StepParameterPojo {
+final class GetFromTopics<T> implements Function<KafkaConsumer<String, String>, List<T>>, StepParameterPojo {
     @StepParameter(value = "topics", makeReadableBy = TopicValueGetter.class)
     private final String[] topics;
 
@@ -62,8 +61,7 @@ final class GetFromTopics<T> implements Function<KafkaStepContext, List<T>>, Ste
     }
 
     @Override
-    public List<T> apply(KafkaStepContext kafkaStepContext) {
-        KafkaConsumer<String, String> consumer = kafkaStepContext.getConsumer();
+    public List<T> apply(KafkaConsumer<String, String> consumer) {
         consumer.subscribe(asList(topics));
 
         ConsumerRecords<String, String> consumerRecords = consumer.poll(ofNanos(1));
@@ -79,6 +77,7 @@ final class GetFromTopics<T> implements Function<KafkaStepContext, List<T>>, Ste
         if (!readMessages.containsAll(messages)) {
             readMessages.addAll(messages);
         }
+
         return messages
                 .stream()
                 .map(record -> {

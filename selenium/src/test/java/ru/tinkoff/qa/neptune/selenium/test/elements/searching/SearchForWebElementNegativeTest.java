@@ -4,7 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
+import ru.tinkoff.qa.neptune.selenium.BaseWebDriverPreparations;
 import ru.tinkoff.qa.neptune.selenium.test.RetryAnalyzer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -18,7 +18,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUn
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeValueProperties.ELEMENT_WAITING_TIME_VALUE;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 
-public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
+public class SearchForWebElementNegativeTest extends BaseWebDriverPreparations {
 
     private static final By CLASS_THAT_DOES_NOT_EXIST = className("fakeClass");
 
@@ -27,7 +27,7 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
         setStartBenchMark();
         try {
             seleniumSteps.find(webElement(CLASS_THAT_DOES_NOT_EXIST)
-                    .timeOut(ONE_SECOND));
+                .timeOut(ONE_SECOND));
         } catch (Exception e) {
             setEndBenchMark();
             throw e;

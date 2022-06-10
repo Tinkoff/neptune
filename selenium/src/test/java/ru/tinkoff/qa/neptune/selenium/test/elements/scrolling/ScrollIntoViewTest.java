@@ -3,8 +3,8 @@ package ru.tinkoff.qa.neptune.selenium.test.elements.scrolling;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.selenium.BaseWebDriverPreparations;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria;
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import ru.tinkoff.qa.neptune.selenium.test.MockScrollWebElementIntoView;
 import ru.tinkoff.qa.neptune.selenium.test.MockWebElement;
 import ru.tinkoff.qa.neptune.selenium.test.elements.searching.widgets.buttons.CustomizedButton;
@@ -20,7 +20,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.DefaultScrollerProperty.
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.TABLE;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.TH;
 
-public class ScrollIntoViewTest extends BaseWebDriverTest {
+public class ScrollIntoViewTest extends BaseWebDriverPreparations {
 
     @BeforeClass
     public static void prepare() {

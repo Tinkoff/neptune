@@ -3,8 +3,8 @@ package ru.tinkoff.qa.neptune.selenium.test.hooks;
 import org.hamcrest.Matcher;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.selenium.BaseWebDriverPreparations;
 import ru.tinkoff.qa.neptune.selenium.content.management.ContentManagementHook;
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import ru.tinkoff.qa.neptune.selenium.test.MockWebDriver;
 
 import java.lang.reflect.Method;
@@ -16,7 +16,7 @@ import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.selenium.content.management.ContentManagementCommand.getCurrentCommand;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 
-public class NavigationHookTest extends BaseWebDriverTest {
+public class NavigationHookTest extends BaseWebDriverPreparations {
 
     private static final ClassWithNavigationOnTest1 O1 = new ClassWithNavigationOnTest1();
     private static final ClassWithNavigationOnTest2 O2 = new ClassWithNavigationOnTest2();

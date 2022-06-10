@@ -3,8 +3,8 @@ package ru.tinkoff.qa.neptune.selenium.test.steps.tests.target.locator;
 import org.openqa.selenium.NoSuchFrameException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.selenium.BaseWebDriverPreparations;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.Frame;
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import ru.tinkoff.qa.neptune.selenium.test.MockWebDriver;
 import ru.tinkoff.qa.neptune.selenium.test.enums.FrameIndexes;
 import ru.tinkoff.qa.neptune.selenium.test.enums.FrameNames;
@@ -22,7 +22,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeVa
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.FRAME_ELEMENT_VALID1;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.FRAME_ELEMENT_VALID2;
 
-public class FrameTest extends BaseWebDriverTest {
+public class FrameTest extends BaseWebDriverPreparations {
 
     private static <T extends Enum<?>> T getRandomEnumItem(T[] elements) {
         return elements[new Random().nextInt(elements.length)];

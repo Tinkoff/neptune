@@ -7,6 +7,8 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 
+import static ru.tinkoff.qa.neptune.rabbit.mq.GetChannel.getChannel;
+
 @SequentialActionSupplier.DefinePerformImperativeParameterName("Bind:")
 @MaxDepthOfReporting(0)
 @Description("{parameters}")
@@ -20,7 +22,7 @@ public final class RabbitMqBindSupplier extends SequentialActionSupplier<RabbitM
     }
 
     public static RabbitMqBindSupplier bindAction(BindUnbindParameters<?> parameters) {
-        return new RabbitMqBindSupplier(parameters).performOn(RabbitMqStepContext::getChannel);
+        return new RabbitMqBindSupplier(parameters).performOn(getChannel());
     }
 
     @Override

@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.function.get;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.rabbitmq.client.Channel;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
@@ -23,6 +24,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.rabbit.mq.GetChannel.getChannel;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaultDataTransformer.RABBIT_MQ_DEFAULT_DATA_TRANSFORMER;
 
@@ -31,7 +33,7 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaultDataTran
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria for every item of resulted array")
 @MaxDepthOfReporting(0)
 public class RabbitMqBasicGetArraySupplier<T> extends SequentialGetStepSupplier
-        .GetArrayStepSupplier<RabbitMqStepContext, T, RabbitMqBasicGetArraySupplier<T>> {
+    .GetArrayChainedStepSupplier<RabbitMqStepContext, T, Channel, RabbitMqBasicGetArraySupplier<T>> {
 
     final GetFromQueue<?> getFromQueue;
 
@@ -47,6 +49,7 @@ public class RabbitMqBasicGetArraySupplier<T> extends SequentialGetStepSupplier
     protected <M> RabbitMqBasicGetArraySupplier(GetFromQueue<M> getFromQueue, Function<M, T[]> function) {
         super(function.compose(getFromQueue));
         this.getFromQueue = getFromQueue;
+        from(getChannel());
     }
 
     /**
@@ -211,18 +214,18 @@ public class RabbitMqBasicGetArraySupplier<T> extends SequentialGetStepSupplier
     }
 
     @Override
-    protected void onFailure(RabbitMqStepContext m, Throwable throwable) {
+    protected void onFailure(Channel m, Throwable throwable) {
         messages = getFromQueue.getMessages();
     }
 
     @Override
-    protected void onStart(RabbitMqStepContext rabbitMqStepContext) {
+    protected void onStart(Channel channel) {
         var transformer = ofNullable(this.transformer)
-                .orElseGet(RABBIT_MQ_DEFAULT_DATA_TRANSFORMER);
+            .orElseGet(RABBIT_MQ_DEFAULT_DATA_TRANSFORMER);
         checkState(nonNull(transformer), "Data transformer is not defined. Please invoke "
-                + "the '#withDataTransformer(DataTransformer)' method or define '"
-                + RABBIT_MQ_DEFAULT_DATA_TRANSFORMER.getName()
-                + "' property/env variable");
+            + "the '#withDataTransformer(DataTransformer)' method or define '"
+            + RABBIT_MQ_DEFAULT_DATA_TRANSFORMER.getName()
+            + "' property/env variable");
         getFromQueue.setTransformer(transformer);
     }
 

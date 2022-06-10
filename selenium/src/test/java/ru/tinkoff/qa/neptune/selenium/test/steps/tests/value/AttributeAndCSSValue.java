@@ -1,10 +1,10 @@
 package ru.tinkoff.qa.neptune.selenium.test.steps.tests.value;
 
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.selenium.BaseWebDriverPreparations;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Select;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Table;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.TextField;
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -20,15 +20,15 @@ import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements.HasRefer
 import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements.HasTextMatcher.hasText;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 
-public class AttributeAndCSSValue extends BaseWebDriverTest {
+public class AttributeAndCSSValue extends BaseWebDriverPreparations {
 
     @Test
     public void getAttributeValueByWidgetSearchCriteria() {
         assertThat(seleniumSteps.attrValueOf(link(LINK_LABEL_TEXT5), HREF),
-                is(LINK_REFERENCE9));
+            is(LINK_REFERENCE9));
 
         assertThat(seleniumSteps.find(link(LINK_LABEL_TEXT5)),
-                hasAttribute(HREF, LINK_REFERENCE9));
+            hasAttribute(HREF, LINK_REFERENCE9));
 
         assertThat(seleniumSteps.find(link(LINK_LABEL_TEXT5)),
                 hasReference(LINK_REFERENCE9));

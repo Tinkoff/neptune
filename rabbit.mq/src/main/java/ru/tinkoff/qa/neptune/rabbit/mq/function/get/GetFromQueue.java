@@ -6,7 +6,6 @@ import com.rabbitmq.client.GetResponse;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
-import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
@@ -19,7 +18,7 @@ import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-final class GetFromQueue<T> implements Function<RabbitMqStepContext, T>, StepParameterPojo {
+final class GetFromQueue<T> implements Function<Channel, T>, StepParameterPojo {
 
     @StepParameter("queue")
     private final String queue;
@@ -64,10 +63,9 @@ final class GetFromQueue<T> implements Function<RabbitMqStepContext, T>, StepPar
     }
 
     @Override
-    public T apply(RabbitMqStepContext input) {
+    public T apply(Channel input) {
         try {
-            Channel channel = input.getChannel();
-            GetResponse getResponse = channel.basicGet(queue, autoAck);
+            GetResponse getResponse = input.basicGet(queue, autoAck);
 
             var msg = new String(getResponse.getBody(), charset);
             if (!readMessages.contains(msg)) {

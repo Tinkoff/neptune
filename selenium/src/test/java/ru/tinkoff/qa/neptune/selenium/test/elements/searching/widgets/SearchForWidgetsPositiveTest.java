@@ -2,10 +2,10 @@ package ru.tinkoff.qa.neptune.selenium.test.elements.searching.widgets;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.selenium.BaseWebDriverPreparations;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier;
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import ru.tinkoff.qa.neptune.selenium.test.RetryAnalyzer;
 import ru.tinkoff.qa.neptune.selenium.test.elements.searching.widgets.buttons.CustomizedButton;
 import ru.tinkoff.qa.neptune.selenium.test.elements.searching.widgets.buttons.LabeledButton;
@@ -20,25 +20,25 @@ import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchS
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 
-public class SearchForWidgetsPositiveTest extends BaseWebDriverTest {
+public class SearchForWidgetsPositiveTest extends BaseWebDriverPreparations {
 
     @DataProvider(name = "search without criteria")
     public static Object[][] searchCriteria() {
         return new Object[][]{
-                {buttons(), 22, Button.class},
+            {buttons(), 22, Button.class},
 
-                {buttons().timeOut(FIVE_SECONDS),
-                        22,
-                        Button.class},
+            {buttons().timeOut(FIVE_SECONDS),
+                22,
+                Button.class},
 
-                {buttons(BUTTON_LABEL_TEXT1),
-                        1,
-                        LabeledButton.class},
+            {buttons(BUTTON_LABEL_TEXT1),
+                1,
+                LabeledButton.class},
 
-                {buttons(BUTTON_LABEL_TEXT1)
-                        .timeOut(FIVE_SECONDS),
-                        1,
-                        LabeledButton.class},
+            {buttons(BUTTON_LABEL_TEXT1)
+                .timeOut(FIVE_SECONDS),
+                1,
+                LabeledButton.class},
 
                 {buttons(BUTTON_LABEL_TEXT6), 2,
                         CustomizedButton.class},

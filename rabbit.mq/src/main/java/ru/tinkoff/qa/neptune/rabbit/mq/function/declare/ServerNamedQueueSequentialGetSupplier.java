@@ -7,20 +7,22 @@ import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 
 import java.io.IOException;
 
+import static ru.tinkoff.qa.neptune.rabbit.mq.GetChannel.getChannel;
+
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Declare:")
 @MaxDepthOfReporting(0)
 @Description("Server named queue")
 public final class ServerNamedQueueSequentialGetSupplier
-        extends SequentialGetStepSupplier.GetSimpleStepSupplier<RabbitMqStepContext, String, ServerNamedQueueSequentialGetSupplier> {
+    extends SequentialGetStepSupplier.GetSimpleStepSupplier<RabbitMqStepContext, String, ServerNamedQueueSequentialGetSupplier> {
 
     private ServerNamedQueueSequentialGetSupplier() {
-        super(rabbitMqStepContext -> {
+        super(getChannel().andThen(channel -> {
             try {
-                return rabbitMqStepContext.getChannel().queueDeclare().getQueue();
+                return channel.queueDeclare().getQueue();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e);
             }
-        });
+        }));
     }
 
     public static ServerNamedQueueSequentialGetSupplier newQueueServerNamed() {

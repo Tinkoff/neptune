@@ -105,7 +105,7 @@ public enum SupportedWebDrivers implements Supplier<Object[]> {
     }
 
     public Object[] get() {
-       return new Object[]{capabilityType.get()};
+        return new Object[]{capabilityType.get()};
     }
 
     public Class<? extends WebDriver> getWebDriverClass() {
@@ -113,4 +113,8 @@ public enum SupportedWebDrivers implements Supplier<Object[]> {
     }
 
     public abstract WebDriverManager getWebDriverManager();
+
+    public CapabilityTypes getCapabilityType() {
+        return capabilityType;
+    }
 }

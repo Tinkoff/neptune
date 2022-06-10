@@ -3,7 +3,6 @@ package ru.tinkoff.qa.neptune.kafka.captors;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -25,28 +24,27 @@ import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapture
 import static ru.tinkoff.qa.neptune.kafka.captors.TestStringInjector.CAUGHT_MESSAGES;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.kafkaIterable;
 
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class GetIterableCaptorTest extends BaseCaptorTest {
-    KafkaConsumer<Object, Object> consumer;
     TopicPartition topicPartition;
 
     @BeforeClass(dependsOnMethods = "setUp")
     public void beforeClass() {
-        consumer = kafka.getConsumer();
         topicPartition = new TopicPartition("testTopic", 1);
         ConsumerRecord consumerRecord1 = new ConsumerRecord("testTopic", 1, 0, null, "{\"name\":\"testName1\"}");
         ConsumerRecord consumerRecord2 = new ConsumerRecord("testTopic", 1, 0, null, "{\"name\":\"testName2\"}");
 
-        when(consumer.poll(ofNanos(1)))
-                .thenReturn(new ConsumerRecords<>(Map.of(topicPartition, of(consumerRecord1, consumerRecord2))));
+        when(kafkaConsumer.poll(ofNanos(1)))
+            .thenReturn(new ConsumerRecords<>(Map.of(topicPartition, of(consumerRecord1, consumerRecord2))));
 
     }
 
     @Test
     public void test1() {
         kafka.poll(kafkaIterable("test description",
-                new TypeReference<DraftDto>() {
-                },
-                "testTopic"));
+            new TypeReference<DraftDto>() {
+            },
+            "testTopic"));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
@@ -56,12 +54,12 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
 
         kafka.poll(kafkaIterable("test description",
-                new TypeReference<DraftDto>() {
-                },
-                "testTopic"));
+            new TypeReference<DraftDto>() {
+            },
+            "testTopic"));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Kafka messages",
-                "{\"name\":\"testName1\"}\r\n\r\n{\"name\":\"testName2\"}\r\n\r\n")));
+            "{\"name\":\"testName1\"}\r\n\r\n{\"name\":\"testName2\"}\r\n\r\n")));
     }
 
     @Test
@@ -69,9 +67,9 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
 
         kafka.poll(kafkaIterable("test description",
-                new TypeReference<DraftDto>() {
-                },
-                "testTopic"));
+            new TypeReference<DraftDto>() {
+            },
+            "testTopic"));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
@@ -81,21 +79,21 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
 
         kafka.poll(kafkaIterable("test description",
-                new TypeReference<DraftDto>() {
-                },
-                "testTopic"));
+            new TypeReference<DraftDto>() {
+            },
+            "testTopic"));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Kafka messages",
-                "{\"name\":\"testName1\"}\r\n\r\n{\"name\":\"testName2\"}\r\n\r\n")));
+            "{\"name\":\"testName1\"}\r\n\r\n{\"name\":\"testName2\"}\r\n\r\n")));
     }
 
     @Test
     public void test5() {
         kafka.poll(kafkaIterable("test description",
-                new TypeReference<DraftDto>() {
-                },
-                "testTopic")
-                .criteria("name = 'kek'", d -> d.getName().equals("kek")));
+            new TypeReference<DraftDto>() {
+            },
+            "testTopic")
+            .criteria("name = 'kek'", d -> d.getName().equals("kek")));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
@@ -105,13 +103,13 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
 
         kafka.poll(kafkaIterable("test description",
-                new TypeReference<DraftDto>() {
-                },
-                "testTopic")
-                .criteria("name = 'kek'", d -> d.getName().equals("kek")));
+            new TypeReference<DraftDto>() {
+            },
+            "testTopic")
+            .criteria("name = 'kek'", d -> d.getName().equals("kek")));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("All received Kafka messages",
-                "{\"name\":\"testName1\"}\r\n\r\n{\"name\":\"testName2\"}\r\n\r\n")));
+            "{\"name\":\"testName1\"}\r\n\r\n{\"name\":\"testName2\"}\r\n\r\n")));
     }
 
     @Test
@@ -119,10 +117,10 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
 
         kafka.poll(kafkaIterable("test description",
-                new TypeReference<DraftDto>() {
-                },
-                "testTopic")
-                .criteria("name = 'kek'", d -> d.getName().equals("kek")));
+            new TypeReference<DraftDto>() {
+            },
+            "testTopic")
+            .criteria("name = 'kek'", d -> d.getName().equals("kek")));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
@@ -132,26 +130,26 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
 
         kafka.poll(kafkaIterable("test description",
-                new TypeReference<DraftDto>() {
-                },
-                "testTopic")
-                .criteria("name = 'kek'", d -> d.getName().equals("kek")));
+            new TypeReference<DraftDto>() {
+            },
+            "testTopic")
+            .criteria("name = 'kek'", d -> d.getName().equals("kek")));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("All received Kafka messages",
-                "{\"name\":\"testName1\"}\r\n\r\n{\"name\":\"testName2\"}\r\n\r\n")));
+            "{\"name\":\"testName1\"}\r\n\r\n{\"name\":\"testName2\"}\r\n\r\n")));
     }
 
     @Test
     public void test9() {
         try {
             kafka.poll(kafkaIterable("TestDescription",
-                    new TypeReference<>() {
-                    },
-                    DraftDto::getName,
-                    "testTopic")
-                    .criteria("Value contains 'test", s -> s.contains("fail"))
-                    .timeOut(ofSeconds(5))
-                    .throwOnNoResult());
+                new TypeReference<>() {
+                },
+                DraftDto::getName,
+                "testTopic")
+                .criteria("Value contains 'test", s -> s.contains("fail"))
+                .timeOut(ofSeconds(5))
+                .throwOnNoResult());
         } catch (Exception e) {
             assertThat(CAUGHT_MESSAGES, anEmptyMap());
             return;
@@ -167,13 +165,13 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
 
         try {
             kafka.poll(kafkaIterable("TestDescription",
-                    new TypeReference<>() {
-                    },
-                    DraftDto::getName,
-                    "testTopic")
-                    .criteria("Value contains 'test", s -> s.contains("fail"))
-                    .timeOut(ofSeconds(5))
-                    .throwOnNoResult());
+                new TypeReference<>() {
+                },
+                DraftDto::getName,
+                "testTopic")
+                .criteria("Value contains 'test", s -> s.contains("fail"))
+                .timeOut(ofSeconds(5))
+                .throwOnNoResult());
         } catch (Exception e) {
             assertThat(CAUGHT_MESSAGES, anEmptyMap());
             return;
@@ -188,18 +186,18 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
 
         try {
             kafka.poll(kafkaIterable("TestDescription",
-                    new TypeReference<>() {
-                    },
-                    DraftDto::getName,
-                    "testTopic")
-                    .criteria("Value contains 'test", s -> s.contains("fail"))
-                    .timeOut(ofSeconds(5))
-                    .throwOnNoResult());
+                new TypeReference<>() {
+                },
+                DraftDto::getName,
+                "testTopic")
+                .criteria("Value contains 'test", s -> s.contains("fail"))
+                .timeOut(ofSeconds(5))
+                .throwOnNoResult());
         } catch (Exception e) {
             assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("All received Kafka messages", "{\"name\":\"testName1\"}\r\n" +
-                    "\r\n" +
-                    "{\"name\":\"testName2\"}\r\n" +
-                    "\r\n")));
+                "\r\n" +
+                "{\"name\":\"testName2\"}\r\n" +
+                "\r\n")));
             return;
         }
 
@@ -212,16 +210,16 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
 
         try {
             kafka.poll(kafkaIterable("TestDescription",
-                    new TypeReference<>() {
-                    },
-                    DraftDto::getName,
-                    "testTopic")
-                    .criteria("Value contains 'test", s -> s.contains("fail"))
-                    .timeOut(ofSeconds(5))
-                    .throwOnNoResult());
+                new TypeReference<>() {
+                },
+                DraftDto::getName,
+                "testTopic")
+                .criteria("Value contains 'test", s -> s.contains("fail"))
+                .timeOut(ofSeconds(5))
+                .throwOnNoResult());
         } catch (Exception e) {
             assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("All received Kafka messages",
-                    "{\"name\":\"testName1\"}\r\n\r\n{\"name\":\"testName2\"}\r\n\r\n")));
+                "{\"name\":\"testName1\"}\r\n\r\n{\"name\":\"testName2\"}\r\n\r\n")));
             return;
         }
 

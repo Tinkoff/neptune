@@ -2,7 +2,6 @@ package ru.tinkoff.qa.neptune.kafka.captors;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -25,18 +24,15 @@ import static ru.tinkoff.qa.neptune.kafka.captors.TestStringInjector.CAUGHT_MESS
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.kafkaIterableItem;
 
 public class GetIterableItemCaptorTest extends BaseCaptorTest {
-
-    KafkaConsumer<Object, Object> consumer;
     TopicPartition topicPartition;
 
     @BeforeClass(dependsOnMethods = "setUp")
     public void beforeClass() {
-        consumer = kafka.getConsumer();
         topicPartition = new TopicPartition("testTopic", 1);
         ConsumerRecord consumerRecord1 = new ConsumerRecord("testTopic", 1, 0, null, "{\"name\":\"testName1\"}");
         ConsumerRecord consumerRecord2 = new ConsumerRecord("testTopic", 1, 0, null, "{\"name\":\"testName2\"}");
 
-        when(consumer.poll(ofNanos(1)))
+        when(kafkaConsumer.poll(ofNanos(1)))
                 .thenReturn(new ConsumerRecords<>(Map.of(topicPartition, of(consumerRecord1, consumerRecord2))));
 
     }

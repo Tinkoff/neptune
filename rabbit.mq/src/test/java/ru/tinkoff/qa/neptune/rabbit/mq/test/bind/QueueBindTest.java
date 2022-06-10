@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.rabbit.mq.test.bind;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.rabbit.mq.test.BaseRabbitMqTest;
+import ru.tinkoff.qa.neptune.rabbit.mq.BaseRabbitMqPreparations;
 
 import java.util.Map;
 
@@ -12,7 +12,7 @@ import static org.mockito.Mockito.verify;
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.binding.QueueBindUnbindParameters.*;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.*;
 
-public class QueueBindTest extends BaseRabbitMqTest {
+public class QueueBindTest extends BaseRabbitMqPreparations {
 
     @AfterMethod
     @BeforeMethod
