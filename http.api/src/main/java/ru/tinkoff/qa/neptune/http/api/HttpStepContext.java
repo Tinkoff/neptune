@@ -34,8 +34,14 @@ import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSuppl
 
 public class HttpStepContext extends Context<HttpStepContext> {
 
+    private CookieStore cookieStore = new CookieManager().getCookieStore();
+
     public static HttpStepContext http() {
         return getCreatedContextOrCreate(HttpStepContext.class);
+    }
+
+    CookieStore getCookieStore() {
+        return cookieStore;
     }
 
     public HttpClient getCurrentClient() {
@@ -44,12 +50,23 @@ public class HttpStepContext extends Context<HttpStepContext> {
             .ifPresent(builder::connectTimeout);
 
         ofNullable(DEFAULT_HTTP_AUTHENTICATOR_PROPERTY.get()).ifPresent(builder::authenticator);
-        ofNullable(DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY.get())
-            .map(builder::cookieHandler)
-            .orElseGet(() -> {
-                var cookieHandler = new CookieManager();
-                return builder.cookieHandler(cookieHandler);
-            });
+
+        var cookieManager = ofNullable(DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY.get())
+            .orElseGet(CookieManager::new);
+
+        var allCookies = cookieStore.getCookies();
+        var uris = cookieStore.getURIs();
+        var newStore = cookieManager.getCookieStore();
+
+        uris.forEach(uri -> {
+            var indexedCookies = cookieStore.get(uri);
+            indexedCookies.forEach(c -> newStore.add(uri, c));
+            allCookies.removeAll(indexedCookies);
+        });
+
+        allCookies.forEach(c -> newStore.add(null, c));
+
+        builder.cookieHandler(cookieManager);
 
         ofNullable(DEFAULT_HTTP_EXECUTOR_PROPERTY.get()).ifPresent(builder::executor);
         ofNullable(DEFAULT_HTTP_PROTOCOL_VERSION_PROPERTY.get()).ifPresent(builder::version);
@@ -59,7 +76,9 @@ public class HttpStepContext extends Context<HttpStepContext> {
         ofNullable(DEFAULT_HTTP_SSL_CONTEXT_PROPERTY.get()).ifPresent(builder::sslContext);
         ofNullable(DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY.get()).ifPresent(builder::sslParameters);
 
-        return builder.build();
+        var client = builder.build();
+        this.cookieStore = newStore;
+        return client;
     }
 
     /**

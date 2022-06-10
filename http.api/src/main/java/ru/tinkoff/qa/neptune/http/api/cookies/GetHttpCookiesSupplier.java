@@ -7,31 +7,32 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 
-import java.net.CookieManager;
+import java.net.CookieStore;
 import java.net.HttpCookie;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+
+import static ru.tinkoff.qa.neptune.http.api.GetCurrentCookieStore.getCurrentCookieStore;
 
 @CaptureOnSuccess(by = CollectionCaptor.class)
 @Description("Http cookies")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Http cookie criteria")
-public final class GetHttpCookiesSupplier extends SequentialGetStepSupplier.GetListChainedStepSupplier<HttpStepContext, List<HttpCookie>, CookieManager, HttpCookie, GetHttpCookiesSupplier> {
+public final class GetHttpCookiesSupplier extends SequentialGetStepSupplier.GetListChainedStepSupplier<HttpStepContext, List<HttpCookie>, CookieStore, HttpCookie, GetHttpCookiesSupplier> {
 
     @StepParameter(value = "Associated with URI", doNotReportNullValues = true)
-    private final URI uri;
+    final URI uri;
 
     private GetHttpCookiesSupplier() {
-        super(cookieManager -> new ArrayList<>(cookieManager.getCookieStore().getCookies()));
+        super(cookieStore -> new ArrayList<>(cookieStore.getCookies()));
         uri = null;
-        from(new GetCookieManager());
+        from(getCurrentCookieStore());
     }
 
     private GetHttpCookiesSupplier(URI uri) {
-        super(cookieManager -> new ArrayList<>(cookieManager.getCookieStore().get(uri)));
+        super(cookieStore -> new ArrayList<>(cookieStore.get(uri)));
         this.uri = uri;
-        from(new GetCookieManager());
+        from(getCurrentCookieStore());
     }
 
     /**
@@ -51,16 +52,5 @@ public final class GetHttpCookiesSupplier extends SequentialGetStepSupplier.GetL
      */
     public static GetHttpCookiesSupplier httpCookies(URI uri) {
         return new GetHttpCookiesSupplier(uri);
-    }
-
-    private static class GetCookieManager implements Function<HttpStepContext, CookieManager> {
-
-        @Override
-        public CookieManager apply(HttpStepContext httpStepContext) {
-            return (CookieManager) httpStepContext
-                    .getCurrentClient()
-                    .cookieHandler()
-                    .orElseThrow(() -> new IllegalStateException("There is no cookie manager"));
-        }
     }
 }

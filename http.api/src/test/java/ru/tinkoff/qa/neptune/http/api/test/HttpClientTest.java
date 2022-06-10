@@ -155,7 +155,10 @@ public class HttpClientTest extends BaseHttpTest {
             "TestSetUpCookieValue");
 
         http().addCookies(httpCookie);
-        assertThat(http().getCookies(), hasItem(httpCookie));
+        assertThat(((CookieManager) http().getCurrentClient().cookieHandler().orElseThrow())
+                .getCookieStore()
+                .getCookies(),
+            hasItem(httpCookie));
     }
 
     @Test
@@ -165,7 +168,10 @@ public class HttpClientTest extends BaseHttpTest {
 
         http().addCookies(httpCookie);
         http().removeCookies();
-        assertThat(http().getCookies(), emptyIterable());
+        assertThat(((CookieManager) http().getCurrentClient().cookieHandler().orElseThrow())
+                .getCookieStore()
+                .getCookies(),
+            emptyIterable());
     }
 
     @Test
@@ -175,7 +181,10 @@ public class HttpClientTest extends BaseHttpTest {
 
         http().addCookies(httpCookie);
         http().removeCookies(httpCookieValue("TestSetUpCookieValue"));
-        assertThat(http().getCookies(), emptyIterable());
+        assertThat(((CookieManager) http().getCurrentClient().cookieHandler().orElseThrow())
+                .getCookieStore()
+                .getCookies(),
+            emptyIterable());
     }
 
     @Test
