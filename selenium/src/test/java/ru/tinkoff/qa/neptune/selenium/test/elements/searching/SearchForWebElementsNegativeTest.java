@@ -5,7 +5,7 @@ import org.openqa.selenium.WebElement;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
+import ru.tinkoff.qa.neptune.selenium.BaseWebDriverPreparations;
 import ru.tinkoff.qa.neptune.selenium.test.RetryAnalyzer;
 
 import java.math.BigDecimal;
@@ -23,7 +23,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUn
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeValueProperties.ELEMENT_WAITING_TIME_VALUE;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 
-public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
+public class SearchForWebElementsNegativeTest extends BaseWebDriverPreparations {
 
     private static final By CLASS_THAT_DOES_NOT_EXIST = className("fakeClass");
 
@@ -32,7 +32,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
     public void findWebElementsFirstLevelWithoutConditionWithDefinedTimeTest() {
         setStartBenchMark();
         List<WebElement> webElements = seleniumSteps.find(webElements(CLASS_THAT_DOES_NOT_EXIST)
-                .timeOut(ONE_SECOND));
+            .timeOut(ONE_SECOND));
         setEndBenchMark();
         assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
         assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(250L));

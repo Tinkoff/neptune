@@ -5,7 +5,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.rabbit.mq.test.BaseRabbitMqTest;
+import ru.tinkoff.qa.neptune.rabbit.mq.BaseRabbitMqPreparations;
 
 import java.util.Map;
 
@@ -16,12 +16,12 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.function.declare.DeclareQueueParam
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.declare.ServerNamedQueueSequentialGetSupplier.newQueueServerNamed;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
 
-public class QueueDeclareTest extends BaseRabbitMqTest {
+public class QueueDeclareTest extends BaseRabbitMqPreparations {
 
     @BeforeClass
     public void beforeClass() throws Exception {
         when(channel.queueDeclare())
-                .thenReturn(new AMQImpl.Queue.DeclareOk("Server_Named_queue", 0, 0));
+            .thenReturn(new AMQImpl.Queue.DeclareOk("Server_Named_queue", 0, 0));
     }
 
     @AfterMethod

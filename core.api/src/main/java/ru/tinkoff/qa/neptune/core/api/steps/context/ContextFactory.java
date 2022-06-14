@@ -7,14 +7,11 @@ import ru.tinkoff.qa.neptune.core.api.steps.proxy.MethodInterceptor;
 import ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyCreationFailureException;
 
 import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.ClassLoader.getSystemClassLoader;
-import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static net.bytebuddy.implementation.MethodDelegation.to;
 import static net.bytebuddy.matcher.ElementMatchers.any;
@@ -59,31 +56,8 @@ public final class ContextFactory {
     private static <T extends Context<?>> T getInstance(Class<T> toInstantiate) {
         checkNotNull(toInstantiate);
 
-        var createWith = toInstantiate.getAnnotation(CreateWith.class);
-        Class<? extends ParameterProvider> provider;
-
-        if (createWith != null) {
-            provider = createWith.provider();
-        } else {
-            provider = ProviderOfEmptyParameters.class;
-        }
-
-        Constructor<? extends ParameterProvider> defaultConstructor;
-        try {
-            defaultConstructor = provider.getDeclaredConstructor();
-        } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException(format("%s should have declared default constructor", provider.getName()));
-        }
-
-        ParameterProvider providerInstance;
-        try {
-            providerInstance = defaultConstructor.newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new ProxyCreationFailureException(e.getMessage(), e);
-        }
-
         var builder = new ByteBuddy().subclass(toInstantiate);
-        var interceptor = new MethodInterceptor<>(toInstantiate, providerInstance);
+        var interceptor = new MethodInterceptor<>(toInstantiate);
 
         Class<? extends T> proxyClass;
         try {

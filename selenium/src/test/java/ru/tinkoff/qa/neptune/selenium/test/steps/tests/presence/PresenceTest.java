@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.test.steps.tests.presence;
 
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.core.api.steps.NotPresentException;
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
+import ru.tinkoff.qa.neptune.selenium.BaseWebDriverPreparations;
 
 import static java.lang.String.format;
 import static java.util.List.of;
@@ -14,15 +14,15 @@ import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.tableRow;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 
-public class PresenceTest extends BaseWebDriverTest {
+public class PresenceTest extends BaseWebDriverPreparations {
 
     @Test
     public void positiveTestOfPresence() {
         var presence = seleniumSteps.presenceOf(flag()
-                .foundFrom(tableRow()
+            .foundFrom(tableRow()
                 .timeOut(FIVE_SECONDS)
                 .criteria(condition(format("Contains %s, %s and %s", CELL_TEXT87, CELL_TEXT88, CELL_TEXT89), tableRow ->
-                        tableRow.getValue().containsAll(of(CELL_TEXT87, CELL_TEXT88, CELL_TEXT89))))));
+                    tableRow.getValue().containsAll(of(CELL_TEXT87, CELL_TEXT88, CELL_TEXT89))))));
 
         assertThat(presence, is(true));
     }

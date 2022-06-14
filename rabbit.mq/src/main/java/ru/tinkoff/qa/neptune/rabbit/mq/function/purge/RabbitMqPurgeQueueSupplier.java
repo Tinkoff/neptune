@@ -11,6 +11,7 @@ import java.io.IOException;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.rabbit.mq.GetChannel.getChannel;
 
 @MaxDepthOfReporting(0)
 @Description("Purge the contents of the queue '{queue}'")
@@ -23,7 +24,7 @@ public class RabbitMqPurgeQueueSupplier extends SequentialActionSupplier<RabbitM
         super();
         checkArgument(isNotBlank(queue));
         this.queue = queue;
-        performOn(RabbitMqStepContext::getChannel);
+        performOn(getChannel());
     }
 
     public static RabbitMqPurgeQueueSupplier purgeQueue(String queue) {

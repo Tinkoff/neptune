@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.kafka.functions.poll;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
@@ -11,13 +12,11 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 import ru.tinkoff.qa.neptune.kafka.captors.AllMessagesCaptor;
-import ru.tinkoff.qa.neptune.kafka.captors.MessagesCaptor;
 import ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.time.Duration;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -28,6 +27,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.ArrayUtils.add;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.kafka.GetConsumer.getConsumer;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetFromTopics.getStringResult;
 import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAFKA_DEFAULT_DATA_TRANSFORMER;
 
@@ -38,12 +38,9 @@ import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAF
 @MaxDepthOfReporting(0)
 @SuppressWarnings({"unchecked", "rawtypes"})
 public abstract class KafkaPollArraySupplier<T, S extends KafkaPollArraySupplier<T, S>> extends SequentialGetStepSupplier
-        .GetArrayStepSupplier<KafkaStepContext, T, S> {
+    .GetArrayChainedStepSupplier<KafkaStepContext, T, KafkaConsumer<String, String>, S> {
 
     final GetFromTopics<?> getFromTopics;
-
-    @CaptureOnSuccess(by = MessagesCaptor.class)
-    List<String> successMessages = new LinkedList<>();
 
     @CaptureOnSuccess(by = AllMessagesCaptor.class)
     @CaptureOnFailure(by = AllMessagesCaptor.class)
@@ -63,6 +60,7 @@ public abstract class KafkaPollArraySupplier<T, S extends KafkaPollArraySupplier
             return ts;
         }));
         this.getFromTopics = getFromTopics;
+        from(getConsumer());
     }
 
     /**
@@ -180,13 +178,13 @@ public abstract class KafkaPollArraySupplier<T, S extends KafkaPollArraySupplier
     }
 
     @Override
-    protected void onStart(KafkaStepContext kafkaStepContext) {
+    protected void onStart(KafkaConsumer<String, String> consumer) {
         var transformer = ofNullable(this.transformer)
-                .orElseGet(KAFKA_DEFAULT_DATA_TRANSFORMER);
+            .orElseGet(KAFKA_DEFAULT_DATA_TRANSFORMER);
         checkState(nonNull(transformer), "Data transformer is not defined. Please invoke "
-                + "the '#withDataTransformer(DataTransformer)' method or define '"
-                + KAFKA_DEFAULT_DATA_TRANSFORMER.getName()
-                + "' property/env variable");
+            + "the '#withDataTransformer(DataTransformer)' method or define '"
+            + KAFKA_DEFAULT_DATA_TRANSFORMER.getName()
+            + "' property/env variable");
         getFromTopics.setTransformer(transformer);
     }
 
@@ -197,19 +195,13 @@ public abstract class KafkaPollArraySupplier<T, S extends KafkaPollArraySupplier
 
     @Override
     protected void onSuccess(T[] t) {
-        var mss = getFromTopics.getSuccessMessages();
-
-        if (t != null && t.length > 0) {
-            for (T item : t) {
-                successMessages.add(mss.get(item));
-            }
-        } else {
+        if (t == null || t.length == 0) {
             messages = getFromTopics.getMessages();
         }
     }
 
     @Override
-    protected void onFailure(KafkaStepContext m, Throwable throwable) {
+    protected void onFailure(KafkaConsumer<String, String> m, Throwable throwable) {
         messages = getFromTopics.getMessages();
     }
 
@@ -228,22 +220,7 @@ public abstract class KafkaPollArraySupplier<T, S extends KafkaPollArraySupplier
 
         private StringMessages(GetFromTopics<String> getFromTopics) {
             super(getFromTopics, s -> s, String.class);
-            withDataTransformer(new DataTransformer() {
-                @Override
-                public <T> T deserialize(String string, Class<T> cls) {
-                    return (T) string;
-                }
-
-                @Override
-                public <T> T deserialize(String string, TypeReference<T> type) {
-                    return (T) string;
-                }
-
-                @Override
-                public String serialize(Object obj) {
-                    return obj.toString();
-                }
-            });
+            withDataTransformer(new StringDataTransformer());
         }
     }
 }

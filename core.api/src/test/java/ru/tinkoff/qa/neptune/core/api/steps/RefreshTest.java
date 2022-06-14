@@ -16,14 +16,14 @@ import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCre
 public class RefreshTest {
 
     @Test
-    public void checkRefreshTest() throws Throwable {
+    public void checkRefreshTest() {
         RefreshableStep.refreshable.getListToRefresh().add(1);
         RefreshableStep.refreshable.getListToRefresh().add(true);
         RefreshableStep.refreshable.getListToRefresh().add("String");
 
         assertThat("Check added values",
-                RefreshableStep.refreshable.getListToRefresh(),
-                contains(1, true, "String"));
+            RefreshableStep.refreshable.getListToRefresh(),
+            contains(1, true, "String"));
 
         refreshContext(RefreshableStep.class);
         assertThat("Check values",
@@ -31,15 +31,11 @@ public class RefreshTest {
                 emptyCollectionOf(Object.class));
     }
 
-    private static class RefreshableStep extends Context<RefreshableStep> implements ContextRefreshable {
+    public static class RefreshableStep extends Context<RefreshableStep> implements ContextRefreshable {
 
         static final RefreshableStep refreshable = getCreatedContextOrCreate(RefreshableStep.class);
 
         private final List<Object> listToRefresh = new ArrayList<>();
-
-        protected RefreshableStep() {
-            super();
-        }
 
         @Override
         public void refreshContext() {

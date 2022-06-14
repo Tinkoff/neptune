@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.rabbit.mq.test.purge;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.rabbit.mq.test.BaseRabbitMqTest;
+import ru.tinkoff.qa.neptune.rabbit.mq.BaseRabbitMqPreparations;
 
 import java.io.IOException;
 
@@ -11,7 +11,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
 
-public class PurgeQueueTest extends BaseRabbitMqTest {
+public class PurgeQueueTest extends BaseRabbitMqPreparations {
 
     @AfterMethod
     @BeforeMethod

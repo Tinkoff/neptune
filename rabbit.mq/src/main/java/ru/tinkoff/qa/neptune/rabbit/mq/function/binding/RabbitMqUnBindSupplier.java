@@ -7,6 +7,8 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 
+import static ru.tinkoff.qa.neptune.rabbit.mq.GetChannel.getChannel;
+
 @SequentialActionSupplier.DefinePerformImperativeParameterName("Unbind:")
 @MaxDepthOfReporting(0)
 @Description("{parameters}")
@@ -20,7 +22,7 @@ public final class RabbitMqUnBindSupplier extends SequentialActionSupplier<Rabbi
     }
 
     public static RabbitMqUnBindSupplier unBindAction(BindUnbindParameters<?> parameters) {
-        return new RabbitMqUnBindSupplier(parameters).performOn(RabbitMqStepContext::getChannel);
+        return new RabbitMqUnBindSupplier(parameters).performOn(getChannel());
     }
 
     @Override

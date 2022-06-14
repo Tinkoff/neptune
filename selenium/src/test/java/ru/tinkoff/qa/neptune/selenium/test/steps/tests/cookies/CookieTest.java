@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.test.steps.tests.cookies;
 
 import org.openqa.selenium.Cookie;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
+import ru.tinkoff.qa.neptune.selenium.BaseWebDriverPreparations;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -15,7 +15,7 @@ import static ru.tinkoff.qa.neptune.selenium.functions.cookies.CommonBrowserCook
 import static ru.tinkoff.qa.neptune.selenium.functions.cookies.CommonBrowserCookieCriteria.cookieIsSecure;
 import static ru.tinkoff.qa.neptune.selenium.functions.cookies.GetSeleniumCookieSupplier.cookies;
 
-public class CookieTest extends BaseWebDriverTest {
+public class CookieTest extends BaseWebDriverPreparations {
 
     @Test
     public void getAllCookieTest() {

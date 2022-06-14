@@ -1,8 +1,11 @@
 package ru.tinkoff.qa.neptune.rabbit.mq;
 
 import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
-import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 import ru.tinkoff.qa.neptune.rabbit.mq.function.binding.BindUnbindParameters;
 import ru.tinkoff.qa.neptune.rabbit.mq.function.declare.DeclareParameters;
 import ru.tinkoff.qa.neptune.rabbit.mq.function.declare.ServerNamedQueueSequentialGetSupplier;
@@ -22,23 +25,53 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.function.binding.RabbitMqUnBindSup
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.declare.DeclareActionSupplier.declareAction;
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.delete.DeleteActionSupplier.deleteAction;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqAuthorizationProperties.RABBIT_MQ_PASSWORD;
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqAuthorizationProperties.RABBIT_MQ_USERNAME;
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqClusterProperty.RABBIT_MQ_CLUSTER_PROPERTY;
 
-
-@CreateWith(provider = RabbitMqParameterProvider.class)
 public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
 
-    private final Channel channel;
-
-    public RabbitMqStepContext(Channel channel) throws IOException, TimeoutException {
-        this.channel = channel;
-    }
+    private Channel channel;
 
     public static RabbitMqStepContext rabbitMq() {
         return getCreatedContextOrCreate(RabbitMqStepContext.class);
     }
 
-    public Channel getChannel() {
+    Channel getChannel() {
         return channel;
+    }
+
+    Connection createConnection() {
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setUsername(RABBIT_MQ_USERNAME.get());
+        factory.setPassword(RABBIT_MQ_PASSWORD.get());
+        try {
+            return factory.newConnection(RABBIT_MQ_CLUSTER_PROPERTY.get());
+        } catch (IOException | TimeoutException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private RabbitMqStepContext actWithChannel(SequentialActionSupplier<RabbitMqStepContext, ?, ?> actionSupplier) {
+        try (var connection = createConnection()) {
+            channel = connection.createChannel();
+            try (var varChannel = channel) {
+                return perform(actionSupplier);
+            }
+        } catch (IOException | TimeoutException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private <R> R getWithChannel(SequentialGetStepSupplier<RabbitMqStepContext, R, ?, ?, ?> toGet) {
+        try (var connection = createConnection()) {
+            channel = connection.createChannel();
+            try (var varChannel = channel) {
+                return get(toGet);
+            }
+        } catch (IOException | TimeoutException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     /**
@@ -49,7 +82,7 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
      * @return read value
      */
     public <T> T read(RabbitMqBasicGetSupplier<T, ?> basicGet) {
-        return get(basicGet);
+        return getWithChannel(basicGet);
     }
 
     /**
@@ -60,7 +93,7 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
      * @return read value
      */
     public <T> T read(RabbitMqBasicGetArrayItemSupplier<T> basicGet) {
-        return get(basicGet);
+        return getWithChannel(basicGet);
     }
 
     /**
@@ -71,7 +104,7 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
      * @return read value
      */
     public <T> T[] read(RabbitMqBasicGetArraySupplier<T> basicGet) {
-        return get(basicGet);
+        return getWithChannel(basicGet);
     }
 
     /**
@@ -82,7 +115,7 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
      * @return read value
      */
     public <T> T read(RabbitMqBasicGetIterableItemSupplier<T> basicGet) {
-        return get(basicGet);
+        return getWithChannel(basicGet);
     }
 
     /**
@@ -93,7 +126,7 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
      * @return read value
      */
     public <T, S extends Iterable<T>> List<T> read(RabbitMqBasicGetIterableSupplier<T, S> basicGet) {
-        return get(basicGet);
+        return getWithChannel(basicGet);
     }
 
     /**
@@ -103,7 +136,7 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
      * @return self-reference
      */
     public RabbitMqStepContext publish(RabbitMqPublishSupplier<?> toPublish) {
-        return perform(toPublish);
+        return actWithChannel(toPublish);
     }
 
     /**
@@ -113,7 +146,7 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
      * @return self-reference
      */
     public RabbitMqStepContext delete(DeleteParameters<?> parameters) {
-        return perform(deleteAction(parameters));
+        return actWithChannel(deleteAction(parameters));
     }
 
     /**
@@ -123,7 +156,7 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
      * @return self-reference
      */
     public RabbitMqStepContext purgeQueue(String queue) {
-        return perform(RabbitMqPurgeQueueSupplier.purgeQueue(queue));
+        return actWithChannel(RabbitMqPurgeQueueSupplier.purgeQueue(queue));
     }
 
     /**
@@ -143,7 +176,7 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
      * @return self-reference
      */
     public RabbitMqStepContext unbind(BindUnbindParameters<?> parameters) {
-        return perform(unBindAction(parameters));
+        return actWithChannel(unBindAction(parameters));
     }
 
     /**
@@ -153,7 +186,7 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
      * @return self-reference
      */
     public RabbitMqStepContext bind(BindUnbindParameters<?> parameters) {
-        return perform(bindAction(parameters));
+        return actWithChannel(bindAction(parameters));
     }
 
     /**
@@ -163,7 +196,7 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
      * @return self-reference
      */
     public RabbitMqStepContext declare(DeclareParameters<?> parameters) {
-        return perform(declareAction(parameters));
+        return actWithChannel(declareAction(parameters));
     }
 
     /**
@@ -173,6 +206,6 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
      * @return name of the declared queue
      */
     public String declare(ServerNamedQueueSequentialGetSupplier toDeclare) {
-        return get(toDeclare);
+        return getWithChannel(toDeclare);
     }
 }

@@ -6,7 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
+import ru.tinkoff.qa.neptune.selenium.BaseWebDriverPreparations;
 import ru.tinkoff.qa.neptune.selenium.test.RetryAnalyzer;
 
 import java.math.BigDecimal;
@@ -28,19 +28,19 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUn
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeValueProperties.ELEMENT_WAITING_TIME_VALUE;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 
-public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
+public class SearchForWebElementsPositiveTest extends BaseWebDriverPreparations {
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementsWithoutConditionTest() {
         List<WebElement> webElements = seleniumSteps.find(webElements(tagName(BUTTON_TAG)));
         assertThat(webElements, contains(equalTo(COMMON_BUTTON1),
-                equalTo(COMMON_BUTTON2),
-                equalTo(COMMON_BUTTON3),
-                equalTo(COMMON_BUTTON4),
-                equalTo(COMMON_LABELED_BUTTON1),
-                equalTo(COMMON_LABELED_BUTTON2),
-                equalTo(COMMON_LABELED_BUTTON3),
-                equalTo(COMMON_LABELED_BUTTON4)));
+            equalTo(COMMON_BUTTON2),
+            equalTo(COMMON_BUTTON3),
+            equalTo(COMMON_BUTTON4),
+            equalTo(COMMON_LABELED_BUTTON1),
+            equalTo(COMMON_LABELED_BUTTON2),
+            equalTo(COMMON_LABELED_BUTTON3),
+            equalTo(COMMON_LABELED_BUTTON4)));
     }
 
     @Test(retryAnalyzer = RetryAnalyzer.class)

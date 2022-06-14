@@ -1,8 +1,8 @@
 package ru.tinkoff.qa.neptune.selenium.test.steps.tests.value;
 
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.selenium.BaseWebDriverPreparations;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -21,16 +21,16 @@ import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements.HasTable
 import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements.HasValueMatcher.elementHasValue;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 
-public class GetValueTest extends BaseWebDriverTest {
+public class GetValueTest extends BaseWebDriverPreparations {
 
     @Test
     public void valueOfTextFieldTest() {
         assertThat(seleniumSteps.find(textField(INPUT_LABEL_TEXT1)),
-                elementHasValue(INPUT_TEXT5));
+            elementHasValue(INPUT_TEXT5));
 
         assertThat(seleniumSteps.edit(textField(INPUT_LABEL_TEXT1), INPUT_TEXT4)
-                        .valueOf(textField(INPUT_LABEL_TEXT1)),
-                is(INPUT_TEXT4));
+                .valueOf(textField(INPUT_LABEL_TEXT1)),
+            is(INPUT_TEXT4));
 
         assertThat(seleniumSteps.find(textField().criteria(attr(ATTR8, VALUE4))),
                 elementHasValue(emptyOrNullString()));
