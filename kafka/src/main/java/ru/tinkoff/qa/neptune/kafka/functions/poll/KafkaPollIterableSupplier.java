@@ -184,10 +184,10 @@ public abstract class KafkaPollIterableSupplier<T, S extends KafkaPollIterableSu
         var mss = getFromTopics.getSuccessMessages();
 
         if (tList != null && !tList.isEmpty()) {
-            tList.forEach(item -> successMessages.add(mss.get(item)));
-        } else {
-            messages = getFromTopics.getMessages();
+            tList.forEach(item -> successMessages.add(mss.get(item).toString()));
         }
+
+        messages = getFromTopics.getMessages();
     }
 
     @Override

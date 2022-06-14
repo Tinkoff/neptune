@@ -19,9 +19,13 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.StreamSupport.stream;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty.DEFAULT_TOPICS_FOR_POLL;
 
 final class GetFromTopics<T> implements Function<KafkaConsumer<String, String>, List<T>>, StepParameterPojo {
+
+    private final Map<Object, ConsumerRecord<String, String>> successMessages = new HashMap<>();
+
     @StepParameter(value = "topics", makeReadableBy = TopicValueGetter.class)
     private final String[] topics;
 
@@ -34,10 +38,7 @@ final class GetFromTopics<T> implements Function<KafkaConsumer<String, String>, 
     final Type type;
 
     private DataTransformer transformer;
-
-    private final LinkedList<String> readMessages = new LinkedList<>();
-
-    private final Map<Object, String> successMessages = new HashMap<>();
+    private List<KafkaRecordWrapper> readRecords = new ArrayList<>();
 
     GetFromTopics(Class<T> cls, TypeReference<T> typeRef, String... topics) {
         checkArgument(!(isNull(cls) && isNull(typeRef)), "Any class or type reference should be defined");
@@ -71,43 +72,43 @@ final class GetFromTopics<T> implements Function<KafkaConsumer<String, String>, 
             return new ArrayList<>();
         }
 
-        List<String> messages = consumerRecords.records(((TopicPartition) partitions.toArray()[0]))
-                .stream().map(ConsumerRecord::value).collect(toList());
+        readRecords.addAll(stream(consumerRecords.spliterator(), false)
+            .map(KafkaRecordWrapper::new)
+            .collect(toList()));
 
-        if (!readMessages.containsAll(messages)) {
-            readMessages.addAll(messages);
-        }
+        readRecords = readRecords.stream().distinct().collect(toList());
 
-        return messages
-                .stream()
-                .map(record -> {
-                    try {
-                        T t;
-                        if (cls != null) {
-                            t = transformer.deserialize(record, cls);
-                        } else {
-                            t = transformer.deserialize(record, typeRef);
-                        }
-                        successMessages.put(t, record);
+        return readRecords
+            .stream()
+            .map(record -> {
+                try {
+                    T t;
+                    var value = record.getConsumerRecord().value();
+                    if (cls != null) {
+                        t = transformer.deserialize(value, cls);
+                    } else {
+                        t = transformer.deserialize(value, typeRef);
+                    }
+                    successMessages.put(t, record.getConsumerRecord());
                         return t;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    return null;
-                })
-                .filter(Objects::nonNull)
-                .collect(toList());
+                return null;
+            })
+            .filter(Objects::nonNull)
+            .collect(toList());
     }
 
     void setTransformer(DataTransformer transformer) {
         this.transformer = transformer;
     }
 
-    LinkedList<String> getMessages() {
-        return readMessages;
+    List<String> getMessages() {
+        return readRecords.stream().map(r -> r.getConsumerRecord().toString()).collect(toList());
     }
 
-    Map<Object, String> getSuccessMessages() {
+    Map<Object, ConsumerRecord<String, String>> getSuccessMessages() {
         return successMessages;
     }
 }

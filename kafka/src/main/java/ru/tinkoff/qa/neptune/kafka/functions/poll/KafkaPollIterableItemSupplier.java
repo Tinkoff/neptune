@@ -184,10 +184,9 @@ public abstract class KafkaPollIterableItemSupplier<T, I extends KafkaPollIterab
     protected void onSuccess(T t) {
         var ms = getFromTopics.getSuccessMessages();
         if (t != null) {
-            message = ms.get(t);
-        } else {
-            messages = new ArrayList<>(ms.values());
+            message = ms.get(t).toString();
         }
+        messages = new ArrayList<>(getFromTopics.getMessages());
     }
 
     @Override

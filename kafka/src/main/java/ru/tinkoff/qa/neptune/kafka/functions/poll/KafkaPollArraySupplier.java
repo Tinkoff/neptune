@@ -204,11 +204,10 @@ public abstract class KafkaPollArraySupplier<T, S extends KafkaPollArraySupplier
 
         if (t != null && t.length > 0) {
             for (T item : t) {
-                successMessages.add(mss.get(item));
+                successMessages.add(mss.get(item).toString());
             }
-        } else {
-            messages = getFromTopics.getMessages();
         }
+        messages = getFromTopics.getMessages();
     }
 
     @Override
