@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.kafka.functions.poll;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
@@ -10,7 +9,10 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -23,8 +25,6 @@ import static java.util.stream.StreamSupport.stream;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty.DEFAULT_TOPICS_FOR_POLL;
 
 final class GetFromTopics<T> implements Function<KafkaConsumer<String, String>, List<T>>, StepParameterPojo {
-
-    private final Map<Object, ConsumerRecord<String, String>> successMessages = new HashMap<>();
 
     @StepParameter(value = "topics", makeReadableBy = TopicValueGetter.class)
     private final String[] topics;
@@ -89,11 +89,11 @@ final class GetFromTopics<T> implements Function<KafkaConsumer<String, String>, 
                     } else {
                         t = transformer.deserialize(value, typeRef);
                     }
-                    successMessages.put(t, record.getConsumerRecord());
-                        return t;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+
+                    return t;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 return null;
             })
             .filter(Objects::nonNull)
@@ -106,9 +106,5 @@ final class GetFromTopics<T> implements Function<KafkaConsumer<String, String>, 
 
     List<String> getMessages() {
         return readRecords.stream().map(r -> r.getConsumerRecord().toString()).collect(toList());
-    }
-
-    Map<Object, ConsumerRecord<String, String>> getSuccessMessages() {
-        return successMessages;
     }
 }

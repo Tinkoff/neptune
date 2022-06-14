@@ -2,9 +2,9 @@ package ru.tinkoff.qa.neptune.kafka.functions.poll;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
-import java.util.Objects;
-
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
+import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 
 final class KafkaRecordWrapper {
 
@@ -21,8 +21,13 @@ final class KafkaRecordWrapper {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof KafkaRecordWrapper && Objects.equals(
-            ((KafkaRecordWrapper) obj).getConsumerRecord().toString(),
-            consumerRecord.toString());
+        return obj instanceof KafkaRecordWrapper && reflectionEquals(
+            ((KafkaRecordWrapper) obj).getConsumerRecord(),
+            consumerRecord);
+    }
+
+    @Override
+    public int hashCode() {
+        return reflectionHashCode(consumerRecord);
     }
 }

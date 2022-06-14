@@ -20,13 +20,9 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
-import static java.util.Objects.nonNull;
-import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.rabbit.mq.GetChannel.getChannel;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
-import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaultDataTransformer.RABBIT_MQ_DEFAULT_DATA_TRANSFORMER;
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Retrieve:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
@@ -43,8 +39,6 @@ public class RabbitMqBasicGetIterableItemSupplier<T> extends SequentialGetStepSu
     @CaptureOnSuccess(by = MessagesCaptor.class)
     @CaptureOnFailure(by = MessagesCaptor.class)
     List<String> messages;
-
-    private DataTransformer transformer;
 
     protected <M, S extends Iterable<T>> RabbitMqBasicGetIterableItemSupplier(GetFromQueue<M> getFromQueue, Function<M, S> function) {
         super(function.compose(getFromQueue));
@@ -226,19 +220,8 @@ public class RabbitMqBasicGetIterableItemSupplier<T> extends SequentialGetStepSu
         messages = getFromQueue.getMessages();
     }
 
-    @Override
-    protected void onStart(Channel channel) {
-        var transformer = ofNullable(this.transformer)
-            .orElseGet(RABBIT_MQ_DEFAULT_DATA_TRANSFORMER);
-        checkState(nonNull(transformer), "Data transformer is not defined. Please invoke "
-            + "the '#withDataTransformer(DataTransformer)' method or define '"
-            + RABBIT_MQ_DEFAULT_DATA_TRANSFORMER.getName()
-            + "' property/env variable");
-        getFromQueue.setTransformer(transformer);
-    }
-
     public RabbitMqBasicGetIterableItemSupplier<T> withDataTransformer(DataTransformer transformer) {
-        this.transformer = transformer;
+        getFromQueue.setTransformer(transformer);
         return this;
     }
 

@@ -12,11 +12,9 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 import ru.tinkoff.qa.neptune.kafka.captors.AllMessagesCaptor;
-import ru.tinkoff.qa.neptune.kafka.captors.MessageCaptor;
 import ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -39,9 +37,6 @@ public abstract class KafkaPollIterableItemSupplier<T, I extends KafkaPollIterab
     extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<KafkaStepContext, T, KafkaConsumer<String, String>, I> {
 
     final GetFromTopics<?> getFromTopics;
-
-    @CaptureOnSuccess(by = MessageCaptor.class)
-    String message;
 
     @CaptureOnSuccess(by = AllMessagesCaptor.class)
     @CaptureOnFailure(by = AllMessagesCaptor.class)
@@ -182,11 +177,9 @@ public abstract class KafkaPollIterableItemSupplier<T, I extends KafkaPollIterab
 
     @Override
     protected void onSuccess(T t) {
-        var ms = getFromTopics.getSuccessMessages();
-        if (t != null) {
-            message = ms.get(t).toString();
+        if (t == null) {
+            messages = getFromTopics.getMessages();
         }
-        messages = new ArrayList<>(getFromTopics.getMessages());
     }
 
     @Override

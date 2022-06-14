@@ -17,12 +17,15 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.fail;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.MapEntryMatcher.mapEntry;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.arrayInOrder;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.mapOf;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.text.StringContainsWithSeparator.withSeparator;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
 import static ru.tinkoff.qa.neptune.kafka.captors.TestStringInjector.CAUGHT_MESSAGES;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.kafkaIterableItem;
 
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class GetIterableItemCaptorTest extends BaseCaptorTest {
     TopicPartition topicPartition;
 
@@ -33,15 +36,15 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
         ConsumerRecord consumerRecord2 = new ConsumerRecord("testTopic", 1, 0, null, "{\"name\":\"testName2\"}");
 
         when(kafkaConsumer.poll(ofNanos(1)))
-                .thenReturn(new ConsumerRecords<>(Map.of(topicPartition, of(consumerRecord1, consumerRecord2))));
+            .thenReturn(new ConsumerRecords<>(Map.of(topicPartition, of(consumerRecord1, consumerRecord2))));
 
     }
 
     @Test
     public void test1() {
         kafka.poll(kafkaIterableItem("kafkaArrayItem",
-                DraftDto.class,
-                "testTopic"));
+            DraftDto.class,
+            "testTopic"));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
@@ -51,11 +54,10 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
 
         var s = kafka.poll(kafkaIterableItem("kafkaArrayItem",
-                DraftDto.class,
-                "testTopic"));
+            DraftDto.class,
+            "testTopic"));
 
-        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Kafka message",
-                "{\"name\":\"testName1\"}")));
+        assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
 
     @Test
@@ -63,8 +65,8 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
 
         kafka.poll(kafkaIterableItem("kafkaArrayItem",
-                DraftDto.class,
-                "testTopic"));
+            DraftDto.class,
+            "testTopic"));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
@@ -74,19 +76,18 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
 
         kafka.poll(kafkaIterableItem("kafkaArrayItem",
-                DraftDto.class,
-                "testTopic"));
+            DraftDto.class,
+            "testTopic"));
 
-        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Kafka message",
-                "{\"name\":\"testName1\"}")));
+        assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
 
     @Test
     public void test5() {
         kafka.poll(kafkaIterableItem("kafkaArrayItem",
-                DraftDto.class,
-                "testTopic")
-                .criteria("name = 'kek'", d -> d.getName().equals("kek")));
+            DraftDto.class,
+            "testTopic")
+            .criteria("name = 'kek'", d -> d.getName().equals("kek")));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
@@ -96,14 +97,16 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
 
         kafka.poll(kafkaIterableItem("kafkaArrayItem",
-                DraftDto.class,
-                "testTopic")
-                .criteria("name = 'kek'", d -> d.getName().equals("kek")));
+            DraftDto.class,
+            "testTopic")
+            .criteria("name = 'kek'", d -> d.getName().equals("kek")));
 
         assertThat(CAUGHT_MESSAGES,
-                mapOf(mapEntry(is("All received Kafka messages"),
-                        allOf(containsString("{\"name\":\"testName1\"}"),
-                                containsString("{\"name\":\"testName2\"}")))));
+            mapOf(mapEntry(is("All received Kafka messages"),
+                withSeparator(
+                    "\r\n\r\n",
+                    arrayInOrder(startsWith("ConsumerRecord("), startsWith("ConsumerRecord("))
+                ))));
     }
 
     @Test
@@ -111,9 +114,9 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
 
         kafka.poll(kafkaIterableItem("kafkaArrayItem",
-                DraftDto.class,
-                "testTopic")
-                .criteria("name = 'kek'", d -> d.getName().equals("kek")));
+            DraftDto.class,
+            "testTopic")
+            .criteria("name = 'kek'", d -> d.getName().equals("kek")));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
@@ -123,25 +126,27 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
 
         kafka.poll(kafkaIterableItem("kafkaArrayItem",
-                DraftDto.class,
-                "testTopic")
-                .criteria("name = 'kek'", d -> d.getName().equals("kek")));
+            DraftDto.class,
+            "testTopic")
+            .criteria("name = 'kek'", d -> d.getName().equals("kek")));
 
         assertThat(CAUGHT_MESSAGES,
-                mapOf(mapEntry(is("All received Kafka messages"),
-                        allOf(containsString("{\"name\":\"testName1\"}"),
-                                containsString("{\"name\":\"testName2\"}")))));
+            mapOf(mapEntry(is("All received Kafka messages"),
+                withSeparator(
+                    "\r\n\r\n",
+                    arrayInOrder(startsWith("ConsumerRecord("), startsWith("ConsumerRecord("))
+                ))));
     }
 
     @Test
     public void test9() {
         try {
             kafka.poll(kafkaIterableItem("kafkaArrayItem",
-                    DraftDto.class,
-                    "testTopic")
-                    .criteria("name = 'kek'", d -> d.getName().equals("kek"))
-                    .timeOut(ofSeconds(5))
-                    .throwOnNoResult());
+                DraftDto.class,
+                "testTopic")
+                .criteria("name = 'kek'", d -> d.getName().equals("kek"))
+                .timeOut(ofSeconds(5))
+                .throwOnNoResult());
         } catch (Exception e) {
             assertThat(CAUGHT_MESSAGES, anEmptyMap());
             return;
@@ -156,11 +161,11 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
 
         try {
             kafka.poll(kafkaIterableItem("kafkaArrayItem",
-                    DraftDto.class,
-                    "testTopic")
-                    .criteria("name = 'kek'", d -> d.getName().equals("kek"))
-                    .timeOut(ofSeconds(5))
-                    .throwOnNoResult());
+                DraftDto.class,
+                "testTopic")
+                .criteria("name = 'kek'", d -> d.getName().equals("kek"))
+                .timeOut(ofSeconds(5))
+                .throwOnNoResult());
         } catch (Exception e) {
             assertThat(CAUGHT_MESSAGES, anEmptyMap());
             return;
@@ -175,14 +180,18 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
 
         try {
             kafka.poll(kafkaIterableItem("kafkaArrayItem",
-                    DraftDto.class,
-                    "testTopic")
-                    .criteria("name = 'kek'", d -> d.getName().equals("kek"))
-                    .timeOut(ofSeconds(5))
-                    .throwOnNoResult());
+                DraftDto.class,
+                "testTopic")
+                .criteria("name = 'kek'", d -> d.getName().equals("kek"))
+                .timeOut(ofSeconds(5))
+                .throwOnNoResult());
         } catch (Exception e) {
-            assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("All received Kafka messages",
-                    "{\"name\":\"testName1\"}\r\n\r\n{\"name\":\"testName2\"}\r\n\r\n")));
+            assertThat(CAUGHT_MESSAGES, mapOf(mapEntry(
+                "All received Kafka messages",
+                withSeparator(
+                    "\r\n\r\n",
+                    arrayInOrder(startsWith("ConsumerRecord("), startsWith("ConsumerRecord("))
+                ))));
             return;
         }
 
@@ -195,14 +204,18 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
 
         try {
             kafka.poll(kafkaIterableItem("kafkaArrayItem",
-                    DraftDto.class,
-                    "testTopic")
-                    .criteria("name = 'kek'", d -> d.getName().equals("kek"))
-                    .timeOut(ofSeconds(5))
-                    .throwOnNoResult());
+                DraftDto.class,
+                "testTopic")
+                .criteria("name = 'kek'", d -> d.getName().equals("kek"))
+                .timeOut(ofSeconds(5))
+                .throwOnNoResult());
         } catch (Exception e) {
-            assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("All received Kafka messages",
-                    "{\"name\":\"testName1\"}\r\n\r\n{\"name\":\"testName2\"}\r\n\r\n")));
+            assertThat(CAUGHT_MESSAGES, mapOf(mapEntry(
+                "All received Kafka messages",
+                withSeparator(
+                    "\r\n\r\n",
+                    arrayInOrder(startsWith("ConsumerRecord("), startsWith("ConsumerRecord("))
+                ))));
             return;
         }
 

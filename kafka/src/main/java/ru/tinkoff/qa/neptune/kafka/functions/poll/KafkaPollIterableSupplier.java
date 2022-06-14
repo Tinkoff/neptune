@@ -12,11 +12,9 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 import ru.tinkoff.qa.neptune.kafka.captors.AllMessagesCaptor;
-import ru.tinkoff.qa.neptune.kafka.captors.MessagesCaptor;
 import ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty;
 
 import java.time.Duration;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -38,9 +36,6 @@ import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAF
 public abstract class KafkaPollIterableSupplier<T, S extends KafkaPollIterableSupplier<T, S>> extends SequentialGetStepSupplier.GetListChainedStepSupplier<KafkaStepContext, List<T>, KafkaConsumer<String, String>, T, S> {
 
     final GetFromTopics<?> getFromTopics;
-
-    @CaptureOnSuccess(by = MessagesCaptor.class)
-    List<String> successMessages = new LinkedList<>();
 
     @CaptureOnSuccess(by = AllMessagesCaptor.class)
     @CaptureOnFailure(by = AllMessagesCaptor.class)
@@ -181,13 +176,9 @@ public abstract class KafkaPollIterableSupplier<T, S extends KafkaPollIterableSu
 
     @Override
     protected void onSuccess(List<T> tList) {
-        var mss = getFromTopics.getSuccessMessages();
-
-        if (tList != null && !tList.isEmpty()) {
-            tList.forEach(item -> successMessages.add(mss.get(item).toString()));
+        if (tList == null || tList.isEmpty()) {
+            messages = getFromTopics.getMessages();
         }
-
-        messages = getFromTopics.getMessages();
     }
 
     @Override

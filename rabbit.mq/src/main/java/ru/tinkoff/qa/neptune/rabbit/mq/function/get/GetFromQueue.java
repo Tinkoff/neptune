@@ -13,10 +13,13 @@ import java.util.LinkedList;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaultDataTransformer.RABBIT_MQ_DEFAULT_DATA_TRANSFORMER;
 
 final class GetFromQueue<T> implements Function<Channel, T>, StepParameterPojo {
 
@@ -64,6 +67,13 @@ final class GetFromQueue<T> implements Function<Channel, T>, StepParameterPojo {
 
     @Override
     public T apply(Channel input) {
+        var transformer = ofNullable(this.transformer)
+            .orElseGet(RABBIT_MQ_DEFAULT_DATA_TRANSFORMER);
+        checkState(nonNull(transformer), "Data transformer is not defined. Please invoke "
+            + "the '#withDataTransformer(DataTransformer)' method or define '"
+            + RABBIT_MQ_DEFAULT_DATA_TRANSFORMER.getName()
+            + "' property/env variable");
+
         try {
             GetResponse getResponse = input.basicGet(queue, autoAck);
 
