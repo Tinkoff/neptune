@@ -68,6 +68,10 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
                 return false;
             }
 
+            if (parameter.isAssignableFrom(currentType)) {
+                continue;
+            }
+
             var declaredArrayType = parameter.getComponentType();
             var currentArrayType = currentType.getComponentType();
             if (nonNull(declaredArrayType) && nonNull(currentArrayType) &&
