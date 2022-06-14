@@ -220,22 +220,7 @@ public abstract class KafkaPollArraySupplier<T, S extends KafkaPollArraySupplier
 
         private StringMessages(GetFromTopics<String> getFromTopics) {
             super(getFromTopics, s -> s, String.class);
-            withDataTransformer(new DataTransformer() {
-                @Override
-                public <T> T deserialize(String string, Class<T> cls) {
-                    return (T) string;
-                }
-
-                @Override
-                public <T> T deserialize(String string, TypeReference<T> type) {
-                    return (T) string;
-                }
-
-                @Override
-                public String serialize(Object obj) {
-                    return obj.toString();
-                }
-            });
+            withDataTransformer(new StringDataTransformer());
         }
     }
 }

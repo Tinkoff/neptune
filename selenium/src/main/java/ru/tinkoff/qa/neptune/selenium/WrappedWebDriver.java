@@ -39,7 +39,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Constructor<T> findSuitableConstructor(Class<T> clazz, Object... params) throws Exception {
+    public static <T> Constructor<T> findSuitableConstructor(Class<T> clazz, Object... params) {
         var constructorList = asList(clazz.getDeclaredConstructors());
         final List<Class<?>> paramTypes = Arrays.stream(params).map(o -> ofNullable(o)
                 .map(Object::getClass)
@@ -50,9 +50,11 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
                 var constructorTypes = asList(constructor.getParameterTypes());
                 return constructorTypes.size() == paramTypes.size() && matches(constructorTypes, paramTypes);
             })
-            .findFirst().orElseThrow(() -> new NoSuchMethodException(
-                format("There is no constructor that convenient to parameter list %s", paramTypes)));
-        foundConstructor.setAccessible(true);
+            .findFirst()
+            .orElseThrow(
+                () -> new IllegalArgumentException(format("There is no constructor that convenient to parameter list %s", paramTypes))
+            );
+
         return (Constructor<T>) foundConstructor;
     }
 
@@ -64,10 +66,6 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             var currentType = paramTypes.get(i);
             if (isNull(currentType)) {
                 return false;
-            }
-
-            if (parameter.isAssignableFrom(currentType)) {
-                continue;
             }
 
             var declaredArrayType = parameter.getComponentType();

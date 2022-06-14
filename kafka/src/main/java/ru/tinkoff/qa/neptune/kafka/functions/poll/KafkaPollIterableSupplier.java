@@ -200,22 +200,7 @@ public abstract class KafkaPollIterableSupplier<T, S extends KafkaPollIterableSu
     public final static class StringMessages extends KafkaPollIterableSupplier<String, StringMessages> {
         private StringMessages(GetFromTopics<String> getFromTopics) {
             super(getFromTopics, s -> s);
-            withDataTransformer(new DataTransformer() {
-                @Override
-                public <T> T deserialize(String string, Class<T> cls) {
-                    return (T) string;
-                }
-
-                @Override
-                public <T> T deserialize(String string, TypeReference<T> type) {
-                    return (T) string;
-                }
-
-                @Override
-                public String serialize(Object obj) {
-                    return obj.toString();
-                }
-            });
+            withDataTransformer(new StringDataTransformer());
         }
     }
 }

@@ -67,9 +67,9 @@ final class GetFromQueue<T> implements Function<Channel, T>, StepParameterPojo {
 
     @Override
     public T apply(Channel input) {
-        var transformer = ofNullable(this.transformer)
+        var dataTransformer = ofNullable(this.transformer)
             .orElseGet(RABBIT_MQ_DEFAULT_DATA_TRANSFORMER);
-        checkState(nonNull(transformer), "Data transformer is not defined. Please invoke "
+        checkState(nonNull(dataTransformer), "Data transformer is not defined. Please invoke "
             + "the '#withDataTransformer(DataTransformer)' method or define '"
             + RABBIT_MQ_DEFAULT_DATA_TRANSFORMER.getName()
             + "' property/env variable");
@@ -83,9 +83,9 @@ final class GetFromQueue<T> implements Function<Channel, T>, StepParameterPojo {
             }
 
             if (cls != null) {
-                return transformer.deserialize(msg, cls);
+                return dataTransformer.deserialize(msg, cls);
             }
-            return transformer.deserialize(msg, typeRef);
+            return dataTransformer.deserialize(msg, typeRef);
         } catch (Exception e) {
             e.printStackTrace();
         }
