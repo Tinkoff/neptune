@@ -1,16 +1,17 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
-import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable.refreshContext;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyCollectionOf;
+import static ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable.refreshContext;
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
 
 public class RefreshTest {
 
@@ -21,8 +22,8 @@ public class RefreshTest {
         RefreshableStep.refreshable.getListToRefresh().add("String");
 
         assertThat("Check added values",
-                RefreshableStep.refreshable.getListToRefresh(),
-                contains(1, true, "String"));
+            RefreshableStep.refreshable.getListToRefresh(),
+            contains(1, true, "String"));
 
         refreshContext(RefreshableStep.class);
         assertThat("Check values",
@@ -30,15 +31,11 @@ public class RefreshTest {
                 emptyCollectionOf(Object.class));
     }
 
-    private static class RefreshableStep extends Context<RefreshableStep> implements ContextRefreshable {
+    public static class RefreshableStep extends Context<RefreshableStep> implements ContextRefreshable {
 
-        static final RefreshableStep refreshable = getInstance(RefreshableStep.class);
+        static final RefreshableStep refreshable = getCreatedContextOrCreate(RefreshableStep.class);
 
         private final List<Object> listToRefresh = new ArrayList<>();
-
-        protected RefreshableStep() {
-            super();
-        }
 
         @Override
         public void refreshContext() {

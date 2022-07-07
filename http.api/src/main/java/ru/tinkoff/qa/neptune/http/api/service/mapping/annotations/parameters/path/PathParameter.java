@@ -107,7 +107,7 @@ public @interface PathParameter {
                     .filter(s -> !pathParams.contains(s))
                     .collect(toList());
 
-            if (notDefinedByParameters.size() > 0) {
+            if (!notDefinedByParameters.isEmpty()) {
                 throw new IllegalArgumentException(format("These parameters are not defined by method parameters: %s. " +
                                 "These names are defined by pattern %s",
                         notDefinedByParameters,
@@ -119,7 +119,7 @@ public @interface PathParameter {
                     .filter(s -> !patternParams.contains(s))
                     .collect(toList());
 
-            if (notDefinedByPattern.size() > 0) {
+            if (!notDefinedByPattern.isEmpty()) {
                 throw new IllegalArgumentException(format("These parameters are not defined by pattern: %s. " +
                                 "Pattern: %s",
                         notDefinedByPattern,

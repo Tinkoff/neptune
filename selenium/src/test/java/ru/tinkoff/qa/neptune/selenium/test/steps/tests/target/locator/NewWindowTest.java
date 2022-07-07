@@ -16,7 +16,6 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static org.openqa.selenium.WindowType.WINDOW;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetNewWindowSupplier.newWindow;
-import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers.CHROME_DRIVER;
 
 
 public class NewWindowTest {
@@ -51,7 +50,7 @@ public class NewWindowTest {
         when(driver2.switchTo()).thenReturn(targetLocator2);
         when(targetLocator2.window("origin_handle")).thenReturn(driver);
 
-        seleniumSteps = new SeleniumStepContext(CHROME_DRIVER) {
+        seleniumSteps = new SeleniumStepContext() {
             @Override
             public WebDriver getWrappedDriver() {
                 return wrappedWebDriver.getWrappedDriver();

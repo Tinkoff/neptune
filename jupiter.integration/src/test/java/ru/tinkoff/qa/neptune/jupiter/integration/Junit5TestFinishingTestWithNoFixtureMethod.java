@@ -14,6 +14,7 @@ import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
 import static ru.tinkoff.qa.neptune.jupiter.integration.properties.Junit5RefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
 import static ru.tinkoff.qa.neptune.jupiter.integration.properties.RefreshEachTimeBefore.*;
 
@@ -44,6 +45,7 @@ public class Junit5TestFinishingTestWithNoFixtureMethod {
     @Test(dataProvider = "data")
     public void refreshTest(List<RefreshEachTimeBefore> strategies, int expected) {
         REFRESH_STRATEGY_PROPERTY.accept(strategies);
+        getCreatedContextOrCreate(ContextClass2.class);
         runBeforeTheChecking();
         assertThat(ContextClass2.getRefreshCount(), is(expected));
     }

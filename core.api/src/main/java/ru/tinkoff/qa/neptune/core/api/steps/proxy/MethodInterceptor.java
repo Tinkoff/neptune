@@ -6,7 +6,6 @@ import net.bytebuddy.implementation.bind.annotation.RuntimeType;
 import net.bytebuddy.implementation.bind.annotation.This;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
 import ru.tinkoff.qa.neptune.core.api.concurrency.ObjectContainer;
-import ru.tinkoff.qa.neptune.core.api.utils.ConstructorUtil;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -15,15 +14,13 @@ import java.lang.reflect.Method;
 import static java.lang.Runtime.getRuntime;
 import static java.util.Optional.ofNullable;
 
-public class MethodInterceptor<T> {
+public final class MethodInterceptor<T> {
 
     private final Class<T> classToInstantiate;
-    private final Object[] constructorParameters;
     private final ThreadLocal<ObjectContainer<T>> threadLocal;
 
-    public MethodInterceptor(Class<T> classToInstantiate, Object[] constructorParameters) {
+    public MethodInterceptor(Class<T> classToInstantiate) {
         this.classToInstantiate = classToInstantiate;
-        this.constructorParameters = constructorParameters;
         threadLocal = new ThreadLocal<>();
     }
 
@@ -40,7 +37,7 @@ public class MethodInterceptor<T> {
                         Constructor<T> c;
 
                         try {
-                            c = ConstructorUtil.findSuitableConstructor(classToInstantiate, constructorParameters);
+                            c = classToInstantiate.getConstructor();
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -48,7 +45,7 @@ public class MethodInterceptor<T> {
 
                         T t;
                         try {
-                            t = c.newInstance(constructorParameters);
+                            t = c.newInstance();
                             if (Stoppable.class.isAssignableFrom(t.getClass())) {
                                 getRuntime().addShutdownHook(new Thread(((Stoppable) t)::stop));
                             }

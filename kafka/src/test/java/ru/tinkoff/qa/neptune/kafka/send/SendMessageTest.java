@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.kafka.CustomMapper;
 import ru.tinkoff.qa.neptune.kafka.DefaultCallBackSupplier;
 import ru.tinkoff.qa.neptune.kafka.DraftDto;
-import ru.tinkoff.qa.neptune.kafka.KafkaBaseTest;
+import ru.tinkoff.qa.neptune.kafka.KafkaBasePreparations;
 
 import java.util.List;
 
@@ -19,7 +19,8 @@ import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionS
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaCallbackProperty.KAFKA_CALLBACK;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicForSendProperty.DEFAULT_TOPIC_FOR_SEND;
 
-public class SendMessageTest extends KafkaBaseTest {
+@SuppressWarnings("unchecked")
+public class SendMessageTest extends KafkaBasePreparations {
 
     DraftDto draftDto = new DraftDto().setName("testName");
     private final Callback customCallBack = (metadata, exception) -> {
@@ -35,7 +36,7 @@ public class SendMessageTest extends KafkaBaseTest {
     public void checkBaseMessageSending() {
         kafka.send(kafkaSerializedMessage(draftDto).topic("testTopic"));
 
-        verify(kafka.getProducer(), times(1))
+        verify(kafkaProducer, times(1))
                 .send(new ProducerRecord<>("testTopic",
                         null,
                         null,
@@ -48,7 +49,7 @@ public class SendMessageTest extends KafkaBaseTest {
     public void checkStringSending() {
         kafka.send(kafkaTextMessage("I'm a String!").topic("testTopic"));
 
-        verify(kafka.getProducer(), times(1))
+        verify(kafkaProducer, times(1))
                 .send(new ProducerRecord<>("testTopic",
                         null,
                         null,
@@ -63,7 +64,7 @@ public class SendMessageTest extends KafkaBaseTest {
                 .topic("testTopic")
                 .dataTransformer(new CustomMapper()));
 
-        verify(kafka.getProducer(), times(1))
+        verify(kafkaProducer, times(1))
                 .send(new ProducerRecord<>("testTopic",
                         null,
                         null,
@@ -78,7 +79,7 @@ public class SendMessageTest extends KafkaBaseTest {
                 .topic("testTopic")
                 .callback(customCallBack));
 
-        verify(kafka.getProducer(), times(1))
+        verify(kafkaProducer, times(1))
                 .send(new ProducerRecord<>("testTopic",
                                 null,
                                 null,
@@ -95,7 +96,7 @@ public class SendMessageTest extends KafkaBaseTest {
                 .partition(1)
                 .timestamp(10L));
 
-        verify(kafka.getProducer(), times(1))
+        verify(kafkaProducer, times(1))
                 .send(new ProducerRecord<>("testTopic",
                         1,
                         10L,
@@ -113,7 +114,7 @@ public class SendMessageTest extends KafkaBaseTest {
                 .timestamp(10L)
                 .callback(customCallBack));
 
-        verify(kafka.getProducer(), times(1))
+        verify(kafkaProducer, times(1))
                 .send(new ProducerRecord<>("testTopic",
                                 1,
                                 10L,
@@ -133,7 +134,7 @@ public class SendMessageTest extends KafkaBaseTest {
                 .dataTransformer(new CustomMapper())
         );
 
-        verify(kafka.getProducer(), times(1))
+        verify(kafkaProducer, times(1))
                 .send(new ProducerRecord<>("testTopic",
                         1,
                         10L,
@@ -151,7 +152,7 @@ public class SendMessageTest extends KafkaBaseTest {
                 .callback(customCallBack)
                 .dataTransformer(new CustomMapper()));
 
-        verify(kafka.getProducer(), times(1))
+        verify(kafkaProducer, times(1))
                 .send(new ProducerRecord<>("testTopic",
                                 1,
                                 10L,
@@ -170,7 +171,7 @@ public class SendMessageTest extends KafkaBaseTest {
                 .timestamp(10L)
                 .dataTransformer(new CustomMapper()));
 
-        verify(kafka.getProducer(), times(1))
+        verify(kafkaProducer, times(1))
                 .send(new ProducerRecord<>("default_Topic",
                         1,
                         10L,
@@ -187,7 +188,7 @@ public class SendMessageTest extends KafkaBaseTest {
                 .partition(1)
                 .timestamp(10L));
 
-        verify(kafka.getProducer(), times(1))
+        verify(kafkaProducer, times(1))
                 .send(new ProducerRecord<>("default_Topic",
                         1,
                         10L,
@@ -204,7 +205,7 @@ public class SendMessageTest extends KafkaBaseTest {
                 .header("Header key", "Value1")
                 .header(new RecordHeader("Header key2", "Value2".getBytes())));
 
-        verify(kafka.getProducer(), times(1))
+        verify(kafkaProducer, times(1))
                 .send(new ProducerRecord<>("testTopic",
                         null,
                         null,
@@ -220,7 +221,7 @@ public class SendMessageTest extends KafkaBaseTest {
         kafka.send(kafkaTextMessage("I'm a String!")
                 .topic("testTopic"));
 
-        verify(kafka.getProducer(), times(1))
+        verify(kafkaProducer, times(1))
                 .send(new ProducerRecord<>("testTopic",
                                 null,
                                 null,
@@ -238,7 +239,7 @@ public class SendMessageTest extends KafkaBaseTest {
                 .header("Header key", "Value1")
                 .header(new RecordHeader("Header key2", "Value2".getBytes())));
 
-        verify(kafka.getProducer(), times(1))
+        verify(kafkaProducer, times(1))
                 .send(new ProducerRecord<>("testTopic",
                         null,
                         null,
@@ -255,7 +256,7 @@ public class SendMessageTest extends KafkaBaseTest {
                 .header("Header key", "Value1")
                 .header(new RecordHeader("Header key2", "Value2".getBytes())));
 
-        verify(kafka.getProducer(), times(1))
+        verify(kafkaProducer, times(1))
                 .send(new ProducerRecord<>("testTopic",
                         null,
                         null,

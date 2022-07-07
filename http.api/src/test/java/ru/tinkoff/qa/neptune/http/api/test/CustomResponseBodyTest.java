@@ -4,7 +4,6 @@ import org.hamcrest.Matcher;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.w3c.dom.Document;
 import ru.tinkoff.qa.neptune.http.api.test.request.body.BodyObject;
 
 import java.net.http.HttpResponse;
@@ -12,12 +11,13 @@ import java.net.http.HttpResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.nullValue;
 import static org.testng.Assert.fail;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasBody.hasBody;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.*;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
+import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
+import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.xml;
 
 public class CustomResponseBodyTest extends BaseHttpTest {
 
@@ -79,14 +79,6 @@ public class CustomResponseBodyTest extends BaseHttpTest {
                 {PATH_TO_JACKSON,
                         xml(BodyObject.class),
                         equalTo(BODY_OBJECT)},
-
-                {PATH_DOCUMENT_XML,
-                        w3cDocument(),
-                        instanceOf(Document.class)},
-
-                {PATH_DOCUMENT_HTML,
-                        jsoupDocument(),
-                        instanceOf(org.jsoup.nodes.Document.class)},
         };
     }
 
@@ -94,7 +86,6 @@ public class CustomResponseBodyTest extends BaseHttpTest {
     public static Object[][] data2() {
         return new Object[][]{
                 {PATH_TO_GSON, xml(BodyObject.class)},
-                {PATH_TO_GSON, w3cDocument()},
                 {PATH_DOCUMENT_XML, json(BodyObject.class)},
         };
     }
@@ -103,15 +94,20 @@ public class CustomResponseBodyTest extends BaseHttpTest {
     public <T> void customResponseBodyTest2(String urlPath,
                                             HttpResponse.BodyHandler<T> handler,
                                             Matcher<? super T> matcher) {
-        assertThat(http().responseOf(GET(REQUEST_URI + urlPath), handler),
-                hasBody(matcher));
+        assertThat(http().responseOf(GET()
+                .baseURI(REQUEST_URI + urlPath)
+                .responseBodyHandler(handler)),
+            hasBody(matcher));
     }
 
     @Test(dataProvider = "data2", expectedExceptions = RuntimeException.class)
     public <T> void negativeTest(String urlPath,
                                  HttpResponse.BodyHandler<T> handler) {
-        assertThat(http().responseOf(GET(REQUEST_URI + urlPath), handler),
-                hasBody(nullValue()));
+        assertThat(http().responseOf(GET()
+                .baseURI(REQUEST_URI)
+                .relativePath(urlPath)
+                .responseBodyHandler(handler)),
+            hasBody(nullValue()));
 
         fail("Exception was expected");
     }

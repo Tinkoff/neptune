@@ -55,10 +55,10 @@ import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods
 public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
     //Правильно
-    RequestBuilder post(String stringArg);
+    RequestBuilder<?> post(String stringArg);
 
     //Правильно
-    default RequestBuilder post() {
+    default RequestBuilder<?> post() {
         return post("Foo bar");
     }
 
@@ -102,45 +102,45 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
     //POST-метод
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething(String stringArg);
+    RequestBuilder<?> postSomething(String stringArg);
 
     //POST-метод выше. Представим что его единственного параметра есть 
     //значение по умолчанию - 'Foo bar'
-    default RequestBuilder postSomething() {
+    default RequestBuilder<?> postSomething() {
         return postSomething("Foo bar");
     }
 
     //GET-метод
     @HttpMethod(httpMethod = GET)
-    RequestBuilder getSomething();
+    RequestBuilder<?> getSomething();
 
     //PUT-метод
     @HttpMethod(httpMethod = PUT)
-    RequestBuilder putSomething();
+    RequestBuilder<?> putSomething();
 
     //DELETE-метод
     @HttpMethod(httpMethod = DELETE)
-    RequestBuilder deleteSomething();
+    RequestBuilder<?> deleteSomething();
 
     //PATCH-метод
     @HttpMethod(httpMethod = PATCH)
-    RequestBuilder patchSomething();
+    RequestBuilder<?> patchSomething();
 
     //HEAD-метод
     @HttpMethod(httpMethod = HEAD)
-    RequestBuilder headSomething();
+    RequestBuilder<?> headSomething();
 
     //OPTIONS-метод
     @HttpMethod(httpMethod = OPTIONS)
-    RequestBuilder optionsSomething();
+    RequestBuilder<?> optionsSomething();
 
     //TRACE-метод
     @HttpMethod(httpMethod = TRACE)
-    RequestBuilder traceSomething();
+    RequestBuilder<?> traceSomething();
 
     //Для случая, когда в RFC нет нужного метода
     @HttpMethod(httpMethodStr = "CUSTOM_METHOD")
-    RequestBuilder customMethod();
+    RequestBuilder<?> customMethod();
 }
 ```
 
@@ -148,9 +148,6 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
 
 ### Заголовки
-
-
-  
 
 Если метод имеет постоянные заголовки (например Content-Type), то
 
@@ -168,7 +165,7 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
     //ниже пример, если заголовок имеет несколько постоянных значений 
     @Header(name = "header1", headerValues = {"abc", "one more value"})
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething(String stringArg);
+    RequestBuilder<?> postSomething(String stringArg);
 }
 ```
 
@@ -185,7 +182,7 @@ import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods
 public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething(
+    RequestBuilder<?> postSomething(
             @HeaderParameter(headerName = "header1") String stringArg1, //заголовок, который необязателен, 
             // может быть передан null
             @HeaderParameter(headerName = "header2", required = true) Integer intArg2, //заголовок, который обязателен
@@ -214,7 +211,7 @@ import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods
 public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething(
+    RequestBuilder<?> postSomething(
             //Если передать объект Map, то он будет преобразован в строку вида
             //`key1,value1,key2,value2` и т.д
             @HeaderParameter(headerName = "header1") Map<?, ?> mapArg1,
@@ -235,9 +232,6 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
 ### Путь
 
-
-  
-
 ```java
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
@@ -255,7 +249,7 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
     //В данном примере продемонстрирована ситуация, когда путь постоянный
     @URIPath("/some/path")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething();
+    RequestBuilder<?> postSomething();
 
     //Формирует path-часть для URI запроса
     //В данном примере продемонстрирована ситуация, когда путь имеет переменную часть
@@ -264,7 +258,7 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
     //параметра пути.
     @URIPath("/some/path/to/{target}/{target2}/{optional}")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething(
+    RequestBuilder<?> postSomething(
             @PathParameter(name = "target") String pathArgument, //данный параметр обязателен 
             @PathParameter(name = "optional", required = false) Integer pathOptArgument, //данный параметр не является 
             //обязательным. Это значит, если его значение будет == null, то из пути будет исключена часть, 
@@ -282,13 +276,13 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
     //то получится следующий путь: /some/path/to/.ABC
     @URIPath("/some/path/to/{target}")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething2(@PathParameter(name = "target", style = LABEL) String pathArgument);
+    RequestBuilder<?> postSomething2(@PathParameter(name = "target", style = LABEL) String pathArgument);
 
     //Если в качестве target передать строку `ABC`
     //то получится следующий путь: /some/path/to/;target=ABC
     @URIPath("/some/path/to/{target}")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething3(@PathParameter(name = "target", style = MATRIX) String pathArgument);
+    RequestBuilder<?> postSomething3(@PathParameter(name = "target", style = MATRIX) String pathArgument);
 }
 ```
 
@@ -311,26 +305,26 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
     ///some/path/to/elem1,elem2,elem3
     @URIPath("/some/path/to/{arrayParam}")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething(@PathParameter(name = "arrayParam") Object[] array);
+    RequestBuilder<?> postSomething(@PathParameter(name = "arrayParam") Object[] array);
 
     //Получится путь вида
     ///some/path/to/.elem1.elem2.elem3
     @URIPath("/some/path/to/{arrayParam}")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething2(@PathParameter(name = "arrayParam", style = LABEL) Object[] array);
+    RequestBuilder<?> postSomething2(@PathParameter(name = "arrayParam", style = LABEL) Object[] array);
 
     //Получится путь вида
     ///some/path/to/;arrayParam=elem1,elem2,elem3
     @URIPath("/some/path/to/{arrayParam}")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething3(@PathParameter(name = "arrayParam", style = MATRIX) Object[] array);
+    RequestBuilder<?> postSomething3(@PathParameter(name = "arrayParam", style = MATRIX) Object[] array);
 
     //explode = true означает "развернуть" объект
     //Получится путь вида
     ///some/path/to/;arrayParam=elem1;arrayParam=elem2;arrayParam=elem3
     @URIPath("/some/path/to/{arrayParam}")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething3(@PathParameter(name = "arrayParam", style = MATRIX, explode = true) Object[] array);
+    RequestBuilder<?> postSomething3(@PathParameter(name = "arrayParam", style = MATRIX, explode = true) Object[] array);
 
     //Зарезервированные символы перекодируются
 }
@@ -356,40 +350,40 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
     ///some/path/to/key1,value1,key2,value2,key3,value3
     @URIPath("/some/path/to/{objParam}")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething(@PathParameter(name = "objParam") Map<?, ?> map);
+    RequestBuilder<?> postSomething(@PathParameter(name = "objParam") Map<?, ?> map);
 
     //explode = true означает "развернуть" объект
     //Получится путь вида
     ///some/path/to/key1=value1,key2=value2,key3=value3
     @URIPath("/some/path/to/{objParam}")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething2(@PathParameter(name = "objParam", explode = true) Map<?, ?> map);
+    RequestBuilder<?> postSomething2(@PathParameter(name = "objParam", explode = true) Map<?, ?> map);
 
     //Получится путь вида
     ///some/path/to/.key1.value1.key2.value2.key3.value3
     @URIPath("/some/path/to/{objParam}")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething3(@PathParameter(name = "objParam", style = LABEL) Map<?, ?> map);
+    RequestBuilder<?> postSomething3(@PathParameter(name = "objParam", style = LABEL) Map<?, ?> map);
 
     //explode = true означает "развернуть" объект
     //Получится путь вида
     ///some/path/to/.key1=value1.key2=value2.key3=value3
     @URIPath("/some/path/to/{objParam}")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething4(@PathParameter(name = "objParam", style = LABEL, explode = true) Map<?, ?> map);
+    RequestBuilder<?> postSomething4(@PathParameter(name = "objParam", style = LABEL, explode = true) Map<?, ?> map);
 
     //Получится путь вида
     ///some/path/to/;objParam=key1,value1,key2,value2,key3,value3
     @URIPath("/some/path/to/{objParam}")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething3(@PathParameter(name = "objParam", style = MATRIX) Map<?, ?> map);
+    RequestBuilder<?> postSomething3(@PathParameter(name = "objParam", style = MATRIX) Map<?, ?> map);
 
     //explode = true означает "развернуть" объект
     //Получится путь вида
     ///some/path/to/;key1=value1;key2=value2;key3=value3
     @URIPath("/some/path/to/{objParam}")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething4(@PathParameter(name = "objParam", style = MATRIX, explode = true) Map<?, ?> map);
+    RequestBuilder<?> postSomething4(@PathParameter(name = "objParam", style = MATRIX, explode = true) Map<?, ?> map);
 
     //Все тоже самое будет работать и для наследника 
     // ru.tinkoff.qa.neptune.http.api.mapping.MappedObjectru.tinkoff.qa.neptune.http.api.mapping.MappedObject
@@ -404,9 +398,6 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
 ### Запрос
 
-
-  
-
 ```java
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
@@ -419,7 +410,7 @@ import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods
 public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething(
+    RequestBuilder<?> postSomething(
             @QueryParameter(name = "param1") String queryArgument, //данный параметр обязателен 
             @QueryParameter(name = "param2", required = false) Integer queryOptArgument, //данный параметр не является 
             //обязательным. Это значит, если его значение будет == null, то в запрос он не будет добавлен
@@ -453,13 +444,13 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
     //arrayParam=elem1&arrayParam=elem2&arrayParam=elem3
     //Зарезервированные символы в значениях будут перекодированы
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething(@QueryParameter(name = "arrayParam") Object[] array);
+    RequestBuilder<?> postSomething(@QueryParameter(name = "arrayParam") Object[] array);
 
     //Получится следующий параметр запроса (arrayParam)
     //arrayParam=elem1&arrayParam=elem2&arrayParam=elem3
     //Зарезервированные символы в значениях будут сохранены
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething2(@QueryParameter(name = "arrayParam") @FormParam(allowReserved = true) Object[] array);
+    RequestBuilder<?> postSomething2(@QueryParameter(name = "arrayParam") @FormParam(allowReserved = true) Object[] array);
 
     //explode = false означает, что объект-массив будет как-бы "сжат", т.е. записан в одну строку с запятой 
     // в качестве разделителя 
@@ -468,40 +459,40 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
     //arrayParam=elem1,elem2,elem3
     //Зарезервированные символы в значениях будут перекодированы
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething3(@QueryParameter(name = "arrayParam") @FormParam(explode = false) Object[] array);
+    RequestBuilder<?> postSomething3(@QueryParameter(name = "arrayParam") @FormParam(explode = false) Object[] array);
 
     //Аналогично примеру postSomething3.
     //Зарезервированные символы в значениях будут сохранены
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething4(@QueryParameter(name = "arrayParam")
+    RequestBuilder<?> postSomething4(@QueryParameter(name = "arrayParam")
                                   @FormParam(explode = false, allowReserved = true) Object[] array);
 
     //Аналогично примеру postSomething3. Параметр запроса arrayParam будет записан 
     //в одну строку с пробелом ("%20") в качестве разделителя. 
     // Если  explode = true, то style будет проигнорирован. И результат будет аналогичен postSomething
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething5(@QueryParameter(name = "arrayParam")
+    RequestBuilder<?> postSomething5(@QueryParameter(name = "arrayParam")
                                   @FormParam(style = SPACE_DELIMITED, explode = false) Object[] array);
 
     //Аналогично примеру postSomething3. Параметр запроса arrayParam будет записан 
     //в одну строку с пробелом ("%20") в качестве разделителя и с сохранением зарезервированных символов как есть. 
     // Если  explode = true, то style будет проигнорирован. И результат будет аналогичен postSomething2
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething6(@QueryParameter(name = "arrayParam")
+    RequestBuilder<?> postSomething6(@QueryParameter(name = "arrayParam")
                                   @FormParam(style = SPACE_DELIMITED, explode = false, allowReserved = true) Object[] array);
 
     //Аналогично примеру postSomething3. Параметр запроса arrayParam будет записан 
     //в одну строку с вертикальной чертой ("%7C") в качестве разделителя. 
     // Если  explode = true, то style будет проигнорирован. И результат будет аналогичен postSomething
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething7(@QueryParameter(name = "arrayParam")
+    RequestBuilder<?> postSomething7(@QueryParameter(name = "arrayParam")
                                   @FormParam(style = PIPE_DELIMITED, explode = false) Object[] array);
 
     //Аналогично примеру postSomething3. Параметр запроса arrayParam будет записан 
     //в одну строку с вертикальной чертой ("%7C") в качестве разделителя и с сохранением зарезервированных символов как есть. 
     // Если  explode = true, то style будет проигнорирован. И результат будет аналогичен postSomething2
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething6(@QueryParameter(name = "arrayParam")
+    RequestBuilder<?> postSomething6(@QueryParameter(name = "arrayParam")
                                   @FormParam(style = PIPE_DELIMITED, explode = false, allowReserved = true) Object[] array);
 }
 ```
@@ -523,22 +514,22 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
     //Запрос будет выглядеть как строка вида key1=value1&key2=value2 и т.д. 
     //Зарезервированные символы в значениях будут перекодированы
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething(@QueryParameter(name = "objParam") Map<?, ?> map);
+    RequestBuilder<?> postSomething(@QueryParameter(name = "objParam") Map<?, ?> map);
 
     //Запрос будет выглядеть как строка вида key1=value1&key2=value2 и т.д. 
     //Зарезервированные символы в значениях будут сохранены
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething2(@QueryParameter(name = "objParam") @FormParam(allowReserved = true) Map<?, ?> map);
+    RequestBuilder<?> postSomething2(@QueryParameter(name = "objParam") @FormParam(allowReserved = true) Map<?, ?> map);
 
     //Запрос будет выглядеть как строка вида objParam=key1,value1,key2,value2 и т.д. 
     //Зарезервированные символы в значениях будут перекодированы
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething3(@QueryParameter(name = "objParam") @FormParam(explode = false) Map<?, ?> map);
+    RequestBuilder<?> postSomething3(@QueryParameter(name = "objParam") @FormParam(explode = false) Map<?, ?> map);
 
     //Запрос будет выглядеть как строка вида objParam=key1,value1,key2,value2 и т.д. 
     //Зарезервированные символы в значениях будут сохранены
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething4(@QueryParameter(name = "objParam")
+    RequestBuilder<?> postSomething4(@QueryParameter(name = "objParam")
                                   @FormParam(explode = false, allowReserved = true) Map<?, ?> map);
 
     //Все тоже самое будет работать и для наследника 
@@ -560,10 +551,7 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
 О поддерживаемых форматах тел http-запросов можно прочитать [тут](REQUEST_RESPONSE.MD#Тело-запроса-на-примере-POST).
 Мэппинг поддерживает все описанные форматы, кроме пользовательских.
-Задача: [#211](https://github.com/TinkoffCreditSystems/neptune/issues/211)
-
-
-  
+Задача: [#211](https://github.com/tinkoff/neptune/issues/211)
 
 Любое тело запроса, кроме `multipart/form-data` можно представить в модели следующим образом
 
@@ -589,95 +577,91 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
     //передача текста в качестве тела POST-запроса
     //параметр обязателен. Значение не должно == null
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postStringBody(@Body String body);
+    RequestBuilder<?> postStringBody(@Body String body);
 
     //передача текста в качестве тела POST-запроса
     //параметр необязателен (isRequired = false). Если значение == null, то будет отправлен запрос с пустым телом
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postStringBody2(@Body(isRequired = false) String body);
+    RequestBuilder<?> postStringBody2(@Body(isRequired = false) String body);
 
     //передача массива байтов в качестве тела POST-запроса
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postByteBody(@Body byte[] body);
+    RequestBuilder<?> postByteBody(@Body byte[] body);
 
     //передача файла в качестве тела POST-запроса
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postFileBody(@Body File body);
+    RequestBuilder<?> postFileBody(@Body File body);
 
     //передача файла в качестве тела POST-запроса
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postFileBody(@Body Path body);
-
-    //передача объекта org.jsoup.nodes.Document в качестве тела POST-запроса
-    @HttpMethod(httpMethod = POST)
-    RequestBuilder postJsoupBody(@Body org.jsoup.nodes.Document body);
+    RequestBuilder<?> postFileBody(@Body Path body);
 
     //передача объекта org.w3c.dom.Document в качестве тела POST-запроса
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postW3CBody(@Body org.w3c.dom.Document body);
+    RequestBuilder<?> postW3CBody(@Body org.w3c.dom.Document body);
 
     //вариант передачи данных application/x-www-form-urlencoded
     //такой способ может пригодиться, когда передается неструктурированный 
     //и не имеющий четких правил и ограничений набор параметров формы
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postForm(@Body FormParameter... body);
+    RequestBuilder<?> postForm(@Body FormParameter... body);
 
     //вариант передачи данных application/x-www-form-urlencoded
     //такой способ может пригодиться, когда передается 
     //и не имеющий четких правил и ограничений параметр формы
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postForm(@Body FormParameter body);
+    RequestBuilder<?> postForm(@Body FormParameter body);
 
     //вариант передачи данных application/x-www-form-urlencoded
     //такой способ может пригодиться, когда передается неструктурированный 
     //и не имеющий четких правил и ограничений набор параметров формы
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postForm(@Body List<FormParameter> body);
+    RequestBuilder<?> postForm(@Body List<FormParameter> body);
 
     //передача потока данных в качестве тела POST-запроса
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postStream(@Body InputStream body);
+    RequestBuilder<?> postStream(@Body InputStream body);
 
     //передача потока данных в качестве тела POST-запроса
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSupplier(@Body Supplier<InputStream> body);
+    RequestBuilder<?> postSupplier(@Body Supplier<InputStream> body);
 
     //передача сериализованного в JSON-строку объекта в качестве тела POST-запроса
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postJson(@Body @BodyParamFormat(format = JSON) SomeObject body);
+    RequestBuilder<?> postJson(@Body @BodyParamFormat(format = JSON) SomeObject body);
 
     //передача сериализованного в XML-строку объекта в качестве тела POST-запроса
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postXml(@Body @BodyParamFormat(format = XML) SomeObject body);
+    RequestBuilder<?> postXml(@Body @BodyParamFormat(format = XML) SomeObject body);
 
     //передача сериализованного в JSON-строку объекта в качестве тела POST-запроса
     //В данном примере упрощенно представлен пример использования MappedObject в качестве тела запроса
     //Данный способ является более предпочтительным
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postJson(@Body @BodyParamFormat(format = JSON) MappedObject body);
+    RequestBuilder<?> postJson(@Body @BodyParamFormat(format = JSON) MappedObject body);
 
     //передача сериализованного в XML-строку объекта в качестве тела POST-запроса
     //В данном примере упрощенно представлен пример использования MappedObject в качестве тела запроса
     //Данный способ является более предпочтительным
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postXml(@Body @BodyParamFormat(format = XML) MappedObject body);
+    RequestBuilder<?> postXml(@Body @BodyParamFormat(format = XML) MappedObject body);
 
     //передача сериализованного в строку JSON-array формата объекта в качестве тела POST-запроса
     //Тоже самое актуально для массивов
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postListJson(@Body @BodyParamFormat(format = JSON) List<Object> body);
+    RequestBuilder<?> postListJson(@Body @BodyParamFormat(format = JSON) List<Object> body);
 
     //передача сериализованного в JSON-строку объекта в качестве тела POST-запроса
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postJsonMixin(@Body @BodyParamFormat(format = JSON, mixIns = MixInClass1.class) SomeObject body);
+    RequestBuilder<?> postJsonMixin(@Body @BodyParamFormat(format = JSON, mixIns = MixInClass1.class) SomeObject body);
 
     //передача сериализованного в XML-строку объекта в качестве тела POST-запроса
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postXmlMixin(@Body @BodyParamFormat(format = XML, mixIns = MixInClass2.class) SomeObject body);
+    RequestBuilder<?> postXmlMixin(@Body @BodyParamFormat(format = XML, mixIns = MixInClass2.class) SomeObject body);
 
     //передача строкового представления объекта класса SomeObject в качестве тела POST-запроса
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomeBody(@Body SomeObject body);
+    RequestBuilder<?> postSomeBody(@Body SomeObject body);
 }
 ```
 
@@ -704,7 +688,7 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
     // - form_int_param2 - необязательный. Если в качестве значения будет передан null, тогда параметр будет исключен из формы 
     // - form_str_param3 - обязательный
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postForm(@URLEncodedParameter(name = "form_object_param1") Object param1,
+    RequestBuilder<?> postForm(@URLEncodedParameter(name = "form_object_param1") Object param1,
                             @URLEncodedParameter(name = "form_int_param2", isRequired = false) Integer param2,
                             @URLEncodedParameter(name = "form_str_param3") String param3);
 }
@@ -745,7 +729,7 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
     // - form_map_param3 - обязательный. Значение параметра будет записано в одну строку с вертикальной чертой ("%7C") в качестве 
     // разделителя и с перекодировкой зарезервированных символов. 
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postForm(@URLEncodedParameter(name = "form_object_param1") Object param1,
+    RequestBuilder<?> postForm(@URLEncodedParameter(name = "form_object_param1") Object param1,
                             @URLEncodedParameter(name = "form_int_param2", isRequired = false) Integer param2,
                             @URLEncodedParameter(name = "form_map_param3")
                             @FormParam(style = PIPE_DELIMITED, explode = false) Map<?, ?> param3);
@@ -755,7 +739,7 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
     // - form_int_param2 - необязательный. Если в качестве значения будет передан null, тогда параметр будет исключен из формы 
     // - form_map_param3 - обязательный. Значение параметра будет записано в виде строки JSON-формата.
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postForm2(@URLEncodedParameter(name = "form_object_param1") Object param1,
+    RequestBuilder<?> postForm2(@URLEncodedParameter(name = "form_object_param1") Object param1,
                              @URLEncodedParameter(name = "form_int_param2", isRequired = false) Integer param2,
                              @URLEncodedParameter(name = "form_map_param3")
                              @BodyParamFormat(format = JSON) Map<?, ?> param3);
@@ -783,7 +767,7 @@ import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.paramet
 public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postMultipart(
+    RequestBuilder<?> postMultipart(
             @MultiPartBody(name = "test_file", contentTransferEncoding = BINARY) File file, //Указываем имя части 'test_file'
             //Передаем файл 
             //и указываем заголовок Content-Transfer-Encoding со значением 'binary'
@@ -918,7 +902,7 @@ public interface ServiceAPI1 extends HttpAPI<ServiceAPI1> {
 
     @URIPath("/path/to/point1")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething(@Body String text);
+    RequestBuilder<?> postSomething(@Body String text);
 
     //Другие методы тоже как-то описаны
 }
@@ -938,7 +922,7 @@ public interface ServiceAPI2 extends HttpAPI<ServiceAPI2> {
 
     @URIPath("/path/to/{point}")
     @HttpMethod(httpMethod = GET)
-    RequestBuilder getSomething(@PathParameter(name = "point") String point);
+    RequestBuilder<?> getSomething(@PathParameter(name = "point") String point);
 
     //Другие методы тоже как-то описаны
 }
@@ -962,23 +946,23 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com");
-        //так же endPoint можно передать как String и java.net.URL
+        var baseURI = URI.create("http://my.api.com");
+        //так же baseURI можно передать как String и java.net.URL
         //ВАЖНО: передаваемое значение должно быть следующего вида - `схема\протокол`://`хост`:`порт если есть/фрагмент/пути/если/надо`
 
-        var service1 = createAPI(ServiceAPI1.class, endPoint); //пример инициализации переменных
-        var service2 = createAPI(ServiceAPI2.class, endPoint); //можно инициализировать как поля 
+        var service1 = createAPI(ServiceAPI1.class, baseURI); //пример инициализации переменных
+        var service2 = createAPI(ServiceAPI2.class, baseURI); //можно инициализировать как поля 
 
 
-        HttpResponse<String> response1 = http().responseOf(
-                service1.postSomething("Some text"),
+        HttpResponse<String> response1 = http().responseOf(service1
+                .postSomething("Some text")
                 //Ответ вернется c телом, интерпретированным/прочитанным как текст
-                ofString());
+                .responseBodyHandler(ofString()));
 
-        HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("endPoint"),
+        HttpResponse<String> response2 = http().responseOf(service2
+                .getSomething("some param")
                 //Ответ вернется c телом, интерпретированным/прочитанным как текст
-                ofString());
+                .responseBodyHandler(ofString()));
     }
 }
 ```
@@ -1003,19 +987,21 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com");
+        var baseURI = URI.create("http://my.api.com");
 
-        var service1 = createAPI(ServiceAPI1.class, endPoint);
-        var service2 = createAPI(ServiceAPI2.class, endPoint);
+        var service1 = createAPI(ServiceAPI1.class, baseURI);
+        var service2 = createAPI(ServiceAPI2.class, baseURI);
 
 
-        HttpResponse<String> response1 = http().responseOf(
-                service1.postSomething("Some text").expectContinue(true),
-                ofString());
+        HttpResponse<String> response1 = http().responseOf(service1
+                .postSomething("Some text")
+                .expectContinue(true)
+                .responseBodyHandler(ofString()));
 
-        HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("endPoint").version(HTTP_2),
-                ofString());
+        HttpResponse<String> response2 = http().responseOf(service2
+                .getSomething("some param")
+                .version(HTTP_2)
+                .responseBodyHandler(ofString()));
     }
 }
 ```
@@ -1073,22 +1059,22 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com");
+        var baseURI = URI.create("http://my.api.com");
 
         //Через метод useForRequestBuilding можно указать несколько классов, через запятую. Классы можно указывать
         //если они имеют публичные конструкторы без параметров, или не имеют объявленных конструкторов совсем
-        var service1 = createAPI(ServiceAPI1.class, endPoint).useForRequestBuilding(RequestTuner1.class);
+        var service1 = createAPI(ServiceAPI1.class, baseURI).useForRequestBuilding(RequestTuner1.class);
         //В противном случае, можно создавать объекты и передавать объекты классов
-        var service2 = createAPI(ServiceAPI2.class, endPoint).useForRequestBuilding(RequestTuner2.class);
+        var service2 = createAPI(ServiceAPI2.class, baseURI).useForRequestBuilding(RequestTuner2.class);
 
 
-        HttpResponse<String> response1 = http().responseOf(
-                service1.postSomething("Some text"),
-                ofString());
+        HttpResponse<String> response1 = http().responseOf(service1
+                .postSomething("Some text")
+                .responseBodyHandler(ofString()));
 
-        HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("endPoint"),
-                ofString());
+        HttpResponse<String> response2 = http().responseOf(service2
+                .getSomething("some param")
+                .responseBodyHandler(ofString()));
     }
 }
 ```
@@ -1145,19 +1131,19 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com");
+        var baseURI = URI.create("http://my.api.com");
 
-        var service1 = createAPI(ServiceAPI1.class, endPoint);
-        var service2 = createAPI(ServiceAPI2.class, endPoint);
+        var service1 = createAPI(ServiceAPI1.class, baseURI);
+        var service2 = createAPI(ServiceAPI2.class, baseURI);
 
 
-        HttpResponse<String> response1 = http().responseOf(
-                service1.postSomething("Some text"),
-                ofString());
+        HttpResponse<String> response1 = http().responseOf(service1
+                .postSomething("Some text")
+                .responseBodyHandler(ofString()));
 
-        HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("endPoint"),
-                ofString());
+        HttpResponse<String> response2 = http().responseOf(service2
+                .getSomething("some param")
+                .responseBodyHandler(ofString()));
     }
 }
 ```
@@ -1184,20 +1170,20 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        //var endPoint = URI.create("http://my.api.com");
+        //var baseURI = URI.create("http://my.api.com");
         //можно больше не указывать
 
         var service1 = createAPI(ServiceAPI1.class);
         var service2 = createAPI(ServiceAPI2.class);
 
 
-        HttpResponse<String> response1 = http().responseOf(
-                service1.postSomething("Some text"),
-                ofString());
+        HttpResponse<String> response1 = http().responseOf(service1
+                .postSomething("Some text")
+                .responseBodyHandler(ofString()));
 
-        HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("endPoint"),
-                ofString());
+        HttpResponse<String> response2 = http().responseOf(service2
+                .getSomething("some param")
+                .responseBodyHandler(ofString()));
     }
 }
 ```
@@ -1253,13 +1239,13 @@ public class MyTest {
         var service1 = createAPI(ServiceAPI1.class, SERVICE1); //Указываем элементы, 
         var service2 = createAPI(ServiceAPI2.class, SERVICE2); //предоставляющие доступ к новым свойствам.
 
-        HttpResponse<String> response1 = http().responseOf(
-                service1.postSomething("Some text"),
-                ofString());
+        HttpResponse<String> response1 = http().responseOf(service1
+                .postSomething("Some text")
+                .responseBodyHandler(ofString()));
 
-        HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("endPoint"),
-                ofString());
+        HttpResponse<String> response2 = http().responseOf(service2
+                .getSomething("some param")
+                .responseBodyHandler(ofString()));
     }
 }
 ```
@@ -1308,13 +1294,13 @@ public class MyTest {
         var service1 = createAPI(ServiceAPI1.class);
         var service2 = createAPI(ServiceAPI2.class);
 
-        HttpResponse<String> response1 = http().responseOf(
-                service1.postSomething("Some text"),
-                ofString());
+        HttpResponse<String> response1 = http().responseOf(service1
+                .postSomething("Some text")
+                .responseBodyHandler(ofString()));
 
-        HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("endPoint"),
-                ofString());
+        HttpResponse<String> response2 = http().responseOf(service2
+                .getSomething("some param")
+                .responseBodyHandler(ofString()));
     }
 }
 ```
@@ -1359,13 +1345,13 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        HttpResponse<String> response1 = http().responseOf(
-                service1.postSomething("Some text"),
-                ofString());
+        HttpResponse<String> response1 = http().responseOf(service1
+                .postSomething("Some text")
+                .responseBodyHandler(ofString()));
 
-        HttpResponse<String> response2 = http().responseOf(
-                service2.getSomething("endPoint"),
-                ofString());
+        HttpResponse<String> response2 = http().responseOf(service2
+                .getSomething("some param")
+                .responseBodyHandler(ofString()));
     }
 }
 ```

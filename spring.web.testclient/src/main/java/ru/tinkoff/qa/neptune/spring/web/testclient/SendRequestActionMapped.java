@@ -44,16 +44,16 @@ public class SendRequestActionMapped<T> extends SendRequestAction<T, BodySpecFun
      */
     public <R> SendRequestActionMapped<T> expectBody(String description, Function<T, R> f, Matcher<? super R> matcher) {
         checkNotNull(matcher);
-        return addExpectation(spec -> {
+        return addExpectation(new ExpectMatches(description, matcher).toString(), spec -> {
             var body = bodyFormat.getBody();
             assertThat(description, f.apply(body), matcher);
             return true;
-        }, new ExpectMatches(description, matcher).toString());
+        });
     }
 
     @Override
     void readBody() {
-        var ex = new Expectation<>(bodyFormat);
+        var ex = new Expectation.SimpleExpectation<>(bodyFormat.toString(), bodyFormat);
         try {
             ex.verify(responseSpec);
             logExpectation(ex).get().performAction(ex);

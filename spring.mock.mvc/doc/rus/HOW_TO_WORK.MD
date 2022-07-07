@@ -1,7 +1,7 @@
 # Работа с MockMVC
 
 - О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст).
-  Объект [контекста для работы со Spring MockMvc](https://tinkoffcreditsystems.github.io/neptune/spring.mock.mvc/ru/tinkoff/qa/neptune/spring/mock/mvc/MockMvcContext.html)
+  Объект [контекста для работы со Spring MockMvc](https://tinkoff.github.io/neptune/spring.mock.mvc/ru/tinkoff/qa/neptune/spring/mock/mvc/MockMvcContext.html)
   в примерах ниже вызывается статическим методом `mockMvcGet`
 
 - О принципах работы шагов, которые возвращают результат, можно прочитать
@@ -41,16 +41,21 @@ public class MyTest {
                 post("/some/path") //запрос
                         .contentType(APPLICATION_JSON) //и его параметры 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk()) //тут можно указать параметры ожидаемого ответа
-                .expect(content().string(containsString("SUCCESS"))) //проверка пройдет по всем 
+                .expect(StatusResultMatchers::isOk) //тут можно указать параметры ожидаемого ответа
+                .expect(content -> content.string(containsString("SUCCESS"))) //проверка пройдет по всем 
                 // указанным ожиданиям. Какие-то из них не будут удовлетворены,
                 //будет выброшено AssertError с описанием всех несоответствий
                 //Так же каждое отдельное несоответствие можно будет найти в отчете,
                 //логе или консоли
+                .expectStatus(200) //есть методы которые позволяют записывать  
+                .expectContent(containsString("SUCCESS")) //ожидания в упрощенном виде        
         );
     }
 }
 ```
+
+Методы, с помощью которых можно описать ожидаемый ответ, можно 
+[посмотреть в документации. Названия методов начинаются на _expect_](https://tinkoff.github.io/neptune/spring.mock.mvc/ru/tinkoff/qa/neptune/spring/mock/mvc/GetMockMvcResponseResultSupplier.html)
 
 Так же можно передавать значения `@Autowired`- полей или переменных пипа `MockMvc`
 
@@ -81,8 +86,8 @@ public class MyTest {
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
         );
     }
 }
@@ -148,8 +153,8 @@ public class MyTest {
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetStringContent() //указываем что нужно просто получить текстовое 
                 //содержимое тела ответа
                 .criteria("Описание критерия получаемого текста", s -> /*предикат, как работает критерий*/) 
@@ -185,8 +190,8 @@ public class MyTest {
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetBody(transformer, //указываем с помощью какого объекта происходит десериализация
                         Dto.class) //указываем, в объект какого класса должно быть десериализовано тело ответа
                 .criteria("Описание критерия, которому должно соответствовать тело", dto -> /*предикат, как работает критерий*/) 
@@ -216,8 +221,8 @@ public class MyTest {
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetBody(transformer, //указываем с помощью какого объекта происходит десериализация
                         new TypeReference<GenericDto<SomeType>>() {}) //указываем, в объект какого типа должно быть 
                         // десериализовано тело ответа
@@ -248,8 +253,8 @@ public class MyTest {
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetValue("Value of the field 'stringValue'", //описание объекта, который следует получить
                         transformer, //указываем с помощью какого объекта происходит десериализация
                         Dto.class, //указываем, в объект какого класса должно быть десериализовано тело ответа
@@ -280,8 +285,8 @@ public class MyTest {
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetValue("Value of the field 'stringValue'", //описание объекта, который следует получить
                         transformer, //указываем с помощью какого объекта происходит десериализация
                         new TypeReference<GenericDto<SomeType>>() {}, //указываем, в объект какого типа должно быть 
@@ -315,8 +320,8 @@ public class MyTest {
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetBody(Dto.class) //указываем, в объект какого класса должно быть десериализовано тело ответа
                 .criteria("Описание критерия, которому должно соответствовать тело", dto -> /*предикат, как работает критерий*/) 
                 //можно указать один или несколько критериев, которым должно соответствовать
@@ -344,8 +349,8 @@ public class MyTest {
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetBody(new TypeReference<GenericDto<SomeType>>() {}) //указываем, в объект какого типа должно быть 
                         // десериализовано тело ответа
                 .criteria("Описание критерия, которому должно соответствовать тело", dto -> /*предикат, как работает критерий*/) 
@@ -374,8 +379,8 @@ public class MyTest {
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetValue("Value of the field 'stringValue'", //описание объекта, который следует получить
                         Dto.class, //указываем, в объект какого класса должно быть десериализовано тело ответа
                         Dto::getStringValue) //описание получаемого результата в виде функции
@@ -403,8 +408,8 @@ public class MyTest {
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetValue("Value of the field 'stringValue'", //описание объекта, который следует получить
                         new TypeReference<GenericDto<SomeType>>() {}, //указываем, в объект какого типа должно быть 
                         // десериализовано тело ответа
@@ -443,8 +448,8 @@ public class MyTest {
             post("/some/path")
                     .contentType(APPLICATION_JSON)
                     .contentType("{\"someString 1\"}"))
-            .expect(status().isOk())
-            .expect(content().string(containsString("SUCCESS")))
+            .expectStatus(200)
+            .expectContent(containsString("SUCCESS"))
             .thenGetList("List of dto's", //описание списка, который следует получить
                     transformer, //указываем с помощью какого объекта происходит десериализация
                     DtoList.class) //указываем, в объект какого класса должно быть десериализовано тело ответа
@@ -480,8 +485,8 @@ public class MyTest {
               post("/some/path")
                       .contentType(APPLICATION_JSON)
                       .contentType("{\"someString 1\"}"))
-              .expect(status().isOk())
-              .expect(content().string(containsString("SUCCESS")))
+              .expectStatus(200)
+              .expectContent(containsString("SUCCESS"))
               .thenGetList("List of dto's", //описание списка, который следует получить
                       transformer, //указываем с помощью какого объекта происходит десериализация
                       new TypeReference<List<Dto>>() {}) //указываем, в объект 
@@ -517,8 +522,8 @@ public class MyTest {
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetList("Value of the field 'listValue'", //описание списка, который следует получить
                         transformer, //указываем с помощью какого объекта происходит десериализация
                         Dto.class, //указываем, в объект какого класса должно быть десериализовано тело ответа
@@ -554,8 +559,8 @@ public class MyTest {
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetList("Value of the field 'listValue'", //описание списка, который следует получить
                         transformer, //указываем с помощью какого объекта происходит десериализация
                         new TypeReference<GenericDto<SomeType>>() {}, //указываем, в объект какого типа должно быть 
@@ -594,8 +599,8 @@ public class MyTest {
             post("/some/path")
                     .contentType(APPLICATION_JSON)
                     .contentType("{\"someString 1\"}"))
-            .expect(status().isOk())
-            .expect(content().string(containsString("SUCCESS")))
+            .expectStatus(200)
+            .expectContent(containsString("SUCCESS"))
             .thenGetList("List of dto's", //описание списка, который следует получить
                     DtoList.class) //указываем, в объект какого класса должно быть десериализовано тело ответа
             //public class DtoList extends ArrayList<Dto>
@@ -629,8 +634,8 @@ public class MyTest {
               post("/some/path")
                       .contentType(APPLICATION_JSON)
                       .contentType("{\"someString 1\"}"))
-              .expect(status().isOk())
-              .expect(content().string(containsString("SUCCESS")))
+              .expectStatus(200)
+              .expectContent(containsString("SUCCESS"))
               .thenGetList("List of dto's", //описание списка, который следует получить
                       new TypeReference<List<Dto>>() {
                       }) //указываем, в объект 
@@ -665,8 +670,8 @@ public class MyTest {
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetList("Value of the field 'listValue'", //описание списка, который следует получить
                         Dto.class, //указываем, в объект какого класса должно быть десериализовано тело ответа
                         Dto::listValue) //описание получения списка в виде функции
@@ -700,8 +705,8 @@ public class MyTest {
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetList("Value of the field 'listValue'", //описание списка, который следует получить
                         new TypeReference<GenericDto<SomeType>>() {
                         }, //указываем, в объект какого типа должно быть 
@@ -742,8 +747,8 @@ public class MyTest {
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetArray("Array of dto's", //описание массива, который следует получить
                         transformer, //указываем с помощью какого объекта происходит десериализация
                         Dto[].class) //указываем, в объект какого класса должно быть десериализовано тело ответа
@@ -776,8 +781,8 @@ public class MyTest {
               post("/some/path")
                       .contentType(APPLICATION_JSON)
                       .contentType("{\"someString 1\"}"))
-              .expect(status().isOk())
-              .expect(content().string(containsString("SUCCESS")))
+              .expectStatus(200)
+              .expectContent(containsString("SUCCESS"))
               .thenGetArray("Array of dto's", //описание массива, который следует получить
                       transformer, //указываем с помощью какого объекта происходит десериализация
                       new TypeReference<GenericDto<SomeType>[]>() {}) //указываем, в объект 
@@ -811,8 +816,8 @@ public class MyTest {
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetArray("Value of the field 'arrayValue'", //описание массива, который следует получить
                         transformer, //указываем с помощью какого объекта происходит десериализация
                         Dto.class, //указываем, в объект какого класса должно быть десериализовано тело ответа
@@ -846,8 +851,8 @@ public class MyTest {
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetList("Value of the field 'arrayValue'", //описание массива, который следует получить
                         transformer, //указываем с помощью какого объекта происходит десериализация
                         new TypeReference<GenericDto<SomeType>>() {}, //указываем, в объект какого типа должно быть 
@@ -884,8 +889,8 @@ public class MyTest {
             post("/some/path")
                     .contentType(APPLICATION_JSON)
                     .contentType("{\"someString 1\"}"))
-            .expect(status().isOk())
-            .expect(content().string(containsString("SUCCESS")))
+            .expectStatus(200)
+            .expectContent(containsString("SUCCESS"))
             .thenGetArray("Array of dto's", //описание массива, который следует получить
                     Dto[].class) //указываем, в объект какого класса должно быть десериализовано тело ответа
             .criteria("Описание критерия, которому должен соответствовать " +
@@ -916,8 +921,8 @@ public class MyTest {
               post("/some/path")
                       .contentType(APPLICATION_JSON)
                       .contentType("{\"someString 1\"}"))
-              .expect(status().isOk())
-              .expect(content().string(containsString("SUCCESS")))
+              .expectStatus(200)
+              .expectContent(containsString("SUCCESS"))
               .thenGetArray("Array of dto's", //описание массива, который следует получить
                       new TypeReference<GenericDto<SomeType>[]>() {}) //указываем, в объект 
                       // какого типа должно быть десериализовано тело ответа
@@ -949,8 +954,8 @@ public class MyTest {
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetArray("Value of the field 'arrayValue'", //описание массива, который следует получить
                         Dto.class, //указываем, в объект какого класса должно быть десериализовано тело ответа
                         Dto::arrayValue) //описание получения массива в виде функции
@@ -982,8 +987,8 @@ public class MyTest {
             post("/some/path")
                     .contentType(APPLICATION_JSON)
                     .contentType("{\"someString 1\"}"))
-            .expect(status().isOk())
-            .expect(content().string(containsString("SUCCESS")))
+            .expectStatus(200)
+            .expectContent(containsString("SUCCESS"))
             .thenGetList("Value of the field 'arrayValue'", //описание массива, который следует получить
                     new TypeReference<GenericDto<SomeType>>() {
                     }, //указываем, в объект какого типа должно быть 
@@ -1024,8 +1029,8 @@ public class MyTest {
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetValueFromIterable("A value from list of dto's", //описание объекта, который следует получить
                         transformer, //указываем с помощью какого объекта происходит десериализация
                         DtoList.class) //указываем, в объект какого класса должно быть десериализовано тело ответа
@@ -1061,8 +1066,8 @@ public class MyTest {
               post("/some/path")
                       .contentType(APPLICATION_JSON)
                       .contentType("{\"someString 1\"}"))
-              .expect(status().isOk())
-              .expect(content().string(containsString("SUCCESS")))
+              .expectStatus(200)
+              .expectContent(containsString("SUCCESS"))
               .thenGetValueFromIterable("A value from list of dto's", //описание объекта, который следует получить
                       transformer, //указываем с помощью какого объекта происходит десериализация
                       new TypeReference<List<Dto>>() {}) //указываем, в объект 
@@ -1096,8 +1101,8 @@ public class MyTest {
                 post("/some/path")
                         .contentType(APPLICATION_JSON)
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetValueFromIterable("A value from  the field 'listValue'", //описание объекта, который следует получить
                         transformer, //указываем с помощью какого объекта происходит десериализация
                         Dto.class, //указываем, в объект какого класса должно быть десериализовано тело ответа
@@ -1133,8 +1138,8 @@ public class MyTest {
                 post("/some/path")
                         .contentType(APPLICATION_JSON)
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetValueFromIterable("A value from  the field 'listValue'", //описание объекта, который следует получить
                         transformer, //указываем с помощью какого объекта происходит десериализация
                         new TypeReference<GenericDto<SomeType>>() {}, //указываем, в объект какого типа должно быть 
@@ -1171,8 +1176,8 @@ public class MyTest {
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetValueFromIterable("A value from list of dto's", //описание объекта, который следует получить
                         DtoList.class) //указываем, в объект какого класса должно быть десериализовано тело ответа
                         //public class DtoList extends ArrayList<Dto>
@@ -1206,8 +1211,8 @@ public class MyTest {
               post("/some/path")
                       .contentType(APPLICATION_JSON)
                       .contentType("{\"someString 1\"}"))
-              .expect(status().isOk())
-              .expect(content().string(containsString("SUCCESS")))
+              .expectStatus(200)
+              .expectContent(containsString("SUCCESS"))
               .thenGetValueFromIterable("A value from list of dto's", //описание объекта, который следует получить
                       new TypeReference<List<Dto>>() {}) //указываем, в объект 
                       // какого типа должно быть десериализовано тело ответа
@@ -1239,8 +1244,8 @@ public class MyTest {
                 post("/some/path")
                         .contentType(APPLICATION_JSON)
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetValueFromIterable("A value from  the field 'listValue'", //описание объекта, который следует получить
                         Dto.class, //указываем, в объект какого класса должно быть десериализовано тело ответа
                         Dto::listValue) //описание получения списка в виде функции
@@ -1274,8 +1279,8 @@ public class MyTest {
                 post("/some/path")
                         .contentType(APPLICATION_JSON)
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetValueFromIterable("A value from  the field 'listValue'", //описание объекта, который следует получить
                         new TypeReference<GenericDto<SomeType>>() {}, //указываем, в объект какого типа должно быть 
                         // десериализовано тело ответа
@@ -1315,8 +1320,8 @@ public class MyTest {
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetValueFromArray("A value from array of dto's", //описание объекта, который следует получить
                         transformer, //указываем с помощью какого объекта происходит десериализация
                         Dto[].class) //указываем, в объект какого класса должно быть десериализовано тело ответа
@@ -1351,8 +1356,8 @@ public class MyTest {
               post("/some/path")
                       .contentType(APPLICATION_JSON)
                       .contentType("{\"someString 1\"}"))
-              .expect(status().isOk())
-              .expect(content().string(containsString("SUCCESS")))
+              .expectStatus(200)
+              .expectContent(containsString("SUCCESS"))
               .thenGetValueFromArray("A value from array of dto's", //описание объекта, который следует получить
                       transformer, //указываем с помощью какого объекта происходит десериализация
                       new TypeReference<GenericDto<SomeType>[]>() {}) //указываем, в объект 
@@ -1386,8 +1391,8 @@ public class MyTest {
                 post("/some/path")
                         .contentType(APPLICATION_JSON)
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetValueFromArray("A value from  the field 'arrayValue'", //описание объекта, который следует получить
                         transformer, //указываем с помощью какого объекта происходит десериализация
                         Dto.class, //указываем, в объект какого класса должно быть десериализовано тело ответа
@@ -1423,8 +1428,8 @@ public class MyTest {
                 post("/some/path")
                         .contentType(APPLICATION_JSON)
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetValueFromArray("A value from  the field 'arrayValue'", //описание объекта, который следует получить
                         transformer, //указываем с помощью какого объекта происходит десериализация
                         new TypeReference<GenericDto<SomeType>>() {}, //указываем, в объект какого типа должно быть 
@@ -1461,8 +1466,8 @@ public class MyTest {
                 post("/some/path") 
                         .contentType(APPLICATION_JSON) 
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetValueFromArray("A value from array of dto's", //описание объекта, который следует получить
                         transformer, //указываем с помощью какого объекта происходит десериализация
                         Dto[].class) //указываем, в объект какого класса должно быть десериализовано тело ответа
@@ -1496,8 +1501,8 @@ public class MyTest {
               post("/some/path")
                       .contentType(APPLICATION_JSON)
                       .contentType("{\"someString 1\"}"))
-              .expect(status().isOk())
-              .expect(content().string(containsString("SUCCESS")))
+              .expectStatus(200)
+              .expectContent(containsString("SUCCESS"))
               .thenGetValueFromArray("A value from array of dto's", //описание объекта, который следует получить
                       transformer, //указываем с помощью какого объекта происходит десериализация
                       new TypeReference<GenericDto<SomeType>[]>() {}) //указываем, в объект 
@@ -1530,8 +1535,8 @@ public class MyTest {
                 post("/some/path")
                         .contentType(APPLICATION_JSON)
                         .contentType("{\"someString 1\"}"))
-                .expect(status().isOk())
-                .expect(content().string(containsString("SUCCESS")))
+                .expectStatus(200)
+                .expectContent(containsString("SUCCESS"))
                 .thenGetValueFromArray("A value from  the field 'arrayValue'", //описание объекта, который следует получить
                         transformer, //указываем с помощью какого объекта происходит десериализация
                         Dto.class, //указываем, в объект какого класса должно быть десериализовано тело ответа
@@ -1566,8 +1571,8 @@ public class MyTest {
             post("/some/path")
                     .contentType(APPLICATION_JSON)
                     .contentType("{\"someString 1\"}"))
-            .expect(status().isOk())
-            .expect(content().string(containsString("SUCCESS")))
+            .expectStatus(200)
+            .expectContent(containsString("SUCCESS"))
             .thenGetValueFromArray("A value from  the field 'arrayValue'", //описание объекта, который следует получить
                     transformer, //указываем с помощью какого объекта происходит десериализация
                     new TypeReference<GenericDto<SomeType>>() {}, //указываем, в объект какого типа должно быть 

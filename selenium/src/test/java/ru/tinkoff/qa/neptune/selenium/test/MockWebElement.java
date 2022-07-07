@@ -138,7 +138,7 @@ public class MockWebElement implements WebElement, WrapsDriver {
     @Override
     public WebElement findElement(By by) {
         List<WebElement> result = findElements(by);
-        if (result.size() == 0) {
+        if (result.isEmpty()) {
             throw new NoSuchElementException(format("Can't locate element with locator %s", by));
         }
 

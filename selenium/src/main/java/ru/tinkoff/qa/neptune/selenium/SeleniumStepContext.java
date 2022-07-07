@@ -7,7 +7,6 @@ import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
-import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 import ru.tinkoff.qa.neptune.selenium.api.widget.*;
 import ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.HttpTraffic;
@@ -43,6 +42,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.asList;
 import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
 import static ru.tinkoff.qa.neptune.selenium.content.management.ContentManagementCommand.getCurrentCommand;
 import static ru.tinkoff.qa.neptune.selenium.functions.click.ClickActionSupplier.on;
 import static ru.tinkoff.qa.neptune.selenium.functions.cookies.RemoveCookiesActionSupplier.deleteCookies;
@@ -66,21 +66,35 @@ import static ru.tinkoff.qa.neptune.selenium.functions.windows.SetWindowPosition
 import static ru.tinkoff.qa.neptune.selenium.functions.windows.SetWindowPositionSupplier.setWindowPosition;
 import static ru.tinkoff.qa.neptune.selenium.functions.windows.SetWindowSizeSupplier.setSizeOf;
 import static ru.tinkoff.qa.neptune.selenium.functions.windows.SetWindowSizeSupplier.setWindowSize;
+import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
 
-@CreateWith(provider = SeleniumParameterProvider.class)
 public class SeleniumStepContext extends Context<SeleniumStepContext> implements WrapsDriver, ContextRefreshable,
-        TakesScreenshot, Stoppable {
+    TakesScreenshot, Stoppable {
 
-    private static final SeleniumStepContext context = getInstance(SeleniumStepContext.class);
-    private final WrappedWebDriver wrappedWebDriver;
+    private SupportedWebDrivers supportedWebDriver;
+    private WrappedWebDriver wrappedWebDriver;
     private HttpProxy proxy;
 
-    public SeleniumStepContext(SupportedWebDrivers supportedWebDriver) {
-        this.wrappedWebDriver = new WrappedWebDriver(supportedWebDriver);
+    private Capabilities currentCapabilities;
+
+    void refreshDriverIfNecessary() {
+        var requiredDriver = SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.get();
+        var requiredCapabilities = requiredDriver.getCapabilityType().get();
+
+        if (!requiredDriver.equals(supportedWebDriver) || !requiredCapabilities.equals(currentCapabilities)) {
+            if (wrappedWebDriver != null && wrappedWebDriver.isAlive()) {
+                wrappedWebDriver.shutDown();
+            }
+
+            wrappedWebDriver = new WrappedWebDriver(requiredDriver);
+            proxy = null;
+            supportedWebDriver = requiredDriver;
+            currentCapabilities = requiredCapabilities;
+        }
     }
 
     public static SeleniumStepContext inBrowser() {
-        return context;
+        return getCreatedContextOrCreate(SeleniumStepContext.class);
     }
 
     private HttpProxy getProxy() {
@@ -98,6 +112,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
 
     @Override
     public WebDriver getWrappedDriver() {
+        refreshDriverIfNecessary();
         return wrappedWebDriver.getWrappedDriver();
     }
 
@@ -288,17 +303,6 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
         return super.get(browserProxyGetStepSupplier);
     }
 
-    /**
-     * Starts over browser traffic recording
-     *
-     * @return self-reference
-     */
-    @Deprecated(forRemoval = true)
-    public SeleniumStepContext resetProxyRecording() {
-        enableAndRefreshNetwork();
-        return this;
-    }
-
     public SeleniumStepContext enableAndRefreshNetwork() {
         if (isNull(proxy)) {
             proxy = new HttpProxy(getDevTools());
@@ -310,6 +314,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     public DevTools getDevTools() {
+        refreshDriverIfNecessary();
         return wrappedWebDriver.getDevTools();
     }
 

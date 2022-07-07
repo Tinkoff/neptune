@@ -6,10 +6,10 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.nonNull;
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
 
 public class WebTestClientContext extends Context<WebTestClientContext> {
 
-    private static final WebTestClientContext context = getInstance(WebTestClientContext.class);
     private final WebTestClientProvider defaultWebTestClientProvider;
 
     public WebTestClientContext() {
@@ -17,7 +17,7 @@ public class WebTestClientContext extends Context<WebTestClientContext> {
     }
 
     static WebTestClientContext getContext() {
-        return context;
+        return getCreatedContextOrCreate(WebTestClientContext.class);
     }
 
     WebTestClient getDefaultWebTestClient() {

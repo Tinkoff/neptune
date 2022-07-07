@@ -13,12 +13,14 @@ import java.util.Optional;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @Description("Http response")
-public class Response<T> implements HttpResponse<T> {
+class Response<T, R> implements HttpResponse<T> {
 
     private final HttpResponse<T> response;
+    private final R calculated;
 
-    public Response(HttpResponse<T> response) {
+    Response(HttpResponse<T> response, R calculated) {
         this.response = response;
+        this.calculated = calculated;
     }
 
     @Override
@@ -63,5 +65,9 @@ public class Response<T> implements HttpResponse<T> {
 
     public String toString() {
         return translate(this) + " " + response.toString();
+    }
+
+    R getCalculated() {
+        return calculated;
     }
 }

@@ -2,8 +2,10 @@ package ru.tinkoff.qa.neptune.kafka;
 
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.StringSerializer;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
-import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 import ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier;
 import ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier;
 import ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier;
@@ -11,29 +13,34 @@ import ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier
 
 import java.util.List;
 
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
+import static ru.tinkoff.qa.neptune.kafka.properties.DefaultKafkaProperties.KAFKA_CONSUMER_PROPERTIES;
+import static ru.tinkoff.qa.neptune.kafka.properties.DefaultKafkaProperties.KAFKA_PRODUCER_PROPERTIES;
 
-@CreateWith(provider = KafkaParameterProvider.class)
+
 @SuppressWarnings("unchecked")
 public class KafkaStepContext extends Context<KafkaStepContext> {
-    private static final KafkaStepContext context = getInstance(KafkaStepContext.class);
-    private final KafkaProducer<String, String> producer;
-    private final KafkaConsumer<String, String> consumer;
-
-    public KafkaStepContext(KafkaProducer<String, String> producer, KafkaConsumer<String, String> consumer) {
-        this.producer = producer;
-        this.consumer = consumer;
-    }
+    private KafkaProducer<String, String> producer;
+    private KafkaConsumer<String, String> consumer;
 
     public static KafkaStepContext kafka() {
-        return context;
+        return getCreatedContextOrCreate(KafkaStepContext.class);
     }
 
-    public KafkaProducer<String, String> getProducer() {
+    KafkaProducer<String, String> getProducer() {
         return producer;
     }
 
-    public <K, V> KafkaConsumer<K, V> getConsumer() {
+    <K, V> KafkaConsumer<K, V> getConsumer() {
         return (KafkaConsumer<K, V>) consumer;
+    }
+
+    KafkaConsumer<String, String> createConsumer() {
+        return new KafkaConsumer<>(KAFKA_CONSUMER_PROPERTIES.get(), new StringDeserializer(), new StringDeserializer());
+    }
+
+    KafkaProducer<String, String> createProducer() {
+        return new KafkaProducer<>(KAFKA_PRODUCER_PROPERTIES.get(), new StringSerializer(), new StringSerializer());
     }
 
     /**
@@ -42,18 +49,35 @@ public class KafkaStepContext extends Context<KafkaStepContext> {
      * @param kafkaSendRecordsActionSupplier describes the object to be sent
      * @return self-reference
      */
+    @SuppressWarnings("unused")
     public KafkaStepContext send(KafkaSendRecordsActionSupplier<?, ?, ?> kafkaSendRecordsActionSupplier) {
-        return perform(kafkaSendRecordsActionSupplier);
+        producer = createProducer();
+        try (var producerVar = producer) {
+            return perform(kafkaSendRecordsActionSupplier);
+        } finally {
+            producer = null;
+        }
+    }
+
+    @SuppressWarnings("unused")
+    private <R> R pollPrivate(SequentialGetStepSupplier<KafkaStepContext, R, ?, ?, ?> pollStep) {
+        consumer = createConsumer();
+        try (var consumerVar = consumer) {
+            return get(pollStep);
+        } finally {
+            consumer = null;
+        }
     }
 
     /**
      * Polls topics and returns an array of values
+     *
      * @param kafkaPollArraySupplier describes an array to get
-     * @param <T> is a type of array item
+     * @param <T>                    is a type of array item
      * @return resulted array
      */
     public <T> T[] poll(KafkaPollArraySupplier<T, ?> kafkaPollArraySupplier) {
-        return get(kafkaPollArraySupplier);
+        return pollPrivate(kafkaPollArraySupplier);
     }
 
     /**
@@ -64,7 +88,7 @@ public class KafkaStepContext extends Context<KafkaStepContext> {
      * @return resulted value
      */
     public <T> T poll(KafkaPollIterableItemSupplier<T, ?> kafkaPollIterableItemSupplier) {
-        return get(kafkaPollIterableItemSupplier);
+        return pollPrivate(kafkaPollIterableItemSupplier);
     }
 
     /**
@@ -75,6 +99,6 @@ public class KafkaStepContext extends Context<KafkaStepContext> {
      * @return resulted list
      */
     public <T> List<T> poll(KafkaPollIterableSupplier<T, ?> kafkaPollIterableSupplier) {
-        return get(kafkaPollIterableSupplier);
+        return pollPrivate(kafkaPollIterableSupplier);
     }
 }

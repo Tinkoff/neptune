@@ -26,4 +26,4 @@ Integration of Neptune with [Spring Data](https://spring.io/projects/spring-data
 
 [Brief documentation in English](./doc/eng/README.MD)
 
-[API overview](https://tinkoffcreditsystems.github.io/neptune/spring.data/index.html)
+[API overview](https://tinkoff.github.io/neptune/spring.data/index.html)

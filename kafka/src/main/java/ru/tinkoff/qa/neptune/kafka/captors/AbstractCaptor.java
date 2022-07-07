@@ -21,7 +21,7 @@ public abstract class AbstractCaptor extends StringCaptor<List<String>> {
                 .map(o -> (String) o)
                 .collect(toList());
 
-        if (result.size() == 0) {
+        if (result.isEmpty()) {
             return null;
         }
 
@@ -32,12 +32,10 @@ public abstract class AbstractCaptor extends StringCaptor<List<String>> {
     public StringBuilder getData(List<String> list) {
         var stringBuilder = new StringBuilder();
 
-        list.forEach(item -> {
-            stringBuilder
-                    .append(item)
-                    .append("\r\n")
-                    .append("\r\n");
-        });
+        list.forEach(item -> stringBuilder
+            .append(item)
+            .append("\r\n")
+            .append("\r\n"));
 
         return stringBuilder;
     }

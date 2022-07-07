@@ -47,7 +47,7 @@ public interface MultipleEnumPropertySuppler<T extends Enum<?>> extends Property
                 .distinct()
                 .collect(toList());
 
-        if (result.size() == 0) {
+        if (result.isEmpty()) {
             return null;
         }
         return result;

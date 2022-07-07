@@ -20,7 +20,7 @@ final class BodyPartCapturedDataInjector implements CapturedDataInjector<List<Mu
 
             var headers = p.headers();
 
-            if (headers != null && headers.toMultimap().size() > 0) {
+            if (headers != null && !headers.toMultimap().isEmpty()) {
                 sb.append("\r\n");
                 headers.toMultimap().forEach((k, v) -> sb.append(k).append(": ").append(join(",", v)).append("\r\n"));
             }

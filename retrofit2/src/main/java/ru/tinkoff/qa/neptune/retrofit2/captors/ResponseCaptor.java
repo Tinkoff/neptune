@@ -27,7 +27,7 @@ public final class ResponseCaptor extends StringCaptor<Response> {
                 .append("Is redirect: ").append(caught.isRedirect()).append("\r\n");
 
         var headers = caught.headers().toMultimap();
-        if (headers.size() > 0) {
+        if (!headers.isEmpty()) {
             headers.forEach((k, v) -> sb.append(k).append(": ").append(join(",", v)).append("\r\n"));
         }
 

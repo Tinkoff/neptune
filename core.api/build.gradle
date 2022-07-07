@@ -1,20 +1,8 @@
-plugins {
-    id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
-}
-
-configurations {
-    agent
-}
-
 dependencies {
-    implementation group: 'org.objenesis', name: 'objenesis', version: '3.2'
-    implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.12.6'
     inpath(group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion)  {
         transitive = false
     }
-    api group: 'org.aspectj', name: 'aspectjrt', version: '1.9.6'
-    api group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.6'
-    agent group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.6'
+    testAspect(sourceSets.main.output)
 }
 
 java {
@@ -37,7 +25,6 @@ processResources {
 
 test {
     useTestNG() {
-        // runlist to executed. path is relative to current folder
         suites 'src/test/resources/suite.xml'
     }
 }
@@ -57,7 +44,7 @@ publishing {
                 packaging = 'jar'
                 name = 'core.api'
                 version = version
-                url = 'https://github.com/TinkoffCreditSystems/neptune'
+                url = 'https://github.com/tinkoff/neptune'
                 licenses {
                     license {
                         name = 'Apache License, Version 2.0'
@@ -73,9 +60,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
-                    developerConnection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
-                    url = 'https://github.com/TinkoffCreditSystems/neptune'
+                    connection = 'scm:git:ssh://git@github.com:tinkoff/neptune.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:tinkoff/neptune.git'
+                    url = 'https://github.com/tinkoff/neptune'
                 }
             }
         }
@@ -83,11 +70,11 @@ publishing {
 }
 
 javadoc {
-    destinationDir = file("${buildDir}/../../../neptune.documentation/javadocs/$project.name")
+    destinationDir = file("${buildDir}/../../neptune.documentation/$project.name")
 
     title = "Neptune Core API. v$globalVersion"
     options.author true
-    options.links 'http://download.oracle.com/javase/9/docs/api/'
+    options.links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
     options.addStringOption 'Xdoclint:none', '-quiet'
     options.memberLevel = JavadocMemberLevel.PROTECTED
     options.bottom = "Copyright &copy; 2022 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."

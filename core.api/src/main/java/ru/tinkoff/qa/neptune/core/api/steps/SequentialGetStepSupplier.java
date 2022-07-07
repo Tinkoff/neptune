@@ -353,22 +353,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     }
 
     Map<String, String> calculatedParameters() {
-        var result = new LinkedHashMap<String, String>();
-        if ((from instanceof SequentialGetStepSupplier<?, ?, ?, ?, ?>)
-                && this.getClass().getAnnotation(IncludeParamsOfInnerGetterStep.class) != null) {
-            var get = (SequentialGetStepSupplier<?, ?, ?, ?, ?>) from;
-            var additional = get.calculatedParameters();
-
-            if (additional.size() > 0) {
-                result.putAll(additional);
-            }
-        }
-
-        var additional = additionalParameters();
-        if (nonNull(additional) && additional.size() > 0) {
-            result.putAll(additional);
-        }
-        return result;
+        return new AdditionalParameterSupplier(from, this, this::additionalParameters).get();
     }
 
     /**
@@ -472,7 +457,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     protected abstract Function<M, R> getEndFunction();
 
-    Criteria<P> getCriteria() {
+    protected Criteria<P> getCriteria() {
         return condition;
     }
 

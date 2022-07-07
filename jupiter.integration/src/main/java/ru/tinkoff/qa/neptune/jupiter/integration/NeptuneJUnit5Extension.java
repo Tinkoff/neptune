@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.jupiter.integration;
 
 import org.junit.jupiter.api.extension.*;
-import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.core.api.hooks.ExecutionHook;
 
 import java.lang.reflect.Method;
@@ -10,6 +9,7 @@ import java.util.List;
 import static java.lang.Thread.currentThread;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable.REFRESHABLE_CONTEXTS;
+import static ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable.refreshContext;
 import static ru.tinkoff.qa.neptune.core.api.concurrency.BusyThreads.setBusy;
 import static ru.tinkoff.qa.neptune.core.api.concurrency.BusyThreads.setFree;
 import static ru.tinkoff.qa.neptune.core.api.dependency.injection.DependencyInjector.injectValues;
@@ -39,7 +39,10 @@ public final class NeptuneJUnit5Extension implements TestInstancePostProcessor,
 
     private void refresh(boolean condition) {
         if (!isRefreshed() && condition) {
-            REFRESHABLE_CONTEXTS.forEach(ContextRefreshable::refreshContext);
+            for (var rc : REFRESHABLE_CONTEXTS) {
+                refreshContext(rc);
+            }
+
             isRefreshed.set(true);
         }
     }

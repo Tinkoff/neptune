@@ -57,29 +57,23 @@ package org.my.pack;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
-import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 
-@CreateWith(provider = MyParameterProvider.class) //<-- Формирует параметры вызова конструктора
-//Предполагается, что для этого используются значения различных переменных окружения
-//среды, в которой выполняются тесты
-//
-//Если конструктор класса не имеет параметров, аннотацию можно не
-//указывать
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
+
+
 public class MyTestContext extends Context<MyTestContext> { //generic сигнатура для того,
     //чтобы предотвратить возможность шагам для других контекстов использовать
     //объекты данного класса
 
     //Рекомендуемый способ доступа до объектов контекста.
-    //Тут все параметры передаются неявно.
-    //Если для данного потока выполнения (Thread) уже был создан 
-    //объект данного класса - вернется этот объект.
     public static MyTestContext myTestContext() {
-        return getInstance(MyTestContext.class);
+        return getCreatedContextOrCreate(MyTestContext.class);
     }
 
-    //Конструктор может содержать параметры
-    protected MyTestContext(/*Параметры*/) {
-        //Логика инициализации
+    //Класс должен иметь объявленный public конструктор без параметров,
+    //или класс не должен иметь объявленные конструкторы
+    public MyTestContext() {
+        super();
     }
 
     // Простой пример того, как связать шаги, возвращающие результат, с данным контекстом,
@@ -114,19 +108,6 @@ public class MyTestContext extends Context<MyTestContext> { //generic сигна
 }
 ```
 
-```java
-package org.my.pack;
-
-import ru.tinkoff.qa.neptune.core.api.steps.context.ParameterProvider;
-
-public class MyParameterProvider implements ParameterProvider {
-    
-    @Override
-    public Object[] provide() {
-        //Создает параметры вызова конструктора MyTestContext
-    }
-}
-```
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 ## Шаги
@@ -1488,18 +1469,13 @@ package org.my.pack;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
-import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 
-@CreateWith(provider = MyParameterProvider.class)
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
+
 public class MyTestContext extends Context<MyTestContext> {
 
     public static MyTestContext myTestContext() {
-        return getInstance(MyTestContext.class);
-    }
-
-    //Конструктор может содержать параметры
-    protected MyTestContext(/*Параметры*/) {
-        //Логика инициализации
+        return getCreatedContextOrCreate(MyTestContext.class);
     }
 
     public <T> T retrieve(SequentialGetStepSupplier<MyTestContext, T, ?, ?, ?> getStepSupplier) {
@@ -1585,9 +1561,6 @@ public class SomeTest {
 
 #### Отсутствие/исчезновение
 
-
-  
-
 Доработаем контекст
 
 ```java
@@ -1596,20 +1569,15 @@ package org.my.pack;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
-import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 
 import java.time.Duration;
 
-@CreateWith(provider = MyParameterProvider.class)
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
+
 public class MyTestContext extends Context<MyTestContext> {
 
     public static MyTestContext myTestContext() {
-        return getInstance(MyTestContext.class);
-    }
-
-    //Конструктор может содержать параметры
-    protected MyTestContext(/*Параметры*/) {
-        //Логика инициализации
+        return getCreatedContextOrCreate(MyTestContext.class);
     }
 
     public <T> T retrieve(SequentialGetStepSupplier<MyTestContext, T, ?, ?, ?> getStepSupplier) {

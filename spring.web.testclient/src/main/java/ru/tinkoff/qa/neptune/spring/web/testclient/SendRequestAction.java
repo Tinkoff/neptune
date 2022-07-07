@@ -1,6 +1,11 @@
 package ru.tinkoff.qa.neptune.spring.web.testclient;
 
+import org.hamcrest.Matcher;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.CacheControl;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.*;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
@@ -12,6 +17,7 @@ import ru.tinkoff.qa.neptune.spring.web.testclient.expectation.descriptions.Expe
 import ru.tinkoff.qa.neptune.spring.web.testclient.expectation.descriptions.ExpectResponseHeaders;
 import ru.tinkoff.qa.neptune.spring.web.testclient.expectation.descriptions.ExpectResponseStatus;
 
+import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,6 +25,8 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.hamcrest.Matchers.equalTo;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableInOrder;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.BodySpecFunction.bodyMappedAs;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.GetArrayFromResponse.array;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.GetListFromResponse.list;
@@ -144,18 +152,15 @@ public abstract class SendRequestAction<B, F extends BodySpecFunction<B, ?, ?>, 
                 .performOn(webTestClientContext -> client);
     }
 
-    <T> SELF addExpectation(Function<WebTestClient.ResponseSpec, T> f, String description) {
-        assertions.add(new Expectation<>(new Function<WebTestClient.ResponseSpec, T>() {
-            @Override
-            public T apply(WebTestClient.ResponseSpec spec) {
-                return f.apply(spec);
-            }
+    <T> SELF addExpectation(String description, Function<WebTestClient.ResponseSpec, T> assertion) {
+        assertions.add(new Expectation.SimpleExpectation<>(description, assertion));
+        return (SELF) this;
+    }
 
-            @Override
-            public String toString() {
-                return description;
-            }
-        }));
+    <R, T> SELF addExpectation(String description,
+                               Function<WebTestClient.ResponseSpec, R> getObj,
+                               Function<R, T> assertion) {
+        assertions.add(new Expectation.ExpectationWithSpringAssertion<>(description, getObj, assertion));
         return (SELF) this;
     }
 
@@ -166,7 +171,58 @@ public abstract class SendRequestAction<B, F extends BodySpecFunction<B, ?, ?>, 
      * @return self-reference
      */
     public SELF expectStatus(Function<StatusAssertions, WebTestClient.ResponseSpec> statusCheck) {
-        return addExpectation(spec -> statusCheck.apply(spec.expectStatus()), new ExpectResponseStatus().toString());
+        return addExpectation(new ExpectResponseStatus().toString(),
+                WebTestClient.ResponseSpec::expectStatus,
+                statusCheck);
+    }
+
+    /**
+     * Assert the response status as an integer.
+     */
+    public SELF expectStatus(int code) {
+        return expectStatus(statusAssertions -> statusAssertions.isEqualTo(code));
+    }
+
+    /**
+     * Assert the response status as an {@link HttpStatus}.
+     */
+    public SELF expectStatus(HttpStatus status) {
+        return expectStatus(statusAssertions -> statusAssertions.isEqualTo(status));
+    }
+
+    /**
+     * Assert the response status code is in the 1xx range.
+     */
+    public SELF expectStatusIs1xxInformational() {
+        return expectStatus(StatusAssertions::is1xxInformational);
+    }
+
+    /**
+     * Assert the response status code is in the 2xx range.
+     */
+    public SELF expectStatusIs2xxSuccessful() {
+        return expectStatus(StatusAssertions::is2xxSuccessful);
+    }
+
+    /**
+     * Assert the response status code is in the 3xx range.
+     */
+    public SELF expectStatusIs3xxRedirection() {
+        return expectStatus(StatusAssertions::is3xxRedirection);
+    }
+
+    /**
+     * Assert the response status code is in the 4xx range.
+     */
+    public SELF expectStatusIs4xxClientError() {
+        return expectStatus(StatusAssertions::is4xxClientError);
+    }
+
+    /**
+     * Assert the response status code is in the 5xx range.
+     */
+    public SELF expectStatusIsis5xxServerError() {
+        return expectStatus(StatusAssertions::is5xxServerError);
     }
 
     /**
@@ -176,7 +232,131 @@ public abstract class SendRequestAction<B, F extends BodySpecFunction<B, ?, ?>, 
      * @return self-reference
      */
     public SELF expectHeader(Function<HeaderAssertions, WebTestClient.ResponseSpec> headerCheck) {
-        return addExpectation(spec -> headerCheck.apply(spec.expectHeader()), new ExpectResponseHeaders().toString());
+        return addExpectation(new ExpectResponseHeaders().toString(),
+                WebTestClient.ResponseSpec::expectHeader,
+                headerCheck);
+    }
+
+    /**
+     * Expect that the header with the given name is present.
+     */
+    public SELF expectHeader(String header) {
+        return expectHeader(headerAssertions -> headerAssertions.exists(header));
+    }
+
+    /**
+     * Assert the first value of the response header is the same as defined.
+     */
+    public SELF expectHeaderValue(String header, String value) {
+        return expectHeaderValue(header, equalTo(value));
+    }
+
+    /**
+     * Assert the first value of the response header with a Hamcrest {@link Matcher}.
+     */
+    public SELF expectHeaderValue(String header, Matcher<? super String> matcher) {
+        return expectHeader(headerAssertions -> headerAssertions.value(header, matcher));
+    }
+
+    /**
+     * Assert all values of the response header with a Hamcrest {@link Matcher}.
+     */
+    public SELF expectHeaderValues(String header, Matcher<? super Iterable<String>> matcher) {
+        return expectHeader(headerAssertions -> headerAssertions.values(header, matcher));
+    }
+
+    /**
+     * Assert all values of the response header are same as defined in the same order.
+     */
+    public SELF expectHeaderValues(String header, String... values) {
+        return expectHeaderValues(header, iterableInOrder(values));
+    }
+
+    /**
+     * Match the first value of the response header with a regex.
+     */
+    public SELF expectHeaderValueMatches(String header, String pattern) {
+        return expectHeader(headerAssertions -> headerAssertions.valueMatches(header, pattern));
+    }
+
+    /**
+     * Match all values of the response header with the given regex
+     * patterns which are applied to the values of the header in the
+     * same order. Note that the number of patterns must match the
+     * number of actual values.
+     */
+    public SELF expectHeaderValuesMatch(String header, String... patterns) {
+        return expectHeader(headerAssertions -> headerAssertions.valuesMatch(header, patterns));
+    }
+
+    /**
+     * Expect a "Cache-Control" header with the given value.
+     */
+    public SELF expectCacheControl(CacheControl cacheControl) {
+        return expectHeader(headerAssertions -> headerAssertions.cacheControl(cacheControl));
+    }
+
+    /**
+     * Expect a "Content-Disposition" header with the given value.
+     */
+    public SELF expectContentDisposition(ContentDisposition contentDisposition) {
+        return expectHeader(headerAssertions -> headerAssertions.contentDisposition(contentDisposition));
+    }
+
+    /**
+     * Expect a "Content-Length" header with the given value.
+     */
+    public SELF expectContentLength(long contentLength) {
+        return expectHeader(headerAssertions -> headerAssertions.contentLength(contentLength));
+    }
+
+    /**
+     * Expect a "Content-Type" header with the given value.
+     */
+    public SELF expectContentType(MediaType mediaType) {
+        return expectHeader(headerAssertions -> headerAssertions.contentType(mediaType));
+    }
+
+    /**
+     * Expect a "Content-Type" header with the given value.
+     */
+    public SELF expectContentType(String mediaType) {
+        return expectHeader(headerAssertions -> headerAssertions.contentType(mediaType));
+    }
+
+    /**
+     * Expect a "Content-Type" header compatible with the given value.
+     */
+    public SELF expectContentTypeCompatibleWith(MediaType mediaType) {
+        return expectHeader(headerAssertions -> headerAssertions.contentTypeCompatibleWith(mediaType));
+    }
+
+    /**
+     * Expect a "Content-Type" header compatible with the given value.
+     */
+    public SELF expectContentTypeCompatibleWith(String mediaType) {
+        return expectHeader(headerAssertions -> headerAssertions.contentTypeCompatibleWith(mediaType));
+    }
+
+    /**
+     * Expect an "Expires" header with the given value.
+     */
+    public SELF expectExpires(long expires) {
+        return expectHeader(headerAssertions -> headerAssertions.expires(expires));
+    }
+
+    /**
+     * Expect a "Last-Modified" header with the given value.
+     */
+    public SELF expectLastModified(long lastModified) {
+        return expectHeader(headerAssertions -> headerAssertions.lastModified(lastModified));
+    }
+
+    /**
+     * Expect a "Location" header with the given value.
+     */
+    public SELF expectLocation(String location) {
+        return expectHeader(headerAssertions -> headerAssertions.location(location));
     }
 
     /**
@@ -186,7 +366,86 @@ public abstract class SendRequestAction<B, F extends BodySpecFunction<B, ?, ?>, 
      * @return self-reference
      */
     public SELF expectCookie(Function<CookieAssertions, WebTestClient.ResponseSpec> cookieCheck) {
-        return addExpectation(spec -> cookieCheck.apply(spec.expectCookie()), new ExpectResponseCookies().toString());
+        return addExpectation(new ExpectResponseCookies().toString(),
+                WebTestClient.ResponseSpec::expectCookie,
+                cookieCheck);
+    }
+
+    /**
+     * Expect that the cookie with the given name is present.
+     */
+    public SELF expectCookie(String name) {
+        return expectCookie(cookieAssertions -> cookieAssertions.exists(name));
+    }
+
+    /**
+     * Expect a header with the given name to match the specified values.
+     */
+    public SELF expectCookieValue(String name, String value) {
+        return expectCookie(cookieAssertions -> cookieAssertions.valueEquals(name, value));
+    }
+
+    /**
+     * Assert the first value of the response cookie with a Hamcrest {@link Matcher}.
+     */
+    public SELF expectCookieValue(String name, Matcher<? super String> matcher) {
+        return expectCookie(cookieAssertions -> cookieAssertions.value(name, matcher));
+    }
+
+    /**
+     * Assert a cookie's maxAge attribute.
+     */
+    public SELF expectCookieMaxAge(String name, Duration expected) {
+        return expectCookie(cookieAssertions -> cookieAssertions.maxAge(name, expected));
+    }
+
+    /**
+     * Assert a cookie's maxAge attribute with a Hamcrest {@link Matcher}.
+     */
+    public SELF expectCookieMaxAge(String name, Matcher<? super Long> matcher) {
+        return expectCookie(cookieAssertions -> cookieAssertions.maxAge(name, matcher));
+    }
+
+    /**
+     * Assert a cookie's path attribute.
+     */
+    public SELF expectCookiePath(String name, String expected) {
+        return expectCookie(cookieAssertions -> cookieAssertions.path(name, expected));
+    }
+
+    /**
+     * Assert a cookie's path attribute with a Hamcrest {@link Matcher}.
+     */
+    public SELF expectCookiePath(String name, Matcher<? super String> matcher) {
+        return expectCookie(cookieAssertions -> cookieAssertions.path(name, matcher));
+    }
+
+    /**
+     * Assert a cookie's domain attribute.
+     */
+    public SELF expectCookieDomain(String name, String expected) {
+        return expectCookie(cookieAssertions -> cookieAssertions.domain(name, expected));
+    }
+
+    /**
+     * Assert a cookie's domain attribute with a Hamcrest {@link Matcher}.
+     */
+    public SELF expectCookieDomain(String name, Matcher<? super String> matcher) {
+        return expectCookie(cookieAssertions -> cookieAssertions.domain(name, matcher));
+    }
+
+    /**
+     * Assert a cookie's secure attribute.
+     */
+    public SELF expectCookieSecure(String name, boolean expected) {
+        return expectCookie(cookieAssertions -> cookieAssertions.secure(name, expected));
+    }
+
+    /**
+     * Assert a cookie's httpOnly attribute.
+     */
+    public SELF expectCookieHttpOnly(String name, boolean expected) {
+        return expectCookie(cookieAssertions -> cookieAssertions.httpOnly(name, expected));
     }
 
     abstract void readBody();
@@ -209,7 +468,7 @@ public abstract class SendRequestAction<B, F extends BodySpecFunction<B, ?, ?>, 
         });
 
         result = bodyFormat.exchangeResult();
-        if (errors.size() == 0) {
+        if (errors.isEmpty()) {
             return;
         }
 

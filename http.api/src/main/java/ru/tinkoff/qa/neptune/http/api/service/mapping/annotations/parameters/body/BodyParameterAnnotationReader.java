@@ -117,18 +117,6 @@ public final class BodyParameterAnnotationReader {
                                     return body((Supplier<InputStream>) bodyValue);
                                 }
 
-                                if (org.w3c.dom.Document.class.isAssignableFrom(cls)) {
-                                    return body((org.w3c.dom.Document) bodyValue);
-                                }
-
-                                if (org.jsoup.nodes.Document.class.isAssignableFrom(cls)) {
-                                    return body((org.jsoup.nodes.Document) bodyValue);
-                                }
-
-                                if (org.w3c.dom.Document.class.isAssignableFrom(cls)) {
-                                    return body((org.jsoup.nodes.Document) bodyValue);
-                                }
-
                                 if (FormParameter[].class.isAssignableFrom(cls)) {
                                     return body((FormParameter[]) bodyValue);
                                 }
@@ -223,7 +211,7 @@ public final class BodyParameterAnnotationReader {
                         }
                     }
 
-                    if (form.size() > 0) {
+                    if (!form.isEmpty()) {
                         return body(form.toArray(new FormParameter[]{}));
                     }
                     return null;
@@ -355,7 +343,7 @@ public final class BodyParameterAnnotationReader {
                                         });
                     }
 
-                    if (partList.size() > 0) {
+                    if (!partList.isEmpty()) {
                         return body(randomAlphanumeric(15), partList.toArray(new BodyPart[]{}));
                     }
                     return null;

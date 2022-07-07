@@ -25,4 +25,4 @@ Integration of Neptune with [Apache Kafka](https://kafka.apache.org/).
 
 [Brief documentation in English](./doc/eng/README.MD)
 
-[API overview](https://tinkoffcreditsystems.github.io/neptune/kafka/index.html)
+[API overview](https://tinkoff.github.io/neptune/kafka/index.html)

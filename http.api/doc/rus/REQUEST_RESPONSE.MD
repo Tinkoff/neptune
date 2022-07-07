@@ -4,27 +4,20 @@
 форматы передачи информации в теле запроса и форматы получения информации в теле ответа.
 
 - О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст). 
-  Объект [контекста для работы с http протоколом](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/HttpStepContext.html)
+  Объект [контекста для работы с http протоколом](https://tinkoff.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/HttpStepContext.html)
   в примерах ниже вызывается статическим методом `ru.tinkoff.qa.neptune.http.api.HttpStepContext#http`
 
 - О принципах работы шагов, которые возвращают результат, можно
   прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги-которые-возвращают-результат).
   
 ## Оглавление
-* [Простая отправка http запроса и получение ответа. На примерах, когда используется только URI](#Простая-отправка-http-запроса-и-получение-ответа-На-примерах-когда-используется-только-URI)
-  + [POST](#post)
-  + [GET](#get)
-  + [PUT](#put)
-  + [DELETE](#delete)
-  + [Любой метод](#Любой-метод)
+* [Простая отправка http запроса и получение ответа](#Простая-отправка-http-запроса-и-получение-ответа)
 * [Тело запроса на примере POST](#Тело-запроса-на-примере-POST)
   + [Массив байтов](#Массив-байтов)
   + [Файл](#Файл)
   + [Строка/Текст](#СтрокаТекст)
   + [Поток данных. InputStream.](#Поток-данных-InputStream)
   + [Форма. application/x-www-form-urlencoded.](#Форма-applicationx-www-form-urlencoded)
-  + [org.w3c.dom.Document.](#orgw3cdomDocument)
-  + [org.jsoup.nodes.Document.](#orgjsoupnodesDocument)
   + [Сериализованные объекты](#Сериализованные-объекты)
   + [Multipart](#multipart)
     - [Форматы](#Форматы)
@@ -35,8 +28,6 @@
   + [Формат тела ответа на примере POST](#Формат-тела-ответа-на-примере-POST)
     - [Объекты, десериализованные из JSON-строки](#Объекты-десериализованные-из-JSON-строки)
     - [Объекты, десериализованные из XML-строки](#Объекты-десериализованные-из-XML-строки)
-    - [Тело ответа как org.w3c.dom.Document](#Тело-ответа-как-orgw3cdomdocument)
-    - [Тело ответа как org.jsoup.nodes.Document](#Тело-ответа-как-orgjsoupnodesdocument)
     - [Описание своего формата](#Описание-своего-формата)
   + [Варианты получения данных тела ответа на примере GET](#Варианты-получения-данных-тела-ответа-на-примере-GET)
     - [Получение данных тела ответа как Java-объект](#Получение-данных-тела-ответа-как-Java-объект)
@@ -45,975 +36,74 @@
     - [Получение данных тела ответа как List](#Получение-данных-тела-ответа-как-List)
     - [Получение данных тела ответа как массив](#Получение-данных-тела-ответа-как-массив)
 
-## Простая отправка http запроса и получение ответа. На примерах, когда используется только URI
+## Простая отправка http запроса и получение ответа
 
-### POST
-
-
-  
-
-```java
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем POST-запрос. Endpoint указывается в виде строки полностью.
-        //Запрос без тела/с пустым телом
-        //Ответ вернется без тела
-        http().responseOf(POST("http://my.api.com/some/path?q1=val1&q2=val2"));
-    }
-}
-
-```
-
-```java
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем POST-запрос. Endpoint указывается в виде строки полностью.
-        //Запрос с телом, переданным как текст 
-        //Ответ вернется без тела
-        http().responseOf(POST("http://my.api.com/some/path?q1=val1&q2=val2", "String body"));
-    }
-}
-
-```
-
-```java
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем POST-запрос. Endpoint указывается в виде строки полностью.
-        //Запрос без тела/с пустым телом
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(POST("http://my.api.com/some/path?q1=val1&q2=val2"), ofString());
-    }
-}
-
-```
-
-```java
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем POST-запрос. Endpoint указывается в виде строки полностью.
-        //Запрос с телом, переданным как текст 
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(POST("http://my.api.com/some/path?q1=val1&q2=val2", "String body"), ofString());
-    }
-}
-
-```
+Важно: [настройка END_POINT_OF_TARGET_API](./SETTINGS.MD#END_POINT_OF_TARGET_API)
 
 ```java
 import java.net.URI;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем POST-запрос. Endpoint указывается в виде URI.
-        //Запрос без тела/с пустым телом
-        //Ответ вернется без тела
-        http().responseOf(POST(endPoint));
-    }
-}
-
-```
-
-```java
-import java.net.URI;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем POST-запрос. Endpoint указывается в виде URI.
-        //Запрос с телом, переданным как текст 
-        //Ответ вернется без тела
-        http().responseOf(POST(endPoint, "String body"));
-    }
-}
-
-```
-
-```java
-import java.net.URI;
-
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем POST-запрос. Endpoint указывается в виде URI.
-        //Запрос без тела/с пустым телом
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(POST(endPoint), ofString());
-    }
-}
-
-```
-
-```java
-import java.net.URI;
-
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем POST-запрос. Endpoint указывается в виде URI.
-        //Запрос с телом, переданным как текст 
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(POST(endPoint, "String body"), ofString());
-    }
-}
-
-```
-
-```java
 import java.net.URL;
 
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import java.net.http.HttpResponse;
+
+import static java.net.http.HttpResponse.BodyHandlers.ofString;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
 
-    @Test
+    @Test(description = "отправка запроса и получение ответа. На примере POST")
     public void myTest() throws Exception {
-        var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем POST-запрос. Endpoint указывается в виде URL.
-        //Запрос без тела/с пустым телом
-        //Ответ вернется без тела
-        http().responseOf(POST(endPoint));
+        //если значение настройки END_POINT_OF_TARGET_API заполнено,
+        //и запрос должен выполниться по этому адресу, то достаточно 
+        http().responseOf(POST() //указать, какой метод следует вызвать
+                .relativePath("/some/path") //дополнить запрос значением path (относительно базового URI) 
+                .queryParam("q1", false, "val1") //дополнить запрос 
+                .queryParam("q2", false, "val2")); //параметрами query
+        
+        //Можно передать базовый URI в виде строки,
+        //которая включает схему, хост, порт (опционально) 
+        // и контекстный путь (опционально)
+        http().responseOf(POST()
+                .baseURI("http://my.api.com/context/path")
+                .relativePath("/some/path") //дополнить запрос значением path (относительно базового URI) 
+                .queryParam("q1", false, "val1") //дополнить запрос 
+                .queryParam("q2", false, "val2")); //параметрами query
+      
+      
+        
+        //Так же в качестве базового URI можно передать объекты URL или URI
+        //Объекты должны включать схему, хост, порт (опционально) 
+        // и контекстный путь (опционально)
+        var baseURI = URI.create("http://my.api.com/context/path");
+        var baseURL = new URL("http://my.api.com/context/path");
+
+        http().responseOf(POST()
+                .baseURI(baseURI)
+                .relativePath("/some/path") 
+                .queryParam("q1", false, "val1") 
+                .queryParam("q2", false, "val2"));
+
+        http().responseOf(POST()
+                .baseURI(basetURL)
+                .relativePath("/some/path")
+                .queryParam("q1", false, "val1")
+                .queryParam("q2", false, "val2"));
+
+        //пример передачи http-запроса с телом
+        http().responseOf(POST("String body"));
+        
+        //указание, в каком формате прочитать тело ответа
+        //в данным случае тело ответа будет представлено в виде строки
+        HttpResponse<String> response = http().responseOf(POST()
+                .responseBodyHandler(ofString()));
     }
 }
 
 ```
 
-```java
-import java.net.URL;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() throws Exception {
-        var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем POST-запрос. Endpoint указывается в виде URL.
-        //Запрос с телом, переданным как текст 
-        //Ответ вернется без тела
-        http().responseOf(POST(endPoint, "String body"));
-    }
-}
-
-```
-
-```java
-import java.net.URL;
-
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() throws Exception {
-        var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем POST-запрос. Endpoint указывается в виде URL.
-        //Запрос без тела/с пустым телом
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(POST(endPoint), ofString());
-    }
-}
-
-```
-
-```java
-import java.net.URL;
-
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() throws Exception {
-        var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем POST-запрос. Endpoint указывается в виде URL.
-        //Запрос с телом, переданным как текст 
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(POST(endPoint, "String body"), ofString());
-    }
-}
-
-```
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
-
-### GET
-
-
-  
-
-```java
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем GET-запрос. Endpoint указывается в виде строки полностью.
-        //Ответ вернется без тела
-        http().responseOf(GET("http://my.api.com/some/path?q1=val1&q2=val2"));
-    }
-}
-
-```
-
-```java
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем GET-запрос. Endpoint указывается в виде строки полностью.
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(GET("http://my.api.com/some/path?q1=val1&q2=val2"), ofString());
-    }
-}
-
-```
-
-```java
-import java.net.URI;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем GET-запрос. Endpoint указывается в виде URI.
-        //Ответ вернется без тела
-        http().responseOf(GET(endPoint));
-    }
-}
-
-```
-
-```java
-import java.net.URI;
-
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем GET-запрос. Endpoint указывается в виде URI.
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(GET(endPoint), ofString());
-    }
-}
-
-```
-
-```java
-import java.net.URL;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() throws Exception {
-        var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем GET-запрос. Endpoint указывается в виде URL.
-        //Ответ вернется без тела
-        http().responseOf(GET(endPoint));
-    }
-}
-
-```
-
-```java
-import java.net.URL;
-
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() throws Exception {
-        var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем GET-запрос. Endpoint указывается в виде URL.
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(GET(endPoint), ofString());
-    }
-}
-
-```
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
-
-### PUT
-
-
-  
-
-```java
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.PUT;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем PUT-запрос. Endpoint указывается в виде строки полностью.
-        //Запрос без тела/с пустым телом
-        //Ответ вернется без тела
-        http().responseOf(PUT("http://my.api.com/some/path?q1=val1&q2=val2"));
-    }
-}
-
-```
-
-```java
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.PUT;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем PUT-запрос. Endpoint указывается в виде строки полностью.
-        //Запрос с телом, переданным как текст 
-        //Ответ вернется без тела
-        http().responseOf(PUT("http://my.api.com/some/path?q1=val1&q2=val2", "String body"));
-    }
-}
-
-```
-
-```java
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.PUT;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем PUT-запрос. Endpoint указывается в виде строки полностью.
-        //Запрос без тела/с пустым телом
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(PUT("http://my.api.com/some/path?q1=val1&q2=val2"), ofString());
-    }
-}
-
-```
-
-```java
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.PUT;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем PUT-запрос. Endpoint указывается в виде строки полностью.
-        //Запрос с телом, переданным как текст 
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(PUT("http://my.api.com/some/path?q1=val1&q2=val2", "String body"), ofString());
-    }
-}
-
-```
-
-```java
-import java.net.URI;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.PUT;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем PUT-запрос. Endpoint указывается в виде URI.
-        //Запрос без тела/с пустым телом
-        //Ответ вернется без тела
-        http().responseOf(PUT(endPoint));
-    }
-}
-
-```
-
-```java
-import java.net.URI;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.PUT;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем PUT-запрос. Endpoint указывается в виде URI.
-        //Запрос с телом, переданным как текст 
-        //Ответ вернется без тела
-        http().responseOf(PUT(endPoint, "String body"));
-    }
-}
-
-```
-
-```java
-import java.net.URI;
-
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.PUT;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем PUT-запрос. Endpoint указывается в виде URI.
-        //Запрос без тела/с пустым телом
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(PUT(endPoint), ofString());
-    }
-}
-
-```
-
-```java
-import java.net.URI;
-
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.PUT;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем PUT-запрос. Endpoint указывается в виде URI.
-        //Запрос с телом, переданным как текст 
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(PUT(endPoint, "String body"), ofString());
-    }
-}
-
-```
-
-```java
-import java.net.URL;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.PUT;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() throws Exception {
-        var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем PUT-запрос. Endpoint указывается в виде URL.
-        //Запрос без тела/с пустым телом
-        //Ответ вернется без тела
-        http().responseOf(PUT(endPoint));
-    }
-}
-
-```
-
-```java
-import java.net.URL;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.PUT;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() throws Exception {
-        var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем PUT-запрос. Endpoint указывается в виде URL.
-        //Запрос с телом, переданным как текст 
-        //Ответ вернется без тела
-        http().responseOf(PUT(endPoint, "String body"));
-    }
-}
-
-```
-
-```java
-import java.net.URL;
-
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.PUT;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() throws Exception  {
-        var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем PUT-запрос. Endpoint указывается в виде URL.
-        //Запрос без тела/с пустым телом
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(PUT(endPoint), ofString());
-    }
-}
-
-```
-
-```java
-import java.net.URL;
-
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.PUT;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() throws Exception {
-        var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем PUT-запрос. Endpoint указывается в виде URL.
-        //Запрос с телом, переданным как текст 
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(PUT(endPoint, "String body"), ofString());
-    }
-}
-
-```
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
-
-### DELETE
-
-
-  
-
-```java
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.DELETE;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем DELETE-запрос. Endpoint указывается в виде строки полностью.
-        //Ответ вернется без тела
-        http().responseOf(DELETE("http://my.api.com/some/path?q1=val1&q2=val2"));
-    }
-}
-
-```
-
-```java
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.DELETE;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем DELETE-запрос. Endpoint указывается в виде строки полностью.
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(DELETE("http://my.api.com/some/path?q1=val1&q2=val2"), ofString());
-    }
-}
-
-```
-
-```java
-import java.net.URI;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.DELETE;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем DELETE-запрос. Endpoint указывается в виде URI.
-        //Ответ вернется без тела
-        http().responseOf(DELETE(endPoint));
-    }
-}
-
-```
-
-```java
-import java.net.URI;
-
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.DELETE;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем DELETE-запрос. Endpoint указывается в виде URI.
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(DELETE(endPoint), ofString());
-    }
-}
-
-```
-
-```java
-import java.net.URL;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.DELETE;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() throws Exception {
-        var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем DELETE-запрос. Endpoint указывается в виде URL.
-        //Ответ вернется без тела
-        http().responseOf(DELETE(endPoint));
-    }
-}
-
-```
-
-```java
-import java.net.URL;
-
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.DELETE;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() throws Exception {
-        var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем DELETE-запрос. Endpoint указывается в виде URL.
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(DELETE(endPoint), ofString());
-    }
-}
-
-```
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
-
-### Любой метод
-
-
-  
-
-Выше перечислены варианты использования типовых http-методов (POST, GET, PUT, DELETE). Но есть еще такие методы, как
-TRACE, HEAD и т.п. Они реже используются. Чисто теоретически, можно реализовать свой собственный метод протокола http.
-Так же, из собственной практики, встречаются нетипичные примеры использования методов POST, GET, PUT или DELETE.
-Например, DELETE-метод с отправкой тела. Для подобных случаев предусмотрены следующие варианты
-
-```java
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.METHOD;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем некий SOME_METHOD-запрос. Endpoint указывается в виде строки полностью.
-        //Запрос без тела/с пустым телом
-        //Ответ вернется без тела
-        http().responseOf(METHOD("SOME_METHOD", "http://my.api.com/some/path?q1=val1&q2=val2"));
-    }
-}
-
-```
-
-```java
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.METHOD;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем некий SOME_METHOD-запрос. Endpoint указывается в виде строки полностью.
-        //Запрос с телом, переданным как текст 
-        //Ответ вернется без тела
-        http().responseOf(METHOD("SOME_METHOD", "http://my.api.com/some/path?q1=val1&q2=val2", "String body"));
-    }
-}
-
-```
-
-```java
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.METHOD;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем некий SOME_METHOD-запрос. Endpoint указывается в виде строки полностью.
-        //Запрос без тела/с пустым телом
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(METHOD("SOME_METHOD", "http://my.api.com/some/path?q1=val1&q2=val2"), ofString());
-    }
-}
-
-```
-
-```java
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.METHOD;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        //Выполняем некий SOME_METHOD-запрос. Endpoint указывается в виде строки полностью.
-        //Запрос с телом, переданным как текст 
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(METHOD("SOME_METHOD", "http://my.api.com/some/path?q1=val1&q2=val2", "String body"), ofString());
-    }
-}
-
-```
-
-```java
-import java.net.URI;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.METHOD;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем некий SOME_METHOD-запрос. Endpoint указывается в виде URI.
-        //Запрос без тела/с пустым телом
-        //Ответ вернется без тела
-        http().responseOf(METHOD("SOME_METHOD", endPoint));
-    }
-}
-
-```
-
-```java
-import java.net.URI;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.METHOD;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем некий SOME_METHOD-запрос. Endpoint указывается в виде URI.
-        //Запрос с телом, переданным как текст 
-        //Ответ вернется без тела
-        http().responseOf(METHOD("SOME_METHOD", endPoint, "String body"));
-    }
-}
-
-```
-
-```java
-import java.net.URI;
-
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.METHOD;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем некий SOME_METHOD-запрос. Endpoint указывается в виде URI.
-        //Запрос без тела/с пустым телом
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(METHOD("SOME_METHOD", endPoint), ofString());
-    }
-}
-
-```
-
-```java
-import java.net.URI;
-
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.METHOD;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем некий SOME_METHOD-запрос. Endpoint указывается в виде URI.
-        //Запрос с телом, переданным как текст 
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(METHOD("SOME_METHOD", endPoint, "String body"), ofString());
-    }
-}
-
-```
-
-```java
-import java.net.URL;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.METHOD;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() throws Exception {
-        var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем некий SOME_METHOD-запрос. Endpoint указывается в виде URL.
-        //Запрос без тела/с пустым телом
-        //Ответ вернется без тела
-        http().responseOf(METHOD("SOME_METHOD", endPoint));
-    }
-}
-
-```
-
-```java
-import java.net.URL;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.METHOD;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() throws Exception {
-        var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем некий SOME_METHOD-запрос. Endpoint указывается в виде URL.
-        //Запрос с телом, переданным как текст 
-        //Ответ вернется без тела
-        http().responseOf(METHOD("SOME_METHOD", endPoint, "String body"));
-    }
-}
-
-```
-
-```java
-import java.net.URL;
-
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.METHOD;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() throws Exception {
-        var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем некий SOME_METHOD-запрос. Endpoint указывается в виде URL.
-        //Запрос без тела/с пустым телом
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(METHOD("SOME_METHOD", endPoint), ofString());
-    }
-}
-
-```
-
-```java
-import java.net.URL;
-
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.METHOD;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() throws Exception {
-        var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Выполняем некий SOME_METHOD-запрос. Endpoint указывается в виде URL.
-        //Запрос с телом, переданным как текст 
-        //Ответ вернется c телом, интерпретированным/прочитанным как текст
-        http().responseOf(METHOD("SOME_METHOD", endPoint, "String body"), ofString());
-    }
-}
-
-```
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+Варианты выполняемых запросов и их параметров можно посмотреть [в документе](https://tinkoff.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/request/RequestBuilderFactory.html)
 
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
@@ -1025,42 +115,33 @@ public class MyTest {
 
 ### Массив байтов
 
-
-  
-
 ```java
-import java.net.URI;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
         var body = new byte[]{/*Какой-то контент*/};
-        http().responseOf(POST(endPoint, body));
+        http().responseOf(POST(body));
     }
 }
 
 ```
 
 ```java
-import java.net.URI;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
         var body = new byte[]{/*Какой-то контент*/};
         int requiredLength; //Нужная длина под-массива, который надо передать
         int offset; //Смещение относительно начала всего массива body
-        http().responseOf(POST(endPoint, body, requiredLength, offset));
+        http().responseOf(POST(body, requiredLength, offset));
     }
 }
 
@@ -1071,42 +152,35 @@ public class MyTest {
 
 ### Файл
 
-
-  
-
 ```java
 import java.io.File;
-import java.net.URI;
 
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
         var body = new File(/* путь к файлу или другие параметры конструктора*/);
-        http().responseOf(POST(endPoint, body));
+        http().responseOf(POST(body));
     }
 }
 
 ```
 
 ```java
-import java.net.URI;
 import java.nio.file.Path;
 
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
         var body = Path.of(/*параметры вызова*/);
-        http().responseOf(POST(endPoint, body));
+        http().responseOf(POST(body));
     }
 }
 
@@ -1117,40 +191,32 @@ public class MyTest {
 
 ### Строка/Текст
 
-
-  
-
 ```java
-import java.net.URI;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        http().responseOf(POST(endPoint, "Some text"));
+        http().responseOf(POST("Some text"));
     }
 }
 
 ```
 
 ```java
-import java.net.URI;
 import java.nio.charset.Charset;
 
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
         var charset = Charset.forName(/* Имя набора символов */);
-        http().responseOf(POST(endPoint, body, charset));
+        http().responseOf(POST(body, charset));
     }
 }
 
@@ -1161,24 +227,19 @@ public class MyTest {
 
 ### Поток данных. InputStream.
 
-
-  
-
 ```java
 import java.io.InputStream;
-import java.net.URI;
 
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
         //Вариант, когда отправляется уже где-то полученный InputStream
         InputStream inputStream; //как-то присваиваем значение
-        http().responseOf(POST(endPoint, inputStream));
+        http().responseOf(POST(inputStream));
     }
 }
 
@@ -1186,23 +247,21 @@ public class MyTest {
 
 ```java
 import java.io.InputStream;
-import java.net.URI;
 import java.util.function.Supplier;
 
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
         //Вариант, с отложенным получением InputStream
         Supplier<InputStream> supplier = () -> {
             //алгоритм описания получения InputStream.
             //Сработает в момент отправки запроса
         };
-        http().responseOf(POST(endPoint, supplier));
+        http().responseOf(POST(supplier));
     }
 }
 
@@ -1213,26 +272,20 @@ public class MyTest {
 
 ### Форма. application/x-www-form-urlencoded.
 
-
-  
-
 ```java
-import java.net.URI;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper.JSON;
 import static ru.tinkoff.qa.neptune.http.api.request.FormValueDelimiters.COMMA;
 import static ru.tinkoff.qa.neptune.http.api.request.FormValueDelimiters.SPACE;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        http().responseOf(POST(endPoint,
+        http().responseOf(POST(
                 //передается параметр формы param1, имеющий множественные значение "value1", "value2", "value3"
                 //у которых зарезервированные символы (allowReserved=false) будут перекодированы
                 formParameter("param1", false, "value1", "value2", "value3"),
@@ -1264,162 +317,68 @@ public class MyTest {
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-
-### org.w3c.dom.Document.
-
-
-  
-
-```java
-import org.w3c.dom.Document;
-
-import java.net.URI;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        Document doc; //Считаем что значение как-то инициализируется
-        http().responseOf(POST(endPoint, doc));
-    }
-}
-
-```
-
-```java
-import org.w3c.dom.Document;
-
-import javax.xml.transform.Transformer;
-import java.net.URI;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        Document doc; //Считаем что значение как-то инициализируется
-        Transformer transformer; //Считаем что значение как-то инициализируется
-        http().responseOf(POST(endPoint, doc, transformer));
-    }
-}
-
-```
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
-
-### org.jsoup.nodes.Document.
-
-
-  
-
-```java
-import org.jsoup.nodes.Document;
-
-import java.net.URI;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        Document doc; //Считаем что значение как-то инициализируется
-        http().responseOf(POST(endPoint, doc));
-    }
-}
-
-```
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
-
 ### Сериализованные объекты
-
-
-  
 
 Объекты, как правило, сериализуются в JSON или XML строки, чтобы быть переданными в качестве тела запроса
 
 ```java
-import java.net.URI;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
         //Сериализация объекта в JSON-строку и передача в качестве тела
-        http().responseOf(POST(endPoint, new ObjectMapper(), someObject));
+        http().responseOf(POST(new ObjectMapper(), someObject));
     }
 }
 ```
 
 ```java
-import java.net.URI;
-
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
         //Сериализация объекта в XML-строку и передача в качестве тела
-        http().responseOf(POST(endPoint, new XmlMapper(), someObject));
+        http().responseOf(POST(new XmlMapper(), someObject));
     }
 }
 ```
 
 ```java
-import java.net.URI;
-
 import static ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper.JSON;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
         //Сериализация объекта в JSON-строку и передача в качестве тела
-        http().responseOf(POST(endPoint, JSON, someObject));
+        http().responseOf(POST(JSON, someObject));
     }
 }
 ```
 
 ```java
-import java.net.URI;
-
 import static ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper.XML;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
         //Сериализация объекта в XML-строку и передача в качестве тела
-        http().responseOf(POST(endPoint, XML, someObject));
+        http().responseOf(POST(XML, someObject));
     }
 }
 ```
@@ -1433,13 +392,8 @@ public class MyTest {
 
 ### Multipart
 
-
-  
-
 ```java
-import java.net.URI;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
 
@@ -1447,8 +401,7 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        http().responseOf(POST(endPoint,
+        http().responseOf(POST(
                 bodyPart(new byte[]{1, 2, 3}, "testBytes"),
                 bodyPart(new byte[]{4, 5, 6}, "testBytes2")));
     }
@@ -1456,9 +409,7 @@ public class MyTest {
 ```
 
 ```java
-import java.net.URI;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
@@ -1467,8 +418,7 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        http().responseOf(POST(endPoint,
+        http().responseOf(POST(
                 randomAlphanumeric(15), //На тот случай когда разделитель нужно указать явно
                 bodyPart(new byte[]{1, 2, 3}, "testBytes"),
                 bodyPart(new byte[]{4, 5, 6}, "testBytes2")));
@@ -1482,8 +432,6 @@ public class MyTest {
 #### Форматы
 
 - **Массив байтов**
-    
-       
 
     ```java        
         import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
@@ -1509,8 +457,6 @@ public class MyTest {
     
 
 - **Поток данных. InputStream**
-    
-       
 
     ```java
     import java.io.InputStream;
@@ -1538,8 +484,6 @@ public class MyTest {
   
 
 - **Файл**
-    
-       
 
     ```java
     import java.io.File;
@@ -1590,9 +534,7 @@ public class MyTest {
     [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
     
 
-- **Строка/текст**
-    
-       
+- **Строка/текст** 
 
     ```java        
         import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
@@ -1614,10 +556,7 @@ public class MyTest {
     [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
     
 
-- **Сериализованный объект**
-
-    
-        
+- **Сериализованный объект** 
 
     ```java
         import com.fasterxml.jackson.databind.ObjectMapper;
@@ -1669,8 +608,6 @@ public class MyTest {
     
   
 - **Строковое представление объекта Java**
-    
-       
 
     ```java        
         import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
@@ -1724,30 +661,24 @@ public class MyTest {
 
 ### Описываем свой собственный формат тела запроса
 
-
-  
-
 Предположим, у нас есть POST запрос, который принимает в качестве тела строку определенного формата, сформированную из
 даты. В принципе, задача решается просто
 
 ```java
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-
         var date = new Date(); //(1)
         var format = new SimpleDateFormat(/*Параметры конструктора*/); // 2)
 
-        http().responseOf(POST(endPoint, format.format(date)));
+        http().responseOf(POST(format.format(date)));
     }
 }
 ```
@@ -1798,63 +729,20 @@ public class DateBody extends RequestBody<Date> {
 И теперь
 
 ```java
-import java.net.URI;
 import java.util.Date;
 
 import static org.my.pack.DateBody.dateBody;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        http().responseOf(POST(endPoint, dateBody(new Date())));
+        http().responseOf(POST(dateBody(new Date())));
     }
 }
 ```
-
-или
-
-```java
-import java.util.Date;
-
-import static org.my.pack.DateBody.dateBody;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        http().responseOf(POST("http://my.api.com/some/path?q1=val1&q2=val2", dateBody(new Date())));
-    }
-}
-```
-
-или
-
-```java
-import java.net.URL;
-import java.util.Date;
-
-import static org.my.pack.DateBody.dateBody;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() throws Exception {
-        var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
-        http().responseOf(POST(endPoint, dateBody(new Date())));
-    }
-}
-```
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -1866,20 +754,25 @@ public class MyTest {
 import java.net.URI;
 
 import static java.net.http.HttpClient.Version.HTTP_2;
+import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static ru.tinkoff.qa.neptune.http.api.request.FormValueDelimiters.PIPE;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        http().responseOf(GET(endPoint)
+        var baseURI = URI.create("http://my.api.com/context/path");
+        http().responseOf(GET()
                 //Все перечисленное ниже не является обязательным для каждого отравляемого запроса
-                //можно указать заголовок/свойство запроса и передаем множественное значение 
+                .baseURI(baseURI)
+                .relativePath("/some/relativePath")
+                .queryParam("q1", false, "val1")
+                .queryParam("q2", false, "val2")
+                //можно указать header запроса и передаем множественное значение
                 .header("header1", "some value", "one more value")
-                //можно указать заголовок/свойство запроса и передаем одиночное значение 
+                //можно указать header запроса и передаем одиночное значение 
                 .header("header2", "some value")
                 //можно указать дополнительный параметр query-части запроса,
                 //передаем множественное значение. Точно так же можем передать и одиночное значение.
@@ -1901,7 +794,11 @@ public class MyTest {
                 .version(HTTP_2)
                 //Ожидать от сервера приложения ответ 100 (Continue) перед полной отправкой 
                 //запроса
-                .expectContinue(true));
+                .expectContinue(true)
+                //указываем, в каком формате должно быть прочитано тело
+                //ответа. Без вызова этого метода, по умолчанию, тело ответа
+                //не читается, т.е. ответ возвращается с пустым телом
+                .responseBodyHandler(ofString()));
     }
 }
 ```
@@ -1945,91 +842,30 @@ public class MyRequestTuner implements RequestTuner {
 И тогда
 
 ```java
-import java.net.URI;
-
 import org.my.pack.MyRequestTuner;
 
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        http().responseOf(GET(endPoint)
+        http().responseOf(GET()
                 //вызывается общий алгоритм настройки
                 .tuneWith(new MyRequestTuner()));
-    }
-}
-```
 
-или
-
-```java
-import java.net.URI;
-
-import org.my.pack.MyRequestTuner;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        http().responseOf(GET(endPoint)
+        http().responseOf(GET()
                 //вызывается общий алгоритм настройки
                 //Можно использовать класс, если у него не объявлено никакого конструктора,
                 //или объявлен public конструктор без параметров
                 .tuneWith(MyRequestTuner.class));
-    }
-}
-```
 
-Если надо использовать более одного алгоритма настройки, которые не конфликтуют друг с другом, тогда
-
-```java
-import java.net.URI;
-
-import org.my.pack.MyRequestTuner;
-import org.my.pack.MyRequestTuner2;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        http().responseOf(GET(endPoint)
+        http().responseOf(GET()
                 //вызываются общие алгоритмы настройки
                 .tuneWith(new MyRequestTuner(), new MyRequestTuner2()));
-    }
-}
-```
 
-или
-
-```java
-//тоже самое, что пример выше, просто более читаемо написано
-
-import java.net.URI;
-
-import org.my.pack.MyRequestTuner;
-import org.my.pack.MyRequestTuner2;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        http().responseOf(GET(endPoint)
+        http().responseOf(GET()
                 //вызываются общие алгоритмы настройки
                 .tuneWith(new MyRequestTuner())
                 .tuneWith(new MyRequestTuner2()));
@@ -2037,60 +873,7 @@ public class MyTest {
 }
 ```
 
-или
-
-```java
-import java.net.URI;
-
-import org.my.pack.MyRequestTuner;
-import org.my.pack.MyRequestTuner2;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        http().responseOf(GET(endPoint)
-                //вызываются общие алгоритмы настройки
-                //Можно использовать классы, если у них не объявлено никаких конструкторов,
-                //или объявлены public конструкторы без параметров
-                .tuneWith(MyRequestTuner.class, MyRequestTuner2.class));
-    }
-}
-```
-
-или
-
-```java
-//тоже самое, что пример выше, просто более читаемо написано
-
-import java.net.URI;
-
-import org.my.pack.MyRequestTuner;
-import org.my.pack.MyRequestTuner2;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        http().responseOf(GET(endPoint)
-                //вызываются общие алгоритмы настройки
-                //Можно использовать классы, если у них не объявлено никаких конструкторов,
-                //или объявлены public конструкторы без параметров
-                .tuneWith(MyRequestTuner.class)
-                .tuneWith(MyRequestTuner2.class));
-    }
-}
-```
-
-Второй вариант подробно описан в [Мэппинг http-сервисов](./MAPPING.MD)
+Фича используется в [мэппинге http-сервисов](./MAPPING.MD)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -2102,25 +885,20 @@ public class MyTest {
 Интеграция Neptune с нативным Java http клиентом предоставляет возможность свободно интерпретировать информацию, которая
 возвращается в теле ответа на http-запрос. Для этого используются объекты `java.net.http.HttpResponse.BodyHandler`.
 
-
-  
-
 ```java
-import java.net.URI;
 import java.net.http.HttpResponse;
 
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFacrory.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        HttpResponse<String> response = http().responseOf(POST(endPoint, "String body"),
+        HttpResponse<String> response = http().responseOf(POST("String body")
                 //Ответ вернется c телом, интерпретированным/прочитанным как текст
-                ofString());
+                .responseBodyHandler(ofString()));
 
         String body = response.body();
     }
@@ -2130,22 +908,19 @@ public class MyTest {
 Если нужно отправить запрос, при этом тело http-ответа значения не имеет, тогда
 
 ```java
-import java.net.URI;
 import java.net.http.HttpResponse;
 
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFacrory.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        //java.net.http.HttpResponse.BodyHandler не указывается.
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
         //На самом деле, ответ на этот запрос может иметь тело, 
         //но в данном примере оно просто не будет прочитано,
         //и вернется ответ с пустым телом
-        HttpResponse<Void> response = http().responseOf(POST(endPoint, "String body"));
+        HttpResponse<Void> response = http().responseOf(POST("String body"));
     }
 }
 ```
@@ -2157,19 +932,14 @@ public class MyTest {
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 
-
 #### Объекты, десериализованные из JSON-строки
 
-
-  
-
 ```java
-import java.net.URI;
 import java.net.http.HttpResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.deserialized;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
@@ -2177,12 +947,11 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        HttpResponse<SomeClass> response = http().responseOf(POST(endPoint, "String body"),
+        HttpResponse<SomeClass> response = http().responseOf(POST( "String body")
                 //Предполагается, что тело ответа может быть прочитано как JSON-строка,
                 //которую можно десериализовать в объект класса SomeClass
                 //При этом используется настроенный и переданный явно объект класса ObjectMapper
-                deserialized(SomeClass.class, new ObjectMapper()));
+                .responseBodyHandler(deserialized(SomeClass.class, new ObjectMapper())));
 
         SomeClass body = response.body();
     }
@@ -2192,13 +961,12 @@ public class MyTest {
 или
 
 ```java
-import java.net.URI;
 import java.net.http.HttpResponse;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.deserialized;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
@@ -2206,13 +974,11 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        HttpResponse<SomeClass> response = http().responseOf(POST(endPoint, "String body"),
+        HttpResponse<SomeClass> response = http().responseOf(POST("String body")
                 //Предполагается, что тело ответа может быть прочитано как JSON-строка,
                 //которую можно десериализовать в объект SomeClass.
                 //При этом используется настроенный и переданный явно объект класса ObjectMapper
-                deserialized(new TypeReference<SomeClass>() {
-                }, new ObjectMapper()));
+                .responseBodyHandler(deserialized(new TypeReference<SomeClass>() {}, new ObjectMapper())));
 
         SomeClass body = response.body();
     }
@@ -2222,10 +988,9 @@ public class MyTest {
 или
 
 ```java
-import java.net.URI;
 import java.net.http.HttpResponse;
 
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
@@ -2233,12 +998,11 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        HttpResponse<SomeClass> response = http().responseOf(POST(endPoint, "String body"),
+        HttpResponse<SomeClass> response = http().responseOf(POST("String body")
                 //Предполагается, что тело ответа может быть прочитано как JSON-строка,
                 //которую можно десериализовать в объект класса SomeClass
                 //При этом используется настроенный алгоритм сериализации/десериализации по умолчанию
-                json(SomeClass.class));
+                .responseBodyHandler(json(SomeClass.class)));
 
         SomeClass body = response.body();
     }
@@ -2248,12 +1012,11 @@ public class MyTest {
 или
 
 ```java
-import java.net.URI;
 import java.net.http.HttpResponse;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
@@ -2261,13 +1024,11 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        HttpResponse<SomeClass> response = http().responseOf(POST(endPoint, "String body"),
+        HttpResponse<SomeClass> response = http().responseOf(POST("String body")
                 //Предполагается, что тело ответа может быть прочитано как JSON-строка,
                 //которую можно десериализовать в объект SomeClass
                 //При этом используется настроенный алгоритм сериализации/десериализации по умолчанию
-                json(new TypeReference<SomeClass>() {
-                }));
+                .responseBodyHandler(json(new TypeReference<SomeClass>() {})));
 
         SomeClass body = response.body();
     }
@@ -2284,12 +1045,11 @@ public class MyTest {
 #### Объекты, десериализованные из XML-строки
 
 ```java
-import java.net.URI;
 import java.net.http.HttpResponse;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.deserialized;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
@@ -2297,12 +1057,11 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        HttpResponse<SomeClass> response = http().responseOf(POST(endPoint, "String body"),
+        HttpResponse<SomeClass> response = http().responseOf(POST("String body")
                 //Предполагается, что тело ответа может быть прочитано как XML-строка,
                 //которую можно десериализовать в объект класса SomeClass
                 //При этом используется настроенный и переданный явно объект класса XmlMapper
-                deserialized(SomeClass.class, new XmlMapper()));
+                .responseBodyHandler(deserialized(SomeClass.class, new XmlMapper())));
 
         SomeClass body = response.body();
     }
@@ -2312,13 +1071,12 @@ public class MyTest {
 или
 
 ```java
-import java.net.URI;
 import java.net.http.HttpResponse;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.deserialized;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
@@ -2326,13 +1084,11 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        HttpResponse<SomeClass> response = http().responseOf(POST(endPoint, "String body"),
+        HttpResponse<SomeClass> response = http().responseOf(POST("String body")
                 //Предполагается, что тело ответа может быть прочитано как XML-строка,
                 //которую можно десериализовать в объект SomeClass
                 //При этом используется настроенный и переданный явно объект класса XmlMapper
-                deserialized(new TypeReference<SomeClass>() {
-                }, new XmlMapper()));
+                .responseBodyHandler(deserialized(new TypeReference<SomeClass>() {}, new XmlMapper())));
 
         SomeClass body = response.body();
     }
@@ -2342,10 +1098,9 @@ public class MyTest {
 или
 
 ```java
-import java.net.URI;
 import java.net.http.HttpResponse;
 
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.xml;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
@@ -2353,12 +1108,11 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        HttpResponse<SomeClass> response = http().responseOf(POST(endPoint, "String body"),
+        HttpResponse<SomeClass> response = http().responseOf(POST("String body")
                 //Предполагается, что тело ответа может быть прочитано как XML-строка,
                 //которую можно десериализовать в объект класса SomeClass
                 //При этом используется настроенный алгоритм сериализации/десериализации по умолчанию
-                xml(SomeClass.class));
+                .responseBodyHandler(xml(SomeClass.class)));
 
         SomeClass body = response.body();
     }
@@ -2368,12 +1122,11 @@ public class MyTest {
 или
 
 ```java
-import java.net.URI;
 import java.net.http.HttpResponse;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.xml;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
@@ -2381,13 +1134,11 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        HttpResponse<SomeClass> response = http().responseOf(POST(endPoint, "String body"),
+        HttpResponse<SomeClass> response = http().responseOf(POST("String body")
                 //Предполагается, что тело ответа может быть прочитано как XML-строка,
                 //которую можно десериализовать в объект SomeClass
                 //При этом используется настроенный алгоритм сериализации/десериализации по умолчанию
-                xml(new TypeReference<SomeClass>() {
-                }));
+                .responseBodyHandler(xml(new TypeReference<SomeClass>() {})));
 
         SomeClass body = response.body();
     }
@@ -2398,99 +1149,6 @@ public class MyTest {
 прочитать [XML DEFAULT_XML_MAPPER](./SETTINGS.MD#XML-DEFAULT_XML_MAPPER)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
-
-#### Тело ответа как org.w3c.dom.Document
-
-```java
-import java.net.URI;
-import java.net.http.HttpResponse;
-
-import org.w3c.dom.Document;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.w3cDocument;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        HttpResponse<Document> response = http().responseOf(POST(endPoint, "String body"),
-                //Предполагается, что тело ответа может быть прочитано как строка,
-                //которую можно преобразовать в org.w3c.dom.Document
-                w3cDocument());
-
-        Document body = response.body();
-    }
-}
-```
-
-или
-
-```java
-import java.net.URI;
-import java.net.http.HttpResponse;
-
-import org.w3c.dom.Document;
-
-import javax.xml.parsers.DocumentBuilder;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.w3cDocument;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        DocumentBuilder builder; //Представим, что значение присвоено 
-
-        HttpResponse<Document> response = http().responseOf(POST(endPoint, "String body"),
-                //Предполагается, что тело ответа может быть прочитано как строка,
-                //которую можно преобразовать в org.w3c.dom.Document
-                //Объект DocumentBuilder нужен для уточнения алгоритма преобразования
-                w3cDocument(builder));
-
-        Document body = response.body();
-    }
-}
-```
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
-
-#### Тело ответа как org.jsoup.nodes.Document
-
-```java
-import java.net.URI;
-import java.net.http.HttpResponse;
-
-import org.jsoup.nodes.Document;
-
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.jsoupDocument;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        HttpResponse<Document> response = http().responseOf(POST(endPoint, "String body"),
-                //Предполагается, что тело ответа может быть прочитано как строка,
-                //которую можно преобразовать в org.jsoup.nodes.Document
-                jsoupDocument());
-
-        Document body = response.body();
-    }
-}
-```
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
 
 #### Описание своего формат
 
@@ -2544,10 +1202,9 @@ public class BodyObject {
 И нужно сделать как, как будто тело включает в себя не весь объект, а только значение поля `a`. Тогда
 
 ```java
-import java.net.URI;
 import java.net.http.HttpResponse;
 
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.mapped;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
@@ -2556,14 +1213,11 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        DocumentBuilder builder; //Представим, что значение присвоено 
-
-        HttpResponse<String> response = http().responseOf(POST(endPoint, "String body"),
+        HttpResponse<String> response = http().responseOf(POST("String body")
                 //Тело ответа десериализуется в BodyObject, потом берется только значение поля `a`
                 //Выглядит результат так, будто тело ответа включает в себя только значение поля `a`,
                 //а не объект целиком
-                mapped(json(BodyObject.class), BodyObject::getA));
+                .responseBodyHandler(mapped(json(BodyObject.class), BodyObject::getA)));
 
         String body = response.body();
     }
@@ -2594,30 +1248,23 @@ public class BodyFieldA() extends MappedBodyHandler<BodyObject, String> {
 и тогда
 
 ```java
-import java.net.URI;
 import java.net.http.HttpResponse;
 
 import static org.my.packeage.BodyFieldA.bodyFieldA;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        DocumentBuilder builder; //Представим, что значение присвоено 
-
-        HttpResponse<String> response = http().responseOf(POST(endPoint, "String body"),
-                bodyFieldA());
+        HttpResponse<String> response = http().responseOf(POST("String body")
+                .responseBodyHandler(bodyFieldA()));
 
         String body = response.body();
     }
 }
 ```
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -2680,16 +1327,13 @@ public class BodyObject {
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
-[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
+[Критерии для получения подходящего http ответа](https://tinkoff.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
 
 ```java
-import java.net.URI;
-
 import static java.time.Duration.ofSeconds;
 import static java.time.Duration.ofMillis;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.asIs;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
 
@@ -2697,15 +1341,15 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-
         //Возвращается тело ответа на запрос. Http ответ и его тело должны подходить под указанные критерии.
         //Ответ на начало выполнения еще не получен, указывается тот запрос, который следует отправить.
-        BodyObject o = http().bodyData(asIs(GET(endPoint), json(BodyObject.class))
+        BodyObject o = http().responseOf(GET() //запрос и его параметры
+                .responseBodyHandler(json(BodyObject.class)) //в каком формате прочитать тело ответа
+                .tryToReturnBody() //получить прочитанное тело ответа
                 //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
                 .responseCriteria(statusCode(200))
                 //можно указать критерий, которому должно соответствовать тело 
-                .criteria("Поле A содержит ключ 'foo' со значением 'bar'", bodyObject -> bodyObject.getA.get("foo").equals("bar"))
+                .criteria("Поле A содержит ключ 'foo' со значением 'bar'", bodyObject -> bodyObject.getA().get("foo").equals("bar"))
                 //можно указать время на получение ожидаемого результата = 10 секунд
                 //В течение этих 10 секунд запрос будет отправляться до тех пор,
                 //пока не вернется ожидаемый ответ с ожидаемыми данными
@@ -2720,28 +1364,23 @@ public class MyTest {
 ```
 
 ```java
-import java.net.URI;
-
 import static java.time.Duration.ofSeconds;
 import static java.time.Duration.ofMillis;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.asObject;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
 
 public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-
         //Возвращается объект, получаемый из тела ответа или вычисляемый с использованием данных этого тела.
         //Http ответ и вычисленный объект должны подходить под указанные критерии. 
         // Ответ на начало выполнения еще не получен, указывается тот запрос, который следует отправить.
-        Map<String, String> o = http().bodyData(asObject("Значение поля A", //Описываем, что извлекается. Пойдет в лог/отчет
-                GET(endPoint), //запрос и его параметры
-                json(BodyObject.class), //в каком формате прочитать тело
-                BodyObject::getA) //как извлечь из тела ответа нужные данные
+        Map<String, String> o = http().responseOf(GET() //запрос и его параметры
+                .responseBodyHandler(json(BodyObject.class)) //в каком формате прочитать тело ответа
+                // Описываем, что извлекается.        
+                .tryToReturn("Значение поля A", BodyObject::getA) //и как извлечь из тела ответа нужные данные
                 //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
                 .responseCriteria(statusCode(200))
                 //можно указать критерий, которому должны соответствовать результирующие данные
@@ -2759,70 +1398,6 @@ public class MyTest {
 }
 ```
 
-```java
-import java.net.URI;
-import java.net.http.HttpResponse;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.asIs;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        
-        HttpResponse<BodyObject> response = http().responseOf(GET(endPoint), json(BodyObject.class));
-
-        //Возвращается тело ответа на запрос. Его тело должно подходить под указанные критерии. 
-        //Ответ на начало выполнения уже получен
-        BodyObject o = http().bodyData(asIs(response) //полученный выше ответ
-                //можно указать критерий, которому должно соответствовать тело 
-                .criteria("Поле A содержит ключ 'foo' со значением 'bar'", bodyObject -> bodyObject.getA.get("foo").equals("bar"))
-                //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
-    }
-}
-```
-
-```java
-import java.net.URI;
-import java.net.http.HttpResponse;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.asObject;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        
-        HttpResponse<BodyObject> response = http().responseOf(GET(endPoint), json(BodyObject.class));
-
-        //Возвращается объект, получаемый из тела ответа или вычисляемый с использованием данных этого тела.
-        //Вычисленный объект должен подходить под указанные критерии.  
-        //Ответ на начало выполнения уже получен
-        Map<String, String> o = http().bodyData(asObject("Значение поля A", //Описываем, что извлекается. Пойдет в лог/отчет
-                response, //полученный выше ответ
-                BodyObject::getA) //как извлечь из тела ответа нужные данные
-                //можно указать критерий, которому должны соответствовать результирующие данные
-                .criteria("Содержит ключ 'foo' со значением 'bar'", map -> map.get("foo").equals("bar"))
-                //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
-    }
-}
-```
-
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 
@@ -2830,61 +1405,13 @@ public class MyTest {
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
-[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
-
+[Критерии для получения подходящего http ответа](https://tinkoff.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
 
 ```java
-import java.net.URI;
-
 import static java.time.Duration.ofSeconds;
 import static java.time.Duration.ofMillis;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromIterableBodyStepSupplier.asOneOfIterable;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.mapped;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        
-        //Возвращается элемент коллекции / Iterable. Тело является коллекцией или объектом Iterable.
-        //Http ответ и хотя бы один из элементов коллекция/Iterable должны подходить под указанные критерии.
-        //Из общего тела (Iterable/коллекции) вернется первый подходящий элемент.
-        // 
-        //Ответ на начало выполнения еще не получен, указывается тот запрос, который следует отправить.
-        Integer o = http().bodyData(asOneOfIterable("Число, полученное из ответа", //Описываем, что извлекается. Пойдет в лог/отчет
-                GET(endPoint),
-                mapped(json(BodyObject.class), BodyObject::getB)) //представляем, будто в теле вернулась коллекция
-                //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
-                .responseCriteria(statusCode(200))
-                //можно указать критерий, которому должен соответствовать получаемый элемент 
-                .criteria("Положительное число", i -> i.intValue() > 0)
-                //можно указать время на получение ожидаемого результата = 10 секунд
-                //В течение этих 10 секунд запрос будет отправляться до тех пор,
-                //пока не вернется ожидаемый ответ с ожидаемыми данными
-                //т.е. со статусом=200 и непустой коллекцией объектов, в которой хотя бы один элемент 
-                //соответствует переданному критерию
-                .retryTimeOut(ofSeconds(10))
-                //можно указать интервал между попытками получить результат в пределах указанных 10 сек
-                .pollingInterval(ofMillis(500))
-                //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
-    }
-}
-```
-
-```java
-import java.net.URI;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromIterableBodyStepSupplier.asOneOfIterable;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
 
@@ -2892,18 +1419,17 @@ public class MyTest {
 
   @Test
   public void myTest() {
-    var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-
     // Возвращается элемент коллекции / Iterable. Тело необязательно является коллекцией 
     // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
     // вычислений. Http ответ и хотя бы один из элементов коллекция/Iterable должны подходить под указанные 
     // критерии. Из коллекции вернется первый подходящий элемент.
     // 
     //Ответ на начало выполнения еще не получен, указывается тот запрос, который следует отправить.
-    Integer o = http().bodyData(asOneOfIterable("Значение из поля B", //Описываем, что извлекается. Пойдет в лог/отчет
-            GET(endPoint), //запрос и его параметры
-            json(BodyObject.class), //в каком формате прочитать тело
-            BodyObject::getB) //как извлечь из тела ответа нужную промежуточную коллекцию
+    Integer o = http().responseOf(GET() //запрос и его параметры
+            .responseBodyHandler(json(BodyObject.class)) //в каком формате прочитать тело ответа
+            // Описываем, что извлекается.        
+            .tryToReturnItem("Значение из поля B", BodyObject::getB) //и как извлечь из тела ответа коллекцию, 
+            // из которой будет получено результирующее значение
             //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
             .responseCriteria(statusCode(200))
             //можно указать критерий, которому должен соответствовать получаемый элемент 
@@ -2916,83 +1442,9 @@ public class MyTest {
             .retryTimeOut(ofSeconds(10))
             //можно указать интервал между попытками получить результат в пределах указанных 10 сек
             .pollingInterval(ofMillis(500))
-                //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
-    }
-}
-```
-
-```java
-import java.net.URI;
-import java.net.http.HttpResponse;
-import java.util.List;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromIterableBodyStepSupplier.asOneOfIterable;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.mapped;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        
-        HttpResponse<List<Integer>> response = http().responseOf(GET(endPoint),
-                mapped(json(BodyObject.class), BodyObject::getB)); //представляем, будто в теле вернулась коллекция
-
-        //Возвращается элемент коллекции / Iterable. Тело является коллекцией или объектом Iterable.
-        //Хотя бы один из элементов коллекция/Iterable должен подходить под указанные критерии.
-        //Из общего тела (Iterable/коллекции) вернется первый подходящий элемент.
-        // 
-        //Ответ на начало выполнения уже получен
-        Integer o = http().bodyData(asOneOfIterable("Число, полученное из ответа", //Описываем, что извлекается. Пойдет в лог/отчет
-                response) //полученный выше ответ
-                //можно указать критерий, которому должен соответствовать получаемый элемент 
-                .criteria("Положительное число", i -> i.intValue() > 0)
-                //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
-    }
-}
-```
-
-```java
-import java.net.URI;
-import java.net.http.HttpResponse;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromIterableBodyStepSupplier.asOneOfIterable;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-  @Test
-  public void myTest() {
-    var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-
-    HttpResponse<BodyObject> response = http().responseOf(GET(endPoint), json(BodyObject.class));
-
-    // Возвращается элемент коллекции / Iterable. Тело необязательно является коллекцией 
-    // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
-    // вычислений. Хотя бы один из элементов коллекция/Iterable должен подходить под указанные критерии.
-    // Из коллекции вернется первый подходящий элемент.
-    // 
-    //Ответ на начало выполнения уже получен
-    Integer o = http().bodyData(asOneOfIterable("Значение из поля B", //Описываем, что извлекается. Пойдет в лог/отчет
-            response, //полученный выше ответ
-            BodyObject::getB) //как извлечь из тела ответа нужные данные
-            //можно указать критерий, которому должен соответствовать получаемый элемент 
-            .criteria("Положительное число", i -> i.intValue() > 0)
             //можно указать, что должно быть выброшено исключение, если результат не был получен
             .throwOnNoResult());
-  }
+    }
 }
 ```
 
@@ -3003,60 +1455,13 @@ public class MyTest {
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
-[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
+[Критерии для получения подходящего http ответа](https://tinkoff.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
 
 ```java
-import java.net.URI;
-
 import static java.time.Duration.ofSeconds;
 import static java.time.Duration.ofMillis;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromArrayBodyStepSupplier.asOneOfArray;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.mapped;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-
-        //Возвращается элемент массива. Тело является массивом.
-        //Http ответ и хотя бы один из элементов массива должны подходить под указанные критерии.
-        //Из общего тела-массива вернется первый подходящий элемент.
-        // 
-        //Ответ на начало выполнения еще не получен, указывается тот запрос, который следует отправить.
-        Integer o = http().bodyData(asOneOfArray("Число, полученное из ответа", //Описываем, что извлекается. Пойдет в лог/отчет
-                GET(endPoint),
-                mapped(json(BodyObject.class), BodyObject::getС)) //представляем, будто в теле вернулся массив
-                //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
-                .responseCriteria(statusCode(200))
-                //можно указать критерий, которому должен соответствовать получаемый элемент 
-                .criteria("Положительное число", i -> i.intValue() > 0)
-                //можно указать время на получение ожидаемого результата = 10 секунд
-                //В течение этих 10 секунд запрос будет отправляться до тех пор,
-                //пока не вернется ожидаемый ответ с ожидаемыми данными
-                //т.е. со статусом=200 и непустым массивом объектов, в котором хотя бы один элемент 
-                //соответствует переданному критерию
-                .retryTimeOut(ofSeconds(10))
-                //можно указать интервал между попытками получить результат в пределах указанных 10 сек
-                .pollingInterval(ofMillis(500))
-                //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
-    }
-}
-```
-
-```java
-import java.net.URI;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromArrayBodyStepSupplier.asOneOfArray;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
 
@@ -3064,18 +1469,17 @@ public class MyTest {
 
   @Test
   public void myTest() {
-    var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-
     // Возвращается элемент массива. Тело необязательно является массивом. 
     // Промежуточный массив получается в ходе дополнительных вычислений. 
     // Http ответ и хотя бы один из элементов массива должны подходить под указанные 
     // критерии. Из массива вернется первый подходящий элемент.
     // 
     //Ответ на начало выполнения еще не получен, указывается тот запрос, который следует отправить.
-    Integer o = http().bodyData(asOneOfArray("Значение из поля C", //Описываем, что извлекается. Пойдет в лог/отчет
-            GET(endPoint), //запрос и его параметры
-            json(BodyObject.class), //в каком формате прочитать тело
-            BodyObject::getC) //как извлечь из тела ответа нужный промежуточный массив
+    Integer o = http().responseOf(GET() //запрос и его параметры
+            .responseBodyHandler(json(BodyObject.class)) //в каком формате прочитать тело ответа
+            // Описываем, что извлекается.        
+            .tryToReturnArrayItem("Значение из поля C", BodyObject::getC) //и как извлечь из тела ответа массив, 
+            // из которого будет получено результирующее значение
             //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
             .responseCriteria(statusCode(200))
             //можно указать критерий, которому должен соответствовать получаемый элемент 
@@ -3088,82 +1492,9 @@ public class MyTest {
             .retryTimeOut(ofSeconds(10))
             //можно указать интервал между попытками получить результат в пределах указанных 10 сек
             .pollingInterval(ofMillis(500))
-                //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
-    }
-}
-```
-
-```java
-import java.net.URI;
-import java.net.http.HttpResponse;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromArrayBodyStepSupplier.asOneOfArray;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.mapped;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        
-        HttpResponse<Integer[]> response = http().responseOf(GET(endPoint),
-                mapped(json(BodyObject.class), BodyObject::getС)); //представляем, будто в теле вернулся массив
-
-        //Возвращается элемент массива. Тело является массивом.
-        //Хотя бы один из элементов массива должен подходить под указанные критерии.
-        //Из общего тела-массива вернется первый подходящий элемент.
-        // 
-        //Ответ на начало выполнения уже получен
-        Integer o = http().bodyData(asOneOfArray("Число, полученное из ответа", //Описываем, что извлекается. Пойдет в лог/отчет
-                response) //полученный выше ответ
-                //можно указать критерий, которому должен соответствовать получаемый элемент 
-                .criteria("Положительное число", i -> i.intValue() > 0)
-                //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
-    }
-}
-```
-
-```java
-import java.net.URI;
-import java.net.http.HttpResponse;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromArrayBodyStepSupplier.asOneOfArray;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-  @Test
-  public void myTest() {
-    var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-
-    HttpResponse<BodyObject> response = http().responseOf(GET(endPoint), json(BodyObject.class));
-
-    // Возвращается элемент массива. Тело необязательно является массивом. 
-    // Промежуточный массив получается в ходе дополнительных вычислений. 
-    // Хотя бы один из элементов массива должен подходить под указанные критерии. 
-    // Из массива вернется первый подходящий элемент.
-    // 
-    //Ответ на начало выполнения уже получен
-    Integer o = http().bodyData(asOneOfArray("Значение из поля C", //Описываем, что извлекается. Пойдет в лог/отчет
-            response, //полученный выше ответ
-            BodyObject::getС) //как извлечь из тела ответа нужные данные
-            //можно указать критерий, которому должен соответствовать получаемый элемент 
-            .criteria("Положительное число", i -> i.intValue() > 0)
             //можно указать, что должно быть выброшено исключение, если результат не был получен
             .throwOnNoResult());
-  }
+    }
 }
 ```
 
@@ -3173,59 +1504,13 @@ public class MyTest {
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
-[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
+[Критерии для получения подходящего http ответа](https://tinkoff.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
 
 ```java
-import java.net.URI;
-
 import static java.time.Duration.ofSeconds;
 import static java.time.Duration.ofMillis;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectsFromIterableBodyStepSupplier.asIterable;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.mapped;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-  @Test
-  public void myTest() {
-    var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-
-    //Возвращается немутабельный лист. Тело является коллекцией/объектом Iterable.
-    //Http ответ и каждый элемент результирующей коллекции должны подходить под указанные критерии.
-    //Из общего тела (Iterable/коллекции) вернется под-множество подходящих элементов.
-    // 
-    //Ответ на начало выполнения еще не получен, указывается тот запрос, который следует отправить.
-    List<Integer> o = http().bodyData(asIterable("Числа, полученные из ответа", //Описываем, что извлекается. Пойдет в лог/отчет
-            GET(endPoint),
-            mapped(json(BodyObject.class), BodyObject::getB)) //представляем, будто в теле вернулась коллекция
-            //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
-            .responseCriteria(statusCode(200))
-            //можно указать критерий, которому должен соответствовать каждый элемент результирующей под-коллекции
-            .criteria("Положительное число", i -> i.intValue() > 0)
-            //можно указать время на получение ожидаемого результата = 10 секунд
-            //В течение этих 10 секунд запрос будет отправляться до тех пор,
-            //пока не вернется ожидаемый ответ с ожидаемыми данными
-            //т.е. со статусом=200 и непустой коллекцией объектов, соответствующих переданному критерию
-            .retryTimeOut(ofSeconds(10))
-            //можно указать интервал между попытками получить результат в пределах указанных 10 сек
-            .pollingInterval(ofMillis(500))
-            //можно указать, что должно быть выброшено исключение, если результат не был получен
-            .throwOnNoResult());
-  }
-}
-```
-
-```java
-import java.net.URI;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectsFromIterableBodyStepSupplier.asIterable;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
 
@@ -3233,18 +1518,17 @@ public class MyTest {
 
   @Test
   public void myTest() {
-    var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-
     // Возвращается немутабельный лист. Тело необязательно является коллекцией 
     // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
     // вычислений. Http ответ и каждый элемент результирующей коллекции должны подходить под указанные критерии. 
     // Из коллекции вернется под-множество подходящих элементов.
     // 
     //Ответ на начало выполнения еще не получен, указывается тот запрос, который следует отправить.
-    List<Integer> o = http().bodyData(asIterable("Значения из поля B", //Описываем, что извлекается. Пойдет в лог/отчет
-            GET(endPoint), //запрос и его параметры
-            json(BodyObject.class), //в каком формате прочитать тело
-            BodyObject::getB) //как извлечь из тела ответа нужную промежуточную коллекцию
+    List<Integer> o = http().responseOf(GET() //запрос и его параметры
+            .responseBodyHandler(json(BodyObject.class)) //в каком формате прочитать тело ответа
+            // Описываем, что извлекается.        
+            .tryToReturnList("Значения из поля B", BodyObject::getB) //и как извлечь из тела ответа коллекцию, 
+            // из которой будут получены результирующие значения
             //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
             .responseCriteria(statusCode(200))
             //можно указать критерий, которому должен соответствовать каждый элемент результирующей под-коллекции
@@ -3256,80 +1540,6 @@ public class MyTest {
             .retryTimeOut(ofSeconds(10))
             //можно указать интервал между попытками получить результат в пределах указанных 10 сек
             .pollingInterval(ofMillis(500))
-            //можно указать, что должно быть выброшено исключение, если результат не был получен
-            .throwOnNoResult());
-  }
-}
-```
-
-```java
-import java.net.URI;
-import java.net.http.HttpResponse;
-import java.util.List;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectsFromIterableBodyStepSupplier.asIterable;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.mapped;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-  @Test
-  public void myTest() {
-    var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-
-    HttpResponse<List<Integer>> response = http().responseOf(GET(endPoint),
-            mapped(json(BodyObject.class), BodyObject::getB)); //представляем, будто в теле вернулась коллекция
-
-    //Возвращается немутабельный лист. Тело является коллекцией или объектом Iterable.
-    //Каждый элемент результирующей коллекции должен подходить под указанные критерии.
-    //Из общего тела (Iterable/коллекции) вернется под-множество подходящих элементов.
-    // 
-    //Ответ на начало выполнения уже получен
-    List<Integer> o = http().bodyData(asIterable("Числа, полученные из ответа", //Описываем, что извлекается. Пойдет в лог/отчет
-            response) //полученный выше ответ
-            //можно указать критерий, которому должен соответствовать каждый элемент результирующей под-коллекции
-            .criteria("Положительное число", i -> i.intValue() > 0)
-            //можно указать, что должно быть выброшено исключение, если результат не был получен
-            .throwOnNoResult());
-  }
-}
-```
-
-```java
-import java.net.URI;
-import java.net.http.HttpResponse;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectsFromIterableBodyStepSupplier.asIterable;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-  @Test
-  public void myTest() {
-    var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-
-    HttpResponse<BodyObject> response = http().responseOf(GET(endPoint), json(BodyObject.class));
-
-    // Возвращается немутабельный лист. Тело необязательно является коллекцией 
-    // или объектом Iterable. Промежуточная коллекция или Iterable получаются в ходе дополнительных 
-    // вычислений. Каждый элемент результирующей коллекции должен подходить под указанные критерии. 
-    // Из коллекции вернется под-множество подходящих элементов.
-    // 
-    //Ответ на начало выполнения уже получен
-    List<Integer> o = http().bodyData(asIterable("Значения из поля B", //Описываем, что извлекается. Пойдет в лог/отчет
-            response, //полученный выше ответ
-            BodyObject::getB) //как извлечь из тела ответа нужные данные
-            //можно указать критерий, которому должен соответствовать каждый элемент результирующей под-коллекции
-            .criteria("Положительное число", i -> i.intValue() > 0)
             //можно указать, что должно быть выброшено исключение, если результат не был получен
             .throwOnNoResult());
   }
@@ -3343,59 +1553,13 @@ public class MyTest {
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
-Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
+Критерии для получения подходящего http ответа](https://tinkoff.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
 
 ```java
-import java.net.URI;
-
 import static java.time.Duration.ofSeconds;
 import static java.time.Duration.ofMillis;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectsFromArrayBodyStepSupplier.asArray;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.mapped;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-
-        //Возвращается массив. Тело является массивом.
-        //Http ответ и каждый элемент результирующего массива должны подходить под указанные критерии.
-        //Из общего тела - массива вернется под-массив подходящих элементов.
-        // 
-        //Ответ на начало выполнения еще не получен, указывается тот запрос, который следует отправить.
-        Integer o = http().bodyData(asArray("Числа, полученные из ответа", //Описываем, что извлекается. Пойдет в лог/отчет
-                GET(endPoint),
-                mapped(json(BodyObject.class), BodyObject::getС)) //представляем, будто в теле вернулся массив
-                //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
-                .responseCriteria(statusCode(200))
-                //можно указать критерий, которому должен соответствовать каждый элемент результирующего под-массива
-                .criteria("Положительное число", i -> i.intValue() > 0)
-                //можно указать время на получение ожидаемого результата = 10 секунд
-                //В течение этих 10 секунд запрос будет отправляться до тех пор,
-                //пока не вернется ожидаемый ответ с ожидаемыми данными
-                //т.е. со статусом=200 и непустым массивом объектов, соответствующих переданному критерию
-                .retryTimeOut(ofSeconds(10))
-                //можно указать интервал между попытками получить результат в пределах указанных 10 сек
-                .pollingInterval(ofMillis(500))
-                //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
-    }
-}
-```
-
-```java
-import java.net.URI;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectsFromArrayBodyStepSupplier.asArray;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
 
@@ -3403,18 +1567,17 @@ public class MyTest {
 
   @Test
   public void myTest() {
-    var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-
     // Возвращается массив. Тело необязательно является массивом. 
     // Промежуточный массив получается в ходе дополнительных 
     // вычислений. Http ответ и каждый элемент результирующего массива должны подходить под указанные критерии. 
     // Из массива вернется под-массив подходящих элементов.
     // 
     //Ответ на начало выполнения еще не получен, указывается тот запрос, который следует отправить.
-    Integer o = http().bodyData(asArray("Значения из поля C", //Описываем, что извлекается. Пойдет в лог/отчет
-            GET(endPoint), //запрос и его параметры
-            json(BodyObject.class), //в каком формате прочитать тело
-            BodyObject::getC) //как извлечь из тела ответа нужный промежуточный массив
+    Integer o = http().responseOf(GET() //запрос и его параметры
+            .responseBodyHandler(json(BodyObject.class)) //в каком формате прочитать тело ответа
+            // Описываем, что извлекается.        
+            .tryToReturnArray("Значения из поля C", BodyObject::getC) //и как извлечь из тела ответа массив, 
+            // из которого будут получены результирующие значения
             //можно указать критерий ожидаемого ответа, т.е. код статуса должен быть 200
             .responseCriteria(statusCode(200))
             //можно указать критерий, которому должен соответствовать каждый элемент результирующего под-массива
@@ -3427,85 +1590,9 @@ public class MyTest {
             //можно указать интервал между попытками получить результат в пределах указанных 10 сек
             .pollingInterval(ofMillis(500))
             //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
-    }
-}
-```
-
-```java
-import java.net.URI;
-import java.net.http.HttpResponse;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectsFromArrayBodyStepSupplier.asArray;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.mapped;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-    @Test
-    public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        
-        HttpResponse<Integer[]> response = http().responseOf(GET(endPoint),
-                mapped(json(BodyObject.class), BodyObject::getС)); //представляем, будто в теле вернулся массив
-
-        //Возвращается массив. Тело является массивом.
-        //Каждый элемент результирующего массива должен подходить под указанные критерии.
-        //Из общего тела - массива вернется под-массив подходящих элементов.
-        // 
-        //Ответ на начало выполнения уже получен
-        Integer o = http().bodyData(asArray("Числа, полученные из ответа", //Описываем, что извлекается. Пойдет в лог/отчет
-                response) //полученный выше ответ
-                //можно указать критерий, которому должен соответствовать каждый элемент результирующего под-массива 
-                .criteria("Положительное число", i -> i.intValue() > 0)
-                //можно указать, что должно быть выброшено исключение, если результат не был получен
-                .throwOnNoResult());
-    }
-}
-```
-
-```java
-import java.net.URI;
-import java.net.http.HttpResponse;
-
-import static java.time.Duration.ofSeconds;
-import static java.time.Duration.ofMillis;
-import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectsFromArrayBodyStepSupplier.asArray;
-import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
-
-public class MyTest {
-
-  @Test
-  public void myTest() {
-    var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-
-    HttpResponse<BodyObject> response = http().responseOf(GET(endPoint), json(BodyObject.class));
-
-    // Возвращается массив. Тело необязательно является массивом. 
-    // Промежуточный массив получается в ходе дополнительных 
-    // вычислений. Каждый элемент результирующего массива должен подходить под указанные критерии. 
-    // Из массива вернется под-массив подходящих элементов.
-    // 
-    //Ответ на начало выполнения уже получен
-    Integer o = http().bodyData(asArray("Значения из поля C", //Описываем, что извлекается. Пойдет в лог/отчет
-            response, //полученный выше ответ
-            BodyObject::getС) //как извлечь из тела ответа нужные данные
-            //можно указать критерий, которому должен соответствовать каждый элемент результирующего под-массива
-            .criteria("Положительное число", i -> i.intValue() > 0)
-            //можно указать, что должно быть выброшено исключение, если результат не был получен
             .throwOnNoResult());
-  }
+    }
 }
 ```
-
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)

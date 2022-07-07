@@ -8,7 +8,6 @@ import ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart;
 import ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.FormParameter;
 import ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.URLEncodedForm;
 
-import javax.xml.transform.Transformer;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -128,37 +127,6 @@ public final class RequestBodyFactory {
      */
     public static RequestBody<String> body(FormParameter... formParameters) {
         return new URLEncodedForm(formParameters);
-    }
-
-    /**
-     * Creates a body of http request. W3C {@link org.w3c.dom.Document} is used as string content
-     *
-     * @param body is a document that is used as a request body
-     * @return an instance of {@link RequestBody}
-     */
-    public static RequestBody<String> body(org.w3c.dom.Document body) {
-        return new W3CDocumentBody(body);
-    }
-
-    /**
-     * Creates a body of http request. W3C {@link org.w3c.dom.Document} is used as string content
-     *
-     * @param body        is a document that is used as a request body
-     * @param transformer is a document transformer
-     * @return an instance of {@link RequestBody}
-     */
-    public static RequestBody<String> body(org.w3c.dom.Document body, Transformer transformer) {
-        return new W3CDocumentBody(body, transformer);
-    }
-
-    /**
-     * Creates a body of http request. Html {@link org.jsoup.nodes.Document body} is used as string content
-     *
-     * @param body is a document that is used as a request body
-     * @return an instance of {@link RequestBody}
-     */
-    public static RequestBody<String> body(org.jsoup.nodes.Document body) {
-        return new JSoupDocumentBody(body);
     }
 
     /**

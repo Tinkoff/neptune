@@ -3,7 +3,7 @@
 Полезные страницы:
 
 - О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст). 
-  Объект [контекста для браузера](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/SeleniumStepContext.html)
+  Объект [контекста для браузера](https://tinkoff.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/SeleniumStepContext.html)
   в примерах ниже вызывается статическим методом `ru.tinkoff.qa.neptune.selenium.SeleniumStepContext#inBrowser`
 
 - [Виджеты](./WIDGET.MD)
@@ -12,7 +12,7 @@
 
 - О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
-- [Критерии для элементов страницы](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/functions/searching/CommonElementCriteria.html)
+- [Критерии для элементов страницы](https://tinkoff.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/functions/searching/CommonElementCriteria.html)
 
 ## Оглавление
 - [Примеры поиска](#Примеры-поиска)

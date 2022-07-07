@@ -1,6 +1,6 @@
 # Neptune
 
-[![Neptune-master Status](https://github.com/Tinkoff/neptune/workflows/gradle-ci/badge.svg)](https://github.com/TinkoffCreditSystems/neptune/actions)
+[![Neptune-master Status](https://github.com/Tinkoff/neptune/workflows/gradle-ci/badge.svg)](https://github.com/tinkoff/neptune/actions)
 
 [![License][license-badge]][license-link]
 
@@ -35,6 +35,8 @@
 [closedissues-badge]: https://img.shields.io/github/issues-closed-raw/Tinkoff/neptune
 [closedissues-link]: https://github.com/Tinkoff/neptune/issues?q=is%3Aissue+is%3Aclosed
 
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=neptune)](https://sonarcloud.io/summary/new_code?id=neptune)
+
 Test automation framework for automation of E2E/system/integrating testing.
 
 It is under the ALPHA testing by developers/QA engineers of [Tinkoff.ru](https://www.tinkoff.ru/software/) for a while. Built jar are not available outside. For now source code and documentation is available for overview.
@@ -51,6 +53,7 @@ Module documentation:
 - [Integration of Neptune with Kafka](kafka/README.md)
 - [Integration of Neptune with Selenium WebDriver API](selenium/README.md)
 - [Neptune Database abstractions](database.abstractions/README.md)
+- [Neptune Hibernate Integration](hibernate/README.md)
 
 For Spring projects:
 - [Integration of Neptune with Spring MockMvc](spring.mock.mvc/README.md)

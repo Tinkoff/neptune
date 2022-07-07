@@ -5,6 +5,7 @@ import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.testng.integration.BaseTestNgTest;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
 
 public class SequentialParameterizedTestNGTest extends BaseTestNgTest {
 
@@ -19,7 +20,8 @@ public class SequentialParameterizedTestNGTest extends BaseTestNgTest {
 
     @Test
     public void calcResult() {
-        result = ContextClass2.context.getA() + ContextClass2.context.getB() + numberToAdd;
+        result = getCreatedContextOrCreate(ContextClass2.class).getA()
+                + getCreatedContextOrCreate(ContextClass2.class).getB() + numberToAdd;
     }
 
     @Test(dependsOnMethods = "calcResult")

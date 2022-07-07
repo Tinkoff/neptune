@@ -1,7 +1,7 @@
 # Работа с алертами
 
 - О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст). 
-  Объект [контекста для браузера](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/SeleniumStepContext.html) 
+  Объект [контекста для браузера](https://tinkoff.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/SeleniumStepContext.html) 
   в примерах ниже вызывается статическим методом `ru.tinkoff.qa.neptune.selenium.SeleniumStepContext#inBrowser` 
 
 - О принципах работы шагов, которые возвращают результат, можно
@@ -12,7 +12,7 @@
 
 - О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
-- [Критерии для алерта](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/functions/target/locator/alert/AlertCriteria.html)
+- [Критерии для алерта](https://tinkoff.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/functions/target/locator/alert/AlertCriteria.html)
 
 ## Оглавление
 

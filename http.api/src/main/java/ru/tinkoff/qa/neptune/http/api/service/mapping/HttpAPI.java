@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.http.api.service.mapping;
 import ru.tinkoff.qa.neptune.core.api.binding.Bind;
 import ru.tinkoff.qa.neptune.core.api.properties.url.URLValuePropertySupplier;
 import ru.tinkoff.qa.neptune.http.api.properties.end.point.DefaultEndPointOfTargetAPIProperty;
+import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.request.RequestTuner;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.Header;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
@@ -18,10 +19,14 @@ import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.que
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 import static java.lang.ClassLoader.getSystemClassLoader;
 import static java.lang.reflect.Proxy.newProxyInstance;
+import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpServiceBindReader.getDefaultURLProperty;
 
@@ -30,7 +35,7 @@ import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpServiceBindRead
  * This interface is designed to be a parent of interfaces that model
  * behavior of some http API.
  * <p>
- * Child interfaces should declare methods that return {@link ru.tinkoff.qa.neptune.http.api.request.RequestBuilder}.
+ * Child interfaces should declare methods that return {@link RequestBuilder}.
  * These methods should describe application http API under the testing.
  * Other methods should be static or they should have {@code default} modifier.
  * {@code default} methods also may describe API of an applications in case when a method of an API has optional
@@ -73,6 +78,13 @@ import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpServiceBindRead
  */
 public interface HttpAPI<T extends HttpAPI<T>> {
 
+    @SuppressWarnings("unchecked")
+    private static <T extends HttpAPI<T>> T createAPI(Class<T> toCreate, Supplier<URI> uriSupplier) {
+        return (T) newProxyInstance(getSystemClassLoader(),
+                new Class[]{toCreate},
+                new HttpAPIProxyHandler(uriSupplier, toCreate));
+    }
+
     /**
      * Creates an instance of an interface that extends {@link HttpAPI}.
      *
@@ -81,11 +93,9 @@ public interface HttpAPI<T extends HttpAPI<T>> {
      * @param <T>      is a type of resulted instance
      * @return is an instance of an interface that extends {@link HttpAPI}
      */
-    @SuppressWarnings("unchecked")
     static <T extends HttpAPI<T>> T createAPI(Class<T> toCreate, URI uri) {
-        return (T) newProxyInstance(getSystemClassLoader(),
-                new Class[]{toCreate},
-                new HttpAPIProxyHandler(uri, toCreate));
+        checkArgument(nonNull(toCreate), "Value of root URI is null");
+        return createAPI(toCreate, () -> uri);
     }
 
     /**
@@ -130,7 +140,20 @@ public interface HttpAPI<T extends HttpAPI<T>> {
      * @return is an instance of an interface that extends {@link HttpAPI}
      */
     static <T extends HttpAPI<T>> T createAPI(Class<T> toCreate, URLValuePropertySupplier urlProperty) {
-        return createAPI(toCreate, urlProperty.get());
+        return createAPI(toCreate, () -> ofNullable(urlProperty)
+                .map(s -> {
+                    var url = s.get();
+                    checkState(nonNull(url), "Value of the property "
+                            + s.getName()
+                            + " is not defined");
+
+                    try {
+                        return urlProperty.get().toURI();
+                    } catch (URISyntaxException e) {
+                        throw new IllegalStateException(e);
+                    }
+                })
+                .orElse(null));
     }
 
     /**
@@ -148,17 +171,17 @@ public interface HttpAPI<T extends HttpAPI<T>> {
     }
 
     /**
-     * Adds instances that define parameters of resulted objects of {@link ru.tinkoff.qa.neptune.http.api.request.RequestBuilder}
+     * Adds instances that define parameters of resulted objects of {@link RequestBuilder}
      *
-     * @param requestTuners instances that define parameters of resulted objects of {@link ru.tinkoff.qa.neptune.http.api.request.RequestBuilder}
+     * @param requestTuners instances that define parameters of resulted objects of {@link RequestBuilder}
      * @return is supposed to return self-reference
      */
     T useForRequestBuilding(RequestTuner... requestTuners);
 
     /**
-     * Defines a class those instance defines parameters of resulted objects of {@link ru.tinkoff.qa.neptune.http.api.request.RequestBuilder}
+     * Defines a class those instance defines parameters of resulted objects of {@link RequestBuilder}
      *
-     * @param requestTuner a class those instance defines parameters of resulted objects of {@link ru.tinkoff.qa.neptune.http.api.request.RequestBuilder}
+     * @param requestTuner a class those instance defines parameters of resulted objects of {@link RequestBuilder}
      * @return is supposed to return self-reference
      */
     T useForRequestBuilding(Class<? extends RequestTuner> requestTuner);

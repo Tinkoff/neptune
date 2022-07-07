@@ -7,23 +7,16 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import java.util.List;
 
 import static java.util.Comparator.comparing;
-import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
 final class MatchedObjectsBundleFilter extends DefaultAbstractBundleFiller {
 
-    private static List<Class<?>> matchedObjects;
-
-    protected MatchedObjectsBundleFilter(LocalizationBundlePartition p) {
+    MatchedObjectsBundleFilter(LocalizationBundlePartition p) {
         super(p, getMatchedObjects(), "MATCHED OBJECTS");
     }
 
-    public static synchronized List<Class<?>> getMatchedObjects() {
-        if (nonNull(matchedObjects)) {
-            return matchedObjects;
-        }
-
-        matchedObjects = new ClassGraph()
+    private static List<Class<?>> getMatchedObjects() {
+        return new ClassGraph()
                 .enableClassInfo()
                 .ignoreClassVisibility()
                 .scan()
@@ -34,7 +27,5 @@ final class MatchedObjectsBundleFilter extends DefaultAbstractBundleFiller {
                 .map(cls -> (Class<?>) cls)
                 .sorted(comparing(Class::getName))
                 .collect(toList());
-
-        return matchedObjects;
     }
 }

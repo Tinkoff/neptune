@@ -75,6 +75,7 @@ public final class DefaultTestRunningListener implements IInvokedMethodListener,
                 .ifPresentOrElse(method1 -> {}, () -> {
                     if (stream(method.getAnnotations()).anyMatch(annotation -> annotationToRefreshBefore
                             .contains(annotation.annotationType()))) {
+
                         REFRESHABLE_CONTEXTS.forEach(ContextRefreshable::refreshContext);
                         previouslyRefreshed.set(method);
                     }

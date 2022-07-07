@@ -64,7 +64,7 @@ public final class ListOfWebElementImageCaptor extends ImageCaptor<List<ElementP
 
     @Override
     public BufferedImage getData(List<ElementPhotographer> toBeCaptured) {
-        if (toBeCaptured.size() == 0) {
+        if (toBeCaptured.isEmpty()) {
             return null;
         }
 

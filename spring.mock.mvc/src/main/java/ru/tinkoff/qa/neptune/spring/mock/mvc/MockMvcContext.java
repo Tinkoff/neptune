@@ -7,10 +7,10 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.nonNull;
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
 
 public class MockMvcContext extends Context<MockMvcContext> {
 
-    private static final MockMvcContext context = getInstance(MockMvcContext.class);
     private final MockMvcProvider defaultMockMvcProvider;
 
     public MockMvcContext() {
@@ -18,7 +18,7 @@ public class MockMvcContext extends Context<MockMvcContext> {
     }
 
     static MockMvcContext getContext() {
-        return context;
+        return getCreatedContextOrCreate(MockMvcContext.class);
     }
 
     /**

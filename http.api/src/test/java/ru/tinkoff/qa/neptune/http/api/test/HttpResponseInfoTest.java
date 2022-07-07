@@ -23,72 +23,80 @@ import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasPreviousRespon
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasStatusCode.hasStatusCode;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasURI.hasURI;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasVersion.hasVersion;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.POST;
 
 public class HttpResponseInfoTest extends BaseHttpTest {
 
     @Test
     public void statusCode() {
         stubFor(get(urlPathEqualTo("/testStatus.html"))
-                .willReturn(aResponse().withBody("SUCCESS")));
+            .willReturn(aResponse().withBody("SUCCESS")));
 
-        assertThat(http().responseOf(GET(REQUEST_URI + "/testStatus.html"), ofString()),
-                hasStatusCode(200));
+        assertThat(
+            http().responseOf(GET()
+                .baseURI(REQUEST_URI)
+                .relativePath("/testStatus.html")
+                .responseBodyHandler(ofString())),
+            hasStatusCode(200));
     }
 
 
     @Test
     public void headersTest() {
         stubFor(post(urlPathEqualTo("/header2.html"))
-                .willReturn(aResponse().withBody("SUCCESS")));
+            .willReturn(aResponse().withBody("SUCCESS")));
 
-        assertThat(http().responseOf(POST(REQUEST_URI + "/header2.html", "Request body")),
-                all(
-                        hasHeader("matched-stub-id", notOf(emptyIterable())),
-                        hasHeader("vary", iterableInOrder("Accept-Encoding, User-Agent"))
-                ));
+        assertThat(
+            http().responseOf(POST("Request body").baseURI(REQUEST_URI + "/header2.html")),
+            all(
+                hasHeader("matched-stub-id", notOf(emptyIterable())),
+                hasHeader("vary", iterableInOrder("Accept-Encoding, User-Agent"))
+            ));
     }
 
     @Test
     public void bodyTest() {
         stubFor(get(urlPathEqualTo("/body2.html"))
-                .willReturn(aResponse().withBody("SUCCESS")));
+            .willReturn(aResponse().withBody("SUCCESS")));
 
-        assertThat(http().responseOf(GET(format("%s/body2.html", REQUEST_URI)), ofString()),
-                hasBody("SUCCESS"));
+        assertThat(
+            http().responseOf(GET()
+                .baseURI(format("%s/body2.html", REQUEST_URI))
+                .responseBodyHandler(ofString())),
+            hasBody("SUCCESS"));
     }
 
     @Test
     public void uriTest() {
         stubFor(get(urlPathEqualTo("/uri.html"))
-                .willReturn(aResponse().withBody("SUCCESS")));
+            .willReturn(aResponse().withBody("SUCCESS")));
 
-        assertThat(http().responseOf(GET(format("%s/uri.html", REQUEST_URI))),
-                hasURI(allOf(uriHasScheme("http"),
-                        uriHasHost("127.0.0.1"),
-                        uriHasPort(8089),
-                        uriHasPath("/uri.html"),
-                        HasQueryStringMatcher.uriHasQueryString(nullValue())
-                )));
+        assertThat(http().responseOf(GET().baseURI(format("%s/uri.html", REQUEST_URI))),
+            hasURI(allOf(uriHasScheme("http"),
+                uriHasHost("127.0.0.1"),
+                uriHasPort(8089),
+                uriHasPath("/uri.html"),
+                HasQueryStringMatcher.uriHasQueryString(nullValue())
+            )));
     }
 
     @Test
     public void versionTest() {
         stubFor(get(urlPathEqualTo("/version.html"))
-                .willReturn(aResponse().withBody("SUCCESS")));
+            .willReturn(aResponse().withBody("SUCCESS")));
 
-        assertThat(http().responseOf(GET(format("%s/version.html", REQUEST_URI))),
-                hasVersion(HTTP_2));
+        assertThat(http().responseOf(GET().baseURI(format("%s/version.html", REQUEST_URI))),
+            hasVersion(HTTP_2));
     }
 
 
     @Test
     public void previousResponseTest() {
         stubFor(get(urlPathEqualTo("/version2.html"))
-                .willReturn(aResponse().withBody("SUCCESS")));
+            .willReturn(aResponse().withBody("SUCCESS")));
 
-        assertThat(http().responseOf(GET(format("%s/version2.html", REQUEST_URI))),
-                not(hasPreviousResponse()));
+        assertThat(http().responseOf(GET().baseURI(format("%s/version2.html", REQUEST_URI))),
+            not(hasPreviousResponse()));
     }
 }

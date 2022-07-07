@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.rabbit.mq.test.declare;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.rabbit.mq.test.BaseRabbitMqTest;
+import ru.tinkoff.qa.neptune.rabbit.mq.BaseRabbitMqPreparations;
 
 import java.io.IOException;
 import java.util.Map;
@@ -13,7 +13,7 @@ import static org.mockito.Mockito.verify;
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.declare.DeclareExchangeParameters.newExchange;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_EXCHANGE_NAME;
 
-public class ExchangeDeclareTest extends BaseRabbitMqTest {
+public class ExchangeDeclareTest extends BaseRabbitMqPreparations {
 
     @AfterMethod
     @BeforeMethod

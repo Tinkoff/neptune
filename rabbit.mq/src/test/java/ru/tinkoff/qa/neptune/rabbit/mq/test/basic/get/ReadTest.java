@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.rabbitmq.client.GetResponse;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.rabbit.mq.test.BaseRabbitMqTest;
+import ru.tinkoff.qa.neptune.rabbit.mq.BaseRabbitMqPreparations;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.CustomMapper;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.DefaultMapper;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.DraftDto;
@@ -19,7 +19,7 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.*;
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetSupplier.rabbitBody;
 
-public class ReadTest extends BaseRabbitMqTest {
+public class ReadTest extends BaseRabbitMqPreparations {
 
     private final DraftDto dto = new DraftDto().setName("test");
     private final String body = new DefaultMapper().serialize(dto);

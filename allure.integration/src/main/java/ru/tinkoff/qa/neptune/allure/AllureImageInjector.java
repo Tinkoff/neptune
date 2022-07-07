@@ -1,11 +1,14 @@
 package ru.tinkoff.qa.neptune.allure;
 
-import ru.tinkoff.qa.neptune.core.api.event.firing.captors.CapturedImageInjector;
 import io.qameta.allure.AllureResultsWriteException;
+import ru.tinkoff.qa.neptune.core.api.event.firing.captors.CapturedImageInjector;
 
 import javax.imageio.ImageIO;
-import java.awt.image.*;
-import java.io.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import static io.qameta.allure.Allure.addAttachment;
 import static java.io.File.createTempFile;
@@ -17,7 +20,7 @@ public class AllureImageInjector implements CapturedImageInjector {
     private InputStream inputStream(BufferedImage image) {
         File picForLog = null;
         try {
-            picForLog = createTempFile("picture", randomUUID().toString() + ".png");
+            picForLog = createTempFile("picture", randomUUID() + ".png");
             ImageIO.write(image, "png", picForLog);
             return new FileInputStream(picForLog);
         }

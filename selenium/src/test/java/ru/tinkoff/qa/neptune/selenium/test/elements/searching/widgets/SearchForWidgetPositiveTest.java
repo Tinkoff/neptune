@@ -3,9 +3,9 @@ package ru.tinkoff.qa.neptune.selenium.test.elements.searching.widgets;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.selenium.BaseWebDriverPreparations;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import ru.tinkoff.qa.neptune.selenium.test.RetryAnalyzer;
 import ru.tinkoff.qa.neptune.selenium.test.elements.searching.widgets.buttons.CustomizedButton;
 import ru.tinkoff.qa.neptune.selenium.test.elements.searching.widgets.buttons.LabeledButton;
@@ -23,26 +23,26 @@ import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchS
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 
-public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
+public class SearchForWidgetPositiveTest extends BaseWebDriverPreparations {
 
     @DataProvider(name = "search without criteria")
     public static Object[][] searchCriteria() {
         return new Object[][]{
-                {button(), COMMON_BUTTON1, SimpleButton.class},
+            {button(), COMMON_BUTTON1, SimpleButton.class},
 
-                {button().timeOut(FIVE_SECONDS), COMMON_BUTTON1, SimpleButton.class},
+            {button().timeOut(FIVE_SECONDS), COMMON_BUTTON1, SimpleButton.class},
 
-                {button(BUTTON_LABEL_TEXT1), COMMON_LABELED_BUTTON1, LabeledButton.class},
+            {button(BUTTON_LABEL_TEXT1), COMMON_LABELED_BUTTON1, LabeledButton.class},
 
-                {button(BUTTON_LABEL_TEXT1)
-                        .timeOut(FIVE_SECONDS), COMMON_LABELED_BUTTON1,
-                        LabeledButton.class},
+            {button(BUTTON_LABEL_TEXT1)
+                .timeOut(FIVE_SECONDS), COMMON_LABELED_BUTTON1,
+                LabeledButton.class},
 
-                {button(BUTTON_LABEL_TEXT6), CUSTOM_LABELED_BUTTON2,
-                        CustomizedButton.class},
+            {button(BUTTON_LABEL_TEXT6), CUSTOM_LABELED_BUTTON2,
+                CustomizedButton.class},
 
 
-                {button().criteria(enabled()),
+            {button().criteria(enabled()),
                         COMMON_BUTTON3,
                         SimpleButton.class},
 
@@ -217,6 +217,6 @@ public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
         setEndBenchMark();
         assertThat(t.getClass().getSuperclass(), is(widgetClass));
         ofNullable(element).ifPresent(element1 -> assertThat(t.getWrappedElement(), equalTo(element1)));
-        assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(150L));
+        assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(250L));
     }
 }

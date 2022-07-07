@@ -63,7 +63,7 @@ public @interface UseInjectors {
                                 && abstractInjector.isAssignableFrom(injector))
                         .collect(toList());
 
-                if (found.size() > 0) {
+                if (!found.isEmpty()) {
                     result.put(abstractInjector, found);
                 }
             });

@@ -25,7 +25,7 @@ import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
 import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byId;
 import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byIds;
 
-public class SaveTest extends BaseSpringDataTest {
+public class SaveTest extends BaseSpringDataPreparing {
 
     private final TestEntity updatedEntity = new TestEntity().setId(10L)
             .setName("Test Name 1")

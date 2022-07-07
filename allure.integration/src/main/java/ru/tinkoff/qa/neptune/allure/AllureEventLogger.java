@@ -11,7 +11,6 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.UUID;
 
 import static io.qameta.allure.Allure.addAttachment;
 import static io.qameta.allure.Allure.getLifecycle;
@@ -20,6 +19,7 @@ import static io.qameta.allure.model.Status.PASSED;
 import static io.qameta.allure.util.ResultsUtils.getStatus;
 import static io.qameta.allure.util.ResultsUtils.getStatusDetails;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.core.api.utils.ToArrayUtil.stringValueOfObjectOrArray;
 
@@ -31,7 +31,7 @@ public class AllureEventLogger implements EventLogger {
 
     @Override
     public void fireTheEventStarting(String message, Map<String, String> parameters) {
-        var uuid = UUID.randomUUID().toString();
+        var uuid = randomUUID().toString();
         var result = new StepResult().setName(message)
                 .setParameters(parameters
                         .entrySet()
@@ -41,26 +41,26 @@ public class AllureEventLogger implements EventLogger {
                                 .setValue(e.getValue()))
                         .collect(toList()));
 
-        if (stepUIIDs.size() == 0) {
-            allureLifecycle.startStep(uuid, result);
+        if (getStepUIIDs().isEmpty()) {
+            getAllureLifecycle().startStep(uuid, result);
         } else {
-            allureLifecycle.startStep(stepUIIDs.getLast(), uuid, result);
+            getAllureLifecycle().startStep(getStepUIIDs().getLast(), uuid, result);
         }
-        stepUIIDs.addLast(uuid);
-        results.put(uuid, null);
+        getStepUIIDs().addLast(uuid);
+        getResults().put(uuid, null);
     }
 
     @Override
     public void fireThrownException(Throwable throwable) {
-        if (stepUIIDs.size() == 0) {
+        if (getStepUIIDs().isEmpty()) {
             return;
         }
 
-        var uuid = stepUIIDs.getLast();
-        allureLifecycle.updateStep(uuid, s -> s
+        var uuid = getStepUIIDs().getLast();
+        getAllureLifecycle().updateStep(uuid, s -> s
                 .setStatus(getStatus(throwable).orElse(BROKEN))
                 .setStatusDetails(getStatusDetails(throwable).orElse(null)));
-        results.put(uuid, getStatus(throwable).orElse(BROKEN));
+        getResults().put(uuid, getStatus(throwable).orElse(BROKEN));
 
         var bos = new ByteArrayOutputStream();
         var ps = new PrintStream(bos, true, UTF_8);
@@ -71,43 +71,43 @@ public class AllureEventLogger implements EventLogger {
 
     @Override
     public void fireReturnedValue(String resultDescription, Object returned) {
-        if (stepUIIDs.size() == 0) {
+        if (getStepUIIDs().isEmpty()) {
             return;
         }
 
-        var uuid = stepUIIDs.getLast();
-        allureLifecycle.updateStep(uuid, s -> s.setStatus(PASSED)
+        var uuid = getStepUIIDs().getLast();
+        getAllureLifecycle().updateStep(uuid, s -> s.setStatus(PASSED)
                 .getParameters()
                 .add(new Parameter()
                         .setName(resultDescription)
                         .setValue(stringValueOfObjectOrArray(returned))));
-        results.put(uuid, PASSED);
+        getResults().put(uuid, PASSED);
     }
 
     @Override
     public void fireEventFinishing() {
-        if (stepUIIDs.size() == 0) {
+        if (getStepUIIDs().isEmpty()) {
             return;
         }
 
-        var uuid = stepUIIDs.getLast();
-        allureLifecycle.updateStep(uuid, stepResult -> {
-            if (results.get(uuid) == null) {
+        var uuid = getStepUIIDs().getLast();
+        getAllureLifecycle().updateStep(uuid, stepResult -> {
+            if (getResults().get(uuid) == null) {
                 stepResult.setStatus(PASSED);
             }
         });
-        allureLifecycle.stopStep(uuid);
-        stepUIIDs.removeLast();
+        getAllureLifecycle().stopStep(uuid);
+        getStepUIIDs().removeLast();
     }
 
     @Override
     public void addParameters(Map<String, String> parameters) {
-        if (stepUIIDs.size() == 0) {
+        if (getStepUIIDs().isEmpty()) {
             return;
         }
 
-        var uuid = stepUIIDs.getLast();
-        allureLifecycle.updateStep(uuid, stepResult -> {
+        var uuid = getStepUIIDs().getLast();
+        getAllureLifecycle().updateStep(uuid, stepResult -> {
             var params = stepResult.getParameters();
             params.addAll(parameters
                     .entrySet()
@@ -117,5 +117,17 @@ public class AllureEventLogger implements EventLogger {
             stepResult.setParameters(params);
         });
 
+    }
+
+    AllureLifecycle getAllureLifecycle() {
+        return allureLifecycle;
+    }
+
+    LinkedList<String> getStepUIIDs() {
+        return stepUIIDs;
+    }
+
+    Map<String, Status> getResults() {
+        return results;
     }
 }

@@ -131,7 +131,7 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
             }
         });
 
-        if (caughtMismatches.size() > 0) {
+        if (!caughtMismatches.isEmpty()) {
             throw new AssertionError(new AssertFoundMismatchesDescription(caughtMismatches));
         }
     }

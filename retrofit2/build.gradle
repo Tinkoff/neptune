@@ -1,21 +1,9 @@
-plugins {
-    id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
-}
-
 dependencies {
     api project(':core.api')
-    inpath(project(":core.api")) {
-        transitive = false
-    }
     api group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.9.0'
-    api group: 'org.apache.tika', name: 'tika-core', version: '2.2.1'
     testImplementation  group: 'com.squareup.retrofit2', name: 'converter-gson', version: '2.9.0'
     testImplementation  group: 'com.squareup.retrofit2', name: 'converter-scalars', version: '2.9.0'
     testImplementation group: 'com.github.tomakehurst', name: 'wiremock-jre8-standalone', version: '2.32.0'
-}
-
-test {
-    useTestNG()
 }
 
 task generateBundle(type: JavaExec)  {
@@ -53,7 +41,7 @@ publishing {
                 packaging = 'jar'
                 name = 'retrofit2'
                 version = version
-                url = 'https://github.com/TinkoffCreditSystems/neptune'
+                url = 'https://github.com/tinkoff/neptune'
                 licenses {
                     license {
                         name = 'Apache License, Version 2.0'
@@ -69,9 +57,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
-                    developerConnection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
-                    url = 'https://github.com/TinkoffCreditSystems/neptune'
+                    connection = 'scm:git:ssh://git@github.com:tinkoff/neptune.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:tinkoff/neptune.git'
+                    url = 'https://github.com/tinkoff/neptune'
                 }
             }
         }
@@ -79,11 +67,11 @@ publishing {
 }
 
 javadoc {
-    destinationDir = file("${buildDir}/../../../neptune.documentation/javadocs/$project.name")
+    destinationDir = file("${buildDir}/../../neptune.documentation/$project.name")
 
     title = "Neptune Retrofit 2.x Integration API. v$globalVersion"
     options.author true
-    options.links 'http://download.oracle.com/javase/9/docs/api/'
+    options.links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
     options.addStringOption 'Xdoclint:none', '-quiet'
     options.memberLevel = JavadocMemberLevel.PROTECTED
     options.bottom = "Copyright &copy; 2022 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."

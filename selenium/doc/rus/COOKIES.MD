@@ -1,7 +1,7 @@
 # Работа с cookie браузера
 
 - О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст). 
-  Объект [контекста для браузера](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/SeleniumStepContext.html)
+  Объект [контекста для браузера](https://tinkoff.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/SeleniumStepContext.html)
   в примерах ниже вызывается статическим методом `ru.tinkoff.qa.neptune.selenium.SeleniumStepContext#inBrowser`
 
 - О принципах работы шагов, которые возвращают результат, можно
@@ -12,7 +12,7 @@
 
 - О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии). 
 
-- [Критерии для cookie браузера](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/functions/cookies/CommonBrowserCookieCriteria.html)
+- [Критерии для cookie браузера](https://tinkoff.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/functions/cookies/CommonBrowserCookieCriteria.html)
 
 ## Оглавление
 - [Получение cookie браузера](#Получение-cookie-браузера)

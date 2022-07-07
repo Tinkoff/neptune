@@ -5,11 +5,11 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import java.util.List;
 
-import static java.lang.reflect.Modifier.isStatic;
-import static java.util.Arrays.stream;
-import static java.util.Optional.ofNullable;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContext;
 
+@SuppressWarnings("rawtypes")
 public interface ContextRefreshable {
 
     List<Class<? extends Context>> REFRESHABLE_CONTEXTS = new ClassGraph()
@@ -23,39 +23,18 @@ public interface ContextRefreshable {
             .collect(toList());
 
     /**
-     * Performs the refreshing of a {@link Context} instance related to current thread.
-     * It is considered that given subclass of {@link Context} has a static field of
-     * same type as the class. This field should not be null. Also it is required
-     * to fill the field with a value created by invocation of {@code Context.getInstance(Class)}
+     * Performs the refreshing of an instance of {@link Context} which belongs to current thread.
      *
-     * @param toBeRefreshed
+     * @param toBeRefreshed is a class of an instance to be refreshed
      */
     static void refreshContext(Class<? extends Context> toBeRefreshed) {
         if (!ContextRefreshable.class.isAssignableFrom(toBeRefreshed)) {
             return;
         }
 
-        var field = stream(toBeRefreshed.getDeclaredFields())
-                .filter(f -> {
-                    if (!isStatic(f.getModifiers())) {
-                        return false;
-                    }
-
-                    return f.getType().equals(toBeRefreshed);
-                })
-                .findFirst()
-                .orElse(null);
-
-        if (field == null) {
-            return;
-        }
-
-        field.setAccessible(true);
-        try {
-            var value = field.get(toBeRefreshed);
-            ofNullable(value).ifPresent(o -> ((ContextRefreshable) o).refreshContext());
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        var context = getCreatedContext(toBeRefreshed);
+        if (nonNull(context)) {
+            ((ContextRefreshable) context).refreshContext();
         }
     }
 

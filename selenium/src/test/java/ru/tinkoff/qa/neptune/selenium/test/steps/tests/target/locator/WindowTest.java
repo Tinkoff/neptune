@@ -6,8 +6,8 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.selenium.BaseWebDriverPreparations;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 
 import static java.time.Duration.ofSeconds;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -27,7 +27,7 @@ import static ru.tinkoff.qa.neptune.selenium.test.enums.InitialSizes.*;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.URLs.*;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles.*;
 
-public class WindowTest extends BaseWebDriverTest {
+public class WindowTest extends BaseWebDriverPreparations {
 
     @BeforeMethod
     public void prepare() {

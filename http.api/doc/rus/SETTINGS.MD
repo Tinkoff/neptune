@@ -377,9 +377,6 @@ public class SomeClass {
 }
 ```
 
-Если свойство никак не настраивать, то по умолчанию в качестве значения свойства используются объекты класса `ru.tinkoff.qa.neptune.http.api.properties.ssl.AllTrustedSslContextSupplier`.
-Данный поставщик возвращает объекты `javax.net.ssl.SSLContext`, которые принимают любые сертификаты.
-
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
@@ -590,7 +587,7 @@ public class SomeClass {
 
 ```properties
 #Значение свойства указывается так
-END_POINT_OF_TARGET_API=http://my.api.domain.com:2000
+END_POINT_OF_TARGET_API=http://my.api.domain.com:2000/context/path
 ```
 
 ```java

@@ -2,15 +2,9 @@ package ru.tinkoff.qa.neptune.selenium.test.webdriver.starting;
 
 import org.hamcrest.Matchers;
 import org.testng.annotations.*;
-import ru.tinkoff.qa.neptune.selenium.SeleniumParameterProvider;
 import ru.tinkoff.qa.neptune.selenium.WrappedWebDriver;
-import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeSettingsSupplierHeadless;
 
-import java.util.Map;
-
-import static java.util.Map.entry;
-import static java.util.Map.ofEntries;
 import static java.util.Optional.ofNullable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static ru.tinkoff.qa.neptune.selenium.authentication.BrowserCredentials.changeBrowserLogin;
@@ -19,21 +13,18 @@ import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProper
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers.CHROME_DRIVER;
 import static ru.tinkoff.qa.neptune.selenium.properties.WebDriverCredentialsProperty.WEB_DRIVER_CREDENTIALS_PROPERTY;
 
+@SuppressWarnings("unchecked")
 public class AuthenticationTest {
-
-    private final Map<String, String> PROPERTIES_TO_SET_BEFORE =
-            ofEntries(entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getName(), CHROME_DRIVER.name()),
-                    entry(CHROME.getName(), ChromeSettingsSupplierHeadless.class.getName()));
     private WrappedWebDriver wrappedWebDriver;
 
     @BeforeClass
     public void setUp() {
-        PROPERTIES_TO_SET_BEFORE.forEach(System::setProperty);
+        SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.accept(CHROME_DRIVER);
+        CHROME.accept(new Class[]{ChromeSettingsSupplierHeadless.class});
     }
 
     public void getDriver() {
-        wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
-                new SeleniumParameterProvider().provide()[0]);
+        wrappedWebDriver = new WrappedWebDriver(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.get());
     }
 
     @BeforeMethod(alwaysRun = true)
@@ -57,15 +48,15 @@ public class AuthenticationTest {
     }
 
     @Test(groups = "NO CREDENTIALS",
-            expectedExceptions = UnsupportedOperationException.class,
-            expectedExceptionsMessageRegExp = "There is no object that can perform login action in a browser. Please define the 'WEB_DRIVER_CREDENTIALS' property")
+        expectedExceptions = UnsupportedOperationException.class,
+        expectedExceptionsMessageRegExp = "There is no object that can perform login action in a browser. Please define the 'WEB_DRIVER_CREDENTIALS' property")
     public void test2() {
         changeBrowserLogin("ABC");
     }
 
     @Test(groups = "NO CREDENTIALS",
-            expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "Object of type class ru.tinkoff.qa.neptune.selenium.test.webdriver.starting.TestBrowserCredentials doesn't support credentials of type java.lang.Boolean")
+        expectedExceptions = IllegalArgumentException.class,
+        expectedExceptionsMessageRegExp = "Object of type class ru.tinkoff.qa.neptune.selenium.test.webdriver.starting.TestBrowserCredentials doesn't support credentials of type java.lang.Boolean")
     public void test3() {
         WEB_DRIVER_CREDENTIALS_PROPERTY.accept(TestBrowserCredentials.class);
         changeBrowserLogin(true);
@@ -127,6 +118,7 @@ public class AuthenticationTest {
 
     @AfterClass
     public void tearDown() {
-        PROPERTIES_TO_SET_BEFORE.keySet().forEach(s -> System.getProperties().remove(s));
+        SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.accept(null);
+        CHROME.accept(null);
     }
 }

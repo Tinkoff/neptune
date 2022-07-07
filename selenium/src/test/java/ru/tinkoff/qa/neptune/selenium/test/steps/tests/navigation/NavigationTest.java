@@ -1,8 +1,8 @@
 package ru.tinkoff.qa.neptune.selenium.test.steps.tests.navigation;
 
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.selenium.BaseWebDriverPreparations;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import ru.tinkoff.qa.neptune.selenium.test.MockWindow;
 
 import static java.lang.System.getProperties;
@@ -14,7 +14,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_D
 import static ru.tinkoff.qa.neptune.selenium.test.enums.URLs.*;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles.*;
 
-public class NavigationTest extends BaseWebDriverTest {
+public class NavigationTest extends BaseWebDriverPreparations {
 
     @Test
     public void test1() {
