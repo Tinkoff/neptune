@@ -31,8 +31,8 @@ public class KafkaStepContext extends Context<KafkaStepContext> {
         return producer;
     }
 
-    <K, V> KafkaConsumer<K, V> getConsumer() {
-        return (KafkaConsumer<K, V>) consumer;
+    public KafkaConsumer<String, String> getConsumer() {
+        return consumer;
     }
 
     KafkaConsumer<String, String> createConsumer() {
