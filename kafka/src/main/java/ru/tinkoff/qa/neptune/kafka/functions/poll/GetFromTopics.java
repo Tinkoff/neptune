@@ -15,12 +15,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty.DEFAULT_TOPICS_FOR_POLL;
 
 final class GetFromTopics<T> implements Function<List<ConsumerRecord<String, String>>, List<T>>, StepParameterPojo {
-
-    @StepParameter(value = "topics", makeReadableBy = TopicValueGetter.class)
-    public String[] topics;
 
     @StepParameter(value = "Class to deserialize to", doNotReportNullValues = true)
     private final Class<T> cls;
@@ -34,7 +30,6 @@ final class GetFromTopics<T> implements Function<List<ConsumerRecord<String, Str
 
     GetFromTopics(Class<T> cls, TypeReference<T> typeRef, String... topics) {
         checkArgument(!(isNull(cls) && isNull(typeRef)), "Any class or type reference should be defined");
-        this.topics = topics.length == 0 ? DEFAULT_TOPICS_FOR_POLL.get() : topics;
         this.cls = cls;
         this.typeRef = typeRef;
         this.type = ofNullable(typeRef).map(TypeReference::getType).orElse(null);
@@ -47,10 +42,6 @@ final class GetFromTopics<T> implements Function<List<ConsumerRecord<String, Str
 
     GetFromTopics(TypeReference<T> typeRef, String... topics) {
         this(null, typeRef, topics);
-    }
-
-    static GetFromTopics<String> getStringResult(String... topics) {
-        return new GetFromTopics<>(String.class, null, topics);
     }
 
     @Override

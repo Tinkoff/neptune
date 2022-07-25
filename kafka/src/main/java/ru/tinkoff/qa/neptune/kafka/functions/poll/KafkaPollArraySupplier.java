@@ -20,10 +20,13 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.ArrayUtils.add;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetFromTopics.getStringResult;
+import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAFKA_DEFAULT_DATA_TRANSFORMER;
 
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Poll:")
@@ -31,10 +34,10 @@ import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetFromTopics.getString
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria for every item of resulted array")
 @MaxDepthOfReporting(0)
 @SuppressWarnings({"unchecked", "rawtypes"})
-public abstract class KafkaPollArraySupplier<T, M, D, S extends KafkaPollArraySupplier<T, M, D, S>> extends SequentialGetStepSupplier
-        .GetArrayChainedStepSupplier<KafkaStepContext, T, M, S> {
+public abstract class KafkaPollArraySupplier<M, R, S extends KafkaPollArraySupplier<M, R, S>> extends SequentialGetStepSupplier
+        .GetArrayStepSupplier<KafkaStepContext, R, S> {
 
-    final Function<?, List<D>> parameterFunction;
+    private GetRecords.MergeProperty getFromTopics;
 
     @CaptureOnSuccess(by = AllMessagesCaptor.class)
     @CaptureOnFailure(by = AllMessagesCaptor.class)
@@ -42,24 +45,10 @@ public abstract class KafkaPollArraySupplier<T, M, D, S extends KafkaPollArraySu
 
     private DataTransformer transformer;
 
-    protected KafkaPollArraySupplier(Function<M, List<D>> originalFunction, Function<D, T> howToGet, Class<T> componentClass) {
-        super(originalFunction.andThen(list -> {
-            var listT = list.stream().map(howToGet).collect(toList());
-            T[] ts = (T[]) Array.newInstance(componentClass, 0);
-
-            for (var t : listT) {
-                ts = add(ts, t);
-            }
-
-            return ts;
-        }));
-        this.parameterFunction = originalFunction;
-    }
-
-    /*protected <M> KafkaPollArraySupplier(GetFromTopics<M> getFromTopics, Function<M, T> originalFunction, Class<T> componentClass) {
+    protected KafkaPollArraySupplier(GetRecords.MergeProperty<List<M>> getFromTopics, Function<M, R> originalFunction, Class<R> componentClass) {
         super(getFromTopics.andThen(list -> {
             var listT = list.stream().map(originalFunction).collect(toList());
-            T[] ts = (T[]) Array.newInstance(componentClass, 0);
+            R[] ts = (R[]) Array.newInstance(componentClass, 0);
 
             for (var t : listT) {
                 ts = add(ts, t);
@@ -68,10 +57,7 @@ public abstract class KafkaPollArraySupplier<T, M, D, S extends KafkaPollArraySu
             return ts;
         }));
         this.getFromTopics = getFromTopics;
-        from(getConsumer());
     }
-
-     */
 
     /**
      * Creates a step that returns array of values which are calculated by data of read messages.
@@ -89,7 +75,7 @@ public abstract class KafkaPollArraySupplier<T, M, D, S extends KafkaPollArraySu
      * @return an instance of {@link KafkaPollArraySupplier.Mapped}
      */
     @Description("{description}")
-    public static <M, T> Mapped<T> kafkaArray(
+    public static <M, T> Mapped<M, T> kafkaArray(
             @DescriptionFragment(value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
             ) String description,
@@ -98,7 +84,9 @@ public abstract class KafkaPollArraySupplier<T, M, D, S extends KafkaPollArraySu
             Function<M, T> toGet,
             String... topics) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return new KafkaPollArraySupplier.Mapped<>(new GetFromTopics<>(classT, topics), toGet, componentClass);
+        return new KafkaPollArraySupplier.Mapped<>(new GetRecords(topics).andThen(new GetFromTopics<>(classT)),
+                toGet,
+                componentClass);
     }
 
     /**
@@ -117,7 +105,7 @@ public abstract class KafkaPollArraySupplier<T, M, D, S extends KafkaPollArraySu
      * @return an instance of {@link KafkaPollArraySupplier.Mapped}
      */
     @Description("{description}")
-    public static <M, T> Mapped<T> kafkaArray(
+    public static <M, T> Mapped<M, T> kafkaArray(
             @DescriptionFragment(value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
             ) String description,
@@ -126,7 +114,7 @@ public abstract class KafkaPollArraySupplier<T, M, D, S extends KafkaPollArraySu
             Function<M, T> toGet,
             String... topics) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return new KafkaPollArraySupplier.Mapped<>(new GetFromTopics<>(typeT, topics), toGet, componentClass);
+        return new KafkaPollArraySupplier.Mapped<>(new GetRecords(topics).andThen(new GetFromTopics<>(typeT)), toGet, componentClass);
     }
 
     /**
@@ -141,7 +129,7 @@ public abstract class KafkaPollArraySupplier<T, M, D, S extends KafkaPollArraySu
      * @param <T>         is a type of deserialized message
      * @return an instance of {@link KafkaPollArraySupplier.Mapped}
      */
-    public static <T> Mapped<T> kafkaArray(
+    public static <T> Mapped<T, T> kafkaArray(
             String description,
             Class<T> classT,
             String... topics) {
@@ -160,7 +148,7 @@ public abstract class KafkaPollArraySupplier<T, M, D, S extends KafkaPollArraySu
      * @param <T>         is a type of deserialized message
      * @return an instance of {@link KafkaPollArraySupplier.Mapped}
      */
-    public static <T> Mapped<T> kafkaArray(
+    public static <T> Mapped<T, T> kafkaArray(
             String description,
             TypeReference<T> typeT,
             String... topics) {
@@ -179,7 +167,7 @@ public abstract class KafkaPollArraySupplier<T, M, D, S extends KafkaPollArraySu
      */
     @Description("String messages")
     public static StringMessages kafkaArrayOfRawMessages(String... topics) {
-        return new StringMessages(getStringResult(topics));
+        return new StringMessages(new GetRecords(topics).andThen(new GetFromTopics<>(String.class)));
     }
 
     @Override
@@ -187,17 +175,16 @@ public abstract class KafkaPollArraySupplier<T, M, D, S extends KafkaPollArraySu
         return super.timeOut(timeOut);
     }
 
-    //todo реализовать в кажлм классе
-//    @Override
-//    protected void onStart(KafkaConsumer<String, String> consumer) {
-//        var transformer = ofNullable(this.transformer)
-//            .orElseGet(KAFKA_DEFAULT_DATA_TRANSFORMER);
-//        checkState(nonNull(transformer), "Data transformer is not defined. Please invoke "
-//            + "the '#withDataTransformer(DataTransformer)' method or define '"
-//            + KAFKA_DEFAULT_DATA_TRANSFORMER.getName()
-//            + "' property/env variable");
-//        getFromTopics.setTransformer(transformer);
-//    }
+    @Override
+    protected void onStart(KafkaStepContext m) {
+        var transformer = ofNullable(this.transformer)
+                .orElseGet(KAFKA_DEFAULT_DATA_TRANSFORMER);
+        checkState(nonNull(transformer), "Data transformer is not defined. Please invoke "
+                + "the '#withDataTransformer(DataTransformer)' method or define '"
+                + KAFKA_DEFAULT_DATA_TRANSFORMER.getName()
+                + "' property/env variable");
+        ((GetFromTopics<M>) getFromTopics.getAfter()).setTransformer(transformer);
+    }
 
     S withDataTransformer(DataTransformer dataTransformer) {
         this.transformer = dataTransformer;
@@ -205,46 +192,33 @@ public abstract class KafkaPollArraySupplier<T, M, D, S extends KafkaPollArraySu
     }
 
     @Override
-    protected void onSuccess(T[] t) {
-        if ((t == null || t.length == 0) && parameterFunction instanceof CollectsMessages) {
-            messages = ((CollectsMessages) parameterFunction).getMessages();
+    protected void onSuccess(R[] t) {
+        if (t == null || t.length == 0) {
+            messages = getFromTopics.getBefore().getMessages();
         }
     }
 
     @Override
-    protected void onFailure(M m, Throwable throwable) {
-        if (parameterFunction instanceof CollectsMessages) {
-            messages = ((CollectsMessages) parameterFunction).getMessages();
-        }
+    protected void onFailure(KafkaStepContext m, Throwable throwable) {
+        messages = getFromTopics.getBefore().getMessages();
     }
 
+    public final static class Mapped<M, T> extends KafkaPollArraySupplier<M, T, Mapped<M, T>> {
 
-    public final static class Mapped<T> extends KafkaPollArraySupplier<T, Mapped<T>> {
-
-        private <M> Mapped(GetFromTopics<M> getFromTopics, Function<M, T> originalFunction, Class<T> componentClass) {
+        private Mapped(GetRecords.MergeProperty<List<M>> getFromTopics, Function<M, T> originalFunction, Class<T> componentClass) {
             super(getFromTopics, originalFunction, componentClass);
         }
 
-        public Mapped<T> withDataTransformer(DataTransformer transformer) {
+        public Mapped<M, T> withDataTransformer(DataTransformer transformer) {
             return super.withDataTransformer(transformer);
         }
     }
 
-    private abstract static class StringMessages<M, S extends StringMessages<M, S>> extends KafkaPollArraySupplier<String, M, String, S> {
+    public final static class StringMessages extends KafkaPollArraySupplier<String, String, StringMessages> {
 
-        protected StringMessages(Function<M, List<String>> originalFunction) {
-            super(originalFunction, s -> s, String.class);
+        private StringMessages(GetRecords.MergeProperty<List<String>> getFromTopics) {
+            super(getFromTopics, s -> s, String.class);
             withDataTransformer(new StringDataTransformer());
         }
-    }
-
-    public final static class StringMessagesDirect extends StringMessages<List<String>> {
-        super()
-    }
-
-    public final static class StringMessagesFromRecords extends StringMessages<List<String>> {
-        super();
-
-        from();
     }
 }
