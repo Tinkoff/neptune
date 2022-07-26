@@ -5,9 +5,10 @@
 ## Оглавление
 
 - [Получение сообщения](#Получение-сообщения)
-  - [Получение данных сообщения как List](#Получение-данных-сообщения-как-List)
-  - [Получение данных сообщения в виде массива](#Получение-данных-сообщения-в-виде-массива)
-    - [Получение данных сообщения как Java-объект из Iterable](#Получение-данных-сообщения-как-Java-объект-из-Iterable)
+  - [Получение consumerRecords](#Получение-consumerRecords)
+  - [Получение десериализованных сообщений как List](#Получение-десериализованных-сообщений-как-List)
+  - [Получение десериализованных сообщений в виде массива](#Получение-десериализованных-сообщений-в-виде-массива)
+  - [Получение десериализованного сообщения как Java-объект из Iterable](#Получение-десериализованного-сообщения-как-Java-объект-из-Iterable)
 - [Публикация сообщений](#Публикация-сообщений)
 
 ## Получение сообщения
@@ -17,7 +18,224 @@
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-### Получение данных сообщения как List
+### Получение consumerRecords
+
+В примерах ниже предполагается, что настройки / свойства / переменные окружения
+[KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER),
+[DEFAULT_TOPICS_FOR_POLL](./SETTINGS.MD#DEFAULT_TOPICS_FOR_POLL)
+перед началом выполнения имеют непустые значения
+
+```java
+import java.util.List;
+
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetRecordSupplier.consumerRecords;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    //Возвращает коллекцию ConsumerRecord из указанных топиков
+    List<ConsumerRecord> results = kafka().poll(consumerRecords("Описание", 
+            "test_topic1", "test_topic2") //топики для получения сообщений
+            .timeOut(ofSeconds(5)) //можно указать время на получение 
+            // ожидаемого результата = 5 секунд
+            .criteria("description", c->c.value().contains("29"))//можно указать критерий, 
+            // которому должен соответствовать каждый элемент результирующей коллекции
+            .throwOnNoResult()); //можно указать, что должно быть выброшено исключение, если результат не был получен
+  }
+}
+```
+
+```java
+import java.util.List;
+
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetRecordSupplier.consumerRecords;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    List<Object> results = kafka().poll(consumerRecords("Описание", 
+            "test_topic1", "test_topic2") 
+            //Вернет лист объектов, полученных вызовом метода value у каждой ConsumerRecord
+            .thenGetList("value from ConsumerRecords", ConsumerRecord::value)); 
+  }
+}
+```
+
+```java
+import java.util.List;
+
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetRecordSupplier.consumerRecords;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    List<DraftDto> results = kafka().poll(consumerRecords("Описание", 
+            "test_topic1", "test_topic2") 
+            //Вернет лист десериализованных объектов
+            .thenGetList("Описание", DraftDto.class)); 
+  }
+}
+```
+
+```java
+import java.util.List;
+
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetRecordSupplier.consumerRecords;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    List<String> results = kafka().poll(consumerRecords("Описание", 
+            "test_topic1", "test_topic2") 
+            //Сначала десериализует каждый consumerRecord в объект DraftDto и выполнит функцию "DraftDto::getName"
+            .thenGetList("DraftDto-> name", DraftDto.class, DraftDto::getName)); 
+            //В результате вернется коллекция строк
+  }
+}
+```
+
+```java
+import java.util.List;
+
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetRecordSupplier.consumerRecords;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    List<DraftDto> results = kafka().poll(consumerRecords("Описание", 
+            "test_topic1", "test_topic2") 
+            .thenGetList("Описание", new TypeReference<DraftDto>() {})); 
+  }
+}
+```
+
+```java
+import java.util.List;
+
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetRecordSupplier.consumerRecords;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    List<String> results = kafka().poll(consumerRecords("Описание", 
+            "test_topic1", "test_topic2") 
+            .thenGetList("DraftDto-> name", new TypeReference<>() {}, DraftDto::getName)); 
+  }
+}
+```
+
+```java
+import java.util.List;
+
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetRecordSupplier.consumerRecords;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    //Вернет значение value для найденной consumerRecord
+    var results = kafka().poll(consumerRecords("Описание", 
+            "test_topic1", "test_topic2")
+            .thenGetItem("value",ConsumerRecord::value));
+  }
+}
+```
+
+```java
+import java.util.List;
+
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetRecordSupplier.consumerRecords;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    //Вернет десериализованный объект DraftDto
+    DraftDto results = kafka().poll(consumerRecords("Описание", 
+            "test_topic1", "test_topic2")
+            .thenGetItem("description",DraftDto.class));
+  }
+}
+```
+
+```java
+import java.util.List;
+
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetRecordSupplier.consumerRecords;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    //Вернет десериализованный объект DraftDto
+    DraftDto results = kafka().poll(consumerRecords("Описание", 
+            "test_topic1", "test_topic2")
+            .thenGetItem("description",new TypeReference<DraftDto>() {}));
+  }
+}
+```
+
+```java
+import java.util.List;
+
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetRecordSupplier.consumerRecords;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    String results = kafka().poll(consumerRecords("Описание", 
+            "test_topic1", "test_topic2")
+            .thenGetItem("description",DraftDto.class, DraftDto::getName));
+  }
+}
+```
+
+```java
+import java.util.List;
+
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
+import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetRecordSupplier.consumerRecords;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    String results = kafka().poll(consumerRecords("Описание", 
+            "test_topic1", "test_topic2")
+            .thenGetItem("description",new TypeReference<DraftDto>() {}, DraftDto::getName));
+  }
+}
+```
+
+### Получение десериализованных сообщений как List
 
 В примерах ниже предполагается, что настройки / свойства / переменные окружения
 [KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER),
@@ -236,7 +454,7 @@ public class MyTest {
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-### Получение данных сообщения в виде массива
+### Получение десериализованных сообщений в виде массива
 
 В примерах ниже предполагается, что настройки / свойства / переменные окружения
 [KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER),
@@ -450,7 +668,7 @@ public class MyTest {
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
-### Получение данных сообщения как Java-объект из Iterable
+### Получение десериализованного сообщения как Java-объект из Iterable
 
 В примерах ниже предполагается, что настройки / свойства / переменные окружения
 [KAFKA_DEFAULT_DATA_TRANSFORMER](./SETTINGS.MD#KAFKA_DEFAULT_DATA_TRANSFORMER),
