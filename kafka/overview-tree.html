@@ -130,6 +130,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 <li class="circle">ru.tinkoff.qa.neptune.kafka.<a href="ru/tinkoff/qa/neptune/kafka/GetConsumer.html" title="class in ru.tinkoff.qa.neptune.kafka"><span class="typeNameLink">GetConsumer</span></a> (implements java.util.function.<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;T,&#8203;R&gt;)</li>
 <li class="circle">ru.tinkoff.qa.neptune.kafka.<a href="ru/tinkoff/qa/neptune/kafka/GetProducer.html" title="class in ru.tinkoff.qa.neptune.kafka"><span class="typeNameLink">GetProducer</span></a> (implements java.util.function.<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;T,&#8203;R&gt;)</li>
+<li class="circle">ru.tinkoff.qa.neptune.kafka.functions.poll.<a href="ru/tinkoff/qa/neptune/kafka/functions/poll/GetRecords.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll"><span class="typeNameLink">GetRecords</span></a> (implements java.util.function.<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;T,&#8203;R&gt;, ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo)</li>
 <li class="circle">ru.tinkoff.qa.neptune.kafka.properties.<a href="ru/tinkoff/qa/neptune/kafka/properties/KafkaCallbackProperty.html" title="class in ru.tinkoff.qa.neptune.kafka.properties"><span class="typeNameLink">KafkaCallbackProperty</span></a> (implements ru.tinkoff.qa.neptune.core.api.properties.object.ObjectPropertySupplier&lt;R,&#8203;T&gt;)</li>
 <li class="circle">ru.tinkoff.qa.neptune.kafka.properties.<a href="ru/tinkoff/qa/neptune/kafka/properties/KafkaDefaultTopicForSendProperty.html" title="class in ru.tinkoff.qa.neptune.kafka.properties"><span class="typeNameLink">KafkaDefaultTopicForSendProperty</span></a> (implements ru.tinkoff.qa.neptune.core.api.properties.string.StringValuePropertySupplier)</li>
 <li class="circle">ru.tinkoff.qa.neptune.kafka.properties.<a href="ru/tinkoff/qa/neptune/kafka/properties/KafkaDefaultTopicsForPollProperty.html" title="class in ru.tinkoff.qa.neptune.kafka.properties"><span class="typeNameLink">KafkaDefaultTopicsForPollProperty</span></a> (implements ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier&lt;T,&#8203;R&gt;)</li>
@@ -150,11 +151,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 <li class="circle">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier&lt;T,&#8203;R,&#8203;M,&#8203;P,&#8203;THIS&gt; (implements java.lang.<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Cloneable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Cloneable</a>, ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo, java.util.function.<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Supplier</a>&lt;T&gt;)
 <ul>
-<li class="circle">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.GetArrayChainedStepSupplier&lt;T,&#8203;R,&#8203;M,&#8203;THIS&gt;
+<li class="circle">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.GetArrayStepSupplier&lt;T,&#8203;R,&#8203;THIS&gt;
 <ul>
-<li class="circle">ru.tinkoff.qa.neptune.kafka.functions.poll.<a href="ru/tinkoff/qa/neptune/kafka/functions/poll/KafkaPollArraySupplier.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll"><span class="typeNameLink">KafkaPollArraySupplier</span></a>&lt;T,&#8203;S&gt;
+<li class="circle">ru.tinkoff.qa.neptune.kafka.functions.poll.<a href="ru/tinkoff/qa/neptune/kafka/functions/poll/KafkaPollArraySupplier.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll"><span class="typeNameLink">KafkaPollArraySupplier</span></a>&lt;M,&#8203;R,&#8203;S&gt;
 <ul>
-<li class="circle">ru.tinkoff.qa.neptune.kafka.functions.poll.<a href="ru/tinkoff/qa/neptune/kafka/functions/poll/KafkaPollArraySupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll"><span class="typeNameLink">KafkaPollArraySupplier.Mapped</span></a>&lt;T&gt;</li>
+<li class="circle">ru.tinkoff.qa.neptune.kafka.functions.poll.<a href="ru/tinkoff/qa/neptune/kafka/functions/poll/KafkaPollArraySupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll"><span class="typeNameLink">KafkaPollArraySupplier.Mapped</span></a>&lt;M,&#8203;T&gt;</li>
 <li class="circle">ru.tinkoff.qa.neptune.kafka.functions.poll.<a href="ru/tinkoff/qa/neptune/kafka/functions/poll/KafkaPollArraySupplier.StringMessages.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll"><span class="typeNameLink">KafkaPollArraySupplier.StringMessages</span></a></li>
 </ul>
 </li>
@@ -162,9 +163,19 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 <li class="circle">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.GetListChainedStepSupplier&lt;T,&#8203;S,&#8203;M,&#8203;R,&#8203;THIS&gt;
 <ul>
-<li class="circle">ru.tinkoff.qa.neptune.kafka.functions.poll.<a href="ru/tinkoff/qa/neptune/kafka/functions/poll/KafkaPollIterableSupplier.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll"><span class="typeNameLink">KafkaPollIterableSupplier</span></a>&lt;T,&#8203;S&gt;
+<li class="circle">ru.tinkoff.qa.neptune.kafka.functions.poll.<a href="ru/tinkoff/qa/neptune/kafka/functions/poll/KafkaPollListFromRecordSupplier.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll"><span class="typeNameLink">KafkaPollListFromRecordSupplier</span></a>&lt;R,&#8203;M,&#8203;S&gt;
 <ul>
-<li class="circle">ru.tinkoff.qa.neptune.kafka.functions.poll.<a href="ru/tinkoff/qa/neptune/kafka/functions/poll/KafkaPollIterableSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll"><span class="typeNameLink">KafkaPollIterableSupplier.Mapped</span></a>&lt;T&gt;</li>
+<li class="circle">ru.tinkoff.qa.neptune.kafka.functions.poll.<a href="ru/tinkoff/qa/neptune/kafka/functions/poll/KafkaPollListFromRecordSupplier.KafkaPollDeserializedFromSupplier.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll"><span class="typeNameLink">KafkaPollListFromRecordSupplier.KafkaPollDeserializedFromSupplier</span></a>&lt;R,&#8203;M&gt;</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="circle">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.GetListStepSupplier&lt;T,&#8203;S,&#8203;R,&#8203;THIS&gt;
+<ul>
+<li class="circle">ru.tinkoff.qa.neptune.kafka.functions.poll.<a href="ru/tinkoff/qa/neptune/kafka/functions/poll/GetRecordSupplier.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll"><span class="typeNameLink">GetRecordSupplier</span></a></li>
+<li class="circle">ru.tinkoff.qa.neptune.kafka.functions.poll.<a href="ru/tinkoff/qa/neptune/kafka/functions/poll/KafkaPollIterableSupplier.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll"><span class="typeNameLink">KafkaPollIterableSupplier</span></a>&lt;M,&#8203;R,&#8203;S&gt;
+<ul>
+<li class="circle">ru.tinkoff.qa.neptune.kafka.functions.poll.<a href="ru/tinkoff/qa/neptune/kafka/functions/poll/KafkaPollIterableSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll"><span class="typeNameLink">KafkaPollIterableSupplier.Mapped</span></a>&lt;M,&#8203;T&gt;</li>
 <li class="circle">ru.tinkoff.qa.neptune.kafka.functions.poll.<a href="ru/tinkoff/qa/neptune/kafka/functions/poll/KafkaPollIterableSupplier.StringMessages.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll"><span class="typeNameLink">KafkaPollIterableSupplier.StringMessages</span></a></li>
 </ul>
 </li>
@@ -172,9 +183,18 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 <li class="circle">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier&lt;T,&#8203;R,&#8203;M,&#8203;THIS&gt;
 <ul>
-<li class="circle">ru.tinkoff.qa.neptune.kafka.functions.poll.<a href="ru/tinkoff/qa/neptune/kafka/functions/poll/KafkaPollIterableItemSupplier.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll"><span class="typeNameLink">KafkaPollIterableItemSupplier</span></a>&lt;T,&#8203;I&gt;
+<li class="circle">ru.tinkoff.qa.neptune.kafka.functions.poll.<a href="ru/tinkoff/qa/neptune/kafka/functions/poll/KafkaPollItemFromRecordSupplier.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll"><span class="typeNameLink">KafkaPollItemFromRecordSupplier</span></a>&lt;R,&#8203;M,&#8203;I&gt;
 <ul>
-<li class="circle">ru.tinkoff.qa.neptune.kafka.functions.poll.<a href="ru/tinkoff/qa/neptune/kafka/functions/poll/KafkaPollIterableItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll"><span class="typeNameLink">KafkaPollIterableItemSupplier.Mapped</span></a>&lt;T&gt;</li>
+<li class="circle">ru.tinkoff.qa.neptune.kafka.functions.poll.<a href="ru/tinkoff/qa/neptune/kafka/functions/poll/KafkaPollItemFromRecordSupplier.KafkaPollDeserializedItemFromRecordSupplier.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll"><span class="typeNameLink">KafkaPollItemFromRecordSupplier.KafkaPollDeserializedItemFromRecordSupplier</span></a>&lt;R,&#8203;M&gt;</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="circle">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.GetObjectFromIterableStepSupplier&lt;T,&#8203;R,&#8203;THIS&gt;
+<ul>
+<li class="circle">ru.tinkoff.qa.neptune.kafka.functions.poll.<a href="ru/tinkoff/qa/neptune/kafka/functions/poll/KafkaPollIterableItemSupplier.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll"><span class="typeNameLink">KafkaPollIterableItemSupplier</span></a>&lt;M,&#8203;T,&#8203;I&gt;
+<ul>
+<li class="circle">ru.tinkoff.qa.neptune.kafka.functions.poll.<a href="ru/tinkoff/qa/neptune/kafka/functions/poll/KafkaPollIterableItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll"><span class="typeNameLink">KafkaPollIterableItemSupplier.Mapped</span></a>&lt;M,&#8203;T&gt;</li>
 <li class="circle">ru.tinkoff.qa.neptune.kafka.functions.poll.<a href="ru/tinkoff/qa/neptune/kafka/functions/poll/KafkaPollIterableItemSupplier.StringMessage.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll"><span class="typeNameLink">KafkaPollIterableItemSupplier.StringMessage</span></a></li>
 </ul>
 </li>

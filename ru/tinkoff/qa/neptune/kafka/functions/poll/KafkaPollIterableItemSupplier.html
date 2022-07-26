@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":10,"i6":10,"i7":10,"i8":10};
+var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":10,"i6":10,"i7":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -94,7 +94,7 @@ loadScripts(document, 'script');</script>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -115,7 +115,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <main role="main">
 <div class="header">
 <div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">ru.tinkoff.qa.neptune.kafka.functions.poll</a></div>
-<h2 title="Class KafkaPollIterableItemSupplier" class="title">Class KafkaPollIterableItemSupplier&lt;T,&#8203;I extends KafkaPollIterableItemSupplier&lt;T,&#8203;I&gt;&gt;</h2>
+<h2 title="Class KafkaPollIterableItemSupplier" class="title">Class KafkaPollIterableItemSupplier&lt;M,&#8203;T,&#8203;I extends KafkaPollIterableItemSupplier&lt;M,&#8203;T,&#8203;I&gt;&gt;</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
@@ -125,10 +125,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li><a href="../../../core/api/steps/SequentialGetStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier</a>&lt;T,&#8203;R,&#8203;M,&#8203;R,&#8203;THIS&gt;</li>
 <li>
 <ul class="inheritance">
-<li><a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier</a>&lt;<a href="../../KafkaStepContext.html" title="class in ru.tinkoff.qa.neptune.kafka">KafkaStepContext</a>,&#8203;T,&#8203;org.apache.kafka.clients.consumer.KafkaConsumer&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;,&#8203;I&gt;</li>
+<li><a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFromIterableStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.GetObjectFromIterableStepSupplier</a>&lt;<a href="../../KafkaStepContext.html" title="class in ru.tinkoff.qa.neptune.kafka">KafkaStepContext</a>,&#8203;T,&#8203;I&gt;</li>
 <li>
 <ul class="inheritance">
-<li>ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier&lt;T,&#8203;I&gt;</li>
+<li>ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier&lt;M,&#8203;T,&#8203;I&gt;</li>
 </ul>
 </li>
 </ul>
@@ -148,8 +148,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd><code><a href="KafkaPollIterableItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier.Mapped</a></code>, <code><a href="KafkaPollIterableItemSupplier.StringMessage.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier.StringMessage</a></code></dd>
 </dl>
 <hr>
-<pre>public abstract class <span class="typeNameLabel">KafkaPollIterableItemSupplier&lt;T,&#8203;I extends KafkaPollIterableItemSupplier&lt;T,&#8203;I&gt;&gt;</span>
-extends <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier</a>&lt;<a href="../../KafkaStepContext.html" title="class in ru.tinkoff.qa.neptune.kafka">KafkaStepContext</a>,&#8203;T,&#8203;org.apache.kafka.clients.consumer.KafkaConsumer&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;,&#8203;I&gt;</pre>
+<pre>public abstract class <span class="typeNameLabel">KafkaPollIterableItemSupplier&lt;M,&#8203;T,&#8203;I extends KafkaPollIterableItemSupplier&lt;M,&#8203;T,&#8203;I&gt;&gt;</span>
+extends <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFromIterableStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier.GetObjectFromIterableStepSupplier</a>&lt;<a href="../../KafkaStepContext.html" title="class in ru.tinkoff.qa.neptune.kafka">KafkaStepContext</a>,&#8203;T,&#8203;I&gt;</pre>
 </li>
 </ul>
 </div>
@@ -172,7 +172,7 @@ extends <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFrom
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="KafkaPollIterableItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier.Mapped</a>&lt;<a href="KafkaPollIterableItemSupplier.Mapped.html" title="type parameter in KafkaPollIterableItemSupplier.Mapped">T</a>&gt;</span></code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="KafkaPollIterableItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier.Mapped</a>&lt;<a href="KafkaPollIterableItemSupplier.Mapped.html" title="type parameter in KafkaPollIterableItemSupplier.Mapped">M</a>,&#8203;<a href="KafkaPollIterableItemSupplier.Mapped.html" title="type parameter in KafkaPollIterableItemSupplier.Mapped">T</a>&gt;</span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
@@ -198,6 +198,19 @@ extends <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFrom
 <!--   -->
 </a>
 <h3>Field Summary</h3>
+<table class="memberSummary">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Field</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#NO_DESC_ERROR_TEXT">NO_DESC_ERROR_TEXT</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</table>
 <ul class="blockList">
 <li class="blockList"><a id="fields.inherited.from.class.ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier">
 <!--   -->
@@ -224,8 +237,8 @@ extends <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFrom
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>protected </code></td>
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(ru.tinkoff.qa.neptune.kafka.functions.poll.GetFromTopics,java.util.function.Function)">KafkaPollIterableItemSupplier</a></span>&#8203;(ru.tinkoff.qa.neptune.kafka.functions.poll.GetFromTopics&lt;S&gt;&nbsp;getFromTopics,
-                             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;S,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>&gt;&nbsp;originalFunction)</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(ru.tinkoff.qa.neptune.kafka.functions.poll.GetRecords.MergeProperty,java.util.function.Function)">KafkaPollIterableItemSupplier</a></span>&#8203;(ru.tinkoff.qa.neptune.kafka.functions.poll.GetRecords.MergeProperty&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">M</a>&gt;&gt;&nbsp;getFromTopics,
+                             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">M</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>&gt;&nbsp;originalFunction)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -247,7 +260,7 @@ extends <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFrom
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>static &lt;M&gt;&nbsp;<a href="KafkaPollIterableItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier.Mapped</a>&lt;M&gt;</code></td>
+<td class="colFirst"><code>static &lt;M&gt;&nbsp;<a href="KafkaPollIterableItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier.Mapped</a>&lt;M,&#8203;M&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#kafkaIterableItem(java.lang.String,com.fasterxml.jackson.core.type.TypeReference,java.lang.String...)">kafkaIterableItem</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
                  com.fasterxml.jackson.core.type.TypeReference&lt;M&gt;&nbsp;typeT,
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>...&nbsp;topics)</code></th>
@@ -256,7 +269,7 @@ extends <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFrom
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>static &lt;M,&#8203;T&gt;<br><a href="KafkaPollIterableItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier.Mapped</a>&lt;T&gt;</code></td>
+<td class="colFirst"><code>static &lt;M,&#8203;T&gt;<br><a href="KafkaPollIterableItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier.Mapped</a>&lt;M,&#8203;T&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#kafkaIterableItem(java.lang.String,com.fasterxml.jackson.core.type.TypeReference,java.util.function.Function,java.lang.String...)">kafkaIterableItem</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
                  com.fasterxml.jackson.core.type.TypeReference&lt;M&gt;&nbsp;typeT,
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;T&gt;&nbsp;toGet,
@@ -266,7 +279,7 @@ extends <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFrom
 </td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code>static &lt;M&gt;&nbsp;<a href="KafkaPollIterableItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier.Mapped</a>&lt;M&gt;</code></td>
+<td class="colFirst"><code>static &lt;M&gt;&nbsp;<a href="KafkaPollIterableItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier.Mapped</a>&lt;M,&#8203;M&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#kafkaIterableItem(java.lang.String,java.lang.Class,java.lang.String...)">kafkaIterableItem</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;M&gt;&nbsp;cls,
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>...&nbsp;topics)</code></th>
@@ -275,7 +288,7 @@ extends <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFrom
 </td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code>static &lt;M,&#8203;T&gt;<br><a href="KafkaPollIterableItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier.Mapped</a>&lt;T&gt;</code></td>
+<td class="colFirst"><code>static &lt;M,&#8203;T&gt;<br><a href="KafkaPollIterableItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier.Mapped</a>&lt;M,&#8203;T&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#kafkaIterableItem(java.lang.String,java.lang.Class,java.util.function.Function,java.lang.String...)">kafkaIterableItem</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;M&gt;&nbsp;cls,
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;T&gt;&nbsp;toGet,
@@ -293,7 +306,7 @@ extends <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFrom
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onFailure(org.apache.kafka.clients.consumer.KafkaConsumer,java.lang.Throwable)">onFailure</a></span>&#8203;(org.apache.kafka.clients.consumer.KafkaConsumer&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;m,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onFailure(ru.tinkoff.qa.neptune.kafka.KafkaStepContext,java.lang.Throwable)">onFailure</a></span>&#8203;(<a href="../../KafkaStepContext.html" title="class in ru.tinkoff.qa.neptune.kafka">KafkaStepContext</a>&nbsp;m,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&nbsp;throwable)</code></th>
 <td class="colLast">
 <div class="block">Some additional action if the step is failed</div>
@@ -301,19 +314,12 @@ extends <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFrom
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onStart(org.apache.kafka.clients.consumer.KafkaConsumer)">onStart</a></span>&#8203;(org.apache.kafka.clients.consumer.KafkaConsumer&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;consumer)</code></th>
-<td class="colLast">
-<div class="block">Some additional action on start of the getting step-function</div>
-</td>
-</tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>protected void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onSuccess(T)">onSuccess</a></span>&#8203;(<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>&nbsp;t)</code></th>
 <td class="colLast">
 <div class="block">Some additional action if the step is successful</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">I</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#timeOut(java.time.Duration)">timeOut</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</code></th>
 <td class="colLast">
@@ -322,18 +328,11 @@ extends <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFrom
 </tr>
 </table>
 <ul class="blockList">
-<li class="blockList"><a id="methods.inherited.from.class.ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier">
-<!--   -->
-</a>
-<h3>Methods inherited from class&nbsp;ru.tinkoff.qa.neptune.core.api.steps.<a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier</a></h3>
-<code><a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier.html#from(java.util.function.Function)">from</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier.html#from(M)">from</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier.html#from(ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier)">from</a></code></li>
-</ul>
-<ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;ru.tinkoff.qa.neptune.core.api.steps.<a href="../../../core/api/steps/SequentialGetStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier</a></h3>
-<code><a href="../../../core/api/steps/SequentialGetStepSupplier.html#addIgnored(java.lang.Class)">addIgnored</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#addIgnored(java.util.Collection)">addIgnored</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#additionalParameters()">additionalParameters</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#clone()">clone</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#get()">get</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#getCriteria()">getCriteria</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#getDescription()">getDescription</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#getFrom()">getFrom</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#getParameters()">getParameters</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#pollingInterval(java.time.Duration)">pollingInterval</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#preparePreFunction()">preparePreFunction</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#setDescription(java.lang.String)">setDescription</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#throwOnNoResult()">throwOnNoResult</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#toString()">toString</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#turnReportingOff(T)">turnReportingOff</a></code></li>
+<code><a href="../../../core/api/steps/SequentialGetStepSupplier.html#addIgnored(java.lang.Class)">addIgnored</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#addIgnored(java.util.Collection)">addIgnored</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#additionalParameters()">additionalParameters</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#clone()">clone</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#get()">get</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#getCriteria()">getCriteria</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#getDescription()">getDescription</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#getFrom()">getFrom</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#getParameters()">getParameters</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#onStart(M)">onStart</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#pollingInterval(java.time.Duration)">pollingInterval</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#preparePreFunction()">preparePreFunction</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#setDescription(java.lang.String)">setDescription</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#throwOnNoResult()">throwOnNoResult</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#toString()">toString</a>, <a href="../../../core/api/steps/SequentialGetStepSupplier.html#turnReportingOff(T)">turnReportingOff</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -351,6 +350,29 @@ extends <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFrom
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
+<!-- ============ FIELD DETAIL =========== -->
+<section role="region">
+<ul class="blockList">
+<li class="blockList"><a id="field.detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a id="NO_DESC_ERROR_TEXT">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>NO_DESC_ERROR_TEXT</h4>
+<pre>public static final&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> NO_DESC_ERROR_TEXT</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../../constant-values.html#ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.NO_DESC_ERROR_TEXT">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</section>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <section role="region">
 <ul class="blockList">
@@ -358,14 +380,14 @@ extends <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFrom
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(ru.tinkoff.qa.neptune.kafka.functions.poll.GetFromTopics,java.util.function.Function)">
+<a id="&lt;init&gt;(ru.tinkoff.qa.neptune.kafka.functions.poll.GetRecords.MergeProperty,java.util.function.Function)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>KafkaPollIterableItemSupplier</h4>
-<pre>protected&nbsp;KafkaPollIterableItemSupplier&#8203;(ru.tinkoff.qa.neptune.kafka.functions.poll.GetFromTopics&lt;S&gt;&nbsp;getFromTopics,
-                                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;S,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>&gt;&nbsp;originalFunction)</pre>
+<pre>protected&nbsp;KafkaPollIterableItemSupplier&#8203;(ru.tinkoff.qa.neptune.kafka.functions.poll.GetRecords.MergeProperty&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">M</a>&gt;&gt;&nbsp;getFromTopics,
+                                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">M</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>&gt;&nbsp;originalFunction)</pre>
 </li>
 </ul>
 </li>
@@ -384,10 +406,10 @@ extends <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFrom
 <ul class="blockList">
 <li class="blockList">
 <h4>kafkaIterableItem</h4>
-<pre class="methodSignature">public static&nbsp;&lt;M,&#8203;T&gt;&nbsp;<a href="KafkaPollIterableItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier.Mapped</a>&lt;T&gt;&nbsp;kafkaIterableItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                                                                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;M&gt;&nbsp;cls,
-                                                                                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;T&gt;&nbsp;toGet,
-                                                                                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>...&nbsp;topics)</pre>
+<pre class="methodSignature">public static&nbsp;&lt;M,&#8203;T&gt;&nbsp;<a href="KafkaPollIterableItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier.Mapped</a>&lt;M,&#8203;T&gt;&nbsp;kafkaIterableItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
+                                                                                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;M&gt;&nbsp;cls,
+                                                                                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;T&gt;&nbsp;toGet,
+                                                                                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>...&nbsp;topics)</pre>
 <div class="block">Creates a step that returns value which is calculated by data of a read message.
  <p></p>
  It is not necessary to define <code>topics</code>. If there is no topic defined then value of the property
@@ -412,10 +434,10 @@ extends <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFrom
 <ul class="blockList">
 <li class="blockList">
 <h4>kafkaIterableItem</h4>
-<pre class="methodSignature">public static&nbsp;&lt;M,&#8203;T&gt;&nbsp;<a href="KafkaPollIterableItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier.Mapped</a>&lt;T&gt;&nbsp;kafkaIterableItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                                                                    com.fasterxml.jackson.core.type.TypeReference&lt;M&gt;&nbsp;typeT,
-                                                                                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;T&gt;&nbsp;toGet,
-                                                                                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>...&nbsp;topics)</pre>
+<pre class="methodSignature">public static&nbsp;&lt;M,&#8203;T&gt;&nbsp;<a href="KafkaPollIterableItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier.Mapped</a>&lt;M,&#8203;T&gt;&nbsp;kafkaIterableItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
+                                                                                            com.fasterxml.jackson.core.type.TypeReference&lt;M&gt;&nbsp;typeT,
+                                                                                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;T&gt;&nbsp;toGet,
+                                                                                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>...&nbsp;topics)</pre>
 <div class="block">Creates a step that returns value which is calculated by data of a read message.
  <p></p>
  It is not necessary to define <code>topics</code>. If there is no topic defined then value of the property
@@ -440,9 +462,9 @@ extends <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFrom
 <ul class="blockList">
 <li class="blockList">
 <h4>kafkaIterableItem</h4>
-<pre class="methodSignature">public static&nbsp;&lt;M&gt;&nbsp;<a href="KafkaPollIterableItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier.Mapped</a>&lt;M&gt;&nbsp;kafkaIterableItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                                                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;M&gt;&nbsp;cls,
-                                                                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>...&nbsp;topics)</pre>
+<pre class="methodSignature">public static&nbsp;&lt;M&gt;&nbsp;<a href="KafkaPollIterableItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier.Mapped</a>&lt;M,&#8203;M&gt;&nbsp;kafkaIterableItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
+                                                                                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;M&gt;&nbsp;cls,
+                                                                                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>...&nbsp;topics)</pre>
 <div class="block">Creates a step that returns a deserialized message.
  <p></p>
  It is not necessary to define <code>topics</code>. If there is no topic defined then value of the property
@@ -465,9 +487,9 @@ extends <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFrom
 <ul class="blockList">
 <li class="blockList">
 <h4>kafkaIterableItem</h4>
-<pre class="methodSignature">public static&nbsp;&lt;M&gt;&nbsp;<a href="KafkaPollIterableItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier.Mapped</a>&lt;M&gt;&nbsp;kafkaIterableItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                                                            com.fasterxml.jackson.core.type.TypeReference&lt;M&gt;&nbsp;typeT,
-                                                                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>...&nbsp;topics)</pre>
+<pre class="methodSignature">public static&nbsp;&lt;M&gt;&nbsp;<a href="KafkaPollIterableItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier.Mapped</a>&lt;M,&#8203;M&gt;&nbsp;kafkaIterableItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
+                                                                                    com.fasterxml.jackson.core.type.TypeReference&lt;M&gt;&nbsp;typeT,
+                                                                                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>...&nbsp;topics)</pre>
 <div class="block">Creates a step that returns a deserialized message.
  <p></p>
  It is not necessary to define <code>topics</code>. If there is no topic defined then value of the property
@@ -503,23 +525,6 @@ extends <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFrom
 </dl>
 </li>
 </ul>
-<a id="onStart(org.apache.kafka.clients.consumer.KafkaConsumer)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>onStart</h4>
-<pre class="methodSignature">protected&nbsp;void&nbsp;onStart&#8203;(org.apache.kafka.clients.consumer.KafkaConsumer&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;consumer)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../core/api/steps/SequentialGetStepSupplier.html#onStart(M)">SequentialGetStepSupplier</a></code></span></div>
-<div class="block">Some additional action on start of the getting step-function</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../core/api/steps/SequentialGetStepSupplier.html#onStart(M)">onStart</a></code>&nbsp;in class&nbsp;<code><a href="../../../core/api/steps/SequentialGetStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier</a>&lt;<a href="../../KafkaStepContext.html" title="class in ru.tinkoff.qa.neptune.kafka">KafkaStepContext</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>,&#8203;org.apache.kafka.clients.consumer.KafkaConsumer&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">I</a> extends <a href="KafkaPollIterableItemSupplier.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier</a>&lt;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">I</a>&gt;&gt;</code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>consumer</code> - is a mediator value is used to get the required result</dd>
-</dl>
-</li>
-</ul>
 <a id="timeOut(java.time.Duration)">
 <!--   -->
 </a>
@@ -532,7 +537,7 @@ extends <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFrom
  is for defining the waiting time.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../core/api/steps/SequentialGetStepSupplier.html#timeOut(java.time.Duration)">timeOut</a></code>&nbsp;in class&nbsp;<code><a href="../../../core/api/steps/SequentialGetStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier</a>&lt;<a href="../../KafkaStepContext.html" title="class in ru.tinkoff.qa.neptune.kafka">KafkaStepContext</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>,&#8203;org.apache.kafka.clients.consumer.KafkaConsumer&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">I</a> extends <a href="KafkaPollIterableItemSupplier.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier</a>&lt;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">I</a>&gt;&gt;</code></dd>
+<dd><code><a href="../../../core/api/steps/SequentialGetStepSupplier.html#timeOut(java.time.Duration)">timeOut</a></code>&nbsp;in class&nbsp;<code><a href="../../../core/api/steps/SequentialGetStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier</a>&lt;<a href="../../KafkaStepContext.html" title="class in ru.tinkoff.qa.neptune.kafka">KafkaStepContext</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>,&#8203;<a href="../../KafkaStepContext.html" title="class in ru.tinkoff.qa.neptune.kafka">KafkaStepContext</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">I</a> extends <a href="KafkaPollIterableItemSupplier.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier</a>&lt;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">M</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">I</a>&gt;&gt;</code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>timeOut</code> - is a time duration to get desired value</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -553,25 +558,25 @@ extends <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFrom
 <div class="block">Some additional action if the step is successful</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../core/api/steps/SequentialGetStepSupplier.html#onSuccess(R)">onSuccess</a></code>&nbsp;in class&nbsp;<code><a href="../../../core/api/steps/SequentialGetStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier</a>&lt;<a href="../../KafkaStepContext.html" title="class in ru.tinkoff.qa.neptune.kafka">KafkaStepContext</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>,&#8203;org.apache.kafka.clients.consumer.KafkaConsumer&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">I</a> extends <a href="KafkaPollIterableItemSupplier.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier</a>&lt;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">I</a>&gt;&gt;</code></dd>
+<dd><code><a href="../../../core/api/steps/SequentialGetStepSupplier.html#onSuccess(R)">onSuccess</a></code>&nbsp;in class&nbsp;<code><a href="../../../core/api/steps/SequentialGetStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier</a>&lt;<a href="../../KafkaStepContext.html" title="class in ru.tinkoff.qa.neptune.kafka">KafkaStepContext</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>,&#8203;<a href="../../KafkaStepContext.html" title="class in ru.tinkoff.qa.neptune.kafka">KafkaStepContext</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">I</a> extends <a href="KafkaPollIterableItemSupplier.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier</a>&lt;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">M</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">I</a>&gt;&gt;</code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>t</code> - is a result value</dd>
 </dl>
 </li>
 </ul>
-<a id="onFailure(org.apache.kafka.clients.consumer.KafkaConsumer,java.lang.Throwable)">
+<a id="onFailure(ru.tinkoff.qa.neptune.kafka.KafkaStepContext,java.lang.Throwable)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>onFailure</h4>
-<pre class="methodSignature">protected&nbsp;void&nbsp;onFailure&#8203;(org.apache.kafka.clients.consumer.KafkaConsumer&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;m,
+<pre class="methodSignature">protected&nbsp;void&nbsp;onFailure&#8203;(<a href="../../KafkaStepContext.html" title="class in ru.tinkoff.qa.neptune.kafka">KafkaStepContext</a>&nbsp;m,
                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&nbsp;throwable)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../core/api/steps/SequentialGetStepSupplier.html#onFailure(M,java.lang.Throwable)">SequentialGetStepSupplier</a></code></span></div>
 <div class="block">Some additional action if the step is failed</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../core/api/steps/SequentialGetStepSupplier.html#onFailure(M,java.lang.Throwable)">onFailure</a></code>&nbsp;in class&nbsp;<code><a href="../../../core/api/steps/SequentialGetStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier</a>&lt;<a href="../../KafkaStepContext.html" title="class in ru.tinkoff.qa.neptune.kafka">KafkaStepContext</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>,&#8203;org.apache.kafka.clients.consumer.KafkaConsumer&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">I</a> extends <a href="KafkaPollIterableItemSupplier.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier</a>&lt;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">I</a>&gt;&gt;</code></dd>
+<dd><code><a href="../../../core/api/steps/SequentialGetStepSupplier.html#onFailure(M,java.lang.Throwable)">onFailure</a></code>&nbsp;in class&nbsp;<code><a href="../../../core/api/steps/SequentialGetStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier</a>&lt;<a href="../../KafkaStepContext.html" title="class in ru.tinkoff.qa.neptune.kafka">KafkaStepContext</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>,&#8203;<a href="../../KafkaStepContext.html" title="class in ru.tinkoff.qa.neptune.kafka">KafkaStepContext</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">I</a> extends <a href="KafkaPollIterableItemSupplier.html" title="class in ru.tinkoff.qa.neptune.kafka.functions.poll">KafkaPollIterableItemSupplier</a>&lt;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">M</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">T</a>,&#8203;<a href="KafkaPollIterableItemSupplier.html" title="type parameter in KafkaPollIterableItemSupplier">I</a>&gt;&gt;</code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>m</code> - is a mediator value is used to get the required result</dd>
 <dd><code>throwable</code> - is a thrown exception/error</dd>
@@ -636,7 +641,7 @@ extends <a href="../../../core/api/steps/SequentialGetStepSupplier.GetObjectFrom
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
