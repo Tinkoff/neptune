@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.spring.data.select;
 
 import org.springframework.data.repository.Repository;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
