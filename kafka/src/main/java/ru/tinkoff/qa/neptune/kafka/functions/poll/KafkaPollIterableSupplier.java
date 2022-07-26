@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.kafka.functions.poll;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
@@ -19,34 +18,27 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
-import static java.util.Objects.nonNull;
-import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.kafka.GetConsumer.getConsumer;
-import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetFromTopics.getStringResult;
-import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAFKA_DEFAULT_DATA_TRANSFORMER;
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Poll:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Object criteria")
 @MaxDepthOfReporting(0)
 @SuppressWarnings("unchecked")
-public abstract class KafkaPollIterableSupplier<T, S extends KafkaPollIterableSupplier<T, S>> extends SequentialGetStepSupplier.GetListChainedStepSupplier<KafkaStepContext, List<T>, KafkaConsumer<String, String>, T, S> {
+public abstract class KafkaPollIterableSupplier<M, R, S extends KafkaPollIterableSupplier<M, R, S>>
+        extends SequentialGetStepSupplier.GetListStepSupplier<KafkaStepContext, List<R>, R, S> {
 
-    final GetFromTopics<?> getFromTopics;
+    public static final String NO_DESC_ERROR_TEXT = "Description should be defined";
+    private GetRecords.MergeProperty getFromTopics;
 
     @CaptureOnSuccess(by = AllMessagesCaptor.class)
     @CaptureOnFailure(by = AllMessagesCaptor.class)
     List<String> messages;
 
-    private DataTransformer transformer;
-
-    protected <M> KafkaPollIterableSupplier(GetFromTopics<M> getFromTopics, Function<M, T> function) {
+    protected KafkaPollIterableSupplier(GetRecords.MergeProperty<List<M>> getFromTopics, Function<M, R> function) {
         super(getFromTopics.andThen(list -> list.stream().map(function).collect(toList())));
         this.getFromTopics = getFromTopics;
-        from(getConsumer());
     }
 
     /**
@@ -64,15 +56,15 @@ public abstract class KafkaPollIterableSupplier<T, S extends KafkaPollIterableSu
      * @return an instance of {@link KafkaPollIterableSupplier.Mapped}
      */
     @Description("{description}")
-    public static <M, T> Mapped<T> kafkaIterable(
+    public static <M, T> Mapped<M, T> kafkaIterable(
             @DescriptionFragment(value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
             ) String description,
             Class<M> cls,
             Function<M, T> toGet,
             String... topics) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        return new KafkaPollIterableSupplier.Mapped<>(new GetFromTopics<>(cls, topics), toGet);
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
+        return new KafkaPollIterableSupplier.Mapped<>(new GetRecords(topics).andThen(new GetDeserializedData<>(cls)), toGet);
     }
 
     /**
@@ -90,15 +82,15 @@ public abstract class KafkaPollIterableSupplier<T, S extends KafkaPollIterableSu
      * @return an instance of {@link KafkaPollIterableSupplier.Mapped}
      */
     @Description("{description}")
-    public static <M, T> Mapped<T> kafkaIterable(
+    public static <M, T> Mapped<M, T> kafkaIterable(
             @DescriptionFragment(value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
             ) String description,
             TypeReference<M> typeT,
             Function<M, T> toGet,
             String... topics) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        return new KafkaPollIterableSupplier.Mapped<>(new GetFromTopics<>(typeT, topics), toGet);
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
+        return new KafkaPollIterableSupplier.Mapped<>(new GetRecords(topics).andThen(new GetDeserializedData<>(typeT)), toGet);
     }
 
     /**
@@ -113,7 +105,7 @@ public abstract class KafkaPollIterableSupplier<T, S extends KafkaPollIterableSu
      * @param <T>         is a type of deserialized message
      * @return an instance of {@link KafkaPollIterableSupplier.Mapped}
      */
-    public static <T> Mapped<T> kafkaIterable(
+    public static <T> Mapped<T, T> kafkaIterable(
             String description,
             TypeReference<T> typeT,
             String... topics) {
@@ -132,7 +124,7 @@ public abstract class KafkaPollIterableSupplier<T, S extends KafkaPollIterableSu
      * @param <T>         is a type of deserialized message
      * @return an instance of {@link KafkaPollIterableSupplier.Mapped}
      */
-    public static <T> Mapped<T> kafkaIterable(
+    public static <T> Mapped<T, T> kafkaIterable(
             String description,
             Class<T> cls,
             String... topics) {
@@ -150,22 +142,11 @@ public abstract class KafkaPollIterableSupplier<T, S extends KafkaPollIterableSu
      */
     @Description("String messages")
     public static StringMessages kafkaRawMessages(String... topics) {
-        return new StringMessages(getStringResult(topics));
-    }
-
-    @Override
-    protected void onStart(KafkaConsumer<String, String> consumer) {
-        var transformer = ofNullable(this.transformer)
-            .orElseGet(KAFKA_DEFAULT_DATA_TRANSFORMER);
-        checkState(nonNull(transformer), "Data transformer is not defined. Please invoke "
-            + "the '#withDataTransformer(DataTransformer)' method or define '"
-            + KAFKA_DEFAULT_DATA_TRANSFORMER.getName()
-            + "' property/env variable");
-        getFromTopics.setTransformer(transformer);
+        return new StringMessages(new GetRecords(topics).andThen(new GetDeserializedData<>(String.class)));
     }
 
     S withDataTransformer(DataTransformer dataTransformer) {
-        this.transformer = dataTransformer;
+        ((GetDeserializedData<M>) getFromTopics.getAfter()).setTransformer(dataTransformer);
         return (S) this;
     }
 
@@ -175,30 +156,30 @@ public abstract class KafkaPollIterableSupplier<T, S extends KafkaPollIterableSu
     }
 
     @Override
-    protected void onSuccess(List<T> tList) {
+    protected void onSuccess(List<R> tList) {
         if (tList == null || tList.isEmpty()) {
-            messages = getFromTopics.getMessages();
+            messages = getFromTopics.getBefore().getMessages();
         }
     }
 
     @Override
-    protected void onFailure(KafkaConsumer<String, String> m, Throwable throwable) {
-        messages = getFromTopics.getMessages();
+    protected void onFailure(KafkaStepContext m, Throwable throwable) {
+        messages = getFromTopics.getBefore().getMessages();
     }
 
-    public final static class Mapped<T> extends KafkaPollIterableSupplier<T, Mapped<T>> {
-        private  <M> Mapped(GetFromTopics<M> getFromTopics, Function<M, T> function) {
+    public final static class Mapped<M, T> extends KafkaPollIterableSupplier<M, T, Mapped<M, T>> {
+        private Mapped(GetRecords.MergeProperty<List<M>> getFromTopics, Function<M, T> function) {
             super(getFromTopics, function);
         }
 
         @Override
-        public Mapped<T> withDataTransformer(DataTransformer transformer) {
+        public Mapped<M, T> withDataTransformer(DataTransformer transformer) {
             return super.withDataTransformer(transformer);
         }
     }
 
-    public final static class StringMessages extends KafkaPollIterableSupplier<String, StringMessages> {
-        private StringMessages(GetFromTopics<String> getFromTopics) {
+    public final static class StringMessages extends KafkaPollIterableSupplier<String, String, StringMessages> {
+        private StringMessages(GetRecords.MergeProperty<List<String>> getFromTopics) {
             super(getFromTopics, s -> s);
             withDataTransformer(new StringDataTransformer());
         }
