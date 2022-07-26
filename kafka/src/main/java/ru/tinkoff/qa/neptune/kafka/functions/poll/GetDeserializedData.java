@@ -12,9 +12,12 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAFKA_DEFAULT_DATA_TRANSFORMER;
 
 final class GetDeserializedData<T> implements Function<List<ConsumerRecord<String, String>>, List<T>>, StepParameterPojo {
 
@@ -46,6 +49,13 @@ final class GetDeserializedData<T> implements Function<List<ConsumerRecord<Strin
 
     @Override
     public List<T> apply(List<ConsumerRecord<String, String>> records) {
+        transformer = ofNullable(this.transformer)
+                .orElseGet(KAFKA_DEFAULT_DATA_TRANSFORMER);
+        checkState(nonNull(transformer), "Data transformer is not defined. Please invoke "
+                + "the '#withDataTransformer(DataTransformer)' method or define '"
+                + KAFKA_DEFAULT_DATA_TRANSFORMER.getName()
+                + "' property/env variable");
+
         return records
                 .stream()
                 .map(record -> {

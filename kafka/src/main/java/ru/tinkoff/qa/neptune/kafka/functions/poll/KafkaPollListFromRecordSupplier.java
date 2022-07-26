@@ -15,12 +15,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
-import static java.util.Objects.nonNull;
-import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAFKA_DEFAULT_DATA_TRANSFORMER;
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Poll:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
@@ -55,7 +51,7 @@ public abstract class KafkaPollListFromRecordSupplier<R, M, S extends KafkaPollL
      * @param description is description of value to get
      * @param f           describes how to get desired value
      * @param <R>         is a type of item of iterable
-     * @return
+     * @return KafkaPollDeserializedFromSupplier
      */
     @Description("{description}")
     static <R> KafkaPollListFromRecordSupplier<R, R, ?> listFromRecords(
@@ -76,7 +72,7 @@ public abstract class KafkaPollListFromRecordSupplier<R, M, S extends KafkaPollL
      * @param conversion  describes how to get desired value
      * @param <R>         is a type of item of iterable
      * @param <M>         is a type of deserialized message
-     * @return
+     * @return KafkaPollDeserializedFromSupplier
      */
     @Description("{description}")
     static <R, M> KafkaPollDeserializedFromSupplier<R, M> listFromRecords(
@@ -97,7 +93,7 @@ public abstract class KafkaPollListFromRecordSupplier<R, M, S extends KafkaPollL
      * @param conversion  describes how to get desired value
      * @param <R>         is a type of item of iterable
      * @param <M>         is a type of deserialized message
-     * @return
+     * @return KafkaPollDeserializedFromSupplier
      */
     @Description("{description}")
     static <R, M> KafkaPollDeserializedFromSupplier<R, M> listFromRecords(
@@ -113,28 +109,16 @@ public abstract class KafkaPollListFromRecordSupplier<R, M, S extends KafkaPollL
     public static final class KafkaPollDeserializedFromSupplier<R, M>
             extends KafkaPollListFromRecordSupplier<R, M, KafkaPollDeserializedFromSupplier<R, M>> {
 
-        private DataTransformer transformer;
-        final GetDeserializedData<M> getFromTopics;
+        final GetDeserializedData<M> getDeserializedData;
 
-        private KafkaPollDeserializedFromSupplier(GetDeserializedData<M> getFromTopics, Function<M, R> conversion) {
-            super(getFromTopics, conversion);
-            this.getFromTopics = getFromTopics;
+        private KafkaPollDeserializedFromSupplier(GetDeserializedData<M> getDeserializedData, Function<M, R> conversion) {
+            super(getDeserializedData, conversion);
+            this.getDeserializedData = getDeserializedData;
         }
 
         public KafkaPollDeserializedFromSupplier<R, M> withDataTransformer(DataTransformer transformer) {
-            this.transformer = transformer;
+            getDeserializedData.setTransformer(transformer);
             return this;
-        }
-
-        @Override
-        protected void onStart(List<ConsumerRecord<String, String>> records) {
-            var transformer = ofNullable(this.transformer)
-                    .orElseGet(KAFKA_DEFAULT_DATA_TRANSFORMER);
-            checkState(nonNull(transformer), "Data transformer is not defined. Please invoke "
-                    + "the '#withDataTransformer(DataTransformer)' method or define '"
-                    + KAFKA_DEFAULT_DATA_TRANSFORMER.getName()
-                    + "' property/env variable");
-            getFromTopics.setTransformer(transformer);
         }
     }
 }

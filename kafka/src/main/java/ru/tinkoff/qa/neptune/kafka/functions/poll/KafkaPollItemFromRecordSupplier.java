@@ -14,12 +14,8 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
-import static java.util.Objects.nonNull;
-import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAFKA_DEFAULT_DATA_TRANSFORMER;
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Poll:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
@@ -81,28 +77,16 @@ public abstract class KafkaPollItemFromRecordSupplier<R, M, I extends KafkaPollI
     public static final class KafkaPollDeserializedItemFromRecordSupplier<R, M>
             extends KafkaPollItemFromRecordSupplier<R, M, KafkaPollDeserializedItemFromRecordSupplier<R, M>> {
 
-        private DataTransformer transformer;
-        final GetDeserializedData<M> getFromTopics;
+        final GetDeserializedData<M> getDeserializedData;
 
-        public KafkaPollDeserializedItemFromRecordSupplier(GetDeserializedData<M> getFromTopics, Function<M, R> convert) {
-            super(getFromTopics, convert);
-            this.getFromTopics = getFromTopics;
+        public KafkaPollDeserializedItemFromRecordSupplier(GetDeserializedData<M> getDeserializedData, Function<M, R> convert) {
+            super(getDeserializedData, convert);
+            this.getDeserializedData = getDeserializedData;
         }
 
         public KafkaPollDeserializedItemFromRecordSupplier<R, M> withDataTransformer(DataTransformer transformer) {
-            this.transformer = transformer;
+            getDeserializedData.setTransformer(transformer);
             return this;
-        }
-
-        @Override
-        protected void onStart(List<ConsumerRecord<String, String>> records) {
-            var transformer = ofNullable(this.transformer)
-                    .orElseGet(KAFKA_DEFAULT_DATA_TRANSFORMER);
-            checkState(nonNull(transformer), "Data transformer is not defined. Please invoke "
-                    + "the '#withDataTransformer(DataTransformer)' method or define '"
-                    + KAFKA_DEFAULT_DATA_TRANSFORMER.getName()
-                    + "' property/env variable");
-            getFromTopics.setTransformer(transformer);
         }
     }
 }
