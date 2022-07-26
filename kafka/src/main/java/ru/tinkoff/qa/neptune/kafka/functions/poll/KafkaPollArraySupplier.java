@@ -84,7 +84,7 @@ public abstract class KafkaPollArraySupplier<M, R, S extends KafkaPollArraySuppl
             Function<M, T> toGet,
             String... topics) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return new KafkaPollArraySupplier.Mapped<>(new GetRecords(topics).andThen(new GetFromTopics<>(classT)),
+        return new KafkaPollArraySupplier.Mapped<>(new GetRecords(topics).andThen(new GetDeserializedData<>(classT)),
                 toGet,
                 componentClass);
     }
@@ -114,7 +114,7 @@ public abstract class KafkaPollArraySupplier<M, R, S extends KafkaPollArraySuppl
             Function<M, T> toGet,
             String... topics) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return new KafkaPollArraySupplier.Mapped<>(new GetRecords(topics).andThen(new GetFromTopics<>(typeT)), toGet, componentClass);
+        return new KafkaPollArraySupplier.Mapped<>(new GetRecords(topics).andThen(new GetDeserializedData<>(typeT)), toGet, componentClass);
     }
 
     /**
@@ -167,7 +167,7 @@ public abstract class KafkaPollArraySupplier<M, R, S extends KafkaPollArraySuppl
      */
     @Description("String messages")
     public static StringMessages kafkaArrayOfRawMessages(String... topics) {
-        return new StringMessages(new GetRecords(topics).andThen(new GetFromTopics<>(String.class)));
+        return new StringMessages(new GetRecords(topics).andThen(new GetDeserializedData<>(String.class)));
     }
 
     @Override
@@ -183,7 +183,7 @@ public abstract class KafkaPollArraySupplier<M, R, S extends KafkaPollArraySuppl
                 + "the '#withDataTransformer(DataTransformer)' method or define '"
                 + KAFKA_DEFAULT_DATA_TRANSFORMER.getName()
                 + "' property/env variable");
-        ((GetFromTopics<M>) getFromTopics.getAfter()).setTransformer(transformer);
+        ((GetDeserializedData<M>) getFromTopics.getAfter()).setTransformer(transformer);
     }
 
     S withDataTransformer(DataTransformer dataTransformer) {

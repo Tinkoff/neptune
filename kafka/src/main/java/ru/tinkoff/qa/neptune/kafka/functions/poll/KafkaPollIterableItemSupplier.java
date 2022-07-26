@@ -69,7 +69,7 @@ public abstract class KafkaPollIterableItemSupplier<M, T, I extends KafkaPollIte
             Function<M, T> toGet,
             String... topics) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return new KafkaPollIterableItemSupplier.Mapped<>(new GetRecords(topics).andThen(new GetFromTopics<>(cls)), toGet);
+        return new KafkaPollIterableItemSupplier.Mapped<>(new GetRecords(topics).andThen(new GetDeserializedData<>(cls)), toGet);
     }
 
     /**
@@ -95,7 +95,7 @@ public abstract class KafkaPollIterableItemSupplier<M, T, I extends KafkaPollIte
             Function<M, T> toGet,
             String... topics) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return new KafkaPollIterableItemSupplier.Mapped<>(new GetRecords(topics).andThen(new GetFromTopics<>(typeT)), toGet);
+        return new KafkaPollIterableItemSupplier.Mapped<>(new GetRecords(topics).andThen(new GetDeserializedData<>(typeT)), toGet);
     }
 
     /**
@@ -147,7 +147,7 @@ public abstract class KafkaPollIterableItemSupplier<M, T, I extends KafkaPollIte
      */
     @Description("String message")
     public static StringMessage kafkaRawMessage(String... topics) {
-        return new StringMessage(new GetRecords(topics).andThen(new GetFromTopics<>(String.class)));
+        return new StringMessage(new GetRecords(topics).andThen(new GetDeserializedData<>(String.class)));
     }
 
     @Override
@@ -158,7 +158,7 @@ public abstract class KafkaPollIterableItemSupplier<M, T, I extends KafkaPollIte
                 + "the '#withDataTransformer(DataTransformer)' method or define '"
                 + KAFKA_DEFAULT_DATA_TRANSFORMER.getName()
                 + "' property/env variable");
-        ((GetFromTopics<M>) getFromTopics.getAfter()).setTransformer(transformer);
+        ((GetDeserializedData<M>) getFromTopics.getAfter()).setTransformer(transformer);
     }
 
     I withDataTransformer(DataTransformer dataTransformer) {

@@ -16,7 +16,7 @@ import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
-final class GetFromTopics<T> implements Function<List<ConsumerRecord<String, String>>, List<T>>, StepParameterPojo {
+final class GetDeserializedData<T> implements Function<List<ConsumerRecord<String, String>>, List<T>>, StepParameterPojo {
 
     @StepParameter(value = "Class to deserialize to", doNotReportNullValues = true)
     private final Class<T> cls;
@@ -28,7 +28,7 @@ final class GetFromTopics<T> implements Function<List<ConsumerRecord<String, Str
 
     private DataTransformer transformer;
 
-    GetFromTopics(Class<T> cls, TypeReference<T> typeRef, String... topics) {
+    GetDeserializedData(Class<T> cls, TypeReference<T> typeRef) {
         checkArgument(!(isNull(cls) && isNull(typeRef)), "Any class or type reference should be defined");
         this.cls = cls;
         this.typeRef = typeRef;
@@ -36,12 +36,12 @@ final class GetFromTopics<T> implements Function<List<ConsumerRecord<String, Str
 
     }
 
-    GetFromTopics(Class<T> cls, String... topics) {
-        this(cls, null, topics);
+    GetDeserializedData(Class<T> cls) {
+        this(cls, null);
     }
 
-    GetFromTopics(TypeReference<T> typeRef, String... topics) {
-        this(null, typeRef, topics);
+    GetDeserializedData(TypeReference<T> typeRef, String... topics) {
+        this(null, typeRef);
     }
 
     @Override

@@ -74,12 +74,10 @@ public class GetRecords implements Function<KafkaStepContext, List<ConsumerRecor
 
         @Override
         public Map<String, String> getParameters() {
-            if (before != null) {
-                if (after instanceof StepParameterPojo) {
-                    var parameters = before.getParameters();
-                    parameters.putAll(((StepParameterPojo) after).getParameters());
-                    return parameters;
-                }
+            if (before != null && after instanceof StepParameterPojo) {
+                var parameters = before.getParameters();
+                parameters.putAll(((StepParameterPojo) after).getParameters());
+                return parameters;
             }
             return StepParameterPojo.super.getParameters();
         }

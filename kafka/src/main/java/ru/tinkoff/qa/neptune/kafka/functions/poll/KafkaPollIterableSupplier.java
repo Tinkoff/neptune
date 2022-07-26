@@ -69,7 +69,7 @@ public abstract class KafkaPollIterableSupplier<M, R, S extends KafkaPollIterabl
             Function<M, T> toGet,
             String... topics) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return new KafkaPollIterableSupplier.Mapped<>(new GetRecords(topics).andThen(new GetFromTopics<>(cls)), toGet);
+        return new KafkaPollIterableSupplier.Mapped<>(new GetRecords(topics).andThen(new GetDeserializedData<>(cls)), toGet);
     }
 
     /**
@@ -95,7 +95,7 @@ public abstract class KafkaPollIterableSupplier<M, R, S extends KafkaPollIterabl
             Function<M, T> toGet,
             String... topics) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return new KafkaPollIterableSupplier.Mapped<>(new GetRecords(topics).andThen(new GetFromTopics<>(typeT)), toGet);
+        return new KafkaPollIterableSupplier.Mapped<>(new GetRecords(topics).andThen(new GetDeserializedData<>(typeT)), toGet);
     }
 
     /**
@@ -147,7 +147,7 @@ public abstract class KafkaPollIterableSupplier<M, R, S extends KafkaPollIterabl
      */
     @Description("String messages")
     public static StringMessages kafkaRawMessages(String... topics) {
-        return new StringMessages(new GetRecords(topics).andThen(new GetFromTopics<>(String.class)));
+        return new StringMessages(new GetRecords(topics).andThen(new GetDeserializedData<>(String.class)));
     }
 
     @Override
@@ -158,7 +158,7 @@ public abstract class KafkaPollIterableSupplier<M, R, S extends KafkaPollIterabl
                 + "the '#withDataTransformer(DataTransformer)' method or define '"
                 + KAFKA_DEFAULT_DATA_TRANSFORMER.getName()
                 + "' property/env variable");
-        ((GetFromTopics<M>) getFromTopics.getAfter()).setTransformer(transformer);
+        ((GetDeserializedData<M>) getFromTopics.getAfter()).setTransformer(transformer);
     }
 
     S withDataTransformer(DataTransformer dataTransformer) {

@@ -29,11 +29,13 @@ import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAF
 public abstract class KafkaPollItemFromRecordSupplier<R, M, I extends KafkaPollItemFromRecordSupplier<R, M, I>>
         extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<KafkaStepContext, R, List<ConsumerRecord<String, String>>, I> {
 
+    public static final String NO_DESC_ERROR_TEXT = "Description should be defined";
+
     private KafkaPollItemFromRecordSupplier(Function<ConsumerRecord<String, String>, R> originalFunction) {
         super(list -> list.stream().map(originalFunction).collect(toList()));
     }
 
-    private KafkaPollItemFromRecordSupplier(GetFromTopics<M> f1, Function<M, R> f2) {
+    private KafkaPollItemFromRecordSupplier(GetDeserializedData<M> f1, Function<M, R> f2) {
         super(f1.andThen(ms -> ms.stream().map(f2).collect(toList())));
     }
 
@@ -48,7 +50,7 @@ public abstract class KafkaPollItemFromRecordSupplier<R, M, I extends KafkaPollI
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
             ) String description,
             Function<ConsumerRecord<String, String>, R> f) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         return new KafkaPollItemFromRecordSupplier(f) {
         };
     }
@@ -60,8 +62,8 @@ public abstract class KafkaPollItemFromRecordSupplier<R, M, I extends KafkaPollI
             ) String description,
             Class<M> cls,
             Function<M, R> conversion) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        return new KafkaPollDeserializedItemFromRecordSupplier(new GetFromTopics<>(cls), conversion);
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
+        return new KafkaPollDeserializedItemFromRecordSupplier(new GetDeserializedData<>(cls), conversion);
     }
 
     @Description("{description}")
@@ -71,8 +73,8 @@ public abstract class KafkaPollItemFromRecordSupplier<R, M, I extends KafkaPollI
             ) String description,
             TypeReference<M> typeT,
             Function<M, R> conversion) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        return new KafkaPollDeserializedItemFromRecordSupplier(new GetFromTopics<>(typeT), conversion);
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
+        return new KafkaPollDeserializedItemFromRecordSupplier(new GetDeserializedData<>(typeT), conversion);
     }
 
 
@@ -80,9 +82,9 @@ public abstract class KafkaPollItemFromRecordSupplier<R, M, I extends KafkaPollI
             extends KafkaPollItemFromRecordSupplier<R, M, KafkaPollDeserializedItemFromRecordSupplier<R, M>> {
 
         private DataTransformer transformer;
-        final GetFromTopics<M> getFromTopics;
+        final GetDeserializedData<M> getFromTopics;
 
-        public KafkaPollDeserializedItemFromRecordSupplier(GetFromTopics<M> getFromTopics, Function<M, R> convert) {
+        public KafkaPollDeserializedItemFromRecordSupplier(GetDeserializedData<M> getFromTopics, Function<M, R> convert) {
             super(getFromTopics, convert);
             this.getFromTopics = getFromTopics;
         }
