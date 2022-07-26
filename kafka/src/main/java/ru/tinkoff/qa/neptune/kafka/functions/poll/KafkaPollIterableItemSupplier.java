@@ -18,12 +18,8 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
-import static java.util.Objects.nonNull;
-import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAFKA_DEFAULT_DATA_TRANSFORMER;
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Poll:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
@@ -33,13 +29,12 @@ import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAF
 public abstract class KafkaPollIterableItemSupplier<M, T, I extends KafkaPollIterableItemSupplier<M, T, I>>
         extends SequentialGetStepSupplier.GetObjectFromIterableStepSupplier<KafkaStepContext, T, I> {
 
+    public static final String NO_DESC_ERROR_TEXT = "Description should be defined";
     private GetRecords.MergeProperty getFromTopics;
 
     @CaptureOnSuccess(by = AllMessagesCaptor.class)
     @CaptureOnFailure(by = AllMessagesCaptor.class)
     List<String> messages;
-
-    private DataTransformer transformer;
 
     protected KafkaPollIterableItemSupplier(GetRecords.MergeProperty<List<M>> getFromTopics, Function<M, T> originalFunction) {
         super(getFromTopics.andThen(list -> list.stream().map(originalFunction).collect(toList())));
@@ -68,7 +63,7 @@ public abstract class KafkaPollIterableItemSupplier<M, T, I extends KafkaPollIte
             Class<M> cls,
             Function<M, T> toGet,
             String... topics) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         return new KafkaPollIterableItemSupplier.Mapped<>(new GetRecords(topics).andThen(new GetDeserializedData<>(cls)), toGet);
     }
 
@@ -94,7 +89,7 @@ public abstract class KafkaPollIterableItemSupplier<M, T, I extends KafkaPollIte
             TypeReference<M> typeT,
             Function<M, T> toGet,
             String... topics) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         return new KafkaPollIterableItemSupplier.Mapped<>(new GetRecords(topics).andThen(new GetDeserializedData<>(typeT)), toGet);
     }
 
@@ -150,19 +145,8 @@ public abstract class KafkaPollIterableItemSupplier<M, T, I extends KafkaPollIte
         return new StringMessage(new GetRecords(topics).andThen(new GetDeserializedData<>(String.class)));
     }
 
-    @Override
-    protected void onStart(KafkaStepContext m) {
-        var transformer = ofNullable(this.transformer)
-                .orElseGet(KAFKA_DEFAULT_DATA_TRANSFORMER);
-        checkState(nonNull(transformer), "Data transformer is not defined. Please invoke "
-                + "the '#withDataTransformer(DataTransformer)' method or define '"
-                + KAFKA_DEFAULT_DATA_TRANSFORMER.getName()
-                + "' property/env variable");
-        ((GetDeserializedData<M>) getFromTopics.getAfter()).setTransformer(transformer);
-    }
-
     I withDataTransformer(DataTransformer dataTransformer) {
-        this.transformer = dataTransformer;
+        ((GetDeserializedData<M>) getFromTopics.getAfter()).setTransformer(dataTransformer);
         return (I) this;
     }
 

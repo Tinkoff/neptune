@@ -20,13 +20,9 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
-import static java.util.Objects.nonNull;
-import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.ArrayUtils.add;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAFKA_DEFAULT_DATA_TRANSFORMER;
 
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Poll:")
@@ -36,14 +32,13 @@ import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAF
 @SuppressWarnings({"unchecked", "rawtypes"})
 public abstract class KafkaPollArraySupplier<M, R, S extends KafkaPollArraySupplier<M, R, S>> extends SequentialGetStepSupplier
         .GetArrayStepSupplier<KafkaStepContext, R, S> {
+    public static final String NO_DESC_ERROR_TEXT = "Description should be defined";
 
     private GetRecords.MergeProperty getFromTopics;
 
     @CaptureOnSuccess(by = AllMessagesCaptor.class)
     @CaptureOnFailure(by = AllMessagesCaptor.class)
     List<String> messages;
-
-    private DataTransformer transformer;
 
     protected KafkaPollArraySupplier(GetRecords.MergeProperty<List<M>> getFromTopics, Function<M, R> originalFunction, Class<R> componentClass) {
         super(getFromTopics.andThen(list -> {
@@ -83,7 +78,7 @@ public abstract class KafkaPollArraySupplier<M, R, S extends KafkaPollArraySuppl
             Class<T> componentClass,
             Function<M, T> toGet,
             String... topics) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         return new KafkaPollArraySupplier.Mapped<>(new GetRecords(topics).andThen(new GetDeserializedData<>(classT)),
                 toGet,
                 componentClass);
@@ -113,7 +108,7 @@ public abstract class KafkaPollArraySupplier<M, R, S extends KafkaPollArraySuppl
             Class<T> componentClass,
             Function<M, T> toGet,
             String... topics) {
-        checkArgument(isNotBlank(description), "Description should be defined");
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         return new KafkaPollArraySupplier.Mapped<>(new GetRecords(topics).andThen(new GetDeserializedData<>(typeT)), toGet, componentClass);
     }
 
@@ -175,19 +170,8 @@ public abstract class KafkaPollArraySupplier<M, R, S extends KafkaPollArraySuppl
         return super.timeOut(timeOut);
     }
 
-    @Override
-    protected void onStart(KafkaStepContext m) {
-        var transformer = ofNullable(this.transformer)
-                .orElseGet(KAFKA_DEFAULT_DATA_TRANSFORMER);
-        checkState(nonNull(transformer), "Data transformer is not defined. Please invoke "
-                + "the '#withDataTransformer(DataTransformer)' method or define '"
-                + KAFKA_DEFAULT_DATA_TRANSFORMER.getName()
-                + "' property/env variable");
-        ((GetDeserializedData<M>) getFromTopics.getAfter()).setTransformer(transformer);
-    }
-
     S withDataTransformer(DataTransformer dataTransformer) {
-        this.transformer = dataTransformer;
+        ((GetDeserializedData<M>) getFromTopics.getAfter()).setTransformer(dataTransformer);
         return (S) this;
     }
 
