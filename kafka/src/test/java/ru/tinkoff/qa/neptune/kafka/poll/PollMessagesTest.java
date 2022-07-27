@@ -23,6 +23,7 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsEach
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.pojo.PojoGetterReturnsMatcher.getterReturns;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetRecordSupplier.consumerRecords;
+import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetRecordSupplier.records;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.kafkaArray;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.kafkaArrayOfRawMessages;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.kafkaIterableItem;
@@ -445,5 +446,11 @@ public class PollMessagesTest extends KafkaBasePreparations {
                 .withDataTransformer(new CustomMapper()));
 
         assertThat(result, getterReturns("getName", "PREFIXCondition"));
+    }
+
+    @Test
+    public void test42() {
+        var result = kafka.poll(records("testTopic"));
+        assertThat(result, hasItems(consumerRecord1, consumerRecord2, consumerRecord3));
     }
 }
