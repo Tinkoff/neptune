@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.core.api.localization;
 import java.io.IOException;
 import java.util.*;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.valueOf;
 import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
@@ -26,11 +27,23 @@ public abstract class LocalizationBundlePartition {
     private final List<String> packageName;
     private final Map<Locale, Map<String, String>> bundleContent = new HashMap<>();
 
-    protected LocalizationBundlePartition(String name, String... packageName) {
+    private final List<Locale> supportedLocales = new ArrayList<>();
+
+    protected LocalizationBundlePartition(String name, List<Locale> supportedLocales, String... packageName) {
         this.name = name;
         this.packageName = asList(packageName);
         this.defaultBundleName = "neptune_Localization" + "_" + name;
         customBundleName = this.defaultBundleName + "_CUSTOM";
+        this.supportedLocales.addAll(supportedLocales);
+    }
+
+    protected LocalizationBundlePartition(String name, String... packageName) {
+        this(name, List.of(), packageName);
+    }
+
+    boolean mayItUsedWithThisLocale(Locale locale) {
+        checkNotNull(locale);
+        return supportedLocales.contains(locale) || supportedLocales.isEmpty();
     }
 
     static List<LocalizationBundlePartition> getKnownPartitions() {

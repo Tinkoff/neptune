@@ -68,6 +68,25 @@ core/index
 ```
 
 ```{toctree}
+:caption: Assert
+:hidden:
+:maxdepth: 7
+
+check/check.md
+common_matchers/index.md
+```
+
+```{toctree}
+:caption: Базы данных
+:hidden:
+:maxdepth: 7
+
+data.base/database.abstractions.md
+data.base/hibernate/index.md
+```
+
+
+```{toctree}
 :caption: Spring Boot
 :hidden:
 :maxdepth: 7

@@ -1,4 +1,14 @@
-# Абстрактный контекст
+# database.abstractions
+
+Модуль предоставляет абстракции для работы с базами данных в рамках _Neptune_.
+Абстракции поддерживают как ORM, так и Repository паттерны и могут
+быть использованы для реализации API для работы с конкретной библиотекой.
+
+```{eval-rst}
+.. include:: data_dase_dependencies.rst
+```
+
+## Абстрактный [контекст](./../core/steps/context/index.md)
 
 Класс AbstractDatabaseStepContext содержит абстрактные базовые методы для осуществления
 CRUD-запросов в СУБД.
@@ -33,7 +43,7 @@ public class HibernateDatabaseContext extends AbstractDatabaseStepContext<Hibern
 }
 ```
 
-# Интерфейс OrmCompatible
+## Интерфейс OrmCompatible
 
 Интерфейс OrmCompatible содержит дополнительные методы для работы с JDO или JPA-объектами.
 
@@ -73,4 +83,3 @@ public class HibernateDatabaseContext extends AbstractDatabaseStepContext<Hibern
     }
 }
 ```
-

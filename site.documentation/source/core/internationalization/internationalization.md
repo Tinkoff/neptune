@@ -4,8 +4,8 @@ Neptune имеет свой механизм локализации / интер
 
 ## Для чего применяется
 
-- [Шаги](./steps/steps/index.md)
-- [Аттачи](./events/attaches/index.rst)
+- [Шаги](../steps/steps/index.md)
+- [Аттачи](../events/attaches/index.rst)
 - Другие объекты
 
 ## Механизм
@@ -14,7 +14,7 @@ Neptune имеет свой механизм локализации / интер
 .. include:: internationalization_sample.rst
 ```
 
-Свойства описаны [тут](../quick_start/settings/internationalization.md)
+Свойства описаны [тут](../../quick_start/settings/internationalization.md)
 
 ## Базовый механизм
 
@@ -28,7 +28,13 @@ DEFAULT_LOCALE=ru_RU
 На текущий момент поддерживаются локали: 
 - `ru_RU` - русский
 
-### Как добавить бандл для локали, которой нет среди поддерживаемых
+### Добавление возможности интернационализации своего модуля на основе бандлов
+
+```{eval-rst}
+.. include:: internationalization_new_bundle.rst
+```
+
+### Создание нового бандла для своего модуля или локали, для которой нет бандлов в _Neptune_
 
 ```{eval-rst}
 .. include:: internationalization_new_locale_maven.rst
@@ -323,14 +329,14 @@ core.api.logical.lexemes.Not = nicht
 core.api.hamcrest.pojo.ReturnedObject = von '{getter}' zurückgegebener wert'
 ```
 
-### Создание бандла для локали, которая есть среди поддерживаемых
+### Создание кастомного бандла поверх существующего в _Neptune_
 
 ```{eval-rst}
 .. include:: internationalization_custom_locale_maven.rst
 .. include:: internationalization_custom_locale_gradle.rst
 ```
 
-Будут сформированы файлы вида ``neptune_Localization_<name_of_the_module>_ru_RU.properties``.
+Будут сформированы файлы вида ``neptune_Localization_<name_of_the_module>_CUSTOM_ru_RU.properties``.
 Их контент будет похож на пример ниже:
 
 ```properties
@@ -604,11 +610,10 @@ core.api.logical.lexemes.Or = или
 Все что теперь нужно — это исправить текст в значении каждого из свойств, кроме ⚠️ выражений внутри `{}`,
 их нужно оставить как есть.
 
-## Добавление интернационализации своего модуля на основе бандлов
+### Названия бандлов существующих модулей
 
-```{eval-rst}
-.. include:: internationalization_new_bundle.rst
-```
+- [Core](./../index.rst): `core`
+- [Check](./../../check/check.md): `check`
 
 
 

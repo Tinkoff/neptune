@@ -8,10 +8,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -21,6 +18,8 @@ import static java.lang.Thread.currentThread;
 import static java.lang.reflect.Modifier.isAbstract;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.LocaleUtils.toLocale;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.LocalizationBundlePartition.getKnownPartitions;
@@ -43,17 +42,21 @@ public class ResourceBundleGenerator {
 
         var custom = args.length > 2 && parseBoolean(args[2]);
         List<LocalizationBundlePartition> partitions;
+        var locale = toLocale(args[0]);
         if (args.length <= 3) {
-            partitions = getKnownPartitions();
+            partitions = getKnownPartitions()
+                .stream()
+                .filter(p -> p.mayItUsedWithThisLocale(locale))
+                .collect(toList());
         } else {
             partitions = new ArrayList<>();
             var known = getKnownPartitions();
             for (int i = 3; i < args.length; i++) {
                 var currentIndex = i;
                 partitions.add(known.stream()
-                        .filter(p -> p.getName().equalsIgnoreCase(args[currentIndex]))
+                        .filter(p -> p.getName().equalsIgnoreCase(args[currentIndex]) && p.mayItUsedWithThisLocale(locale))
                         .findFirst()
-                        .orElseThrow(() -> new IllegalArgumentException("No such bundle partition '" + args[currentIndex] + "'")));
+                        .orElseThrow(() -> new IllegalArgumentException("No partition '" + args[currentIndex] + "' that may be used with locale " + locale)));
             }
         }
 

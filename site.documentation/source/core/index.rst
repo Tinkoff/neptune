@@ -79,7 +79,7 @@ Gradle
    steps/annotations/index.md
    events/index.md
    settings/index.md
-   internationalization.md
+   internationalization/internationalization.md
    serialize_deserialize.rst
    dependency_injection.rst
    hooks.rst
