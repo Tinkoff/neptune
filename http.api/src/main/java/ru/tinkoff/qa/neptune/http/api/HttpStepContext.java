@@ -8,6 +8,7 @@ import ru.tinkoff.qa.neptune.http.api.response.*;
 import java.net.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -54,7 +55,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
         var cookieManager = ofNullable(DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY.get())
             .orElseGet(CookieManager::new);
 
-        var allCookies = cookieStore.getCookies();
+        var allCookies = new ArrayList<>(cookieStore.getCookies());
         var uris = cookieStore.getURIs();
         var newStore = cookieManager.getCookieStore();
 
@@ -65,7 +66,6 @@ public class HttpStepContext extends Context<HttpStepContext> {
         });
 
         allCookies.forEach(c -> newStore.add(null, c));
-
         builder.cookieHandler(cookieManager);
 
         ofNullable(DEFAULT_HTTP_EXECUTOR_PROPERTY.get()).ifPresent(builder::executor);
@@ -208,7 +208,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
         try {
             return getCookies(url.toURI(), cookieCriteria);
         } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -247,7 +247,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
         try {
             return addCookies(url.toURI(), cookies);
         } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -296,7 +296,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
         try {
             return addCookies(url.toURI(), cookies);
         } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -354,7 +354,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
         try {
             return addCookies(url.toURI(), parse(header));
         } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
     }
 
