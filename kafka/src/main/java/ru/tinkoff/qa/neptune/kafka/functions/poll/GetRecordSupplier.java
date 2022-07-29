@@ -41,11 +41,16 @@ public class GetRecordSupplier extends SequentialGetStepSupplier.GetListStepSupp
         return new GetRecordSupplier(new GetRecords(topics));
     }
 
+    @Description("Kafka messages")
+    public static GetRecordSupplier records(String... topics) {
+        return new GetRecordSupplier(new GetRecords(topics));
+    }
+
     /**
      * @param description     is description of value to get
      * @param getItemFunction
      * @param <R>             is a type of item of iterable
-     * @return
+     * @return KafkaPollListFromRecordSupplier
      */
     public <R> KafkaPollListFromRecordSupplier<R, R, ?> thenGetList(String description, Function<ConsumerRecord<String, String>, R> getItemFunction) {
         return listFromRecords(description, getItemFunction).from(this);
@@ -57,7 +62,7 @@ public class GetRecordSupplier extends SequentialGetStepSupplier.GetListStepSupp
      * @param conversion  describes how to get desired value
      * @param <R>         is a type of item of iterable
      * @param <M>         is a type of deserialized message
-     * @return
+     * @return KafkaPollListFromRecordSupplier.KafkaPollDeserializedFromSupplier
      */
     public <R, M> KafkaPollListFromRecordSupplier.KafkaPollDeserializedFromSupplier<R, M> thenGetList(String description, Class<M> cls, Function<M, R> conversion) {
         return listFromRecords(description, cls, conversion).from(this);
@@ -69,7 +74,7 @@ public class GetRecordSupplier extends SequentialGetStepSupplier.GetListStepSupp
      * @param conversion  describes how to get desired value
      * @param <R>         is a type of item of iterable
      * @param <M>         is a type of deserialized message
-     * @return
+     * @return KafkaPollListFromRecordSupplier.KafkaPollDeserializedFromSupplier
      */
     public <R, M> KafkaPollListFromRecordSupplier.KafkaPollDeserializedFromSupplier<R, M> thenGetList(String description, TypeReference<M> typeT, Function<M, R> conversion) {
         return listFromRecords(description, typeT, conversion).from(this);
@@ -79,7 +84,7 @@ public class GetRecordSupplier extends SequentialGetStepSupplier.GetListStepSupp
      * @param description is description of value to get
      * @param cls         is a class of a value to deserialize a message from topics
      * @param <R>         is a type of deserialized message
-     * @return
+     * @return KafkaPollListFromRecordSupplier.KafkaPollDeserializedFromSupplier
      */
     public <R> KafkaPollListFromRecordSupplier.KafkaPollDeserializedFromSupplier<R, ?> thenGetList(String description, Class<R> cls) {
         return thenGetList(description, cls, f -> f);
@@ -89,7 +94,7 @@ public class GetRecordSupplier extends SequentialGetStepSupplier.GetListStepSupp
      * @param description is description of value to get
      * @param typeT       is a reference to type of value to deserialize message
      * @param <R>         is a type of deserialized message
-     * @return
+     * @return KafkaPollListFromRecordSupplier.KafkaPollDeserializedFromSupplier
      */
     public <R> KafkaPollListFromRecordSupplier.KafkaPollDeserializedFromSupplier<R, ?> thenGetList(String description, TypeReference<R> typeT) {
         return thenGetList(description, typeT, f -> f);
@@ -99,7 +104,7 @@ public class GetRecordSupplier extends SequentialGetStepSupplier.GetListStepSupp
      * @param description is description of value to get
      * @param function    describes how to get desired value
      * @param <R>         is a type of item
-     * @return
+     * @return KafkaPollItemFromRecordSupplier
      */
     public <R> KafkaPollItemFromRecordSupplier<R, R, ?> thenGetItem(String description, Function<ConsumerRecord<String, String>, R> function) {
         return itemFromRecords(description, function).from(this);
@@ -111,7 +116,7 @@ public class GetRecordSupplier extends SequentialGetStepSupplier.GetListStepSupp
      * @param function    describes how to get desired value
      * @param <R>         is a type of resulted value
      * @param <M>         is a type of deserialized message
-     * @return
+     * @return KafkaPollItemFromRecordSupplier.KafkaPollDeserializedItemFromRecordSupplier
      */
     public <R, M> KafkaPollItemFromRecordSupplier.KafkaPollDeserializedItemFromRecordSupplier<R, M> thenGetItem(String description, Class<M> cls, Function<M, R> function) {
         return itemFromRecords(description, cls, function).from(this);
@@ -123,7 +128,7 @@ public class GetRecordSupplier extends SequentialGetStepSupplier.GetListStepSupp
      * @param function    describes how to get desired value
      * @param <R>         is a type of resulted value
      * @param <M>         is a type of deserialized message
-     * @return
+     * @return KafkaPollItemFromRecordSupplier.KafkaPollDeserializedItemFromRecordSupplier
      */
     public <R, M> KafkaPollItemFromRecordSupplier.KafkaPollDeserializedItemFromRecordSupplier<R, M> thenGetItem(String description, TypeReference<M> typeT, Function<M, R> function) {
         return itemFromRecords(description, typeT, function).from(this);
@@ -133,7 +138,7 @@ public class GetRecordSupplier extends SequentialGetStepSupplier.GetListStepSupp
      * @param description is description of value to get
      * @param typeT       is a reference to type of value to deserialize message
      * @param <R>         is a type of deserialized message
-     * @return
+     * @return KafkaPollItemFromRecordSupplier.KafkaPollDeserializedItemFromRecordSupplier
      */
     public <R> KafkaPollItemFromRecordSupplier.KafkaPollDeserializedItemFromRecordSupplier<R, ?> thenGetItem(String description, TypeReference<R> typeT) {
         return thenGetItem(description, typeT, f -> f);
@@ -143,7 +148,7 @@ public class GetRecordSupplier extends SequentialGetStepSupplier.GetListStepSupp
      * @param description is description of value to get
      * @param cls         is a class of a value to deserialize a message from topics
      * @param <R>         is a type of deserialized message
-     * @return
+     * @return KafkaPollItemFromRecordSupplier.KafkaPollDeserializedItemFromRecordSupplier
      */
     public <R> KafkaPollItemFromRecordSupplier.KafkaPollDeserializedItemFromRecordSupplier<R, ?> thenGetItem(String description, Class<R> cls) {
         return thenGetItem(description, cls, f -> f);
