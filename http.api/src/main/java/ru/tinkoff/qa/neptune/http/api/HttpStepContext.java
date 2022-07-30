@@ -157,6 +157,14 @@ public class HttpStepContext extends Context<HttpStepContext> {
         return get(iterable);
     }
 
+    private static URI toURI(URL url) {
+        try {
+            return url.toURI();
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
     /**
      * Gets not expired cookies which are stored by current http client.
      *
@@ -205,11 +213,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      */
     @SafeVarargs
     public final List<HttpCookie> getCookies(URL url, Criteria<HttpCookie>... cookieCriteria) {
-        try {
-            return getCookies(url.toURI(), cookieCriteria);
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
+        return getCookies(toURI(url), cookieCriteria);
     }
 
     /**
@@ -244,11 +248,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return self-reference
      */
     public HttpStepContext addCookies(URL url, List<HttpCookie> cookies) {
-        try {
-            return addCookies(url.toURI(), cookies);
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
+        return addCookies(toURI(url), cookies);
     }
 
     /**
@@ -293,11 +293,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return self-reference
      */
     public HttpStepContext addCookies(URL url, HttpCookie... cookies) {
-        try {
-            return addCookies(url.toURI(), cookies);
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
+        return addCookies(toURI(url), cookies);
     }
 
     /**
@@ -351,11 +347,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return self-reference
      */
     public HttpStepContext addCookies(URL url, String header) {
-        try {
-            return addCookies(url.toURI(), parse(header));
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
+        return addCookies(toURI(url), parse(header));
     }
 
     /**
