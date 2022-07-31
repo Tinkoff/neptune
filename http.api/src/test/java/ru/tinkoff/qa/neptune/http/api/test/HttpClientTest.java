@@ -39,7 +39,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.cookies.CommonHttpCookieCriteria.httpCookieValue;
 import static ru.tinkoff.qa.neptune.http.api.properties.authentification.DefaultHttpAuthenticatorProperty.DEFAULT_HTTP_AUTHENTICATOR_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.cookies.DefaultHttpCookieManagerProperty.DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.executor.DefaultHttpExecutorProperty.DEFAULT_HTTP_EXECUTOR_PROPERTY;
@@ -147,44 +146,6 @@ public class HttpClientTest extends BaseHttpTest {
             getProperties().remove(DEFAULT_HTTP_SSL_CONTEXT_PROPERTY.getName());
             getProperties().remove(DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY.getName());
         }
-    }
-
-    @Test
-    public void addCookieTest() {
-        var httpCookie = new HttpCookie("TestSetUpCookieName",
-            "TestSetUpCookieValue");
-
-        http().addCookies(httpCookie);
-        assertThat(((CookieManager) http().getCurrentClient().cookieHandler().orElseThrow())
-                .getCookieStore()
-                .getCookies(),
-            hasItem(httpCookie));
-    }
-
-    @Test
-    public void clearCookiesTest() {
-        var httpCookie = new HttpCookie("TestSetUpCookieName",
-            "TestSetUpCookieValue");
-
-        http().addCookies(httpCookie);
-        http().removeCookies();
-        assertThat(((CookieManager) http().getCurrentClient().cookieHandler().orElseThrow())
-                .getCookieStore()
-                .getCookies(),
-            emptyIterable());
-    }
-
-    @Test
-    public void clearCookiesTest2() {
-        var httpCookie = new HttpCookie("TestSetUpCookieName",
-            "TestSetUpCookieValue");
-
-        http().addCookies(httpCookie);
-        http().removeCookies(httpCookieValue("TestSetUpCookieValue"));
-        assertThat(((CookieManager) http().getCurrentClient().cookieHandler().orElseThrow())
-                .getCookieStore()
-                .getCookies(),
-            emptyIterable());
     }
 
     @Test
