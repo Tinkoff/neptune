@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.net.HttpCookie.parse;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
@@ -158,6 +159,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
     }
 
     private static URI toURI(URL url) {
+        checkNotNull(url);
         try {
             return url.toURI();
         } catch (URISyntaxException e) {
