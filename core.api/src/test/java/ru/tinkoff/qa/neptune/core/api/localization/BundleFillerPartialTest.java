@@ -19,8 +19,8 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsCons
 
 public class BundleFillerPartialTest {
 
-    private final ResourceBundleGenerator.BundleFiller bundleFiller =
-            new ResourceBundleGenerator.BundleFiller(new DefinedPackagesPartition(), null, new Properties());
+    private final BundleFiller bundleFiller =
+            new BundleFiller(new DefinedPackagesPartition(), null, new Properties());
 
     @DataProvider
     public static Object[][] data() {
