@@ -69,6 +69,7 @@ jobs:
         documentation_path: ./site.documentation/source
         requirements_path: ./site.documentation/requirements.txt
         sphinx_version: 5.0.2
+        target_path: site
 
     - name: Push changes
       uses: ad-m/github-push-action@master
