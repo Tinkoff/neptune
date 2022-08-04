@@ -2,9 +2,12 @@
 
 Модуль, который предоставляет гибкую функциональность для assert-действий с использованием [матчеров](http://hamcrest.org/JavaHamcrest/tutorial).
 
+
 ```{eval-rst}
 .. include:: check_dependencies.rst
 ```
+
+[API](https://tinkoff.github.io/neptune/check/index.html)
 
 ```{eval-rst}
 .. include:: simpleAssert.rst

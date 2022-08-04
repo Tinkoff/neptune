@@ -1936,7 +1936,7 @@ public final class GetMockMvcResponseResultSupplier extends SequentialGetStepSup
                 errors.forEach(e -> messageBuilder.append("\r\n").append("\r\n").append(e.getMessage()));
                 throw new AssertionError(messageBuilder.toString());
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new AssertionError(e);
             }
         }
     }

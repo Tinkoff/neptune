@@ -69,6 +69,8 @@ Gradle
         }
     }
 
+`API <https://tinkoff.github.io/neptune/core.api/index.html>`_
+
 
 .. toctree::
    :hidden:

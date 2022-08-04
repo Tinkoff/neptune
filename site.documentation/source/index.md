@@ -77,21 +77,21 @@ common_matchers/index.md
 ```
 
 ```{toctree}
+:caption: Spring Boot
+:hidden:
+:maxdepth: 7
+
+spring/spring.boot.sterter.md
+spring/mock.mvc/index.md
+```
+
+```{toctree}
 :caption: Базы данных
 :hidden:
 :maxdepth: 7
 
 data.base/database.abstractions.md
 data.base/hibernate/index.md
-```
-
-
-```{toctree}
-:caption: Spring Boot
-:hidden:
-:maxdepth: 7
-
-spring/spring.boot.sterter.md
 ```
 
 

@@ -6,6 +6,8 @@
 .. include:: junit5_dependencies.rst
 ```
 
+[API](https://tinkoff.github.io/neptune/jupiter.integration/index.html)
+
 ## Пишем первый JUnit5-тест
 
 Ниже варианты, с помощью которых можно добавлять новые тесты, используя текущий модуль
