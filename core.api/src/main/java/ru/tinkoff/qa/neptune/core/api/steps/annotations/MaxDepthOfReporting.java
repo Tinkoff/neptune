@@ -27,6 +27,10 @@ public @interface MaxDepthOfReporting {
 
     class MaxDepthOfReportingReader {
 
+        private MaxDepthOfReportingReader() {
+            super();
+        }
+
         public static int getMaxDepth(Class<?> cls) {
             var clazz = cls;
             while (!clazz.equals(Object.class)) {

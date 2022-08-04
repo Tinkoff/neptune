@@ -53,7 +53,7 @@ final class BundleFiller {
                     var instance = c.newInstance();
                     bundleFillerExtensions.add(instance);
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    throw new IllegalStateException(e);
                 }
             });
 
