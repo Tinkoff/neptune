@@ -39,6 +39,6 @@ public class AllureImageInjector implements CapturedImageInjector {
     @Override
     public void inject(BufferedImage toBeInjected, String message) {
         InputStream inputStream = inputStream(toBeInjected);
-        addAttachment(message, "image/*", inputStream, "png");
+        addAttachment(message, "image/png", inputStream, "png");
     }
 }
