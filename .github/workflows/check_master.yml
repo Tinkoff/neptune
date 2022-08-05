@@ -55,24 +55,14 @@ jobs:
       run: |
         ./gradlew aggregatedJavadocs javadoc
 
-    - name: Deploy JavaDoc
+    - name: Create site
+      run: |
+        sphinx-build ./site.documentation/source ./neptune.documentation/site
+
+    - name: Deploy documents
       uses: JamesIves/github-pages-deploy-action@v4.3.3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         branch: gh-pages
         clean: true
         folder: neptune.documentation
-
-    - name: Build Site and commit
-      uses: sphinx-notes/pages@v2
-      with:
-        documentation_path: ./site.documentation/source
-        requirements_path: ./site.documentation/requirements.txt
-        sphinx_version: 5.0.2
-        target_path: site
-
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: gh-pages
