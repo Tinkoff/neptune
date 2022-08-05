@@ -17,7 +17,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * Classes of objects of {@link SequentialGetStepSupplier} and {@link SequentialActionSupplier}
  * should have unique definitions of step parameters.
  *
- * @return to include parameters or not
  * @see SequentialGetStepSupplier.DefineCriteriaParameterName
  * @see SequentialGetStepSupplier.DefineTimeOutParameterName
  * @see SequentialGetStepSupplier.DefinePollingTimeParameterName

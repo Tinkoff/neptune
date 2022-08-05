@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.core.api.localization;
 
-import io.github.classgraph.ClassGraph;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.AdditionalMetadata;
 
 import java.io.*;
@@ -8,19 +7,17 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.Boolean.parseBoolean;
 import static java.lang.ClassLoader.getSystemClassLoader;
 import static java.lang.Thread.currentThread;
-import static java.lang.reflect.Modifier.isAbstract;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.LocaleUtils.toLocale;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.LocalizationBundlePartition.getKnownPartitions;
 
@@ -42,17 +39,21 @@ public class ResourceBundleGenerator {
 
         var custom = args.length > 2 && parseBoolean(args[2]);
         List<LocalizationBundlePartition> partitions;
+        var locale = toLocale(args[0]);
         if (args.length <= 3) {
-            partitions = getKnownPartitions();
+            partitions = getKnownPartitions()
+                .stream()
+                .filter(p -> p.mayItUsedWithThisLocale(locale))
+                .collect(toList());
         } else {
             partitions = new ArrayList<>();
             var known = getKnownPartitions();
             for (int i = 3; i < args.length; i++) {
                 var currentIndex = i;
                 partitions.add(known.stream()
-                        .filter(p -> p.getName().equalsIgnoreCase(args[currentIndex]))
+                        .filter(p -> p.getName().equalsIgnoreCase(args[currentIndex]) && p.mayItUsedWithThisLocale(locale))
                         .findFirst()
-                        .orElseThrow(() -> new IllegalArgumentException("No such bundle partition '" + args[currentIndex] + "'")));
+                        .orElseThrow(() -> new IllegalArgumentException("No partition '" + args[currentIndex] + "' that may be used with locale " + locale)));
             }
         }
 
@@ -81,55 +82,7 @@ public class ResourceBundleGenerator {
                 }
             }
 
-            fillFile(p, propFile, currentProperties);
-        }
-    }
-
-    private static void fillFile(LocalizationBundlePartition partition, File file, Properties properties) throws IOException {
-        clearFile(file);
-
-        var writer = new FileWriter(file, true);
-
-        try (var output = new BufferedWriter(writer)) {
-            output.write("#Values for translation of steps, their parameters, matchers and their descriptions," +
-                    " and attachments are defined here. Format key = value");
-
-            new StepBundleFilter(partition).fill(output, properties);
-            new CriteriaBundleFilter(partition).fill(output, properties);
-            new AttachmentsBundleFilter(partition).fill(output, properties);
-            new MatchersBundleFilter(partition).fill(output, properties);
-            new MismatchDescriptionBundleFilter(partition).fill(output, properties);
-            new MatchedObjectsBundleFilter(partition).fill(output, properties);
-            new ParameterPojoBundleFilter(partition).fill(output, properties);
-            new OtherObjectsBundleFilter(partition).fill(output, properties);
-
-            new ClassGraph().enableAllInfo()
-                    .enableClassInfo()
-                    .ignoreClassVisibility()
-                    .scan()
-                    .getSubclasses(BundleFillerExtension.class.getName())
-                    .loadClasses(BundleFillerExtension.class)
-                    .stream()
-                    .filter(cls -> !isAbstract(cls.getModifiers()) &&
-                            !cls.equals(StepBundleFilter.class) &&
-                            !cls.equals(CriteriaBundleFilter.class) &&
-                            !cls.equals(AttachmentsBundleFilter.class) &&
-                            !cls.equals(MatchersBundleFilter.class) &&
-                            !cls.equals(MismatchDescriptionBundleFilter.class) &&
-                            !cls.equals(MatchedObjectsBundleFilter.class) &&
-                            !cls.equals(ParameterPojoBundleFilter.class) &&
-                            !cls.equals(OtherObjectsBundleFilter.class) &&
-                            stream(cls.getAnnotationsByType(BindToPartition.class))
-                                    .anyMatch(a -> a.value().equalsIgnoreCase(partition.getName())))
-                    .forEach(cls -> {
-                        try {
-                            var c = cls.getConstructor();
-                            c.setAccessible(true);
-                            c.newInstance().fill(output, properties);
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
+            new BundleFiller(p, propFile, currentProperties).fillFile();
         }
     }
 
@@ -178,11 +131,5 @@ public class ResourceBundleGenerator {
         var prop = new Properties();
         prop.load(new InputStreamReader(is, StandardCharsets.UTF_8));
         return prop;
-    }
-
-    private static void clearFile(File file) throws FileNotFoundException {
-        var writer = new PrintWriter(file);
-        writer.print(EMPTY);
-        writer.close();
     }
 }

@@ -1,12 +1,13 @@
 package ru.tinkoff.qa.neptune.kafka.functions.send;
 
 import org.apache.kafka.clients.producer.Callback;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.header.internals.RecordHeaders;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
@@ -19,6 +20,7 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.getCaptors;
+import static ru.tinkoff.qa.neptune.kafka.GetProducer.getProducer;
 import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAFKA_DEFAULT_DATA_TRANSFORMER;
 import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAFKA_KEY_TRANSFORMER;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaCallbackProperty.KAFKA_CALLBACK;
@@ -28,7 +30,7 @@ import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicForSendPro
 @MaxDepthOfReporting(0)
 @Description("message.")
 @SuppressWarnings("unchecked")
-public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRecordsActionSupplier<K, V, T>> extends SequentialActionSupplier<KafkaStepContext, KafkaStepContext, T> {
+public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRecordsActionSupplier<K, V, T>> extends SequentialActionSupplier<KafkaStepContext, KafkaProducer<String, String>, T> {
     @StepParameter("topic")
     private String topic = DEFAULT_TOPIC_FOR_SEND.get();
     String value;
@@ -44,7 +46,7 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
 
     public KafkaSendRecordsActionSupplier() {
         super();
-        performOn(kafkaStepContext -> kafkaStepContext);
+        performOn(getProducer());
     }
 
     /**
@@ -120,18 +122,16 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
     }
 
     @Override
-    protected void howToPerform(KafkaStepContext kafkaStepContext) {
-        var producer = kafkaStepContext.getProducer();
-
+    protected void howToPerform(KafkaProducer<String, String> producer) {
         ProducerRecord<String, String> records;
 
         records = new ProducerRecord<>(
-                topic,
-                partition,
-                timestamp,
-                key,
-                value,
-                headers);
+            topic,
+            partition,
+            timestamp,
+            key,
+            value,
+            headers);
 
         if (callback == null) {
             producer.send(records);

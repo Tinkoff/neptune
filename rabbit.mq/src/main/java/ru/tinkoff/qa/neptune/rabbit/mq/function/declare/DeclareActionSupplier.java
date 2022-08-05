@@ -1,11 +1,13 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.function.declare;
 
 import com.rabbitmq.client.Channel;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
+
+import static ru.tinkoff.qa.neptune.rabbit.mq.GetChannel.getChannel;
 
 @SequentialActionSupplier.DefinePerformImperativeParameterName("Declare:")
 @MaxDepthOfReporting(0)
@@ -20,7 +22,7 @@ public final class DeclareActionSupplier extends SequentialActionSupplier<Rabbit
     }
 
     public static DeclareActionSupplier declareAction(DeclareParameters<?> parameters) {
-        return new DeclareActionSupplier(parameters).performOn(RabbitMqStepContext::getChannel);
+        return new DeclareActionSupplier(parameters).performOn(getChannel());
     }
 
     @Override

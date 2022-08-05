@@ -3,13 +3,12 @@ package ru.tinkoff.qa.neptune.kafka.poll;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.kafka.CustomMapper;
 import ru.tinkoff.qa.neptune.kafka.DraftDto;
-import ru.tinkoff.qa.neptune.kafka.KafkaBaseTest;
+import ru.tinkoff.qa.neptune.kafka.KafkaBasePreparations;
 
 import java.util.Map;
 
@@ -23,6 +22,8 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsEach
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsEachItemMatcher.eachOfIterable;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.pojo.PojoGetterReturnsMatcher.getterReturns;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
+import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetRecordSupplier.consumerRecords;
+import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetRecordSupplier.records;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.kafkaArray;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.kafkaArrayOfRawMessages;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.kafkaIterableItem;
@@ -31,8 +32,8 @@ import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSuppli
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.kafkaRawMessages;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty.DEFAULT_TOPICS_FOR_POLL;
 
-public class PollMessagesTest extends KafkaBaseTest {
-    KafkaConsumer<Object, Object> consumer;
+@SuppressWarnings({"rawtypes", "unchecked"})
+public class PollMessagesTest extends KafkaBasePreparations {
     TopicPartition topicPartition;
     ConsumerRecord consumerRecord1;
     ConsumerRecord consumerRecord2;
@@ -40,14 +41,13 @@ public class PollMessagesTest extends KafkaBaseTest {
 
     @BeforeClass(dependsOnMethods = "setUp")
     public void beforeClass() {
-        consumer = kafka.getConsumer();
         topicPartition = new TopicPartition("testTopic", 1);
         consumerRecord1 = new ConsumerRecord("testTopic", 1, 0, null,
-                "{\"name\":\"testName\", \"name1\":29, \"name2\": true}");
+            "{\"name\":\"testName\", \"name1\":29, \"name2\": true}");
         consumerRecord2 = new ConsumerRecord("testTopic", 1, 0, null, "{\"1\":1}");
         consumerRecord3 = new ConsumerRecord("testTopic", 1, 0, null, "{\"name\":\"Condition\"}");
 
-        when(consumer.poll(ofNanos(1)))
+        when(kafkaConsumer.poll(ofNanos(1)))
                 .thenReturn(new ConsumerRecords<>(Map.of(topicPartition, of(consumerRecord1, consumerRecord2, consumerRecord3))));
 
     }
@@ -274,7 +274,7 @@ public class PollMessagesTest extends KafkaBaseTest {
         DEFAULT_TOPICS_FOR_POLL.accept("tt");
         kafka.poll(kafkaRawMessage());
 
-        verify(consumer, times(1)).subscribe(of("tt"));
+        verify(kafkaConsumer, times(1)).subscribe(of("tt"));
     }
 
     @Test
@@ -289,7 +289,7 @@ public class PollMessagesTest extends KafkaBaseTest {
         DEFAULT_TOPICS_FOR_POLL.accept("ttt");
         kafka.poll(kafkaRawMessages());
 
-        verify(consumer, times(1)).subscribe(of("ttt"));
+        verify(kafkaConsumer, times(1)).subscribe(of("ttt"));
     }
 
     @Test
@@ -304,6 +304,153 @@ public class PollMessagesTest extends KafkaBaseTest {
         DEFAULT_TOPICS_FOR_POLL.accept("tttt");
         kafka.poll(kafkaArrayOfRawMessages());
 
-        verify(consumer, times(1)).subscribe(of("tttt"));
+        verify(kafkaConsumer, times(1)).subscribe(of("tttt"));
+    }
+
+    @Test
+    public void test26() {
+        var result = kafka.poll(consumerRecords("TestDescription", "testTopic")
+
+                .timeOut(ofSeconds(1)));
+
+        assertThat(result, hasItems(consumerRecord1, consumerRecord2, consumerRecord3));
+    }
+
+    @Test
+    public void test27() {
+        var result = kafka.poll(consumerRecords("TestDescription", "testTopic")
+                .thenGetList("value from ConsumerRecords", ConsumerRecord::value));
+
+        assertThat(result, containsInAnyOrder(consumerRecord1.value(), consumerRecord2.value(), consumerRecord3.value()));
+    }
+
+    @Test
+    public void test28() {
+        var result = kafka.poll(consumerRecords("TestDescription", "testTopic")
+                .thenGetList("value from ConsumerRecords", ConsumerRecord::value));
+
+        assertThat(result, containsInAnyOrder(consumerRecord1.value(), consumerRecord2.value(), consumerRecord3.value()));
+    }
+
+    @Test
+    public void test29() {
+        var result = kafka.poll(consumerRecords("TestDescription", "testTopic")
+                .criteria("description", c -> c.value().contains("29")));
+
+        assertThat(result, containsInAnyOrder(consumerRecord1));
+    }
+
+    @Test
+    public void test30() {
+        var result = kafka.poll(consumerRecords("TestDescription", "testTopic")
+                .criteria("description", c -> c.value().contains("29"))
+                .thenGetList("value from ConsumerRecords", ConsumerRecord::value));
+
+        assertThat(result, containsInAnyOrder(consumerRecord1.value()));
+    }
+
+    @Test
+    public void test31() {
+        var result = kafka.poll(consumerRecords("TestDescription", "testTopic")
+                .criteria("description", c -> c.value().contains("29"))
+                .thenGetList("value from ConsumerRecords", DraftDto.class));
+
+        assertThat(result, hasSize(1));
+    }
+
+    @Test
+    public void test32() {
+        var result = kafka.poll(consumerRecords("TestDescription", "testTopic")
+                .criteria("description", c -> c.value().contains("29"))
+                .thenGetList("DraftDto-> name", DraftDto.class, DraftDto::getName));
+
+        assertThat(result.get(0), is("testName"));
+    }
+
+    @Test
+    public void test33() {
+        var result = kafka.poll(consumerRecords("TestDescription", "testTopic")
+                .criteria("description", c -> c.value().contains("29"))
+                .thenGetList("value from ConsumerRecords", new TypeReference<>() {
+                }, DraftDto::getName));
+
+        assertThat(result.get(0), is("testName"));
+    }
+
+    @Test
+    public void test34() {
+        var result = kafka.poll(consumerRecords("TestDescription", "testTopic")
+                .criteria("description", c -> c.value().contains("29"))
+                .thenGetList("value from ConsumerRecords", new TypeReference<DraftDto>() {
+                }));
+
+        assertThat(result, hasSize(1));
+    }
+
+    @Test
+    public void test35() {
+        var result = kafka.poll(consumerRecords("TestDescription", "testTopic")
+                .thenGetItem("value from ConsumerRecords", new TypeReference<DraftDto>() {
+                }));
+
+        assertThat(result.getName(), is("testName"));
+    }
+
+    @Test
+    public void test36() {
+        var result = kafka.poll(consumerRecords("TestDescription", "testTopic")
+                .thenGetItem("value from ConsumerRecords", DraftDto.class));
+
+        assertThat(result.getName(), is("testName"));
+    }
+
+    @Test
+    public void test37() {
+        var result = kafka.poll(consumerRecords("TestDescription", "testTopic")
+                .criteria("testDescription", c -> c.value().contains("Condition"))
+                .thenGetItem("value from ConsumerRecords", new TypeReference<DraftDto>() {
+                }));
+
+        assertThat(result.getName(), is("Condition"));
+    }
+
+    @Test
+    public void test38() {
+        var result = kafka.poll(consumerRecords("TestDescription", "testTopic")
+                .thenGetItem("value from ConsumerRecords", DraftDto.class, DraftDto::getName));
+
+        assertThat(result, is("testName"));
+    }
+
+    @Test
+    public void test39() {
+        var result = kafka.poll(consumerRecords("TestDescription", "testTopic")
+                .thenGetItem("value from ConsumerRecords", new TypeReference<>() {
+                }, DraftDto::getName));
+
+        assertThat(result, is("testName"));
+    }
+
+    @Test
+    public void test40() {
+        var result = kafka.poll(consumerRecords("TestDescription", "testTopic")
+                .thenGetItem("value from ConsumerRecords", ConsumerRecord::value));
+
+        assertThat(result, is("{\"name\":\"testName\", \"name1\":29, \"name2\": true}"));
+    }
+
+    @Test
+    public void test41() {
+        var result = kafka.poll(consumerRecords("TestDescription", "testTopic")
+                .thenGetItem("value from ConsumerRecords", DraftDto.class)
+                .withDataTransformer(new CustomMapper()));
+
+        assertThat(result, getterReturns("getName", "PREFIXCondition"));
+    }
+
+    @Test
+    public void test42() {
+        var result = kafka.poll(records("testTopic"));
+        assertThat(result, hasItems(consumerRecord1, consumerRecord2, consumerRecord3));
     }
 }

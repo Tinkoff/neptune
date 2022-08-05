@@ -5,7 +5,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.rabbit.mq.test.BaseRabbitMqTest;
+import ru.tinkoff.qa.neptune.rabbit.mq.BaseRabbitMqPreparations;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.CustomMapper;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.DefaultMapper;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.DraftDto;
@@ -22,7 +22,7 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.function.publish.RabbitMqPublishSu
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_EXCHANGE_NAME;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_ROUTING_KEY_NAME;
 
-public class PublishMessageTest extends BaseRabbitMqTest {
+public class PublishMessageTest extends BaseRabbitMqPreparations {
     byte[] bytesWithDefaultMapper;
     byte[] bytesWithCustomMapper;
 

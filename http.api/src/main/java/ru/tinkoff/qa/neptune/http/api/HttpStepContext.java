@@ -2,22 +2,19 @@ package ru.tinkoff.qa.neptune.http.api;
 
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
-import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.response.*;
 
-import java.net.HttpCookie;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.net.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.net.HttpCookie.parse;
-import static java.net.http.HttpResponse.BodyHandlers.discarding;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
@@ -25,45 +22,75 @@ import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCre
 import static ru.tinkoff.qa.neptune.http.api.cookies.AddHttpCookiesActionSupplier.addHttpCookies;
 import static ru.tinkoff.qa.neptune.http.api.cookies.DeleteHttpCookiesActionSupplier.deleteCookies;
 import static ru.tinkoff.qa.neptune.http.api.cookies.GetHttpCookiesSupplier.httpCookies;
+import static ru.tinkoff.qa.neptune.http.api.properties.authentification.DefaultHttpAuthenticatorProperty.DEFAULT_HTTP_AUTHENTICATOR_PROPERTY;
+import static ru.tinkoff.qa.neptune.http.api.properties.cookies.DefaultHttpCookieManagerProperty.DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY;
+import static ru.tinkoff.qa.neptune.http.api.properties.executor.DefaultHttpExecutorProperty.DEFAULT_HTTP_EXECUTOR_PROPERTY;
+import static ru.tinkoff.qa.neptune.http.api.properties.priority.DefaultHttpPriorityProperty.DEFAULT_HTTP_PRIORITY_PROPERTY;
+import static ru.tinkoff.qa.neptune.http.api.properties.protocol.version.DefaultHttpProtocolVersionProperty.DEFAULT_HTTP_PROTOCOL_VERSION_PROPERTY;
+import static ru.tinkoff.qa.neptune.http.api.properties.proxy.DefaultHttpProxySelectorProperty.DEFAULT_HTTP_PROXY_SELECTOR_PROPERTY;
+import static ru.tinkoff.qa.neptune.http.api.properties.redirect.DefaultHttpRedirectProperty.DEFAULT_HTTP_REDIRECT_PROPERTY;
+import static ru.tinkoff.qa.neptune.http.api.properties.ssl.DefaultHttpSslContextProperty.DEFAULT_HTTP_SSL_CONTEXT_PROPERTY;
+import static ru.tinkoff.qa.neptune.http.api.properties.ssl.DefaultHttpSslParametersProperty.DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY;
+import static ru.tinkoff.qa.neptune.http.api.properties.time.DefaultConnectTimeOutProperty.DEFAULT_CONNECT_TIME_OUT_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplier.response;
 
-@CreateWith(provider = HttpStepsParameterProvider.class)
 public class HttpStepContext extends Context<HttpStepContext> {
 
-    private final HttpClient client;
-
-    public HttpStepContext(HttpClient.Builder clientBuilder) {
-        this.client = clientBuilder.build();
-    }
+    private CookieStore cookieStore = new CookieManager().getCookieStore();
 
     public static HttpStepContext http() {
         return getCreatedContextOrCreate(HttpStepContext.class);
     }
 
+    CookieStore getCookieStore() {
+        return cookieStore;
+    }
+
     public HttpClient getCurrentClient() {
+        final var builder = HttpClient.newBuilder();
+        ofNullable(DEFAULT_CONNECT_TIME_OUT_PROPERTY.get())
+            .ifPresent(builder::connectTimeout);
+
+        ofNullable(DEFAULT_HTTP_AUTHENTICATOR_PROPERTY.get()).ifPresent(builder::authenticator);
+
+        var cookieManager = ofNullable(DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY.get())
+            .orElseGet(CookieManager::new);
+
+        var allCookies = new ArrayList<>(cookieStore.getCookies());
+        var uris = cookieStore.getURIs();
+        var newStore = cookieManager.getCookieStore();
+
+        uris.forEach(uri -> {
+            var indexedCookies = cookieStore.get(uri);
+            indexedCookies.forEach(c -> newStore.add(uri, c));
+            allCookies.removeAll(indexedCookies);
+        });
+
+        allCookies.forEach(c -> newStore.add(null, c));
+        builder.cookieHandler(cookieManager);
+
+        ofNullable(DEFAULT_HTTP_EXECUTOR_PROPERTY.get()).ifPresent(builder::executor);
+        ofNullable(DEFAULT_HTTP_PROTOCOL_VERSION_PROPERTY.get()).ifPresent(builder::version);
+        ofNullable(DEFAULT_HTTP_PRIORITY_PROPERTY.get()).ifPresent(builder::priority);
+        ofNullable(DEFAULT_HTTP_PROXY_SELECTOR_PROPERTY.get()).ifPresent(builder::proxy);
+        ofNullable(DEFAULT_HTTP_REDIRECT_PROPERTY.get()).ifPresent(builder::followRedirects);
+        ofNullable(DEFAULT_HTTP_SSL_CONTEXT_PROPERTY.get()).ifPresent(builder::sslContext);
+        ofNullable(DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY.get()).ifPresent(builder::sslParameters);
+
+        var client = builder.build();
+        this.cookieStore = newStore;
         return client;
     }
 
     /**
-     * Sends http request and receives a response with body
+     * Sends http request and receives a response
      *
      * @param requestBuilder is a builder of http request
-     * @param bodyHandler    is a handler of a response body
      * @param <T>            is a type of response body
      * @return an instance of {@link HttpResponse}
      */
-    public <T> HttpResponse<T> responseOf(RequestBuilder requestBuilder, HttpResponse.BodyHandler<T> bodyHandler) {
-        return get(response(requestBuilder, bodyHandler));
-    }
-
-    /**
-     * Sends http request and receives a response with no body
-     *
-     * @param requestBuilder is a builder of http request
-     * @return an instance of {@link HttpResponse}
-     */
-    public HttpResponse<Void> responseOf(RequestBuilder requestBuilder) {
-        return responseOf(requestBuilder, discarding());
+    public <T> HttpResponse<T> responseOf(RequestBuilder<T> requestBuilder) {
+        return get(response(requestBuilder, t -> t));
     }
 
     /**
@@ -74,10 +101,9 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @param <R>    is a type of an object to get
      * @return an instance of {@code <R>}
      */
-    public <T, R> R bodyData(GetObjectFromBodyStepSupplier<T, R, ?, ?> object) {
+    public <T, R> R responseOf(GetObjectFromBodyStepSupplier<T, R> object) {
         return get(object);
     }
-
 
     /**
      * Extracts some object from http response body. Firstly it extracts an array of same type as
@@ -85,10 +111,10 @@ public class HttpStepContext extends Context<HttpStepContext> {
      *
      * @param oneOfArray is description how to get an array from a body of http response
      * @param <T>        is a type of response body
-     * @param <R>        is a type of an item of array which is extracted from a body of http response
+     * @param <R>        is a type of item of array which is extracted from a body of http response
      * @return an instance of {@code <R>}
      */
-    public <T, R> R bodyData(GetObjectFromArrayBodyStepSupplier<T, R, ?, ?> oneOfArray) {
+    public <T, R> R responseOf(GetObjectFromArrayBodyStepSupplier<T, R> oneOfArray) {
         return get(oneOfArray);
     }
 
@@ -98,10 +124,10 @@ public class HttpStepContext extends Context<HttpStepContext> {
      *
      * @param oneOfIterable is description how to get an {@link Iterable} from a body of http response
      * @param <T>           is a type of response body
-     * @param <R>           is a type of an element of {@link Iterable} which is extracted from a body of http response
+     * @param <R>           is a type of element of {@link Iterable} which is extracted from a body of http response
      * @return an instance of {@code <R>}
      */
-    public <T, R> R bodyData(GetObjectFromIterableBodyStepSupplier<T, R, ?, ?> oneOfIterable) {
+    public <T, R> R responseOf(GetObjectFromIterableBodyStepSupplier<T, R> oneOfIterable) {
         return get(oneOfIterable);
     }
 
@@ -111,25 +137,34 @@ public class HttpStepContext extends Context<HttpStepContext> {
      *
      * @param array is description how to get an array from a body of http response
      * @param <T>   is a type of response body
-     * @param <R>   is a type of an item of array which is extracted from a body of http response
+     * @param <R>   is a type of item of array which is extracted from a body of http response
      * @return an array of {@code <R>}
      */
-    public <T, R> R[] bodyData(GetObjectsFromArrayBodyStepSupplier<T, R, ?, ?> array) {
+    public <T, R> R[] responseOf(GetObjectsFromArrayBodyStepSupplier<T, R> array) {
         return get(array);
     }
 
     /**
-     * Extracts some {@link Iterable} from http response body. Firstly it extracts an iterable
-     * and then it returns resulted object or sub iterable.
+     * Extracts some {@link Iterable} from http response body. Firstly it extracts an iterable,
+     * and then it returns resulted object or sub iterable as a list.
      *
      * @param iterable is description how to get an {@link Iterable} from a body of http response
      * @param <T>      is a type of response body
-     * @param <R>      is a type of an element of {@link Iterable} which is extracted from a body of http response
+     * @param <R>      is a type of element of {@link Iterable} which is extracted from a body of http response
      * @param <S>      is a type of {@link Iterable}
      * @return an instance of {@code <S>}
      */
-    public <T, R, S extends Iterable<R>> List<R> bodyData(GetObjectsFromIterableBodyStepSupplier<T, R, S, ?, ?> iterable) {
+    public <T, R, S extends Iterable<R>> List<R> responseOf(GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
         return get(iterable);
+    }
+
+    private static URI toURI(URL url) {
+        checkNotNull(url);
+        try {
+            return url.toURI();
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     /**
@@ -180,11 +215,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      */
     @SafeVarargs
     public final List<HttpCookie> getCookies(URL url, Criteria<HttpCookie>... cookieCriteria) {
-        try {
-            return getCookies(url.toURI(), cookieCriteria);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        return getCookies(toURI(url), cookieCriteria);
     }
 
     /**
@@ -219,11 +250,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return self-reference
      */
     public HttpStepContext addCookies(URL url, List<HttpCookie> cookies) {
-        try {
-            return addCookies(url.toURI(), cookies);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        return addCookies(toURI(url), cookies);
     }
 
     /**
@@ -268,11 +295,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return self-reference
      */
     public HttpStepContext addCookies(URL url, HttpCookie... cookies) {
-        try {
-            return addCookies(url.toURI(), cookies);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        return addCookies(toURI(url), cookies);
     }
 
     /**
@@ -326,11 +349,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return self-reference
      */
     public HttpStepContext addCookies(URL url, String header) {
-        try {
-            return addCookies(url.toURI(), parse(header));
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        return addCookies(toURI(url), parse(header));
     }
 
     /**

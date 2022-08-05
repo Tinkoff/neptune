@@ -1,13 +1,12 @@
 package ru.tinkoff.qa.neptune.http.api.cookies;
 
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 
-import java.net.CookieManager;
 import java.net.CookieStore;
 import java.net.HttpCookie;
 import java.net.URI;
@@ -18,27 +17,19 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
+import static ru.tinkoff.qa.neptune.http.api.GetCurrentCookieStore.getCurrentCookieStore;
 
 /**
  * This class is designed to build an action that removes cookies from a "cookie jar".
  */
 @Description("Delete http cookies")
 public abstract class DeleteHttpCookiesActionSupplier<R, S extends DeleteHttpCookiesActionSupplier<R, S>>
-        extends SequentialActionSupplier<HttpStepContext, R, S> {
-
-    CookieStore cookieStore;
+    extends SequentialActionSupplier<HttpStepContext, CookieStore, S> {
 
     private DeleteHttpCookiesActionSupplier() {
         super();
-    }
-
-    @Override
-    protected void onStart(HttpStepContext httpStepContext) {
-        cookieStore = httpStepContext
-                .getCurrentClient()
-                .cookieHandler()
-                .map(cookieHandler -> ((CookieManager) cookieHandler).getCookieStore())
-                .orElseThrow(() -> new IllegalStateException("There is no cookie manager"));
+        performOn(getCurrentCookieStore());
     }
 
     /**
@@ -78,55 +69,67 @@ public abstract class DeleteHttpCookiesActionSupplier<R, S extends DeleteHttpCoo
     @Description("Delete all http cookies")
     private static final class DeleteAllHttpCookies extends DeleteHttpCookiesActionSupplier<HttpStepContext, DeleteAllHttpCookies> {
 
-        private DeleteAllHttpCookies() {
-            super();
-            performOn(httpStepContext -> httpStepContext);
-        }
-
         @Override
-        protected void howToPerform(HttpStepContext value) {
-            cookieStore.removeAll();
+        protected void howToPerform(CookieStore value) {
+            value.removeAll();
         }
     }
 
 
     @MaxDepthOfReporting(0)
-    @DefinePerformOnParameterName("Http cookies to delete")
     private static final class DeleteDefinedHttpCookies extends DeleteHttpCookiesActionSupplier<Collection<HttpCookie>, DeleteDefinedHttpCookies> {
+
+        @StepParameter("Http cookies to delete")
+        private final Collection<HttpCookie> toDelete;
 
         private DeleteDefinedHttpCookies(Collection<HttpCookie> toDelete) {
             super();
             checkArgument(nonNull(toDelete) && !toDelete.isEmpty(),
-                    "Should be defined at least one cookie");
-            performOn(toDelete);
+                "Should be defined at least one cookie");
+            this.toDelete = toDelete;
         }
 
         @Override
-        protected void howToPerform(Collection<HttpCookie> value) {
-            value.forEach(httpCookie -> cookieStore.remove(null, httpCookie));
+        protected void howToPerform(CookieStore value) {
+            toDelete.forEach(httpCookie -> value.remove(null, httpCookie));
         }
     }
 
     @MaxDepthOfReporting(0)
-    @IncludeParamsOfInnerGetterStep
     private static final class DeleteFoundHttpCookies extends DeleteHttpCookiesActionSupplier<List<HttpCookie>, DeleteFoundHttpCookies> {
+
+        @StepParameter("Http cookies to delete")
+        private final List<Criteria<HttpCookie>> criteria;
+        @StepParameter(value = "Associated with URI", doNotReportNullValues = true)
+        private final URI uri;
+        private List<HttpCookie> toDelete;
 
         @SafeVarargs
         private DeleteFoundHttpCookies(URI uri, Criteria<HttpCookie>... toBeRemoved) {
             super();
-            checkArgument(nonNull(toBeRemoved) && toBeRemoved.length > 0,
-                    "It is necessary to define at least one criteria to find http cookies for removal");
+            checkArgument(nonNull(toBeRemoved), "Criteria should not be null");
+            criteria = stream(toBeRemoved).collect(toList());
+            this.uri = uri;
 
             var getCookies = ofNullable(uri)
-                    .map(GetHttpCookiesSupplier::httpCookies)
-                    .orElseGet(GetHttpCookiesSupplier::httpCookies);
+                .map(GetHttpCookiesSupplier::httpCookies)
+                .orElseGet(GetHttpCookiesSupplier::httpCookies);
             stream(toBeRemoved).forEach(getCookies::criteria);
-            performOn(getCookies);
         }
 
         @Override
-        protected void howToPerform(List<HttpCookie> value) {
-            value.forEach(httpCookie -> cookieStore.remove(null, httpCookie));
+        @SuppressWarnings("unchecked")
+        protected void onStart(HttpStepContext httpStepContext) {
+            toDelete = ofNullable(uri)
+                .map(uriParam -> httpStepContext.getCookies(uriParam, criteria.toArray(Criteria[]::new)))
+                .orElseGet(() -> httpStepContext.getCookies(criteria.toArray(Criteria[]::new)));
+
+            super.onStart(httpStepContext);
+        }
+
+        @Override
+        protected void howToPerform(CookieStore value) {
+            toDelete.forEach(httpCookie -> value.remove(null, httpCookie));
         }
     }
 }

@@ -1,8 +1,8 @@
 package ru.tinkoff.qa.neptune.selenium.test.steps.tests.click;
 
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.selenium.BaseWebDriverPreparations;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -11,7 +11,7 @@ import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 
-public class ClickTest extends BaseWebDriverTest {
+public class ClickTest extends BaseWebDriverPreparations {
 
     @Test
     public void test1() {

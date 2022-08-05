@@ -47,7 +47,7 @@ Temporary Items
 .apdisk
 .idea
 build/
-toy.constructor.iml
+*/*.iml
 .gradle
 */out/*
 */*.log
@@ -59,3 +59,10 @@ allure-results/*
 */neptune.properties
 */neptune.global.properties
 /neptune.global.properties
+/neptune.documentation/
+
+*/venv
+*/bin
+*/lib
+*/*.cfg
+/site.documentation/site

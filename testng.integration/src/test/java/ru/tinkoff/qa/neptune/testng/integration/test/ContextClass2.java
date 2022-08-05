@@ -2,18 +2,16 @@ package ru.tinkoff.qa.neptune.testng.integration.test;
 
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
-import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 
-@CreateWith(provider = ABParameterProvider.class)
-public class ContextClass2 extends Context implements ContextRefreshable {
+public class ContextClass2 extends Context<ContextClass2> implements ContextRefreshable {
 
     private final int a;
     private final int b;
     private static int refreshCount;
 
-    public ContextClass2(int a, int b) {
-        this.a = a;
-        this.b = b;
+    public ContextClass2() {
+        this.a = 1;
+        this.b = 2;
     }
 
     int getA() {

@@ -17,20 +17,20 @@ import static java.util.Optional.ofNullable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.*;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.*;
 
 public class RawRequestBuildingTest {
 
     @DataProvider
     public static Object[][] data() {
         return new Object[][]{
-                {POST("https://www.google.com/"), "POST", nullValue()},
-                {POST("https://www.google.com/", "Some body"), "POST", equalTo("Some body")},
-                {GET("https://www.google.com/"), "GET", nullValue()},
-                {DELETE("https://www.google.com/"), "DELETE", nullValue()},
-                {PUT("https://www.google.com/"), "PUT", nullValue()},
-                {PUT("https://www.google.com/", "Some body"), "PUT", equalTo("Some body")},
-                {METHOD("CUSTOM_METHOD", "https://www.google.com/", "Some body"), "CUSTOM_METHOD", equalTo("Some body")},
+                {POST().baseURI("https://www.google.com/"), "POST", nullValue()},
+                {POST("Some body").baseURI("https://www.google.com/"), "POST", equalTo("Some body")},
+                {GET().baseURI("https://www.google.com/"), "GET", nullValue()},
+                {DELETE().baseURI("https://www.google.com/"), "DELETE", nullValue()},
+                {PUT().baseURI("https://www.google.com/"), "PUT", nullValue()},
+                {PUT("Some body").baseURI("https://www.google.com/"), "PUT", equalTo("Some body")},
+                {METHOD("CUSTOM_METHOD", "Some body").baseURI("https://www.google.com/"), "CUSTOM_METHOD", equalTo("Some body")},
         };
     }
 
@@ -65,7 +65,7 @@ public class RawRequestBuildingTest {
 
     @Test
     public void test2() throws Exception {
-        var request = METHOD("Some_method", new URL("https://www.google.com/"))
+        var request = METHOD("Some_method").baseURI(new URL("https://www.google.com/"))
                 .tuneWith(new RequestTuner1(), new RequestTuner2())
                 .build();
 
@@ -82,7 +82,8 @@ public class RawRequestBuildingTest {
 
     @Test
     public void test3() {
-        var request = PUT("https://www.google.com/")
+        var request = PUT()
+                .baseURI("https://www.google.com/")
                 .tuneWith(RequestTuner1.class, RequestTuner1.class, RequestTuner2.class)
                 .build();
 

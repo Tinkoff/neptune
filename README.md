@@ -1,6 +1,7 @@
 # Neptune
 
-[![Neptune-master Status](https://github.com/Tinkoff/neptune/workflows/gradle-ci/badge.svg)](https://github.com/TinkoffCreditSystems/neptune/actions)
+
+.[![Neptune-master Status](https://github.com/Tinkoff/neptune/workflows/gradle-ci/badge.svg)](https://github.com/tinkoff/neptune/actions)
 
 [![License][license-badge]][license-link]
 
@@ -37,41 +38,14 @@
 
 [![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=neptune)](https://sonarcloud.io/summary/new_code?id=neptune)
 
-Test automation framework for automation of E2E/system/integrating testing.
+It is the E2E/system/integrating testing tool designed for Java developers and QA
 
-It is under the ALPHA testing by developers/QA engineers of [Tinkoff.ru](https://www.tinkoff.ru/software/) for a while. Built jar are not available outside. For now source code and documentation is available for overview.
+It is under the ALPHA testing by [Tinkoff.ru](https://www.tinkoff.ru/software/) for a while. Built jar are not public yet. Source code and documentation are available for overview.
 
-Module documentation:
-
-- [Core module](core.api/README.md)
-- [Integration of Neptune with Hamcrest matchers](check/README.md)
-- [Integration of Neptune with Allure test reporting framework](allure.integration/README.md)
-- [Integration of Neptune native http client of Java (since v11)](http.api/README.md)
-- [Integration of Neptune with Swagger 3.x](neptune.swagger.codegen/README.md)
-- [Integration of Neptune with Retrofit2](retrofit2/README.md)
-- [Integration of Neptune with Rabbit MQ](rabbit.mq/README.MD)  
-- [Integration of Neptune with Kafka](kafka/README.md)
-- [Integration of Neptune with Selenium WebDriver API](selenium/README.md)
-- [Neptune Database abstractions](database.abstractions/README.md)
-
-For Spring projects:
-- [Integration of Neptune with Spring MockMvc](spring.mock.mvc/README.md)
-- [Integration of Neptune with Spring WebTestClient](spring.web.testclient/README.md)
-- [Integration of Neptune with Spring Data](spring.data/README.md)
-- [Additional Auto-Configuration Spring Boot Module](neptune-spring-boot-starter/README.md)
-
-For test runners:
-- [Integration of Neptune with TestNG framework](testng.integration/README.md)
-- [Neptune + Testng + Allure](allure.testng.bridge/README.md)
-- [Integration of Neptune with JUnit5](jupiter.integration/README.md)
-- [Neptune + JUnit5 + Allure](allure.jupiter.bridge/README.md)
+First public BETA-versions are coming soon
 
 [Overview of all packages](https://tinkoff.github.io/neptune/overview-summary.html)
 
 [Issues to be fixed/Requred features](https://github.com/Tinkoff/neptune/issues)
 
 [Change list](https://github.com/Tinkoff/neptune/releases)
-
-Owners: [@TikhomirovSergey](https://github.com/TikhomirovSergey), [@ArisAgnew](https://github.com/ArisAgnew), [@AndrewCharykov](https://github.com/AndrewCharykov), [@Burnouttt](https://github.com/Burnouttt)
-
-First public BETA-versions are coming soon

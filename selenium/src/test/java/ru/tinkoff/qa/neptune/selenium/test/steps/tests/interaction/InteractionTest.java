@@ -9,9 +9,9 @@ import org.openqa.selenium.interactions.Sequence;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.selenium.BaseWebDriverPreparations;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ import static ru.tinkoff.qa.neptune.selenium.test.SequenceSpy.getActions;
 import static ru.tinkoff.qa.neptune.selenium.test.SequenceSpy.setActions;
 
 @SuppressWarnings("unchecked")
-public class InteractionTest extends BaseWebDriverTest {
+public class InteractionTest extends BaseWebDriverPreparations {
 
     public static <T, V> Matcher<Map<T, V>> hasAllEntries(Map<Object, Object> entries) {
         List<Matcher<? super Map<T, V>>> matchers = new ArrayList<>(entries.size());

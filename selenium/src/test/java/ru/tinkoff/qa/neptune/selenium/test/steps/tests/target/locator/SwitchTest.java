@@ -1,10 +1,10 @@
 package ru.tinkoff.qa.neptune.selenium.test.steps.tests.target.locator;
 
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.selenium.BaseWebDriverPreparations;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.Frame;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 import ru.tinkoff.qa.neptune.selenium.test.ActiveWebElement;
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import ru.tinkoff.qa.neptune.selenium.test.MockWebDriver;
 import ru.tinkoff.qa.neptune.selenium.test.enums.FrameIndexes;
 import ru.tinkoff.qa.neptune.selenium.test.enums.FrameNames;
@@ -27,7 +27,7 @@ import static ru.tinkoff.qa.neptune.selenium.test.MockAlert.setSwitchedTo;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles.HANDLE2;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles.HANDLE3;
 
-public class SwitchTest extends BaseWebDriverTest {
+public class SwitchTest extends BaseWebDriverPreparations {
 
     private static <T extends Enum<?>> T getRandomEnumItem(T[] elements) {
         return elements[new Random().nextInt(elements.length)];

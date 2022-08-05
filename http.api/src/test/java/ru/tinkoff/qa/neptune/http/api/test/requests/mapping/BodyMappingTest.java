@@ -413,7 +413,7 @@ public class BodyMappingTest {
 
 
     @Test(dataProvider = "data1")
-    public void test1(RequestBuilder builder, String method) {
+    public void test1(RequestBuilder<?> builder, String method) {
         var r = builder.build();
         assertThat(r.method(), is(method));
 
@@ -423,7 +423,7 @@ public class BodyMappingTest {
     }
 
     @Test(dataProvider = "data2")
-    public void test2(RequestBuilder builder, Class<?> bodyClass) {
+    public void test2(RequestBuilder<?> builder, Class<?> bodyClass) {
         var r = builder.build();
 
         var body = ((NeptuneHttpRequestImpl) r).body();
@@ -431,7 +431,7 @@ public class BodyMappingTest {
     }
 
     @Test(dataProvider = "data3")
-    public void test3(RequestBuilder builder, Class<?> bodyClass, String body) {
+    public void test3(RequestBuilder<?> builder, Class<?> bodyClass, String body) {
         var r = builder.build();
 
         var rBody = ((NeptuneHttpRequestImpl) r).body();
@@ -559,164 +559,164 @@ public class BodyMappingTest {
     private interface BodyMapping extends HttpAPI<BodyMapping> {
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postSomeBody(@Body(isRequired = false) String body);
+        RequestBuilder<?> postSomeBody(@Body(isRequired = false) String body);
 
         @HttpMethod(httpMethod = GET)
-        RequestBuilder getSomeBody(@Body String body);
+        RequestBuilder<?> getSomeBody(@Body String body);
 
         @HttpMethod(httpMethod = PUT)
-        RequestBuilder putSomeBody(@Body String body);
+        RequestBuilder<?> putSomeBody(@Body String body);
 
         @HttpMethod(httpMethod = DELETE)
-        RequestBuilder deleteBody(@Body String body);
+        RequestBuilder<?> deleteBody(@Body String body);
 
         @HttpMethod(httpMethod = PATCH)
-        RequestBuilder patchSomeBody(@Body String body);
+        RequestBuilder<?> patchSomeBody(@Body String body);
 
         @HttpMethod(httpMethod = HEAD)
-        RequestBuilder headSomeBody(@Body String body);
+        RequestBuilder<?> headSomeBody(@Body String body);
 
         @HttpMethod(httpMethod = OPTIONS)
-        RequestBuilder optionsSomeBody(@Body String body);
+        RequestBuilder<?> optionsSomeBody(@Body String body);
 
         @HttpMethod(httpMethod = TRACE)
-        RequestBuilder traceSomeBody(@Body String body);
+        RequestBuilder<?> traceSomeBody(@Body String body);
 
         @HttpMethod(httpMethodStr = "CUSTOM_METHOD")
-        RequestBuilder customSomeBody(@Body String body);
+        RequestBuilder<?> customSomeBody(@Body String body);
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postByteBody(@Body byte[] body);
+        RequestBuilder<?> postByteBody(@Body byte[] body);
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postFileBody(@Body File body);
+        RequestBuilder<?> postFileBody(@Body File body);
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postFileBody(@Body Path body);
+        RequestBuilder<?> postFileBody(@Body Path body);
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postForm(@Body FormParameter... body);
+        RequestBuilder<?> postForm(@Body FormParameter... body);
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postForm(@Body FormParameter body);
+        RequestBuilder<?> postForm(@Body FormParameter body);
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postForm(@Body List<FormParameter> body);
+        RequestBuilder<?> postForm(@Body List<FormParameter> body);
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postStream(@Body InputStream body);
+        RequestBuilder<?> postStream(@Body InputStream body);
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postSupplier(@Body Supplier<InputStream> body);
+        RequestBuilder<?> postSupplier(@Body Supplier<InputStream> body);
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postJson(@Body @BodyParamFormat(format = JSON) MappedObject body);
+        RequestBuilder<?> postJson(@Body @BodyParamFormat(format = JSON) MappedObject body);
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postXml(@Body @BodyParamFormat(format = XML) MappedObject body);
+        RequestBuilder<?> postXml(@Body @BodyParamFormat(format = XML) MappedObject body);
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postBoolean(@Body Boolean body);
+        RequestBuilder<?> postBoolean(@Body Boolean body);
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postListJson(@Body @BodyParamFormat(format = JSON) List<Object> body);
+        RequestBuilder<?> postListJson(@Body @BodyParamFormat(format = JSON) List<Object> body);
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postXmlMap(@Body @BodyParamFormat(format = XML, mixIns = MapRootElementMixIn.class) Map<?, ?> body);
+        RequestBuilder<?> postXmlMap(@Body @BodyParamFormat(format = XML, mixIns = MapRootElementMixIn.class) Map<?, ?> body);
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postXmlArray(@Body @BodyParamFormat(format = XML, mixIns = ArrayMixIn.class) Object... body);
-
-
-        @HttpMethod(httpMethod = POST)
-        RequestBuilder postForm2(@URLEncodedParameter(name = "form_object_param1") Object param1,
-                                 @URLEncodedParameter(name = "form_int_param2") int param2,
-                                 @URLEncodedParameter(name = "form_bool_param3") boolean param3);
+        RequestBuilder<?> postXmlArray(@Body @BodyParamFormat(format = XML, mixIns = ArrayMixIn.class) Object... body);
 
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postForm2_1(@URLEncodedParameter(name = "form_object_param1")
-                                   @FormParam(allowReserved = true) Object param1,
-                                   @URLEncodedParameter(name = "form_int_param2") int param2,
-                                   @URLEncodedParameter(name = "form_bool_param3") boolean param3);
+        RequestBuilder<?> postForm2(@URLEncodedParameter(name = "form_object_param1") Object param1,
+                                    @URLEncodedParameter(name = "form_int_param2") int param2,
+                                    @URLEncodedParameter(name = "form_bool_param3") boolean param3);
 
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postForm2_2(@URLEncodedParameter(name = "form_object_param1")
-                                   @FormParam(explode = false) Object param1,
-                                   @URLEncodedParameter(name = "form_int_param2") int param2,
-                                   @URLEncodedParameter(name = "form_bool_param3") boolean param3);
+        RequestBuilder<?> postForm2_1(@URLEncodedParameter(name = "form_object_param1")
+                                      @FormParam(allowReserved = true) Object param1,
+                                      @URLEncodedParameter(name = "form_int_param2") int param2,
+                                      @URLEncodedParameter(name = "form_bool_param3") boolean param3);
 
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postForm2_3(@URLEncodedParameter(name = "form_object_param1")
-                                   @FormParam(explode = false, allowReserved = true) Object param1,
-                                   @URLEncodedParameter(name = "form_int_param2") int param2,
-                                   @URLEncodedParameter(name = "form_bool_param3") boolean param3);
+        RequestBuilder<?> postForm2_2(@URLEncodedParameter(name = "form_object_param1")
+                                      @FormParam(explode = false) Object param1,
+                                      @URLEncodedParameter(name = "form_int_param2") int param2,
+                                      @URLEncodedParameter(name = "form_bool_param3") boolean param3);
 
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postForm3(@URLEncodedParameter(name = "form_array_param1")
-                                 @FormParam(style = SPACE_DELIMITED, explode = false) Object[] param1,
-                                 @URLEncodedParameter(name = "form_int_param2") int param2,
-                                 @URLEncodedParameter(name = "form_bool_param3") boolean param3);
+        RequestBuilder<?> postForm2_3(@URLEncodedParameter(name = "form_object_param1")
+                                      @FormParam(explode = false, allowReserved = true) Object param1,
+                                      @URLEncodedParameter(name = "form_int_param2") int param2,
+                                      @URLEncodedParameter(name = "form_bool_param3") boolean param3);
 
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postForm3_1(@URLEncodedParameter(name = "form_array_param1")
-                                   @FormParam(style = SPACE_DELIMITED, explode = false, allowReserved = true) Object[] param1,
-                                   @URLEncodedParameter(name = "form_int_param2") int param2,
-                                   @URLEncodedParameter(name = "form_bool_param3") boolean param3);
+        RequestBuilder<?> postForm3(@URLEncodedParameter(name = "form_array_param1")
+                                    @FormParam(style = SPACE_DELIMITED, explode = false) Object[] param1,
+                                    @URLEncodedParameter(name = "form_int_param2") int param2,
+                                    @URLEncodedParameter(name = "form_bool_param3") boolean param3);
 
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postForm4(@URLEncodedParameter(name = "form_array_param1")
-                                 @FormParam(style = PIPE_DELIMITED, explode = false) Object[] param1,
-                                 @URLEncodedParameter(name = "form_int_param2") int param2,
-                                 @URLEncodedParameter(name = "form_bool_param3") boolean param3);
+        RequestBuilder<?> postForm3_1(@URLEncodedParameter(name = "form_array_param1")
+                                      @FormParam(style = SPACE_DELIMITED, explode = false, allowReserved = true) Object[] param1,
+                                      @URLEncodedParameter(name = "form_int_param2") int param2,
+                                      @URLEncodedParameter(name = "form_bool_param3") boolean param3);
 
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postForm4_1(@URLEncodedParameter(name = "form_array_param1")
-                                   @FormParam(style = PIPE_DELIMITED, explode = false, allowReserved = true) Object[] param1,
-                                   @URLEncodedParameter(name = "form_int_param2") int param2,
-                                   @URLEncodedParameter(name = "form_bool_param3") boolean param3);
-
-        @HttpMethod(httpMethod = POST)
-        RequestBuilder postForm5_1(@URLEncodedParameter(name = "form_object_param1")
-                                   @BodyParamFormat(format = JSON) Object param1,
-                                   @URLEncodedParameter(name = "form_int_param2") int param2,
-                                   @URLEncodedParameter(name = "form_bool_param3") boolean param3);
-
-        @HttpMethod(httpMethod = POST)
-        RequestBuilder postForm5_2(@URLEncodedParameter(name = "form_object_param1", isRequired = false)
-                                   @BodyParamFormat(format = XML, mixIns = MapRootElementMixIn.class) Object param1,
-                                   @URLEncodedParameter(name = "form_int_param2") int param2,
-                                   @URLEncodedParameter(name = "form_bool_param3") boolean param3);
+        RequestBuilder<?> postForm4(@URLEncodedParameter(name = "form_array_param1")
+                                    @FormParam(style = PIPE_DELIMITED, explode = false) Object[] param1,
+                                    @URLEncodedParameter(name = "form_int_param2") int param2,
+                                    @URLEncodedParameter(name = "form_bool_param3") boolean param3);
 
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postMultipart(@MultiPartBody(name = "test_file", contentTransferEncoding = BINARY) File file,
-                                     @MultiPartBody(name = "test_xml")
-                                     @BodyParamFormat(format = XML, mixIns = ArrayMixIn.class)
-                                     @DefineContentType(contentType = "application/xml") Object[] array,
+        RequestBuilder<?> postForm4_1(@URLEncodedParameter(name = "form_array_param1")
+                                      @FormParam(style = PIPE_DELIMITED, explode = false, allowReserved = true) Object[] param1,
+                                      @URLEncodedParameter(name = "form_int_param2") int param2,
+                                      @URLEncodedParameter(name = "form_bool_param3") boolean param3);
 
-                                     @MultiPartBody(name = "test_file2")
-                                     @DefineFileName(useGivenFileName = true) Path path,
+        @HttpMethod(httpMethod = POST)
+        RequestBuilder<?> postForm5_1(@URLEncodedParameter(name = "form_object_param1")
+                                      @BodyParamFormat(format = JSON) Object param1,
+                                      @URLEncodedParameter(name = "form_int_param2") int param2,
+                                      @URLEncodedParameter(name = "form_bool_param3") boolean param3);
 
-                                     @MultiPartBody(name = "test_binary")
-                                     @DefineFileName
-                                     @DefineContentType byte[] binary,
+        @HttpMethod(httpMethod = POST)
+        RequestBuilder<?> postForm5_2(@URLEncodedParameter(name = "form_object_param1", isRequired = false)
+                                      @BodyParamFormat(format = XML, mixIns = MapRootElementMixIn.class) Object param1,
+                                      @URLEncodedParameter(name = "form_int_param2") int param2,
+                                      @URLEncodedParameter(name = "form_bool_param3") boolean param3);
 
-                                     @MultiPartBody(name = "test_file3")
-                                     @DefineContentType Path path2,
 
-                                     @MultiPartBody(name = "test_binary2")
-                                     @DefineFileName(fileName = "tezzt_file")
-                                     @DefineContentType byte[] binary2,
+        @HttpMethod(httpMethod = POST)
+        RequestBuilder<?> postMultipart(@MultiPartBody(name = "test_file", contentTransferEncoding = BINARY) File file,
+                                        @MultiPartBody(name = "test_xml")
+                                        @BodyParamFormat(format = XML, mixIns = ArrayMixIn.class)
+                                        @DefineContentType(contentType = "application/xml") Object[] array,
 
-                                     @MultiPartBody(name = "test_file4", isRequired = false)
-                                     @DefineFileName(fileName = "tezzt_file") Path path3);
+                                        @MultiPartBody(name = "test_file2")
+                                        @DefineFileName(useGivenFileName = true) Path path,
+
+                                        @MultiPartBody(name = "test_binary")
+                                        @DefineFileName
+                                        @DefineContentType byte[] binary,
+
+                                        @MultiPartBody(name = "test_file3")
+                                        @DefineContentType Path path2,
+
+                                        @MultiPartBody(name = "test_binary2")
+                                        @DefineFileName(fileName = "tezzt_file")
+                                        @DefineContentType byte[] binary2,
+
+                                        @MultiPartBody(name = "test_file4", isRequired = false)
+                                        @DefineFileName(fileName = "tezzt_file") Path path3);
     }
 
     @JsonPropertyOrder({"someNumber", "someString", "someArray", "nested", "nestedNext"})

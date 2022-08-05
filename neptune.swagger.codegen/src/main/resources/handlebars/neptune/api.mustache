@@ -38,7 +38,7 @@ public interface {{classname}} extends HttpAPI<{{classname}}> {
     @URIPath(value = "{{{path}}}") {{#contentType}}
     @Header(name = "Content-Type", headerValues = "{{{contentType}}}"){{/contentType}}{{#isDeprecated}}
     @Deprecated(forRemoval = true){{/isDeprecated}}
-    RequestBuilder {{operationId}}(
+    RequestBuilder<?> {{operationId}}(
 {{#parameters}}{{>queryParams}}{{>pathParams}}{{>headerParams}}{{>bodyParams}}{{>formParams}}{{/parameters}}
     );
 

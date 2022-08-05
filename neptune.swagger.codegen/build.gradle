@@ -23,7 +23,7 @@ publishing {
                 packaging = 'jar'
                 name = 'neptune.swagger.codegen'
                 version = version
-                url = 'https://github.com/TinkoffCreditSystems/neptune'
+                url = 'https://github.com/tinkoff/neptune'
                 licenses {
                     license {
                         name = 'Apache License, Version 2.0'
@@ -39,9 +39,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
-                    developerConnection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
-                    url = 'https://github.com/TinkoffCreditSystems/neptune'
+                    connection = 'scm:git:ssh://git@github.com:tinkoff/neptune.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:tinkoff/neptune.git'
+                    url = 'https://github.com/tinkoff/neptune'
                 }
             }
         }
@@ -49,11 +49,11 @@ publishing {
 }
 
 javadoc {
-    destinationDir = file("${buildDir}/../../../neptune.documentation/javadocs/$project.name")
+    destinationDir = file("${buildDir}/../../neptune.documentation/$project.name")
 
     title = "Neptune Swagger integration API. v$globalVersion"
     options.author true
-    options.links 'http://download.oracle.com/javase/9/docs/api/'
+    options.links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
     options.addStringOption 'Xdoclint:none', '-quiet'
     options.memberLevel = JavadocMemberLevel.PROTECTED
     options.bottom = "Copyright &copy; 2022 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."

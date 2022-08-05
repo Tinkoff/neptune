@@ -4,7 +4,6 @@ import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
-import ru.tinkoff.qa.neptune.http.api.HttpStepsParameterProvider;
 import ru.tinkoff.qa.neptune.http.api.properties.authentification.DefaultHttpAuthenticatorProperty;
 import ru.tinkoff.qa.neptune.http.api.properties.cookies.DefaultHttpCookieManagerProperty;
 import ru.tinkoff.qa.neptune.http.api.properties.executor.DefaultHttpExecutorProperty;
@@ -40,7 +39,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.cookies.CommonHttpCookieCriteria.httpCookieValue;
 import static ru.tinkoff.qa.neptune.http.api.properties.authentification.DefaultHttpAuthenticatorProperty.DEFAULT_HTTP_AUTHENTICATOR_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.cookies.DefaultHttpCookieManagerProperty.DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.executor.DefaultHttpExecutorProperty.DEFAULT_HTTP_EXECUTOR_PROPERTY;
@@ -52,7 +50,7 @@ import static ru.tinkoff.qa.neptune.http.api.properties.ssl.DefaultHttpSslContex
 import static ru.tinkoff.qa.neptune.http.api.properties.ssl.DefaultHttpSslParametersProperty.DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.time.DefaultConnectTimeOutUnitProperty.DEFAULT_CONNECT_TIME_UNIT_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.time.DefaultConnectTimeOutValueProperty.DEFAULT_CONNECT_TIME_VALUE_PROPERTY;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
 
 public class HttpClientTest extends BaseHttpTest {
 
@@ -88,13 +86,13 @@ public class HttpClientTest extends BaseHttpTest {
     @BeforeClass
     public void beforeClass() {
         stubFor(get(urlPathEqualTo("/index.html"))
-                .willReturn(aResponse()
-                        .withBody("Hello")
-                        .withHeader("Set-Cookie", "TestCookieName=TestCookieValue")));
+            .willReturn(aResponse()
+                .withBody("Hello")
+                .withHeader("Set-Cookie", "TestCookieName=TestCookieValue")));
     }
 
     @Test
-    public void useHttpClientWithoutProperties() throws Exception {
+    public void useHttpClientWithoutProperties() {
         var client = http().getCurrentClient();
 
         assertThat(client.authenticator().orElse(null), nullValue());
@@ -123,7 +121,7 @@ public class HttpClientTest extends BaseHttpTest {
         setProperty(DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY.getName(), TestSslParametersSupplier.class.getName());
 
         try {
-            var newContext = new HttpStepContext((HttpClient.Builder) new HttpStepsParameterProvider().provide()[0]);
+            var newContext = new HttpStepContext();
             var client = newContext.getCurrentClient();
 
             assertThat(client.authenticator().orElse(null), equalTo(DEFAULT_AUTHENTICATOR));
@@ -151,47 +149,21 @@ public class HttpClientTest extends BaseHttpTest {
     }
 
     @Test
-    public void addCookieTest() {
-        var httpCookie = new HttpCookie("TestSetUpCookieName",
-                "TestSetUpCookieValue");
-
-        http().addCookies(httpCookie);
-        assertThat(http().getCookies(), hasItem(httpCookie));
-    }
-
-    @Test
-    public void clearCookiesTest() {
-        var httpCookie = new HttpCookie("TestSetUpCookieName",
-                "TestSetUpCookieValue");
-
-        http().addCookies(httpCookie);
-        http().removeCookies();
-        assertThat(http().getCookies(), emptyIterable());
-    }
-
-    @Test
-    public void clearCookiesTest2() {
-        var httpCookie = new HttpCookie("TestSetUpCookieName",
-                "TestSetUpCookieValue");
-
-        http().addCookies(httpCookie);
-        http().removeCookies(httpCookieValue("TestSetUpCookieValue"));
-        assertThat(http().getCookies(), emptyIterable());
-    }
-
-    @Test
     public void queryParameterTest() throws Throwable {
         stubFor(get(urlPathEqualTo("/query"))
-                .willReturn(aResponse().withBody("Hello query")));
+            .willReturn(aResponse().withBody("Hello query")));
 
-        var response = http().responseOf(GET(REQUEST_URI + "/query")
-                .queryParam("date", false, "01-01-1980")
-                .queryParam("some word", false, "Word and word again"), ofString());
+        var response = http().responseOf(GET()
+            .baseURI(REQUEST_URI)
+            .relativePath("/query")
+            .queryParam("date", false, "01-01-1980")
+            .queryParam("some word", false, "Word and word again")
+            .responseBodyHandler(ofString()));
 
         assertThat(response.body(),
-                Matchers.equalTo("Hello query"));
+            Matchers.equalTo("Hello query"));
         assertThat(response.uri(), equalTo(new URI("http://127.0.0.1:8089/query?date=" + encode("01-01-1980", UTF_8) + "&"
-                + encode("some word", UTF_8) + "=" + encode("Word and word again", UTF_8))));
+            + encode("some word", UTF_8) + "=" + encode("Word and word again", UTF_8))));
     }
 
     public static class TestAuthenticatorSupplier extends DefaultHttpAuthenticatorProperty.AuthenticatorSupplier {

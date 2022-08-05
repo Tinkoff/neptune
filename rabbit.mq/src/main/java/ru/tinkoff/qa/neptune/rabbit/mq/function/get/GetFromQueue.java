@@ -6,7 +6,6 @@ import com.rabbitmq.client.GetResponse;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
-import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
@@ -14,12 +13,15 @@ import java.util.LinkedList;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaultDataTransformer.RABBIT_MQ_DEFAULT_DATA_TRANSFORMER;
 
-final class GetFromQueue<T> implements Function<RabbitMqStepContext, T>, StepParameterPojo {
+final class GetFromQueue<T> implements Function<Channel, T>, StepParameterPojo {
 
     @StepParameter("queue")
     private final String queue;
@@ -64,10 +66,16 @@ final class GetFromQueue<T> implements Function<RabbitMqStepContext, T>, StepPar
     }
 
     @Override
-    public T apply(RabbitMqStepContext input) {
+    public T apply(Channel input) {
+        var dataTransformer = ofNullable(this.transformer)
+            .orElseGet(RABBIT_MQ_DEFAULT_DATA_TRANSFORMER);
+        checkState(nonNull(dataTransformer), "Data transformer is not defined. Please invoke "
+            + "the '#withDataTransformer(DataTransformer)' method or define '"
+            + RABBIT_MQ_DEFAULT_DATA_TRANSFORMER.getName()
+            + "' property/env variable");
+
         try {
-            Channel channel = input.getChannel();
-            GetResponse getResponse = channel.basicGet(queue, autoAck);
+            GetResponse getResponse = input.basicGet(queue, autoAck);
 
             var msg = new String(getResponse.getBody(), charset);
             if (!readMessages.contains(msg)) {
@@ -75,9 +83,9 @@ final class GetFromQueue<T> implements Function<RabbitMqStepContext, T>, StepPar
             }
 
             if (cls != null) {
-                return transformer.deserialize(msg, cls);
+                return dataTransformer.deserialize(msg, cls);
             }
-            return transformer.deserialize(msg, typeRef);
+            return dataTransformer.deserialize(msg, typeRef);
         } catch (Exception e) {
             e.printStackTrace();
         }

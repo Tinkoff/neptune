@@ -6,14 +6,12 @@ dependencies {
         exclude group: 'com.google.code.gson', module: 'gson'
         exclude group: 'net.bytebuddy', module:'byte-buddy'
     }
-    implementation(group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '5.1.0') {
+    implementation(group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '5.2.0') {
         exclude group: 'org.seleniumhq.selenium'
         exclude group: 'org.apache.commons', module: 'commons-lang3'
         exclude group: 'org.jsoup', module: 'jsoup'
     }
     testImplementation  group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
-    implementation group: 'cglib', name: 'cglib', version: '3.3.0'
-    implementation group: 'org.objenesis', name: 'objenesis', version: '3.2'
 }
 
 test {
@@ -57,7 +55,7 @@ publishing {
                 packaging = 'jar'
                 name = 'selenium'
                 version = version
-                url = 'https://github.com/TinkoffCreditSystems/neptune'
+                url = 'https://github.com/tinkoff/neptune'
                 licenses {
                     license {
                         name = 'Apache License, Version 2.0'
@@ -73,9 +71,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
-                    developerConnection = 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
-                    url = 'https://github.com/TinkoffCreditSystems/neptune'
+                    connection = 'scm:git:ssh://git@github.com:tinkoff/neptune.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:tinkoff/neptune.git'
+                    url = 'https://github.com/tinkoff/neptune'
                 }
             }
         }
@@ -83,11 +81,11 @@ publishing {
 }
 
 javadoc {
-    destinationDir = file("${buildDir}/../../../neptune.documentation/javadocs/$project.name")
+    destinationDir = file("${buildDir}/../../neptune.documentation/$project.name")
 
     title = "Neptune Selenium Integration API. v$globalVersion"
     options.author true
-    options.links 'http://download.oracle.com/javase/9/docs/api/'
+    options.links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
     options.addStringOption 'Xdoclint:none', '-quiet'
     options.memberLevel = JavadocMemberLevel.PROTECTED
     options.bottom = "Copyright &copy; 2022 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."

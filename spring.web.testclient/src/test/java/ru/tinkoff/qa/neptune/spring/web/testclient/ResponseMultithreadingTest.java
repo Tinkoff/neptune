@@ -16,7 +16,7 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient.SendRequestAction.send
 import static ru.tinkoff.qa.neptune.spring.web.testclient.TestStringInjector.getMessages;
 import static ru.tinkoff.qa.neptune.spring.web.testclient.WebTestClientContext.webTestClient;
 
-public class ResponseMultithreadingTest extends BaseTest {
+public class ResponseMultithreadingTest extends BaseTestPreparation {
 
     @BeforeClass
     public void setUpBeforeClass() {

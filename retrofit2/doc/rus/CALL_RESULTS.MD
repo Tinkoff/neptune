@@ -157,7 +157,7 @@ public class MyTest {
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
-[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/retrofit2/ru/tinkoff/qa/neptune/retrofit2/criteria/ResponseCriteria.html)
+[Критерии для получения подходящего http ответа](https://tinkoff.github.io/neptune/retrofit2/ru/tinkoff/qa/neptune/retrofit2/criteria/ResponseCriteria.html)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -339,7 +339,7 @@ public class MyTest {
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
-[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/retrofit2/ru/tinkoff/qa/neptune/retrofit2/criteria/ResponseCriteria.html)
+[Критерии для получения подходящего http ответа](https://tinkoff.github.io/neptune/retrofit2/ru/tinkoff/qa/neptune/retrofit2/criteria/ResponseCriteria.html)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -532,7 +532,7 @@ public class MyTest {
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
-[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/retrofit2/ru/tinkoff/qa/neptune/retrofit2/criteria/ResponseCriteria.html)
+[Критерии для получения подходящего http ответа](https://tinkoff.github.io/neptune/retrofit2/ru/tinkoff/qa/neptune/retrofit2/criteria/ResponseCriteria.html)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -719,7 +719,7 @@ public class MyTest {
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
-[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/retrofit2/ru/tinkoff/qa/neptune/retrofit2/criteria/ResponseCriteria.html)
+[Критерии для получения подходящего http ответа](https://tinkoff.github.io/neptune/retrofit2/ru/tinkoff/qa/neptune/retrofit2/criteria/ResponseCriteria.html)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
@@ -911,7 +911,7 @@ public class MyTest {
 
 О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
-[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/retrofit2/ru/tinkoff/qa/neptune/retrofit2/criteria/ResponseCriteria.html)
+[Критерии для получения подходящего http ответа](https://tinkoff.github.io/neptune/retrofit2/ru/tinkoff/qa/neptune/retrofit2/criteria/ResponseCriteria.html)
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 

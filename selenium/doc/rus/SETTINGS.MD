@@ -12,7 +12,6 @@
   - [Настройки Capabilities](#Настройки-capabilities)
     - [WEB_DRIVER_CAPABILITY_BROWSER_NAME](#web_driver_capability_browser_name)
     - [WEB_DRIVER_CAPABILITY_PLATFORM_NAME](#web_driver_capability_platform_name)
-    - [WEB_DRIVER_CAPABILITY_SUPPORTS_JAVASCRIPT](#web_driver_capability_supports_javascript)
     - [WEB_DRIVER_CAPABILITY_BROWSER_VERSION](#web_driver_capability_browser_version)
 - [Параметры сессии](#Параметры-сессии)
   - [FIND_ONLY_VISIBLE_ELEMENTS](#find_only_visible_elements)
@@ -42,7 +41,6 @@
 - `EDGE_DRIVER` - запуск `org.openqa.selenium.edge.EdgeDriver`
 - `FIREFOX_DRIVER` - запуск `org.openqa.selenium.firefox.FirefoxDriver`
 - `IE_DRIVER` - запуск `org.openqa.selenium.ie.InternetExplorerDriver`
-- `OPERA_DRIVER` - запуск `org.openqa.selenium.opera.OperaDriver`
 - `SAFARI_DRIVER` - запуск `org.openqa.selenium.safari.SafariDriver`
 
 
@@ -88,7 +86,6 @@ public class SomeClass {
 - `EDGE_CAPABILITY_SUPPLIERS` - используется если `WEB_DRIVER_TO_LAUNCH=EDGE_DRIVER`
 - `FIREFOX_CAPABILITY_SUPPLIERS` - используется если `WEB_DRIVER_TO_LAUNCH=FIREFOX_DRIVER`
 - `IE_CAPABILITY_SUPPLIERS` - используется если `WEB_DRIVER_TO_LAUNCH=IE_DRIVER`
-- `OPERA_CAPABILITY_SUPPLIERS` - используется если `WEB_DRIVER_TO_LAUNCH=OPERA_DRIVER`
 - `SAFARI_CAPABILITY_SUPPLIERS` - используется если `WEB_DRIVER_TO_LAUNCH=SAFARI_DRIVER`
 
 Все перечисленные настройки/свойства используют в качестве значений строки, состоящие из полных имен классов-имплементоров
@@ -215,9 +212,6 @@ public class SomeClass {
 
 #### WEB_DRIVER_CAPABILITY_PLATFORM_NAME
 
-
-  
-
 Указывает значение `platformName`. Значение должно соответствовать одному из элементов перечисления `org.openqa.selenium.Platform`, 
 либо строковому представлению одного из элементов перечисления `org.openqa.selenium.Platform`.
 
@@ -243,36 +237,6 @@ public class SomeClass {
     }
 }
 ```
-[к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
-
-
-#### WEB_DRIVER_CAPABILITY_SUPPORTS_JAVASCRIPT
-
-
-  
-
-Указывает значение `javascriptEnabled`. Доступные значения - `true` или `false`.
-
-```properties
-#Значение свойства указывается так
-WEB_DRIVER_CAPABILITY_SUPPORTS_JAVASCRIPT=false
-```
-
-```java
-import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes
-        .CommonCapabilityProperties.SUPPORTS_JAVASCRIPT;
-
-public class SomeClass {
-    
-    public void someVoid() {
-        //пример доступа до значения свойства
-        Boolean enableJS = (Boolean) SUPPORTS_JAVASCRIPT.get();
-    }
-}
-```
-
-Значение по умолчанию - `true`
-
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
 
 

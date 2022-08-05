@@ -1,6 +1,9 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
-import net.sf.cglib.proxy.MethodProxy;
+import net.bytebuddy.implementation.bind.annotation.AllArguments;
+import net.bytebuddy.implementation.bind.annotation.Origin;
+import net.bytebuddy.implementation.bind.annotation.RuntimeType;
+import net.bytebuddy.implementation.bind.annotation.This;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -8,7 +11,7 @@ import java.lang.reflect.Method;
 
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.ToStringFormer.webElementToString;
 
-class WebElementInterceptor extends AbstractElementInterceptor {
+public final class WebElementInterceptor extends AbstractElementInterceptor {
 
     private final By by;
 
@@ -17,13 +20,15 @@ class WebElementInterceptor extends AbstractElementInterceptor {
         this.by = by;
     }
 
-    public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
+    @Override
+    @RuntimeType
+    public Object intercept(@This Object obj, @Origin Method method, @AllArguments Object[] args) throws Throwable {
         if ("toString".equals(method.getName()) &&
                 method.getParameterTypes().length == 0
                 && String.class.equals(method.getReturnType())) {
             return webElementToString((WebElement) createRealObject(), by);
         } else {
-            return super.intercept(obj, method, args, proxy);
+            return super.intercept(obj, method, args);
         }
     }
 

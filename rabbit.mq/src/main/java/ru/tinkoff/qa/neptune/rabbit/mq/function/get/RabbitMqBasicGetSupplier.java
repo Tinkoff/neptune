@@ -1,10 +1,11 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.function.get;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.rabbitmq.client.Channel;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -20,14 +21,11 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Objects.nonNull;
-import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.rabbit.mq.GetChannel.getChannel;
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetFromQueue.getStringResult;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
-import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaultDataTransformer.RABBIT_MQ_DEFAULT_DATA_TRANSFORMER;
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Retrieve:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
@@ -35,7 +33,7 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaultDataTran
 @MaxDepthOfReporting(0)
 @SuppressWarnings("unchecked")
 public abstract class RabbitMqBasicGetSupplier<T, R extends RabbitMqBasicGetSupplier<T, R>>
-        extends SequentialGetStepSupplier.GetObjectStepSupplier<RabbitMqStepContext, T, R> {
+    extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<RabbitMqStepContext, T, Channel, R> {
 
     final GetFromQueue<?> getFromQueue;
 
@@ -49,9 +47,8 @@ public abstract class RabbitMqBasicGetSupplier<T, R extends RabbitMqBasicGetSupp
     protected <M> RabbitMqBasicGetSupplier(GetFromQueue<M> getFromQueue, Function<M, T> function) {
         super(function.compose(getFromQueue));
         this.getFromQueue = getFromQueue;
+        from(getChannel());
     }
-
-    private DataTransformer transformer;
 
     /**
      * Creates a step that gets some value which is calculated by body of message.
@@ -246,23 +243,12 @@ public abstract class RabbitMqBasicGetSupplier<T, R extends RabbitMqBasicGetSupp
     }
 
     @Override
-    protected void onFailure(RabbitMqStepContext m, Throwable throwable) {
+    protected void onFailure(Channel m, Throwable throwable) {
         messages = getFromQueue.getMessages();
     }
 
-    @Override
-    protected void onStart(RabbitMqStepContext rabbitMqStepContext) {
-        var transformer = ofNullable(this.transformer)
-                .orElseGet(RABBIT_MQ_DEFAULT_DATA_TRANSFORMER);
-        checkState(nonNull(transformer), "Data transformer is not defined. Please invoke "
-                + "the '#withDataTransformer(DataTransformer)' method or define '"
-                + RABBIT_MQ_DEFAULT_DATA_TRANSFORMER.getName()
-                + "' property/env variable");
-        getFromQueue.setTransformer(transformer);
-    }
-
     R withDataTransformer(DataTransformer transformer) {
-        this.transformer = transformer;
+        getFromQueue.setTransformer(transformer);
         return (R) this;
     }
 

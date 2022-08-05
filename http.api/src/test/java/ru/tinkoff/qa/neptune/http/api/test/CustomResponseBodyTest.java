@@ -15,7 +15,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.testng.Assert.fail;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasBody.hasBody;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilderFactory.GET;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.xml;
 
@@ -94,15 +94,20 @@ public class CustomResponseBodyTest extends BaseHttpTest {
     public <T> void customResponseBodyTest2(String urlPath,
                                             HttpResponse.BodyHandler<T> handler,
                                             Matcher<? super T> matcher) {
-        assertThat(http().responseOf(GET(REQUEST_URI + urlPath), handler),
-                hasBody(matcher));
+        assertThat(http().responseOf(GET()
+                .baseURI(REQUEST_URI + urlPath)
+                .responseBodyHandler(handler)),
+            hasBody(matcher));
     }
 
     @Test(dataProvider = "data2", expectedExceptions = RuntimeException.class)
     public <T> void negativeTest(String urlPath,
                                  HttpResponse.BodyHandler<T> handler) {
-        assertThat(http().responseOf(GET(REQUEST_URI + urlPath), handler),
-                hasBody(nullValue()));
+        assertThat(http().responseOf(GET()
+                .baseURI(REQUEST_URI)
+                .relativePath(urlPath)
+                .responseBodyHandler(handler)),
+            hasBody(nullValue()));
 
         fail("Exception was expected");
     }

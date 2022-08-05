@@ -1,11 +1,11 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.function.publish;
 
 import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 import ru.tinkoff.qa.neptune.rabbit.mq.captors.MessageCaptor;
@@ -23,6 +23,7 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.getCaptors;
+import static ru.tinkoff.qa.neptune.rabbit.mq.GetChannel.getChannel;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_EXCHANGE_NAME;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_ROUTING_KEY_NAME;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqAMQPProperty.RABBIT_AMQP_PROPERTY;
@@ -30,15 +31,15 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaultDataTran
 
 @SequentialActionSupplier.DefinePerformImperativeParameterName("Publish:")
 @MaxDepthOfReporting(0)
-@Description("message. exchange = '{exchange}', routingKey = '{routingKey}'")
+@Description("message")
 @SuppressWarnings("unchecked")
-public abstract class RabbitMqPublishSupplier<T extends RabbitMqPublishSupplier<T>> extends SequentialActionSupplier<RabbitMqStepContext, RabbitMqStepContext, T> {
+public abstract class RabbitMqPublishSupplier<T extends RabbitMqPublishSupplier<T>> extends SequentialActionSupplier<RabbitMqStepContext, Channel, T> {
 
     private final Map<String, Object> headers = new LinkedHashMap<>();
     String body;
-    @DescriptionFragment("exchange")
+    @StepParameter("exchange")
     private String exchange = "";
-    @DescriptionFragment("routingKey")
+    @StepParameter("routingKey")
     private String routingKey = "";
     @StepParameter("mandatory")
     private boolean mandatory;
@@ -49,9 +50,9 @@ public abstract class RabbitMqPublishSupplier<T extends RabbitMqPublishSupplier<
 
     private RabbitMqPublishSupplier() {
         super();
-        performOn(rabbitStepContext -> rabbitStepContext);
+        performOn(getChannel());
         propertyBuilder = ofNullable(RABBIT_AMQP_PROPERTY.get())
-                .orElseGet(AMQP.BasicProperties.Builder::new);
+            .orElseGet(AMQP.BasicProperties.Builder::new);
     }
 
     @Override
@@ -106,14 +107,13 @@ public abstract class RabbitMqPublishSupplier<T extends RabbitMqPublishSupplier<
     }
 
     @Override
-    protected void howToPerform(RabbitMqStepContext value) {
-        var channel = value.getChannel();
+    protected void howToPerform(Channel value) {
         var props = propertyBuilder.build();
         try {
-            channel.basicPublish(exchange, routingKey, mandatory, immediate, props,
-                    body.getBytes());
+            value.basicPublish(exchange, routingKey, mandatory, immediate, props,
+                body.getBytes());
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 

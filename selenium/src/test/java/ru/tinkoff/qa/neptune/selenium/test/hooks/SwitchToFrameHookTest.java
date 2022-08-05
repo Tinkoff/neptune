@@ -4,8 +4,8 @@ import org.hamcrest.Matcher;
 import org.openqa.selenium.NoSuchFrameException;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.selenium.BaseWebDriverPreparations;
 import ru.tinkoff.qa.neptune.selenium.content.management.ContentManagementHook;
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import ru.tinkoff.qa.neptune.selenium.test.MockWebDriver;
 
 import java.lang.reflect.Method;
@@ -17,7 +17,8 @@ import static org.testng.AssertJUnit.fail;
 import static ru.tinkoff.qa.neptune.selenium.content.management.ContentManagementCommand.getCurrentCommand;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.FRAME_ELEMENT_VALID1;
 
-public class SwitchToFrameHookTest extends BaseWebDriverTest {
+@SuppressWarnings({"rawtypes", "unchecked"})
+public class SwitchToFrameHookTest extends BaseWebDriverPreparations {
 
     private static final ContentManagementHook hook = new ContentManagementHook();
     private static final ClassWithSwitchingToFrameTest1 O1 = new ClassWithSwitchingToFrameTest1();

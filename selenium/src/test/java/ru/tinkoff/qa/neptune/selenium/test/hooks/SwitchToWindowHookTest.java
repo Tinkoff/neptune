@@ -5,8 +5,8 @@ import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.selenium.BaseWebDriverPreparations;
 import ru.tinkoff.qa.neptune.selenium.content.management.ContentManagementHook;
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import ru.tinkoff.qa.neptune.selenium.test.MockWebDriver;
 
 import java.lang.reflect.Method;
@@ -19,7 +19,7 @@ import static ru.tinkoff.qa.neptune.selenium.content.management.ContentManagemen
 import static ru.tinkoff.qa.neptune.selenium.test.enums.URLs.*;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles.*;
 
-public class SwitchToWindowHookTest extends BaseWebDriverTest {
+public class SwitchToWindowHookTest extends BaseWebDriverPreparations {
 
     private static final ContentManagementHook hook = new ContentManagementHook();
     private static final ClassWithSwitchingToWindowTest1 O1 = new ClassWithSwitchingToWindowTest1();
