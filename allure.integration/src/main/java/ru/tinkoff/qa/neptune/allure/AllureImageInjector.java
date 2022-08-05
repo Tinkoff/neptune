@@ -23,11 +23,9 @@ public class AllureImageInjector implements CapturedImageInjector {
             picForLog = createTempFile("picture", randomUUID() + ".png");
             ImageIO.write(image, "png", picForLog);
             return new FileInputStream(picForLog);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new AllureResultsWriteException(e.getMessage(), e);
-        }
-        finally {
+        } finally {
             ofNullable(picForLog).ifPresent(file -> {
                 if (file.exists()) {
                     file.deleteOnExit();
