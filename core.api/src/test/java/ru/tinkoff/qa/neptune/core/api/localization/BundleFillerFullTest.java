@@ -34,7 +34,7 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsItem
 
 public class BundleFillerFullTest {
 
-    private final ResourceBundleGenerator.BundleFiller bundleFiller;
+    private final BundleFiller bundleFiller;
     private final File propertyFile;
 
     public BundleFillerFullTest() throws IOException {
@@ -49,7 +49,7 @@ public class BundleFillerFullTest {
             properties.store(fileOutput, "");
         }
 
-        bundleFiller = new ResourceBundleGenerator.BundleFiller(new AllPackagePartition(),
+        bundleFiller = new BundleFiller(new AllPackagePartition(),
                 propertyFile,
                 properties);
     }
