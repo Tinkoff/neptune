@@ -1,0 +1,1274 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Сериализация и десериализация" href="../serialize_deserialize.html" /><link rel="prev" title="Сторонние свойства" href="../settings/property_sources.html" />
+
+    <meta name="generator" content="sphinx-5.0.2, furo 2022.06.21"/>
+        <title>Механизм локализации / интернационализации - Neptune documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Neptune  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  
+  <span class="sidebar-brand-text">Neptune  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Быстрый старт</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../quick_start/index.html">Быстрый старт</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../quick_start/settings/index.html">Свойства Neptune</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../quick_start/settings/resorces.html">Освобождение ресурсов</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../quick_start/settings/attachments.html">Автоматическое создание аттачей</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../quick_start/settings/to_limit_report_depth.html">Глубина вывода шагов в отчет / консоль</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../quick_start/settings/internationalization.html">Язык / локализация</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../quick_start/start_to_contribute.html">Как контрибъютить</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Тест-раннеры</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../test_runners/testng/index.html">TestNG</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../test_runners/testng/allure.testng.bridge.html">allure.testng.bridge</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../test_runners/junit5/index.html">JUnit5</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../test_runners/junit5/allure.jupiter.bridge.html">allure.jupiter.bridge</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Тест-репортеры</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../test_reports/allure.html">Allure</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core</span></p>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../index.html">Neptune Core</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="../steps/context/index.html">Контексты</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../steps/context/refresh.html">Обновление</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../steps/context/stopping.html">Завершение / Остановка</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../steps/steps/index.html">Шаги</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../steps/steps/get_step_supplier/index.html">Возврат результата (get-step)</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../steps/steps/get_step_supplier/get_object_step.html">Возврат объекта (<code class="docutils literal notranslate"><span class="pre">java.lang.Object</span></code> и его наследники)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../steps/steps/get_step_supplier/get_object_from_iterable_step.html">Возврат элемента коллекции/Iterable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../steps/steps/get_step_supplier/get_object_from_array_step.html">Возврат элемента массива</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../steps/steps/get_step_supplier/get_list_step.html">Возврат листа</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../steps/steps/get_step_supplier/get_array_step.html">Возврат массива</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../steps/steps/action_supplier.html">Выполнение действия (action-step)</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../steps/criteria/index.html">Критерии</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../steps/criteria/AND_junction.html">Объединение AND</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../steps/criteria/OR_junction.html">Объединение OR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../steps/criteria/XOR_junction.html">Объединение XOR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../steps/criteria/inversion.html">Инверсия критериев</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../steps/annotations/index.html">Аннотации шагов и критериев</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../steps/annotations/parameter_string_presentation.html">Строковое представление параметра</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../steps/annotations/%40Description_%40DescriptionFragment.html">@Description и @DescriptionFragment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../steps/annotations/%40StepParameter.html">@StepParameter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../steps/annotations/%40IncludeParamsOfInnerGetterStep.html">@IncludeParamsOfInnerGetterStep</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../steps/annotations/%40MaxDepthOfReporting.html">@MaxDepthOfReporting</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../steps/annotations/get-step/index.html">Аннотации параметров get-step</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../steps/annotations/get-step/%40DefineGetImperativeParameterName.html">@DefineGetImperativeParameterName</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../steps/annotations/get-step/%40DefineTimeOutParameterName.html">@DefineTimeOutParameterName</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../steps/annotations/get-step/%40DefinePollingTimeParameterName.html">@DefinePollingTimeParameterName</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../steps/annotations/get-step/%40DefineCriteriaParameterName.html">@DefineCriteriaParameterName</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../steps/annotations/get-step/%40DefineFromParameterName.html">@DefineFromParameterName</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../steps/annotations/get-step/%40DefineResultDescriptionParameterName.html">@DefineResultDescriptionParameterName</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../steps/annotations/get-step/%40ThrowWhenNoData.html">@ThrowWhenNoData</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../steps/annotations/action-step/index.html">Аннотации параметров action-step</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../steps/annotations/action-step/%40DefinePerformImperativeParameterName.html">@DefinePerformImperativeParameterName</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../steps/annotations/action-step/%40DefinePerformOnParameterName.html">@DefinePerformOnParameterName</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../events/index.html">Логирование событий</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../events/event_logger.html">Логгер событий</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../events/attaches/index.html">Аттачи</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../events/attaches/description.html">Название / сообщение аттача</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../events/attaches/%40UseInjectors.html">@UseInjectors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../events/attaches/spi_setting.html">SPI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../events/attaches/file_attach.html">Аттач файла</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../events/attaches/picture_attach.html">Аттач картинки</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../events/attaches/text_attach.html">Аттач текста</a></li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../events/attaches/annotations/index.html">Аннотации для шагов</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="../events/attaches/annotations/%40CaptureOnSuccess.html">@CaptureOnSuccess</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../events/attaches/annotations/%40CaptureOnFailure.html">@CaptureOnFailure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../settings/index.html">Создание собственных настроек</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../settings/string.html">String-свойства</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../settings/boolean.html">Boolean-свойства</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../settings/byte.html">Byte-свойства</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../settings/double.html">Double-свойства</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../settings/float.html">Float-свойства</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../settings/integer.html">Integer-свойства</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../settings/long.html">Long-свойства</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../settings/short.html">Short-свойства</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../settings/url.html">Url-свойства</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../settings/enum_single_item.html">Enum-свойства. Один элемент</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../settings/enum_multiple_items.html">Enum-свойства. Множество элементов</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../settings/duration.html">Duration-свойства</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../settings/any_objects.html">Произвольные объекты</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../settings/property_sources.html">Сторонние свойства</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Механизм локализации / интернационализации</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../serialize_deserialize.html">Сериализация и десериализация</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dependency_injection.html">Внедрение зависимостей</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hooks.html">Хуки</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../class_binding.html">Связывание классов</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Assert</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../check/check.html">Check</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../common_matchers/index.html">Общий набор матчеров</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../common_matchers/iterable.html">Для java.lang.Iterable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../common_matchers/array.html">Для массивов</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../common_matchers/map.html">Для java.util.Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../common_matchers/uri_url.html">Для URI/URL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../common_matchers/string_with_separator.html">Для строки с разделителем</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../common_matchers/pojo.html">Для POJO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../common_matchers/class.html">Для класса объекта</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../common_matchers/throwable.html">Для Throwable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../common_matchers/combine.html">Объединения матчеров AND, OR, XOR, NOT</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Spring Boot</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../spring/spring.boot.sterter.html">Neptune Spring boot starter</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../spring/mock.mvc/index.html">Mock MVC</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" role="switch" type="checkbox"/><label for="toctree-checkbox-18"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../spring/mock.mvc/settings.html">Свойства</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../spring/mock.mvc/response.html">Request / Response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../spring/mock.mvc/bodydata.html">Mock MVC. Response body</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../spring/web.test.client/index.html">Web Test Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spring/spring.data/index.html">Spring Data</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Базы данных</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../data.base/database.abstractions.html">database.abstractions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data.base/hibernate/index.html">Hibernate</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1>Механизм локализации / интернационализации<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
+<p>Neptune имеет свой механизм локализации / интернационализации вывода информации.</p>
+<section id="id2">
+<h2>Для чего применяется<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../steps/steps/index.html"><span class="doc std std-doc">Шаги</span></a></p></li>
+<li><p><a class="reference internal" href="../events/attaches/index.html"><span class="doc std std-doc">Аттачи</span></a></p></li>
+<li><p>Другие объекты</p></li>
+</ul>
+</section>
+<section id="id3">
+<h2>Механизм<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">Интерфейс, который надо реализовать</span><a class="headerlink" href="#id8" title="Permalink to this code">#</a></div>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">StepLocalization</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">   </span><span class="cm">/**</span>
+<span class="cm">    * Makes translation by usage of a class.</span>
+<span class="cm">    *</span>
+<span class="cm">    * @param clz                       is a class whose metadata may be used for auxiliary purposes</span>
+<span class="cm">    * @param template                  is a template of a string to be translated. It is usually taken</span>
+<span class="cm">    *                                  from {@link Description} of a class. It may contain named parameters</span>
+<span class="cm">    *                                  placed between &#39;{}&#39;. Names of parameters should correspond to class fields</span>
+<span class="cm">    *                                  annotated by {@link DescriptionFragment}</span>
+<span class="cm">    * @param descriptionTemplateParams is a list of parameters and their values. These parameters are taken from</span>
+<span class="cm">    *                                  fields annotated by {@link DescriptionFragment}. This parameter is included</span>
+<span class="cm">    *                                  because the list is possible to be re-used for some reasons.</span>
+<span class="cm">    * @param locale                    is a used locale</span>
+<span class="cm">    * @param &lt;T&gt;                       is a type of class</span>
+<span class="cm">    * @return translated text</span>
+<span class="cm">    */</span><span class="w"></span>
+<span class="w">   </span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">classTranslation</span><span class="p">(</span><span class="n">Class</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">clz</span><span class="p">,</span><span class="w"></span>
+<span class="w">                               </span><span class="n">String</span><span class="w"> </span><span class="n">template</span><span class="p">,</span><span class="w"></span>
+<span class="w">                               </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TemplateParameter</span><span class="o">&gt;</span><span class="w"> </span><span class="n">descriptionTemplateParams</span><span class="p">,</span><span class="w"></span>
+<span class="w">                               </span><span class="n">Locale</span><span class="w"> </span><span class="n">locale</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">   </span><span class="cm">/**</span>
+<span class="cm">    * Makes translation by usage of a method.</span>
+<span class="cm">    *</span>
+<span class="cm">    * @param method                    is a method whose metadata may be used for auxiliary purposes</span>
+<span class="cm">    * @param template                  is a template of a string to be translated. It is usually taken</span>
+<span class="cm">    *                                  from {@link Description} of a method. It may contain named parameters</span>
+<span class="cm">    *                                  placed between &#39;{}&#39;. Names of parameters should correspond to</span>
+<span class="cm">    *                                  method parameters annotated by {@link DescriptionFragment}. In case of methods</span>
+<span class="cm">    *                                  numbers from 0 are allowed to be used as parameter names between &#39;{}&#39;. Each</span>
+<span class="cm">    *                                  defined number should be an index of a parameter of the method signature.</span>
+<span class="cm">    * @param descriptionTemplateParams is a list of parameters and their values. These parameters are taken from</span>
+<span class="cm">    *                                  method parameters. Name of each {@link TemplateParameter} is formed by</span>
+<span class="cm">    *                                  {@link DescriptionFragment} or index of the corresponding {@link Parameter} of</span>
+<span class="cm">    *                                  the method signature. This parameter is included because the list is possible</span>
+<span class="cm">    *                                  to be re-used for some reasons.</span>
+<span class="cm">    * @param locale                    is a used locale</span>
+<span class="cm">    * @return translated text</span>
+<span class="cm">    */</span><span class="w"></span>
+<span class="w">   </span><span class="n">String</span><span class="w"> </span><span class="nf">methodTranslation</span><span class="p">(</span><span class="n">Method</span><span class="w"> </span><span class="n">method</span><span class="p">,</span><span class="w"></span>
+<span class="w">                            </span><span class="n">String</span><span class="w"> </span><span class="n">template</span><span class="p">,</span><span class="w"></span>
+<span class="w">                            </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TemplateParameter</span><span class="o">&gt;</span><span class="w"> </span><span class="n">descriptionTemplateParams</span><span class="p">,</span><span class="w"></span>
+<span class="w">                            </span><span class="n">Locale</span><span class="w"> </span><span class="n">locale</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">   </span><span class="cm">/**</span>
+<span class="cm">    * Makes translation by usage of other annotated element that differs from {@link Class} and {@link Method}</span>
+<span class="cm">    *</span>
+<span class="cm">    * @param member         is an annotated element whose metadata may be used for auxiliary purposes</span>
+<span class="cm">    * @param toBeTranslated is a string to be translated. This string is usually taken from the member</span>
+<span class="cm">    * @param locale         is a used locale</span>
+<span class="cm">    * @param &lt;T&gt;            is a type of member</span>
+<span class="cm">    * @return translated text</span>
+<span class="cm">    */</span><span class="w"></span>
+<span class="w">   </span><span class="o">&lt;</span><span class="n">T</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">AnnotatedElement</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">Member</span><span class="o">&gt;</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">memberTranslation</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">member</span><span class="p">,</span><span class="w"></span>
+<span class="w">                                                                  </span><span class="n">String</span><span class="w"> </span><span class="n">toBeTranslated</span><span class="p">,</span><span class="w"></span>
+<span class="w">                                                                  </span><span class="n">Locale</span><span class="w"> </span><span class="n">locale</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">   </span><span class="cm">/**</span>
+<span class="cm">    * Makes translation of a text.</span>
+<span class="cm">    *</span>
+<span class="cm">    * @param text   to be translated</span>
+<span class="cm">    * @param locale is a used locale</span>
+<span class="cm">    * @return translated text</span>
+<span class="cm">    */</span><span class="w"></span>
+<span class="w">   </span><span class="n">String</span><span class="w"> </span><span class="nf">translation</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">text</span><span class="p">,</span><span class="w"> </span><span class="n">Locale</span><span class="w"> </span><span class="n">locale</span><span class="p">);</span><span class="w"></span>
+<span class="w"> </span><span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">Свойства которые следует заполнить</span><a class="headerlink" href="#id9" title="Permalink to this code">#</a></div>
+<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="na">DEFAULT_LOCALIZATION_ENGINE</span><span class="o">=</span><span class="s">org.my.project.MyLocalizationEngine</span><span class="w"></span>
+<span class="na">DEFAULT_LOCALE</span><span class="o">=</span><span class="s">ru_RU</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<p>Свойства описаны <a class="reference internal" href="../../quick_start/settings/internationalization.html"><span class="doc std std-doc">тут</span></a></p>
+</section>
+<section id="id4">
+<h2>Базовый механизм<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h2>
+<p>Дефолтный поддерживаемый механизм основан на использовании <a class="reference external" href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/ResourceBundle.html">ResourceBundle</a>.</p>
+<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="na">DEFAULT_LOCALIZATION_ENGINE</span><span class="o">=</span><span class="s">ru.tinkoff.qa.neptune.core.api.localization.LocalizationByResourceBundle</span><span class="w"></span>
+<span class="na">DEFAULT_LOCALE</span><span class="o">=</span><span class="s">ru_RU</span><span class="w"></span>
+</pre></div>
+</div>
+<p>На текущий момент поддерживаются локали:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ru_RU</span></code> - русский</p></li>
+</ul>
+<section id="id5">
+<h3>Добавление возможности интернационализации своего модуля на основе бандлов<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h3>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">Класс для описания бандла</span><a class="headerlink" href="#id10" title="Permalink to this code">#</a></div>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span><span class="w"></span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.localization.LocalizationBundlePartition</span><span class="p">;</span><span class="w"></span>
+
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyLocalizationPartition</span><span class="w"></span>
+<span class="w">       </span><span class="c1">//необходимо унаследовать данный класс</span><span class="w"></span>
+<span class="w">       </span><span class="kd">extends</span><span class="w"> </span><span class="n">LocalizationBundlePartition</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">MyLocalizationPartition</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//необходимо, чтобы конструктор</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// был доступен и не имел параметров</span><span class="w"></span>
+<span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="s">&quot;my.module&quot;</span><span class="w"> </span><span class="c1">//название бандла</span><span class="w"></span>
+<span class="w">                </span><span class="p">,</span><span class="w"> </span><span class="s">&quot;org.mypack&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">//имя корневых пакетов,</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// к которым относятся вложенные объекты</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// для локализации</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text">Настройка SPI в <cite>main/resources/</cite> или <cite>test/resources/</cite></span><a class="headerlink" href="#id11" title="Permalink to this code">#</a></div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ META-INF
+├── services
+    ├── ru.tinkoff.qa.neptune.core.api.localization.LocalizationBundlePartition
+</pre></div>
+</div>
+</div>
+<p>В файл <code class="docutils literal notranslate"><span class="pre">ru.tinkoff.qa.neptune.core.api.localization.LocalizationBundlePartition</span></code> внести строку <code class="docutils literal notranslate"><span class="pre">org.mypack.MyLocalizationPartition</span></code></p>
+</section>
+<section id="neptune">
+<h3>Создание нового бандла для своего модуля или локали, для которой нет бандлов в <em>Neptune</em><a class="headerlink" href="#neptune" title="Permalink to this heading">#</a></h3>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-text">maven. build/plugins</span><a class="headerlink" href="#id12" title="Permalink to this code">#</a></div>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;plugin&gt;</span>
+     <span class="nt">&lt;groupId&gt;</span>org.codehaus.mojo<span class="nt">&lt;/groupId&gt;</span>
+     <span class="nt">&lt;artifactId&gt;</span>exec-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+     <span class="nt">&lt;version&gt;</span>3.0.0<span class="nt">&lt;/version&gt;</span>
+     <span class="nt">&lt;executions&gt;</span>
+          <span class="nt">&lt;execution&gt;</span>
+              <span class="nt">&lt;id&gt;</span>generate properties<span class="nt">&lt;/id&gt;</span>
+              <span class="nt">&lt;phase&gt;</span>compile<span class="nt">&lt;/phase&gt;</span>
+              <span class="nt">&lt;goals&gt;</span>
+                  <span class="nt">&lt;goal&gt;</span>java<span class="nt">&lt;/goal&gt;</span>
+              <span class="nt">&lt;/goals&gt;</span>
+              <span class="nt">&lt;configuration&gt;</span>
+                  <span class="nt">&lt;mainClass&gt;</span>ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator<span class="nt">&lt;/mainClass&gt;</span>
+                  <span class="nt">&lt;arguments&gt;</span>
+                       <span class="cm">&lt;!--Нужная локаль--&gt;</span>
+                       <span class="nt">&lt;argument&gt;</span>de_DE<span class="nt">&lt;/argument&gt;</span>
+                       <span class="cm">&lt;!--или ${basedir}/src/main/resources--&gt;</span>
+                       <span class="cm">&lt;!--или любая другая директория--&gt;</span>
+                       <span class="nt">&lt;argument&gt;</span>${basedir}/src/test/resources<span class="nt">&lt;/argument&gt;</span>
+                       <span class="cm">&lt;!--кастомный бандл (true) или дефолтный (false)--&gt;</span>
+                       <span class="cm">&lt;!--В данном случае false--&gt;</span>
+                       <span class="nt">&lt;argument&gt;</span>false<span class="nt">&lt;/argument&gt;</span>
+                       <span class="cm">&lt;!--Имя бандла, который надо сформировать--&gt;</span>
+                       <span class="cm">&lt;!--У каждого модуля Neptune уникальный набор имен бандлов--&gt;</span>
+                       <span class="cm">&lt;!--Имена бандлов можно не указывать, тогда сформируются бандлы для--&gt;</span>
+                       <span class="cm">&lt;!--всех подключенных модулей--&gt;</span>
+                       <span class="nt">&lt;argument&gt;</span>name_of_the_module<span class="nt">&lt;/argument&gt;</span>
+                       <span class="cm">&lt;!--и так далее, имена нужных бандлов--&gt;</span>
+                       <span class="nt">&lt;argument&gt;</span>name_of_the_modul2<span class="nt">&lt;/argument&gt;</span>
+                  <span class="nt">&lt;/arguments&gt;</span>
+              <span class="nt">&lt;/configuration&gt;</span>
+          <span class="nt">&lt;/execution&gt;</span>
+     <span class="nt">&lt;/executions&gt;</span>
+<span class="nt">&lt;/plugin&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-text">gradle</span><a class="headerlink" href="#id13" title="Permalink to this code">#</a></div>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">task</span><span class="w"> </span><span class="nf">generateBundle</span><span class="o">(</span><span class="nl">type:</span><span class="w"> </span><span class="n">JavaExec</span><span class="o">)</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">classpath</span><span class="w"> </span><span class="n">sourceSets</span><span class="o">.</span><span class="na">main</span><span class="o">.</span><span class="na">runtimeClasspath</span><span class="w"></span>
+<span class="w">    </span><span class="n">main</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//нужная локаль</span><span class="w"></span>
+<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="s2">&quot;de_DE&quot;</span><span class="o">,</span><span class="w"></span>
+<span class="w">            </span><span class="c1">//или $projectDir/src/main/resources</span><span class="w"></span>
+<span class="w">            </span><span class="c1">//или любая другая директория</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;$projectDir/src/test/resources&quot;</span><span class="o">,</span><span class="w"></span>
+<span class="w">            </span><span class="c1">//кастомный бандл (true) или дефолтный (false)</span><span class="w"></span>
+<span class="w">            </span><span class="c1">//В данном случае false</span><span class="w"></span>
+<span class="w">            </span><span class="kc">false</span><span class="o">,</span><span class="w"></span>
+<span class="w">            </span><span class="c1">//Имя бандла, который надо сформировать.</span><span class="w"></span>
+<span class="w">            </span><span class="c1">//У каждого модуля Neptune уникальный набор имен бандлов</span><span class="w"></span>
+<span class="w">            </span><span class="c1">//Имена бандлов можно не указывать, тогда сформируются бандлы для</span><span class="w"></span>
+<span class="w">            </span><span class="c1">//всех подключенных модулей</span><span class="w"></span>
+<span class="w">            </span><span class="n">name_of_the_module</span><span class="o">,</span><span class="w"></span>
+<span class="w">            </span><span class="c1">//и так далее, имена нужных бандлов</span><span class="w"></span>
+<span class="w">            </span><span class="n">name_of_the_modul2</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<p>Будут сформированы файлы вида <code class="docutils literal notranslate"><span class="pre">neptune_Localization_&lt;name_of_the_module&gt;_de_DE.properties</span></code>.
+Их контент будет похож на пример ниже:</p>
+<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c">#Values for translation of steps, their parameters, matchers and their descriptions, and attachments are defined here. Format key = value</span><span class="w"></span>
+
+<span class="c">#============================================ STEPS ============================================ </span><span class="w"></span>
+
+<span class="c">######################## core.api.steps.SequentialGetStepSupplier #</span><span class="w"></span>
+<span class="c">#_________________________________Parameters_____________________________________</span><span class="w"></span>
+<span class="c">#Original text = Get:</span><span class="w"></span>
+<span class="na">core.api.steps.SequentialGetStepSupplier.imperative</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Get:</span><span class="w"></span>
+<span class="c">#Original text = Result</span><span class="w"></span>
+<span class="na">core.api.steps.SequentialGetStepSupplier.resultDescription</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Result</span><span class="w"></span>
+<span class="c">#Original text = Not present:</span><span class="w"></span>
+<span class="na">core.api.steps.SequentialGetStepSupplier.errorMessageStartingOnEmptyResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Not present:</span><span class="w"></span>
+
+<span class="c">######################## core.api.steps.SequentialActionSupplier #</span><span class="w"></span>
+<span class="c">#_________________________________Parameters_____________________________________</span><span class="w"></span>
+<span class="c">#Original text = Perform:</span><span class="w"></span>
+<span class="na">core.api.steps.SequentialActionSupplier.imperative</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Perform:</span><span class="w"></span>
+
+<span class="c">######################## core.api.steps.Absence #</span><span class="w"></span>
+<span class="c">#_________________________________Parameters_____________________________________</span><span class="w"></span>
+<span class="c">#Original text = Wait for:</span><span class="w"></span>
+<span class="na">core.api.steps.Absence.imperative</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Wait for:</span><span class="w"></span>
+<span class="c">#Original text = Time of the waiting for absence</span><span class="w"></span>
+<span class="na">core.api.steps.Absence.timeOut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Time of the waiting for absence</span><span class="w"></span>
+<span class="c">#Original text = Is absent</span><span class="w"></span>
+<span class="na">core.api.steps.Absence.resultDescription</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Is absent</span><span class="w"></span>
+<span class="c">#Original text = Still present:</span><span class="w"></span>
+<span class="na">core.api.steps.Absence.errorMessageStartingOnEmptyResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Still present:</span><span class="w"></span>
+<span class="c">#__________________________________ Methods _______________________________________</span><span class="w"></span>
+<span class="c">#Original text = Absence of {toBeAbsent}</span><span class="w"></span>
+<span class="na">core.api.steps.Absence.absence(core.api.steps.SequentialGetStepSupplier&lt;T,?,?,?,?&gt;)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Absence of {toBeAbsent}</span><span class="w"></span>
+
+<span class="c">######################## core.api.steps.Presence #</span><span class="w"></span>
+<span class="c">#_________________________________Parameters_____________________________________</span><span class="w"></span>
+<span class="c">#Original text = Wait for:</span><span class="w"></span>
+<span class="na">core.api.steps.Presence.imperative</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Wait for:</span><span class="w"></span>
+<span class="c">#Original text = Is present</span><span class="w"></span>
+<span class="na">core.api.steps.Presence.resultDescription</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Is present</span><span class="w"></span>
+<span class="c">#__________________________________ Methods _______________________________________</span><span class="w"></span>
+<span class="c">#Original text = Presence of {toBePresent}</span><span class="w"></span>
+<span class="na">core.api.steps.Presence.presence(core.api.steps.SequentialGetStepSupplier&lt;T,?,?,?,?&gt;)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Presence of {toBePresent}</span><span class="w"></span>
+
+<span class="c">#============================================ ATTACHMENTS ============================================ </span><span class="w"></span>
+
+<span class="c">######################## core.api.event.firing.collections.ArrayCaptor #</span><span class="w"></span>
+<span class="c">#Original text = Resulted array</span><span class="w"></span>
+<span class="na">core.api.event.firing.collections.ArrayCaptor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Resulted array</span><span class="w"></span>
+
+<span class="c">######################## core.api.event.firing.collections.CollectionCaptor #</span><span class="w"></span>
+<span class="c">#Original text = Resulted collection</span><span class="w"></span>
+<span class="na">core.api.event.firing.collections.CollectionCaptor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Resulted collection</span><span class="w"></span>
+
+<span class="c">######################## core.api.event.firing.collections.MapCaptor #</span><span class="w"></span>
+<span class="c">#Original text = Resulted map</span><span class="w"></span>
+<span class="na">core.api.event.firing.collections.MapCaptor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Resulted map</span><span class="w"></span>
+
+<span class="c">#============================================ MATCHERS ============================================ </span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.common.AnyThingMatcher #</span><span class="w"></span>
+<span class="c">#Original text = ANYTHING</span><span class="w"></span>
+<span class="na">core.api.hamcrest.common.AnyThingMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">ANYTHING</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.common.all.AllCriteriaMatcher #</span><span class="w"></span>
+<span class="c">#Original text = {allMatchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.common.all.AllCriteriaMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">{allMatchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.common.any.AnyMatcher #</span><span class="w"></span>
+<span class="c">#Original text = {orExpression}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.common.any.AnyMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">{orExpression}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.common.not.NotMatcher #</span><span class="w"></span>
+<span class="c">#Original text = {notExpression}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.common.not.NotMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">{notExpression}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.common.only.one.OnlyOneMatcher #</span><span class="w"></span>
+<span class="c">#Original text = {onlyOneExpression}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.common.only.one.OnlyOneMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">{onlyOneExpression}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.MapEntryMatcher #</span><span class="w"></span>
+<span class="c">#Original text = Key: {key} Value: {value}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.MapEntryMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Key: {key} Value: {value}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher #</span><span class="w"></span>
+<span class="c">#Original text = in any order: {matchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">in any order: {matchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher$ArrayConsistsOfMatcherInOrder #</span><span class="w"></span>
+<span class="c">#Original text = in following order: {matchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher$ArrayConsistsOfMatcherInOrder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">in following order: {matchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher$IterableConsistsOfMatcherInOrder #</span><span class="w"></span>
+<span class="c">#Original text = in following order: {matchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher$IterableConsistsOfMatcherInOrder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">in following order: {matchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher$MapConsistsOfMatcherInOrder #</span><span class="w"></span>
+<span class="c">#Original text = in following order: {matchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher$MapConsistsOfMatcherInOrder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">in following order: {matchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsEachItemMatcher #</span><span class="w"></span>
+<span class="c">#Original text = each item: {matchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsEachItemMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">each item: {matchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsEachItemMatcher$MapEachItemMatcher #</span><span class="w"></span>
+<span class="c">#Original text = each entry: {matchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsEachItemMatcher$MapEachItemMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">each entry: {matchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsIncludesMatcher #</span><span class="w"></span>
+<span class="c">#Original text = includes in any order: {matchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsIncludesMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">includes in any order: {matchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsIncludesMatcher$ArrayIncludesMatcherInOrder #</span><span class="w"></span>
+<span class="c">#Original text = includes in following order: {matchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsIncludesMatcher$ArrayIncludesMatcherInOrder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">includes in following order: {matchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsIncludesMatcher$IterableIncludesMatcherInOrder #</span><span class="w"></span>
+<span class="c">#Original text = includes in following order: {matchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsIncludesMatcher$IterableIncludesMatcherInOrder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">includes in following order: {matchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsIncludesMatcher$MapIncludesMatcherInOrder #</span><span class="w"></span>
+<span class="c">#Original text = includes in following order: {matchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsIncludesMatcher$MapIncludesMatcherInOrder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">includes in following order: {matchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsItemsMatcher #</span><span class="w"></span>
+<span class="c">#Original text = has item(s): {matchers}. Expected count: {count}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsItemsMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">has item(s): {matchers}. Expected count: {count}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsItemsMatcher$MapHasItemsMatcher #</span><span class="w"></span>
+<span class="c">#Original text = has entry(es): {matchers}. Expected count: {count}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsItemsMatcher$MapHasItemsMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">has entry(es): {matchers}. Expected count: {count}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.pojo.PojoGetterReturnsMatcher #</span><span class="w"></span>
+<span class="c">#Original text = Public getter &#39;{getter}&#39; is expected to return a value: {criteria}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.pojo.PojoGetterReturnsMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Public getter &#39;{getter}&#39; is expected to return a value: {criteria}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.resorce.locator.HasHostMatcher #</span><span class="w"></span>
+<span class="c">#Original text = Host {matcher}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.resorce.locator.HasHostMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Host {matcher}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.resorce.locator.HasPathMatcher #</span><span class="w"></span>
+<span class="c">#Original text = Path {matcher}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.resorce.locator.HasPathMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Path {matcher}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.resorce.locator.HasPortMatcher #</span><span class="w"></span>
+<span class="c">#Original text = Port {matcher}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.resorce.locator.HasPortMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Port {matcher}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.resorce.locator.HasProtocolMatcher #</span><span class="w"></span>
+<span class="c">#Original text = Protocol {matcher}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.resorce.locator.HasProtocolMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Protocol {matcher}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.resorce.locator.HasQueryParameters #</span><span class="w"></span>
+<span class="c">#Original text = has query parameter {key} {value}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.resorce.locator.HasQueryParameters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">has query parameter {key} {value}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.resorce.locator.HasQueryStringMatcher #</span><span class="w"></span>
+<span class="c">#Original text = Query {matcher}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.resorce.locator.HasQueryStringMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Query {matcher}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.resorce.locator.HasReferenceMatcher #</span><span class="w"></span>
+<span class="c">#Original text = Url reference {matcher}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.resorce.locator.HasReferenceMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Url reference {matcher}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.resorce.locator.HasSchemeMatcher #</span><span class="w"></span>
+<span class="c">#Original text = Scheme {matcher}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.resorce.locator.HasSchemeMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Scheme {matcher}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.resorce.locator.HasUserInfoMatcher #</span><span class="w"></span>
+<span class="c">#Original text = User info {matcher}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.resorce.locator.HasUserInfoMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">User info {matcher}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.text.StringContainsWithSeparator #</span><span class="w"></span>
+<span class="c">#Original text = string has substring(s) separated by &lt;&#39;{separator}&#39;&gt;: {toContain}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.text.StringContainsWithSeparator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">string has substring(s) separated by &lt;&#39;{separator}&#39;&gt;: {toContain}</span><span class="w"></span>
+
+<span class="c">#============================================ MISMATCH DESCRIPTIONS ============================================ </span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.NullValueMismatch #</span><span class="w"></span>
+<span class="c">#Original text = Null value. All checks were stopped</span><span class="w"></span>
+<span class="na">core.api.hamcrest.NullValueMismatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Null value. All checks were stopped</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.ObjectIsNotPresentMismatch #</span><span class="w"></span>
+<span class="c">#Original text = Not present {objectName}: {characteristics}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.ObjectIsNotPresentMismatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Not present {objectName}: {characteristics}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.PropertyValueMismatch #</span><span class="w"></span>
+<span class="c">#Original text = {property} {mismatch}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.PropertyValueMismatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">{property} {mismatch}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.SomethingWentWrongDescriber #</span><span class="w"></span>
+<span class="c">#Original text = Something went wrong. The exception was thrown: {exception}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.SomethingWentWrongDescriber</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Something went wrong. The exception was thrown: {exception}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.TypeMismatch #</span><span class="w"></span>
+<span class="c">#Original text = Type mismatch. Object of class that equals or extends following types was expected: </span><span class="w"></span>
+<span class="c">#{expected}</span><span class="w"></span>
+<span class="c">#Class of passed value is `{actual}`. All checks were stopped</span><span class="w"></span>
+<span class="na">core.api.hamcrest.TypeMismatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Type mismatch. Object of class that equals or extends following types was expected: \r\n\</span>
+<span class="s">{expected}\r\n\</span>
+<span class="s">Class of passed value is `{actual}`. All checks were stopped</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.common.DoesNotMatchAnyCriteria #</span><span class="w"></span>
+<span class="c">#Original text = &lt;{value}&gt; doesn&#39;t match any of listed criteria</span><span class="w"></span>
+<span class="na">core.api.hamcrest.common.DoesNotMatchAnyCriteria</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&lt;{value}&gt; doesn&#39;t match any of listed criteria</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.common.only.one.MatchesMoreThanOneCriteria #</span><span class="w"></span>
+<span class="c">#Original text = Value: {value}. Only one of listed criteria was expected to be matched. Checks of following criteria were positive:</span><span class="w"></span>
+<span class="c"># {matchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.common.only.one.MatchesMoreThanOneCriteria</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Value: {value}. Only one of listed criteria was expected to be matched. Checks of following criteria were positive:\r\n\</span>
+<span class="s">{matchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.descriptions.DifferentSizeMismatch #</span><span class="w"></span>
+<span class="c">#Original text = {actual} items instead of {expected}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.descriptions.DifferentSizeMismatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">{actual} items instead of {expected}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.descriptions.EmptyMismatch #</span><span class="w"></span>
+<span class="c">#Original text = &lt;EMPTY&gt;</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.descriptions.EmptyMismatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&lt;EMPTY&gt;</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.descriptions.OutOfItemsOrderMismatch #</span><span class="w"></span>
+<span class="c">#Original text = The item [&#39;{currentCriteria}&#39;] doesn&#39;t go after : [{lastSuccessful}; index: {lastSuccessfulIndex}; criteria: &#39;{lastSuccessfulCriteria}&#39;]</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.descriptions.OutOfItemsOrderMismatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">The item [&#39;{currentCriteria}&#39;] doesn&#39;t go after : [{lastSuccessful}; index: {lastSuccessfulIndex}; criteria: &#39;{lastSuccessfulCriteria}&#39;]</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.pojo.NoSuchMethodMismatch #</span><span class="w"></span>
+<span class="c">#Original text = Class {clazz} has no non-static and public method &#39;{getter}&#39; with empty signature and which returns some value</span><span class="w"></span>
+<span class="na">core.api.hamcrest.pojo.NoSuchMethodMismatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Class {clazz} has no non-static and public method &#39;{getter}&#39; with empty signature and which returns some value</span><span class="w"></span>
+
+<span class="c">#============================================ MATCHED OBJECTS ============================================ </span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.descriptions.Count #</span><span class="w"></span>
+<span class="c">#Original text = Count</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.descriptions.Count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Count</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.descriptions.Item #</span><span class="w"></span>
+<span class="c">#Original text = item{indexStr}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.descriptions.Item</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">item{indexStr}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.descriptions.Key #</span><span class="w"></span>
+<span class="c">#Original text = Key</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.descriptions.Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Key</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.descriptions.Value #</span><span class="w"></span>
+<span class="c">#Original text = Value</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.descriptions.Value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Value</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.pojo.ReturnedObject #</span><span class="w"></span>
+<span class="c">#Original text = value returned from &#39;{getter}&#39;</span><span class="w"></span>
+<span class="na">core.api.hamcrest.pojo.ReturnedObject</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">value returned from &#39;{getter}&#39;</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.resorce.locator.QueryParameter #</span><span class="w"></span>
+<span class="c">#Original text = URI/URL query parameter{param}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.resorce.locator.QueryParameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">URI/URL query parameter{param}</span><span class="w"></span>
+
+<span class="c">#============================================ OTHER ============================================ </span><span class="w"></span>
+
+<span class="c">######################## core.api.event.firing.Captor #</span><span class="w"></span>
+<span class="c">#Original text = Attachment</span><span class="w"></span>
+<span class="na">core.api.event.firing.Captor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Attachment</span><span class="w"></span>
+
+<span class="c">######################## core.api.logical.lexemes.Not #</span><span class="w"></span>
+<span class="c">#Original text = not</span><span class="w"></span>
+<span class="na">core.api.logical.lexemes.Not</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">not</span><span class="w"></span>
+
+<span class="c">######################## core.api.logical.lexemes.OnlyOne #</span><span class="w"></span>
+<span class="c">#Original text = xor</span><span class="w"></span>
+<span class="na">core.api.logical.lexemes.OnlyOne</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">xor</span><span class="w"></span>
+
+<span class="c">######################## core.api.logical.lexemes.Or #</span><span class="w"></span>
+<span class="c">#Original text = or</span><span class="w"></span>
+<span class="na">core.api.logical.lexemes.Or</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">or</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Все что теперь нужно — это заменить английский текст в значении каждого из свойств на немецкий, кроме ⚠️
+выражений внутри <code class="docutils literal notranslate"><span class="pre">{}</span></code>, их нужно оставить как есть</p>
+<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c">######################## core.api.logical.lexemes.Not #</span><span class="w"></span>
+<span class="c">#Original text = not</span><span class="w"></span>
+<span class="na">core.api.logical.lexemes.Not</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">nicht</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.pojo.ReturnedObject #</span><span class="w"></span>
+<span class="c">#Original text = value returned from &#39;{getter}&#39;</span><span class="w"></span>
+<span class="na">core.api.hamcrest.pojo.ReturnedObject</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">von &#39;{getter}&#39; zurückgegebener wert&#39;</span><span class="w"></span>
+</pre></div>
+</div>
+</section>
+<section id="id6">
+<h3>Создание кастомного бандла поверх существующего в <em>Neptune</em><a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h3>
+<div class="literal-block-wrapper docutils container" id="id14">
+<div class="code-block-caption"><span class="caption-text">maven. build/plugins</span><a class="headerlink" href="#id14" title="Permalink to this code">#</a></div>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;plugin&gt;</span>
+     <span class="nt">&lt;groupId&gt;</span>org.codehaus.mojo<span class="nt">&lt;/groupId&gt;</span>
+     <span class="nt">&lt;artifactId&gt;</span>exec-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+     <span class="nt">&lt;version&gt;</span>3.0.0<span class="nt">&lt;/version&gt;</span>
+     <span class="nt">&lt;executions&gt;</span>
+          <span class="nt">&lt;execution&gt;</span>
+              <span class="nt">&lt;id&gt;</span>generate properties<span class="nt">&lt;/id&gt;</span>
+              <span class="nt">&lt;phase&gt;</span>compile<span class="nt">&lt;/phase&gt;</span>
+              <span class="nt">&lt;goals&gt;</span>
+                  <span class="nt">&lt;goal&gt;</span>java<span class="nt">&lt;/goal&gt;</span>
+              <span class="nt">&lt;/goals&gt;</span>
+              <span class="nt">&lt;configuration&gt;</span>
+                  <span class="nt">&lt;mainClass&gt;</span>ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator<span class="nt">&lt;/mainClass&gt;</span>
+                  <span class="nt">&lt;arguments&gt;</span>
+                       <span class="cm">&lt;!--Нужная локаль--&gt;</span>
+                       <span class="nt">&lt;argument&gt;</span>ru_RU<span class="nt">&lt;/argument&gt;</span>
+                       <span class="cm">&lt;!--или ${basedir}/src/main/resources--&gt;</span>
+                       <span class="cm">&lt;!--или любая другая директория--&gt;</span>
+                       <span class="nt">&lt;argument&gt;</span>${basedir}/src/test/resources<span class="nt">&lt;/argument&gt;</span>
+                       <span class="cm">&lt;!--кастомный бандл (true) или дефолтный (false)--&gt;</span>
+                       <span class="cm">&lt;!--В данном случае true--&gt;</span>
+                       <span class="nt">&lt;argument&gt;</span>true<span class="nt">&lt;/argument&gt;</span>
+                       <span class="cm">&lt;!--Имя бандла, который надо сформировать--&gt;</span>
+                       <span class="cm">&lt;!--У каждого модуля Neptune уникальный набор имен бандлов--&gt;</span>
+                       <span class="cm">&lt;!--Имена бандлов можно не указывать, тогда сформируются бандлы для--&gt;</span>
+                       <span class="cm">&lt;!--всех подключенных модулей--&gt;</span>
+                       <span class="nt">&lt;argument&gt;</span>name_of_the_module<span class="nt">&lt;/argument&gt;</span>
+                       <span class="cm">&lt;!--и так далее, имена нужных бандлов--&gt;</span>
+                       <span class="nt">&lt;argument&gt;</span>name_of_the_modul2<span class="nt">&lt;/argument&gt;</span>
+                  <span class="nt">&lt;/arguments&gt;</span>
+              <span class="nt">&lt;/configuration&gt;</span>
+          <span class="nt">&lt;/execution&gt;</span>
+     <span class="nt">&lt;/executions&gt;</span>
+<span class="nt">&lt;/plugin&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id15">
+<div class="code-block-caption"><span class="caption-text">gradle</span><a class="headerlink" href="#id15" title="Permalink to this code">#</a></div>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">task</span><span class="w"> </span><span class="nf">generateBundle</span><span class="o">(</span><span class="nl">type:</span><span class="w"> </span><span class="n">JavaExec</span><span class="o">)</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">classpath</span><span class="w"> </span><span class="n">sourceSets</span><span class="o">.</span><span class="na">main</span><span class="o">.</span><span class="na">runtimeClasspath</span><span class="w"></span>
+<span class="w">    </span><span class="n">main</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//нужная локаль</span><span class="w"></span>
+<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="s2">&quot;ru_RU&quot;</span><span class="o">,</span><span class="w"></span>
+<span class="w">            </span><span class="c1">//или $projectDir/src/main/resources</span><span class="w"></span>
+<span class="w">            </span><span class="c1">//или любая другая директория</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;$projectDir/src/test/resources&quot;</span><span class="o">,</span><span class="w"></span>
+<span class="w">            </span><span class="c1">//кастомный бандл (true) или дефолтный (false)</span><span class="w"></span>
+<span class="w">            </span><span class="c1">//В данном случае true</span><span class="w"></span>
+<span class="w">            </span><span class="kc">true</span><span class="o">,</span><span class="w"></span>
+<span class="w">            </span><span class="c1">//Имя бандла, который надо сформировать.</span><span class="w"></span>
+<span class="w">            </span><span class="c1">//У каждого модуля Neptune уникальный набор имен бандлов</span><span class="w"></span>
+<span class="w">            </span><span class="c1">//Имена бандлов можно не указывать, тогда сформируются бандлы для</span><span class="w"></span>
+<span class="w">            </span><span class="c1">//всех подключенных модулей</span><span class="w"></span>
+<span class="w">            </span><span class="n">name_of_the_module</span><span class="o">,</span><span class="w"></span>
+<span class="w">            </span><span class="c1">//и так далее, имена нужных бандлов</span><span class="w"></span>
+<span class="w">            </span><span class="n">name_of_the_modul2</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<p>Будут сформированы файлы вида <code class="docutils literal notranslate"><span class="pre">neptune_Localization_&lt;name_of_the_module&gt;_CUSTOM_ru_RU.properties</span></code>.
+Их контент будет похож на пример ниже:</p>
+<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c">#Values for translation of steps, their parameters, matchers and their descriptions, and attachments are defined here. Format key = value</span><span class="w"></span>
+
+<span class="c">#============================================ STEPS ============================================ </span><span class="w"></span>
+
+<span class="c">######################## core.api.steps.SequentialGetStepSupplier #</span><span class="w"></span>
+<span class="c">#_________________________________Parameters_____________________________________</span><span class="w"></span>
+<span class="c">#Original text = Get:</span><span class="w"></span>
+<span class="na">core.api.steps.SequentialGetStepSupplier.imperative</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Получить:</span><span class="w"></span>
+<span class="c">#Original text = Result</span><span class="w"></span>
+<span class="na">core.api.steps.SequentialGetStepSupplier.resultDescription</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Результат</span><span class="w"></span>
+<span class="c">#Original text = Not present:</span><span class="w"></span>
+<span class="na">core.api.steps.SequentialGetStepSupplier.errorMessageStartingOnEmptyResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Не присутствует / не найдено:</span><span class="w"></span>
+
+<span class="c">######################## core.api.steps.SequentialActionSupplier #</span><span class="w"></span>
+<span class="c">#_________________________________Parameters_____________________________________</span><span class="w"></span>
+<span class="c">#Original text = Perform:</span><span class="w"></span>
+<span class="na">core.api.steps.SequentialActionSupplier.imperative</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Выполнить:</span><span class="w"></span>
+
+<span class="c">######################## core.api.steps.Absence #</span><span class="w"></span>
+<span class="c">#_________________________________Parameters_____________________________________</span><span class="w"></span>
+<span class="c">#Original text = Wait for:</span><span class="w"></span>
+<span class="na">core.api.steps.Absence.imperative</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Ожидать:</span><span class="w"></span>
+<span class="c">#Original text = Time of the waiting for absence</span><span class="w"></span>
+<span class="na">core.api.steps.Absence.timeOut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Время ожидания отсутствия/исчезновения</span><span class="w"></span>
+<span class="c">#Original text = Is absent</span><span class="w"></span>
+<span class="na">core.api.steps.Absence.resultDescription</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Отсутствует:</span><span class="w"></span>
+<span class="c">#Original text = Still present:</span><span class="w"></span>
+<span class="na">core.api.steps.Absence.errorMessageStartingOnEmptyResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Все еще присутствует:</span><span class="w"></span>
+<span class="c">#__________________________________ Methods _______________________________________</span><span class="w"></span>
+<span class="c">#Original text = Absence of {toBeAbsent}</span><span class="w"></span>
+<span class="na">core.api.steps.Absence.absence(core.api.steps.SequentialGetStepSupplier&lt;T,?,?,?,?&gt;)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Отсутствие. {toBeAbsent}</span><span class="w"></span>
+
+<span class="c">######################## core.api.steps.Presence #</span><span class="w"></span>
+<span class="c">#_________________________________Parameters_____________________________________</span><span class="w"></span>
+<span class="c">#Original text = Wait for:</span><span class="w"></span>
+<span class="na">core.api.steps.Presence.imperative</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Ожидать:</span><span class="w"></span>
+<span class="c">#Original text = Is present</span><span class="w"></span>
+<span class="na">core.api.steps.Presence.resultDescription</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Присутствует:</span><span class="w"></span>
+<span class="c">#__________________________________ Methods _______________________________________</span><span class="w"></span>
+<span class="c">#Original text = Presence of {toBePresent}</span><span class="w"></span>
+<span class="na">core.api.steps.Presence.presence(core.api.steps.SequentialGetStepSupplier&lt;T,?,?,?,?&gt;)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Наличие. {toBePresent}</span><span class="w"></span>
+
+<span class="c">#============================================ ATTACHMENTS ============================================ </span><span class="w"></span>
+
+<span class="c">######################## core.api.event.firing.collections.ArrayCaptor #</span><span class="w"></span>
+<span class="c">#Original text = Resulted array</span><span class="w"></span>
+<span class="na">core.api.event.firing.collections.ArrayCaptor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Полученный массив</span><span class="w"></span>
+
+<span class="c">######################## core.api.event.firing.collections.CollectionCaptor #</span><span class="w"></span>
+<span class="c">#Original text = Resulted collection</span><span class="w"></span>
+<span class="na">core.api.event.firing.collections.CollectionCaptor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Полученная коллекция</span><span class="w"></span>
+
+<span class="c">######################## core.api.event.firing.collections.MapCaptor #</span><span class="w"></span>
+<span class="c">#Original text = Resulted map</span><span class="w"></span>
+<span class="na">core.api.event.firing.collections.MapCaptor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Полученный Map&lt;?,?&gt;</span><span class="w"></span>
+
+<span class="c">#============================================ MATCHERS ============================================ </span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.common.AnyThingMatcher #</span><span class="w"></span>
+<span class="c">#Original text = ANYTHING</span><span class="w"></span>
+<span class="na">core.api.hamcrest.common.AnyThingMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">ЛЮБОЕ ЗНАЧЕНИЕ</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.common.all.AllCriteriaMatcher #</span><span class="w"></span>
+<span class="c">#Original text = {allMatchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.common.all.AllCriteriaMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">{allMatchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.common.any.AnyMatcher #</span><span class="w"></span>
+<span class="c">#Original text = {orExpression}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.common.any.AnyMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">{orExpression}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.common.not.NotMatcher #</span><span class="w"></span>
+<span class="c">#Original text = {notExpression}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.common.not.NotMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">{notExpression}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.common.only.one.OnlyOneMatcher #</span><span class="w"></span>
+<span class="c">#Original text = {onlyOneExpression}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.common.only.one.OnlyOneMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">{onlyOneExpression}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.MapEntryMatcher #</span><span class="w"></span>
+<span class="c">#Original text = Key: {key} Value: {value}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.MapEntryMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Ключ: {key} значение: {value}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher #</span><span class="w"></span>
+<span class="c">#Original text = in any order: {matchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">в любом порядке: {matchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher$ArrayConsistsOfMatcherInOrder #</span><span class="w"></span>
+<span class="c">#Original text = in following order: {matchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher$ArrayConsistsOfMatcherInOrder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">в следующем порядке: {matchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher$IterableConsistsOfMatcherInOrder #</span><span class="w"></span>
+<span class="c">#Original text = in following order: {matchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher$IterableConsistsOfMatcherInOrder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">в следующем порядке: {matchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher$MapConsistsOfMatcherInOrder #</span><span class="w"></span>
+<span class="c">#Original text = in following order: {matchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher$MapConsistsOfMatcherInOrder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">в следующем порядке: {matchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsEachItemMatcher #</span><span class="w"></span>
+<span class="c">#Original text = each item: {matchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsEachItemMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">каждый элемент: {matchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsEachItemMatcher$MapEachItemMatcher #</span><span class="w"></span>
+<span class="c">#Original text = each entry: {matchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsEachItemMatcher$MapEachItemMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">каждая запись: {matchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsIncludesMatcher #</span><span class="w"></span>
+<span class="c">#Original text = includes in any order: {matchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsIncludesMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">включает в любом порядке: {matchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsIncludesMatcher$ArrayIncludesMatcherInOrder #</span><span class="w"></span>
+<span class="c">#Original text = includes in following order: {matchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsIncludesMatcher$ArrayIncludesMatcherInOrder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">включает в следующем порядке: {matchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsIncludesMatcher$IterableIncludesMatcherInOrder #</span><span class="w"></span>
+<span class="c">#Original text = includes in following order: {matchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsIncludesMatcher$IterableIncludesMatcherInOrder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">включает в следующем порядке: {matchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsIncludesMatcher$MapIncludesMatcherInOrder #</span><span class="w"></span>
+<span class="c">#Original text = includes in following order: {matchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsIncludesMatcher$MapIncludesMatcherInOrder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">включает в следующем порядке: {matchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsItemsMatcher #</span><span class="w"></span>
+<span class="c">#Original text = has item(s): {matchers}. Expected count: {count}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsItemsMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">есть элемент(ы): {matchers}. Ожидаемое количество: {count}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.SetOfObjectsItemsMatcher$MapHasItemsMatcher #</span><span class="w"></span>
+<span class="c">#Original text = has entry(es): {matchers}. Expected count: {count}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.SetOfObjectsItemsMatcher$MapHasItemsMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">есть запись(записи): {matchers}. Ожидаемое количество: {count}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.pojo.PojoGetterReturnsMatcher #</span><span class="w"></span>
+<span class="c">#Original text = Public getter &#39;{getter}&#39; is expected to return a value: {criteria}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.pojo.PojoGetterReturnsMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Публичный метод &#39;{getter}&#39; должен вернуть значение: {criteria}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.resorce.locator.HasHostMatcher #</span><span class="w"></span>
+<span class="c">#Original text = Host {matcher}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.resorce.locator.HasHostMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">хост {matcher}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.resorce.locator.HasPathMatcher #</span><span class="w"></span>
+<span class="c">#Original text = Path {matcher}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.resorce.locator.HasPathMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Path {matcher}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.resorce.locator.HasPortMatcher #</span><span class="w"></span>
+<span class="c">#Original text = Port {matcher}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.resorce.locator.HasPortMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Порт {matcher}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.resorce.locator.HasProtocolMatcher #</span><span class="w"></span>
+<span class="c">#Original text = Protocol {matcher}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.resorce.locator.HasProtocolMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Протокол {matcher}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.resorce.locator.HasQueryParameters #</span><span class="w"></span>
+<span class="c">#Original text = has query parameter {key} {value}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.resorce.locator.HasQueryParameters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">query-параметр {key} {value}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.resorce.locator.HasQueryStringMatcher #</span><span class="w"></span>
+<span class="c">#Original text = Query {matcher}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.resorce.locator.HasQueryStringMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Query {matcher}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.resorce.locator.HasReferenceMatcher #</span><span class="w"></span>
+<span class="c">#Original text = Url reference {matcher}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.resorce.locator.HasReferenceMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Url reference {matcher}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.resorce.locator.HasSchemeMatcher #</span><span class="w"></span>
+<span class="c">#Original text = Scheme {matcher}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.resorce.locator.HasSchemeMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Scheme {matcher}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.resorce.locator.HasUserInfoMatcher #</span><span class="w"></span>
+<span class="c">#Original text = User info {matcher}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.resorce.locator.HasUserInfoMatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">User info {matcher}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.text.StringContainsWithSeparator #</span><span class="w"></span>
+<span class="c">#Original text = string has substring(s) separated by &lt;&#39;{separator}&#39;&gt;: {toContain}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.text.StringContainsWithSeparator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">строка с разделителем &lt;&#39;{separator}&#39;&gt; содержит под-строки: {toContain}</span><span class="w"></span>
+
+<span class="c">#============================================ MISMATCH DESCRIPTIONS ============================================ </span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.NullValueMismatch #</span><span class="w"></span>
+<span class="c">#Original text = Null value. All checks were stopped</span><span class="w"></span>
+<span class="na">core.api.hamcrest.NullValueMismatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Null. Проверка завершена</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.ObjectIsNotPresentMismatch #</span><span class="w"></span>
+<span class="c">#Original text = Not present {objectName}: {characteristics}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.ObjectIsNotPresentMismatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Объект не найден {objectName}: {characteristics}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.PropertyValueMismatch #</span><span class="w"></span>
+<span class="c">#Original text = {property} {mismatch}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.PropertyValueMismatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">{property} {mismatch}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.SomethingWentWrongDescriber #</span><span class="w"></span>
+<span class="c">#Original text = Something went wrong. The exception was thrown: {exception}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.SomethingWentWrongDescriber</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Что-то пошло не так. Выброшенное исключение: {exception}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.TypeMismatch #</span><span class="w"></span>
+<span class="c">#Original text = Type mismatch. Object of class that equals or extends following types was expected: </span><span class="w"></span>
+<span class="c">#{expected}</span><span class="w"></span>
+<span class="c">#Class of passed value is `{actual}`. All checks were stopped</span><span class="w"></span>
+<span class="na">core.api.hamcrest.TypeMismatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Несоответствие типов. Ожидался объект одного из следующих классов: \r\n\</span>
+<span class="s">{expected}\r\n\</span>
+<span class="s">Класс объекта: `{actual}`. Проверка завершена</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.common.DoesNotMatchAnyCriteria #</span><span class="w"></span>
+<span class="c">#Original text = &lt;{value}&gt; doesn&#39;t match any of listed criteria</span><span class="w"></span>
+<span class="na">core.api.hamcrest.common.DoesNotMatchAnyCriteria</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&lt;{value}&gt; не соответствует ни одному из указанных параметров</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.common.only.one.MatchesMoreThanOneCriteria #</span><span class="w"></span>
+<span class="c">#Original text = Value: {value}. Only one of listed criteria was expected to be matched. Checks of following criteria were positive:</span><span class="w"></span>
+<span class="c"># {matchers}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.common.only.one.MatchesMoreThanOneCriteria</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Значение: {value}. Ожидалось соответствие только одному из перечисленных критериев. Соответствия:\r\n\</span>
+<span class="s">{matchers}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.descriptions.DifferentSizeMismatch #</span><span class="w"></span>
+<span class="c">#Original text = {actual} items instead of {expected}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.descriptions.DifferentSizeMismatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">{actual} элементов вместо {expected}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.descriptions.EmptyMismatch #</span><span class="w"></span>
+<span class="c">#Original text = &lt;EMPTY&gt;</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.descriptions.EmptyMismatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&lt;ПУСТО&gt;</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.descriptions.OutOfItemsOrderMismatch #</span><span class="w"></span>
+<span class="c">#Original text = The item [&#39;{currentCriteria}&#39;] doesn&#39;t go after : [{lastSuccessful}; index: {lastSuccessfulIndex}; criteria: &#39;{lastSuccessfulCriteria}&#39;]</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.descriptions.OutOfItemsOrderMismatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Элемент [&#39;{currentCriteria}&#39;] не следует за : [{lastSuccessful}; индекс: {lastSuccessfulIndex}; критерий: &#39;{lastSuccessfulCriteria}&#39;]</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.pojo.NoSuchMethodMismatch #</span><span class="w"></span>
+<span class="c">#Original text = Class {clazz} has no non-static and public method &#39;{getter}&#39; with empty signature and which returns some value</span><span class="w"></span>
+<span class="na">core.api.hamcrest.pojo.NoSuchMethodMismatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Класс {clazz} не имеет нестатический и публичный метод &#39;{getter}&#39; с пустой сигнатурой и возвращающий значение</span><span class="w"></span>
+
+<span class="c">#============================================ MATCHED OBJECTS ============================================ </span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.descriptions.Count #</span><span class="w"></span>
+<span class="c">#Original text = Count</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.descriptions.Count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Количество</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.descriptions.Item #</span><span class="w"></span>
+<span class="c">#Original text = item{indexStr}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.descriptions.Item</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">элемент{indexStr}</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.descriptions.Key #</span><span class="w"></span>
+<span class="c">#Original text = Key</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.descriptions.Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Ключ</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.iterables.descriptions.Value #</span><span class="w"></span>
+<span class="c">#Original text = Value</span><span class="w"></span>
+<span class="na">core.api.hamcrest.iterables.descriptions.Value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Значение</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.pojo.ReturnedObject #</span><span class="w"></span>
+<span class="c">#Original text = value returned from &#39;{getter}&#39;</span><span class="w"></span>
+<span class="na">core.api.hamcrest.pojo.ReturnedObject</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">значение которое вернул &#39;{getter}&#39;</span><span class="w"></span>
+
+<span class="c">######################## core.api.hamcrest.resorce.locator.QueryParameter #</span><span class="w"></span>
+<span class="c">#Original text = URI/URL query parameter{param}</span><span class="w"></span>
+<span class="na">core.api.hamcrest.resorce.locator.QueryParameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">query-параметр URI/URL{param}</span><span class="w"></span>
+
+<span class="c">#============================================ OTHER ============================================ </span><span class="w"></span>
+
+<span class="c">######################## core.api.logical.lexemes.Not #</span><span class="w"></span>
+<span class="c">#Original text = not</span><span class="w"></span>
+<span class="na">core.api.logical.lexemes.Not</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">НЕ</span><span class="w"></span>
+
+<span class="c">######################## core.api.logical.lexemes.OnlyOne #</span><span class="w"></span>
+<span class="c">#Original text = xor</span><span class="w"></span>
+<span class="na">core.api.logical.lexemes.OnlyOne</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">xor</span><span class="w"></span>
+
+<span class="c">######################## core.api.logical.lexemes.Or #</span><span class="w"></span>
+<span class="c">#Original text = or</span><span class="w"></span>
+<span class="na">core.api.logical.lexemes.Or</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">или</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Все что теперь нужно — это исправить текст в значении каждого из свойств, кроме ⚠️ выражений внутри <code class="docutils literal notranslate"><span class="pre">{}</span></code>,
+их нужно оставить как есть.</p>
+</section>
+<section id="id7">
+<h3>Названия бандлов существующих модулей<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="../index.html"><span class="doc std std-doc">Core</span></a>: <code class="docutils literal notranslate"><span class="pre">core</span></code></p></li>
+<li><p><a class="reference internal" href="../../check/check.html"><span class="doc std std-doc">Check</span></a>: <code class="docutils literal notranslate"><span class="pre">check</span></code></p></li>
+</ul>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../serialize_deserialize.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Сериализация и десериализация</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../settings/property_sources.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Сторонние свойства</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022, S.Tikhomirov
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/Tinkoff/neptune" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Механизм локализации / интернационализации</a><ul>
+<li><a class="reference internal" href="#id2">Для чего применяется</a></li>
+<li><a class="reference internal" href="#id3">Механизм</a></li>
+<li><a class="reference internal" href="#id4">Базовый механизм</a><ul>
+<li><a class="reference internal" href="#id5">Добавление возможности интернационализации своего модуля на основе бандлов</a></li>
+<li><a class="reference internal" href="#neptune">Создание нового бандла для своего модуля или локали, для которой нет бандлов в <em>Neptune</em></a></li>
+<li><a class="reference internal" href="#id6">Создание кастомного бандла поверх существующего в <em>Neptune</em></a></li>
+<li><a class="reference internal" href="#id7">Названия бандлов существующих модулей</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/scripts/furo.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/tabs.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
+    </body>
+</html>

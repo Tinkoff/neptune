@@ -1,0 +1,441 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="Инверсия критериев" href="inversion.html" /><link rel="prev" title="Объединение OR" href="OR_junction.html" />
+
+    <meta name="generator" content="sphinx-5.0.2, furo 2022.06.21"/>
+        <title>Объединение XOR - Neptune documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">Neptune  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  
+  <span class="sidebar-brand-text">Neptune  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Быстрый старт</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../quick_start/index.html">Быстрый старт</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../quick_start/settings/index.html">Свойства Neptune</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../quick_start/settings/resorces.html">Освобождение ресурсов</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../quick_start/settings/attachments.html">Автоматическое создание аттачей</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../quick_start/settings/to_limit_report_depth.html">Глубина вывода шагов в отчет / консоль</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../quick_start/settings/internationalization.html">Язык / локализация</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start/start_to_contribute.html">Как контрибъютить</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Тест-раннеры</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../test_runners/testng/index.html">TestNG</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../test_runners/testng/allure.testng.bridge.html">allure.testng.bridge</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../test_runners/junit5/index.html">JUnit5</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../test_runners/junit5/allure.jupiter.bridge.html">allure.jupiter.bridge</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Тест-репортеры</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../test_reports/allure.html">Allure</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core</span></p>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../../index.html">Neptune Core</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="../context/index.html">Контексты</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../context/refresh.html">Обновление</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../context/stopping.html">Завершение / Остановка</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../steps/index.html">Шаги</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../steps/get_step_supplier/index.html">Возврат результата (get-step)</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../steps/get_step_supplier/get_object_step.html">Возврат объекта (<code class="docutils literal notranslate"><span class="pre">java.lang.Object</span></code> и его наследники)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../steps/get_step_supplier/get_object_from_iterable_step.html">Возврат элемента коллекции/Iterable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../steps/get_step_supplier/get_object_from_array_step.html">Возврат элемента массива</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../steps/get_step_supplier/get_list_step.html">Возврат листа</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../steps/get_step_supplier/get_array_step.html">Возврат массива</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../steps/action_supplier.html">Выполнение действия (action-step)</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="index.html">Критерии</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="AND_junction.html">Объединение AND</a></li>
+<li class="toctree-l3"><a class="reference internal" href="OR_junction.html">Объединение OR</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">Объединение XOR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inversion.html">Инверсия критериев</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../annotations/index.html">Аннотации шагов и критериев</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../annotations/parameter_string_presentation.html">Строковое представление параметра</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../annotations/%40Description_%40DescriptionFragment.html">@Description и @DescriptionFragment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../annotations/%40StepParameter.html">@StepParameter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../annotations/%40IncludeParamsOfInnerGetterStep.html">@IncludeParamsOfInnerGetterStep</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../annotations/%40MaxDepthOfReporting.html">@MaxDepthOfReporting</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../annotations/get-step/index.html">Аннотации параметров get-step</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../annotations/get-step/%40DefineGetImperativeParameterName.html">@DefineGetImperativeParameterName</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../annotations/get-step/%40DefineTimeOutParameterName.html">@DefineTimeOutParameterName</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../annotations/get-step/%40DefinePollingTimeParameterName.html">@DefinePollingTimeParameterName</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../annotations/get-step/%40DefineCriteriaParameterName.html">@DefineCriteriaParameterName</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../annotations/get-step/%40DefineFromParameterName.html">@DefineFromParameterName</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../annotations/get-step/%40DefineResultDescriptionParameterName.html">@DefineResultDescriptionParameterName</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../annotations/get-step/%40ThrowWhenNoData.html">@ThrowWhenNoData</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../annotations/action-step/index.html">Аннотации параметров action-step</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../annotations/action-step/%40DefinePerformImperativeParameterName.html">@DefinePerformImperativeParameterName</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../annotations/action-step/%40DefinePerformOnParameterName.html">@DefinePerformOnParameterName</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../events/index.html">Логирование событий</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../events/event_logger.html">Логгер событий</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../events/attaches/index.html">Аттачи</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../events/attaches/description.html">Название / сообщение аттача</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../events/attaches/%40UseInjectors.html">@UseInjectors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../events/attaches/spi_setting.html">SPI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../events/attaches/file_attach.html">Аттач файла</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../events/attaches/picture_attach.html">Аттач картинки</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../events/attaches/text_attach.html">Аттач текста</a></li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../../events/attaches/annotations/index.html">Аннотации для шагов</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../events/attaches/annotations/%40CaptureOnSuccess.html">@CaptureOnSuccess</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../events/attaches/annotations/%40CaptureOnFailure.html">@CaptureOnFailure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../settings/index.html">Создание собственных настроек</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../settings/string.html">String-свойства</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../settings/boolean.html">Boolean-свойства</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../settings/byte.html">Byte-свойства</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../settings/double.html">Double-свойства</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../settings/float.html">Float-свойства</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../settings/integer.html">Integer-свойства</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../settings/long.html">Long-свойства</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../settings/short.html">Short-свойства</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../settings/url.html">Url-свойства</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../settings/enum_single_item.html">Enum-свойства. Один элемент</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../settings/enum_multiple_items.html">Enum-свойства. Множество элементов</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../settings/duration.html">Duration-свойства</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../settings/any_objects.html">Произвольные объекты</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../settings/property_sources.html">Сторонние свойства</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../internationalization/internationalization.html">Механизм локализации / интернационализации</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../serialize_deserialize.html">Сериализация и десериализация</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../dependency_injection.html">Внедрение зависимостей</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../hooks.html">Хуки</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../class_binding.html">Связывание классов</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Assert</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../check/check.html">Check</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../common_matchers/index.html">Общий набор матчеров</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../common_matchers/iterable.html">Для java.lang.Iterable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../common_matchers/array.html">Для массивов</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../common_matchers/map.html">Для java.util.Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../common_matchers/uri_url.html">Для URI/URL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../common_matchers/string_with_separator.html">Для строки с разделителем</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../common_matchers/pojo.html">Для POJO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../common_matchers/class.html">Для класса объекта</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../common_matchers/throwable.html">Для Throwable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../common_matchers/combine.html">Объединения матчеров AND, OR, XOR, NOT</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Spring Boot</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../spring/spring.boot.sterter.html">Neptune Spring boot starter</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../spring/mock.mvc/index.html">Mock MVC</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" role="switch" type="checkbox"/><label for="toctree-checkbox-18"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../spring/mock.mvc/settings.html">Свойства</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../spring/mock.mvc/response.html">Request / Response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../spring/mock.mvc/bodydata.html">Mock MVC. Response body</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spring/web.test.client/index.html">Web Test Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spring/spring.data/index.html">Spring Data</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Базы данных</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../data.base/database.abstractions.html">database.abstractions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data.base/hibernate/index.html">Hibernate</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="xor">
+<h1>Объединение XOR<a class="headerlink" href="#xor" title="Permalink to this heading">#</a></h1>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Примеры</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.my.pack.MyCriteriaLib.oneMoreCriteria</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.my.pack.MyCriteriaLib.someCriteria</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.my.pack.MyGetStepSupplier.something</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.my.pack.MyTestContext.myTestContext</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Criteria.ONLY_ONE</span><span class="p">;</span><span class="w"></span>
+
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">   </span><span class="nd">@Test</span><span class="w"></span>
+<span class="w">   </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="kd">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">myTestContext</span><span class="p">().</span><span class="na">retrieve</span><span class="p">(</span><span class="n">something</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
+<span class="w">              </span><span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="n">ONLY_ONE</span><span class="p">(</span><span class="n">someCriteria</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;B&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">oneMoreCriteria</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)))</span><span class="w"></span>
+<span class="w">              </span><span class="c1">//тоже самое, что строкой выше, но боле удобным способом</span><span class="w"></span>
+<span class="w">              </span><span class="p">.</span><span class="na">criteriaOnlyOne</span><span class="p">(</span><span class="n">someCriteria</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;B&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">oneMoreCriteria</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)));</span><span class="w"></span>
+<span class="w">     </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="inversion.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Инверсия критериев</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="OR_junction.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Объединение OR</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022, S.Tikhomirov
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/Tinkoff/neptune" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/scripts/furo.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/tabs.js"></script>
+    <script src="../../../_static/design-tabs.js"></script>
+    </body>
+</html>
