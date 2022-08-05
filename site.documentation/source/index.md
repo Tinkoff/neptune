@@ -83,6 +83,8 @@ common_matchers/index.md
 
 spring/spring.boot.sterter.md
 spring/mock.mvc/index.md
+spring/web.test.client/index.md
+spring/spring.data/index.md
 ```
 
 ```{toctree}
