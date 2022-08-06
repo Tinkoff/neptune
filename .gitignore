@@ -59,10 +59,16 @@ allure-results/*
 */neptune.properties
 */neptune.global.properties
 /neptune.global.properties
-/neptune.documentation/
+/neptune.documentation/**/*.html
+/neptune.documentation/**/*.xml
+/neptune.documentation/**/*.txt
+/neptune.documentation/**/*.css
+/neptune.documentation/**/*.js
+/neptune.documentation/**/*.zip
+/neptune.documentation/**/element-list
+/neptune.documentation/**/*.png
 
 */venv
 */bin
 */lib
 */*.cfg
-/site.documentation/site
