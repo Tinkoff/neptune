@@ -300,11 +300,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../spring.boot.sterter.html">Neptune Spring boot starter</a></li>
 <li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Mock MVC</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" role="switch" type="checkbox"/><label for="toctree-checkbox-18"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="settings.html">Свойства</a></li>
-<li class="toctree-l2"><a class="reference internal" href="response.html">Request / Response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="response.html">MockMVC. Request / Response</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bodydata.html">Mock MVC. Response body</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../web.test.client/index.html">Web Test Client</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../web.test.client/index.html">Web Test Client</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" role="switch" type="checkbox"/><label for="toctree-checkbox-19"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../web.test.client/response.html">WebTestClient. Request / Response</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../spring.data/index.html">Spring Data</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Базы данных</span></p>
@@ -396,8 +399,8 @@
 </div>
 </div>
 <p><a class="reference external" href="https://tinkoff.github.io/neptune/spring.mock.mvc/index.html">API</a></p>
-<section id="neptune">
-<h2>Почему <em>Neptune</em> ?<a class="headerlink" href="#neptune" title="Permalink to this heading">#</a></h2>
+<section id="neptune-mockmvc">
+<h2>Сравнение <em>Neptune + MockMVC</em> с другими вариантами<a class="headerlink" href="#neptune-mockmvc" title="Permalink to this heading">#</a></h2>
 <p>Ниже небольшое сравнение того как выглядит один и тот же тест:</p>
 <ul class="simple">
 <li><p>с использованием Mock MVC, без реализации шагов</p></li>
@@ -447,9 +450,9 @@
 <span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">someCalculatedValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="c1">//вычисление чего-то с использованием </span><span class="w"></span>
 <span class="w">            </span><span class="c1">//responseDto</span><span class="w"></span>
 
-<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="s">&quot;Some calculated value&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">            </span><span class="n">someCalculatedValue</span><span class="p">.</span><span class="na">getSomethingElse</span><span class="p">(),</span><span class="w"></span>
-<span class="w">            </span><span class="n">is</span><span class="p">(</span><span class="n">someExpeсtedValue2</span><span class="p">));</span><span class="w"></span>
+<span class="w">            </span><span class="n">assertThat</span><span class="p">(</span><span class="s">&quot;Some calculated value&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="n">someCalculatedValue</span><span class="p">.</span><span class="na">getSomethingElse</span><span class="p">(),</span><span class="w"></span>
+<span class="w">                </span><span class="n">is</span><span class="p">(</span><span class="n">someExpeсtedValue2</span><span class="p">));</span><span class="w"></span>
 
 <span class="w">        </span><span class="c1">//и т.д.</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
@@ -533,7 +536,7 @@
 
 <span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">someCalculatedValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="c1">//вычисление чего-то с использованием </span><span class="w"></span>
 <span class="w">            </span><span class="c1">//responseDto</span><span class="w"></span>
-<span class="w">        </span><span class="n">assertSomeCalculatedValue</span><span class="p">(</span><span class="n">someCalculatedValue</span><span class="p">,</span><span class="w"> </span><span class="n">someExpectedValue2</span><span class="p">);</span><span class="w"></span>
+<span class="w">            </span><span class="n">assertSomeCalculatedValue</span><span class="p">(</span><span class="n">someCalculatedValue</span><span class="p">,</span><span class="w"> </span><span class="n">someExpectedValue2</span><span class="p">);</span><span class="w"></span>
 <span class="w">        </span><span class="c1">//и т.д.</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
@@ -545,7 +548,7 @@
 <div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="nd">@SpringBootTest</span><span class="w"></span>
 <span class="nd">@AutoConfigureMockMvc</span><span class="w"></span>
 <span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span>
+
 <span class="w">    </span><span class="nd">@Autowired</span><span class="w"></span>
 <span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">ObjectMapper</span><span class="w"> </span><span class="n">objectMapper</span><span class="p">;</span><span class="w"></span>
 
@@ -563,18 +566,18 @@
 <span class="w">                </span><span class="c1">// будут проверены все ожидания    </span><span class="w"></span>
 <span class="w">                </span><span class="p">.</span><span class="na">expectStatus</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span><span class="w"> </span><span class="c1">//проваленные будут выделены в отчете</span><span class="w"></span>
 <span class="w">                </span><span class="p">.</span><span class="na">expectJsonPathValue</span><span class="p">(</span><span class="s">&quot;$.successOrder&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"></span>
-<span class="w">                 </span><span class="c1">//предусмотрен механизм десериализации   </span><span class="w"></span>
+<span class="w">                </span><span class="c1">//предусмотрен механизм десериализации   </span><span class="w"></span>
 <span class="w">                </span><span class="p">.</span><span class="na">thenGetBody</span><span class="p">(</span><span class="n">SomeResponseDto</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
 <span class="w">        </span><span class="p">);</span><span class="w"></span>
 
-<span class="w">      </span><span class="n">check</span><span class="p">(</span><span class="s">&quot;Response body&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">           </span><span class="n">responseDto</span><span class="p">,</span><span class="w"></span>
-<span class="w">           </span><span class="n">match</span><span class="p">(</span><span class="s">&quot;Some field value&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">                   </span><span class="n">SomeResponseDto</span><span class="p">::</span><span class="n">getSomething</span><span class="p">,</span><span class="w"> </span>
-<span class="w">                   </span><span class="n">is</span><span class="p">(</span><span class="n">someExpectedValue</span><span class="p">)),</span><span class="w"></span>
-<span class="w">           </span><span class="n">match</span><span class="p">(</span><span class="s">&quot;Some calculated value&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">                   </span><span class="n">dto</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="cm">/*вычисление чего-то с использованием*/</span><span class="p">},</span><span class="w"> </span>
-<span class="w">                   </span><span class="n">is</span><span class="p">(</span><span class="n">someExpeсtedValue2</span><span class="p">)));</span><span class="w"></span>
+<span class="w">        </span><span class="n">check</span><span class="p">(</span><span class="s">&quot;Response body&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">responseDto</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">match</span><span class="p">(</span><span class="s">&quot;Some field value&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="n">SomeResponseDto</span><span class="p">::</span><span class="n">getSomething</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="n">is</span><span class="p">(</span><span class="n">someExpectedValue</span><span class="p">)),</span><span class="w"></span>
+<span class="w">            </span><span class="n">match</span><span class="p">(</span><span class="s">&quot;Some calculated value&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="n">dto</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="cm">/*вычисление чего-то с использованием*/</span><span class="p">},</span><span class="w"></span>
+<span class="w">                </span><span class="n">is</span><span class="p">(</span><span class="n">someExpeсtedValue2</span><span class="p">)));</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
@@ -648,7 +651,7 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Mock MVC</a><ul>
-<li><a class="reference internal" href="#neptune">Почему <em>Neptune</em> ?</a><ul>
+<li><a class="reference internal" href="#neptune-mockmvc">Сравнение <em>Neptune + MockMVC</em> с другими вариантами</a><ul>
 <li><a class="reference internal" href="#id1">Тест с использованием Mock MVC, без реализации шагов</a></li>
 <li><a class="reference internal" href="#id2">Тест с использованием Mock MVC и с реализацией шагов</a></li>
 <li><a class="reference internal" href="#mock-mvc-neptune">Тест с использованием Mock MVC и Neptune</a></li>
