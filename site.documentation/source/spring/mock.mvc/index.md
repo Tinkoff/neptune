@@ -13,7 +13,7 @@
 
 [API](https://tinkoff.github.io/neptune/spring.mock.mvc/index.html)
 
-## Почему _Neptune_ ?
+## Сравнение _Neptune + MockMVC_ с другими вариантами
 
 Ниже небольшое сравнение того как выглядит один и тот же тест:
 
@@ -24,6 +24,7 @@
 ### Тест с использованием Mock MVC, без реализации шагов
 
 ```java
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class SomeTest {
@@ -65,9 +66,9 @@ public class SomeTest {
         var someCalculatedValue = //вычисление чего-то с использованием 
             //responseDto
 
-        assertThat("Some calculated value", 
-            someCalculatedValue.getSomethingElse(),
-            is(someExpeсtedValue2));
+            assertThat("Some calculated value",
+                someCalculatedValue.getSomethingElse(),
+                is(someExpeсtedValue2));
 
         //и т.д.
     }
@@ -80,6 +81,7 @@ public class SomeTest {
 какие действия выполняются и каков их результат. Тогда
 
 ```java
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class SomeTest {
@@ -152,7 +154,7 @@ public class SomeTest {
 
         var someCalculatedValue = //вычисление чего-то с использованием 
             //responseDto
-        assertSomeCalculatedValue(someCalculatedValue, someExpectedValue2);
+            assertSomeCalculatedValue(someCalculatedValue, someExpectedValue2);
         //и т.д.
     }
 }
@@ -161,10 +163,11 @@ public class SomeTest {
 ### Тест с использованием Mock MVC и Neptune
 
 ```java
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class SomeTest {
-    
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -182,18 +185,18 @@ public class SomeTest {
                 // будут проверены все ожидания    
                 .expectStatus(200) //проваленные будут выделены в отчете
                 .expectJsonPathValue("$.successOrder", 5)
-                 //предусмотрен механизм десериализации   
+                //предусмотрен механизм десериализации   
                 .thenGetBody(SomeResponseDto.class)
         );
 
-      check("Response body", 
-           responseDto,
-           match("Some field value", 
-                   SomeResponseDto::getSomething, 
-                   is(someExpectedValue)),
-           match("Some calculated value", 
-                   dto -> {/*вычисление чего-то с использованием*/}, 
-                   is(someExpeсtedValue2)));
+        check("Response body",
+            responseDto,
+            match("Some field value",
+                SomeResponseDto::getSomething,
+                is(someExpectedValue)),
+            match("Some calculated value",
+                dto -> {/*вычисление чего-то с использованием*/},
+                is(someExpeсtedValue2)));
     }
 }
 ```
