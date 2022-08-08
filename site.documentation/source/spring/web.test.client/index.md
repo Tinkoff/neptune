@@ -1,61 +1,56 @@
-# Mock MVC
+# Web Test Client
 
 Данный модуль:
 
 - является дополнением к
-  стандартному [Spring MockMvc](https://spring.getdocs.org/en-US/spring-framework-docs/docs/testing/integration-testing/spring-mvc-test-framework.html)
-- данный модуль предоставляет фасад , который фиксирует работу _Spring MockMvc_ в виде шагов
-- данный модуль исправляет потенциальные неудобства флоу _Spring MockMvc_
+  стандартному [Spring WebTestClient](https://spring.getdocs.org/en-US/spring-framework-docs/docs/testing/integration-testing/webtestclient.html)
+- данный модуль предоставляет фасад , который фиксирует работу _Spring WebTestClient_ в виде шагов
+- данный модуль исправляет потенциальные неудобства флоу _Spring WebTestClient_
 
 ```{eval-rst}
-.. include:: mockmvc_dependencies.rst
+.. include:: webtestclient_dependencies.rst
 ```
 
-[API](https://tinkoff.github.io/neptune/spring.mock.mvc/index.html)
+[API](https://tinkoff.github.io/neptune/spring.web.testclient/index.html)
 
-## Сравнение _Neptune + MockMVC_ с другими вариантами
+## Сравнение _Neptune + WebTestClient_ с другими вариантами
 
 Ниже небольшое сравнение того как выглядит один и тот же тест:
 
-- с использованием Mock MVC, без реализации шагов
-- с использованием Mock MVC и с реализацией шагов
-- с использованием Mock MVC и Neptune
+- с использованием WebTestClient, без реализации шагов
+- с использованием WebTestClient и с реализацией шагов
+- с использованием WebTestClient и Neptune
 
-### Тест с использованием Mock MVC, без реализации шагов
+### Тест с использованием WebTestClient, без реализации шагов
 
 ```java
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureWebTestClient
 public class SomeTest {
 
     @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private MockMvc mockMvc;
+    private WebTestClient client;
 
     @Test
     public void semeAPITest() {
-        var bodyContent = mockMvc.perform(get("/something")
-                .contentType(APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new SomeDTO())))
+        SomeResponseDto responseDto = client.post()
+            .uri("/something")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .body(Mono.just(new SomeDTO()), SomeDTO.class)
+            .exchange()
             //Если текущее ожидание не выполнилось, 
             //на нем тест остановится и последующие ожидания не будут
             //проверены. Хотелось бы видеть более полную картину несоответствий
             //до того, как начать багофикс
-            .andExpect(status().isOk()) //хотелось бы частые ожидания иметь 
+            .expectStatus().isOk()
+            //хотелось бы частые ожидания иметь
             //в более доступном и коротком виде
-            //
-            //По умолчанию не поддерживается десериализация, 
-            //тело можно провалидировать по xpath/jsonpath/текстовому контенту
-            .andExpect(jsonPath("$.successOrder").value(5))
-            //либо получить тело ответа как сырой текст
-            .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
-
-        //и явно вызвать десериализацию
-        SomeResponseDto responseDto
-            = objectMapper.readValue(bodyContent, SomeResponseDto.class);
+            .expectHeader().contentType(MediaType.APPLICATION_JSON)
+            .expectBody(SomeResponseDto.class)
+            .returnResult()
+            .getResponseBody();
 
         //дельнейшие вычисления
         //проверка поля ответа
@@ -75,7 +70,7 @@ public class SomeTest {
 }
 ```
 
-### Тест с использованием Mock MVC и с реализацией шагов
+### Тест с использованием WebTestClient и с реализацией шагов
 
 Предположим, что результат интеграционного теста должен быть оформлен в отчет, описывающий по шагам,
 какие действия выполняются и каков их результат. Тогда
@@ -83,43 +78,49 @@ public class SomeTest {
 ```java
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureWebTestClient
 public class SomeTest {
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
-    private MockMvc mockMvc;
+    private WebTestClient client;
 
     @Step("Подготовить тело запроса")
-    private String prepareRequestBody() {
-        var body = objectMapper.writeValueAsString(new SomeDTO());
-        addAttachment("Request body", "application/json", body);
-        return body;
+    private SomeDTO prepareRequestBody() {
+        var toReturn = new SomeDTO();
+        addAttachment("Request body", "application/json",
+            objectMapper.writeValueAsString(toReturn));
+        return toReturn;
     }
 
-    @Step("Подготавливаем запрос GET /something")
-    private MockHttpServletRequestBuilder prepareRequest(String body) {
-        var getRequest = get("/something")
-            .contentType(APPLICATION_JSON)
-            .content(body);
+    @Step("Получаем ответ на запрос POST /something")
+    private ResponseSpec getResponsePostSpec(SomeDTO body) {
+        var postExchangeSpec = client.post()
+            .uri("/something")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .body(Mono.just(new SomeDTO()), SomeDTO.class)
+            .exchange();
 
         //делаем аттачи, фиксируем параметры и т.д.
-        return getRequest;
+        return postExchangeSpec;
     }
 
-    @Step("Выполняем запрос и возвращаем прочитанное тело")
+    @Step("Выполняем проверку ответа и возвращаем прочитанное тело")
     private SomeResponseDto getSomeResponseDto(
-        MockHttpServletRequestBuilder requestBuilder, int count) {
+        ResponseSpec responseSpec) {
 
-        var bodyContent = mockMvc.perform(requestBuilder)
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.successOrder").value(count))
-            .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
+        SomeResponseDto bodyContent = responseSpec.expectStatus().isOk()
+            .expectHeader().contentType(MediaType.APPLICATION_JSON)
+            .expectBody(SomeResponseDto.class)
+            .returnResult()
+            .getResponseBody();
 
-        addAttachment("Response body", "application/json", bodyContent);
-        return objectMapper.readValue(bodyContent, SomeResponseDto.class);
+        addAttachment("Response body", "application/json",
+            objectMapper.writeValueAsString(bodyContent));
+        return bodyContent;
     }
 
     @Step("Проверить тело ответа")
@@ -148,8 +149,8 @@ public class SomeTest {
         //в перспективе затруднит модификацию/рефактринг тестов
 
         var body = prepareRequestBody();
-        var request = prepareRequest(body);
-        var dto = getSomeResponseDto(request, 5);
+        var response = getResponsePostSpec(body);
+        var dto = getSomeResponseDto(response);
         assertSomeDTO(dto, someExpectedValue);
 
         var someCalculatedValue = //вычисление чего-то с использованием 
@@ -160,33 +161,32 @@ public class SomeTest {
 }
 ```
 
-### Тест с использованием Mock MVC и Neptune
+### Тест с использованием WebTestClient  и Neptune
 
 ```java
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureWebTestClient
 public class SomeTest {
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     //Поле ниже можно не объявлять
     //@Autowired
-    //private MockMvc mockMvc;
+    //private WebTestClient client;
 
     @Test //все описанное в тесте сформирует шаги разной вложенности
     //и автоматически сформирует аттачи
     public void semeAPITest() {
-        SomeResponseDto responseDto = mockMvcGet(
-            response(get("/something")
-                .contentType(APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new SomeDTO())))
-                // будут проверены все ожидания    
+        SomeResponseDto responseDto = webTestClient(
+            send(webClient -> webClient.post()
+                    .uri("/something")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .body(Mono.just(new SomeDTO()), SomeDTO.class),
+                Dto.class)
+                // будут проверены все ожидания       
                 .expectStatus(200) //проваленные будут выделены в отчете
-                .expectJsonPathValue("$.successOrder", 5)
-                //предусмотрен механизм десериализации   
-                .thenGetBody(SomeResponseDto.class)
+                .expectContentType(APPLICATION_JSON)
+                .thenGetBody()
         );
 
         check("Response body",
@@ -204,8 +204,5 @@ public class SomeTest {
 ```{toctree}
 :hidden:
 
-settings.md
 response.md
-bodydata.md
 ```
-
