@@ -358,7 +358,7 @@
 <span class="nd">@AutoConfigureWebTestClient</span><span class="w"></span>
 <span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Простое выполнение запроса и получение ответа&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Простая отправка запроса&quot;</span><span class="p">)</span><span class="w"></span>
 <span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">        </span><span class="n">webTestClient</span><span class="p">(</span><span class="w"></span>
 <span class="w">            </span><span class="c1">//описывается запрос:</span><span class="w"></span>
@@ -394,7 +394,7 @@
 <span class="w">    </span><span class="nd">@Autowired</span><span class="w"> </span><span class="c1">//Или любой другой вариант</span><span class="w"></span>
 <span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">WebTestClient</span><span class="w"> </span><span class="n">client</span><span class="p">;</span><span class="w"> </span><span class="c1">//инициализации поля или переменной</span><span class="w"></span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Простое выполнение запроса и получение ответа&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Простая отправка запроса&quot;</span><span class="p">)</span><span class="w"></span>
 <span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">        </span><span class="n">webTestClient</span><span class="p">(</span><span class="w"></span>
 <span class="w">            </span><span class="n">send</span><span class="p">(</span><span class="n">client</span><span class="p">,</span><span class="w"> </span><span class="c1">//явная передача объекта WebTestClient</span><span class="w"></span>
@@ -434,7 +434,7 @@ expect_</a>
 <span class="nd">@AutoConfigureWebTestClient</span><span class="w"></span>
 <span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Простое выполнение запроса и получение ответа&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Пример описания ожидаемого ответа&quot;</span><span class="p">)</span><span class="w"></span>
 <span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">        </span><span class="n">webTestClient</span><span class="p">(</span><span class="w"></span>
 <span class="w">            </span><span class="n">send</span><span class="p">(</span><span class="n">webClient</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">webClient</span><span class="p">.</span><span class="na">post</span><span class="p">()</span><span class="w"></span>
@@ -472,7 +472,8 @@ expect_</a>
 <span class="nd">@AutoConfigureWebTestClient</span><span class="w"></span>
 <span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Простое выполнение запроса и получение ответа&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Пример описания ожидаемого ответа, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
+<span class="w">            </span><span class="s">&quot;чье тело прочитано как текст/массив байтов&quot;</span><span class="p">)</span><span class="w"></span>
 <span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">        </span><span class="n">webTestClient</span><span class="p">(</span><span class="w"></span>
 <span class="w">            </span><span class="n">send</span><span class="p">(</span><span class="n">webClient</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">webClient</span><span class="p">.</span><span class="na">post</span><span class="p">()</span><span class="w"></span>
@@ -500,7 +501,8 @@ expect_</a>
 <span class="nd">@AutoConfigureWebTestClient</span><span class="w"></span>
 <span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Простое выполнение запроса и получение ответа&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Пример описания ожидаемого ответа, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
+<span class="w">            </span><span class="s">&quot;чье тело прочитано как DTO&quot;</span><span class="p">)</span><span class="w"></span>
 <span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">        </span><span class="n">webTestClient</span><span class="p">(</span><span class="w"></span>
 <span class="w">            </span><span class="n">send</span><span class="p">(</span><span class="n">webClient</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">webClient</span><span class="p">.</span><span class="na">post</span><span class="p">()</span><span class="w"></span>
