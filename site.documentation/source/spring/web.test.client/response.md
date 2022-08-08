@@ -10,7 +10,7 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient
 @AutoConfigureWebTestClient
 public class MyTest {
 
-    @Test(description = "Простое выполнение запроса и получение ответа")
+    @Test(description = "Простая отправка запроса")
     public void myTest() {
         webTestClient(
             //описывается запрос:
@@ -48,7 +48,7 @@ public class MyTest {
     @Autowired //Или любой другой вариант
     private WebTestClient client; //инициализации поля или переменной
 
-    @Test(description = "Простое выполнение запроса и получение ответа")
+    @Test(description = "Простая отправка запроса")
     public void myTest() {
         webTestClient(
             send(client, //явная передача объекта WebTestClient
@@ -90,7 +90,7 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient
 @AutoConfigureWebTestClient
 public class MyTest {
 
-    @Test(description = "Простое выполнение запроса и получение ответа")
+    @Test(description = "Пример описания ожидаемого ответа")
     public void myTest() {
         webTestClient(
             send(webClient -> webClient.post()
@@ -130,7 +130,8 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient
 @AutoConfigureWebTestClient
 public class MyTest {
 
-    @Test(description = "Простое выполнение запроса и получение ответа")
+    @Test(description = "Пример описания ожидаемого ответа, " +
+            "чье тело прочитано как текст/массив байтов")
     public void myTest() {
         webTestClient(
             send(webClient -> webClient.post()
@@ -160,7 +161,8 @@ import static ru.tinkoff.qa.neptune.spring.web.testclient
 @AutoConfigureWebTestClient
 public class MyTest {
 
-    @Test(description = "Простое выполнение запроса и получение ответа")
+    @Test(description = "Пример описания ожидаемого ответа, " +
+            "чье тело прочитано как DTO")
     public void myTest() {
         webTestClient(
             send(webClient -> webClient.post()

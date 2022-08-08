@@ -13,7 +13,7 @@
 
 [API](https://tinkoff.github.io/neptune/spring.web.testclient/index.html)
 
-## ## Сравнение _Neptune + WebTestClient_ с другими вариантами
+## Сравнение _Neptune + WebTestClient_ с другими вариантами
 
 Ниже небольшое сравнение того как выглядит один и тот же тест:
 
