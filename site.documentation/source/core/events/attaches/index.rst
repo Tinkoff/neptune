@@ -74,7 +74,7 @@
    description.md
    @UseInjectors.rst
    spi_setting.rst
+   annotations/index.md
    file_attach.md
    picture_attach.md
    text_attach.md
-   annotations/index.md
