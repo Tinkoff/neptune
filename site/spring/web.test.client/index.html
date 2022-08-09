@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="WebTestClient. Request / Response" href="response.html" /><link rel="prev" title="Mock MVC. Response body" href="../mock.mvc/bodydata.html" />
 
     <meta name="generator" content="sphinx-5.0.2, furo 2022.06.21"/>
-        <title>Web Test Client - Neptune documentation</title>
+        <title>WebTestClient - Neptune documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -242,14 +242,14 @@
 <li class="toctree-l4"><a class="reference internal" href="../../core/events/attaches/description.html">Название / сообщение аттача</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../core/events/attaches/%40UseInjectors.html">@UseInjectors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../core/events/attaches/spi_setting.html">SPI</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../core/events/attaches/file_attach.html">Аттач файла</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../core/events/attaches/picture_attach.html">Аттач картинки</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../core/events/attaches/text_attach.html">Аттач текста</a></li>
 <li class="toctree-l4 has-children"><a class="reference internal" href="../../core/events/attaches/annotations/index.html">Аннотации для шагов</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="../../core/events/attaches/annotations/%40CaptureOnSuccess.html">@CaptureOnSuccess</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../core/events/attaches/annotations/%40CaptureOnFailure.html">@CaptureOnFailure</a></li>
 </ul>
 </li>
+<li class="toctree-l4"><a class="reference internal" href="../../core/events/attaches/file_attach.html">Аттач файла</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../core/events/attaches/picture_attach.html">Аттач картинки</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../core/events/attaches/text_attach.html">Аттач текста</a></li>
 </ul>
 </li>
 </ul>
@@ -299,12 +299,12 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../spring.boot.sterter.html">Neptune Spring boot starter</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../mock.mvc/index.html">Mock MVC</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" role="switch" type="checkbox"/><label for="toctree-checkbox-18"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../mock.mvc/settings.html">Свойства</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mock.mvc/response.html">MockMVC. Request / Response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mock.mvc/settings.html">Mock MVC. Свойства</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mock.mvc/response.html">Mock MVC. Request / Response</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mock.mvc/bodydata.html">Mock MVC. Response body</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Web Test Client</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" role="switch" type="checkbox"/><label for="toctree-checkbox-19"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">WebTestClient</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" role="switch" type="checkbox"/><label for="toctree-checkbox-19"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="response.html">WebTestClient. Request / Response</a></li>
 </ul>
 </li>
@@ -347,8 +347,8 @@
           </label>
         </div>
         <article role="main">
-          <section class="tex2jax_ignore mathjax_ignore" id="web-test-client">
-<h1>Web Test Client<a class="headerlink" href="#web-test-client" title="Permalink to this heading">#</a></h1>
+          <section class="tex2jax_ignore mathjax_ignore" id="webtestclient">
+<h1>WebTestClient<a class="headerlink" href="#webtestclient" title="Permalink to this heading">#</a></h1>
 <p>Данный модуль:</p>
 <ul class="simple">
 <li><p>является дополнением к
@@ -356,10 +356,9 @@
 <li><p>данный модуль предоставляет фасад , который фиксирует работу <em>Spring WebTestClient</em> в виде шагов</p></li>
 <li><p>данный модуль исправляет потенциальные неудобства флоу <em>Spring WebTestClient</em></p></li>
 </ul>
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">maven/dependencies</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;dependencies&gt;</span>
-     <span class="nt">&lt;dependency&gt;</span>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">maven/dependencies</span><a class="headerlink" href="#id3" title="Permalink to this code">#</a></div>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span>     <span class="nt">&lt;dependency&gt;</span>
          <span class="cm">&lt;!--необходимо иметь в classpath--&gt;</span>
          <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
          <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-webflux<span class="nt">&lt;/artifactId&gt;</span>
@@ -382,12 +381,11 @@
          <span class="nt">&lt;version&gt;</span>${LATEST_RELEASE_OR_BETA_VERSION}<span class="nt">&lt;/version&gt;</span>
          <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
      <span class="nt">&lt;/dependency&gt;</span>
- <span class="nt">&lt;/dependencies&gt;</span>
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-text">Добавить в build.gradle</span><a class="headerlink" href="#id3" title="Permalink to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Добавить в build.gradle</span><a class="headerlink" href="#id4" title="Permalink to this code">#</a></div>
 <div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="n">dependencies</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
 <span class="w">        </span><span class="n">dependencies</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
 <span class="w">        </span><span class="c1">//необходимо иметь в classpath</span><span class="w"></span>
@@ -409,8 +407,8 @@
 <li><p>с использованием WebTestClient и с реализацией шагов</p></li>
 <li><p>с использованием WebTestClient и Neptune</p></li>
 </ul>
-<section id="webtestclient">
-<h3>Тест с использованием WebTestClient, без реализации шагов<a class="headerlink" href="#webtestclient" title="Permalink to this heading">#</a></h3>
+<section id="id1">
+<h3>Тест с использованием WebTestClient, без реализации шагов<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
 <div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="nd">@SpringBootTest</span><span class="w"></span>
 <span class="nd">@AutoConfigureWebTestClient</span><span class="w"></span>
 <span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
@@ -457,8 +455,8 @@
 </pre></div>
 </div>
 </section>
-<section id="id1">
-<h3>Тест с использованием WebTestClient и с реализацией шагов<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<section id="id2">
+<h3>Тест с использованием WebTestClient и с реализацией шагов<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
 <p>Предположим, что результат интеграционного теста должен быть оформлен в отчет, описывающий по шагам,
 какие действия выполняются и каков их результат. Тогда</p>
 <div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="nd">@SpringBootTest</span><span class="w"></span>
@@ -652,10 +650,10 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Web Test Client</a><ul>
+<li><a class="reference internal" href="#">WebTestClient</a><ul>
 <li><a class="reference internal" href="#neptune-webtestclient">Сравнение <em>Neptune + WebTestClient</em> с другими вариантами</a><ul>
-<li><a class="reference internal" href="#webtestclient">Тест с использованием WebTestClient, без реализации шагов</a></li>
-<li><a class="reference internal" href="#id1">Тест с использованием WebTestClient и с реализацией шагов</a></li>
+<li><a class="reference internal" href="#id1">Тест с использованием WebTestClient, без реализации шагов</a></li>
+<li><a class="reference internal" href="#id2">Тест с использованием WebTestClient и с реализацией шагов</a></li>
 <li><a class="reference internal" href="#webtestclient-neptune">Тест с использованием WebTestClient  и Neptune</a></li>
 </ul>
 </li>

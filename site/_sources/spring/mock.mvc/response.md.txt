@@ -1,4 +1,4 @@
-# MockMVC. Request / Response
+# Mock MVC. Request / Response
 
 ```java
 import org.springframework.boot.test.context.SpringBootTest;
