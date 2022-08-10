@@ -301,14 +301,17 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../mock.mvc/index.html">Mock MVC</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" role="switch" type="checkbox"/><label for="toctree-checkbox-18"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../mock.mvc/settings.html">Mock MVC. Свойства</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mock.mvc/response.html">Mock MVC. Request / Response</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mock.mvc/bodydata.html">Mock MVC. Response body</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mock.mvc/bodydata.html">Mock MVC. Тело ответа</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">WebTestClient</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" role="switch" type="checkbox"/><label for="toctree-checkbox-19"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">WebTestClient. Request / Response</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../spring.data/index.html">Spring Data</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../spring.data/index.html">Spring Data</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" role="switch" type="checkbox"/><label for="toctree-checkbox-20"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../spring.data/settings.html">Spring Data. Свойства</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Базы данных</span></p>
 <ul>
@@ -409,8 +412,8 @@
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-<section id="id1">
-<h2>Описание ожиданий<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
+<section id="webtestclient">
+<h2>WebTestClient. Описание ожиданий<a class="headerlink" href="#webtestclient" title="Permalink to this heading">#</a></h2>
 <p>Методы, с помощью которых можно описать ожидаемый ответ, можно найти:</p>
 <ul class="simple">
 <li><p>в документации <a class="reference external" href="https://tinkoff.github.io/neptune/spring.web.testclient/ru/tinkoff/qa/neptune/spring/web/testclient/SendRequestAction.html">общего описания отправки запроса. Названия методов начинаются на _
@@ -523,14 +526,14 @@ expect_</a>
 </pre></div>
 </div>
 </section>
-<section id="id2">
-<h2>Тело ответа<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
+<section id="id1">
+<h2>WebTestClient. Тело ответа<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
 <p>Важно:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../../core/steps/steps/get_step_supplier/index.html"><span class="doc std std-doc">Шаги, возвращающие объекты</span></a></p></li>
 </ul>
-<section id="id3">
-<h3>Прочитанное как текст / массив байтов<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
+<section id="id2">
+<h3>Прочитанное как текст / массив байтов<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
 <div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span><span class="w"></span>
 <span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span><span class="w"></span>
 <span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span><span class="w"></span>
@@ -647,8 +650,8 @@ expect_</a>
 </pre></div>
 </div>
 </section>
-<section id="id4">
-<h3>Массив<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
+<section id="id3">
+<h3>Массив<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
 <div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
 
 <span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span><span class="w"></span>
@@ -731,8 +734,8 @@ expect_</a>
 </pre></div>
 </div>
 </section>
-<section id="id5">
-<h3>Элемент массива<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h3>
+<section id="id4">
+<h3>Элемент массива<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
 <div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span><span class="w"></span>
 <span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span><span class="w"></span>
 <span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span><span class="w"></span>
@@ -838,14 +841,14 @@ expect_</a>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">WebTestClient. Request / Response</a><ul>
-<li><a class="reference internal" href="#id1">Описание ожиданий</a></li>
-<li><a class="reference internal" href="#id2">Тело ответа</a><ul>
-<li><a class="reference internal" href="#id3">Прочитанное как текст / массив байтов</a></li>
+<li><a class="reference internal" href="#webtestclient">WebTestClient. Описание ожиданий</a></li>
+<li><a class="reference internal" href="#id1">WebTestClient. Тело ответа</a><ul>
+<li><a class="reference internal" href="#id2">Прочитанное как текст / массив байтов</a></li>
 <li><a class="reference internal" href="#dto">Прочитанное как DTO</a></li>
 <li><a class="reference internal" href="#list">List</a></li>
-<li><a class="reference internal" href="#id4">Массив</a></li>
+<li><a class="reference internal" href="#id3">Массив</a></li>
 <li><a class="reference internal" href="#iterable">Элемент Iterable</a></li>
-<li><a class="reference internal" href="#id5">Элемент массива</a></li>
+<li><a class="reference internal" href="#id4">Элемент массива</a></li>
 </ul>
 </li>
 </ul>
