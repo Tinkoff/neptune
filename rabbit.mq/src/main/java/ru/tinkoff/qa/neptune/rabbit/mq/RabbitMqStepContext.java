@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.rabbit.mq;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.GetResponse;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
@@ -37,7 +38,7 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
         return getCreatedContextOrCreate(RabbitMqStepContext.class);
     }
 
-    Channel getChannel() {
+    public Channel getChannel() {
         return channel;
     }
 
@@ -81,18 +82,7 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
      * @param <T>      is a type of desired value
      * @return read value
      */
-    public <T> T read(RabbitMqBasicGetSupplier<T, ?> basicGet) {
-        return getWithChannel(basicGet);
-    }
-
-    /**
-     * Reads some value from queue
-     *
-     * @param basicGet how to read value
-     * @param <T>      is a type of desired value
-     * @return read value
-     */
-    public <T> T read(RabbitMqBasicGetArrayItemSupplier<T> basicGet) {
+    public <T> T read(RabbitMqBasicGetArrayItemSupplier<?, T, ?> basicGet) {
         return getWithChannel(basicGet);
     }
 
@@ -103,7 +93,7 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
      * @param <T>      is a type of desired value
      * @return read value
      */
-    public <T> T[] read(RabbitMqBasicGetArraySupplier<T> basicGet) {
+    public <T> T[] read(RabbitMqBasicGetArraySupplier<?, T, ?> basicGet) {
         return getWithChannel(basicGet);
     }
 
@@ -114,7 +104,7 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
      * @param <T>      is a type of desired value
      * @return read value
      */
-    public <T> T read(RabbitMqBasicGetIterableItemSupplier<T> basicGet) {
+    public <T> T read(RabbitMqBasicGetIterableItemSupplier<?, T, ?> basicGet) {
         return getWithChannel(basicGet);
     }
 
@@ -125,7 +115,19 @@ public class RabbitMqStepContext extends Context<RabbitMqStepContext> {
      * @param <T>      is a type of desired value
      * @return read value
      */
-    public <T, S extends Iterable<T>> List<T> read(RabbitMqBasicGetIterableSupplier<T, S> basicGet) {
+    public <T> List<T> read(RabbitMqBasicGetIterableSupplier<?, T, ?> basicGet) {
+        return getWithChannel(basicGet);
+    }
+
+    public List<GetResponse> read(GetResponseSupplier basicGet) {
+        return getWithChannel(basicGet);
+    }
+
+    public <T> List<T> read(RabbitMqBasicGetListFromResponseSupplier<T, ?, ?> basicGet) {
+        return getWithChannel(basicGet);
+    }
+
+    public <T> T read(RabbitMqBasicGetItemFromResponseSupplier<T, ?, ?> basicGet) {
         return getWithChannel(basicGet);
     }
 

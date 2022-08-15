@@ -3,17 +3,16 @@ package ru.tinkoff.qa.neptune.rabbit.mq.test.captors;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.rabbitmq.client.GetResponse;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.DefaultMapper;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.DraftDto;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 import static java.time.Duration.ofSeconds;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.anEmptyMap;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.fail;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.MapEntryMatcher.mapEntry;
@@ -21,18 +20,20 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsCons
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetArraySupplier.rabbitArray;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetArraySupplier.rabbitArrayOfRawMessages;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
 import static ru.tinkoff.qa.neptune.rabbit.mq.test.captors.TestStringInjector.CAUGHT_MESSAGES;
 
 public class GetArrayCaptorTest extends BaseCaptorTest {
 
-    private final List<DraftDto> dtos = List.of(new DraftDto().setName("test2"), new DraftDto().setName("test3"));
-    private final String body = new DefaultMapper().serialize(dtos);
+    private final String body1 = new DefaultMapper().serialize(new DraftDto().setName("test1"));
+    private final String body2 = new DefaultMapper().serialize(new DraftDto().setName("test2"));
 
-    @BeforeClass
+    @BeforeMethod
     public void beforeClass() throws Exception {
         when(channel.basicGet("test_queue3", true))
-                .thenReturn(new GetResponse(null, null, body.getBytes(StandardCharsets.UTF_8), 0));
+                .thenReturn(new GetResponse(null, null, body1.getBytes(StandardCharsets.UTF_8), 0))
+                .thenReturn(new GetResponse(null, null, body2.getBytes(StandardCharsets.UTF_8), 0));
 
         DEFAULT_QUEUE_NAME.accept("test_queue3");
     }
@@ -44,13 +45,34 @@ public class GetArrayCaptorTest extends BaseCaptorTest {
     }
 
     @Test
-    public void test1() {
-        rabbitMqStepContext.read(rabbitArray("Values of fields 'name'",
-                new TypeReference<List<DraftDto>>() {
-                },
-                list -> list.stream().map(DraftDto::getName).toArray(String[]::new))
+    public void test00() {
+        var result = rabbitMqStepContext.read(rabbitArrayOfRawMessages()
                 .autoAck()
-                .criteria("Value contains 'test", s -> s.contains("test")));
+                .timeOut(ofSeconds(5)));
+
+        assertThat(result, arrayWithSize(1));
+    }
+
+    @Test
+    public void test0() {
+        var result = rabbitMqStepContext.read(rabbitArray("description",
+                new TypeReference<DraftDto>() {
+                })
+                .autoAck()
+                .criteria("Name equals test1", ss -> ss.getName().contains("test1"))
+                .timeOut(ofSeconds(5)));
+
+        assertThat(result, arrayWithSize(1));
+    }
+
+    @Test
+    public void test1() {
+        rabbitMqStepContext.read(rabbitArray("description",
+                new TypeReference<DraftDto>() {
+                })
+                .autoAck()
+                .criteria("Name equals test1", ss -> ss.getName().contains("test2"))
+                .timeOut(ofSeconds(5)));
 
         assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
@@ -59,81 +81,110 @@ public class GetArrayCaptorTest extends BaseCaptorTest {
     public void test2() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
 
-        rabbitMqStepContext.read(rabbitArray("Values of fields 'name'",
-                new TypeReference<List<DraftDto>>() {
-                },
-                list -> list.stream().map(DraftDto::getName).toArray(String[]::new))
+        rabbitMqStepContext.read(rabbitArray("description",
+                new TypeReference<DraftDto>() {
+                })
                 .autoAck()
-                .criteria("Value contains 'test", s -> s.contains("test")));
+                .criteria("Name equals test1", ss -> ss.getName().contains("test2"))
+                .timeOut(ofSeconds(5)));
 
-        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("RabbitMQ message",
-                "[{\"name\":\"test2\"},{\"name\":\"test3\"}]")));
+        assertThat(CAUGHT_MESSAGES.get("Read RabbitMQ messages"),
+                containsString("{\"name\":\"test2\"}"));
     }
 
     @Test
     public void test3() {
-        DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
-
-        rabbitMqStepContext.read(rabbitArray("Values of fields 'name'",
-                new TypeReference<List<DraftDto>>() {
-                },
-                list -> list.stream().map(DraftDto::getName).toArray(String[]::new))
+        var result = rabbitMqStepContext.read(rabbitArray("description",
+                DraftDto.class)
                 .autoAck()
-                .criteria("Value contains 'test", s -> s.contains("test")));
+                .criteria("Name equals test2", ss -> ss.getName().contains("test2"))
+                .timeOut(ofSeconds(5)));
 
-        assertThat(CAUGHT_MESSAGES, anEmptyMap());
+        assertThat(result, arrayWithSize(1));
     }
 
     @Test
     public void test4() {
-        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
+        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
 
-        rabbitMqStepContext.read(rabbitArray("Values of fields 'name'",
-                new TypeReference<List<DraftDto>>() {
-                },
-                list -> list.stream().map(DraftDto::getName).toArray(String[]::new))
+        var result = rabbitMqStepContext.read(rabbitArray("description",
+                DraftDto.class,
+                String.class,
+                DraftDto::getName)
                 .autoAck()
-                .criteria("Value contains 'test", s -> s.contains("test")));
+                .criteria("Name equals test", ss -> ss.contains("test0"))
+                .timeOut(ofSeconds(5)));
 
-        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("RabbitMQ message",
-                "[{\"name\":\"test2\"},{\"name\":\"test3\"}]")));
+        assertThat(result, arrayWithSize(0));
     }
 
     @Test
     public void test5() {
-        rabbitMqStepContext.read(rabbitArray("Values of fields 'name'",
-                new TypeReference<List<DraftDto>>() {
+        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
+        rabbitMqStepContext.read(rabbitArray("description",
+                new TypeReference<DraftDto>() {
                 },
-                list -> list.stream().map(DraftDto::getName).toArray(String[]::new))
+                DraftDto.class,
+                t -> t)
                 .autoAck()
-                .criteria("Value contains 'test", s -> s.contains("fail")));
+                .criteria("Name equals test2", ss -> ss.getName().contains("test2"))
+                .timeOut(ofSeconds(5)));
 
-        assertThat(CAUGHT_MESSAGES, anEmptyMap());
+        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Read RabbitMQ messages",
+                "#1\r\n\r\n{\"name\":\"test1\"}\r\n\r\n#2\r\n\r\n{\"name\":\"test2\"}")));
     }
 
     @Test
     public void test6() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
-        rabbitMqStepContext.read(rabbitArray("Values of fields 'name'",
-                new TypeReference<List<DraftDto>>() {
+        rabbitMqStepContext.read(rabbitArray("description",
+                new TypeReference<DraftDto>() {
                 },
-                list -> list.stream().map(DraftDto::getName).toArray(String[]::new))
+                DraftDto.class,
+                t -> t)
                 .autoAck()
-                .criteria("Value contains 'test", s -> s.contains("fail"))
+                .criteria("Name equals test1", ss -> ss.getName().contains("test2"))
                 .timeOut(ofSeconds(5)));
 
-        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Read RabbitMQ messages", "#1\r\n" +
-                "\r\n" +
-                "[{\"name\":\"test2\"},{\"name\":\"test3\"}]")));
+        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Read RabbitMQ messages",
+                "#1\r\n\r\n{\"name\":\"test1\"}\r\n\r\n#2\r\n\r\n{\"name\":\"test2\"}")));
     }
 
     @Test
     public void test7() {
+        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
+        rabbitMqStepContext.read(rabbitArray("description",
+                "test_queue3",
+                DraftDto.class)
+                .autoAck()
+                .criteria("Name equals test2", ss -> ss.getName().contains("test2"))
+                .timeOut(ofSeconds(5)));
+
+        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Read RabbitMQ messages",
+                "#1\r\n\r\n{\"name\":\"test1\"}\r\n\r\n#2\r\n\r\n{\"name\":\"test2\"}")));
+    }
+
+    @Test
+    public void test8() {
+        var result = rabbitMqStepContext.read(rabbitArray("description",
+                "test_queue3",
+                DraftDto.class)
+                .autoAck()
+                .criteria("Name equals test2", ss -> ss.getName().contains("test2"))
+                .timeOut(ofSeconds(5)));
+
+        assertThat(result, arrayWithSize(1));
+    }
+
+    @Test
+    public void test9() {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
+
         rabbitMqStepContext.read(rabbitArray("Values of fields 'name'",
-                new TypeReference<List<DraftDto>>() {
+                new TypeReference<>() {
                 },
-                list -> list.stream().map(DraftDto::getName).toArray(String[]::new))
+                String.class,
+                DraftDto::getName)
                 .autoAck()
                 .criteria("Value contains 'test", s -> s.contains("fail"))
                 .timeOut(ofSeconds(5)));
@@ -142,50 +193,13 @@ public class GetArrayCaptorTest extends BaseCaptorTest {
     }
 
     @Test
-    public void test8() {
-        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
-        rabbitMqStepContext.read(rabbitArray("Values of fields 'name'",
-                new TypeReference<List<DraftDto>>() {
-                },
-                list -> list.stream().map(DraftDto::getName).toArray(String[]::new))
-                .autoAck()
-                .criteria("Value contains 'test", s -> s.contains("fail"))
-                .timeOut(ofSeconds(5)));
-
-        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Read RabbitMQ messages", "#1\r\n" +
-                "\r\n" +
-                "[{\"name\":\"test2\"},{\"name\":\"test3\"}]")));
-    }
-    
-    @Test
-    public void test9() {
-        try {
-            rabbitMqStepContext.read(rabbitArray("Values of fields 'name'",
-                    new TypeReference<List<DraftDto>>() {
-                    },
-                    list -> list.stream().map(DraftDto::getName).toArray(String[]::new))
-                    .autoAck()
-                    .criteria("Value contains 'test", s -> s.contains("fail"))
-                    .timeOut(ofSeconds(5))
-                    .throwOnNoResult());
-        }
-        catch (Exception e) {
-            assertThat(CAUGHT_MESSAGES, anEmptyMap());
-            return;
-        }
-
-        fail("Exception was expected");
-    }
-
-    @Test
     public void test10() {
-        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
-
         try {
             rabbitMqStepContext.read(rabbitArray("Values of fields 'name'",
-                    new TypeReference<List<DraftDto>>() {
+                    new TypeReference<>() {
                     },
-                    list -> list.stream().map(DraftDto::getName).toArray(String[]::new))
+                    String.class,
+                    DraftDto::getName)
                     .autoAck()
                     .criteria("Value contains 'test", s -> s.contains("fail"))
                     .timeOut(ofSeconds(5))
@@ -197,56 +211,81 @@ public class GetArrayCaptorTest extends BaseCaptorTest {
         }
 
         fail("Exception was expected");
-
     }
 
     @Test
     public void test11() {
-        DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
+        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
 
         try {
             rabbitMqStepContext.read(rabbitArray("Values of fields 'name'",
-                    new TypeReference<List<DraftDto>>() {
+                    new TypeReference<>() {
                     },
-                    list -> list.stream().map(DraftDto::getName).toArray(String[]::new))
+                    String.class,
+                    DraftDto::getName)
                     .autoAck()
                     .criteria("Value contains 'test", s -> s.contains("fail"))
                     .timeOut(ofSeconds(5))
                     .throwOnNoResult());
         }
         catch (Exception e) {
-            assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Read RabbitMQ messages", "#1\r\n" +
-                    "\r\n" +
-                    "[{\"name\":\"test2\"},{\"name\":\"test3\"}]")));
+            assertThat(CAUGHT_MESSAGES, anEmptyMap());
             return;
         }
 
         fail("Exception was expected");
-
     }
 
     @Test
     public void test12() {
-        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
+        DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
 
         try {
             rabbitMqStepContext.read(rabbitArray("Values of fields 'name'",
-                    new TypeReference<List<DraftDto>>() {
+                    new TypeReference<>() {
                     },
-                    list -> list.stream().map(DraftDto::getName).toArray(String[]::new))
+                    String.class,
+                    DraftDto::getName)
                     .autoAck()
                     .criteria("Value contains 'test", s -> s.contains("fail"))
                     .timeOut(ofSeconds(5))
                     .throwOnNoResult());
         }
         catch (Exception e) {
-            assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Read RabbitMQ messages", "#1\r\n" +
-                    "\r\n" +
-                    "[{\"name\":\"test2\"},{\"name\":\"test3\"}]")));
+            assertThat(CAUGHT_MESSAGES.get("Read RabbitMQ messages"),
+                    containsString("{\"name\":\"test1\"}"));
+            assertThat(CAUGHT_MESSAGES.get("Read RabbitMQ messages"),
+                    containsString("{\"name\":\"test2\"}"));
             return;
         }
 
         fail("Exception was expected");
-
     }
+
+    @Test
+    public void test13() {
+        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
+
+        try {
+            rabbitMqStepContext.read(rabbitArray("Values of fields 'name'",
+                    new TypeReference<>() {
+                    },
+                    String.class,
+                    DraftDto::getName)
+                    .autoAck()
+                    .criteria("Value contains 'test", s -> s.contains("fail"))
+                    .timeOut(ofSeconds(5))
+                    .throwOnNoResult());
+        }
+        catch (Exception e) {
+            assertThat(CAUGHT_MESSAGES.get("Read RabbitMQ messages"),
+                    containsString("{\"name\":\"test1\"}"));
+            assertThat(CAUGHT_MESSAGES.get("Read RabbitMQ messages"),
+                    containsString("{\"name\":\"test2\"}"));
+            return;
+        }
+
+        fail("Exception was expected");
+    }
+
 }

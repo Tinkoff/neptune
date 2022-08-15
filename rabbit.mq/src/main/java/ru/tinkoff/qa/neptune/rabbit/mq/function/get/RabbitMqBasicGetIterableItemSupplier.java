@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.function.get;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.rabbitmq.client.Channel;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
@@ -20,18 +19,20 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.rabbit.mq.GetChannel.getChannel;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Retrieve:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Object criteria")
 @MaxDepthOfReporting(0)
-public class RabbitMqBasicGetIterableItemSupplier<T> extends SequentialGetStepSupplier
-    .GetObjectFromIterableChainedStepSupplier<RabbitMqStepContext, T, Channel, RabbitMqBasicGetIterableItemSupplier<T>> {
+@SuppressWarnings("unchecked")
+public abstract class RabbitMqBasicGetIterableItemSupplier<M, T, I extends RabbitMqBasicGetIterableItemSupplier<M, T, I>>
+        extends SequentialGetStepSupplier.GetObjectFromIterableStepSupplier<RabbitMqStepContext, T, I> {
 
-    final GetFromQueue<?> getFromQueue;
+    public static final String NO_DESC_ERROR_TEXT = "Description should be defined";
+    final GetFromQueue.MergeProperty getFromQueue;
 
     @CaptureOnSuccess(by = MessageCaptor.class)
     String message;
@@ -40,10 +41,9 @@ public class RabbitMqBasicGetIterableItemSupplier<T> extends SequentialGetStepSu
     @CaptureOnFailure(by = MessagesCaptor.class)
     List<String> messages;
 
-    protected <M, S extends Iterable<T>> RabbitMqBasicGetIterableItemSupplier(GetFromQueue<M> getFromQueue, Function<M, S> function) {
-        super(function.compose(getFromQueue));
+    protected RabbitMqBasicGetIterableItemSupplier(GetFromQueue.MergeProperty<List<M>> getFromQueue, Function<M, T> function) {
+        super(getFromQueue.andThen(list -> list.stream().map(function).collect(toList())));
         this.getFromQueue = getFromQueue;
-        from(getChannel());
     }
 
     /**
@@ -55,19 +55,18 @@ public class RabbitMqBasicGetIterableItemSupplier<T> extends SequentialGetStepSu
      * @param toGet       describes how to get desired value
      * @param <M>         is a type of deserialized message
      * @param <T>         is a type of item of iterable
-     * @param <S>         is a type of iterable
      * @return an instance of {@link RabbitMqBasicGetIterableItemSupplier}
      */
     @Description("{description}")
-    public static <M, T, S extends Iterable<T>> RabbitMqBasicGetIterableItemSupplier<T> rabbitIterableItem(
+    public static <M, T> Mapped<M, T> rabbitIterableItem(
             @DescriptionFragment(value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
             ) String description,
             String queue,
             Class<M> classT,
-            Function<M, S> toGet) {
+            Function<M, T> toGet) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return new RabbitMqBasicGetIterableItemSupplier<>(new GetFromQueue<>(queue, classT), toGet);
+        return new RabbitMqBasicGetIterableItemSupplier.Mapped<>(new GetFromQueue(queue).andThen(new GetDeserializedData<>(classT)), toGet);
     }
 
     /**
@@ -79,14 +78,13 @@ public class RabbitMqBasicGetIterableItemSupplier<T> extends SequentialGetStepSu
      * @param toGet       describes how to get desired value
      * @param <M>         is a type of deserialized message
      * @param <T>         is a type of item of iterable
-     * @param <S>         is a type of iterable
      * @return an instance of {@link RabbitMqBasicGetIterableItemSupplier}
      * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
      */
-    public static <M, T, S extends Iterable<T>> RabbitMqBasicGetIterableItemSupplier<T> rabbitIterableItem(
+    public static <M, T> Mapped<M, T> rabbitIterableItem(
             String description,
             Class<M> classT,
-            Function<M, S> toGet) {
+            Function<M, T> toGet) {
         return rabbitIterableItem(description, DEFAULT_QUEUE_NAME.get(), classT, toGet);
     }
 
@@ -99,19 +97,18 @@ public class RabbitMqBasicGetIterableItemSupplier<T> extends SequentialGetStepSu
      * @param toGet       describes how to get desired value
      * @param <M>         is a type of deserialized message
      * @param <T>         is a type of item of iterable
-     * @param <S>         is a type of iterable
      * @return an instance of {@link RabbitMqBasicGetIterableItemSupplier}
      */
     @Description("{description}")
-    public static <M, T, S extends Iterable<T>> RabbitMqBasicGetIterableItemSupplier<T> rabbitIterableItem(
+    public static <M, T> Mapped<M, T> rabbitIterableItem(
             @DescriptionFragment(value = "description",
                     makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
             ) String description,
             String queue,
             TypeReference<M> typeT,
-            Function<M, S> toGet) {
+            Function<M, T> toGet) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return new RabbitMqBasicGetIterableItemSupplier<>(new GetFromQueue<>(queue, typeT), toGet);
+        return new RabbitMqBasicGetIterableItemSupplier.Mapped<>(new GetFromQueue(queue).andThen(new GetDeserializedData<>(typeT)), toGet);
     }
 
     /**
@@ -127,10 +124,10 @@ public class RabbitMqBasicGetIterableItemSupplier<T> extends SequentialGetStepSu
      * @return an instance of {@link RabbitMqBasicGetIterableItemSupplier}
      * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
      */
-    public static <M, T, S extends Iterable<T>> RabbitMqBasicGetIterableItemSupplier<T> rabbitIterableItem(
+    public static <M, T> Mapped<M, T> rabbitIterableItem(
             String description,
             TypeReference<M> typeT,
-            Function<M, S> toGet) {
+            Function<M, T> toGet) {
         return rabbitIterableItem(description, DEFAULT_QUEUE_NAME.get(), typeT, toGet);
     }
 
@@ -141,13 +138,12 @@ public class RabbitMqBasicGetIterableItemSupplier<T> extends SequentialGetStepSu
      * @param queue       is a queue to read
      * @param classT      is a class of a value to deserialize message
      * @param <T>         is a type of item of iterable
-     * @param <S>         is a type of iterable
      * @return an instance of {@link RabbitMqBasicGetIterableItemSupplier}
      */
-    public static <T, S extends Iterable<T>> RabbitMqBasicGetIterableItemSupplier<T> rabbitIterableItem(
+    public static <M> Mapped<M, M> rabbitIterableItem(
             String description,
             String queue,
-            Class<S> classT) {
+            Class<M> classT) {
         return rabbitIterableItem(description, queue, classT, ts -> ts);
     }
 
@@ -157,13 +153,13 @@ public class RabbitMqBasicGetIterableItemSupplier<T> extends SequentialGetStepSu
      * @param description is description of value to get
      * @param classT      is a class of a value to deserialize message
      * @param <T>         is a type of item of iterable
-     * @param <S>         is a type of iterable
+     * @param <M>         is a type of iterable
      * @return an instance of {@link RabbitMqBasicGetIterableItemSupplier}
      * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
      */
-    public static <T, S extends Iterable<T>> RabbitMqBasicGetIterableItemSupplier<T> rabbitIterableItem(
+    public static <M> Mapped<M, M> rabbitIterableItem(
             String description,
-            Class<S> classT) {
+            Class<M> classT) {
         return rabbitIterableItem(description, DEFAULT_QUEUE_NAME.get(), classT);
     }
 
@@ -173,14 +169,13 @@ public class RabbitMqBasicGetIterableItemSupplier<T> extends SequentialGetStepSu
      * @param description is description of value to get
      * @param queue       is a queue to read
      * @param typeT       is a reference to type of value to deserialize message
-     * @param <T>         is a type of item of iterable
-     * @param <S>         is a type of iterable
+     * @param <M>         is a type of iterable
      * @return an instance of {@link RabbitMqBasicGetIterableItemSupplier}
      */
-    public static <T, S extends Iterable<T>> RabbitMqBasicGetIterableItemSupplier<T> rabbitIterableItem(
+    public static <M> Mapped<M, M> rabbitIterableItem(
             String description,
             String queue,
-            TypeReference<S> typeT) {
+            TypeReference<M> typeT) {
         return rabbitIterableItem(description, queue, typeT, ts -> ts);
     }
 
@@ -189,25 +184,24 @@ public class RabbitMqBasicGetIterableItemSupplier<T> extends SequentialGetStepSu
      *
      * @param description is description of value to get
      * @param typeT       is a reference to type of value to deserialize message
-     * @param <T>         is a type of item of iterable
-     * @param <S>         is a type of iterable
+     * @param <M>         is a type of iterable
      * @return an instance of {@link RabbitMqBasicGetIterableItemSupplier}
      * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
      */
-    public static <T, S extends Iterable<T>> RabbitMqBasicGetIterableItemSupplier<T> rabbitIterableItem(
+    public static <M> Mapped<M, M> rabbitIterableItem(
             String description,
-            TypeReference<S> typeT) {
+            TypeReference<M> typeT) {
         return rabbitIterableItem(description, DEFAULT_QUEUE_NAME.get(), typeT);
     }
 
     @Override
-    public RabbitMqBasicGetIterableItemSupplier<T> timeOut(Duration timeOut) {
+    public I timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
     }
 
     @Override
     protected void onSuccess(T t) {
-        var ms = getFromQueue.getMessages();
+        var ms = ((GetDeserializedData<T>) getFromQueue.getAfter()).getMessages();
         if (t != null) {
             message = ms.getLast();
         } else {
@@ -216,13 +210,13 @@ public class RabbitMqBasicGetIterableItemSupplier<T> extends SequentialGetStepSu
     }
 
     @Override
-    protected void onFailure(Channel m, Throwable throwable) {
-        messages = getFromQueue.getMessages();
+    protected void onFailure(RabbitMqStepContext m, Throwable throwable) {
+        messages = ((GetDeserializedData<T>) getFromQueue.getAfter()).getMessages();
     }
 
-    public RabbitMqBasicGetIterableItemSupplier<T> withDataTransformer(DataTransformer transformer) {
-        getFromQueue.setTransformer(transformer);
-        return this;
+    I withDataTransformer(DataTransformer transformer) {
+        ((GetDeserializedData<M>) getFromQueue.getAfter()).setTransformer(transformer);
+        return (I) this;
     }
 
     /**
@@ -230,8 +224,27 @@ public class RabbitMqBasicGetIterableItemSupplier<T> extends SequentialGetStepSu
      *
      * @return self-reference
      */
-    public RabbitMqBasicGetIterableItemSupplier<T> autoAck() {
-        this.getFromQueue.setAutoAck();
-        return this;
+    public I autoAck() {
+        this.getFromQueue.getBefore().setAutoAck();
+        return (I) this;
+    }
+
+    public final static class Mapped<M, T> extends RabbitMqBasicGetIterableItemSupplier<M, T, Mapped<M, T>> {
+
+        protected Mapped(GetFromQueue.MergeProperty<List<M>> getFromQueue, Function<M, T> function) {
+            super(getFromQueue, function);
+        }
+
+        public Mapped<M, T> withDataTransformer(DataTransformer transformer) {
+            return super.withDataTransformer(transformer);
+        }
+    }
+
+    public final static class StringMessage extends RabbitMqBasicGetIterableItemSupplier<String, String, StringMessage> {
+
+        protected StringMessage(GetFromQueue.MergeProperty<List<String>> getFromQueue) {
+            super(getFromQueue, s -> s);
+            withDataTransformer(new StringDataTransformer());
+        }
     }
 }
