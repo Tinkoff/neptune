@@ -1,4 +1,4 @@
-# MockMVC. Request / Response
+# Mock MVC. Request / Response
 
 ```java
 import org.springframework.boot.test.context.SpringBootTest;
@@ -67,7 +67,7 @@ public class MyTest {
 }
 ```
 
-## Описание ожиданий
+## Mock MVC. Описание ожиданий
 
 Методы, с помощью которых можно описать ожидаемый ответ, можно
 [посмотреть в документации. Названия методов начинаются на _expect_](https://tinkoff.github.io/neptune/spring.mock.mvc/ru/tinkoff/qa/neptune/spring/mock/mvc/GetMockMvcResponseResultSupplier.html).

@@ -1,7 +1,6 @@
 .. code-block:: xml
    :caption: maven/dependencies
 
-   <dependencies>
         <dependency>
             <!--необходимо иметь в classpath-->
             <groupId>org.springframework.boot</groupId>
@@ -25,7 +24,6 @@
             <version>${LATEST_RELEASE_OR_BETA_VERSION}</version>
             <scope>test</scope>
         </dependency>
-    </dependencies>
 
 .. code-block:: groovy
    :caption: Добавить в build.gradle

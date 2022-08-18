@@ -1,4 +1,4 @@
-# Web Test Client
+# WebTestClient
 
 Данный модуль:
 
