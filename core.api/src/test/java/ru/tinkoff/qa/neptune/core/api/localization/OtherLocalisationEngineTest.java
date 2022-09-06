@@ -10,7 +10,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import java.util.Locale;
-import java.util.function.Function;
 
 import static java.lang.System.getProperties;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -84,11 +83,6 @@ public class OtherLocalisationEngineTest {
         @Description("Method with Composite Description + {element} GetSupplier")
         public static GetStepSupplier methodWithCompositeAnnotation(@DescriptionFragment("element") String s) {
             return new GetStepSupplier();
-        }
-
-        @Override
-        protected Function<Object, Object> getEndFunction() {
-            return null;
         }
 
         protected GetStepSupplier from(Object o) {

@@ -11,14 +11,13 @@ import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
 import static java.util.List.of;
 
-abstract class BaseConditionalTest {
-    static Duration FIVE_SECONDS = ofSeconds(5);
-    static Duration FIVE_HUNDRED_MILLIS = ofMillis(500);
+abstract class BaseConditionalConstants {
+    static Duration ONE_SECOND = ofSeconds(1);
+    static Duration ONE_HUNDRED_MILLIS = ofMillis(100);
     static Duration ONE_MILLISECOND = ofMillis(1);
     static final String A_UPPER = "A";
     static final String A_LOWER = "a";
     static final String ONE_NUM = "1";
-    static final RuntimeException NOTHING_WAS_FOUND = new RuntimeException("nothing was found");
 
     static final Predicate<String> VALUE_A = A_UPPER::equalsIgnoreCase;
     static final Predicate<String> VALUE_W = "W"::equalsIgnoreCase;
@@ -31,8 +30,13 @@ abstract class BaseConditionalTest {
     static final List<String> EMPTY_LIST = List.of();
 
     final Function<List<String>, Set<String>> CONVERT_LIST_TO_SET = HashSet::new;
-    final Function<List<String>, String[]> CONVERT_LIST_TO_ARRAY = strings -> strings.toArray(new String[] {});
+    final Function<List<String>, String[]> CONVERT_LIST_TO_ARRAY = strings -> strings.toArray(new String[]{});
     final Function<List<String>, String> GET_FIRST_OBJECT_FROM_LIST = strings -> strings.get(0);
 
+    static <T, R> Function<T, R> createMalformedFunction() {
+        return t -> {
+            throw new IllegalStateException("Test exception");
+        };
+    }
 
 }

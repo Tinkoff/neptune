@@ -2,9 +2,9 @@ package ru.tinkoff.qa.neptune.core.api.steps;
 
 import com.google.common.collect.Iterables;
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import java.lang.reflect.Array;
@@ -34,7 +34,9 @@ public final class Presence<T> extends SequentialGetStepSupplier.GetObjectChaine
 
     private Presence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBePresent) {
         this();
-        from(turnReportingOff(toBePresent.clone()));
+        var copy = turnReportingOff(makeACopy(toBePresent));
+        copy.ignoreSelectionParameters();
+        from(copy);
         readCaptorsOnSuccess(toBePresent.getClass(), successCaptors);
     }
 

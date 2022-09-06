@@ -13,32 +13,9 @@ import java.util.stream.Stream;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
-import static ru.tinkoff.qa.neptune.http.api.response.dictionary.AdditionalCriteriaDescription.hasResultItem;
 
 @SuppressWarnings("unchecked")
-public interface DefinesResponseCriteria<R, S extends DefinesResponseCriteria<R, S>> {
-
-    static <T, R> Criteria<HttpResponse<T>> getResponseCriteriaForIterables(
-        Object fromVal,
-        Criteria<R> resultCriteria,
-        String description
-    ) {
-        Criteria<HttpResponse<T>> responseCriteria = null;
-        if (fromVal instanceof ResponseSequentialGetSupplier) {
-            if (resultCriteria != null) {
-                responseCriteria = condition(
-                    hasResultItem(description, resultCriteria.toString()).toString(),
-                    r -> ((Stream<R>) createStream(((Response<T, ?>) r).getCalculated())).anyMatch(resultCriteria.get())
-                );
-            } else {
-                responseCriteria = condition(
-                    hasResultItem(description).toString(),
-                    r -> ((Stream<R>) createStream(((Response<T, ?>) r).getCalculated())).findAny().isPresent()
-                );
-            }
-        }
-        return responseCriteria;
-    }
+interface DefinesResponseCriteria<R, S extends DefinesResponseCriteria<R, S>> {
 
     private static <R> Stream<R> createStream(Object arrayOrIterable) {
         if (arrayOrIterable == null) {
