@@ -49,7 +49,7 @@ public class SelectionOfArrayItemStepSupplierTest {
         long start = System.currentTimeMillis();
         var result = testListStepSupplier()
             .criteria("Is object", Objects::nonNull)
-            .returnIfFoundLength(isEqual(8))
+            .returnIfEntireLength(isEqual(8))
             .returnOnCondition("contains a list",
                 objects -> ArrayUtils.contains(objects, List.of(2,
                     true,
@@ -77,7 +77,7 @@ public class SelectionOfArrayItemStepSupplierTest {
         var result = testListStepSupplier()
             .criteria("Is object", Objects::nonNull)
             .returnItemOfIndex(1)
-            .returnIfFoundLength(isEqual(8))
+            .returnIfEntireLength(isEqual(8))
             .returnOnCondition("contains a list",
                 objects -> ArrayUtils.contains(objects, List.of(2,
                     true,
@@ -105,7 +105,7 @@ public class SelectionOfArrayItemStepSupplierTest {
         try {
             testListStepSupplier()
                 .criteria("Is object", Objects::nonNull)
-                .returnIfFoundLength(isEqual(10))
+                .returnIfEntireLength(isEqual(10))
                 .returnOnCondition("contains a list",
                     objects -> ArrayUtils.contains(objects, List.of(2,
                         true,
@@ -126,7 +126,7 @@ public class SelectionOfArrayItemStepSupplierTest {
                 end - start,
                 greaterThan(1000L));
 
-            assertThat(TestCapturedStringInjector.messages, contains(startsWith("Found items")));
+            assertThat(TestCapturedStringInjector.messages, contains(startsWith("Got items")));
             return;
         }
 
@@ -142,7 +142,7 @@ public class SelectionOfArrayItemStepSupplierTest {
                 throw new IllegalStateException("Test Exception");
             })
                 .criteria("Is object", Objects::nonNull)
-                .returnIfFoundLength(isEqual(10))
+                .returnIfEntireLength(isEqual(10))
                 .returnOnCondition("contains a list",
                     objects -> ArrayUtils.contains(objects, List.of(2,
                         true,
@@ -175,7 +175,7 @@ public class SelectionOfArrayItemStepSupplierTest {
         try {
             testListStepSupplier(o -> new Object[]{})
                 .criteria("Is object", Objects::nonNull)
-                .returnIfFoundLength(isEqual(10))
+                .returnIfEntireLength(isEqual(10))
                 .returnOnCondition("contains a list",
                     objects -> ArrayUtils.contains(objects, List.of(2,
                         true,
@@ -208,7 +208,7 @@ public class SelectionOfArrayItemStepSupplierTest {
         try {
             testListStepSupplier(o -> new Object[]{})
                 .criteria("Is object", Objects::nonNull)
-                .returnIfFoundLength(isEqual(10))
+                .returnIfEntireLength(isEqual(10))
                 .returnOnCondition("contains a list",
                     objects -> ArrayUtils.contains(objects, List.of(2,
                         true,
@@ -244,7 +244,7 @@ public class SelectionOfArrayItemStepSupplierTest {
                 throw new IllegalStateException("Test Exception");
             })
                 .criteria("Is object", Objects::nonNull)
-                .returnIfFoundLength(isEqual(10))
+                .returnIfEntireLength(isEqual(10))
                 .returnOnCondition("contains a list",
                     objects -> ArrayUtils.contains(objects, List.of(2,
                         true,

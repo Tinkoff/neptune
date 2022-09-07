@@ -5,7 +5,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
-@Description("Index [{index}] is out of found items count [{count}]")
+@Description("Index [{index}] is out of got items count [{count}]")
 public final class IndexIsOut {
 
     @DescriptionFragment("index")

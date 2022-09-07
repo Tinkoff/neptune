@@ -4,7 +4,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
-@Description("Set of found items was empty")
+@Description("Set of got items was empty")
 public final class WasEmpty {
     @Override
     public String toString() {

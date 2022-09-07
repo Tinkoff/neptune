@@ -560,6 +560,61 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
     }
 
+    interface ReturnsOnCondition<T, THIS extends ReturnsOnCondition<T, THIS>> {
+
+        /**
+         * Defines a condition for entire set of found/suitable elements.
+         *
+         * @param condition a condition for entire set of items
+         * @return self-reference
+         */
+        THIS returnOnCondition(Criteria<T> condition);
+
+        /**
+         * Defines a condition for entire set of found/suitable elements.
+         *
+         * @param description describes the condition
+         * @param predicate   defines the condition
+         * @return self-reference
+         */
+        default THIS returnOnCondition(String description, Predicate<T> predicate) {
+            return returnOnCondition(condition(description, predicate));
+        }
+
+        /**
+         * Defines a condition for entire set of found/suitable elements. Defined
+         * criteria will be transformed into OR-expression
+         *
+         * @param condition condition for entire set of items
+         * @return self-reference
+         */
+        default THIS returnOnConditionOr(Criteria<T>... condition) {
+            return returnOnCondition(OR(condition));
+        }
+
+        /**
+         * Defines a condition for entire set of found/suitable elements. Defined
+         * criteria will be transformed into XOR-expression
+         *
+         * @param condition condition for entire set of items
+         * @return self-reference
+         */
+        default THIS returnOnConditionOnlyOne(Criteria<T>... condition) {
+            return returnOnCondition(ONLY_ONE(condition));
+        }
+
+        /**
+         * Defines a condition for entire set of found/suitable elements. Defined
+         * criteria will be inverted
+         *
+         * @param condition condition for entire set of items
+         * @return self-reference
+         */
+        default THIS returnOnConditionOnlyNot(Criteria<T>... condition) {
+            return returnOnCondition(NOT(condition));
+        }
+    }
+
     private static abstract class PrivateGetIterableStepSupplier<T, R, M, P, THIS extends PrivateGetIterableStepSupplier<T, R, M, P, THIS>>
         extends PrivateGetConditionalStepSupplier<T, R, M, P, THIS> {
         protected final FunctionFactory.IterableFunctionFactory<M, ?, R, P> iterableFunctionFactory;
@@ -581,7 +636,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
             iterableFunctionFactory.ignoreSelectionParameters();
         }
 
-        interface SelectionOptionsForList<R, THIS extends SelectionOptionsForList<R, THIS>> {
+        interface SelectionOptionsForList<R, THIS extends SelectionOptionsForList<R, THIS>>
+            extends ReturnsOnCondition<List<R>, THIS> {
 
             private PrivateGetIterableStepSupplier<?, List<R>, ?, ?, ?> cast() {
                 return (PrivateGetIterableStepSupplier<?, List<R>, ?, ?, ?>) this;
@@ -662,7 +718,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
              * @param sizeCondition a size condition for entire list
              * @return self-reference
              */
-            default THIS returnIfFoundSize(ItemsCountCondition sizeCondition) {
+            default THIS returnIfEntireSize(ItemsCountCondition sizeCondition) {
                 var casted = cast();
                 var selection = getListSelection(casted);
                 selection.whenCount(sizeCondition);
@@ -675,59 +731,17 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
              * @param condition a condition for entire list
              * @return self-reference
              */
+            @Override
             default THIS returnOnCondition(Criteria<List<R>> condition) {
                 var casted = cast();
                 var selection = getListSelection(casted);
                 selection.onCondition(condition);
                 return (THIS) this;
             }
-
-            /**
-             * Defines a condition for list of found/suitable elements.
-             *
-             * @param description describes the condition
-             * @param predicate   defines the condition
-             * @return self-reference
-             */
-            default THIS returnOnCondition(String description, Predicate<List<R>> predicate) {
-                return returnOnCondition(condition(description, predicate));
-            }
-
-            /**
-             * Defines a condition for list of found/suitable elements. Defined
-             * criteria will be transformed into OR-expression
-             *
-             * @param condition a condition for entire list
-             * @return self-reference
-             */
-            default THIS returnOnConditionOr(Criteria<List<R>>... condition) {
-                return returnOnCondition(OR(condition));
-            }
-
-            /**
-             * Defines a condition for list of found/suitable elements. Defined
-             * criteria will be transformed into XOR-expression
-             *
-             * @param condition a condition for entire list
-             * @return self-reference
-             */
-            default THIS returnOnConditionOnlyOne(Criteria<List<R>>... condition) {
-                return returnOnCondition(ONLY_ONE(condition));
-            }
-
-            /**
-             * Defines a condition for list of found/suitable elements. Defined
-             * criteria will be inverted
-             *
-             * @param condition a condition for entire list
-             * @return self-reference
-             */
-            default THIS returnOnConditionOnlyNot(Criteria<List<R>>... condition) {
-                return returnOnCondition(NOT(condition));
-            }
         }
 
-        interface SelectionOptionsForArray<R, THIS extends SelectionOptionsForArray<R, THIS>> {
+        interface SelectionOptionsForArray<R, THIS extends SelectionOptionsForArray<R, THIS>> extends
+            ReturnsOnCondition<R[], THIS> {
 
             private PrivateGetIterableStepSupplier<?, R[], ?, ?, ?> cast() {
                 return (PrivateGetIterableStepSupplier<?, R[], ?, ?, ?>) this;
@@ -807,7 +821,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
              * @param lengthCondition a length condition for entire array
              * @return self-reference
              */
-            default THIS returnIfFoundLength(ItemsCountCondition lengthCondition) {
+            default THIS returnIfEntireLength(ItemsCountCondition lengthCondition) {
                 var casted = cast();
                 var selection = getArraySelection(casted);
                 selection.whenCount(lengthCondition);
@@ -820,276 +834,12 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
              * @param condition a condition for entire array
              * @return self-reference
              */
+            @Override
             default THIS returnOnCondition(Criteria<R[]> condition) {
                 var casted = cast();
                 var selection = getArraySelection(casted);
                 selection.onCondition(condition);
                 return (THIS) this;
-            }
-
-            /**
-             * Defines a condition for array of found/suitable elements.
-             *
-             * @param description describes the condition
-             * @param predicate   defines the condition
-             * @return self-reference
-             */
-            default THIS returnOnCondition(String description, Predicate<R[]> predicate) {
-                return returnOnCondition(condition(description, predicate));
-            }
-
-            /**
-             * Defines a condition for array of found/suitable elements. Defined
-             * criteria will be transformed into OR-expression
-             *
-             * @param condition a condition for entire array
-             * @return self-reference
-             */
-            default THIS returnOnConditionOr(Criteria<R[]>... condition) {
-                return returnOnCondition(OR(condition));
-            }
-
-            /**
-             * Defines a condition for array of found/suitable elements. Defined
-             * criteria will be transformed into XOR-expression
-             *
-             * @param condition a condition for entire array
-             * @return self-reference
-             */
-            default THIS returnOnConditionOnlyOne(Criteria<R[]>... condition) {
-                return returnOnCondition(ONLY_ONE(condition));
-            }
-
-            /**
-             * Defines a condition for array of found/suitable elements. Defined
-             * criteria will be inverted
-             *
-             * @param condition a condition for entire array
-             * @return self-reference
-             */
-            default THIS returnOnConditionOnlyNot(Criteria<R[]>... condition) {
-                return returnOnCondition(NOT(condition));
-            }
-        }
-    }
-
-    private static abstract class PrivateGetItemStepSupplier<I, T, R, M, P, THIS extends PrivateGetItemStepSupplier<I, T, R, M, P, THIS>>
-        extends PrivateGetConditionalStepSupplier<T, R, M, P, THIS> {
-
-        protected final FunctionFactory.ItemFunctionFactory<M, I, R, P> itemFunctionFactory;
-
-        protected <S extends I> PrivateGetItemStepSupplier(Function<M, S> stepFunction,
-                                                           FunctionFactory.ItemFunctionFactory<M, I, R, P> functionFactory) {
-            super((Function<M, I>) stepFunction, functionFactory);
-            this.itemFunctionFactory = functionFactory;
-        }
-
-        @Override
-        void fillSelectionParameters(Map<String, String> parameters) {
-            ofNullable(itemFunctionFactory.getResultSelection())
-                .ifPresent(rs -> parameters.putAll(rs.getParameters()));
-        }
-
-        @Override
-        void ignoreSelectionParameters() {
-            itemFunctionFactory.ignoreSelectionParameters();
-        }
-
-        interface SelectionOptionsForIterableItem<R, I extends Iterable<R>, THIS extends SelectionOptionsForIterableItem<R, I, THIS>> {
-
-            private PrivateGetItemStepSupplier<I, ?, R, ?, ?, ?> cast() {
-                return (PrivateGetItemStepSupplier<I, ?, R, ?, ?, ?>) this;
-            }
-
-            private SelectionOfItem.SelectionOfIterableItem<R, I> getSelectionOfIterableItem(PrivateGetItemStepSupplier<I, ?, R, ?, ?, ?> casted) {
-                return (SelectionOfItem.SelectionOfIterableItem<R, I>) ofNullable(casted.itemFunctionFactory.getResultSelection())
-                    .orElseGet(() -> {
-                        var s = SelectionOfItem.SelectionOfIterableItem.<R, I>selectItemOfIterable();
-                        casted.itemFunctionFactory.setResultSelection(s);
-                        return s;
-                    });
-            }
-
-            /**
-             * Defines index of the target element take from the iterable of found/suitable elements.
-             *
-             * @param size index of the target element
-             * @return self-reference
-             */
-            default THIS returnItemOfIndex(int size) {
-                var casted = cast();
-                var selection = getSelectionOfIterableItem(casted);
-                selection.index(size);
-                return (THIS) this;
-            }
-
-            /**
-             * Defines a size condition for entire iterable of found/suitable elements.
-             *
-             * @param sizeCondition a size condition for entire iterable
-             * @return self-reference
-             */
-            default THIS returnIfFoundSize(ItemsCountCondition sizeCondition) {
-                var casted = cast();
-                var selection = getSelectionOfIterableItem(casted);
-                selection.whenCount(sizeCondition);
-                return (THIS) this;
-            }
-
-            /**
-             * Defines a condition for iterable of found/suitable elements.
-             *
-             * @param condition a condition for entire iterable
-             * @return self-reference
-             */
-            default THIS returnOnCondition(Criteria<I> condition) {
-                var casted = cast();
-                var selection = getSelectionOfIterableItem(casted);
-                selection.onCondition(condition);
-                return (THIS) this;
-            }
-
-            /**
-             * Defines a condition for iterable of found/suitable elements.
-             *
-             * @param description describes the condition
-             * @param predicate   defines the condition
-             * @return self-reference
-             */
-            default THIS returnOnCondition(String description, Predicate<I> predicate) {
-                return returnOnCondition(condition(description, predicate));
-            }
-
-            /**
-             * Defines a condition for iterable of found/suitable elements. Defined
-             * criteria will be transformed into OR-expression
-             *
-             * @param condition a condition for entire iterable
-             * @return self-reference
-             */
-            default THIS returnOnConditionOr(Criteria<I>... condition) {
-                return returnOnCondition(OR(condition));
-            }
-
-            /**
-             * Defines a condition for iterable of found/suitable elements. Defined
-             * criteria will be transformed into XOR-expression
-             *
-             * @param condition a condition for entire iterable
-             * @return self-reference
-             */
-            default THIS returnOnConditionOnlyOne(Criteria<I>... condition) {
-                return returnOnCondition(ONLY_ONE(condition));
-            }
-
-            /**
-             * Defines a condition for iterable of found/suitable elements. Defined
-             * criteria will be inverted
-             *
-             * @param condition a condition for entire iterable
-             * @return self-reference
-             */
-            default THIS returnOnConditionOnlyNot(Criteria<I>... condition) {
-                return returnOnCondition(NOT(condition));
-            }
-        }
-
-        interface SelectionOptionsForArrayItem<R, THIS extends SelectionOptionsForArrayItem<R, THIS>> {
-
-            private PrivateGetItemStepSupplier<R[], ?, R, ?, ?, ?> cast() {
-                return (PrivateGetItemStepSupplier<R[], ?, R, ?, ?, ?>) this;
-            }
-
-            private SelectionOfItem.SelectionOfArrayItem<R> getSelectionOfArrayItem(PrivateGetItemStepSupplier<R[], ?, R, ?, ?, ?> casted) {
-                return (SelectionOfItem.SelectionOfArrayItem<R>) ofNullable(casted.itemFunctionFactory.getResultSelection())
-                    .orElseGet(() -> {
-                        var s = SelectionOfItem.SelectionOfArrayItem.<R>selectItemOfArray();
-                        casted.itemFunctionFactory.setResultSelection(s);
-                        return s;
-                    });
-            }
-
-            /**
-             * Defines index of the target element take from the array of found/suitable elements.
-             *
-             * @param size index of the target element
-             * @return self-reference
-             */
-            default THIS returnItemOfIndex(int size) {
-                var casted = cast();
-                var selection = getSelectionOfArrayItem(casted);
-                selection.index(size);
-                return (THIS) this;
-            }
-
-            /**
-             * Defines a size condition for entire array of found/suitable elements.
-             *
-             * @param lengthCondition a length condition for entire array
-             * @return self-reference
-             */
-            default THIS returnIfFoundLength(ItemsCountCondition lengthCondition) {
-                var casted = cast();
-                var selection = getSelectionOfArrayItem(casted);
-                selection.whenCount(lengthCondition);
-                return (THIS) this;
-            }
-
-            /**
-             * Defines a condition for array of found/suitable elements.
-             *
-             * @param condition a condition for entire array
-             * @return self-reference
-             */
-            default THIS returnOnCondition(Criteria<R[]> condition) {
-                var casted = cast();
-                var selection = getSelectionOfArrayItem(casted);
-                selection.onCondition(condition);
-                return (THIS) this;
-            }
-
-            /**
-             * Defines a condition for array of found/suitable elements.
-             *
-             * @param description describes the condition
-             * @param predicate   defines the condition
-             * @return self-reference
-             */
-            default THIS returnOnCondition(String description, Predicate<R[]> predicate) {
-                return returnOnCondition(condition(description, predicate));
-            }
-
-            /**
-             * Defines a condition for array of found/suitable elements. Defined
-             * criteria will be transformed into OR-expression
-             *
-             * @param condition a condition for entire array
-             * @return self-reference
-             */
-            default THIS returnOnConditionOr(Criteria<R[]>... condition) {
-                return returnOnCondition(OR(condition));
-            }
-
-            /**
-             * Defines a condition for array of found/suitable elements. Defined
-             * criteria will be transformed into XOR-expression
-             *
-             * @param condition a condition for entire array
-             * @return self-reference
-             */
-            default THIS returnOnConditionOnlyOne(Criteria<R[]>... condition) {
-                return returnOnCondition(ONLY_ONE(condition));
-            }
-
-            /**
-             * Defines a condition for array of found/suitable elements. Defined
-             * criteria will be inverted
-             *
-             * @param condition a condition for entire array
-             * @return self-reference
-             */
-            default THIS returnOnConditionOnlyNot(Criteria<R[]>... condition) {
-                return returnOnCondition(NOT(condition));
             }
         }
     }
@@ -1141,6 +891,143 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
     }
 
+    private static abstract class PrivateGetItemStepSupplier<I, T, R, M, P, THIS extends PrivateGetItemStepSupplier<I, T, R, M, P, THIS>>
+        extends PrivateGetConditionalStepSupplier<T, R, M, P, THIS> {
+
+        protected final FunctionFactory.ItemFunctionFactory<M, I, R, P> itemFunctionFactory;
+
+        protected <S extends I> PrivateGetItemStepSupplier(Function<M, S> stepFunction,
+                                                           FunctionFactory.ItemFunctionFactory<M, I, R, P> functionFactory) {
+            super((Function<M, I>) stepFunction, functionFactory);
+            this.itemFunctionFactory = functionFactory;
+        }
+
+        @Override
+        void fillSelectionParameters(Map<String, String> parameters) {
+            ofNullable(itemFunctionFactory.getResultSelection())
+                .ifPresent(rs -> parameters.putAll(rs.getParameters()));
+        }
+
+        @Override
+        void ignoreSelectionParameters() {
+            itemFunctionFactory.ignoreSelectionParameters();
+        }
+
+        interface SelectionOptionsForIterableItem<R, I extends Iterable<R>, THIS extends SelectionOptionsForIterableItem<R, I, THIS>>
+            extends ReturnsOnCondition<I, THIS> {
+
+            private PrivateGetItemStepSupplier<I, ?, R, ?, ?, ?> cast() {
+                return (PrivateGetItemStepSupplier<I, ?, R, ?, ?, ?>) this;
+            }
+
+            private SelectionOfItem.SelectionOfIterableItem<R, I> getSelectionOfIterableItem(PrivateGetItemStepSupplier<I, ?, R, ?, ?, ?> casted) {
+                return (SelectionOfItem.SelectionOfIterableItem<R, I>) ofNullable(casted.itemFunctionFactory.getResultSelection())
+                    .orElseGet(() -> {
+                        var s = SelectionOfItem.SelectionOfIterableItem.<R, I>selectItemOfIterable();
+                        casted.itemFunctionFactory.setResultSelection(s);
+                        return s;
+                    });
+            }
+
+            /**
+             * Defines index of the target element take from the iterable of found/suitable elements.
+             *
+             * @param size index of the target element
+             * @return self-reference
+             */
+            default THIS returnItemOfIndex(int size) {
+                var casted = cast();
+                var selection = getSelectionOfIterableItem(casted);
+                selection.index(size);
+                return (THIS) this;
+            }
+
+            /**
+             * Defines a size condition for entire iterable of found/suitable elements.
+             *
+             * @param sizeCondition a size condition for entire iterable
+             * @return self-reference
+             */
+            default THIS returnIfEntireSize(ItemsCountCondition sizeCondition) {
+                var casted = cast();
+                var selection = getSelectionOfIterableItem(casted);
+                selection.whenCount(sizeCondition);
+                return (THIS) this;
+            }
+
+            /**
+             * Defines a condition for iterable of found/suitable elements.
+             *
+             * @param condition a condition for entire iterable
+             * @return self-reference
+             */
+            @Override
+            default THIS returnOnCondition(Criteria<I> condition) {
+                var casted = cast();
+                var selection = getSelectionOfIterableItem(casted);
+                selection.onCondition(condition);
+                return (THIS) this;
+            }
+        }
+
+        interface SelectionOptionsForArrayItem<R, THIS extends SelectionOptionsForArrayItem<R, THIS>>
+            extends ReturnsOnCondition<R[], THIS> {
+
+            private PrivateGetItemStepSupplier<R[], ?, R, ?, ?, ?> cast() {
+                return (PrivateGetItemStepSupplier<R[], ?, R, ?, ?, ?>) this;
+            }
+
+            private SelectionOfItem.SelectionOfArrayItem<R> getSelectionOfArrayItem(PrivateGetItemStepSupplier<R[], ?, R, ?, ?, ?> casted) {
+                return (SelectionOfItem.SelectionOfArrayItem<R>) ofNullable(casted.itemFunctionFactory.getResultSelection())
+                    .orElseGet(() -> {
+                        var s = SelectionOfItem.SelectionOfArrayItem.<R>selectItemOfArray();
+                        casted.itemFunctionFactory.setResultSelection(s);
+                        return s;
+                    });
+            }
+
+            /**
+             * Defines index of the target element take from the array of found/suitable elements.
+             *
+             * @param size index of the target element
+             * @return self-reference
+             */
+            default THIS returnItemOfIndex(int size) {
+                var casted = cast();
+                var selection = getSelectionOfArrayItem(casted);
+                selection.index(size);
+                return (THIS) this;
+            }
+
+            /**
+             * Defines a size condition for entire array of found/suitable elements.
+             *
+             * @param lengthCondition a length condition for entire array
+             * @return self-reference
+             */
+            default THIS returnIfEntireLength(ItemsCountCondition lengthCondition) {
+                var casted = cast();
+                var selection = getSelectionOfArrayItem(casted);
+                selection.whenCount(lengthCondition);
+                return (THIS) this;
+            }
+
+            /**
+             * Defines a condition for array of found/suitable elements.
+             *
+             * @param condition a condition for entire array
+             * @return self-reference
+             */
+            @Override
+            default THIS returnOnCondition(Criteria<R[]> condition) {
+                var casted = cast();
+                var selection = getSelectionOfArrayItem(casted);
+                selection.onCondition(condition);
+                return (THIS) this;
+            }
+        }
+    }
+
     /**
      * This class is designed to build and supply functions to get desired value using some iterable.
      *
@@ -1161,7 +1048,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         public Function<T, R> get() {
             var get = (Get<T, R>) super.get();
             get.setResultSelection(itemFunctionFactory.getResultSelection());
-            get.setCaptorOfFailedResultSelection(new IterableCaptor<Iterable<R>>(new FoundItems().toString()));
+            get.setCaptorOfFailedResultSelection(new IterableCaptor<Iterable<R>>(new GotItems().toString()));
             return get;
         }
     }
@@ -1201,7 +1088,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         public Function<T, R> get() {
             var get = (Get<T, R>) super.get();
             get.setResultSelection(itemFunctionFactory.getResultSelection());
-            get.setCaptorOfFailedResultSelection(new IterableCaptor<Iterable<R>>(new FoundItems().toString()));
+            get.setCaptorOfFailedResultSelection(new IterableCaptor<Iterable<R>>(new GotItems().toString()));
             return get;
         }
     }
@@ -1226,7 +1113,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         public Function<T, R> get() {
             var get = (Get<T, R>) super.get();
             get.setResultSelection(itemFunctionFactory.getResultSelection());
-            get.setCaptorOfFailedResultSelection(new ArrayCaptor(new FoundItems().toString()));
+            get.setCaptorOfFailedResultSelection(new ArrayCaptor(new GotItems().toString()));
             return get;
         }
     }
@@ -1266,7 +1153,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         public Function<T, R> get() {
             var get = (Get<T, R>) super.get();
             get.setResultSelection(itemFunctionFactory.getResultSelection());
-            get.setCaptorOfFailedResultSelection(new ArrayCaptor(new FoundItems().toString()));
+            get.setCaptorOfFailedResultSelection(new ArrayCaptor(new GotItems().toString()));
             return get;
         }
     }
@@ -1292,7 +1179,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         public Function<T, List<R>> get() {
             var get = (Get<T, List<R>>) super.get();
             get.setResultSelection(iterableFunctionFactory.getResultSelection());
-            get.setCaptorOfFailedResultSelection(new CollectionCaptor(new FoundItems().toString()));
+            get.setCaptorOfFailedResultSelection(new CollectionCaptor(new GotItems().toString()));
             return get;
         }
     }
@@ -1333,7 +1220,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         public Function<T, List<R>> get() {
             var get = (Get<T, List<R>>) super.get();
             get.setResultSelection(iterableFunctionFactory.getResultSelection());
-            get.setCaptorOfFailedResultSelection(new CollectionCaptor(new FoundItems().toString()));
+            get.setCaptorOfFailedResultSelection(new CollectionCaptor(new GotItems().toString()));
             return get;
         }
     }
@@ -1358,47 +1245,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         public Function<T, R[]> get() {
             var get = (Get<T, R[]>) super.get();
             get.setResultSelection(iterableFunctionFactory.getResultSelection());
-            get.setCaptorOfFailedResultSelection(new ArrayCaptor(new FoundItems().toString()));
-            return get;
-        }
-    }
-
-    /**
-     * This class is designed to build and supply chained functions to get some desired array-value.
-     *
-     * @param <T>    is a type of input value
-     * @param <M>    is a type of mediator value is used to get the result
-     * @param <R>    is a type of item from resulted array
-     * @param <THIS> this is the self-type. It is used for the method chaining.
-     */
-    public static abstract class GetArrayChainedStepSupplier<T, R, M, THIS extends GetArrayChainedStepSupplier<T, R, M, THIS>>
-        extends PrivateGetIterableStepSupplier<T, R[], M, R, THIS>
-        implements PrivateGetIterableStepSupplier.SelectionOptionsForArray<R, THIS> {
-
-        protected GetArrayChainedStepSupplier(Function<M, R[]> originalFunction) {
-            super(originalFunction, new FunctionFactory.ArrayFunctionFactory<>());
-        }
-
-        @Override
-        protected THIS from(Function<T, ? extends M> from) {
-            return super.from(from);
-        }
-
-        @Override
-        protected THIS from(M from) {
-            return super.from(from);
-        }
-
-        @Override
-        protected THIS from(SequentialGetStepSupplier<T, ? extends M, ?, ?, ?> from) {
-            return super.from(from);
-        }
-
-        @Override
-        public Function<T, R[]> get() {
-            var get = (Get<T, R[]>) super.get();
-            get.setResultSelection(iterableFunctionFactory.getResultSelection());
-            get.setCaptorOfFailedResultSelection(new ArrayCaptor(new FoundItems().toString()));
+            get.setCaptorOfFailedResultSelection(new ArrayCaptor(new GotItems().toString()));
             return get;
         }
     }
@@ -1555,8 +1402,48 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
     }
 
-    @Description("Found items")
-    private static final class FoundItems {
+    /**
+     * This class is designed to build and supply chained functions to get some desired array-value.
+     *
+     * @param <T>    is a type of input value
+     * @param <M>    is a type of mediator value is used to get the result
+     * @param <R>    is a type of item from resulted array
+     * @param <THIS> this is the self-type. It is used for the method chaining.
+     */
+    public static abstract class GetArrayChainedStepSupplier<T, R, M, THIS extends GetArrayChainedStepSupplier<T, R, M, THIS>>
+        extends PrivateGetIterableStepSupplier<T, R[], M, R, THIS>
+        implements PrivateGetIterableStepSupplier.SelectionOptionsForArray<R, THIS> {
+
+        protected GetArrayChainedStepSupplier(Function<M, R[]> originalFunction) {
+            super(originalFunction, new FunctionFactory.ArrayFunctionFactory<>());
+        }
+
+        @Override
+        protected THIS from(Function<T, ? extends M> from) {
+            return super.from(from);
+        }
+
+        @Override
+        protected THIS from(M from) {
+            return super.from(from);
+        }
+
+        @Override
+        protected THIS from(SequentialGetStepSupplier<T, ? extends M, ?, ?, ?> from) {
+            return super.from(from);
+        }
+
+        @Override
+        public Function<T, R[]> get() {
+            var get = (Get<T, R[]>) super.get();
+            get.setResultSelection(iterableFunctionFactory.getResultSelection());
+            get.setCaptorOfFailedResultSelection(new ArrayCaptor(new GotItems().toString()));
+            return get;
+        }
+    }
+
+    @Description("Got items")
+    private static final class GotItems {
 
         public String toString() {
             return translate(this);

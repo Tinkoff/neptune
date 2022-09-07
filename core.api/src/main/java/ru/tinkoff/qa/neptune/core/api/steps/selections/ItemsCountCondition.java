@@ -4,6 +4,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.String.valueOf;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
@@ -137,17 +138,28 @@ public abstract class ItemsCountCondition {
                 return EMPTY;
             }
 
-            if (nonNull(min) && nonNull(max)) {
-                return new GreaterThan()
-                    + " " + min
-                    + "; "
-                    + new LesserThan()
-                    + " " + max;
+            var toStringBuilder = new StringBuilder();
+            if (nonNull(min)) {
+                if (min.inclusive) {
+                    toStringBuilder.append(new GreaterThanOrEqual()).append(" ").append(min);
+                } else {
+                    toStringBuilder.append(new GreaterThan()).append(" ").append(min);
+                }
+
+                if (nonNull(max)) {
+                    toStringBuilder.append("; ");
+                }
             }
 
-            return isNull(min) ?
-                new LesserThan() + " " + max :
-                new GreaterThan() + " " + min;
+            if (nonNull(max)) {
+                if (max.inclusive) {
+                    toStringBuilder.append(new LesserThanOrEqual()).append(" ").append(max);
+                } else {
+                    toStringBuilder.append(new LesserThan()).append(" ").append(max);
+                }
+            }
+
+            return toStringBuilder.toString();
         }
 
         void setMin(int min, boolean inclusive) {
@@ -162,13 +174,9 @@ public abstract class ItemsCountCondition {
         }
     }
 
-    @Description("{borderValue}, or equal={orEqual}")
     private static class CountBorder {
 
-        @DescriptionFragment("borderValue")
         private final int borderValue;
-
-        @DescriptionFragment("orEqual")
         private final boolean inclusive;
 
         private CountBorder(int borderValue, boolean inclusive) {
@@ -180,7 +188,7 @@ public abstract class ItemsCountCondition {
 
         @Override
         public String toString() {
-            return translate(this);
+            return valueOf(borderValue);
         }
 
         int getBorderValue() {
@@ -200,8 +208,24 @@ public abstract class ItemsCountCondition {
         }
     }
 
+    @Description("Greater than or equal")
+    private static final class GreaterThanOrEqual {
+        @Override
+        public String toString() {
+            return translate(this);
+        }
+    }
+
     @Description("Lesser than")
     private static final class LesserThan {
+        @Override
+        public String toString() {
+            return translate(this);
+        }
+    }
+
+    @Description("Lesser than or equal")
+    private static final class LesserThanOrEqual {
         @Override
         public String toString() {
             return translate(this);

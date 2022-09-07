@@ -51,7 +51,7 @@ public class SelectionOfArrayStepSupplierTest {
             .criteria("Is object", Objects::nonNull)
             .returnArrayOfLength(3)
             .returnBeforeIndex(7)
-            .returnIfFoundLength(isEqual(8))
+            .returnIfEntireLength(isEqual(8))
             .returnOnCondition("contains a list",
                 objects -> ArrayUtils.contains(objects, List.of(2,
                     true,
@@ -85,7 +85,7 @@ public class SelectionOfArrayStepSupplierTest {
         var result = testListStepSupplier()
             .criteria("Is object", Objects::nonNull)
             .returnItemsOfIndexes(0, 3, 5)
-            .returnIfFoundLength(isEqual(8))
+            .returnIfEntireLength(isEqual(8))
             .returnOnCondition("contains a list",
                 objects -> ArrayUtils.contains(objects, List.of(2,
                     true,
@@ -117,7 +117,7 @@ public class SelectionOfArrayStepSupplierTest {
                 .criteria("Is object", Objects::nonNull)
                 .returnArrayOfLength(3)
                 .returnBeforeIndex(7)
-                .returnIfFoundLength(isEqual(10))
+                .returnIfEntireLength(isEqual(10))
                 .returnOnCondition("contains a list",
                     objects -> ArrayUtils.contains(objects, List.of(2,
                         true,
@@ -138,7 +138,7 @@ public class SelectionOfArrayStepSupplierTest {
                 end - start,
                 greaterThan(1000L));
 
-            assertThat(TestCapturedStringInjector.messages, contains(startsWith("Found items")));
+            assertThat(TestCapturedStringInjector.messages, contains(startsWith("Got items")));
             return;
         }
 
@@ -156,7 +156,7 @@ public class SelectionOfArrayStepSupplierTest {
                 .criteria("Is object", Objects::nonNull)
                 .returnArrayOfLength(3)
                 .returnBeforeIndex(7)
-                .returnIfFoundLength(isEqual(10))
+                .returnIfEntireLength(isEqual(10))
                 .returnOnCondition("contains a list",
                     objects -> ArrayUtils.contains(objects, List.of(2,
                         true,
@@ -191,7 +191,7 @@ public class SelectionOfArrayStepSupplierTest {
                 .criteria("Is object", Objects::nonNull)
                 .returnArrayOfLength(3)
                 .returnBeforeIndex(7)
-                .returnIfFoundLength(isEqual(10))
+                .returnIfEntireLength(isEqual(10))
                 .returnOnCondition("contains a list",
                     objects -> ArrayUtils.contains(objects, List.of(2,
                         true,
@@ -228,7 +228,7 @@ public class SelectionOfArrayStepSupplierTest {
                 .criteria("Is object", Objects::nonNull)
                 .returnArrayOfLength(3)
                 .returnBeforeIndex(7)
-                .returnIfFoundLength(isEqual(10))
+                .returnIfEntireLength(isEqual(10))
                 .returnOnCondition("contains a list",
                     objects -> ArrayUtils.contains(objects, List.of(2,
                         true,

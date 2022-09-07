@@ -51,7 +51,7 @@ public class SelectionOfListStepSupplierTest {
             .criteria("Is object", Objects::nonNull)
             .returnListOfSize(3)
             .returnBeforeIndex(7)
-            .returnIfFoundSize(isEqual(8))
+            .returnIfEntireSize(isEqual(8))
             .returnOnCondition("contains a list",
                 objects -> objects.contains(List.of(2,
                     true,
@@ -80,12 +80,11 @@ public class SelectionOfListStepSupplierTest {
 
     @Test
     public void positiveTestWithIndexes() {
-
         long start = System.currentTimeMillis();
         var result = testListStepSupplier()
             .criteria("Is object", Objects::nonNull)
             .returnItemsOfIndexes(0, 3, 5)
-            .returnIfFoundSize(isEqual(8))
+            .returnIfEntireSize(isEqual(8))
             .returnOnCondition("contains a list",
                 objects -> objects.contains(List.of(2,
                     true,
@@ -117,7 +116,7 @@ public class SelectionOfListStepSupplierTest {
                 .criteria("Is object", Objects::nonNull)
                 .returnListOfSize(3)
                 .returnBeforeIndex(7)
-                .returnIfFoundSize(isEqual(10))
+                .returnIfEntireSize(isEqual(10))
                 .returnOnCondition("contains a list",
                     objects -> objects.contains(List.of(2,
                         true,
@@ -138,7 +137,7 @@ public class SelectionOfListStepSupplierTest {
                 end - start,
                 greaterThan(1000L));
 
-            assertThat(TestCapturedStringInjector.messages, contains(startsWith("Found items")));
+            assertThat(TestCapturedStringInjector.messages, contains(startsWith("Got items")));
             return;
         }
 
@@ -156,7 +155,7 @@ public class SelectionOfListStepSupplierTest {
                 .criteria("Is object", Objects::nonNull)
                 .returnListOfSize(3)
                 .returnBeforeIndex(7)
-                .returnIfFoundSize(isEqual(10))
+                .returnIfEntireSize(isEqual(10))
                 .returnOnCondition("contains a list",
                     objects -> objects.contains(List.of(2,
                         true,
@@ -191,7 +190,7 @@ public class SelectionOfListStepSupplierTest {
                 .criteria("Is object", Objects::nonNull)
                 .returnListOfSize(3)
                 .returnBeforeIndex(7)
-                .returnIfFoundSize(isEqual(10))
+                .returnIfEntireSize(isEqual(10))
                 .returnOnCondition("contains a list",
                     objects -> objects.contains(List.of(2,
                         true,
@@ -226,7 +225,7 @@ public class SelectionOfListStepSupplierTest {
                 .criteria("Is object", Objects::nonNull)
                 .returnListOfSize(3)
                 .returnBeforeIndex(7)
-                .returnIfFoundSize(isEqual(10))
+                .returnIfEntireSize(isEqual(10))
                 .returnOnCondition("contains a list",
                     objects -> objects.contains(List.of(2,
                         true,
@@ -264,7 +263,7 @@ public class SelectionOfListStepSupplierTest {
                 .criteria("Is object", Objects::nonNull)
                 .returnListOfSize(3)
                 .returnBeforeIndex(7)
-                .returnIfFoundSize(isEqual(10))
+                .returnIfEntireSize(isEqual(10))
                 .returnOnCondition("contains a list",
                     objects -> objects.contains(List.of(2,
                         true,

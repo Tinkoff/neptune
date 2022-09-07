@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.core.api.steps.selections;
 
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -166,13 +167,33 @@ public class ListResultSelectionTest extends SelectionsPreparations {
     }
 
     @Test
+    public void negativeTestNull() {
+        var selection = selectList().ofCount(10);
+        var result = selection.evaluate(null);
+        assertThat(result, nullValue());
+        assertThat(selection.mismatchMessage(), equalTo(
+            "It is not possible to select resulted items because:\r\n" +
+                "Set of got items was null"));
+    }
+
+    @Test
+    public void negativeTestEmpty() {
+        var selection = selectList().ofCount(10);
+        var result = selection.evaluate(new ArrayList<>());
+        assertThat(result, nullValue());
+        assertThat(selection.mismatchMessage(), equalTo(
+            "It is not possible to select resulted items because:\r\n" +
+                "Set of got items was empty"));
+    }
+
+    @Test
     public void negativeTestSizeEquals() {
         var selection = selectList().ofCount(10);
         var result = selection.evaluate(OBJECT_LIST);
         assertThat(result, nullValue());
         assertThat(selection.mismatchMessage(), equalTo(
             "It is not possible to select resulted items because:\r\n" +
-                "Max index [9] is out of found items count [8]"));
+                "Max index [9] is out of got items count [8]"));
     }
 
     @Test
@@ -182,7 +203,7 @@ public class ListResultSelectionTest extends SelectionsPreparations {
         assertThat(result, nullValue());
         assertThat(selection.mismatchMessage(), equalTo(
             "It is not possible to select resulted items because:\r\n" +
-                "Max index [9] is out of found items count [8]"));
+                "Max index [9] is out of got items count [8]"));
     }
 
     @Test(dataProvider = "negativeSizeConditions")
@@ -204,7 +225,7 @@ public class ListResultSelectionTest extends SelectionsPreparations {
         assertThat(result, nullValue());
         assertThat(selection.mismatchMessage(), equalTo(
             "It is not possible to select resulted items because:\r\n" +
-                "Max index [9] is out of found items count [8]"));
+                "Max index [9] is out of got items count [8]"));
     }
 
     @Test
@@ -216,7 +237,7 @@ public class ListResultSelectionTest extends SelectionsPreparations {
         assertThat(result, nullValue());
         assertThat(selection.mismatchMessage(), equalTo(
             "It is not possible to select resulted items because:\r\n" +
-                "Min index [11] is out of found items count [8]"));
+                "Min index [11] is out of got items count [8]"));
     }
 
     @Test
@@ -241,7 +262,7 @@ public class ListResultSelectionTest extends SelectionsPreparations {
         assertThat(result, nullValue());
         assertThat(selection.mismatchMessage(), equalTo(
             "It is not possible to select resulted items because:\r\n" +
-                "Set of found items doesnt match 'does not contain a list'"));
+                "Set of got items doesnt match 'does not contain a list'"));
     }
 
     @Test
@@ -270,7 +291,7 @@ public class ListResultSelectionTest extends SelectionsPreparations {
         assertThat(result, nullValue());
         assertThat(selection.mismatchMessage(), equalTo(
             "It is not possible to select resulted items because:\r\n" +
-                "Count [8] of found items doesnt match 'equal 10'"));
+                "Count [8] of got items doesnt match 'equal 10'"));
     }
 
     @Test
@@ -298,7 +319,7 @@ public class ListResultSelectionTest extends SelectionsPreparations {
         assertThat(result, nullValue());
         assertThat(selection.mismatchMessage(), equalTo(
             "It is not possible to select resulted items because:\r\n" +
-                "Set of found items doesnt match 'does not contain a list'"));
+                "Set of got items doesnt match 'does not contain a list'"));
     }
 
     @Test
@@ -312,7 +333,7 @@ public class ListResultSelectionTest extends SelectionsPreparations {
         assertThat(result, nullValue());
         assertThat(selection.mismatchMessage(), equalTo(
             "It is not possible to select resulted items because:\r\n" +
-                "Max index [9] is out of found items count [8]"));
+                "Max index [9] is out of got items count [8]"));
     }
 
     @Test
@@ -325,7 +346,7 @@ public class ListResultSelectionTest extends SelectionsPreparations {
         assertThat(result, nullValue());
         assertThat(selection.mismatchMessage(), equalTo(
             "It is not possible to select resulted items because:\r\n" +
-                "Max index [10] is out of found items count [8]"));
+                "Max index [10] is out of got items count [8]"));
     }
 
     @Test

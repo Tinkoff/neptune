@@ -25,7 +25,7 @@ abstract class SelectionOfIterable<T, R, THIS extends SelectionOfIterable<T, R, 
     extends ResultSelection<T, R> {
 
     private final List<Criteria<T>> notMatched = new ArrayList<>();
-    @StepParameter("Return the result when total count of found items is")
+    @StepParameter("Return the result when total count of got items is")
     ItemsCountCondition whenCount;
     LinkedList<Criteria<T>> additionalConditionsForIterable = new LinkedList<>();
     private boolean wasNull;
@@ -162,7 +162,7 @@ abstract class SelectionOfIterable<T, R, THIS extends SelectionOfIterable<T, R, 
         return super.evaluate(selectFrom);
     }
 
-    @Description("Return the result on condition")
+    @Description("Return if set of got items matches")
     private static final class OnCondition {
         @Override
         public String toString() {

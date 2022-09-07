@@ -6,7 +6,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
-@Description("Set of found items doesnt match '{condition}'")
+@Description("Set of got items doesnt match '{condition}'")
 public final class DoesntMatch {
 
     @DescriptionFragment("condition")

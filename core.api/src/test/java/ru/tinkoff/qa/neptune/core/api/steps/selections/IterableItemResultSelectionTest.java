@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.core.api.steps.selections;
 import com.google.common.collect.Iterables;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -92,13 +93,33 @@ public class IterableItemResultSelectionTest extends SelectionsPreparations {
     }
 
     @Test
+    public void negativeTestNull() {
+        var selection = selectItemOfIterable().index(10);
+        var result = selection.evaluate(null);
+        assertThat(result, nullValue());
+        assertThat(selection.mismatchMessage(), equalTo(
+            "It is not possible to select resulted items because:\r\n" +
+                "Set of got items was null"));
+    }
+
+    @Test
+    public void negativeTestEmpty() {
+        var selection = selectItemOfIterable().index(10);
+        var result = selection.evaluate(new ArrayList<>());
+        assertThat(result, nullValue());
+        assertThat(selection.mismatchMessage(), equalTo(
+            "It is not possible to select resulted items because:\r\n" +
+                "Set of got items was empty"));
+    }
+
+    @Test
     public void negativeTestSizeIndex() {
         var selection = selectItemOfIterable().index(10);
         var result = selection.evaluate(OBJECT_LIST);
         assertThat(result, nullValue());
         assertThat(selection.mismatchMessage(), equalTo(
             "It is not possible to select resulted items because:\r\n" +
-                "Index [10] is out of found items count [8]"));
+                "Index [10] is out of got items count [8]"));
     }
 
     @Test(dataProvider = "negativeSizeConditions")
@@ -133,7 +154,7 @@ public class IterableItemResultSelectionTest extends SelectionsPreparations {
         assertThat(result, nullValue());
         assertThat(selection.mismatchMessage(), equalTo(
             "It is not possible to select resulted items because:\r\n" +
-                "Set of found items doesnt match 'does not contain a list'"));
+                "Set of got items doesnt match 'does not contain a list'"));
     }
 
     @Test
@@ -160,7 +181,7 @@ public class IterableItemResultSelectionTest extends SelectionsPreparations {
         assertThat(result, nullValue());
         assertThat(selection.mismatchMessage(), equalTo(
             "It is not possible to select resulted items because:\r\n" +
-                "Count [8] of found items doesnt match 'equal 10'"));
+                "Count [8] of got items doesnt match 'equal 10'"));
     }
 
     @Test
@@ -186,7 +207,7 @@ public class IterableItemResultSelectionTest extends SelectionsPreparations {
         assertThat(result, nullValue());
         assertThat(selection.mismatchMessage(), equalTo(
             "It is not possible to select resulted items because:\r\n" +
-                "Set of found items doesnt match 'does not contain a list'"));
+                "Set of got items doesnt match 'does not contain a list'"));
     }
 
     @Test

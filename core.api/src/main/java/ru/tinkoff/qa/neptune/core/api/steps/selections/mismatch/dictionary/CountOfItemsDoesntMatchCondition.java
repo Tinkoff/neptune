@@ -6,7 +6,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.selections.ItemsCountCondition;
 
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
-@Description("Count [{size}] of found items doesnt match '{condition}'")
+@Description("Count [{size}] of got items doesnt match '{condition}'")
 public final class CountOfItemsDoesntMatchCondition {
 
     @DescriptionFragment("size")

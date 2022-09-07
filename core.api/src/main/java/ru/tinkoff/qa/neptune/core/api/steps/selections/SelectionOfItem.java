@@ -12,7 +12,7 @@ import static java.util.Objects.nonNull;
 public abstract class SelectionOfItem<T, R, THIS extends SelectionOfItem<T, R, THIS>>
     extends SelectionOfIterable<T, R, THIS> {
 
-    @StepParameter(value = "Index", doNotReportNullValues = true)
+    @StepParameter(value = "Index of got item to be returned", doNotReportNullValues = true)
     Integer index;
 
     private SelectionOfItem() {

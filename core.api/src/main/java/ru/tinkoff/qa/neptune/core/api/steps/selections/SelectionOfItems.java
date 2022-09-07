@@ -26,15 +26,15 @@ public abstract class SelectionOfItems<T, R, THIS extends SelectionOfItems<T, R,
     private Integer minIndex = 0;
     private Integer maxIndex;
 
-    @StepParameter(value = "How many found items to return",
+    @StepParameter(value = "How many got items to return",
         doNotReportNullValues = true)
     private Integer size;
 
-    @StepParameter(value = "Index to return found items from",
+    @StepParameter(value = "To return got items before/after",
         doNotReportNullValues = true)
-    private Direction<T> direction;
+    private Direction direction;
 
-    @StepParameter(value = "Indexes of found items to be returned",
+    @StepParameter(value = "Indexes of got items to be returned",
         doNotReportNullValues = true,
         makeReadableBy = IndexesOfFoundItemsParameterValueGetter.class)
     private Integer[] indexes;
@@ -121,7 +121,7 @@ public abstract class SelectionOfItems<T, R, THIS extends SelectionOfItems<T, R,
         return (THIS) this;
     }
 
-    private THIS setDirection(Direction<T> direction) {
+    private THIS setDirection(Direction direction) {
         checkNotNull(direction);
         this.direction = direction;
         this.indexes = null;
@@ -137,7 +137,7 @@ public abstract class SelectionOfItems<T, R, THIS extends SelectionOfItems<T, R,
      * @return self-reference
      */
     public THIS beforeIndex(int index) {
-        return setDirection(new Direction.Before<>(index));
+        return setDirection(new Direction.Before(index));
     }
 
     /**
@@ -149,7 +149,7 @@ public abstract class SelectionOfItems<T, R, THIS extends SelectionOfItems<T, R,
      * @return self-reference
      */
     public THIS afterIndex(int index) {
-        return setDirection(new Direction.After<>(index));
+        return setDirection(new Direction.After(index));
     }
 
     /**

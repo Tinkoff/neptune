@@ -42,63 +42,63 @@ public class SelectionsPreparations {
         return new Object[][]{
             {isEqual(10),
                 "It is not possible to select resulted items because:\r\n" +
-                    "Count [8] of found items doesnt match 'equal 10'"},
+                    "Count [8] of got items doesnt match 'equal 10'"},
 
             {isGreater(15).andLesser(20),
                 "It is not possible to select resulted items because:\r\n" +
-                    "Count [8] of found items doesnt match 'Greater than 15, or equal=false; " +
-                    "Lesser than 20, or equal=false'"},
+                    "Count [8] of got items doesnt match 'Greater than 15; " +
+                    "Lesser than 20'"},
 
             {isGreaterOrEqual(15).andLesserOrEqual(20),
                 "It is not possible to select resulted items because:\r\n" +
-                    "Count [8] of found items doesnt match 'Greater than 15, or equal=true; " +
-                    "Lesser than 20, or equal=true'"},
+                    "Count [8] of got items doesnt match 'Greater than or equal 15; " +
+                    "Lesser than or equal 20'"},
 
             {isGreater(15).andLesserOrEqual(20),
                 "It is not possible to select resulted items because:\r\n" +
-                    "Count [8] of found items doesnt match 'Greater than 15, or equal=false; " +
-                    "Lesser than 20, or equal=true'"},
+                    "Count [8] of got items doesnt match 'Greater than 15; " +
+                    "Lesser than or equal 20'"},
 
             {isGreaterOrEqual(15).andLesser(20),
                 "It is not possible to select resulted items because:\r\n" +
-                    "Count [8] of found items doesnt match 'Greater than 15, or equal=true; " +
-                    "Lesser than 20, or equal=false'"},
+                    "Count [8] of got items doesnt match 'Greater than or equal 15; " +
+                    "Lesser than 20'"},
 
             {isGreater(15),
                 "It is not possible to select resulted items because:\r\n" +
-                    "Count [8] of found items doesnt match 'Greater than 15, or equal=false'"},
+                    "Count [8] of got items doesnt match 'Greater than 15'"},
 
             {isGreaterOrEqual(15),
                 "It is not possible to select resulted items because:\r\n" +
-                    "Count [8] of found items doesnt match 'Greater than 15, or equal=true'"},
+                    "Count [8] of got items doesnt match 'Greater than or equal 15'"},
 
             {isLesser(6).andGreater(2),
                 "It is not possible to select resulted items because:\r\n" +
-                    "Count [8] of found items doesnt match 'Greater than 2, or equal=false; " +
-                    "Lesser than 6, or equal=false'"},
+                    "Count [8] of got items doesnt match 'Greater than 2; " +
+                    "Lesser than 6'"},
 
             {isLesserOrEqual(6).andGreaterOrEqual(2),
                 "It is not possible to select resulted items because:\r\n" +
-                    "Count [8] of found items doesnt match 'Greater than 2, or equal=true; " +
-                    "Lesser than 6, or equal=true'"},
+                    "Count [8] of got items doesnt match 'Greater than or equal 2; " +
+                    "Lesser than or equal 6'"},
 
             {isLesser(6).andGreaterOrEqual(2),
                 "It is not possible to select resulted items because:\r\n" +
-                    "Count [8] of found items doesnt match 'Greater than 2, or equal=true; " +
-                    "Lesser than 6, or equal=false'"},
+                    "Count [8] of got items doesnt match 'Greater than or equal 2; " +
+                    "Lesser than 6'"},
 
             {isLesserOrEqual(6).andGreater(2),
                 "It is not possible to select resulted items because:\r\n" +
-                    "Count [8] of found items doesnt match 'Greater than 2, or equal=false; " +
-                    "Lesser than 6, or equal=true'"},
+                    "Count [8] of got items doesnt match 'Greater than 2; " +
+                    "Lesser than or equal 6'"},
 
             {isLesser(6),
                 "It is not possible to select resulted items because:\r\n" +
-                    "Count [8] of found items doesnt match 'Lesser than 6, or equal=false'"},
+                    "Count [8] of got items doesnt match 'Lesser than 6'"},
 
             {isLesserOrEqual(6),
                 "It is not possible to select resulted items because:\r\n" +
-                    "Count [8] of found items doesnt match 'Lesser than 6, or equal=true'"},
+                    "Count [8] of got items doesnt match 'Lesser than or equal 6'"},
         };
     }
 }
