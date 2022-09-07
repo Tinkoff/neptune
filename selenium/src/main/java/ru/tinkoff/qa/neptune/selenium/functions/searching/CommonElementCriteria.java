@@ -366,7 +366,7 @@ public final class CommonElementCriteria {
     @Description("has nested {howToFind}")
     public static <T extends SearchContext> Criteria<T> nested(@DescriptionFragment("howToFind") MultipleSearchSupplier<?> howToFind) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
-        var func = turnReportingOff(clearTimeOut(makeACopy(howToFind))).get();
+        var func = turnReportingOff(eraseTimeOut(makeACopy(howToFind))).get();
         return condition(t -> !func.apply(t).isEmpty());
     }
 
@@ -386,7 +386,7 @@ public final class CommonElementCriteria {
                                                                @DescriptionFragment("expected") int expected) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
         checkArgument(expected >= 0, "Count of expected nested elements can't be a negative or zero value.");
-        var func = turnReportingOff(clearTimeOut(makeACopy(howToFind))).get();
+        var func = turnReportingOff(eraseTimeOut(makeACopy(howToFind))).get();
         return condition(t -> func.apply(t).size() == expected);
     }
 
@@ -403,7 +403,7 @@ public final class CommonElementCriteria {
     @Description("has nested {howToFind}")
     public static <T extends SearchContext> Criteria<T> nested(@DescriptionFragment("howToFind") SearchSupplier<?> howToFind) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
-        var func = turnReportingOff(clearTimeOut(makeACopy(howToFind))).get();
+        var func = turnReportingOff(eraseTimeOut(makeACopy(howToFind))).get();
         return condition(t -> {
             try {
                 return func.apply(t) != null;

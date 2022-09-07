@@ -49,9 +49,9 @@ public final class Absence<T> extends SequentialGetStepSupplier.GetObjectChained
     private Absence(SequentialGetStepSupplier<?, ?, ?, ?, ?> toBeAbsent) {
         this();
         var copy = turnReportingOff(
-            clearTimeOut(makeACopy(toBeAbsent)).addIgnored(Throwable.class)
+            eraseTimeOut(makeACopy(toBeAbsent)).addIgnored(Throwable.class)
         );
-        copy.ignoreSelectionParameters();
+        copy.ignoreSelection();
         from(copy);
         readCaptorsOnSuccess(toBeAbsent.getClass(), successCaptors);
     }

@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.http.api.response;
 
-import com.google.common.collect.Streams;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 
@@ -8,26 +7,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
-import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 
 @SuppressWarnings("unchecked")
 interface DefinesResponseCriteria<R, S extends DefinesResponseCriteria<R, S>> {
-
-    private static <R> Stream<R> createStream(Object arrayOrIterable) {
-        if (arrayOrIterable == null) {
-            return null;
-        }
-
-        if (arrayOrIterable.getClass().isArray()) {
-            return stream((R[]) arrayOrIterable);
-        }
-
-        return Streams.stream((Iterable<R>) arrayOrIterable);
-    }
 
     private ResponseSequentialGetSupplier<R> getResponseStep() {
         try {

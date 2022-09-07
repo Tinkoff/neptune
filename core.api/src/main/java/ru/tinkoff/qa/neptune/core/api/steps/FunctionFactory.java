@@ -178,7 +178,7 @@ public interface FunctionFactory<T, S, R, P> {
         ResultSelection<R, R> resultSelection;
         boolean ignoreSelectionParameters;
 
-        void ignoreSelectionParameters() {
+        void ignoreSelection() {
             this.ignoreSelectionParameters = true;
         }
 
@@ -399,7 +399,7 @@ public interface FunctionFactory<T, S, R, P> {
         ResultSelection<S, R> resultSelection;
         boolean ignoreSelectionParameters;
 
-        void ignoreSelectionParameters() {
+        void ignoreSelection() {
             this.ignoreSelectionParameters = true;
         }
 

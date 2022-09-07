@@ -5,6 +5,7 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.collections.ArrayCaptor;
 import ru.tinkoff.qa.neptune.core.api.event.firing.collections.CollectionCaptor;
 import ru.tinkoff.qa.neptune.core.api.event.firing.collections.IterableCaptor;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.*;
+import ru.tinkoff.qa.neptune.core.api.steps.conditions.ResultSelection;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 import ru.tinkoff.qa.neptune.core.api.steps.selections.ItemsCountCondition;
 import ru.tinkoff.qa.neptune.core.api.steps.selections.SelectionOfItem;
@@ -39,6 +40,10 @@ import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.Def
 import static ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting.MaxDepthOfReportingReader.getMaxDepth;
 import static ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter.StepParameterCreator.createStepParameter;
 import static ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData.ThrowWhenNoDataReader.getDeclaredBy;
+import static ru.tinkoff.qa.neptune.core.api.steps.selections.SelectionOfItem.selectItemOfArray;
+import static ru.tinkoff.qa.neptune.core.api.steps.selections.SelectionOfItem.selectItemOfIterable;
+import static ru.tinkoff.qa.neptune.core.api.steps.selections.SelectionOfItems.selectArray;
+import static ru.tinkoff.qa.neptune.core.api.steps.selections.SelectionOfItems.selectList;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 /**
@@ -87,7 +92,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         return (T) t.copy();
     }
 
-    public static <T extends SequentialGetStepSupplier<?, ?, ?, ?, ?>> T clearTimeOut(T t) {
+    public static <T extends SequentialGetStepSupplier<?, ?, ?, ?, ?>> T eraseTimeOut(T t) {
         return (T) t.clearTimeout();
     }
 
@@ -171,7 +176,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
             }));
     }
 
-    void ignoreSelectionParameters() {
+    void ignoreSelection() {
 
     }
 
@@ -469,9 +474,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     final THIS copy() {
         try {
             var copy = (THIS) super.clone();
-            var from = copy.getFrom();
-            if (from instanceof SequentialGetStepSupplier) {
-                copy.from(((SequentialGetStepSupplier<T, ? extends M, ?, ?, ?>) from).copy());
+            var parentStep = copy.getFrom();
+            if (parentStep instanceof SequentialGetStepSupplier) {
+                copy.from(((SequentialGetStepSupplier<T, ? extends M, ?, ?, ?>) parentStep).copy());
             }
             return copy;
         } catch (CloneNotSupportedException e) {
@@ -518,7 +523,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         return from;
     }
 
-    public static abstract class GetSimpleStepSupplier<T, R, THIS extends GetSimpleStepSupplier<T, R, THIS>>
+    public abstract static class GetSimpleStepSupplier<T, R, THIS extends GetSimpleStepSupplier<T, R, THIS>>
         extends SequentialGetStepSupplier<T, R, T, R, THIS> {
 
         protected GetSimpleStepSupplier(Function<T, R> originalFunction) {
@@ -527,11 +532,17 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
     }
 
-    private static abstract class PrivateGetConditionalStepSupplier<T, R, M, P, THIS extends PrivateGetConditionalStepSupplier<T, R, M, P, THIS>>
+    private abstract static class PrivateGetConditionalStepSupplier<T, R, M, P, THIS extends PrivateGetConditionalStepSupplier<T, R, M, P, THIS>>
         extends SequentialGetStepSupplier<T, R, M, P, THIS> {
 
-        protected <S> PrivateGetConditionalStepSupplier(Function<M, S> stepFunction, FunctionFactory<M, S, R, P> functionFactory) {
+        final Captor<?, ?> captorForResultSelection;
+        ResultSelection<?, ?> selection;
+
+        protected <S> PrivateGetConditionalStepSupplier(Function<M, S> stepFunction,
+                                                        FunctionFactory<M, S, R, P> functionFactory,
+                                                        Captor<?, ?> captorForResultSelection) {
             super(stepFunction, functionFactory);
+            this.captorForResultSelection = captorForResultSelection;
         }
 
         @Override
@@ -557,6 +568,16 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         @Override
         public THIS criteriaNot(Criteria<? super P>... criteria) {
             return super.criteriaNot(criteria);
+        }
+
+        @Override
+        public Function<T, R> get() {
+            var get = (Get<T, R>) super.get();
+            if (nonNull(selection)) {
+                get.setResultSelection(selection);
+                get.setCaptorOfFailedResultSelection(captorForResultSelection);
+            }
+            return get;
         }
     }
 
@@ -620,8 +641,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         protected final FunctionFactory.IterableFunctionFactory<M, ?, R, P> iterableFunctionFactory;
 
         protected <S> PrivateGetIterableStepSupplier(Function<M, S> stepFunction,
-                                                     FunctionFactory.IterableFunctionFactory<M, S, R, P> functionFactory) {
-            super(stepFunction, functionFactory);
+                                                     FunctionFactory.IterableFunctionFactory<M, S, R, P> functionFactory,
+                                                     Captor<?, ?> captorForResultSelection) {
+            super(stepFunction, functionFactory, captorForResultSelection);
             this.iterableFunctionFactory = functionFactory;
         }
 
@@ -632,8 +654,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
 
         @Override
-        void ignoreSelectionParameters() {
-            iterableFunctionFactory.ignoreSelectionParameters();
+        void ignoreSelection() {
+            iterableFunctionFactory.ignoreSelection();
         }
 
         interface SelectionOptionsForList<R, THIS extends SelectionOptionsForList<R, THIS>>
@@ -646,8 +668,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
             private SelectionOfItems.SelectionOfList<R> getListSelection(PrivateGetIterableStepSupplier<?, List<R>, ?, ?, ?> casted) {
                 return (SelectionOfItems.SelectionOfList<R>) ofNullable(casted.iterableFunctionFactory.getResultSelection())
                     .orElseGet(() -> {
-                        var s = SelectionOfItems.SelectionOfList.<R>selectList();
+                        var s = (SelectionOfItems.SelectionOfList<R>) selectList();
                         casted.iterableFunctionFactory.setResultSelection(s);
+                        casted.selection = s;
                         return s;
                     });
             }
@@ -750,8 +773,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
             private SelectionOfItems.SelectionOfArray<R> getArraySelection(PrivateGetIterableStepSupplier<?, R[], ?, ?, ?> casted) {
                 return (SelectionOfItems.SelectionOfArray<R>) ofNullable(casted.iterableFunctionFactory.getResultSelection())
                     .orElseGet(() -> {
-                        var s = SelectionOfItems.SelectionOfArray.<R>selectArray();
+                        var s = (SelectionOfItems.SelectionOfArray<R>) selectArray();
                         casted.iterableFunctionFactory.setResultSelection(s);
+                        casted.selection = s;
                         return s;
                     });
             }
@@ -851,11 +875,11 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <R>    is a type of result value
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetObjectStepSupplier<T, R, THIS extends GetObjectStepSupplier<T, R, THIS>>
+    public abstract static class GetObjectStepSupplier<T, R, THIS extends GetObjectStepSupplier<T, R, THIS>>
         extends PrivateGetConditionalStepSupplier<T, R, T, R, THIS> {
 
         protected GetObjectStepSupplier(Function<T, R> originalFunction) {
-            super(originalFunction, new FunctionFactory.ObjectFunctionFactory<>());
+            super(originalFunction, new FunctionFactory.ObjectFunctionFactory<>(), null);
             from(t -> t);
         }
     }
@@ -868,11 +892,11 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <M>    is a type of mediator value is used to get the result
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetObjectChainedStepSupplier<T, R, M, THIS extends GetObjectChainedStepSupplier<T, R, M, THIS>>
+    public abstract static class GetObjectChainedStepSupplier<T, R, M, THIS extends GetObjectChainedStepSupplier<T, R, M, THIS>>
         extends PrivateGetConditionalStepSupplier<T, R, M, R, THIS> {
 
         protected GetObjectChainedStepSupplier(Function<M, R> originalFunction) {
-            super(originalFunction, new FunctionFactory.ObjectFunctionFactory<>());
+            super(originalFunction, new FunctionFactory.ObjectFunctionFactory<>(), null);
         }
 
         @Override
@@ -891,14 +915,15 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
     }
 
-    private static abstract class PrivateGetItemStepSupplier<I, T, R, M, P, THIS extends PrivateGetItemStepSupplier<I, T, R, M, P, THIS>>
+    private abstract static class PrivateGetItemStepSupplier<I, T, R, M, P, THIS extends PrivateGetItemStepSupplier<I, T, R, M, P, THIS>>
         extends PrivateGetConditionalStepSupplier<T, R, M, P, THIS> {
 
         protected final FunctionFactory.ItemFunctionFactory<M, I, R, P> itemFunctionFactory;
 
         protected <S extends I> PrivateGetItemStepSupplier(Function<M, S> stepFunction,
-                                                           FunctionFactory.ItemFunctionFactory<M, I, R, P> functionFactory) {
-            super((Function<M, I>) stepFunction, functionFactory);
+                                                           FunctionFactory.ItemFunctionFactory<M, I, R, P> functionFactory,
+                                                           Captor<?, ?> captorForResultSelection) {
+            super((Function<M, I>) stepFunction, functionFactory, captorForResultSelection);
             this.itemFunctionFactory = functionFactory;
         }
 
@@ -909,8 +934,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
 
         @Override
-        void ignoreSelectionParameters() {
-            itemFunctionFactory.ignoreSelectionParameters();
+        void ignoreSelection() {
+            itemFunctionFactory.ignoreSelection();
         }
 
         interface SelectionOptionsForIterableItem<R, I extends Iterable<R>, THIS extends SelectionOptionsForIterableItem<R, I, THIS>>
@@ -923,8 +948,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
             private SelectionOfItem.SelectionOfIterableItem<R, I> getSelectionOfIterableItem(PrivateGetItemStepSupplier<I, ?, R, ?, ?, ?> casted) {
                 return (SelectionOfItem.SelectionOfIterableItem<R, I>) ofNullable(casted.itemFunctionFactory.getResultSelection())
                     .orElseGet(() -> {
-                        var s = SelectionOfItem.SelectionOfIterableItem.<R, I>selectItemOfIterable();
+                        var s = (SelectionOfItem.SelectionOfIterableItem<R, I>) selectItemOfIterable();
                         casted.itemFunctionFactory.setResultSelection(s);
+                        casted.selection = s;
                         return s;
                     });
             }
@@ -980,8 +1006,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
             private SelectionOfItem.SelectionOfArrayItem<R> getSelectionOfArrayItem(PrivateGetItemStepSupplier<R[], ?, R, ?, ?, ?> casted) {
                 return (SelectionOfItem.SelectionOfArrayItem<R>) ofNullable(casted.itemFunctionFactory.getResultSelection())
                     .orElseGet(() -> {
-                        var s = SelectionOfItem.SelectionOfArrayItem.<R>selectItemOfArray();
+                        var s = (SelectionOfItem.SelectionOfArrayItem<R>) selectItemOfArray();
                         casted.itemFunctionFactory.setResultSelection(s);
+                        casted.selection = s;
                         return s;
                     });
             }
@@ -1035,21 +1062,15 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <R>    is a type of result value. Also it is a type of item from iterable.
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetObjectFromIterableStepSupplier<T, R, THIS extends GetObjectFromIterableStepSupplier<T, R, THIS>>
+    public abstract static class GetObjectFromIterableStepSupplier<T, R, THIS extends GetObjectFromIterableStepSupplier<T, R, THIS>>
         extends PrivateGetItemStepSupplier<Iterable<R>, T, R, T, R, THIS>
         implements PrivateGetItemStepSupplier.SelectionOptionsForIterableItem<R, Iterable<R>, THIS> {
 
         protected <S extends Iterable<R>> GetObjectFromIterableStepSupplier(Function<T, S> originalFunction) {
-            super(originalFunction, new FunctionFactory.IterableItemFunctionFactory<>());
+            super(originalFunction,
+                new FunctionFactory.IterableItemFunctionFactory<>(),
+                new IterableCaptor<>(new GotItems().toString()));
             from(t -> t);
-        }
-
-        @Override
-        public Function<T, R> get() {
-            var get = (Get<T, R>) super.get();
-            get.setResultSelection(itemFunctionFactory.getResultSelection());
-            get.setCaptorOfFailedResultSelection(new IterableCaptor<Iterable<R>>(new GotItems().toString()));
-            return get;
         }
     }
 
@@ -1061,12 +1082,14 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <M>    is a type of mediator value is used to get the result
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetObjectFromIterableChainedStepSupplier<T, R, M, THIS extends GetObjectFromIterableChainedStepSupplier<T, R, M, THIS>>
+    public abstract static class GetObjectFromIterableChainedStepSupplier<T, R, M, THIS extends GetObjectFromIterableChainedStepSupplier<T, R, M, THIS>>
         extends PrivateGetItemStepSupplier<Iterable<R>, T, R, M, R, THIS>
         implements PrivateGetItemStepSupplier.SelectionOptionsForIterableItem<R, Iterable<R>, THIS> {
 
         protected <S extends Iterable<R>> GetObjectFromIterableChainedStepSupplier(Function<M, S> originalFunction) {
-            super(originalFunction, new FunctionFactory.IterableItemFunctionFactory<>());
+            super(originalFunction,
+                new FunctionFactory.IterableItemFunctionFactory<>(),
+                new IterableCaptor<>(new GotItems().toString()));
         }
 
         @Override
@@ -1083,14 +1106,6 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         protected THIS from(SequentialGetStepSupplier<T, ? extends M, ?, ?, ?> from) {
             return super.from(from);
         }
-
-        @Override
-        public Function<T, R> get() {
-            var get = (Get<T, R>) super.get();
-            get.setResultSelection(itemFunctionFactory.getResultSelection());
-            get.setCaptorOfFailedResultSelection(new IterableCaptor<Iterable<R>>(new GotItems().toString()));
-            return get;
-        }
     }
 
     /**
@@ -1100,21 +1115,15 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <R>    is a type of result value. Also it is a type of item from array.
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetObjectFromArrayStepSupplier<T, R, THIS extends GetObjectFromArrayStepSupplier<T, R, THIS>>
+    public abstract static class GetObjectFromArrayStepSupplier<T, R, THIS extends GetObjectFromArrayStepSupplier<T, R, THIS>>
         extends PrivateGetItemStepSupplier<R[], T, R, T, R, THIS>
         implements PrivateGetItemStepSupplier.SelectionOptionsForArrayItem<R, THIS> {
 
         protected GetObjectFromArrayStepSupplier(Function<T, R[]> originalFunction) {
-            super(originalFunction, new FunctionFactory.ArrayItemFunctionFactory<>());
+            super(originalFunction,
+                new FunctionFactory.ArrayItemFunctionFactory<>(),
+                new ArrayCaptor(new GotItems().toString()));
             from(t -> t);
-        }
-
-        @Override
-        public Function<T, R> get() {
-            var get = (Get<T, R>) super.get();
-            get.setResultSelection(itemFunctionFactory.getResultSelection());
-            get.setCaptorOfFailedResultSelection(new ArrayCaptor(new GotItems().toString()));
-            return get;
         }
     }
 
@@ -1126,12 +1135,14 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <M>    is a type of mediator value is used to get the result
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetObjectFromArrayChainedStepSupplier<T, R, M, THIS extends GetObjectFromArrayChainedStepSupplier<T, R, M, THIS>>
+    public abstract static class GetObjectFromArrayChainedStepSupplier<T, R, M, THIS extends GetObjectFromArrayChainedStepSupplier<T, R, M, THIS>>
         extends PrivateGetItemStepSupplier<R[], T, R, M, R, THIS>
         implements PrivateGetItemStepSupplier.SelectionOptionsForArrayItem<R, THIS> {
 
         protected GetObjectFromArrayChainedStepSupplier(Function<M, R[]> originalFunction) {
-            super(originalFunction, new FunctionFactory.ArrayItemFunctionFactory<>());
+            super(originalFunction,
+                new FunctionFactory.ArrayItemFunctionFactory<>(),
+                new ArrayCaptor(new GotItems().toString()));
         }
 
         @Override
@@ -1148,14 +1159,6 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         protected THIS from(SequentialGetStepSupplier<T, ? extends M, ?, ?, ?> from) {
             return super.from(from);
         }
-
-        @Override
-        public Function<T, R> get() {
-            var get = (Get<T, R>) super.get();
-            get.setResultSelection(itemFunctionFactory.getResultSelection());
-            get.setCaptorOfFailedResultSelection(new ArrayCaptor(new GotItems().toString()));
-            return get;
-        }
     }
 
     /**
@@ -1166,21 +1169,15 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <R>    is a type of item from resulted iterable
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetListStepSupplier<T, S extends Iterable<R>, R, THIS extends GetListStepSupplier<T, S, R, THIS>>
+    public abstract static class GetListStepSupplier<T, S extends Iterable<R>, R, THIS extends GetListStepSupplier<T, S, R, THIS>>
         extends PrivateGetIterableStepSupplier<T, List<R>, T, R, THIS>
         implements PrivateGetIterableStepSupplier.SelectionOptionsForList<R, THIS> {
 
         protected GetListStepSupplier(Function<T, S> originalFunction) {
-            super(originalFunction, new FunctionFactory.ListFunctionFactory<>());
+            super(originalFunction,
+                new FunctionFactory.ListFunctionFactory<>(),
+                new CollectionCaptor(new GotItems().toString()));
             from(t -> t);
-        }
-
-        @Override
-        public Function<T, List<R>> get() {
-            var get = (Get<T, List<R>>) super.get();
-            get.setResultSelection(iterableFunctionFactory.getResultSelection());
-            get.setCaptorOfFailedResultSelection(new CollectionCaptor(new GotItems().toString()));
-            return get;
         }
     }
 
@@ -1193,12 +1190,14 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <R>    is a type of item from resulted iterable
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetListChainedStepSupplier<T, S extends Iterable<R>, M, R, THIS extends GetListChainedStepSupplier<T, S, M, R, THIS>>
+    public abstract static class GetListChainedStepSupplier<T, S extends Iterable<R>, M, R, THIS extends GetListChainedStepSupplier<T, S, M, R, THIS>>
         extends PrivateGetIterableStepSupplier<T, List<R>, M, R, THIS>
         implements PrivateGetIterableStepSupplier.SelectionOptionsForList<R, THIS> {
 
         protected GetListChainedStepSupplier(Function<M, S> originalFunction) {
-            super(originalFunction, new FunctionFactory.ListFunctionFactory<>());
+            super(originalFunction,
+                new FunctionFactory.ListFunctionFactory<>(),
+                new CollectionCaptor(new GotItems().toString()));
         }
 
         @Override
@@ -1215,14 +1214,6 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         protected THIS from(SequentialGetStepSupplier<T, ? extends M, ?, ?, ?> from) {
             return super.from(from);
         }
-
-        @Override
-        public Function<T, List<R>> get() {
-            var get = (Get<T, List<R>>) super.get();
-            get.setResultSelection(iterableFunctionFactory.getResultSelection());
-            get.setCaptorOfFailedResultSelection(new CollectionCaptor(new GotItems().toString()));
-            return get;
-        }
     }
 
     /**
@@ -1232,21 +1223,15 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <R>    is a type of item from resulted array
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetArrayStepSupplier<T, R, THIS extends GetArrayStepSupplier<T, R, THIS>>
+    public abstract static class GetArrayStepSupplier<T, R, THIS extends GetArrayStepSupplier<T, R, THIS>>
         extends PrivateGetIterableStepSupplier<T, R[], T, R, THIS>
         implements PrivateGetIterableStepSupplier.SelectionOptionsForArray<R, THIS> {
 
         protected GetArrayStepSupplier(Function<T, R[]> originalFunction) {
-            super(originalFunction, new FunctionFactory.ArrayFunctionFactory<>());
+            super(originalFunction,
+                new FunctionFactory.ArrayFunctionFactory<>(),
+                new ArrayCaptor(new GotItems().toString()));
             from(t -> t);
-        }
-
-        @Override
-        public Function<T, R[]> get() {
-            var get = (Get<T, R[]>) super.get();
-            get.setResultSelection(iterableFunctionFactory.getResultSelection());
-            get.setCaptorOfFailedResultSelection(new ArrayCaptor(new GotItems().toString()));
-            return get;
         }
     }
 
@@ -1410,12 +1395,14 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <R>    is a type of item from resulted array
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetArrayChainedStepSupplier<T, R, M, THIS extends GetArrayChainedStepSupplier<T, R, M, THIS>>
+    public abstract static class GetArrayChainedStepSupplier<T, R, M, THIS extends GetArrayChainedStepSupplier<T, R, M, THIS>>
         extends PrivateGetIterableStepSupplier<T, R[], M, R, THIS>
         implements PrivateGetIterableStepSupplier.SelectionOptionsForArray<R, THIS> {
 
         protected GetArrayChainedStepSupplier(Function<M, R[]> originalFunction) {
-            super(originalFunction, new FunctionFactory.ArrayFunctionFactory<>());
+            super(originalFunction,
+                new FunctionFactory.ArrayFunctionFactory<>(),
+                new ArrayCaptor(new GotItems().toString()));
         }
 
         @Override
@@ -1431,14 +1418,6 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         @Override
         protected THIS from(SequentialGetStepSupplier<T, ? extends M, ?, ?, ?> from) {
             return super.from(from);
-        }
-
-        @Override
-        public Function<T, R[]> get() {
-            var get = (Get<T, R[]>) super.get();
-            get.setResultSelection(iterableFunctionFactory.getResultSelection());
-            get.setCaptorOfFailedResultSelection(new ArrayCaptor(new GotItems().toString()));
-            return get;
         }
     }
 

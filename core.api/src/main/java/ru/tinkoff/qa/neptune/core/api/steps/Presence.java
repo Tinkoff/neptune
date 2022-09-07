@@ -35,7 +35,7 @@ public final class Presence<T> extends SequentialGetStepSupplier.GetObjectChaine
     private Presence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBePresent) {
         this();
         var copy = turnReportingOff(makeACopy(toBePresent));
-        copy.ignoreSelectionParameters();
+        copy.ignoreSelection();
         from(copy);
         readCaptorsOnSuccess(toBePresent.getClass(), successCaptors);
     }
