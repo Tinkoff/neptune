@@ -104,27 +104,29 @@ public class ArrayOrCollectionCaptorTest {
 
     @Test
     public void arrayCaptureTest() {
+        var object = new Object();
         var value = new ArrayCaptor()
-                .getCaptured(new Object[]{
-                        null,
-                        2,
-                        true,
-                        "Hello",
-                        List.of(1, "ABC", true),
-                        Map.of("key1", "value"),
-                        new Object(),
-                        new Object[]{1, 2, 3}
-                });
+            .getCaptured(new Object[]{
+                null,
+                2,
+                true,
+                "Hello",
+                List.of(1, "ABC", true),
+                Map.of("key1", "value"),
+                object,
+                new Object[]{1, 2, 3}
+            });
 
         assertThat(value,
                 contains(
-                        null,
-                        2,
-                        true,
-                        "Hello",
-                        List.of(1, "ABC", true),
-                        Map.of("key1", "value"),
-                        new Object[]{1, 2, 3}
+                    null,
+                    2,
+                    true,
+                    "Hello",
+                    List.of(1, "ABC", true),
+                    Map.of("key1", "value"),
+                    object,
+                    new Object[]{1, 2, 3}
                 ));
     }
 
@@ -144,13 +146,14 @@ public class ArrayOrCollectionCaptorTest {
 
         var result = new ArrayCaptor().getData(data).toString().split("\r\n");
         assertThat(result, arrayContaining(
-                not(emptyOrNullString()),
-                not(emptyOrNullString()),
-                not(emptyOrNullString()),
-                not(emptyOrNullString()),
-                not(emptyOrNullString()),
-                not(emptyOrNullString()),
-                not(emptyOrNullString())
+            not(emptyOrNullString()),
+            not(emptyOrNullString()),
+            not(emptyOrNullString()),
+            not(emptyOrNullString()),
+            not(emptyOrNullString()),
+            not(emptyOrNullString()),
+            not(emptyOrNullString()),
+            not(emptyOrNullString())
         ));
     }
 }

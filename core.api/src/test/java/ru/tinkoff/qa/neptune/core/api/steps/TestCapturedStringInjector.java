@@ -9,7 +9,7 @@ import static java.lang.String.format;
 
 public class TestCapturedStringInjector implements CapturedStringInjector {
 
-    static final List<String> messages = new ArrayList<>();
+    public static final List<String> messages = new ArrayList<>();
 
     @Override
     public void inject(StringBuilder toBeInjected, String message) {

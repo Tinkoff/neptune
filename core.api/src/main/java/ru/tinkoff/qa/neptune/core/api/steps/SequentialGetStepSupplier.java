@@ -1,12 +1,15 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.AdditionalMetadata;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
-import ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetList;
+import ru.tinkoff.qa.neptune.core.api.event.firing.collections.ArrayCaptor;
+import ru.tinkoff.qa.neptune.core.api.event.firing.collections.CollectionCaptor;
+import ru.tinkoff.qa.neptune.core.api.event.firing.collections.IterableCaptor;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.*;
+import ru.tinkoff.qa.neptune.core.api.steps.conditions.ResultSelection;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
+import ru.tinkoff.qa.neptune.core.api.steps.selections.ItemsCountCondition;
+import ru.tinkoff.qa.neptune.core.api.steps.selections.SelectionOfItem;
+import ru.tinkoff.qa.neptune.core.api.steps.selections.SelectionOfItems;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
@@ -29,19 +32,18 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure.CaptureOnFailureReader.readCaptorsOnFailure;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess.CaptureOnSuccessReader.readCaptorsOnSuccess;
-import static ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting.MaxDepthOfReportingReader.getMaxDepth;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchFailureEvent;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchSuccessEvent;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultGetParameterReader.*;
+import static ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting.MaxDepthOfReportingReader.getMaxDepth;
 import static ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter.StepParameterCreator.createStepParameter;
 import static ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData.ThrowWhenNoDataReader.getDeclaredBy;
-import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetList.getList;
-import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromArray.getFromArray;
-import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
-import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
-import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSubArray.getArray;
+import static ru.tinkoff.qa.neptune.core.api.steps.selections.SelectionOfItem.selectItemOfArray;
+import static ru.tinkoff.qa.neptune.core.api.steps.selections.SelectionOfItem.selectItemOfIterable;
+import static ru.tinkoff.qa.neptune.core.api.steps.selections.SelectionOfItems.selectArray;
+import static ru.tinkoff.qa.neptune.core.api.steps.selections.SelectionOfItems.selectList;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 /**
@@ -59,7 +61,7 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 @SequentialGetStepSupplier.DefineResultDescriptionParameterName
 @ThrowWhenNoData
 public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends SequentialGetStepSupplier<T, R, M, P, THIS>> implements Cloneable,
-        Supplier<Function<T, R>>, StepParameterPojo {
+    Supplier<Function<T, R>>, StepParameterPojo {
 
     private String description;
     protected boolean toReport = true;
@@ -73,12 +75,25 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     Duration sleepingTime;
     ExceptionSupplier exceptionSupplier;
 
-    protected SequentialGetStepSupplier() {
+    private final Function<M, Object> stepFunction;
+    private final FunctionFactory<M, Object, R, P> functionFactory;
+
+    protected <S> SequentialGetStepSupplier(Function<M, S> stepFunction, FunctionFactory<M, S, R, P> functionFactory) {
         super();
+        this.stepFunction = (Function<M, Object>) stepFunction;
+        this.functionFactory = (FunctionFactory<M, Object, R, P>) functionFactory;
     }
 
     public static <T extends SequentialGetStepSupplier<?, ?, ?, ?, ?>> T turnReportingOff(T t) {
         return (T) t.turnReportingOff();
+    }
+
+    public static <T extends SequentialGetStepSupplier<?, ?, ?, ?, ?>> T makeACopy(T t) {
+        return (T) t.copy();
+    }
+
+    public static <T extends SequentialGetStepSupplier<?, ?, ?, ?, ?>> T eraseTimeOut(T t) {
+        return (T) t.clearTimeout();
     }
 
     protected THIS setDescription(String description) {
@@ -102,7 +117,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         });
 
         if ((from instanceof SequentialGetStepSupplier<?, ?, ?, ?, ?>)
-                && this.getClass().getAnnotation(IncludeParamsOfInnerGetterStep.class) != null) {
+            && this.getClass().getAnnotation(IncludeParamsOfInnerGetterStep.class) != null) {
             var get = (SequentialGetStepSupplier<?, ?, ?, ?, ?>) from;
             get.fillCustomParameters(result);
             get.fillCriteriaParameters(result);
@@ -126,6 +141,10 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         parameters.putAll(StepParameterPojo.super.getParameters());
     }
 
+    void fillSelectionParameters(Map<String, String> parameters) {
+
+    }
+
     void fillCriteriaParameters(Map<String, String> parameters) {
         var cls = (Class<?>) this.getClass();
 
@@ -143,18 +162,22 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         var cls = (Class<?>) this.getClass();
 
         ofNullable(getTimeOutMetadata(cls, true)).ifPresent(metaData ->
-                ofNullable(timeToGet).ifPresent(duration -> {
-                    if (duration.toMillis() > 0) {
-                        parameters.put(translate(metaData), formatDurationHMS(duration.toMillis()));
-                    }
-                }));
+            ofNullable(timeToGet).ifPresent(duration -> {
+                if (duration.toMillis() > 0) {
+                    parameters.put(translate(metaData), formatDurationHMS(duration.toMillis()));
+                }
+            }));
 
         ofNullable(getPollingTimeMetadata(cls, true)).ifPresent(metaData ->
-                ofNullable(sleepingTime).ifPresent(duration -> {
-                    if (duration.toMillis() > 0) {
-                        parameters.put(translate(metaData), formatDurationHMS(duration.toMillis()));
-                    }
-                }));
+            ofNullable(sleepingTime).ifPresent(duration -> {
+                if (duration.toMillis() > 0) {
+                    parameters.put(translate(metaData), formatDurationHMS(duration.toMillis()));
+                }
+            }));
+    }
+
+    void ignoreSelection() {
+
     }
 
     /**
@@ -180,7 +203,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * {@link #criteriaNot(Criteria[])} are invoked previously then it joins conditions with 'AND'.
      *
      * @param description is a description of the criteria
-     * @param predicate   is the the criteria
+     * @param predicate   is the criteria
      */
     THIS criteria(String description, Predicate<? super P> predicate) {
         return criteria(condition(description, predicate));
@@ -247,9 +270,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
         var from = getFrom();
         if (from instanceof SequentialGetStepSupplier) {
-            var newFrom = ((SequentialGetStepSupplier<T, ? extends M, ?, ?, ?>) from).clone();
-            newFrom.clearTimeout();
-            from(newFrom);
+            ((SequentialGetStepSupplier<T, ? extends M, ?, ?, ?>) from).clearTimeout();
         }
         return (THIS) this;
     }
@@ -353,7 +374,11 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     }
 
     Map<String, String> calculatedParameters() {
-        return new AdditionalParameterSupplier(from, this, this::additionalParameters).get();
+        return new AdditionalParameterSupplier(from, this, () -> {
+            var result = new LinkedHashMap<>(this.additionalParameters());
+            fillSelectionParameters(result);
+            return result;
+        }).get();
     }
 
     /**
@@ -390,25 +415,25 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         var description = translate(translate(getImperativeMetadata(this.getClass(), true)) + " " + this.getDescription()).trim();
 
         var toBeReturned = new Get<>(description, endFunction)
-                .setResultDescription(resultDescription)
-                .setParameters(params)
-                .setMaxDepth(getMaxDepth(this.getClass()))
-                .compose(composeWith);
+            .setResultDescription(resultDescription)
+            .setParameters(params)
+            .setMaxDepth(getMaxDepth(this.getClass()))
+            .compose(composeWith);
 
         if (toReport && catchSuccessEvent()) {
             var successCaptors = new ArrayList<Captor<Object, Object>>();
             readCaptorsOnSuccess(this.getClass(), successCaptors);
             toBeReturned
-                    .addOnSuccessAdditional(of(FieldValueCaptureMaker.onSuccess(this)))
-                    .addSuccessCaptors(successCaptors);
+                .addOnSuccessAdditional(of(FieldValueCaptureMaker.onSuccess(this)))
+                .addSuccessCaptors(successCaptors);
         }
 
         if (toReport && catchFailureEvent()) {
             var failureCaptors = new ArrayList<Captor<Object, Object>>();
             readCaptorsOnFailure(this.getClass(), failureCaptors);
             toBeReturned
-                    .addOnFailureAdditional(of(FieldValueCaptureMaker.onFailure(this)))
-                    .addFailureCaptors(failureCaptors);
+                .addOnFailureAdditional(of(FieldValueCaptureMaker.onFailure(this)))
+                .addFailureCaptors(failureCaptors);
         }
 
         if (!toReport) {
@@ -446,16 +471,49 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         return description;
     }
 
-    @Override
-    protected THIS clone() {
+    final THIS copy() {
         try {
-            return (THIS) super.clone();
+            var copy = (THIS) super.clone();
+            var parentStep = copy.getFrom();
+            if (parentStep instanceof SequentialGetStepSupplier) {
+                copy.from(((SequentialGetStepSupplier<T, ? extends M, ?, ?, ?>) parentStep).copy());
+            }
+            return copy;
         } catch (CloneNotSupportedException e) {
             throw new UnsupportedOperationException(e);
         }
     }
 
-    protected abstract Function<M, R> getEndFunction();
+    protected Function<M, R> getEndFunction() {
+        return ofNullable(getCriteria())
+            .map(c -> ofNullable(timeToGet)
+                .map(wait -> ofNullable(sleepingTime).map(sleep ->
+                        ofNullable(exceptionSupplier)
+                            .map(supplier -> functionFactory.createFunction(stepFunction, c.get(), wait, sleep, supplier, ignored))
+                            .orElseGet(() -> functionFactory.createFunction(stepFunction, c.get(), wait, sleep, ignored)))
+
+                    .orElseGet(() -> ofNullable(exceptionSupplier)
+                        .map(supplier -> functionFactory.createFunction(stepFunction, c.get(), wait, supplier, ignored))
+                        .orElseGet(() -> functionFactory.createFunction(stepFunction, c.get(), wait, ignored))))
+
+                .orElseGet(() -> ofNullable(exceptionSupplier)
+                    .map(supplier -> functionFactory.createFunction(stepFunction, c.get(), supplier, ignored))
+                    .orElseGet(() -> functionFactory.createFunction(stepFunction, c.get(), ignored))))
+
+            .orElseGet(() -> ofNullable(timeToGet)
+                .map(wait -> ofNullable(sleepingTime)
+                    .map(sleep -> ofNullable(exceptionSupplier)
+                        .map(supplier -> functionFactory.createFunction(stepFunction, wait, sleep, supplier, ignored))
+                        .orElseGet(() -> functionFactory.createFunction(stepFunction, wait, sleep, ignored)))
+
+                    .orElseGet(() -> ofNullable(exceptionSupplier)
+                        .map(supplier -> functionFactory.createFunction(stepFunction, wait, supplier, ignored))
+                        .orElseGet(() -> functionFactory.createFunction(stepFunction, wait, ignored))))
+
+                .orElseGet(() -> ofNullable(exceptionSupplier)
+                    .map(supplier -> functionFactory.createFunction(stepFunction, supplier, ignored))
+                    .orElse(functionFactory.createFunction(stepFunction, ignored))));
+    }
 
     protected Criteria<P> getCriteria() {
         return condition;
@@ -465,100 +523,348 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         return from;
     }
 
-    public static class GetSimpleStepSupplier<T, R, THIS extends GetSimpleStepSupplier<T, R, THIS>>
-            extends SequentialGetStepSupplier<T, R, T, R, THIS> {
-
-        private final Function<T, R> originalFunction;
+    public abstract static class GetSimpleStepSupplier<T, R, THIS extends GetSimpleStepSupplier<T, R, THIS>>
+        extends SequentialGetStepSupplier<T, R, T, R, THIS> {
 
         protected GetSimpleStepSupplier(Function<T, R> originalFunction) {
-            super();
-            this.originalFunction = originalFunction;
+            super(originalFunction, new FunctionFactory.ObjectFunctionFactory<>());
             from(t -> t);
-        }
-
-        @Override
-        protected Function<T, R> getEndFunction() {
-            return ofNullable(timeToGet)
-                    .map(wait -> ofNullable(sleepingTime)
-                            .map(sleep -> ofNullable(exceptionSupplier)
-                                    .map(supplier -> getSingle(originalFunction, wait, sleep, supplier, ignored.toArray(new Class[]{})))
-                                    .orElseGet(() -> getSingle(originalFunction, wait, sleep, ignored.toArray(new Class[]{}))))
-
-                            .orElseGet(() -> ofNullable(exceptionSupplier)
-                                    .map(supplier -> getSingle(originalFunction, wait, supplier, ignored.toArray(new Class[]{})))
-                                    .orElseGet(() -> getSingle(originalFunction, wait, ignored.toArray(new Class[]{})))))
-
-                    .orElseGet(() -> ofNullable(exceptionSupplier)
-                            .map(supplier -> getSingle(originalFunction, supplier, ignored.toArray(new Class[]{})))
-                            .orElse(getSingle(originalFunction, ignored.toArray(new Class[]{}))));
         }
     }
 
-    private static abstract class PrivateGetObjectStepSupplier<T, R, M, THIS extends PrivateGetObjectStepSupplier<T, R, M, THIS>>
-            extends SequentialGetStepSupplier<T, R, M, R, THIS> {
+    private abstract static class PrivateGetConditionalStepSupplier<T, R, M, P, THIS extends PrivateGetConditionalStepSupplier<T, R, M, P, THIS>>
+        extends SequentialGetStepSupplier<T, R, M, P, THIS> {
 
-        private final Function<M, R> originalFunction;
+        final Captor<?, ?> captorForResultSelection;
+        ResultSelection<?, ?> selection;
 
-        PrivateGetObjectStepSupplier(Function<M, R> originalFunction) {
-            super();
-            this.originalFunction = originalFunction;
+        protected <S> PrivateGetConditionalStepSupplier(Function<M, S> stepFunction,
+                                                        FunctionFactory<M, S, R, P> functionFactory,
+                                                        Captor<?, ?> captorForResultSelection) {
+            super(stepFunction, functionFactory);
+            this.captorForResultSelection = captorForResultSelection;
         }
 
         @Override
-        public THIS criteria(Criteria<? super R> criteria) {
+        public THIS criteria(Criteria<? super P> criteria) {
             return super.criteria(criteria);
         }
 
         @Override
-        public THIS criteria(String description, Predicate<? super R> predicate) {
+        public THIS criteria(String description, Predicate<? super P> predicate) {
             return super.criteria(description, predicate);
         }
 
         @Override
-        public THIS criteriaOr(Criteria<? super R>... criteria) {
+        public THIS criteriaOr(Criteria<? super P>... criteria) {
             return super.criteriaOr(criteria);
         }
 
         @Override
-        public THIS criteriaOnlyOne(Criteria<? super R>... criteria) {
+        public THIS criteriaOnlyOne(Criteria<? super P>... criteria) {
             return super.criteriaOnlyOne(criteria);
         }
 
         @Override
-        public THIS criteriaNot(Criteria<? super R>... criteria) {
+        public THIS criteriaNot(Criteria<? super P>... criteria) {
             return super.criteriaNot(criteria);
         }
 
         @Override
-        protected Function<M, R> getEndFunction() {
-            return ofNullable(getCriteria())
-                    .map(c -> ofNullable(timeToGet)
-                            .map(wait -> ofNullable(sleepingTime).map(sleep ->
-                                    ofNullable(exceptionSupplier)
-                                            .map(supplier -> getSingle(originalFunction, c.get(), wait, sleep, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> getSingle(originalFunction, c.get(), wait, sleep, ignored.toArray(new Class[]{}))))
+        public Function<T, R> get() {
+            var get = (Get<T, R>) super.get();
+            if (nonNull(selection)) {
+                get.setResultSelection(selection);
+                get.setCaptorOfFailedResultSelection(captorForResultSelection);
+            }
+            return get;
+        }
+    }
 
-                                    .orElseGet(() -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> getSingle(originalFunction, c.get(), wait, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> getSingle(originalFunction, c.get(), wait, ignored.toArray(new Class[]{})))))
+    interface ReturnsOnCondition<T, THIS extends ReturnsOnCondition<T, THIS>> {
 
-                            .orElseGet(() -> ofNullable(exceptionSupplier)
-                                    .map(supplier -> getSingle(originalFunction, c.get(), supplier, ignored.toArray(new Class[]{})))
-                                    .orElseGet(() -> getSingle(originalFunction, c.get(), ignored.toArray(new Class[]{})))))
+        /**
+         * Defines a condition for entire set of found/suitable elements.
+         *
+         * @param condition a condition for entire set of items
+         * @return self-reference
+         */
+        THIS returnOnCondition(Criteria<T> condition);
 
-                    .orElseGet(() -> ofNullable(timeToGet)
-                            .map(wait -> ofNullable(sleepingTime)
-                                    .map(sleep -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> getSingle(originalFunction, wait, sleep, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> getSingle(originalFunction, wait, sleep, ignored.toArray(new Class[]{}))))
+        /**
+         * Defines a condition for entire set of found/suitable elements.
+         *
+         * @param description describes the condition
+         * @param predicate   defines the condition
+         * @return self-reference
+         */
+        default THIS returnOnCondition(String description, Predicate<T> predicate) {
+            return returnOnCondition(condition(description, predicate));
+        }
 
-                                    .orElseGet(() -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> getSingle(originalFunction, wait, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> getSingle(originalFunction, wait, ignored.toArray(new Class[]{})))))
+        /**
+         * Defines a condition for entire set of found/suitable elements. Defined
+         * criteria will be transformed into OR-expression
+         *
+         * @param condition condition for entire set of items
+         * @return self-reference
+         */
+        default THIS returnOnConditionOr(Criteria<T>... condition) {
+            return returnOnCondition(OR(condition));
+        }
 
-                            .orElseGet(() -> ofNullable(exceptionSupplier)
-                                    .map(supplier -> getSingle(originalFunction, supplier, ignored.toArray(new Class[]{})))
-                                    .orElse(getSingle(originalFunction, ignored.toArray(new Class[]{})))));
+        /**
+         * Defines a condition for entire set of found/suitable elements. Defined
+         * criteria will be transformed into XOR-expression
+         *
+         * @param condition condition for entire set of items
+         * @return self-reference
+         */
+        default THIS returnOnConditionOnlyOne(Criteria<T>... condition) {
+            return returnOnCondition(ONLY_ONE(condition));
+        }
+
+        /**
+         * Defines a condition for entire set of found/suitable elements. Defined
+         * criteria will be inverted
+         *
+         * @param condition condition for entire set of items
+         * @return self-reference
+         */
+        default THIS returnOnConditionOnlyNot(Criteria<T>... condition) {
+            return returnOnCondition(NOT(condition));
+        }
+    }
+
+    private static abstract class PrivateGetIterableStepSupplier<T, R, M, P, THIS extends PrivateGetIterableStepSupplier<T, R, M, P, THIS>>
+        extends PrivateGetConditionalStepSupplier<T, R, M, P, THIS> {
+        protected final FunctionFactory.IterableFunctionFactory<M, ?, R, P> iterableFunctionFactory;
+
+        protected <S> PrivateGetIterableStepSupplier(Function<M, S> stepFunction,
+                                                     FunctionFactory.IterableFunctionFactory<M, S, R, P> functionFactory,
+                                                     Captor<?, ?> captorForResultSelection) {
+            super(stepFunction, functionFactory, captorForResultSelection);
+            this.iterableFunctionFactory = functionFactory;
+        }
+
+        @Override
+        void fillSelectionParameters(Map<String, String> parameters) {
+            ofNullable(iterableFunctionFactory.getResultSelection())
+                .ifPresent(rs -> parameters.putAll(rs.getParameters()));
+        }
+
+        @Override
+        void ignoreSelection() {
+            iterableFunctionFactory.ignoreSelection();
+        }
+
+        interface SelectionOptionsForList<R, THIS extends SelectionOptionsForList<R, THIS>>
+            extends ReturnsOnCondition<List<R>, THIS> {
+
+            private PrivateGetIterableStepSupplier<?, List<R>, ?, ?, ?> cast() {
+                return (PrivateGetIterableStepSupplier<?, List<R>, ?, ?, ?>) this;
+            }
+
+            private SelectionOfItems.SelectionOfList<R> getListSelection(PrivateGetIterableStepSupplier<?, List<R>, ?, ?, ?> casted) {
+                return (SelectionOfItems.SelectionOfList<R>) ofNullable(casted.iterableFunctionFactory.getResultSelection())
+                    .orElseGet(() -> {
+                        var s = (SelectionOfItems.SelectionOfList<R>) selectList();
+                        casted.iterableFunctionFactory.setResultSelection(s);
+                        casted.selection = s;
+                        return s;
+                    });
+            }
+
+            /**
+             * Sets count of items to take from the list of found/suitable elements.
+             * Invocation of this method erases value set by {@link #returnItemsOfIndexes(Integer...)}
+             *
+             * @param size size of resulted list
+             * @return self-reference
+             */
+            default THIS returnListOfSize(int size) {
+                var casted = cast();
+                var selection = getListSelection(casted);
+                selection.ofCount(size);
+                return (THIS) this;
+            }
+
+            /**
+             * Defines indexes of found items to be returned.
+             * Invocation of this method erases value set by {@link #returnListOfSize(int)}
+             * and {@link #returnBeforeIndex(int)} / {@link #returnAfterIndex(int)}
+             *
+             * @param indexes indexes of items to be returned
+             * @return self-reference
+             */
+            default THIS returnItemsOfIndexes(Integer... indexes) {
+                var casted = cast();
+                var selection = getListSelection(casted);
+                selection.indexes(indexes);
+                return (THIS) this;
+            }
+
+
+            /**
+             * Sets upper list index (exclusively) to take items from the list of found/suitable elements.
+             * Invocation of this method replaces value set by {@link #returnAfterIndex(int)} and
+             * erases value set by {@link #returnItemsOfIndexes(Integer...)}
+             *
+             * @param index is exclusive value of the upper index
+             * @return self-reference
+             */
+            default THIS returnBeforeIndex(int index) {
+                var casted = cast();
+                var selection = getListSelection(casted);
+                selection.beforeIndex(index);
+                return (THIS) this;
+            }
+
+            /**
+             * Sets lower list index (exclusively) to take items from the list of found/suitable elements.
+             * Invocation of this method replaces value set by {@link #returnBeforeIndex(int)} and
+             * erases value set by {@link #returnItemsOfIndexes(Integer...)}
+             *
+             * @param index is exclusive value of the lower index
+             * @return self-reference
+             */
+            default THIS returnAfterIndex(int index) {
+                var casted = cast();
+                var selection = getListSelection(casted);
+                selection.afterIndex(index);
+                return (THIS) this;
+            }
+
+            /**
+             * Defines a size condition for entire list of found/suitable elements.
+             *
+             * @param sizeCondition a size condition for entire list
+             * @return self-reference
+             */
+            default THIS returnIfEntireSize(ItemsCountCondition sizeCondition) {
+                var casted = cast();
+                var selection = getListSelection(casted);
+                selection.whenCount(sizeCondition);
+                return (THIS) this;
+            }
+
+            /**
+             * Defines a condition for list of found/suitable elements.
+             *
+             * @param condition a condition for entire list
+             * @return self-reference
+             */
+            @Override
+            default THIS returnOnCondition(Criteria<List<R>> condition) {
+                var casted = cast();
+                var selection = getListSelection(casted);
+                selection.onCondition(condition);
+                return (THIS) this;
+            }
+        }
+
+        interface SelectionOptionsForArray<R, THIS extends SelectionOptionsForArray<R, THIS>> extends
+            ReturnsOnCondition<R[], THIS> {
+
+            private PrivateGetIterableStepSupplier<?, R[], ?, ?, ?> cast() {
+                return (PrivateGetIterableStepSupplier<?, R[], ?, ?, ?>) this;
+            }
+
+            private SelectionOfItems.SelectionOfArray<R> getArraySelection(PrivateGetIterableStepSupplier<?, R[], ?, ?, ?> casted) {
+                return (SelectionOfItems.SelectionOfArray<R>) ofNullable(casted.iterableFunctionFactory.getResultSelection())
+                    .orElseGet(() -> {
+                        var s = (SelectionOfItems.SelectionOfArray<R>) selectArray();
+                        casted.iterableFunctionFactory.setResultSelection(s);
+                        casted.selection = s;
+                        return s;
+                    });
+            }
+
+            /**
+             * Sets count of items to take from the array of found/suitable elements.
+             * Invocation of this method erases value set by {@link #returnItemsOfIndexes(Integer...)}.
+             *
+             * @param length length of resulted array
+             * @return self-reference
+             */
+            default THIS returnArrayOfLength(int length) {
+                var casted = cast();
+                var selection = getArraySelection(casted);
+                selection.ofCount(length);
+                return (THIS) this;
+            }
+
+            /**
+             * Defines indexes of found items to be returned.
+             * Invocation of this method erases value set by {@link #returnArrayOfLength(int)}
+             * and {@link #returnBeforeIndex(int)} / {@link #returnAfterIndex(int)}
+             *
+             * @param indexes indexes of items to be returned
+             * @return self-reference
+             */
+            default THIS returnItemsOfIndexes(Integer... indexes) {
+                var casted = cast();
+                var selection = getArraySelection(casted);
+                selection.indexes(indexes);
+                return (THIS) this;
+            }
+
+            /**
+             * Sets upper array index (exclusively) to take items from the array of found/suitable elements.
+             * Invocation of this method replaces value set by {@link #returnAfterIndex(int)} and
+             * erases value set by {@link #returnItemsOfIndexes(Integer...)}
+             *
+             * @param index is exclusive value of the upper index
+             * @return self-reference
+             */
+            default THIS returnBeforeIndex(int index) {
+                var casted = cast();
+                var selection = getArraySelection(casted);
+                selection.beforeIndex(index);
+                return (THIS) this;
+            }
+
+            /**
+             * Sets lower array index (exclusively) to take items from the array of found/suitable elements.
+             * Invocation of this method replaces value set by {@link #returnBeforeIndex(int)} and
+             * erases value set by {@link #returnItemsOfIndexes(Integer...)}
+             *
+             * @param index is exclusive value of the lower index
+             * @return self-reference
+             */
+            default THIS returnAfterIndex(int index) {
+                var casted = cast();
+                var selection = getArraySelection(casted);
+                selection.afterIndex(index);
+                return (THIS) this;
+            }
+
+            /**
+             * Defines a length condition for entire array of found/suitable elements.
+             *
+             * @param lengthCondition a length condition for entire array
+             * @return self-reference
+             */
+            default THIS returnIfEntireLength(ItemsCountCondition lengthCondition) {
+                var casted = cast();
+                var selection = getArraySelection(casted);
+                selection.whenCount(lengthCondition);
+                return (THIS) this;
+            }
+
+            /**
+             * Defines a condition for array of found/suitable elements.
+             *
+             * @param condition a condition for entire array
+             * @return self-reference
+             */
+            @Override
+            default THIS returnOnCondition(Criteria<R[]> condition) {
+                var casted = cast();
+                var selection = getArraySelection(casted);
+                selection.onCondition(condition);
+                return (THIS) this;
+            }
         }
     }
 
@@ -569,11 +875,11 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <R>    is a type of result value
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetObjectStepSupplier<T, R, THIS extends GetObjectStepSupplier<T, R, THIS>>
-            extends PrivateGetObjectStepSupplier<T, R, T, THIS> {
+    public abstract static class GetObjectStepSupplier<T, R, THIS extends GetObjectStepSupplier<T, R, THIS>>
+        extends PrivateGetConditionalStepSupplier<T, R, T, R, THIS> {
 
         protected GetObjectStepSupplier(Function<T, R> originalFunction) {
-            super(originalFunction);
+            super(originalFunction, new FunctionFactory.ObjectFunctionFactory<>(), null);
             from(t -> t);
         }
     }
@@ -586,11 +892,11 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <M>    is a type of mediator value is used to get the result
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetObjectChainedStepSupplier<T, R, M, THIS extends GetObjectChainedStepSupplier<T, R, M, THIS>>
-            extends PrivateGetObjectStepSupplier<T, R, M, THIS> {
+    public abstract static class GetObjectChainedStepSupplier<T, R, M, THIS extends GetObjectChainedStepSupplier<T, R, M, THIS>>
+        extends PrivateGetConditionalStepSupplier<T, R, M, R, THIS> {
 
         protected GetObjectChainedStepSupplier(Function<M, R> originalFunction) {
-            super(originalFunction);
+            super(originalFunction, new FunctionFactory.ObjectFunctionFactory<>(), null);
         }
 
         @Override
@@ -609,71 +915,143 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
     }
 
-    private static class PrivateGetObjectFromIterableStepSupplier<T, R, M, THIS extends PrivateGetObjectFromIterableStepSupplier<T, R, M, THIS>>
-            extends SequentialGetStepSupplier<T, R, M, R, THIS> {
+    private abstract static class PrivateGetItemStepSupplier<I, T, R, M, P, THIS extends PrivateGetItemStepSupplier<I, T, R, M, P, THIS>>
+        extends PrivateGetConditionalStepSupplier<T, R, M, P, THIS> {
 
-        private final Function<M, ? extends Iterable<R>> originalFunction;
+        protected final FunctionFactory.ItemFunctionFactory<M, I, R, P> itemFunctionFactory;
 
-        protected <S extends Iterable<R>> PrivateGetObjectFromIterableStepSupplier(Function<M, S> originalFunction) {
-            super();
-            this.originalFunction = originalFunction;
+        protected <S extends I> PrivateGetItemStepSupplier(Function<M, S> stepFunction,
+                                                           FunctionFactory.ItemFunctionFactory<M, I, R, P> functionFactory,
+                                                           Captor<?, ?> captorForResultSelection) {
+            super((Function<M, I>) stepFunction, functionFactory, captorForResultSelection);
+            this.itemFunctionFactory = functionFactory;
         }
 
         @Override
-        public THIS criteria(Criteria<? super R> criteria) {
-            return super.criteria(criteria);
+        void fillSelectionParameters(Map<String, String> parameters) {
+            ofNullable(itemFunctionFactory.getResultSelection())
+                .ifPresent(rs -> parameters.putAll(rs.getParameters()));
         }
 
         @Override
-        public THIS criteria(String description, Predicate<? super R> predicate) {
-            return super.criteria(description, predicate);
+        void ignoreSelection() {
+            itemFunctionFactory.ignoreSelection();
         }
 
-        @Override
-        public THIS criteriaOr(Criteria<? super R>... criteria) {
-            return super.criteriaOr(criteria);
+        interface SelectionOptionsForIterableItem<R, I extends Iterable<R>, THIS extends SelectionOptionsForIterableItem<R, I, THIS>>
+            extends ReturnsOnCondition<I, THIS> {
+
+            private PrivateGetItemStepSupplier<I, ?, R, ?, ?, ?> cast() {
+                return (PrivateGetItemStepSupplier<I, ?, R, ?, ?, ?>) this;
+            }
+
+            private SelectionOfItem.SelectionOfIterableItem<R, I> getSelectionOfIterableItem(PrivateGetItemStepSupplier<I, ?, R, ?, ?, ?> casted) {
+                return (SelectionOfItem.SelectionOfIterableItem<R, I>) ofNullable(casted.itemFunctionFactory.getResultSelection())
+                    .orElseGet(() -> {
+                        var s = (SelectionOfItem.SelectionOfIterableItem<R, I>) selectItemOfIterable();
+                        casted.itemFunctionFactory.setResultSelection(s);
+                        casted.selection = s;
+                        return s;
+                    });
+            }
+
+            /**
+             * Defines index of the target element take from the iterable of found/suitable elements.
+             *
+             * @param size index of the target element
+             * @return self-reference
+             */
+            default THIS returnItemOfIndex(int size) {
+                var casted = cast();
+                var selection = getSelectionOfIterableItem(casted);
+                selection.index(size);
+                return (THIS) this;
+            }
+
+            /**
+             * Defines a size condition for entire iterable of found/suitable elements.
+             *
+             * @param sizeCondition a size condition for entire iterable
+             * @return self-reference
+             */
+            default THIS returnIfEntireSize(ItemsCountCondition sizeCondition) {
+                var casted = cast();
+                var selection = getSelectionOfIterableItem(casted);
+                selection.whenCount(sizeCondition);
+                return (THIS) this;
+            }
+
+            /**
+             * Defines a condition for iterable of found/suitable elements.
+             *
+             * @param condition a condition for entire iterable
+             * @return self-reference
+             */
+            @Override
+            default THIS returnOnCondition(Criteria<I> condition) {
+                var casted = cast();
+                var selection = getSelectionOfIterableItem(casted);
+                selection.onCondition(condition);
+                return (THIS) this;
+            }
         }
 
-        @Override
-        public THIS criteriaOnlyOne(Criteria<? super R>... criteria) {
-            return super.criteriaOnlyOne(criteria);
-        }
+        interface SelectionOptionsForArrayItem<R, THIS extends SelectionOptionsForArrayItem<R, THIS>>
+            extends ReturnsOnCondition<R[], THIS> {
 
-        @Override
-        public THIS criteriaNot(Criteria<? super R>... criteria) {
-            return super.criteriaNot(criteria);
-        }
+            private PrivateGetItemStepSupplier<R[], ?, R, ?, ?, ?> cast() {
+                return (PrivateGetItemStepSupplier<R[], ?, R, ?, ?, ?>) this;
+            }
 
-        @Override
-        protected Function<M, R> getEndFunction() {
-            return ofNullable(getCriteria())
-                    .map(c -> ofNullable(timeToGet)
-                            .map(wait -> ofNullable(sleepingTime).map(sleep ->
-                                    ofNullable(exceptionSupplier)
-                                            .map(supplier -> getFromIterable(originalFunction, c.get(), wait, sleep, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> getFromIterable(originalFunction, c.get(), wait, sleep, ignored.toArray(new Class[]{}))))
+            private SelectionOfItem.SelectionOfArrayItem<R> getSelectionOfArrayItem(PrivateGetItemStepSupplier<R[], ?, R, ?, ?, ?> casted) {
+                return (SelectionOfItem.SelectionOfArrayItem<R>) ofNullable(casted.itemFunctionFactory.getResultSelection())
+                    .orElseGet(() -> {
+                        var s = (SelectionOfItem.SelectionOfArrayItem<R>) selectItemOfArray();
+                        casted.itemFunctionFactory.setResultSelection(s);
+                        casted.selection = s;
+                        return s;
+                    });
+            }
 
-                                    .orElseGet(() -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> getFromIterable(originalFunction, c.get(), wait, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> getFromIterable(originalFunction, c.get(), wait, ignored.toArray(new Class[]{})))))
+            /**
+             * Defines index of the target element take from the array of found/suitable elements.
+             *
+             * @param size index of the target element
+             * @return self-reference
+             */
+            default THIS returnItemOfIndex(int size) {
+                var casted = cast();
+                var selection = getSelectionOfArrayItem(casted);
+                selection.index(size);
+                return (THIS) this;
+            }
 
-                            .orElseGet(() -> ofNullable(exceptionSupplier)
-                                    .map(supplier -> getFromIterable(originalFunction, c.get(), supplier, ignored.toArray(new Class[]{})))
-                                    .orElseGet(() -> getFromIterable(originalFunction, c.get(), ignored.toArray(new Class[]{})))))
+            /**
+             * Defines a size condition for entire array of found/suitable elements.
+             *
+             * @param lengthCondition a length condition for entire array
+             * @return self-reference
+             */
+            default THIS returnIfEntireLength(ItemsCountCondition lengthCondition) {
+                var casted = cast();
+                var selection = getSelectionOfArrayItem(casted);
+                selection.whenCount(lengthCondition);
+                return (THIS) this;
+            }
 
-                    .orElseGet(() -> ofNullable(timeToGet)
-                            .map(wait -> ofNullable(sleepingTime)
-                                    .map(sleep -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> getFromIterable(originalFunction, wait, sleep, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> getFromIterable(originalFunction, wait, sleep, ignored.toArray(new Class[]{}))))
-
-                                    .orElseGet(() -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> getFromIterable(originalFunction, wait, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> getFromIterable(originalFunction, wait, ignored.toArray(new Class[]{})))))
-
-                            .orElseGet(() -> ofNullable(exceptionSupplier)
-                                    .map(supplier -> getFromIterable(originalFunction, supplier, ignored.toArray(new Class[]{})))
-                                    .orElse(getFromIterable(originalFunction, ignored.toArray(new Class[]{})))));
+            /**
+             * Defines a condition for array of found/suitable elements.
+             *
+             * @param condition a condition for entire array
+             * @return self-reference
+             */
+            @Override
+            default THIS returnOnCondition(Criteria<R[]> condition) {
+                var casted = cast();
+                var selection = getSelectionOfArrayItem(casted);
+                selection.onCondition(condition);
+                return (THIS) this;
+            }
         }
     }
 
@@ -684,11 +1062,14 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <R>    is a type of result value. Also it is a type of item from iterable.
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetObjectFromIterableStepSupplier<T, R, THIS extends GetObjectFromIterableStepSupplier<T, R, THIS>>
-            extends PrivateGetObjectFromIterableStepSupplier<T, R, T, THIS> {
+    public abstract static class GetObjectFromIterableStepSupplier<T, R, THIS extends GetObjectFromIterableStepSupplier<T, R, THIS>>
+        extends PrivateGetItemStepSupplier<Iterable<R>, T, R, T, R, THIS>
+        implements PrivateGetItemStepSupplier.SelectionOptionsForIterableItem<R, Iterable<R>, THIS> {
 
         protected <S extends Iterable<R>> GetObjectFromIterableStepSupplier(Function<T, S> originalFunction) {
-            super(originalFunction);
+            super(originalFunction,
+                new FunctionFactory.IterableItemFunctionFactory<>(),
+                new IterableCaptor<>(new GotItems().toString()));
             from(t -> t);
         }
     }
@@ -701,11 +1082,14 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <M>    is a type of mediator value is used to get the result
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetObjectFromIterableChainedStepSupplier<T, R, M, THIS extends GetObjectFromIterableChainedStepSupplier<T, R, M, THIS>>
-            extends PrivateGetObjectFromIterableStepSupplier<T, R, M, THIS> {
+    public abstract static class GetObjectFromIterableChainedStepSupplier<T, R, M, THIS extends GetObjectFromIterableChainedStepSupplier<T, R, M, THIS>>
+        extends PrivateGetItemStepSupplier<Iterable<R>, T, R, M, R, THIS>
+        implements PrivateGetItemStepSupplier.SelectionOptionsForIterableItem<R, Iterable<R>, THIS> {
 
         protected <S extends Iterable<R>> GetObjectFromIterableChainedStepSupplier(Function<M, S> originalFunction) {
-            super(originalFunction);
+            super(originalFunction,
+                new FunctionFactory.IterableItemFunctionFactory<>(),
+                new IterableCaptor<>(new GotItems().toString()));
         }
 
         @Override
@@ -724,74 +1108,6 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
     }
 
-    private static class PrivateGetObjectFromArrayStepSupplier<T, R, M, THIS extends PrivateGetObjectFromArrayStepSupplier<T, R, M, THIS>>
-            extends SequentialGetStepSupplier<T, R, M, R, THIS> {
-
-        private final Function<M, R[]> originalFunction;
-
-        PrivateGetObjectFromArrayStepSupplier(Function<M, R[]> originalFunction) {
-            super();
-            this.originalFunction = originalFunction;
-        }
-
-        @Override
-        public THIS criteria(Criteria<? super R> criteria) {
-            return super.criteria(criteria);
-        }
-
-        @Override
-        public THIS criteria(String description, Predicate<? super R> predicate) {
-            return super.criteria(description, predicate);
-        }
-
-        @Override
-        public THIS criteriaOr(Criteria<? super R>... criteria) {
-            return super.criteriaOr(criteria);
-        }
-
-        @Override
-        public THIS criteriaOnlyOne(Criteria<? super R>... criteria) {
-            return super.criteriaOnlyOne(criteria);
-        }
-
-        @Override
-        public THIS criteriaNot(Criteria<? super R>... criteria) {
-            return super.criteriaNot(criteria);
-        }
-
-        @Override
-        protected Function<M, R> getEndFunction() {
-            return ofNullable(getCriteria())
-                    .map(c -> ofNullable(timeToGet)
-                            .map(wait -> ofNullable(sleepingTime).map(sleep ->
-                                    ofNullable(exceptionSupplier)
-                                            .map(supplier -> getFromArray(originalFunction, c.get(), wait, sleep, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> getFromArray(originalFunction, c.get(), wait, sleep, ignored.toArray(new Class[]{}))))
-
-                                    .orElseGet(() -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> getFromArray(originalFunction, c.get(), wait, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> getFromArray(originalFunction, c.get(), wait, ignored.toArray(new Class[]{})))))
-
-                            .orElseGet(() -> ofNullable(exceptionSupplier)
-                                    .map(supplier -> getFromArray(originalFunction, c.get(), supplier, ignored.toArray(new Class[]{})))
-                                    .orElseGet(() -> getFromArray(originalFunction, c.get(), ignored.toArray(new Class[]{})))))
-
-                    .orElseGet(() -> ofNullable(timeToGet)
-                            .map(wait -> ofNullable(sleepingTime)
-                                    .map(sleep -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> getFromArray(originalFunction, wait, sleep, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> getFromArray(originalFunction, wait, sleep, ignored.toArray(new Class[]{}))))
-
-                                    .orElseGet(() -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> getFromArray(originalFunction, wait, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> getFromArray(originalFunction, wait, ignored.toArray(new Class[]{})))))
-
-                            .orElseGet(() -> ofNullable(exceptionSupplier)
-                                    .map(supplier -> getFromArray(originalFunction, supplier, ignored.toArray(new Class[]{})))
-                                    .orElse(getFromArray(originalFunction, ignored.toArray(new Class[]{})))));
-        }
-    }
-
     /**
      * This class is designed to build and supply functions to get desired value using some array.
      *
@@ -799,11 +1115,14 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <R>    is a type of result value. Also it is a type of item from array.
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetObjectFromArrayStepSupplier<T, R, THIS extends GetObjectFromArrayStepSupplier<T, R, THIS>>
-            extends PrivateGetObjectFromArrayStepSupplier<T, R, T, THIS> {
+    public abstract static class GetObjectFromArrayStepSupplier<T, R, THIS extends GetObjectFromArrayStepSupplier<T, R, THIS>>
+        extends PrivateGetItemStepSupplier<R[], T, R, T, R, THIS>
+        implements PrivateGetItemStepSupplier.SelectionOptionsForArrayItem<R, THIS> {
 
         protected GetObjectFromArrayStepSupplier(Function<T, R[]> originalFunction) {
-            super(originalFunction);
+            super(originalFunction,
+                new FunctionFactory.ArrayItemFunctionFactory<>(),
+                new ArrayCaptor(new GotItems().toString()));
             from(t -> t);
         }
     }
@@ -816,11 +1135,14 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <M>    is a type of mediator value is used to get the result
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetObjectFromArrayChainedStepSupplier<T, R, M, THIS extends GetObjectFromArrayChainedStepSupplier<T, R, M, THIS>>
-            extends PrivateGetObjectFromArrayStepSupplier<T, R, M, THIS> {
+    public abstract static class GetObjectFromArrayChainedStepSupplier<T, R, M, THIS extends GetObjectFromArrayChainedStepSupplier<T, R, M, THIS>>
+        extends PrivateGetItemStepSupplier<R[], T, R, M, R, THIS>
+        implements PrivateGetItemStepSupplier.SelectionOptionsForArrayItem<R, THIS> {
 
         protected GetObjectFromArrayChainedStepSupplier(Function<M, R[]> originalFunction) {
-            super(originalFunction);
+            super(originalFunction,
+                new FunctionFactory.ArrayItemFunctionFactory<>(),
+                new ArrayCaptor(new GotItems().toString()));
         }
 
         @Override
@@ -839,74 +1161,6 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
     }
 
-    private static class PrivateGetListStepSupplier<T, S extends Iterable<R>, M, R, THIS extends PrivateGetListStepSupplier<T, S, M, R, THIS>>
-            extends SequentialGetStepSupplier<T, List<R>, M, R, THIS> {
-
-        private final Function<M, S> originalFunction;
-
-        PrivateGetListStepSupplier(Function<M, S> originalFunction) {
-            super();
-            this.originalFunction = originalFunction;
-        }
-
-        @Override
-        public THIS criteria(Criteria<? super R> criteria) {
-            return super.criteria(criteria);
-        }
-
-        @Override
-        public THIS criteria(String description, Predicate<? super R> predicate) {
-            return super.criteria(description, predicate);
-        }
-
-        @Override
-        public THIS criteriaOr(Criteria<? super R>... criteria) {
-            return super.criteriaOr(criteria);
-        }
-
-        @Override
-        public THIS criteriaOnlyOne(Criteria<? super R>... criteria) {
-            return super.criteriaOnlyOne(criteria);
-        }
-
-        @Override
-        public THIS criteriaNot(Criteria<? super R>... criteria) {
-            return super.criteriaNot(criteria);
-        }
-
-        @Override
-        protected Function<M, List<R>> getEndFunction() {
-            return ofNullable(getCriteria())
-                    .map(c -> ofNullable(timeToGet)
-                            .map(wait -> ofNullable(sleepingTime).map(sleep ->
-                                            ofNullable(exceptionSupplier)
-                                                    .map(supplier -> ToGetList.getList(originalFunction, c.get(), wait, sleep, supplier, ignored.toArray(new Class[]{})))
-                                                    .orElseGet(() -> ToGetList.getList(originalFunction, c.get(), wait, sleep, ignored.toArray(new Class[]{}))))
-
-                                    .orElseGet(() -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> ToGetList.getList(originalFunction, c.get(), wait, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> ToGetList.getList(originalFunction, c.get(), wait, ignored.toArray(new Class[]{})))))
-
-                            .orElseGet(() -> ofNullable(exceptionSupplier)
-                                    .map(supplier -> ToGetList.getList(originalFunction, c.get(), supplier, ignored.toArray(new Class[]{})))
-                                    .orElseGet(() -> ToGetList.getList(originalFunction, c.get(), ignored.toArray(new Class[]{})))))
-
-                    .orElseGet(() -> ofNullable(timeToGet)
-                            .map(wait -> ofNullable(sleepingTime)
-                                    .map(sleep -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> ToGetList.getList(originalFunction, wait, sleep, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> ToGetList.getList(originalFunction, wait, sleep, ignored.toArray(new Class[]{}))))
-
-                                    .orElseGet(() -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> ToGetList.getList(originalFunction, wait, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> ToGetList.getList(originalFunction, wait, ignored.toArray(new Class[]{})))))
-
-                            .orElseGet(() -> ofNullable(exceptionSupplier)
-                                    .map(supplier -> ToGetList.getList(originalFunction, supplier, ignored.toArray(new Class[]{})))
-                                    .orElse(getList(originalFunction, ignored.toArray(new Class[]{})))));
-        }
-    }
-
     /**
      * This class is designed to build and supply functions to get some immutable list-value.
      *
@@ -915,11 +1169,14 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <R>    is a type of item from resulted iterable
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetListStepSupplier<T, S extends Iterable<R>, R, THIS extends GetListStepSupplier<T, S, R, THIS>>
-            extends PrivateGetListStepSupplier<T, S, T, R, THIS> {
+    public abstract static class GetListStepSupplier<T, S extends Iterable<R>, R, THIS extends GetListStepSupplier<T, S, R, THIS>>
+        extends PrivateGetIterableStepSupplier<T, List<R>, T, R, THIS>
+        implements PrivateGetIterableStepSupplier.SelectionOptionsForList<R, THIS> {
 
         protected GetListStepSupplier(Function<T, S> originalFunction) {
-            super(originalFunction);
+            super(originalFunction,
+                new FunctionFactory.ListFunctionFactory<>(),
+                new CollectionCaptor(new GotItems().toString()));
             from(t -> t);
         }
     }
@@ -933,11 +1190,14 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <R>    is a type of item from resulted iterable
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetListChainedStepSupplier<T, S extends Iterable<R>, M, R, THIS extends GetListChainedStepSupplier<T, S, M, R, THIS>>
-            extends PrivateGetListStepSupplier<T, S, M, R, THIS> {
+    public abstract static class GetListChainedStepSupplier<T, S extends Iterable<R>, M, R, THIS extends GetListChainedStepSupplier<T, S, M, R, THIS>>
+        extends PrivateGetIterableStepSupplier<T, List<R>, M, R, THIS>
+        implements PrivateGetIterableStepSupplier.SelectionOptionsForList<R, THIS> {
 
         protected GetListChainedStepSupplier(Function<M, S> originalFunction) {
-            super(originalFunction);
+            super(originalFunction,
+                new FunctionFactory.ListFunctionFactory<>(),
+                new CollectionCaptor(new GotItems().toString()));
         }
 
         @Override
@@ -953,74 +1213,6 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         @Override
         protected THIS from(SequentialGetStepSupplier<T, ? extends M, ?, ?, ?> from) {
             return super.from(from);
-        }
-    }
-
-    private static class PrivateGetArrayStepSupplier<T, R, M, THIS extends PrivateGetArrayStepSupplier<T, R, M, THIS>>
-            extends SequentialGetStepSupplier<T, R[], M, R, THIS> {
-
-        private final Function<M, R[]> originalFunction;
-
-        PrivateGetArrayStepSupplier(Function<M, R[]> originalFunction) {
-            super();
-            this.originalFunction = originalFunction;
-        }
-
-        @Override
-        public THIS criteria(Criteria<? super R> criteria) {
-            return super.criteria(criteria);
-        }
-
-        @Override
-        public THIS criteria(String description, Predicate<? super R> predicate) {
-            return super.criteria(description, predicate);
-        }
-
-        @Override
-        public THIS criteriaOr(Criteria<? super R>... criteria) {
-            return super.criteriaOr(criteria);
-        }
-
-        @Override
-        public THIS criteriaOnlyOne(Criteria<? super R>... criteria) {
-            return super.criteriaOnlyOne(criteria);
-        }
-
-        @Override
-        public THIS criteriaNot(Criteria<? super R>... criteria) {
-            return super.criteriaNot(criteria);
-        }
-
-        @Override
-        protected Function<M, R[]> getEndFunction() {
-            return ofNullable(getCriteria())
-                    .map(c -> ofNullable(timeToGet)
-                            .map(wait -> ofNullable(sleepingTime).map(sleep ->
-                                    ofNullable(exceptionSupplier)
-                                            .map(supplier -> getArray(originalFunction, c.get(), wait, sleep, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> getArray(originalFunction, c.get(), wait, sleep, ignored.toArray(new Class[]{}))))
-
-                                    .orElseGet(() -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> getArray(originalFunction, c.get(), wait, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> getArray(originalFunction, c.get(), wait, ignored.toArray(new Class[]{})))))
-
-                            .orElseGet(() -> ofNullable(exceptionSupplier)
-                                    .map(supplier -> getArray(originalFunction, c.get(), supplier, ignored.toArray(new Class[]{})))
-                                    .orElseGet(() -> getArray(originalFunction, c.get(), ignored.toArray(new Class[]{})))))
-
-                    .orElseGet(() -> ofNullable(timeToGet)
-                            .map(wait -> ofNullable(sleepingTime)
-                                    .map(sleep -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> getArray(originalFunction, wait, sleep, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> getArray(originalFunction, wait, sleep, ignored.toArray(new Class[]{}))))
-
-                                    .orElseGet(() -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> getArray(originalFunction, wait, supplier, ignored.toArray(new Class[]{})))
-                                            .orElseGet(() -> getArray(originalFunction, wait, ignored.toArray(new Class[]{})))))
-
-                            .orElseGet(() -> ofNullable(exceptionSupplier)
-                                    .map(supplier -> getArray(originalFunction, supplier, ignored.toArray(new Class[]{})))
-                                    .orElse(getArray(originalFunction, ignored.toArray(new Class[]{})))));
         }
     }
 
@@ -1031,43 +1223,15 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param <R>    is a type of item from resulted array
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
-    public static abstract class GetArrayStepSupplier<T, R, THIS extends GetArrayStepSupplier<T, R, THIS>>
-            extends PrivateGetArrayStepSupplier<T, R, T, THIS> {
+    public abstract static class GetArrayStepSupplier<T, R, THIS extends GetArrayStepSupplier<T, R, THIS>>
+        extends PrivateGetIterableStepSupplier<T, R[], T, R, THIS>
+        implements PrivateGetIterableStepSupplier.SelectionOptionsForArray<R, THIS> {
 
         protected GetArrayStepSupplier(Function<T, R[]> originalFunction) {
-            super(originalFunction);
+            super(originalFunction,
+                new FunctionFactory.ArrayFunctionFactory<>(),
+                new ArrayCaptor(new GotItems().toString()));
             from(t -> t);
-        }
-    }
-
-    /**
-     * This class is designed to build and supply chained functions to get some desired array-value.
-     *
-     * @param <T>    is a type of input value
-     * @param <M>    is a type of mediator value is used to get the result
-     * @param <R>    is a type of item from resulted array
-     * @param <THIS> this is the self-type. It is used for the method chaining.
-     */
-    public static abstract class GetArrayChainedStepSupplier<T, R, M, THIS extends GetArrayChainedStepSupplier<T, R, M, THIS>>
-            extends PrivateGetArrayStepSupplier<T, R, M, THIS> {
-
-        protected GetArrayChainedStepSupplier(Function<M, R[]> originalFunction) {
-            super(originalFunction);
-        }
-
-        @Override
-        protected THIS from(Function<T, ? extends M> from) {
-            return super.from(from);
-        }
-
-        @Override
-        protected THIS from(M from) {
-            return super.from(from);
-        }
-
-        @Override
-        protected THIS from(SequentialGetStepSupplier<T, ? extends M, ?, ?, ?> from) {
-            return super.from(from);
         }
     }
 
@@ -1221,6 +1385,47 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
             return null;
         }
+    }
 
+    /**
+     * This class is designed to build and supply chained functions to get some desired array-value.
+     *
+     * @param <T>    is a type of input value
+     * @param <M>    is a type of mediator value is used to get the result
+     * @param <R>    is a type of item from resulted array
+     * @param <THIS> this is the self-type. It is used for the method chaining.
+     */
+    public abstract static class GetArrayChainedStepSupplier<T, R, M, THIS extends GetArrayChainedStepSupplier<T, R, M, THIS>>
+        extends PrivateGetIterableStepSupplier<T, R[], M, R, THIS>
+        implements PrivateGetIterableStepSupplier.SelectionOptionsForArray<R, THIS> {
+
+        protected GetArrayChainedStepSupplier(Function<M, R[]> originalFunction) {
+            super(originalFunction,
+                new FunctionFactory.ArrayFunctionFactory<>(),
+                new ArrayCaptor(new GotItems().toString()));
+        }
+
+        @Override
+        protected THIS from(Function<T, ? extends M> from) {
+            return super.from(from);
+        }
+
+        @Override
+        protected THIS from(M from) {
+            return super.from(from);
+        }
+
+        @Override
+        protected THIS from(SequentialGetStepSupplier<T, ? extends M, ?, ?, ?> from) {
+            return super.from(from);
+        }
+    }
+
+    @Description("Got items")
+    private static final class GotItems {
+
+        public String toString() {
+            return translate(this);
+        }
     }
 }

@@ -2,17 +2,17 @@ package ru.tinkoff.qa.neptune.retrofit2.tests;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
-public class BaseBodyDataTest {
+public class BaseBodyDataPreparing {
 
     static void prepareMock() {
         stubFor(get(urlPathEqualTo("/get/json"))
-                .willReturn(aResponse().withBody("[\n" +
-                        "    {\n" +
-                        "      \"bool\": true,\n" +
-                        "      \"color\": \"gold\",\n" +
-                        "      \"number\": 123,\n" +
-                        "      \"object\": {\n" +
-                        "        \"a\": \"b\",\n" +
+            .willReturn(aResponse().withBody("[\n" +
+                    "    {\n" +
+                    "      \"bool\": true,\n" +
+                    "      \"color\": \"gold\",\n" +
+                    "      \"number\": 123,\n" +
+                    "      \"object\": {\n" +
+                    "        \"a\": \"b\",\n" +
                         "        \"c\": \"d\"\n" +
                         "      },\n" +
                         "      \"string\": \"Hello World\"\n" +
