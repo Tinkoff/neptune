@@ -48,4 +48,6 @@ ru.tinkoff.qa.neptune.core.api.steps.conditions
 ru.tinkoff.qa.neptune.core.api.steps.context
 ru.tinkoff.qa.neptune.core.api.steps.parameters
 ru.tinkoff.qa.neptune.core.api.steps.proxy
+ru.tinkoff.qa.neptune.core.api.steps.selections
+ru.tinkoff.qa.neptune.core.api.steps.selections.mismatch.dictionary
 ru.tinkoff.qa.neptune.core.api.utils
