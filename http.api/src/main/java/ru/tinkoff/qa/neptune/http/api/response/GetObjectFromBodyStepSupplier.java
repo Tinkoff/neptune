@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.http.api.response;
 
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -13,11 +12,8 @@ import java.time.Duration;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplier.response;
-import static ru.tinkoff.qa.neptune.http.api.response.dictionary.AdditionalCriteriaDescription.isPossibleToGetExpectedValue;
 
 /**
  * Builds a step-function that retrieves an object from http response body.
@@ -61,23 +57,5 @@ public final class GetObjectFromBodyStepSupplier<T, R>
     @Override
     public GetObjectFromBodyStepSupplier<T, R> pollingInterval(Duration timeOut) {
         return DefinesResponseCriteria.super.pollingInterval(timeOut);
-    }
-
-    @Override
-    public Function<HttpStepContext, R> get() {
-        var fromVal = getFrom();
-        Criteria<HttpResponse<T>> responseCriteria = null;
-        if (fromVal instanceof ResponseSequentialGetSupplier) {
-            var resultCriteria = getCriteria();
-            if (resultCriteria != null) {
-                responseCriteria = condition(
-                    isPossibleToGetExpectedValue(getDescription(), resultCriteria.toString()).toString(),
-                    r -> resultCriteria.get().test(((Response<?, R>) r).getCalculated())
-                );
-            }
-        }
-
-        ofNullable(responseCriteria).ifPresent(this::responseCriteria);
-        return super.get();
     }
 }

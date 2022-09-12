@@ -37,7 +37,7 @@ class DeserializeBody<T, R> implements Function<String, R> {
             try {
                 return mockHttpServletResponse.getContentAsString();
             } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
+                throw new IllegalArgumentException(e);
             }
         }).andThen(new DeserializeBody<>(deserializeTo, transformer, howToGet));
     }
@@ -49,7 +49,7 @@ class DeserializeBody<T, R> implements Function<String, R> {
             try {
                 return mockHttpServletResponse.getContentAsString();
             } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
+                throw new IllegalArgumentException(e);
             }
         }).andThen(new DeserializeBody<>(deserializeTo, transformer, howToGet));
     }

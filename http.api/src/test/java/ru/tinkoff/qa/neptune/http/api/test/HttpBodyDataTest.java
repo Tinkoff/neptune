@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.http.api.test;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.core.api.steps.NotPresentException;
 import ru.tinkoff.qa.neptune.http.api.response.ExpectedHttpResponseHasNotBeenReceivedException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -56,7 +57,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
         assertThat(result, nullValue());
     }
 
-    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    @Test(expectedExceptions = NotPresentException.class)
     public void objectFromBodyTest3() {
         http().responseOf(GET()
             .baseURI(REQUEST_URI)
@@ -77,7 +78,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
             .tryToReturn("List of tags <a>", toNodeList("a"))
-            .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2)
+            .responseCriteria(statusCode(400))
             .retryTimeOut(ofSeconds(5))
             .pollingInterval(ofMillis(500)));
 
@@ -195,7 +196,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .tryToReturnList("List of tags <a>", toNodeList("a"))
             .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
-        assertThat(result, nullValue());
+        assertThat(result, emptyIterable());
     }
 
     @Test
@@ -210,7 +211,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
         assertThat(result, nullValue());
     }
 
-    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    @Test(expectedExceptions = NotPresentException.class)
     public void getIterableTest4() {
         http().responseOf(GET()
             .baseURI(REQUEST_URI)
@@ -231,7 +232,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
             .tryToReturnList("List of tags <a>", toNodeList("a"))
-            .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+            .responseCriteria(statusCode(400))
             .retryTimeOut(ofSeconds(5))
             .pollingInterval(ofMillis(500)));
 
@@ -314,7 +315,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
     }
 
     @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
-    public void getIterableTest110() {
+    public void getIterableTest10() {
         try {
             http().responseOf(GET()
                 .baseURI(REQUEST_URI)
@@ -353,7 +354,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .tryToReturnArray("Array of tags <a>", toNodeArray("a"))
             .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
-        assertThat(result, nullValue());
+        assertThat(result, emptyArray());
     }
 
     @Test
@@ -368,7 +369,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
         assertThat(result, nullValue());
     }
 
-    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    @Test(expectedExceptions = NotPresentException.class)
     public void getArrayTest4() {
         http().responseOf(GET()
             .baseURI(REQUEST_URI)
@@ -389,7 +390,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
             .tryToReturnArray("Array of tags <a>", toNodeArray("a"))
-            .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+            .responseCriteria(statusCode(400))
             .retryTimeOut(ofSeconds(5)));
 
         var stop = currentTimeMillis();
@@ -519,7 +520,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
         assertThat(result, nullValue());
     }
 
-    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    @Test(expectedExceptions = NotPresentException.class)
     public void getOneFromIterableTest4() {
         http().responseOf(GET()
             .baseURI(REQUEST_URI)
@@ -540,7 +541,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
             .tryToReturnItem("Tag <a>", toNodeList("a"))
-            .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+            .responseCriteria(statusCode(400))
             .retryTimeOut(ofSeconds(5)));
 
         var stop = currentTimeMillis();
@@ -672,7 +673,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
         assertThat(result, nullValue());
     }
 
-    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    @Test(expectedExceptions = NotPresentException.class)
     public void getOneFromArrayTest4() {
         http().responseOf(GET()
             .baseURI(REQUEST_URI)
@@ -693,7 +694,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
             .relativePath("/data.html")
             .responseBodyHandler(ofString())
             .tryToReturnArrayItem("Tag <a>", toNodeArray("a"))
-            .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+            .responseCriteria(statusCode(400))
             .retryTimeOut(ofSeconds(5)));
 
         var stop = currentTimeMillis();

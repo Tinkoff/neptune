@@ -21,7 +21,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static java.lang.reflect.Modifier.isStatic;
-import static java.time.Duration.ofMillis;
 import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
@@ -29,7 +28,7 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
-import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.turnReportingOff;
+import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.*;
 
 public final class CommonElementCriteria {
 
@@ -367,7 +366,7 @@ public final class CommonElementCriteria {
     @Description("has nested {howToFind}")
     public static <T extends SearchContext> Criteria<T> nested(@DescriptionFragment("howToFind") MultipleSearchSupplier<?> howToFind) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
-        var func = turnReportingOff(howToFind.clone().timeOut(ofMillis(0))).get();
+        var func = turnReportingOff(eraseTimeOut(makeACopy(howToFind))).get();
         return condition(t -> !func.apply(t).isEmpty());
     }
 
@@ -387,7 +386,7 @@ public final class CommonElementCriteria {
                                                                @DescriptionFragment("expected") int expected) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
         checkArgument(expected >= 0, "Count of expected nested elements can't be a negative or zero value.");
-        var func = turnReportingOff(howToFind.clone().timeOut(ofMillis(0))).get();
+        var func = turnReportingOff(eraseTimeOut(makeACopy(howToFind))).get();
         return condition(t -> func.apply(t).size() == expected);
     }
 
@@ -404,7 +403,7 @@ public final class CommonElementCriteria {
     @Description("has nested {howToFind}")
     public static <T extends SearchContext> Criteria<T> nested(@DescriptionFragment("howToFind") SearchSupplier<?> howToFind) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
-        var func = turnReportingOff(howToFind.clone().timeOut(ofMillis(0))).get();
+        var func = turnReportingOff(eraseTimeOut(makeACopy(howToFind))).get();
         return condition(t -> {
             try {
                 return func.apply(t) != null;

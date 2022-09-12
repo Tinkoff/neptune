@@ -8,10 +8,12 @@ import ru.tinkoff.qa.neptune.http.api.response.*;
 import java.net.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.net.HttpCookie.parse;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
@@ -54,7 +56,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
         var cookieManager = ofNullable(DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY.get())
             .orElseGet(CookieManager::new);
 
-        var allCookies = cookieStore.getCookies();
+        var allCookies = new ArrayList<>(cookieStore.getCookies());
         var uris = cookieStore.getURIs();
         var newStore = cookieManager.getCookieStore();
 
@@ -65,7 +67,6 @@ public class HttpStepContext extends Context<HttpStepContext> {
         });
 
         allCookies.forEach(c -> newStore.add(null, c));
-
         builder.cookieHandler(cookieManager);
 
         ofNullable(DEFAULT_HTTP_EXECUTOR_PROPERTY.get()).ifPresent(builder::executor);
@@ -157,6 +158,15 @@ public class HttpStepContext extends Context<HttpStepContext> {
         return get(iterable);
     }
 
+    private static URI toURI(URL url) {
+        checkNotNull(url);
+        try {
+            return url.toURI();
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
     /**
      * Gets not expired cookies which are stored by current http client.
      *
@@ -205,11 +215,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      */
     @SafeVarargs
     public final List<HttpCookie> getCookies(URL url, Criteria<HttpCookie>... cookieCriteria) {
-        try {
-            return getCookies(url.toURI(), cookieCriteria);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        return getCookies(toURI(url), cookieCriteria);
     }
 
     /**
@@ -244,11 +250,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return self-reference
      */
     public HttpStepContext addCookies(URL url, List<HttpCookie> cookies) {
-        try {
-            return addCookies(url.toURI(), cookies);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        return addCookies(toURI(url), cookies);
     }
 
     /**
@@ -293,11 +295,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return self-reference
      */
     public HttpStepContext addCookies(URL url, HttpCookie... cookies) {
-        try {
-            return addCookies(url.toURI(), cookies);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        return addCookies(toURI(url), cookies);
     }
 
     /**
@@ -351,11 +349,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      * @return self-reference
      */
     public HttpStepContext addCookies(URL url, String header) {
-        try {
-            return addCookies(url.toURI(), parse(header));
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        return addCookies(toURI(url), parse(header));
     }
 
     /**
