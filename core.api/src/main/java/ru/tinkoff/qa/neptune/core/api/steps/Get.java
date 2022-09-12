@@ -3,11 +3,9 @@ package ru.tinkoff.qa.neptune.core.api.steps;
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.steps.conditions.ResultSelection;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -18,10 +16,10 @@ import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.*;
-import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting.MaxDepthOfReportingReader.getCurrentDepth;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchFailureEvent;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchSuccessEvent;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.ToLimitReportDepth.TO_LIMIT_REPORT_DEPTH_PROPERTY;
+import static ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting.MaxDepthOfReportingReader.getCurrentDepth;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 @SuppressWarnings("unchecked")
@@ -41,10 +39,14 @@ final class Get<T, R> implements Function<T, R> {
     private Get<?, ?> previous;
     private Supplier<Map<String, String>> additionalParams;
 
+    private ResultSelection<?, ?> resultSelection;
+    private Captor<Object, Object> captorOfFailedResultSelection;
+
     private final Set<FieldValueCaptureMaker<CaptureOnSuccess>> onSuccessAdditional = new HashSet<>();
     private final Set<FieldValueCaptureMaker<CaptureOnFailure>> onFailureAdditional = new HashSet<>();
 
-    Get(String description, Function<T, R> function) {
+    Get(String description,
+        Function<T, R> function) {
         checkArgument(nonNull(function), "Function should be defined");
         checkArgument(!isBlank(description), "Description should not be empty string or null value");
         this.description = description;
@@ -99,6 +101,14 @@ final class Get<T, R> implements Function<T, R> {
                 if (catchFailureEvent() && toReport) {
                     catchValue(t, failureCaptors);
                     onFailureAdditional.forEach(FieldValueCaptureMaker::makeCaptures);
+                    ofNullable(resultSelection).ifPresent(rs -> {
+                        if (resultSelection.isChecked()) {
+                            catchValue(
+                                    rs.getLastSelectionArgumentValue(),
+                                    List.of(captorOfFailedResultSelection)
+                            );
+                        }
+                    });
                 }
                 throw thrown;
             } else {
@@ -233,6 +243,16 @@ final class Get<T, R> implements Function<T, R> {
 
     Get<T, R> setAdditionalParams(Supplier<Map<String, String>> additionalParams) {
         this.additionalParams = additionalParams;
+        return this;
+    }
+
+    Get<T, R> setResultSelection(ResultSelection<?, ?> resultSelection) {
+        this.resultSelection = resultSelection;
+        return this;
+    }
+
+    Get<T, R> setCaptorOfFailedResultSelection(Captor<?, ?> captorOfFailedResultSelection) {
+        this.captorOfFailedResultSelection = (Captor<Object, Object>) captorOfFailedResultSelection;
         return this;
     }
 }

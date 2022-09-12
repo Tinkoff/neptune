@@ -8,9 +8,18 @@ import java.util.Arrays;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
-public abstract class IterableCaptor<T extends Iterable<?>> extends StringCaptor<T> {
+@SuppressWarnings("unchecked")
+public class IterableCaptor<T extends Iterable<?>> extends StringCaptor<T> {
 
     private static final String LINE_SEPARATOR = "\r\n";
+
+    public IterableCaptor() {
+        super();
+    }
+
+    public IterableCaptor(String description) {
+        super(description);
+    }
 
     @Override
     public StringBuilder getData(T caught) {
@@ -32,5 +41,22 @@ public abstract class IterableCaptor<T extends Iterable<?>> extends StringCaptor
                 },
                 () -> captured.append(format("%s%s", o, LINE_SEPARATOR))));
         return captured;
+    }
+
+    @Override
+    public T getCaptured(Object toBeCaptured) {
+        if (toBeCaptured instanceof Iterable<?>) {
+            try {
+                var iterable = (T) toBeCaptured;
+                if (Iterables.isEmpty(iterable)) {
+                    return null;
+                }
+
+                return iterable;
+            } catch (ClassCastException e) {
+                return null;
+            }
+        }
+        return null;
     }
 }

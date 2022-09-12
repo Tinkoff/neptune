@@ -9,7 +9,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.*;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static java.lang.System.getProperties;
@@ -90,7 +89,7 @@ public class TranslateByResourceBundleTest {
     static class GetStepSupplier extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<Object, Object, Object, GetStepSupplier> {
 
         protected GetStepSupplier() {
-            super(o -> o);
+            super(o -> 1);
         }
 
         public static GetStepSupplier methodWithoutAnnotation() {
@@ -110,11 +109,6 @@ public class TranslateByResourceBundleTest {
         @Description("Method with Composite Description from Annotation + {element}")
         public static GetStepSupplier methodWithCompositeAnnotation(@DescriptionFragment("element") String s) {
             return new GetStepSupplier();
-        }
-
-        @Override
-        protected Function<Object, Object> getEndFunction() {
-            return o -> 1;
         }
 
         protected GetStepSupplier from(Object o) {

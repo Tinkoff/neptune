@@ -10,7 +10,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.retrofit2.RetrofitContext;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -18,13 +17,12 @@ import java.util.function.Supplier;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Iterables.size;
 import static java.util.Objects.nonNull;
-import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
 import static ru.tinkoff.qa.neptune.retrofit2.steps.BodyMatches.body;
-import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.*;
-import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultHasItems.hasResultItems;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.bodyMatches;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.resultResponseCriteria;
 import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getResponse;
 
 @SuppressWarnings("unchecked")
@@ -32,8 +30,6 @@ import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getRespons
 public abstract class GetIterableSupplier<M, R, S extends Iterable<R>, E extends GetIterableSupplier<M, R, S, E>>
         extends SequentialGetStepSupplier.GetListChainedStepSupplier<RetrofitContext, S, RequestExecutionResult<M, S>, R, E>
         implements DefinesResponseCriteria<E> {
-
-    private Criteria<R> derivedValueCriteria;
 
     protected GetIterableSupplier(SendRequestAndGet<M, S> from) {
         super(RequestExecutionResult::getResult);
@@ -158,54 +154,11 @@ public abstract class GetIterableSupplier<M, R, S extends Iterable<R>, E extends
         return (E) this;
     }
 
-    private void criteriaForDerivedValue(Criteria<? super R> criteria) {
-        derivedValueCriteria = ofNullable(derivedValueCriteria)
-                .map(c -> AND(c, criteria))
-                .orElse((Criteria<R>) criteria);
-    }
-
-    @Override
-    public E criteriaOr(Criteria<? super R>... criteria) {
-        criteriaForDerivedValue(OR(criteria));
-        return super.criteriaOr(criteria);
-    }
-
-    @Override
-    public E criteriaOnlyOne(Criteria<? super R>... criteria) {
-        criteriaForDerivedValue(ONLY_ONE(criteria));
-        return super.criteriaOnlyOne(criteria);
-    }
-
-    @Override
-    public E criteriaNot(Criteria<? super R>... criteria) {
-        criteriaForDerivedValue(NOT(criteria));
-        return super.criteriaNot(criteria);
-    }
-
-    @Override
-    public E criteria(Criteria<? super R> criteria) {
-        criteriaForDerivedValue(criteria);
-        return super.criteria(criteria);
-    }
-
-    @Override
-    public E criteria(String description, Predicate<? super R> criteria) {
-        return criteria(condition(description, criteria));
-    }
-
     @Override
     public E throwOnNoResult() {
         ((SendRequestAndGet<M, S>) getFrom()).throwOnNoResult();
         super.throwOnNoResult();
         return (E) this;
-    }
-
-    @Override
-    public Function<RetrofitContext, List<R>> get() {
-        if (derivedValueCriteria != null) {
-            ((SendRequestAndGet<M, S>) getFrom()).criteria(iterableResultMatches(hasResultItems(derivedValueCriteria)));
-        }
-        return super.get();
     }
 
     public static class SimpleGetIterableSupplier<R, S extends Iterable<R>> extends GetIterableSupplier<S, R, S, SimpleGetIterableSupplier<R, S>> {

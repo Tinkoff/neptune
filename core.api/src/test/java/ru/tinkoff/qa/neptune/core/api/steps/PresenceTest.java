@@ -14,6 +14,10 @@ import java.util.function.Function;
 import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static ru.tinkoff.qa.neptune.core.api.steps.PresenceTest.TestGetArrayItemSupplier.getTestArrayItemSupplier;
+import static ru.tinkoff.qa.neptune.core.api.steps.PresenceTest.TestGetArraySupplier.getTestArraySupplier;
+import static ru.tinkoff.qa.neptune.core.api.steps.PresenceTest.TestGetListItemSupplier.getTestListItemSupplier;
+import static ru.tinkoff.qa.neptune.core.api.steps.PresenceTest.TestGetListSupplier.getTestListSupplier;
 import static ru.tinkoff.qa.neptune.core.api.steps.PresenceTest.TestGetSupplier.getTestSupplier;
 
 @SuppressWarnings("unchecked")
@@ -154,6 +158,34 @@ public class PresenceTest {
         assertThat(AbcnceSuccessCaptor.CAUGHT, empty());
     }
 
+    @Test
+    public void test14() {
+        assertThat(presenceTestContext.presenceOf(getTestListSupplier(o -> List.of(1, 2, 3))
+                        .returnListOfSize(4)),
+                is(true));
+    }
+
+    @Test
+    public void test15() {
+        assertThat(presenceTestContext.presenceOf(getTestArraySupplier(o -> new Object[]{1, 2, 3})
+                        .returnArrayOfLength(4)),
+                is(true));
+    }
+
+    @Test
+    public void test16() {
+        assertThat(presenceTestContext.presenceOf(getTestListItemSupplier(o -> List.of(1, 2, 3))
+                        .returnItemOfIndex(4)),
+                is(true));
+    }
+
+    @Test
+    public void test17() {
+        assertThat(presenceTestContext.presenceOf(getTestArrayItemSupplier(o -> new Object[]{1, 2, 3})
+                        .returnItemOfIndex(4)),
+                is(true));
+    }
+
     @CaptureOnSuccess(by = PresenceSuccessCaptor.class)
     @CaptureOnFailure(by = AbcnceSuccessCaptor.class)
     static class TestGetSupplier extends SequentialGetStepSupplier.GetObjectStepSupplier<PresenceTestContext, Object, TestGetSupplier> {
@@ -164,6 +196,54 @@ public class PresenceTest {
         @Description("TestGetSupplierDescription")
         public static TestGetSupplier getTestSupplier(Function<PresenceTestContext, Object> originalFunction) {
             return new TestGetSupplier(originalFunction);
+        }
+    }
+
+    static class TestGetListSupplier extends SequentialGetStepSupplier.GetListStepSupplier<PresenceTestContext, List<Object>, Object, TestGetListSupplier> {
+
+        protected TestGetListSupplier(Function<PresenceTestContext, List<Object>> originalFunction) {
+            super(originalFunction);
+        }
+
+        @Description("TestGetSupplierDescription")
+        public static TestGetListSupplier getTestListSupplier(Function<PresenceTestContext, List<Object>> originalFunction) {
+            return new TestGetListSupplier(originalFunction);
+        }
+    }
+
+    static class TestGetArraySupplier extends SequentialGetStepSupplier.GetArrayStepSupplier<PresenceTestContext, Object, TestGetArraySupplier> {
+
+        protected TestGetArraySupplier(Function<PresenceTestContext, Object[]> originalFunction) {
+            super(originalFunction);
+        }
+
+        @Description("TestGetSupplierDescription")
+        public static TestGetArraySupplier getTestArraySupplier(Function<PresenceTestContext, Object[]> originalFunction) {
+            return new TestGetArraySupplier(originalFunction);
+        }
+    }
+
+    static class TestGetListItemSupplier extends SequentialGetStepSupplier.GetObjectFromIterableStepSupplier<PresenceTestContext, Object, TestGetListItemSupplier> {
+
+        protected <S extends Iterable<Object>> TestGetListItemSupplier(Function<PresenceTestContext, S> originalFunction) {
+            super(originalFunction);
+        }
+
+        @Description("TestGetSupplierDescription")
+        public static TestGetListItemSupplier getTestListItemSupplier(Function<PresenceTestContext, List<Object>> originalFunction) {
+            return new TestGetListItemSupplier(originalFunction);
+        }
+    }
+
+    static class TestGetArrayItemSupplier extends SequentialGetStepSupplier.GetObjectFromArrayStepSupplier<PresenceTestContext, Object, TestGetArrayItemSupplier> {
+
+        protected TestGetArrayItemSupplier(Function<PresenceTestContext, Object[]> originalFunction) {
+            super(originalFunction);
+        }
+
+        @Description("TestGetSupplierDescription")
+        public static TestGetArrayItemSupplier getTestArrayItemSupplier(Function<PresenceTestContext, Object[]> originalFunction) {
+            return new TestGetArrayItemSupplier(originalFunction);
         }
     }
 

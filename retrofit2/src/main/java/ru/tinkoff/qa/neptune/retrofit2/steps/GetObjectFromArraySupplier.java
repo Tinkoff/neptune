@@ -16,13 +16,12 @@ import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
-import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.*;
 import static ru.tinkoff.qa.neptune.retrofit2.steps.BodyMatches.body;
-import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.*;
-import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultHasItems.hasResultItems;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.bodyMatches;
+import static ru.tinkoff.qa.neptune.retrofit2.steps.ResultCriteria.resultResponseCriteria;
 import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getResponse;
 
 @SuppressWarnings("unchecked")
@@ -30,8 +29,6 @@ import static ru.tinkoff.qa.neptune.retrofit2.steps.SendRequestAndGet.getRespons
 public abstract class GetObjectFromArraySupplier<M, R, S extends GetObjectFromArraySupplier<M, R, S>> extends SequentialGetStepSupplier
         .GetObjectFromArrayChainedStepSupplier<RetrofitContext, R, RequestExecutionResult<M, R[]>, S>
         implements DefinesResponseCriteria<S> {
-
-    private Criteria<R> derivedValueCriteria;
 
     protected GetObjectFromArraySupplier(SendRequestAndGet<M, R[]> from) {
         super(RequestExecutionResult::getResult);
@@ -152,54 +149,11 @@ public abstract class GetObjectFromArraySupplier<M, R, S extends GetObjectFromAr
         return (S) this;
     }
 
-    private void criteriaForDerivedValue(Criteria<? super R> criteria) {
-        derivedValueCriteria = ofNullable(derivedValueCriteria)
-                .map(c -> AND(c, criteria))
-                .orElse((Criteria<R>) criteria);
-    }
-
-    @Override
-    public S criteriaOr(Criteria<? super R>... criteria) {
-        criteriaForDerivedValue(OR(criteria));
-        return super.criteriaOr(criteria);
-    }
-
-    @Override
-    public S criteriaOnlyOne(Criteria<? super R>... criteria) {
-        criteriaForDerivedValue(ONLY_ONE(criteria));
-        return super.criteriaOnlyOne(criteria);
-    }
-
-    @Override
-    public S criteriaNot(Criteria<? super R>... criteria) {
-        criteriaForDerivedValue(NOT(criteria));
-        return super.criteriaNot(criteria);
-    }
-
-    @Override
-    public S criteria(Criteria<? super R> criteria) {
-        criteriaForDerivedValue(criteria);
-        return super.criteria(criteria);
-    }
-
-    @Override
-    public S criteria(String description, Predicate<? super R> criteria) {
-        return criteria(condition(description, criteria));
-    }
-
     @Override
     public S throwOnNoResult() {
         ((SendRequestAndGet<M, R[]>) getFrom()).throwOnNoResult();
         super.throwOnNoResult();
         return (S) this;
-    }
-
-    @Override
-    public Function<RetrofitContext, R> get() {
-        if (derivedValueCriteria != null) {
-            ((SendRequestAndGet<M, R[]>) getFrom()).criteria(arrayResultMatches(hasResultItems(derivedValueCriteria)));
-        }
-        return super.get();
     }
 
     public static class SimpleGetObjectFromArraySupplier<M> extends GetObjectFromArraySupplier<M[], M, SimpleGetObjectFromArraySupplier<M>> {

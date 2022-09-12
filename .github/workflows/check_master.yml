@@ -13,47 +13,56 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - uses: nanasess/setup-chromedriver@master
-    - name: Set up JDK 11
-      uses: actions/setup-java@v1
-      with:
-        java-version: 11
-    - name: Cache SonarCloud packages
-      uses: actions/cache@v1
-      with:
-        path: ~/.sonar/cache
-        key: ${{ runner.os }}-sonar
-        restore-keys: ${{ runner.os }}-sonar
-    - name: Cache Gradle packages
-      uses: actions/cache@v1
-      with:
-        path: ~/.gradle/caches
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: nanasess/setup-chromedriver@master
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Gradle packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
         restore-keys: ${{ runner.os }}-gradle
-    - name: Test with Gradle
-      run: |
-        export DISPLAY=:99
-        chromedriver --url-base=/wd/hub &
-        sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
-        ./gradlew clean check
-    - name: SonarCloud Scan
-      env:
+      - name: Test with Gradle
+        run: |
+          export DISPLAY=:99
+          chromedriver --url-base=/wd/hub &
+          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
+          ./gradlew clean check
+      - name: SonarCloud Scan
+        env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        ./gradlew sonarqube -x build --info
+        ./gradlew sonarqube -x build --info 
 
-    - name: Generate javadoc
-      run: |
-        ./gradlew aggregatedJavadocs javadoc
+        - name: Generate javadoc
+          run: |
+            ./gradlew aggregatedJavadocs javadoc
 
-    - name: Deploy JavaDoc
-      uses: JamesIves/github-pages-deploy-action@v4.3.3
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        branch: gh-pages
-        clean: true
-        folder: neptune.documentation
+        - name: Create site
+          run: |
+            pip3 install -r ./site.documentation/requirements.txt
+            sphinx-build ./site.documentation/source ./neptune.documentation/site
+
+        - name: Deploy documents
+          uses: JamesIves/github-pages-deploy-action@v4.3.3
+          with:
+            token: ${{ secrets.GITHUB_TOKEN }}
+            branch: gh-pages
+            clean: true
+            folder: neptune.documentation

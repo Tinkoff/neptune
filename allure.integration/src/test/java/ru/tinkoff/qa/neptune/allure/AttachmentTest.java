@@ -51,7 +51,7 @@ public class AttachmentTest extends AbstractAllurePreparations {
                 iterableHasItems(1,
                         getterReturns("getName", "Image attach"),
                         getterReturns("getSource", not(nullValue())),
-                        getterReturns("getType", "image/*")));
+                        getterReturns("getType", "image/png")));
     }
 
     @Test

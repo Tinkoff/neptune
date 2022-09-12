@@ -1,10 +1,10 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.function.get;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties;
 
@@ -35,7 +35,6 @@ public class RabbitMqBasicGetSupplier {
      * @param <T>         is a type of target value
      * @return an instance of {@link RabbitMqBasicGetSupplier}
      */
-    @Deprecated
     @Description("{description}")
     public static <M, T> RabbitMqBasicGetIterableItemSupplier.Mapped<M, T> rabbitObject(
             @DescriptionFragment(value = "description",
@@ -78,7 +77,6 @@ public class RabbitMqBasicGetSupplier {
      * @param <T>         is a type of target value
      * @return an instance of {@link RabbitMqBasicGetSupplier}
      */
-    @Deprecated
     @Description("{description}")
     public static <M, T> RabbitMqBasicGetIterableItemSupplier.Mapped<M, T> rabbitObject(
             @DescriptionFragment(value = "description",

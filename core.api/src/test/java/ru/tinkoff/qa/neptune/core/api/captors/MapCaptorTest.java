@@ -60,7 +60,8 @@ public class MapCaptorTest {
                         mapEntry(Map.of(1, 2, 3, 4), "value 4"),
                         mapEntry("key4", Map.of(1, 2, 3, 4)),
                         mapEntry(new int[]{1, 2, 3, 4}, "value 4"),
-                        mapEntry("key5", new int[]{1, 2, 3, 4})
+                        mapEntry("key5", new int[]{1, 2, 3, 4}),
+                        mapEntry(instanceOf(Object.class), instanceOf(Object.class))
                 ));
     }
 
@@ -82,6 +83,7 @@ public class MapCaptorTest {
         var value = new MapCaptor().getCaptured(map);
         var result = new MapCaptor().getData(value).toString().split("\r\n");
         assertThat(result, arrayContaining(
+                not(emptyOrNullString()),
                 not(emptyOrNullString()),
                 not(emptyOrNullString()),
                 not(emptyOrNullString()),

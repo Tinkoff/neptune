@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.retrofit2.tests;
 
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.core.api.steps.NotPresentException;
 import ru.tinkoff.qa.neptune.retrofit2.steps.ExpectedHttpResponseHasNotBeenReceivedException;
 import ru.tinkoff.qa.neptune.retrofit2.tests.services.customized.CustomService;
 
@@ -20,7 +21,7 @@ import static ru.tinkoff.qa.neptune.retrofit2.steps.GetObjectFromArraySupplier.a
 import static ru.tinkoff.qa.neptune.retrofit2.steps.GetObjectFromIterableSupplier.iterableItem;
 import static ru.tinkoff.qa.neptune.retrofit2.steps.GetObjectSupplier.body;
 
-public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
+public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataPreparing {
 
     abstract CustomService getService();
 
@@ -50,7 +51,7 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
         assertThat(result, nullValue());
     }
 
-    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    @Test(expectedExceptions = NotPresentException.class)
     public void objectFromBodyTest3() {
         try {
             retrofit().get(body(() -> getService().getJson())
@@ -93,12 +94,11 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
     public void objectFromBodyTest5() {
         var start = currentTimeMillis();
         retrofit().get(body(() -> getService().getJson())
-                .responseStatusCodeIs(200)
+                .responseStatusCodeIs(400)
                 .responseHeaderValueIs("custom header", "true")
                 .responseHeaderValueMatches("custom header", "Some")
                 .responseMessageIs("Successful json")
                 .responseMessageMatches("Successful")
-                .criteria("Size > 2", r -> r.size() > 2)
                 .retryTimeOut(ofSeconds(5))
                 .pollingInterval(ofMillis(500)));
 
@@ -113,12 +113,11 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
         var start = currentTimeMillis();
         try {
             retrofit().get(body(() -> getService().getJson())
-                    .responseStatusCodeIs(200)
+                    .responseStatusCodeIs(400)
                     .responseHeaderValueIs("custom header", "true")
                     .responseHeaderValueMatches("custom header", "Some")
                     .responseMessageIs("Successful json")
                     .responseMessageMatches("Successful")
-                    .criteria("Size > 2", r -> r.size() > 2)
                     .retryTimeOut(ofSeconds(5))
                     .pollingInterval(ofMillis(500))
                     .throwOnNoResult());
@@ -184,10 +183,10 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
                 .responseMessageMatches("Successful")
                 .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2));
 
-        assertThat(result, nullValue());
+        assertThat(result, emptyIterable());
     }
 
-    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    @Test(expectedExceptions = NotPresentException.class)
     public void getIterableTest3() {
         try {
             retrofit().get(iterable("Result list",
@@ -233,12 +232,11 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
         var start = currentTimeMillis();
         retrofit().get(iterable("Result list",
                 () -> getService().getJson())
-                .responseStatusCodeIs(200)
+                .responseStatusCodeIs(400)
                 .responseHeaderValueIs("custom header", "true")
                 .responseHeaderValueMatches("custom header", "Some")
                 .responseMessageIs("Successful json")
                 .responseMessageMatches("Successful")
-                .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2)
                 .retryTimeOut(ofSeconds(5))
                 .pollingInterval(ofMillis(500)));
 
@@ -254,12 +252,11 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
         try {
             retrofit().get(iterable("Result list",
                     () -> getService().getJson())
-                    .responseStatusCodeIs(200)
+                    .responseStatusCodeIs(400)
                     .responseHeaderValueIs("custom header", "true")
                     .responseHeaderValueMatches("custom header", "Some")
                     .responseMessageIs("Successful json")
                     .responseMessageMatches("Successful")
-                    .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2)
                     .retryTimeOut(ofSeconds(5))
                     .pollingInterval(ofMillis(500))
                     .throwOnNoResult());
@@ -326,10 +323,10 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
                 .responseMessageMatches("Successful")
                 .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2));
 
-        assertThat(result, nullValue());
+        assertThat(result, emptyArray());
     }
 
-    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    @Test(expectedExceptions = NotPresentException.class)
     public void getArrayTest3() {
         try {
             retrofit().get(array("Result list",
@@ -375,12 +372,11 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
         var start = currentTimeMillis();
         retrofit().get(array("Result list",
                 () -> getService().getJsonArray())
-                .responseStatusCodeIs(200)
+                .responseStatusCodeIs(400)
                 .responseHeaderValueIs("custom header", "true")
                 .responseHeaderValueMatches("custom header", "Some")
                 .responseMessageIs("Successful json")
                 .responseMessageMatches("Successful")
-                .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2)
                 .retryTimeOut(ofSeconds(5))
                 .pollingInterval(ofMillis(500)));
 
@@ -396,12 +392,11 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
         try {
             retrofit().get(array("Result list",
                     () -> getService().getJsonArray())
-                    .responseStatusCodeIs(200)
+                    .responseStatusCodeIs(400)
                     .responseHeaderValueIs("custom header", "true")
                     .responseHeaderValueMatches("custom header", "Some")
                     .responseMessageIs("Successful json")
                     .responseMessageMatches("Successful")
-                    .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2)
                     .retryTimeOut(ofSeconds(5))
                     .pollingInterval(ofMillis(500))
                     .throwOnNoResult());
@@ -471,7 +466,7 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
         assertThat(result, nullValue());
     }
 
-    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    @Test(expectedExceptions = NotPresentException.class)
     public void getFromIterableTest3() {
         try {
             retrofit().get(iterableItem("Result",
@@ -517,12 +512,11 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
         var start = currentTimeMillis();
         retrofit().get(iterableItem("Result",
                 () -> getService().getJson())
-                .responseStatusCodeIs(200)
+                .responseStatusCodeIs(400)
                 .responseHeaderValueIs("custom header", "true")
                 .responseHeaderValueMatches("custom header", "Some")
                 .responseMessageIs("Successful json")
                 .responseMessageMatches("Successful")
-                .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2)
                 .retryTimeOut(ofSeconds(5))
                 .pollingInterval(ofMillis(500)));
 
@@ -538,12 +532,11 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
         try {
             retrofit().get(iterableItem("Result",
                     () -> getService().getJson())
-                    .responseStatusCodeIs(200)
+                    .responseStatusCodeIs(400)
                     .responseHeaderValueIs("custom header", "true")
                     .responseHeaderValueMatches("custom header", "Some")
                     .responseMessageIs("Successful json")
                     .responseMessageMatches("Successful")
-                    .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2)
                     .retryTimeOut(ofSeconds(5))
                     .pollingInterval(ofMillis(500))
                     .throwOnNoResult());
@@ -613,7 +606,7 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
         assertThat(result, nullValue());
     }
 
-    @Test(expectedExceptions = ExpectedHttpResponseHasNotBeenReceivedException.class)
+    @Test(expectedExceptions = NotPresentException.class)
     public void getArrayItemTest3() {
         try {
             retrofit().get(arrayItem("Result",
@@ -659,12 +652,11 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
         var start = currentTimeMillis();
         retrofit().get(arrayItem("Result",
                 () -> getService().getJsonArray())
-                .responseStatusCodeIs(200)
+                .responseStatusCodeIs(400)
                 .responseHeaderValueIs("custom header", "true")
                 .responseHeaderValueMatches("custom header", "Some")
                 .responseMessageIs("Successful json")
                 .responseMessageMatches("Successful")
-                .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2)
                 .retryTimeOut(ofSeconds(5))
                 .pollingInterval(ofMillis(500)));
 
@@ -680,12 +672,11 @@ public abstract class AbstractCustomHttpBodyDataTest extends BaseBodyDataTest {
         try {
             retrofit().get(arrayItem("Result",
                     () -> getService().getJsonArray())
-                    .responseStatusCodeIs(200)
+                    .responseStatusCodeIs(400)
                     .responseHeaderValueIs("custom header", "true")
                     .responseHeaderValueMatches("custom header", "Some")
                     .responseMessageIs("Successful json")
                     .responseMessageMatches("Successful")
-                    .criteria("Size of 'object' > 2", r -> r.getObject().size() > 2)
                     .retryTimeOut(ofSeconds(5))
                     .pollingInterval(ofMillis(500))
                     .throwOnNoResult());
