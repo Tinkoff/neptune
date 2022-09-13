@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.test.basic.get;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.rabbitmq.client.GetResponse;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeMethod;
