@@ -127,5 +127,52 @@ public class GetResultWithConditionTest extends BaseCaptorTest {
 
         // assertThat(result, hasSize(6));
     }
+    
+    @Test
+    public void test8() {
+        var result = rabbitMqStepContext.read(rabbitIterable("description",
+                DraftDto.class,
+                DraftDto::getName)
+                .autoAck()
+                .returnBeforeIndex(6)
+                .timeOut(ofSeconds(5)));
+
+        assertThat(result, hasSize(6));
+    }
+
+    @Test
+    public void test9() {
+        var result = rabbitMqStepContext.read(rabbitIterable("description",
+                new TypeReference<DraftDto>() {})
+                .autoAck()
+                .returnBeforeIndex(5)
+                .timeOut(ofSeconds(5)));
+
+        assertThat(result, hasSize(5));
+    }
+
+    @Test
+    public void test10() {
+        var result = rabbitMqStepContext.read(rabbitIterable("description",
+                "test_queue3",
+                new TypeReference<DraftDto>() {})
+                .autoAck()
+                .returnBeforeIndex(5)
+                .timeOut(ofSeconds(5)));
+
+        assertThat(result, hasSize(5));
+    }
+
+    @Test
+    public void test11() {
+        var result = rabbitMqStepContext.read(rabbitIterable("description",
+                "test_queue3",
+                DraftDto.class)
+                .autoAck()
+                .returnBeforeIndex(5)
+                .timeOut(ofSeconds(5)));
+
+        assertThat(result, hasSize(5));
+    }
 }
 
