@@ -11,6 +11,14 @@ import static ru.tinkoff.qa.neptune.core.api.utils.ToArrayUtil.toArray;
 @Description("Resulted array")
 public class ArrayCaptor extends CollectionCaptor {
 
+    public ArrayCaptor() {
+        super();
+    }
+
+    public ArrayCaptor(String description) {
+        super(description);
+    }
+
     @Override
     public List<?> getCaptured(Object toBeCaptured) {
 

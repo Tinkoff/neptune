@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.http.api.response;
 
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -13,7 +12,6 @@ import java.time.Duration;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplier.response;
 
@@ -42,18 +40,6 @@ public final class GetObjectFromArrayBodyStepSupplier<T, R>
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
         return new GetObjectFromArrayBodyStepSupplier<T, R>()
             .from(response(requestBuilder, f).addIgnored(Exception.class));
-    }
-
-    @Override
-    public Function<HttpStepContext, R> get() {
-        var fromVal = getFrom();
-        Criteria<HttpResponse<T>> responseCriteria = DefinesResponseCriteria.getResponseCriteriaForIterables(
-            fromVal,
-            getCriteria(),
-            getDescription());
-
-        ofNullable(responseCriteria).ifPresent(this::responseCriteria);
-        return super.get();
     }
 
     @Override

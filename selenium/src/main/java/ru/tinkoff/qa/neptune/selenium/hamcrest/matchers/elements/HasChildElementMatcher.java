@@ -14,9 +14,9 @@ import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.ElementNotF
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.time.Duration.ofMillis;
 import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.common.all.AllCriteriaMatcher.all;
+import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.makeACopy;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.turnReportingOff;
 
 @Description("has child element {search} {elementMatchers}")
@@ -33,7 +33,7 @@ public final class HasChildElementMatcher<T extends SearchContext> extends Neptu
         checkArgument(nonNull(search), "The way to find child element should be defined");
         checkNotNull(elementMatchers);
         this.elementMatchers = elementMatchers;
-        this.search = turnReportingOff(search.clone().timeOut(ofMillis(0)));
+        this.search = turnReportingOff(makeACopy(search));
     }
 
     /**

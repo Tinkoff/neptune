@@ -6,7 +6,7 @@ plugins {
 }
 
 ext {
-    globalVersion = '0.22.7-ALPHA'
+    globalVersion = '0.23.0-ALPHA'
 }
 
 repositories {
@@ -116,7 +116,6 @@ subprojects {
                     exclude: [
                             '**/org/hamcrest/**',
                             '**/**AjcClosure**',
-                            '**/data/base/api/**'
                     ]
             )
         })
@@ -147,7 +146,6 @@ task jacocoOverallReport(type: JacocoReport, group: 'Coverage reports') {
                 exclude: [
                         '**/org/hamcrest/**',
                         '**/**AjcClosure**',
-                        '**/data/base/api/**',
                 ]
         )
     }
@@ -167,7 +165,6 @@ sonarqube {
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.coverage.jacoco.xmlReportPaths", "$buildDir/reports/jacoco/jacocoOverallReport/jacocoOverallReport.xml"
         property "sonar.qualitygate.wait", "true"
-        property "sonar.exclusions", "**/data/base/api/**"
     }
 }
 

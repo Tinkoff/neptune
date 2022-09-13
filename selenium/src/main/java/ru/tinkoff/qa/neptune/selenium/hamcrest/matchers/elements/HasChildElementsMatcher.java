@@ -13,11 +13,11 @@ import ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.descriptions.ElementNotFoundMismatch;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.time.Duration.ofMillis;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableInOrder;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsItemsMatcher.iterableHasItem;
+import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.makeACopy;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.turnReportingOff;
 
 @Description("has child elements {search} {elementsMatcher}")
@@ -34,7 +34,7 @@ public final class HasChildElementsMatcher<T extends SearchContext> extends Nept
         checkArgument(nonNull(search), "The way to find child elements should be defined");
         elementsMatcher = ofNullable(iterableMatcher).map(i -> new Matcher[]{i}).orElseGet(() -> new Matcher[]{});
         this.iterableMatcher = iterableMatcher;
-        this.search = turnReportingOff(search.clone().timeOut(ofMillis(0)));
+        this.search = turnReportingOff(makeACopy(search));
     }
 
     /**

@@ -46,7 +46,7 @@ public final class GetObjectFromResponseBody<T> extends SequentialGetStepSupplie
             try {
                 return mockHttpServletResponse.getContentAsString();
             } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
+                throw new IllegalArgumentException(e);
             }
         });
     }

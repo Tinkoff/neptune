@@ -22,7 +22,7 @@ import static ru.tinkoff.qa.neptune.core.api.logical.lexemes.Or.OR_LEXEME;
 /**
  * This class is designed to create a {@link Predicate} used by {@link SequentialGetStepSupplier}
  *
- * @param <T> is a type of a value to be checked/filtered
+ * @param <T> is a type of value to be checked/filtered
  */
 @SuppressWarnings("unchecked")
 public final class Criteria<T> implements Supplier<Predicate<T>> {

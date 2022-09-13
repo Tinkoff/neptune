@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.cookies;
 
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
@@ -107,8 +107,7 @@ public abstract class DeleteHttpCookiesActionSupplier<R, S extends DeleteHttpCoo
         @SafeVarargs
         private DeleteFoundHttpCookies(URI uri, Criteria<HttpCookie>... toBeRemoved) {
             super();
-            checkArgument(nonNull(toBeRemoved) && toBeRemoved.length > 0,
-                "It is necessary to define at least one criteria to find http cookies for removal");
+            checkArgument(nonNull(toBeRemoved), "Criteria should not be null");
             criteria = stream(toBeRemoved).collect(toList());
             this.uri = uri;
 

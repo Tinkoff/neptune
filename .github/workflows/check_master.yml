@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - uses: nanasess/setup-chromedriver@master
@@ -21,6 +21,10 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
     - name: Cache SonarCloud packages
       uses: actions/cache@v1
       with:
@@ -44,13 +48,18 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        ./gradlew sonarqube -x build --info
+        ./gradlew sonarqube -x build --info 
 
     - name: Generate javadoc
       run: |
         ./gradlew aggregatedJavadocs javadoc
 
-    - name: Deploy JavaDoc
+    - name: Create site
+      run: |
+        pip3 install -r ./site.documentation/requirements.txt
+        sphinx-build ./site.documentation/source ./neptune.documentation/site
+
+    - name: Deploy documents
       uses: JamesIves/github-pages-deploy-action@v4.3.3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}

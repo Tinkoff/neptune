@@ -2,9 +2,9 @@ package ru.tinkoff.qa.neptune.core.api.steps;
 
 import com.google.common.collect.Iterables;
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
@@ -14,13 +14,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess.CaptureOnSuccessReader.readCaptorsOnSuccess;
-import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
+import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetConditionalHelper.AS_IS;
+import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetConditionalHelper.getSingle;
 
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for absence")
 @SequentialGetStepSupplier.DefineResultDescriptionParameterName("Is absent")
@@ -46,11 +48,11 @@ public final class Absence<T> extends SequentialGetStepSupplier.GetObjectChained
 
     private Absence(SequentialGetStepSupplier<?, ?, ?, ?, ?> toBeAbsent) {
         this();
-        from(turnReportingOff(toBeAbsent
-                .clone()
-                .clearTimeout()
-                .addIgnored(Throwable.class)));
-
+        var copy = turnReportingOff(
+            eraseTimeOut(makeACopy(toBeAbsent)).addIgnored(Throwable.class)
+        );
+        copy.ignoreSelection();
+        from(copy);
         readCaptorsOnSuccess(toBeAbsent.getClass(), successCaptors);
     }
 
@@ -80,6 +82,7 @@ public final class Absence<T> extends SequentialGetStepSupplier.GetObjectChained
         return result;
     }
 
+    @SuppressWarnings("unchecked")
     protected Function<T, Object> preparePreFunction() {
         var preFunction = super.preparePreFunction();
 
@@ -119,7 +122,7 @@ public final class Absence<T> extends SequentialGetStepSupplier.GetObjectChained
 
             lastCaught = result;
             return null;
-        }, timeToGet);
+        }, (Predicate<Object>) AS_IS, timeToGet, null, null, new HashSet<>());
         return ((Function<Object, Object>) o -> ofNullable(o).orElse(false)).compose(resulted);
     }
 
