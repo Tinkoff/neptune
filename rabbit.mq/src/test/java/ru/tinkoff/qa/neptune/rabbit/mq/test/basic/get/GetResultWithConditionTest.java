@@ -5,6 +5,7 @@ import com.rabbitmq.client.GetResponse;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.rabbit.mq.test.CustomMapper;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.DefaultMapper;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.DraftDto;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.captors.BaseCaptorTest;
@@ -12,9 +13,9 @@ import ru.tinkoff.qa.neptune.rabbit.mq.test.captors.BaseCaptorTest;
 import java.nio.charset.StandardCharsets;
 
 import static java.time.Duration.ofSeconds;
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayWithSize;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.when;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
 import static ru.tinkoff.qa.neptune.core.api.steps.selections.ItemsCountCondition.isEqual;
@@ -174,6 +175,21 @@ public class GetResultWithConditionTest extends BaseCaptorTest {
                 .timeOut(ofSeconds(5)));
 
         assertThat(result, hasSize(5));
+    }
+    
+    @Test
+    public void test12() {
+        var result = rabbitMqStepContext.read(rabbitArray("description",
+                "test_queue3",
+                DraftDto.class)
+                .withDataTransformer(new CustomMapper())
+                .autoAck()
+                .returnBeforeIndex(5)
+                .timeOut(ofSeconds(5)));
+
+        asList(result).forEach(dto->{
+            assertThat(dto.getName(), containsString("PREFIX"));
+        });
     }
 }
 
