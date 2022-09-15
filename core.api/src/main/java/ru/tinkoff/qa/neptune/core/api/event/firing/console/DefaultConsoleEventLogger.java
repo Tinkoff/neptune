@@ -10,7 +10,7 @@ import java.util.Map;
 import static ru.tinkoff.qa.neptune.core.api.utils.ToArrayUtil.stringValueOfObjectOrArray;
 
 public class DefaultConsoleEventLogger implements EventLogger {
-    private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     private final LinkedList<String> steps = new LinkedList<>();
     private boolean successful = true;
 
@@ -18,7 +18,7 @@ public class DefaultConsoleEventLogger implements EventLogger {
     public void fireTheEventStarting(String message, Map<String, String> parameters) {
         successful = true;
         steps.addLast(message);
-        System.out.println(DATE_FORMAT.format(new Date()) + " STEP HAS BEEN STARTED: " + message);
+        System.out.println(dateFormat.format(new Date()) + " STEP HAS BEEN STARTED: " + message);
         if (parameters.isEmpty()) {
             return;
         }
@@ -43,9 +43,9 @@ public class DefaultConsoleEventLogger implements EventLogger {
         if (!steps.isEmpty()) {
             var step = steps.getLast();
             if (successful) {
-                System.out.println(DATE_FORMAT.format(new Date()) + " STEP HAS FINISHED SUCCESSFULLY: " + step);
+                System.out.println(dateFormat.format(new Date()) + " STEP HAS FINISHED SUCCESSFULLY: " + step);
             } else {
-                System.err.println(DATE_FORMAT.format(new Date()) + " STEP HAS FAILED: " + step);
+                System.err.println(dateFormat.format(new Date()) + " STEP HAS FAILED: " + step);
             }
             steps.removeLast();
         }
