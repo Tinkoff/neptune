@@ -10,7 +10,7 @@ import java.util.Map;
 import static ru.tinkoff.qa.neptune.core.api.utils.ToArrayUtil.stringValueOfObjectOrArray;
 
 public class DefaultConsoleEventLogger implements EventLogger {
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+    private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     private final LinkedList<String> steps = new LinkedList<>();
     private boolean successful = true;
 

@@ -60,14 +60,6 @@ test_reports/allure.md
 ```
 
 ```{toctree}
-:caption: Core
-:hidden:
-:maxdepth: 7
-
-core/index
-```
-
-```{toctree}
 :caption: Assert
 :hidden:
 :maxdepth: 7
@@ -94,6 +86,14 @@ spring/spring.data/index.md
 
 data.base/database.abstractions.md
 data.base/hibernate/index.md
+```
+
+```{toctree}
+:caption: Core
+:hidden:
+:maxdepth: 7
+
+core/index
 ```
 
 
