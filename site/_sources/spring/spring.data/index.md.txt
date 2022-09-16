@@ -29,4 +29,7 @@
 :hidden:
 
 settings.md
+select/index.md
+save/save.md
+delete/delete.md
 ```

@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":9,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":10,"i45":10,"i46":10,"i47":10,"i48":10,"i49":10,"i50":10,"i51":10,"i52":10,"i53":10,"i54":10,"i55":10,"i56":10,"i57":10,"i58":10,"i59":10,"i60":10,"i61":10,"i62":10,"i63":10,"i64":10,"i65":10,"i66":10,"i67":10,"i68":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":9,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -211,446 +211,250 @@ extends <a href="../database/abstractions/AbstractDatabaseStepContext.html" titl
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#absenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetArrayFromEntity,java.time.Duration)">absenceOf</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-         <a href="select/GetArrayFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetArrayFromEntity</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#absenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetItemOfArrayFromEntity,java.time.Duration)">absenceOf</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-         <a href="select/GetItemOfArrayFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetItemOfArrayFromEntity</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#absenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetItemOfIterableFromEntity,java.time.Duration)">absenceOf</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-         <a href="select/GetItemOfIterableFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetItemOfIterableFromEntity</a>&lt;ITEM,&#8203;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;ITEM&gt;,&#8203;R&gt;&nbsp;toGet,
-         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#absenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntities,java.time.Duration)">absenceOf</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-         <a href="select/GetIterableFromEntities.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableFromEntities</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;S extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;ITEM&gt;,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#absenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntity,java.time.Duration)">absenceOf</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-         <a href="select/GetIterableFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableFromEntity</a>&lt;ITEM,&#8203;S,&#8203;R&gt;&nbsp;toGet,
-         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#absenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableItemFromEntities,java.time.Duration)">absenceOf</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-         <a href="select/GetIterableItemFromEntities.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableItemFromEntities</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code>&lt;S,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#absenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetObjectFromEntity,java.time.Duration)">absenceOf</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-         <a href="select/GetObjectFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetObjectFromEntity</a>&lt;S,&#8203;R&gt;&nbsp;toGet,
-         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i7" class="rowColor">
 <td class="colFirst"><code>&lt;R&gt;&nbsp;boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#absenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.SelectManyStepSupplier,java.time.Duration)">absenceOf</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
          <a href="select/SelectManyStepSupplier.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">SelectManyStepSupplier</a>&lt;R&gt;&nbsp;by,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>&lt;R&gt;&nbsp;boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#absenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.SelectOneStepSupplier,java.time.Duration)">absenceOf</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
          <a href="select/SelectOneStepSupplier.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">SelectOneStepSupplier</a>&lt;R&gt;&nbsp;by,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#absenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetArrayFromEntity,java.time.Duration)">absenceOfOrThrow</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                <a href="select/GetArrayFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetArrayFromEntity</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i10" class="altColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#absenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetItemOfArrayFromEntity,java.time.Duration)">absenceOfOrThrow</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                <a href="select/GetItemOfArrayFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetItemOfArrayFromEntity</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i11" class="rowColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#absenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetItemOfIterableFromEntity,java.time.Duration)">absenceOfOrThrow</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                <a href="select/GetItemOfIterableFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetItemOfIterableFromEntity</a>&lt;ITEM,&#8203;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;ITEM&gt;,&#8203;R&gt;&nbsp;toGet,
-                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i12" class="altColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#absenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntities,java.time.Duration)">absenceOfOrThrow</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                <a href="select/GetIterableFromEntities.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableFromEntities</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i13" class="rowColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;S extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;ITEM&gt;,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#absenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntity,java.time.Duration)">absenceOfOrThrow</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                <a href="select/GetIterableFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableFromEntity</a>&lt;ITEM,&#8203;S,&#8203;R&gt;&nbsp;toGet,
-                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i14" class="altColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#absenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableItemFromEntities,java.time.Duration)">absenceOfOrThrow</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                <a href="select/GetIterableItemFromEntities.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableItemFromEntities</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i15" class="rowColor">
-<td class="colFirst"><code>&lt;S,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#absenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetObjectFromEntity,java.time.Duration)">absenceOfOrThrow</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                <a href="select/GetObjectFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetObjectFromEntity</a>&lt;S,&#8203;R&gt;&nbsp;toGet,
-                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i16" class="altColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>&lt;R&gt;&nbsp;boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#absenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.SelectManyStepSupplier,java.time.Duration)">absenceOfOrThrow</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
                 <a href="select/SelectManyStepSupplier.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">SelectManyStepSupplier</a>&lt;R&gt;&nbsp;by,
                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>&lt;R&gt;&nbsp;boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#absenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.SelectOneStepSupplier,java.time.Duration)">absenceOfOrThrow</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
                 <a href="select/SelectOneStepSupplier.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">SelectOneStepSupplier</a>&lt;R&gt;&nbsp;by,
                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>&lt;R&gt;&nbsp;<a href="HibernateContext.html" title="class in ru.tinkoff.qa.neptune.hibernate">HibernateContext</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#delete(java.lang.String,java.lang.Iterable)">delete</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;R&gt;&nbsp;toDelete)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>&lt;R&gt;&nbsp;<a href="HibernateContext.html" title="class in ru.tinkoff.qa.neptune.hibernate">HibernateContext</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#delete(java.lang.String,R...)">delete</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
       R...&nbsp;toDelete)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>&lt;R&gt;&nbsp;<a href="HibernateContext.html" title="class in ru.tinkoff.qa.neptune.hibernate">HibernateContext</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#delete(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.SelectManyStepSupplier)">delete</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
       <a href="select/SelectManyStepSupplier.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">SelectManyStepSupplier</a>&lt;R&gt;&nbsp;select)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>&lt;R&gt;&nbsp;<a href="HibernateContext.html" title="class in ru.tinkoff.qa.neptune.hibernate">HibernateContext</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#delete(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.SelectOneStepSupplier)">delete</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
       <a href="select/SelectOneStepSupplier.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">SelectOneStepSupplier</a>&lt;R&gt;&nbsp;select)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>protected &lt;R,&#8203;Q extends <a href="../core/api/steps/SequentialGetStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier</a>&lt;<a href="HibernateContext.html" title="class in ru.tinkoff.qa.neptune.hibernate">HibernateContext</a>,&#8203;R,&#8203;?,&#8203;?,&#8203;?&gt; &amp; <a href="../database/abstractions/SelectQuery.html" title="interface in ru.tinkoff.qa.neptune.database.abstractions">SelectQuery</a>&lt;R&gt;&gt;<br>R</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#delete(Q)">delete</a></span>&#8203;(Q&nbsp;query)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="HibernateContext.html" title="class in ru.tinkoff.qa.neptune.hibernate">HibernateContext</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#deleteAllFrom(java.lang.Class)">deleteAllFrom</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;?&gt;&nbsp;entityCls)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>javax.persistence.criteria.CriteriaBuilder</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCriteriaBuilder(java.lang.Class)">getCriteriaBuilder</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;?&gt;&nbsp;entityCls)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>&lt;R&gt;&nbsp;javax.persistence.criteria.CriteriaQuery&lt;R&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCriteriaQuery(java.lang.Class)">getCriteriaQuery</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;R&gt;&nbsp;entityCls)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;org.hibernate.SessionFactory&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionFactories()">getSessionFactories</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>org.hibernate.SessionFactory</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionFactoryByEntity(java.lang.Class)">getSessionFactoryByEntity</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;?&gt;&nbsp;entityCls)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>static <a href="HibernateContext.html" title="class in ru.tinkoff.qa.neptune.hibernate">HibernateContext</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hibernate()">hibernate</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i29" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>protected &lt;R,&#8203;Q extends <a href="../core/api/steps/SequentialGetStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier</a>&lt;<a href="HibernateContext.html" title="class in ru.tinkoff.qa.neptune.hibernate">HibernateContext</a>,&#8203;R,&#8203;?,&#8203;?,&#8203;?&gt; &amp; <a href="../database/abstractions/InsertQuery.html" title="interface in ru.tinkoff.qa.neptune.database.abstractions">InsertQuery</a>&lt;R&gt;&gt;<br>R</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#insert(Q)">insert</a></span>&#8203;(Q&nbsp;query)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i30" class="altColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#presenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetArrayFromEntity,java.lang.Class...)">presenceOf</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-          <a href="select/GetArrayFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetArrayFromEntity</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i31" class="rowColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#presenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetItemOfArrayFromEntity,java.lang.Class...)">presenceOf</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-          <a href="select/GetItemOfArrayFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetItemOfArrayFromEntity</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i32" class="altColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#presenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetItemOfIterableFromEntity,java.lang.Class...)">presenceOf</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-          <a href="select/GetItemOfIterableFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetItemOfIterableFromEntity</a>&lt;ITEM,&#8203;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;ITEM&gt;,&#8203;R&gt;&nbsp;toGet,
-          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i33" class="rowColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#presenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntities,java.lang.Class...)">presenceOf</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-          <a href="select/GetIterableFromEntities.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableFromEntities</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i34" class="altColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;S extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;ITEM&gt;,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#presenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntity,java.lang.Class...)">presenceOf</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-          <a href="select/GetIterableFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableFromEntity</a>&lt;ITEM,&#8203;S,&#8203;R&gt;&nbsp;toGet,
-          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i35" class="rowColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#presenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableItemFromEntities,java.lang.Class...)">presenceOf</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-          <a href="select/GetIterableItemFromEntities.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableItemFromEntities</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i36" class="altColor">
-<td class="colFirst"><code>&lt;S,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#presenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetObjectFromEntity,java.lang.Class...)">presenceOf</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-          <a href="select/GetObjectFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetObjectFromEntity</a>&lt;S,&#8203;R&gt;&nbsp;toGet,
-          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i37" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>&lt;R&gt;&nbsp;boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#presenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.SelectManyStepSupplier,java.lang.Class...)">presenceOf</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
           <a href="select/SelectManyStepSupplier.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">SelectManyStepSupplier</a>&lt;R&gt;&nbsp;by,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i38" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>&lt;R&gt;&nbsp;boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#presenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.SelectOneStepSupplier,java.lang.Class...)">presenceOf</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
           <a href="select/SelectOneStepSupplier.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">SelectOneStepSupplier</a>&lt;R&gt;&nbsp;by,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i39" class="rowColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#presenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetArrayFromEntity,java.lang.Class...)">presenceOfOrThrow</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                 <a href="select/GetArrayFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetArrayFromEntity</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i40" class="altColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#presenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetItemOfArrayFromEntity,java.lang.Class...)">presenceOfOrThrow</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                 <a href="select/GetItemOfArrayFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetItemOfArrayFromEntity</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i41" class="rowColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#presenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetItemOfIterableFromEntity,java.lang.Class...)">presenceOfOrThrow</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                 <a href="select/GetItemOfIterableFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetItemOfIterableFromEntity</a>&lt;ITEM,&#8203;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;ITEM&gt;,&#8203;R&gt;&nbsp;toGet,
-                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i42" class="altColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#presenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntities,java.lang.Class...)">presenceOfOrThrow</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                 <a href="select/GetIterableFromEntities.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableFromEntities</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i43" class="rowColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;S extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;ITEM&gt;,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#presenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntity,java.lang.Class...)">presenceOfOrThrow</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                 <a href="select/GetIterableFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableFromEntity</a>&lt;ITEM,&#8203;S,&#8203;R&gt;&nbsp;toGet,
-                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i44" class="altColor">
-<td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#presenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableItemFromEntities,java.lang.Class...)">presenceOfOrThrow</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                 <a href="select/GetIterableItemFromEntities.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableItemFromEntities</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i45" class="rowColor">
-<td class="colFirst"><code>&lt;S,&#8203;R&gt;<br>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#presenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetObjectFromEntity,java.lang.Class...)">presenceOfOrThrow</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                 <a href="select/GetObjectFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetObjectFromEntity</a>&lt;S,&#8203;R&gt;&nbsp;toGet,
-                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i46" class="altColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>&lt;R&gt;&nbsp;boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#presenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.SelectManyStepSupplier,java.lang.Class...)">presenceOfOrThrow</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
                  <a href="select/SelectManyStepSupplier.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">SelectManyStepSupplier</a>&lt;R&gt;&nbsp;by,
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i47" class="rowColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>&lt;R&gt;&nbsp;boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#presenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.SelectOneStepSupplier,java.lang.Class...)">presenceOfOrThrow</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
                  <a href="select/SelectOneStepSupplier.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">SelectOneStepSupplier</a>&lt;R&gt;&nbsp;by,
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i48" class="altColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>&lt;R&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;R&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#saveAll(java.lang.String,java.lang.Iterable)">saveAll</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;R&gt;&nbsp;toSave)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i49" class="rowColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>&lt;R&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;R&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#saveAll(java.lang.String,java.lang.Iterable,ru.tinkoff.qa.neptune.database.abstractions.UpdateAction...)">saveAll</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;R&gt;&nbsp;toSave,
        <a href="../database/abstractions/UpdateAction.html" title="class in ru.tinkoff.qa.neptune.database.abstractions">UpdateAction</a>&lt;R&gt;...&nbsp;updateActions)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i50" class="altColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>&lt;R&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;R&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#saveAll(java.lang.String,R...)">saveAll</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
        R...&nbsp;toSave)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i51" class="rowColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>&lt;R&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;R&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#saveAllByQuery(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.SelectManyStepSupplier,ru.tinkoff.qa.neptune.database.abstractions.UpdateAction...)">saveAllByQuery</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
               <a href="select/SelectManyStepSupplier.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">SelectManyStepSupplier</a>&lt;R&gt;&nbsp;select,
               <a href="../database/abstractions/UpdateAction.html" title="class in ru.tinkoff.qa.neptune.database.abstractions">UpdateAction</a>&lt;R&gt;...&nbsp;updateActions)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i52" class="altColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>&lt;R&gt;&nbsp;R</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#saveByQuery(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.SelectOneStepSupplier,ru.tinkoff.qa.neptune.database.abstractions.UpdateAction...)">saveByQuery</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
            <a href="select/SelectOneStepSupplier.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">SelectOneStepSupplier</a>&lt;R&gt;&nbsp;select,
            <a href="../database/abstractions/UpdateAction.html" title="class in ru.tinkoff.qa.neptune.database.abstractions">UpdateAction</a>&lt;R&gt;...&nbsp;updateActions)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i53" class="rowColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>&lt;R&gt;&nbsp;R</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#saveOne(java.lang.String,R)">saveOne</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
        R&nbsp;toSave)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i54" class="altColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>&lt;R&gt;&nbsp;R</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#saveOne(java.lang.String,R,ru.tinkoff.qa.neptune.database.abstractions.UpdateAction...)">saveOne</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
        R&nbsp;toSave,
        <a href="../database/abstractions/UpdateAction.html" title="class in ru.tinkoff.qa.neptune.database.abstractions">UpdateAction</a>&lt;R&gt;...&nbsp;updateActions)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i55" class="rowColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>ITEM[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#select(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetArrayFromEntity)">select</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
       <a href="select/GetArrayFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetArrayFromEntity</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i56" class="altColor">
+<tr id="i28" class="altColor">
 <td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>ITEM</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#select(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetItemOfArrayFromEntity)">select</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
       <a href="select/GetItemOfArrayFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetItemOfArrayFromEntity</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i57" class="rowColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>ITEM</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#select(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetItemOfIterableFromEntity)">select</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
       <a href="select/GetItemOfIterableFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetItemOfIterableFromEntity</a>&lt;ITEM,&#8203;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;ITEM&gt;,&#8203;R&gt;&nbsp;toGet)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i58" class="altColor">
+<tr id="i30" class="altColor">
 <td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;ITEM&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#select(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntities)">select</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
       <a href="select/GetIterableFromEntities.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableFromEntities</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i59" class="rowColor">
+<tr id="i31" class="rowColor">
 <td class="colFirst"><code>&lt;ITEM,&#8203;S extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;ITEM&gt;,&#8203;R&gt;<br><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;ITEM&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#select(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntity)">select</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
       <a href="select/GetIterableFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableFromEntity</a>&lt;ITEM,&#8203;S,&#8203;R&gt;&nbsp;toGet)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i60" class="altColor">
+<tr id="i32" class="altColor">
 <td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br>ITEM</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#select(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableItemFromEntities)">select</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
       <a href="select/GetIterableItemFromEntities.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableItemFromEntities</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i61" class="rowColor">
+<tr id="i33" class="rowColor">
 <td class="colFirst"><code>&lt;ITEM,&#8203;R&gt;<br><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;ITEM&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#select(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetListFromEntities)">select</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
       <a href="select/GetListFromEntities.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetListFromEntities</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i62" class="altColor">
+<tr id="i34" class="altColor">
 <td class="colFirst"><code>&lt;ITEM,&#8203;S extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;ITEM&gt;,&#8203;R&gt;<br><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;ITEM&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#select(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetListFromEntity)">select</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
       <a href="select/GetListFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetListFromEntity</a>&lt;ITEM,&#8203;S,&#8203;R&gt;&nbsp;toGet)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i63" class="rowColor">
+<tr id="i35" class="rowColor">
 <td class="colFirst"><code>&lt;S,&#8203;R&gt;<br>S</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#select(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetObjectFromEntity)">select</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
       <a href="select/GetObjectFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetObjectFromEntity</a>&lt;S,&#8203;R&gt;&nbsp;toGet)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i64" class="altColor">
+<tr id="i36" class="altColor">
 <td class="colFirst"><code>&lt;R&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;R&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#select(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.SelectManyStepSupplier)">select</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
       <a href="select/SelectManyStepSupplier.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">SelectManyStepSupplier</a>&lt;R&gt;&nbsp;by)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i65" class="rowColor">
+<tr id="i37" class="rowColor">
 <td class="colFirst"><code>&lt;R&gt;&nbsp;R</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#select(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.SelectOneStepSupplier)">select</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
       <a href="select/SelectOneStepSupplier.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">SelectOneStepSupplier</a>&lt;R&gt;&nbsp;by)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i66" class="altColor">
+<tr id="i38" class="altColor">
 <td class="colFirst"><code>protected &lt;R,&#8203;Q extends <a href="../core/api/steps/SequentialGetStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier</a>&lt;<a href="HibernateContext.html" title="class in ru.tinkoff.qa.neptune.hibernate">HibernateContext</a>,&#8203;R,&#8203;?,&#8203;?,&#8203;?&gt; &amp; <a href="../database/abstractions/SelectQuery.html" title="interface in ru.tinkoff.qa.neptune.database.abstractions">SelectQuery</a>&lt;R&gt;&gt;<br>R</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#select(Q)">select</a></span>&#8203;(Q&nbsp;query)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i67" class="rowColor">
+<tr id="i39" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stop()">stop</a></span>()</code></th>
 <td class="colLast">
 <div class="block">An action to be performed when stopped</div>
 </td>
 </tr>
-<tr id="i68" class="altColor">
+<tr id="i40" class="altColor">
 <td class="colFirst"><code>protected &lt;R,&#8203;S,&#8203;Q extends <a href="../core/api/steps/SequentialGetStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier</a>&lt;<a href="HibernateContext.html" title="class in ru.tinkoff.qa.neptune.hibernate">HibernateContext</a>,&#8203;S,&#8203;?,&#8203;?,&#8203;?&gt; &amp; <a href="../database/abstractions/SelectQuery.html" title="interface in ru.tinkoff.qa.neptune.database.abstractions">SelectQuery</a>&lt;S&gt;&gt;<br>S</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#update(Q,ru.tinkoff.qa.neptune.database.abstractions.UpdateAction...)">update</a></span>&#8203;(Q&nbsp;query,
       <a href="../database/abstractions/UpdateAction.html" title="class in ru.tinkoff.qa.neptune.database.abstractions">UpdateAction</a>&lt;R&gt;...&nbsp;actions)</code></th>
@@ -1146,174 +950,6 @@ public final&nbsp;&lt;R&gt;&nbsp;boolean&nbsp;presenceOfOrThrow&#8203;(<a href="
                                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</pre>
 </li>
 </ul>
-<a id="presenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetObjectFromEntity,java.lang.Class...)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>presenceOf</h4>
-<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/SafeVarargs.html?is-external=true" title="class or interface in java.lang" class="externalLink">@SafeVarargs</a>
-public final&nbsp;&lt;S,&#8203;R&gt;&nbsp;boolean&nbsp;presenceOf&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                            <a href="select/GetObjectFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetObjectFromEntity</a>&lt;S,&#8203;R&gt;&nbsp;toGet,
-                                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</pre>
-</li>
-</ul>
-<a id="presenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetObjectFromEntity,java.lang.Class...)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>presenceOfOrThrow</h4>
-<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/SafeVarargs.html?is-external=true" title="class or interface in java.lang" class="externalLink">@SafeVarargs</a>
-public final&nbsp;&lt;S,&#8203;R&gt;&nbsp;boolean&nbsp;presenceOfOrThrow&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                                   <a href="select/GetObjectFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetObjectFromEntity</a>&lt;S,&#8203;R&gt;&nbsp;toGet,
-                                                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</pre>
-</li>
-</ul>
-<a id="presenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntity,java.lang.Class...)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>presenceOf</h4>
-<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/SafeVarargs.html?is-external=true" title="class or interface in java.lang" class="externalLink">@SafeVarargs</a>
-public final&nbsp;&lt;ITEM,&#8203;S extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;ITEM&gt;,&#8203;R&gt;&nbsp;boolean&nbsp;presenceOf&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                                                              <a href="select/GetIterableFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableFromEntity</a>&lt;ITEM,&#8203;S,&#8203;R&gt;&nbsp;toGet,
-                                                                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</pre>
-</li>
-</ul>
-<a id="presenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntity,java.lang.Class...)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>presenceOfOrThrow</h4>
-<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/SafeVarargs.html?is-external=true" title="class or interface in java.lang" class="externalLink">@SafeVarargs</a>
-public final&nbsp;&lt;ITEM,&#8203;S extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;ITEM&gt;,&#8203;R&gt;&nbsp;boolean&nbsp;presenceOfOrThrow&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                                                                     <a href="select/GetIterableFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableFromEntity</a>&lt;ITEM,&#8203;S,&#8203;R&gt;&nbsp;toGet,
-                                                                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</pre>
-</li>
-</ul>
-<a id="presenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetArrayFromEntity,java.lang.Class...)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>presenceOf</h4>
-<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/SafeVarargs.html?is-external=true" title="class or interface in java.lang" class="externalLink">@SafeVarargs</a>
-public final&nbsp;&lt;ITEM,&#8203;R&gt;&nbsp;boolean&nbsp;presenceOf&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                               <a href="select/GetArrayFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetArrayFromEntity</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</pre>
-</li>
-</ul>
-<a id="presenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetArrayFromEntity,java.lang.Class...)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>presenceOfOrThrow</h4>
-<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/SafeVarargs.html?is-external=true" title="class or interface in java.lang" class="externalLink">@SafeVarargs</a>
-public final&nbsp;&lt;ITEM,&#8203;R&gt;&nbsp;boolean&nbsp;presenceOfOrThrow&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                                      <a href="select/GetArrayFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetArrayFromEntity</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</pre>
-</li>
-</ul>
-<a id="presenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetItemOfIterableFromEntity,java.lang.Class...)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>presenceOf</h4>
-<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/SafeVarargs.html?is-external=true" title="class or interface in java.lang" class="externalLink">@SafeVarargs</a>
-public final&nbsp;&lt;ITEM,&#8203;R&gt;&nbsp;boolean&nbsp;presenceOf&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                               <a href="select/GetItemOfIterableFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetItemOfIterableFromEntity</a>&lt;ITEM,&#8203;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;ITEM&gt;,&#8203;R&gt;&nbsp;toGet,
-                                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</pre>
-</li>
-</ul>
-<a id="presenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetItemOfIterableFromEntity,java.lang.Class...)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>presenceOfOrThrow</h4>
-<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/SafeVarargs.html?is-external=true" title="class or interface in java.lang" class="externalLink">@SafeVarargs</a>
-public final&nbsp;&lt;ITEM,&#8203;R&gt;&nbsp;boolean&nbsp;presenceOfOrThrow&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                                      <a href="select/GetItemOfIterableFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetItemOfIterableFromEntity</a>&lt;ITEM,&#8203;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;ITEM&gt;,&#8203;R&gt;&nbsp;toGet,
-                                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</pre>
-</li>
-</ul>
-<a id="presenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetItemOfArrayFromEntity,java.lang.Class...)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>presenceOf</h4>
-<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/SafeVarargs.html?is-external=true" title="class or interface in java.lang" class="externalLink">@SafeVarargs</a>
-public final&nbsp;&lt;ITEM,&#8203;R&gt;&nbsp;boolean&nbsp;presenceOf&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                               <a href="select/GetItemOfArrayFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetItemOfArrayFromEntity</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</pre>
-</li>
-</ul>
-<a id="presenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetItemOfArrayFromEntity,java.lang.Class...)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>presenceOfOrThrow</h4>
-<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/SafeVarargs.html?is-external=true" title="class or interface in java.lang" class="externalLink">@SafeVarargs</a>
-public final&nbsp;&lt;ITEM,&#8203;R&gt;&nbsp;boolean&nbsp;presenceOfOrThrow&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                                      <a href="select/GetItemOfArrayFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetItemOfArrayFromEntity</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</pre>
-</li>
-</ul>
-<a id="presenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntities,java.lang.Class...)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>presenceOf</h4>
-<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/SafeVarargs.html?is-external=true" title="class or interface in java.lang" class="externalLink">@SafeVarargs</a>
-public final&nbsp;&lt;ITEM,&#8203;R&gt;&nbsp;boolean&nbsp;presenceOf&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                               <a href="select/GetIterableFromEntities.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableFromEntities</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</pre>
-</li>
-</ul>
-<a id="presenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntities,java.lang.Class...)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>presenceOfOrThrow</h4>
-<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/SafeVarargs.html?is-external=true" title="class or interface in java.lang" class="externalLink">@SafeVarargs</a>
-public final&nbsp;&lt;ITEM,&#8203;R&gt;&nbsp;boolean&nbsp;presenceOfOrThrow&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                                      <a href="select/GetIterableFromEntities.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableFromEntities</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</pre>
-</li>
-</ul>
-<a id="presenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableItemFromEntities,java.lang.Class...)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>presenceOf</h4>
-<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/SafeVarargs.html?is-external=true" title="class or interface in java.lang" class="externalLink">@SafeVarargs</a>
-public final&nbsp;&lt;ITEM,&#8203;R&gt;&nbsp;boolean&nbsp;presenceOf&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                               <a href="select/GetIterableItemFromEntities.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableItemFromEntities</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</pre>
-</li>
-</ul>
-<a id="presenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableItemFromEntities,java.lang.Class...)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>presenceOfOrThrow</h4>
-<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/SafeVarargs.html?is-external=true" title="class or interface in java.lang" class="externalLink">@SafeVarargs</a>
-public final&nbsp;&lt;ITEM,&#8203;R&gt;&nbsp;boolean&nbsp;presenceOfOrThrow&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                                      <a href="select/GetIterableItemFromEntities.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableItemFromEntities</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&gt;...&nbsp;toIgnore)</pre>
-</li>
-</ul>
 <a id="absenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.SelectOneStepSupplier,java.time.Duration)">
 <!--   -->
 </a>
@@ -1350,166 +986,12 @@ public final&nbsp;&lt;ITEM,&#8203;R&gt;&nbsp;boolean&nbsp;presenceOfOrThrow&#820
 <a id="absenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.SelectManyStepSupplier,java.time.Duration)">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>absenceOfOrThrow</h4>
 <pre class="methodSignature">public&nbsp;&lt;R&gt;&nbsp;boolean&nbsp;absenceOfOrThrow&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
                                     <a href="select/SelectManyStepSupplier.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">SelectManyStepSupplier</a>&lt;R&gt;&nbsp;by,
                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</pre>
-</li>
-</ul>
-<a id="absenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetObjectFromEntity,java.time.Duration)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>absenceOf</h4>
-<pre class="methodSignature">public&nbsp;&lt;S,&#8203;R&gt;&nbsp;boolean&nbsp;absenceOf&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                     <a href="select/GetObjectFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetObjectFromEntity</a>&lt;S,&#8203;R&gt;&nbsp;toGet,
-                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</pre>
-</li>
-</ul>
-<a id="absenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetObjectFromEntity,java.time.Duration)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>absenceOfOrThrow</h4>
-<pre class="methodSignature">public&nbsp;&lt;S,&#8203;R&gt;&nbsp;boolean&nbsp;absenceOfOrThrow&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                            <a href="select/GetObjectFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetObjectFromEntity</a>&lt;S,&#8203;R&gt;&nbsp;toGet,
-                                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</pre>
-</li>
-</ul>
-<a id="absenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntity,java.time.Duration)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>absenceOf</h4>
-<pre class="methodSignature">public&nbsp;&lt;ITEM,&#8203;S extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;ITEM&gt;,&#8203;R&gt;&nbsp;boolean&nbsp;absenceOf&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                                                       <a href="select/GetIterableFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableFromEntity</a>&lt;ITEM,&#8203;S,&#8203;R&gt;&nbsp;toGet,
-                                                                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</pre>
-</li>
-</ul>
-<a id="absenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntity,java.time.Duration)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>absenceOfOrThrow</h4>
-<pre class="methodSignature">public&nbsp;&lt;ITEM,&#8203;S extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;ITEM&gt;,&#8203;R&gt;&nbsp;boolean&nbsp;absenceOfOrThrow&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                                                              <a href="select/GetIterableFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableFromEntity</a>&lt;ITEM,&#8203;S,&#8203;R&gt;&nbsp;toGet,
-                                                                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</pre>
-</li>
-</ul>
-<a id="absenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetArrayFromEntity,java.time.Duration)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>absenceOf</h4>
-<pre class="methodSignature">public&nbsp;&lt;ITEM,&#8203;R&gt;&nbsp;boolean&nbsp;absenceOf&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                        <a href="select/GetArrayFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetArrayFromEntity</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</pre>
-</li>
-</ul>
-<a id="absenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetArrayFromEntity,java.time.Duration)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>absenceOfOrThrow</h4>
-<pre class="methodSignature">public&nbsp;&lt;ITEM,&#8203;R&gt;&nbsp;boolean&nbsp;absenceOfOrThrow&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                               <a href="select/GetArrayFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetArrayFromEntity</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</pre>
-</li>
-</ul>
-<a id="absenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetItemOfIterableFromEntity,java.time.Duration)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>absenceOf</h4>
-<pre class="methodSignature">public&nbsp;&lt;ITEM,&#8203;R&gt;&nbsp;boolean&nbsp;absenceOf&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                        <a href="select/GetItemOfIterableFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetItemOfIterableFromEntity</a>&lt;ITEM,&#8203;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;ITEM&gt;,&#8203;R&gt;&nbsp;toGet,
-                                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</pre>
-</li>
-</ul>
-<a id="absenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetItemOfIterableFromEntity,java.time.Duration)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>absenceOfOrThrow</h4>
-<pre class="methodSignature">public&nbsp;&lt;ITEM,&#8203;R&gt;&nbsp;boolean&nbsp;absenceOfOrThrow&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                               <a href="select/GetItemOfIterableFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetItemOfIterableFromEntity</a>&lt;ITEM,&#8203;? extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Iterable</a>&lt;ITEM&gt;,&#8203;R&gt;&nbsp;toGet,
-                                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</pre>
-</li>
-</ul>
-<a id="absenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetItemOfArrayFromEntity,java.time.Duration)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>absenceOf</h4>
-<pre class="methodSignature">public&nbsp;&lt;ITEM,&#8203;R&gt;&nbsp;boolean&nbsp;absenceOf&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                        <a href="select/GetItemOfArrayFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetItemOfArrayFromEntity</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</pre>
-</li>
-</ul>
-<a id="absenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetItemOfArrayFromEntity,java.time.Duration)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>absenceOfOrThrow</h4>
-<pre class="methodSignature">public&nbsp;&lt;ITEM,&#8203;R&gt;&nbsp;boolean&nbsp;absenceOfOrThrow&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                               <a href="select/GetItemOfArrayFromEntity.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetItemOfArrayFromEntity</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</pre>
-</li>
-</ul>
-<a id="absenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntities,java.time.Duration)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>absenceOf</h4>
-<pre class="methodSignature">public&nbsp;&lt;ITEM,&#8203;R&gt;&nbsp;boolean&nbsp;absenceOf&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                        <a href="select/GetIterableFromEntities.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableFromEntities</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</pre>
-</li>
-</ul>
-<a id="absenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableFromEntities,java.time.Duration)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>absenceOfOrThrow</h4>
-<pre class="methodSignature">public&nbsp;&lt;ITEM,&#8203;R&gt;&nbsp;boolean&nbsp;absenceOfOrThrow&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                               <a href="select/GetIterableFromEntities.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableFromEntities</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</pre>
-</li>
-</ul>
-<a id="absenceOf(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableItemFromEntities,java.time.Duration)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>absenceOf</h4>
-<pre class="methodSignature">public&nbsp;&lt;ITEM,&#8203;R&gt;&nbsp;boolean&nbsp;absenceOf&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                        <a href="select/GetIterableItemFromEntities.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableItemFromEntities</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</pre>
-</li>
-</ul>
-<a id="absenceOfOrThrow(java.lang.String,ru.tinkoff.qa.neptune.hibernate.select.GetIterableItemFromEntities,java.time.Duration)">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>absenceOfOrThrow</h4>
-<pre class="methodSignature">public&nbsp;&lt;ITEM,&#8203;R&gt;&nbsp;boolean&nbsp;absenceOfOrThrow&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                               <a href="select/GetIterableItemFromEntities.html" title="class in ru.tinkoff.qa.neptune.hibernate.select">GetIterableItemFromEntities</a>&lt;ITEM,&#8203;R&gt;&nbsp;toGet,
-                                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</pre>
 </li>
 </ul>
 </li>
