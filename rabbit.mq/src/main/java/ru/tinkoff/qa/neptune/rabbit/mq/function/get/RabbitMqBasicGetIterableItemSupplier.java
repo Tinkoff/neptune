@@ -14,13 +14,16 @@ import ru.tinkoff.qa.neptune.rabbit.mq.captors.MessageCaptor;
 import ru.tinkoff.qa.neptune.rabbit.mq.captors.MessagesCaptor;
 import ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties;
 
+import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetDeserializedData.getStringResult;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Retrieve:")
@@ -192,6 +195,42 @@ public abstract class RabbitMqBasicGetIterableItemSupplier<M, T, I extends Rabbi
             String description,
             TypeReference<M> typeT) {
         return rabbitIterableItem(description, DEFAULT_QUEUE_NAME.get(), typeT);
+    }
+
+    /**
+     * Creates a step that gets string body of message.
+     *
+     * @param queue   is a queue to read
+     * @param charset is a required charset
+     */
+    @Description("String message")
+    public static Mapped<String, String> rabbitRawMessage(String queue, Charset charset) {
+        return new Mapped<>(new GetFromQueue(queue).andThen(getStringResult(charset)), t -> t);
+    }
+
+    /**
+     * Creates a step that gets string body of message. It gets required value from default queue.
+     *
+     * @param charset is a required charset
+     */
+    public static Mapped<String, String> rabbitRawMessage(Charset charset) {
+        return rabbitRawMessage(DEFAULT_QUEUE_NAME.get(), charset);
+    }
+
+    /**
+     * Creates a step that gets string body of message.
+     *
+     * @param queue is a queue to read
+     */
+    public static Mapped<String, String> rabbitRawMessage(String queue) {
+        return rabbitRawMessage(queue, UTF_8);
+    }
+
+    /**
+     Creates a step that gets string body of message. It gets required value from default queue.
+     */
+    public static Mapped<String, String> rabbitRawMessage() {
+        return rabbitRawMessage(UTF_8);
     }
 
     @Override

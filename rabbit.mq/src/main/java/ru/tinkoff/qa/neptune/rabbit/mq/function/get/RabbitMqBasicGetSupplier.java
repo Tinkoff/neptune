@@ -25,6 +25,7 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperti
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Object criteria")
 @MaxDepthOfReporting(0)
+@Deprecated(forRemoval = true)
 @SuppressWarnings({"unused", "unchecked"})
 public class RabbitMqBasicGetSupplier {
 
@@ -122,6 +123,7 @@ public class RabbitMqBasicGetSupplier {
      * @param <T>    is a type of deserialized message
      * @return an instance of {@link RabbitMqBasicGetSupplier}
      */
+    @Deprecated
     @Description("Message body")
     public static <T> RabbitMqBasicGetIterableItemSupplier.Mapped<T, T> rabbitBody(String queue,
                                                                                    Class<T> classT) {
@@ -136,6 +138,7 @@ public class RabbitMqBasicGetSupplier {
      * @return an instance of {@link RabbitMqBasicGetSupplier}
      * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
      */
+    @Deprecated
     public static <T> RabbitMqBasicGetIterableItemSupplier.Mapped<T, T> rabbitBody(Class<T> classT) {
         return rabbitBody(DEFAULT_QUEUE_NAME.get(), classT);
     }
@@ -148,6 +151,7 @@ public class RabbitMqBasicGetSupplier {
      * @param <T>   is a type of deserialized message
      * @return an instance of {@link RabbitMqBasicGetSupplier}
      */
+    @Deprecated
     @Description("Message body")
     public static <T> RabbitMqBasicGetIterableItemSupplier.Mapped<T, T> rabbitBody(String queue,
                                                                                    TypeReference<T> typeT) {
@@ -162,6 +166,7 @@ public class RabbitMqBasicGetSupplier {
      * @return an instance of {@link RabbitMqBasicGetSupplier}
      * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
      */
+    @Deprecated
     public static <T> RabbitMqBasicGetIterableItemSupplier.Mapped<T, T> rabbitBody(TypeReference<T> typeT) {
         return rabbitBody(DEFAULT_QUEUE_NAME.get(), typeT);
     }
@@ -173,6 +178,7 @@ public class RabbitMqBasicGetSupplier {
      * @param charset is a required charset
      * @return an instance of {@link RabbitMqBasicGetSupplier}
      */
+    @Deprecated
     @Description("String message")
     public static RabbitMqBasicGetIterableItemSupplier.Mapped<String, String> rabbitRawMessage(String queue, Charset charset) {
         return new RabbitMqBasicGetIterableItemSupplier.Mapped<>(new GetFromQueue(queue).andThen(getStringResult(charset)), t -> t);
@@ -185,6 +191,7 @@ public class RabbitMqBasicGetSupplier {
      * @return an instance of {@link RabbitMqBasicGetSupplier}
      * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
      */
+    @Deprecated
     public static RabbitMqBasicGetIterableItemSupplier.Mapped<String, String> rabbitRawMessage(Charset charset) {
         return rabbitRawMessage(DEFAULT_QUEUE_NAME.get(), charset);
     }
@@ -195,6 +202,7 @@ public class RabbitMqBasicGetSupplier {
      * @param queue is a queue to read
      * @return an instance of {@link RabbitMqBasicGetSupplier}
      */
+    @Deprecated
     public static RabbitMqBasicGetIterableItemSupplier.Mapped<String, String> rabbitRawMessage(String queue) {
         return rabbitRawMessage(queue, UTF_8);
     }
@@ -205,6 +213,7 @@ public class RabbitMqBasicGetSupplier {
      * @return an instance of {@link RabbitMqBasicGetSupplier}
      * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
      */
+    @Deprecated
     public static RabbitMqBasicGetIterableItemSupplier.Mapped<String, String> rabbitRawMessage() {
         return rabbitRawMessage(UTF_8);
     }

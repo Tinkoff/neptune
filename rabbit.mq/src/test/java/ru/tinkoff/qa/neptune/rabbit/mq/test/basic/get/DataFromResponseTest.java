@@ -5,6 +5,7 @@ import com.rabbitmq.client.GetResponse;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.rabbit.mq.BaseRabbitMqPreparations;
+import ru.tinkoff.qa.neptune.rabbit.mq.test.CustomMapper;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.DefaultMapper;
 import ru.tinkoff.qa.neptune.rabbit.mq.test.DraftDto;
 
@@ -12,8 +13,7 @@ import java.nio.charset.StandardCharsets;
 
 import static java.time.Duration.ofSeconds;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.when;
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetResponseSupplier.response;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
@@ -25,7 +25,7 @@ public class DataFromResponseTest extends BaseRabbitMqPreparations {
     @BeforeMethod
     public void beforeClass() throws Exception {
         when(channel.basicGet("test_queue3", true))
-                .thenReturn(new GetResponse(null, null, body1.getBytes(StandardCharsets.UTF_8), 0))
+                .thenReturn(new GetResponse(null, null, body1.getBytes(StandardCharsets.UTF_8), 1))
                 .thenReturn(new GetResponse(null, null, body2.getBytes(StandardCharsets.UTF_8), 0));
 
         DEFAULT_QUEUE_NAME.accept("test_queue3");
@@ -96,5 +96,45 @@ public class DataFromResponseTest extends BaseRabbitMqPreparations {
                 }));
 
         assertThat(responses, hasSize(1));
+    }
+
+    @Test
+    public void test8() {
+        var responses = rabbitMqStepContext.read(response()
+                .autoAck()
+                .timeOut(ofSeconds(5))
+                .thenGetList("description", GetResponse::getBody));
+
+        assertThat(responses, hasSize(1));
+    }
+
+    @Test
+    public void test9() {
+        var responses = rabbitMqStepContext.read(response()
+                .autoAck()
+                .thenGetItem("description", GetResponse::getMessageCount));
+
+        assertThat(responses, is(1));
+    }
+
+    @Test
+    public void test10() {
+        var responses = rabbitMqStepContext.read(response()
+                .autoAck()
+                .timeOut(ofSeconds(5))
+                .thenGetList("description", new TypeReference<DraftDto>() {
+                }).withDataTransformer(new CustomMapper()));
+
+        assertThat(responses.get(0).getName(), containsString("PREFIX"));
+    }
+
+    @Test
+    public void test11() {
+        var responses = rabbitMqStepContext.read(response()
+                .autoAck()
+                .thenGetItem("description", new TypeReference<DraftDto>() {})
+                .withDataTransformer(new CustomMapper()));
+
+        assertThat(responses.getName(), is("PREFIXtest1"));
     }
 }
