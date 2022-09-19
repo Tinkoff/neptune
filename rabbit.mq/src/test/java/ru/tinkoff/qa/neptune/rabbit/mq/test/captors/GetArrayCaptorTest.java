@@ -131,7 +131,14 @@ public class GetArrayCaptorTest extends BaseCaptorTest {
                 .timeOut(ofSeconds(5)));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Read RabbitMQ messages",
-                "#1\r\n\r\n{\"name\":\"test1\"}\r\n\r\n#2\r\n\r\n{\"name\":\"test2\"}")));
+                "#1\r\n\r\n" +
+                        "GetResponse(envelope=null, props=null, messageCount=0, body=(elided, 16 bytes long))\r\n" +
+                        "Body text:\r\n" +
+                        "{\"name\":\"test1\"}\r\n\r\n" +
+                        "#2\r\n\r\n" +
+                        "GetResponse(envelope=null, props=null, messageCount=0, body=(elided, 16 bytes long))\r\n" +
+                        "Body text:\r\n" +
+                        "{\"name\":\"test2\"}")));
     }
 
     @Test
@@ -147,7 +154,14 @@ public class GetArrayCaptorTest extends BaseCaptorTest {
                 .timeOut(ofSeconds(5)));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Read RabbitMQ messages",
-                "#1\r\n\r\n{\"name\":\"test1\"}\r\n\r\n#2\r\n\r\n{\"name\":\"test2\"}")));
+                "#1\r\n\r\n" +
+                        "GetResponse(envelope=null, props=null, messageCount=0, body=(elided, 16 bytes long))\r\n" +
+                        "Body text:\r\n" +
+                        "{\"name\":\"test1\"}\r\n\r\n" +
+                        "#2\r\n\r\n" +
+                        "GetResponse(envelope=null, props=null, messageCount=0, body=(elided, 16 bytes long))\r\n" +
+                        "Body text:\r\n" +
+                        "{\"name\":\"test2\"}")));
     }
 
     @Test
@@ -161,7 +175,14 @@ public class GetArrayCaptorTest extends BaseCaptorTest {
                 .timeOut(ofSeconds(5)));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Read RabbitMQ messages",
-                "#1\r\n\r\n{\"name\":\"test1\"}\r\n\r\n#2\r\n\r\n{\"name\":\"test2\"}")));
+                "#1\r\n\r\n" +
+                        "GetResponse(envelope=null, props=null, messageCount=0, body=(elided, 16 bytes long))\r\n" +
+                        "Body text:\r\n" +
+                        "{\"name\":\"test1\"}\r\n\r\n" +
+                        "#2\r\n\r\n" +
+                        "GetResponse(envelope=null, props=null, messageCount=0, body=(elided, 16 bytes long))\r\n" +
+                        "Body text:\r\n" +
+                        "{\"name\":\"test2\"}")));
     }
 
     @Test

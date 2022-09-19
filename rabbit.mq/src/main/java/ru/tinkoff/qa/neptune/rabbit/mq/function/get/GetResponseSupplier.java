@@ -2,9 +2,9 @@ package ru.tinkoff.qa.neptune.rabbit.mq.function.get;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.rabbitmq.client.GetResponse;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 
 import java.time.Duration;
@@ -30,12 +30,12 @@ public class GetResponseSupplier extends SequentialGetStepSupplier
 
     }
 
-    @Description("Rabbit response")
+    @Description("Rabbit responses")
     public static GetResponseSupplier response(String queue) {
         return new GetResponseSupplier(new GetFromQueue(queue));
     }
 
-    @Description("Rabbit response")
+    @Description("Rabbit responses")
     public static GetResponseSupplier response() {
         return response(DEFAULT_QUEUE_NAME.get());
     }

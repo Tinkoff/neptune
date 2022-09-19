@@ -4,10 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 import ru.tinkoff.qa.neptune.rabbit.mq.captors.MessagesCaptor;
@@ -42,8 +42,6 @@ public abstract class RabbitMqBasicGetIterableSupplier<M, R, S extends RabbitMqB
         super(getFromQueue.andThen(list -> list.stream().map(function).collect(toList())));
         this.getFromQueue = getFromQueue;
     }
-
-    //TODO доки
 
     /**
      * Creates a step that gets some iterable value which is calculated by body of message.
@@ -233,13 +231,6 @@ public abstract class RabbitMqBasicGetIterableSupplier<M, R, S extends RabbitMqB
         @Override
         public Mapped<M, T> withDataTransformer(DataTransformer transformer) {
             return super.withDataTransformer(transformer);
-        }
-    }
-
-    public final static class StringMessages extends RabbitMqBasicGetIterableSupplier<String, String, StringMessages> {
-        private StringMessages(GetFromQueue.MergeProperty<List<String>> getFromQueue) {
-            super(getFromQueue, s -> s);
-            withDataTransformer(new StringDataTransformer());
         }
     }
 }

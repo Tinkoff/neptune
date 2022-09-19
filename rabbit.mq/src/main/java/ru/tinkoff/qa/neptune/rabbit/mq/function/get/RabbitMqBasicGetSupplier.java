@@ -1,24 +1,17 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.function.get;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.rabbitmq.client.Channel;
-import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties;
 
 import java.nio.charset.Charset;
 import java.util.function.Function;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetDeserializedData.getStringResult;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetIterableItemSupplier.rabbitIterableItem;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Retrieve:")
@@ -41,16 +34,12 @@ public class RabbitMqBasicGetSupplier {
      * @return an instance of {@link RabbitMqBasicGetSupplier}
      */
     @Deprecated
-    @Description("{description}")
     public static <M, T> RabbitMqBasicGetIterableItemSupplier.Mapped<M, T> rabbitObject(
-            @DescriptionFragment(value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
-            ) String description,
+            String description,
             String queue,
             Class<M> classT,
             Function<M, T> toGet) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        return new RabbitMqBasicGetIterableItemSupplier.Mapped<>(new GetFromQueue(queue).andThen(new GetDeserializedData<>(classT)), toGet);
+        return rabbitIterableItem(description, queue, classT, toGet);
     }
 
     /**
@@ -69,7 +58,7 @@ public class RabbitMqBasicGetSupplier {
     public static <M, T> RabbitMqBasicGetIterableItemSupplier.Mapped<M, T> rabbitObject(String description,
                                                                                         Class<M> classT,
                                                                                         Function<M, T> toGet) {
-        return rabbitObject(description, DEFAULT_QUEUE_NAME.get(), classT, toGet);
+        return rabbitIterableItem(description, DEFAULT_QUEUE_NAME.get(), classT, toGet);
     }
 
     /**
@@ -84,16 +73,12 @@ public class RabbitMqBasicGetSupplier {
      * @return an instance of {@link RabbitMqBasicGetSupplier}
      */
     @Deprecated
-    @Description("{description}")
     public static <M, T> RabbitMqBasicGetIterableItemSupplier.Mapped<M, T> rabbitObject(
-            @DescriptionFragment(value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
-            ) String description,
+            String description,
             String queue,
             TypeReference<M> typeT,
             Function<M, T> toGet) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        return new RabbitMqBasicGetIterableItemSupplier.Mapped<>(new GetFromQueue(queue).andThen(new GetDeserializedData<>(typeT)), toGet);
+        return rabbitIterableItem(description,queue,typeT,toGet);
     }
 
     /**
@@ -112,7 +97,8 @@ public class RabbitMqBasicGetSupplier {
     public static <M, T> RabbitMqBasicGetIterableItemSupplier.Mapped<M, T> rabbitObject(String description,
                                                                                         TypeReference<M> typeT,
                                                                                         Function<M, T> toGet) {
-        return rabbitObject(description, DEFAULT_QUEUE_NAME.get(), typeT, toGet);
+        return rabbitIterableItem(description, DEFAULT_QUEUE_NAME.get(), typeT, toGet);
+
     }
 
     /**

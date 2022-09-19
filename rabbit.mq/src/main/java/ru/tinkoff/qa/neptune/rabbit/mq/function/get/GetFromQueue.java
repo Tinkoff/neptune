@@ -87,6 +87,9 @@ final class GetFromQueue implements Function<RabbitMqStepContext, List<GetRespon
     }
 
     public List<String> getMessages() {
-        return responses.stream().map(response -> new String(response.getBody())).collect(toList());
-    }
+        return responses.stream().map(response -> response.toString() +
+                "\r\n" +
+                "Body text:" + "\r\n" +
+                new String(response.getBody()))
+                .collect(toList());    }
 }

@@ -4,10 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 import ru.tinkoff.qa.neptune.rabbit.mq.captors.MessageCaptor;
@@ -276,14 +276,6 @@ public abstract class RabbitMqBasicGetIterableItemSupplier<M, T, I extends Rabbi
 
         public Mapped<M, T> withDataTransformer(DataTransformer transformer) {
             return super.withDataTransformer(transformer);
-        }
-    }
-
-    public final static class StringMessage extends RabbitMqBasicGetIterableItemSupplier<String, String, StringMessage> {
-
-        protected StringMessage(GetFromQueue.MergeProperty<List<String>> getFromQueue) {
-            super(getFromQueue, s -> s);
-            withDataTransformer(new StringDataTransformer());
         }
     }
 }
