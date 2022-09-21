@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":18,"i12":18,"i13":18,"i14":18,"i15":18,"i16":18,"i17":18,"i18":10,"i19":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":18,"i12":18,"i13":18,"i14":18,"i15":18,"i16":18,"i17":18,"i18":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],16:["t5","Default Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -94,7 +94,7 @@ loadScripts(document, 'script');</script>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -115,7 +115,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <main role="main">
 <div class="header">
 <div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">ru.tinkoff.qa.neptune.rabbit.mq.function.get</a></div>
-<h2 title="Class RabbitMqBasicGetArrayItemSupplier" class="title">Class RabbitMqBasicGetArrayItemSupplier&lt;T&gt;</h2>
+<h2 title="Class RabbitMqBasicGetArrayItemSupplier" class="title">Class RabbitMqBasicGetArrayItemSupplier&lt;M,&#8203;R,&#8203;I extends RabbitMqBasicGetArrayItemSupplier&lt;M,&#8203;R,&#8203;I&gt;&gt;</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
@@ -125,10 +125,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li><a href="../../../../core/api/steps/SequentialGetStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier</a>&lt;T,&#8203;R,&#8203;M,&#8203;P,&#8203;THIS&gt;</li>
 <li>
 <ul class="inheritance">
-<li><a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier</a>&lt;<a href="../../RabbitMqStepContext.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq">RabbitMqStepContext</a>,&#8203;T,&#8203;com.rabbitmq.client.Channel,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;T&gt;&gt;</li>
+<li><a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectFromArrayStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.GetObjectFromArrayStepSupplier</a>&lt;<a href="../../RabbitMqStepContext.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq">RabbitMqStepContext</a>,&#8203;R,&#8203;I&gt;</li>
 <li>
 <ul class="inheritance">
-<li>ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetArrayItemSupplier&lt;T&gt;</li>
+<li>ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetArrayItemSupplier&lt;M,&#8203;R,&#8203;I&gt;</li>
 </ul>
 </li>
 </ul>
@@ -141,11 +141,15 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Cloneable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Cloneable</a></code>, <code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Supplier</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;<a href="../../RabbitMqStepContext.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq">RabbitMqStepContext</a>,&#8203;T&gt;&gt;</code>, <code><a href="../../../../core/api/steps/parameters/StepParameterPojo.html" title="interface in ru.tinkoff.qa.neptune.core.api.steps.parameters">StepParameterPojo</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Cloneable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Cloneable</a></code>, <code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Supplier</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;<a href="../../RabbitMqStepContext.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq">RabbitMqStepContext</a>,&#8203;R&gt;&gt;</code>, <code><a href="../../../../core/api/steps/parameters/StepParameterPojo.html" title="interface in ru.tinkoff.qa.neptune.core.api.steps.parameters">StepParameterPojo</a></code></dd>
+</dl>
+<dl>
+<dt>Direct Known Subclasses:</dt>
+<dd><code><a href="RabbitMqBasicGetArrayItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier.Mapped</a></code></dd>
 </dl>
 <hr>
-<pre>public class <span class="typeNameLabel">RabbitMqBasicGetArrayItemSupplier&lt;T&gt;</span>
-extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier</a>&lt;<a href="../../RabbitMqStepContext.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq">RabbitMqStepContext</a>,&#8203;T,&#8203;com.rabbitmq.client.Channel,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;T&gt;&gt;</pre>
+<pre>public abstract class <span class="typeNameLabel">RabbitMqBasicGetArrayItemSupplier&lt;M,&#8203;R,&#8203;I extends RabbitMqBasicGetArrayItemSupplier&lt;M,&#8203;R,&#8203;I&gt;&gt;</span>
+extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectFromArrayStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier.GetObjectFromArrayStepSupplier</a>&lt;<a href="../../RabbitMqStepContext.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq">RabbitMqStepContext</a>,&#8203;R,&#8203;I&gt;</pre>
 </li>
 </ul>
 </div>
@@ -159,6 +163,19 @@ extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectF
 <!--   -->
 </a>
 <h3>Nested Class Summary</h3>
+<table class="memberSummary">
+<caption><span>Nested Classes</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Class</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static class&nbsp;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="RabbitMqBasicGetArrayItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier.Mapped</a>&lt;<a href="RabbitMqBasicGetArrayItemSupplier.Mapped.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier.Mapped">M</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.Mapped.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier.Mapped">T</a>&gt;</span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</table>
 <ul class="blockList">
 <li class="blockList"><a id="nested.classes.inherited.from.class.ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier">
 <!--   -->
@@ -176,6 +193,19 @@ extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectF
 <!--   -->
 </a>
 <h3>Field Summary</h3>
+<table class="memberSummary">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Field</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#NO_DESC_ERROR_TEXT">NO_DESC_ERROR_TEXT</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</table>
 <ul class="blockList">
 <li class="blockList"><a id="fields.inherited.from.class.ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier">
 <!--   -->
@@ -202,8 +232,9 @@ extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectF
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>protected </code></td>
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetFromQueue,java.util.function.Function)">RabbitMqBasicGetArrayItemSupplier</a></span>&#8203;(ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetFromQueue&lt;M&gt;&nbsp;getFromQueue,
-                                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">T</a>[]&gt;&nbsp;function)</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetFromQueue.MergeProperty,java.util.function.Function,java.lang.Class)">RabbitMqBasicGetArrayItemSupplier</a></span>&#8203;(ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetFromQueue.MergeProperty&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">M</a>&gt;&gt;&nbsp;getFromQueue,
+                                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">M</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">R</a>&gt;&nbsp;function,
+                                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">R</a>&gt;&nbsp;componentClass)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -225,7 +256,7 @@ extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectF
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code><a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">T</a>&gt;</code></td>
+<td class="colFirst"><code><a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">I</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#autoAck()">autoAck</a></span>()</code></th>
 <td class="colLast">
 <div class="block">It means that server should consider messages acknowledged once delivered.</div>
@@ -233,7 +264,7 @@ extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectF
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onFailure(com.rabbitmq.client.Channel,java.lang.Throwable)">onFailure</a></span>&#8203;(com.rabbitmq.client.Channel&nbsp;m,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onFailure(ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext,java.lang.Throwable)">onFailure</a></span>&#8203;(<a href="../../RabbitMqStepContext.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq">RabbitMqStepContext</a>&nbsp;m,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&nbsp;throwable)</code></th>
 <td class="colLast">
 <div class="block">Some additional action if the step is failed</div>
@@ -241,79 +272,83 @@ extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectF
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onSuccess(T)">onSuccess</a></span>&#8203;(<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">T</a>&nbsp;t)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onSuccess(R)">onSuccess</a></span>&#8203;(<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">R</a>&nbsp;t)</code></th>
 <td class="colLast">
 <div class="block">Some additional action if the step is successful</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code>static &lt;M,&#8203;T&gt;<br><a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;T&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rabbitArrayItem(java.lang.String,com.fasterxml.jackson.core.type.TypeReference,java.util.function.Function)">rabbitArrayItem</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
+<td class="colFirst"><code>static &lt;M,&#8203;T&gt;<br><a href="RabbitMqBasicGetArrayItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier.Mapped</a>&lt;M,&#8203;T&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rabbitArrayItem(java.lang.String,com.fasterxml.jackson.core.type.TypeReference,java.lang.Class,java.util.function.Function)">rabbitArrayItem</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
                com.fasterxml.jackson.core.type.TypeReference&lt;M&gt;&nbsp;typeT,
-               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;T[]&gt;&nbsp;toGet)</code></th>
+               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;T&gt;&nbsp;componentClass,
+               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;T&gt;&nbsp;toGet)</code></th>
 <td class="colLast">
 <div class="block">Creates a step that gets some value from array which is calculated by body of message.</div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;T&gt;</code></td>
+<td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier.Mapped</a>&lt;T,&#8203;T&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rabbitArrayItem(java.lang.String,com.fasterxml.jackson.core.type.TypeReference)">rabbitArrayItem</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-               com.fasterxml.jackson.core.type.TypeReference&lt;T[]&gt;&nbsp;typeT)</code></th>
+               com.fasterxml.jackson.core.type.TypeReference&lt;T&gt;&nbsp;typeT)</code></th>
 <td class="colLast">
 <div class="block">Creates a step that gets value from array body of message.</div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code>static &lt;M,&#8203;T&gt;<br><a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;T&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rabbitArrayItem(java.lang.String,java.lang.Class,java.util.function.Function)">rabbitArrayItem</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
+<td class="colFirst"><code>static &lt;M,&#8203;T&gt;<br><a href="RabbitMqBasicGetArrayItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier.Mapped</a>&lt;M,&#8203;T&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rabbitArrayItem(java.lang.String,java.lang.Class,java.lang.Class,java.util.function.Function)">rabbitArrayItem</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;M&gt;&nbsp;classT,
-               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;T[]&gt;&nbsp;toGet)</code></th>
+               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;T&gt;&nbsp;componentClass,
+               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;T&gt;&nbsp;toGet)</code></th>
 <td class="colLast">
 <div class="block">Creates a step that gets some value from array which is calculated by body of message.</div>
 </td>
 </tr>
 <tr id="i6" class="altColor">
-<td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;T&gt;</code></td>
+<td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier.Mapped</a>&lt;T,&#8203;T&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rabbitArrayItem(java.lang.String,java.lang.Class)">rabbitArrayItem</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;T[]&gt;&nbsp;classT)</code></th>
+               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;T&gt;&nbsp;classT)</code></th>
 <td class="colLast">
 <div class="block">Creates a step that gets value from array body of message.</div>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
-<td class="colFirst"><code>static &lt;M,&#8203;T&gt;<br><a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;T&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rabbitArrayItem(java.lang.String,java.lang.String,com.fasterxml.jackson.core.type.TypeReference,java.util.function.Function)">rabbitArrayItem</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
+<td class="colFirst"><code>static &lt;M,&#8203;T&gt;<br><a href="RabbitMqBasicGetArrayItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier.Mapped</a>&lt;M,&#8203;T&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rabbitArrayItem(java.lang.String,java.lang.String,com.fasterxml.jackson.core.type.TypeReference,java.lang.Class,java.util.function.Function)">rabbitArrayItem</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;queue,
                com.fasterxml.jackson.core.type.TypeReference&lt;M&gt;&nbsp;typeT,
-               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;T[]&gt;&nbsp;toGet)</code></th>
+               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;T&gt;&nbsp;componentClass,
+               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;T&gt;&nbsp;toGet)</code></th>
 <td class="colLast">
 <div class="block">Creates a step that gets some value from array which is calculated by body of message.</div>
 </td>
 </tr>
 <tr id="i8" class="altColor">
-<td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;T&gt;</code></td>
+<td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier.Mapped</a>&lt;T,&#8203;T&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rabbitArrayItem(java.lang.String,java.lang.String,com.fasterxml.jackson.core.type.TypeReference)">rabbitArrayItem</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;queue,
-               com.fasterxml.jackson.core.type.TypeReference&lt;T[]&gt;&nbsp;typeT)</code></th>
+               com.fasterxml.jackson.core.type.TypeReference&lt;T&gt;&nbsp;typeT)</code></th>
 <td class="colLast">
 <div class="block">Creates a step that gets value from array body of message.</div>
 </td>
 </tr>
 <tr id="i9" class="rowColor">
-<td class="colFirst"><code>static &lt;M,&#8203;T&gt;<br><a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;T&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rabbitArrayItem(java.lang.String,java.lang.String,java.lang.Class,java.util.function.Function)">rabbitArrayItem</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
+<td class="colFirst"><code>static &lt;M,&#8203;T&gt;<br><a href="RabbitMqBasicGetArrayItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier.Mapped</a>&lt;M,&#8203;T&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rabbitArrayItem(java.lang.String,java.lang.String,java.lang.Class,java.lang.Class,java.util.function.Function)">rabbitArrayItem</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;queue,
                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;M&gt;&nbsp;classT,
-               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;T[]&gt;&nbsp;toGet)</code></th>
+               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;T&gt;&nbsp;componentClass,
+               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;T&gt;&nbsp;toGet)</code></th>
 <td class="colLast">
 <div class="block">Creates a step that gets some value from array which is calculated by body of message.</div>
 </td>
 </tr>
 <tr id="i10" class="altColor">
-<td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;T&gt;</code></td>
+<td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier.Mapped</a>&lt;T,&#8203;T&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rabbitArrayItem(java.lang.String,java.lang.String,java.lang.Class)">rabbitArrayItem</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;queue,
-               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;T[]&gt;&nbsp;classT)</code></th>
+               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;T&gt;&nbsp;classT)</code></th>
 <td class="colLast">
 <div class="block">Creates a step that gets value from array body of message.</div>
 </td>
@@ -369,25 +404,13 @@ extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectF
 </td>
 </tr>
 <tr id="i18" class="altColor">
-<td class="colFirst"><code><a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">T</a>&gt;</code></td>
+<td class="colFirst"><code><a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">I</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#timeOut(java.time.Duration)">timeOut</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</code></th>
 <td class="colLast">
 <div class="block">Sometimes it is necessary to wait until some result that may be considered valuable is returned.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
-<td class="colFirst"><code><a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">T</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withDataTransformer(ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer)">withDataTransformer</a></span>&#8203;(<a href="../../../../core/api/data/format/DataTransformer.html" title="interface in ru.tinkoff.qa.neptune.core.api.data.format">DataTransformer</a>&nbsp;transformer)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
 </table>
-<ul class="blockList">
-<li class="blockList"><a id="methods.inherited.from.class.ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier">
-<!--   -->
-</a>
-<h3>Methods inherited from class&nbsp;ru.tinkoff.qa.neptune.core.api.steps.<a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier</a></h3>
-<code><a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier.html#from(java.util.function.Function)">from</a>, <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier.html#from(M)">from</a>, <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier.html#from(ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier)">from</a></code></li>
-</ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier">
 <!--   -->
@@ -411,6 +434,29 @@ extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectF
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
+<!-- ============ FIELD DETAIL =========== -->
+<section role="region">
+<ul class="blockList">
+<li class="blockList"><a id="field.detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a id="NO_DESC_ERROR_TEXT">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>NO_DESC_ERROR_TEXT</h4>
+<pre>public static final&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> NO_DESC_ERROR_TEXT</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../../../constant-values.html#ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetArrayItemSupplier.NO_DESC_ERROR_TEXT">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</section>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <section role="region">
 <ul class="blockList">
@@ -418,14 +464,15 @@ extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectF
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetFromQueue,java.util.function.Function)">
+<a id="&lt;init&gt;(ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetFromQueue.MergeProperty,java.util.function.Function,java.lang.Class)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>RabbitMqBasicGetArrayItemSupplier</h4>
-<pre>protected&nbsp;RabbitMqBasicGetArrayItemSupplier&#8203;(ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetFromQueue&lt;M&gt;&nbsp;getFromQueue,
-                                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">T</a>[]&gt;&nbsp;function)</pre>
+<pre>protected&nbsp;RabbitMqBasicGetArrayItemSupplier&#8203;(ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetFromQueue.MergeProperty&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">M</a>&gt;&gt;&nbsp;getFromQueue,
+                                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">M</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">R</a>&gt;&nbsp;function,
+                                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">R</a>&gt;&nbsp;componentClass)</pre>
 </li>
 </ul>
 </li>
@@ -438,16 +485,17 @@ extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectF
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="rabbitArrayItem(java.lang.String,java.lang.String,java.lang.Class,java.util.function.Function)">
+<a id="rabbitArrayItem(java.lang.String,java.lang.String,java.lang.Class,java.lang.Class,java.util.function.Function)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>rabbitArrayItem</h4>
-<pre class="methodSignature">public static&nbsp;&lt;M,&#8203;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;T&gt;&nbsp;rabbitArrayItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                                                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;queue,
-                                                                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;M&gt;&nbsp;classT,
-                                                                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;T[]&gt;&nbsp;toGet)</pre>
+<pre class="methodSignature">public static&nbsp;&lt;M,&#8203;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier.Mapped</a>&lt;M,&#8203;T&gt;&nbsp;rabbitArrayItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
+                                                                                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;queue,
+                                                                                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;M&gt;&nbsp;classT,
+                                                                                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;T&gt;&nbsp;componentClass,
+                                                                                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;T&gt;&nbsp;toGet)</pre>
 <div class="block">Creates a step that gets some value from array which is calculated by body of message.</div>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
@@ -463,15 +511,16 @@ extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectF
 </dl>
 </li>
 </ul>
-<a id="rabbitArrayItem(java.lang.String,java.lang.Class,java.util.function.Function)">
+<a id="rabbitArrayItem(java.lang.String,java.lang.Class,java.lang.Class,java.util.function.Function)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>rabbitArrayItem</h4>
-<pre class="methodSignature">public static&nbsp;&lt;M,&#8203;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;T&gt;&nbsp;rabbitArrayItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                                                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;M&gt;&nbsp;classT,
-                                                                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;T[]&gt;&nbsp;toGet)</pre>
+<pre class="methodSignature">public static&nbsp;&lt;M,&#8203;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier.Mapped</a>&lt;M,&#8203;T&gt;&nbsp;rabbitArrayItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
+                                                                                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;M&gt;&nbsp;classT,
+                                                                                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;T&gt;&nbsp;componentClass,
+                                                                                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;T&gt;&nbsp;toGet)</pre>
 <div class="block">Creates a step that gets some value from array which is calculated by body of message.
  It gets required value from default queue.</div>
 <dl>
@@ -489,16 +538,17 @@ extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectF
 </dl>
 </li>
 </ul>
-<a id="rabbitArrayItem(java.lang.String,java.lang.String,com.fasterxml.jackson.core.type.TypeReference,java.util.function.Function)">
+<a id="rabbitArrayItem(java.lang.String,java.lang.String,com.fasterxml.jackson.core.type.TypeReference,java.lang.Class,java.util.function.Function)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>rabbitArrayItem</h4>
-<pre class="methodSignature">public static&nbsp;&lt;M,&#8203;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;T&gt;&nbsp;rabbitArrayItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                                                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;queue,
-                                                                               com.fasterxml.jackson.core.type.TypeReference&lt;M&gt;&nbsp;typeT,
-                                                                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;T[]&gt;&nbsp;toGet)</pre>
+<pre class="methodSignature">public static&nbsp;&lt;M,&#8203;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier.Mapped</a>&lt;M,&#8203;T&gt;&nbsp;rabbitArrayItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
+                                                                                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;queue,
+                                                                                              com.fasterxml.jackson.core.type.TypeReference&lt;M&gt;&nbsp;typeT,
+                                                                                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;T&gt;&nbsp;componentClass,
+                                                                                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;T&gt;&nbsp;toGet)</pre>
 <div class="block">Creates a step that gets some value from array which is calculated by body of message.</div>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
@@ -514,15 +564,16 @@ extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectF
 </dl>
 </li>
 </ul>
-<a id="rabbitArrayItem(java.lang.String,com.fasterxml.jackson.core.type.TypeReference,java.util.function.Function)">
+<a id="rabbitArrayItem(java.lang.String,com.fasterxml.jackson.core.type.TypeReference,java.lang.Class,java.util.function.Function)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>rabbitArrayItem</h4>
-<pre class="methodSignature">public static&nbsp;&lt;M,&#8203;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;T&gt;&nbsp;rabbitArrayItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                                                               com.fasterxml.jackson.core.type.TypeReference&lt;M&gt;&nbsp;typeT,
-                                                                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;T[]&gt;&nbsp;toGet)</pre>
+<pre class="methodSignature">public static&nbsp;&lt;M,&#8203;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier.Mapped</a>&lt;M,&#8203;T&gt;&nbsp;rabbitArrayItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
+                                                                                              com.fasterxml.jackson.core.type.TypeReference&lt;M&gt;&nbsp;typeT,
+                                                                                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;T&gt;&nbsp;componentClass,
+                                                                                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;M,&#8203;T&gt;&nbsp;toGet)</pre>
 <div class="block">Creates a step that gets some value from array which is calculated by body of message.
  It gets required value from default queue.</div>
 <dl>
@@ -546,9 +597,9 @@ extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectF
 <ul class="blockList">
 <li class="blockList">
 <h4>rabbitArrayItem</h4>
-<pre class="methodSignature">public static&nbsp;&lt;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;T&gt;&nbsp;rabbitArrayItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                                                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;queue,
-                                                                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;T[]&gt;&nbsp;classT)</pre>
+<pre class="methodSignature">public static&nbsp;&lt;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier.Mapped</a>&lt;T,&#8203;T&gt;&nbsp;rabbitArrayItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
+                                                                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;queue,
+                                                                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;T&gt;&nbsp;classT)</pre>
 <div class="block">Creates a step that gets value from array body of message.</div>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
@@ -568,8 +619,8 @@ extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectF
 <ul class="blockList">
 <li class="blockList">
 <h4>rabbitArrayItem</h4>
-<pre class="methodSignature">public static&nbsp;&lt;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;T&gt;&nbsp;rabbitArrayItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                                                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;T[]&gt;&nbsp;classT)</pre>
+<pre class="methodSignature">public static&nbsp;&lt;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier.Mapped</a>&lt;T,&#8203;T&gt;&nbsp;rabbitArrayItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
+                                                                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;T&gt;&nbsp;classT)</pre>
 <div class="block">Creates a step that gets value from array body of message. It gets required value from default queue.</div>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
@@ -590,9 +641,9 @@ extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectF
 <ul class="blockList">
 <li class="blockList">
 <h4>rabbitArrayItem</h4>
-<pre class="methodSignature">public static&nbsp;&lt;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;T&gt;&nbsp;rabbitArrayItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                                                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;queue,
-                                                                       com.fasterxml.jackson.core.type.TypeReference&lt;T[]&gt;&nbsp;typeT)</pre>
+<pre class="methodSignature">public static&nbsp;&lt;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier.Mapped</a>&lt;T,&#8203;T&gt;&nbsp;rabbitArrayItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
+                                                                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;queue,
+                                                                                      com.fasterxml.jackson.core.type.TypeReference&lt;T&gt;&nbsp;typeT)</pre>
 <div class="block">Creates a step that gets value from array body of message.</div>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
@@ -612,8 +663,8 @@ extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectF
 <ul class="blockList">
 <li class="blockList">
 <h4>rabbitArrayItem</h4>
-<pre class="methodSignature">public static&nbsp;&lt;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;T&gt;&nbsp;rabbitArrayItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
-                                                                       com.fasterxml.jackson.core.type.TypeReference&lt;T[]&gt;&nbsp;typeT)</pre>
+<pre class="methodSignature">public static&nbsp;&lt;T&gt;&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.Mapped.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier.Mapped</a>&lt;T,&#8203;T&gt;&nbsp;rabbitArrayItem&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;description,
+                                                                                      com.fasterxml.jackson.core.type.TypeReference&lt;T&gt;&nbsp;typeT)</pre>
 <div class="block">Creates a step that gets value from array body of message. It gets required value from default queue.</div>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
@@ -634,13 +685,13 @@ extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectF
 <ul class="blockList">
 <li class="blockList">
 <h4>timeOut</h4>
-<pre class="methodSignature">public&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">T</a>&gt;&nbsp;timeOut&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</pre>
+<pre class="methodSignature">public&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">I</a>&nbsp;timeOut&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;timeOut)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../core/api/steps/SequentialGetStepSupplier.html#timeOut(java.time.Duration)">SequentialGetStepSupplier</a></code></span></div>
 <div class="block">Sometimes it is necessary to wait until some result that may be considered valuable is returned. This method
  is for defining the waiting time.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../../core/api/steps/SequentialGetStepSupplier.html#timeOut(java.time.Duration)">timeOut</a></code>&nbsp;in class&nbsp;<code><a href="../../../../core/api/steps/SequentialGetStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier</a>&lt;<a href="../../RabbitMqStepContext.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq">RabbitMqStepContext</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">T</a>,&#8203;com.rabbitmq.client.Channel,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">T</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">T</a>&gt;&gt;</code></dd>
+<dd><code><a href="../../../../core/api/steps/SequentialGetStepSupplier.html#timeOut(java.time.Duration)">timeOut</a></code>&nbsp;in class&nbsp;<code><a href="../../../../core/api/steps/SequentialGetStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier</a>&lt;<a href="../../RabbitMqStepContext.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq">RabbitMqStepContext</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">R</a>,&#8203;<a href="../../RabbitMqStepContext.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq">RabbitMqStepContext</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">R</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">I</a> extends <a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">M</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">R</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">I</a>&gt;&gt;</code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>timeOut</code> - is a time duration to get desired value</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -650,49 +701,40 @@ extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectF
 </ul>
 <a id="onSuccess(java.lang.Object)">
 <!--   -->
-</a><a id="onSuccess(T)">
+</a><a id="onSuccess(R)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>onSuccess</h4>
-<pre class="methodSignature">protected&nbsp;void&nbsp;onSuccess&#8203;(<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">T</a>&nbsp;t)</pre>
+<pre class="methodSignature">protected&nbsp;void&nbsp;onSuccess&#8203;(<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">R</a>&nbsp;t)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../core/api/steps/SequentialGetStepSupplier.html#onSuccess(R)">SequentialGetStepSupplier</a></code></span></div>
 <div class="block">Some additional action if the step is successful</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../../core/api/steps/SequentialGetStepSupplier.html#onSuccess(R)">onSuccess</a></code>&nbsp;in class&nbsp;<code><a href="../../../../core/api/steps/SequentialGetStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier</a>&lt;<a href="../../RabbitMqStepContext.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq">RabbitMqStepContext</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">T</a>,&#8203;com.rabbitmq.client.Channel,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">T</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">T</a>&gt;&gt;</code></dd>
+<dd><code><a href="../../../../core/api/steps/SequentialGetStepSupplier.html#onSuccess(R)">onSuccess</a></code>&nbsp;in class&nbsp;<code><a href="../../../../core/api/steps/SequentialGetStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier</a>&lt;<a href="../../RabbitMqStepContext.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq">RabbitMqStepContext</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">R</a>,&#8203;<a href="../../RabbitMqStepContext.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq">RabbitMqStepContext</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">R</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">I</a> extends <a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">M</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">R</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">I</a>&gt;&gt;</code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>t</code> - is a result value</dd>
 </dl>
 </li>
 </ul>
-<a id="onFailure(com.rabbitmq.client.Channel,java.lang.Throwable)">
+<a id="onFailure(ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext,java.lang.Throwable)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>onFailure</h4>
-<pre class="methodSignature">protected&nbsp;void&nbsp;onFailure&#8203;(com.rabbitmq.client.Channel&nbsp;m,
+<pre class="methodSignature">protected&nbsp;void&nbsp;onFailure&#8203;(<a href="../../RabbitMqStepContext.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq">RabbitMqStepContext</a>&nbsp;m,
                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&nbsp;throwable)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../core/api/steps/SequentialGetStepSupplier.html#onFailure(M,java.lang.Throwable)">SequentialGetStepSupplier</a></code></span></div>
 <div class="block">Some additional action if the step is failed</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../../core/api/steps/SequentialGetStepSupplier.html#onFailure(M,java.lang.Throwable)">onFailure</a></code>&nbsp;in class&nbsp;<code><a href="../../../../core/api/steps/SequentialGetStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier</a>&lt;<a href="../../RabbitMqStepContext.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq">RabbitMqStepContext</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">T</a>,&#8203;com.rabbitmq.client.Channel,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">T</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">T</a>&gt;&gt;</code></dd>
+<dd><code><a href="../../../../core/api/steps/SequentialGetStepSupplier.html#onFailure(M,java.lang.Throwable)">onFailure</a></code>&nbsp;in class&nbsp;<code><a href="../../../../core/api/steps/SequentialGetStepSupplier.html" title="class in ru.tinkoff.qa.neptune.core.api.steps">SequentialGetStepSupplier</a>&lt;<a href="../../RabbitMqStepContext.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq">RabbitMqStepContext</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">R</a>,&#8203;<a href="../../RabbitMqStepContext.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq">RabbitMqStepContext</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">R</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">I</a> extends <a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">M</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">R</a>,&#8203;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">I</a>&gt;&gt;</code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>m</code> - is a mediator value is used to get the required result</dd>
 <dd><code>throwable</code> - is a thrown exception/error</dd>
 </dl>
-</li>
-</ul>
-<a id="withDataTransformer(ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>withDataTransformer</h4>
-<pre class="methodSignature">public&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">T</a>&gt;&nbsp;withDataTransformer&#8203;(<a href="../../../../core/api/data/format/DataTransformer.html" title="interface in ru.tinkoff.qa.neptune.core.api.data.format">DataTransformer</a>&nbsp;transformer)</pre>
 </li>
 </ul>
 <a id="autoAck()">
@@ -701,7 +743,7 @@ extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectF
 <ul class="blockList">
 <li class="blockList">
 <h4>autoAck</h4>
-<pre class="methodSignature">public&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="class in ru.tinkoff.qa.neptune.rabbit.mq.function.get">RabbitMqBasicGetArrayItemSupplier</a>&lt;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">T</a>&gt;&nbsp;autoAck()</pre>
+<pre class="methodSignature">public&nbsp;<a href="RabbitMqBasicGetArrayItemSupplier.html" title="type parameter in RabbitMqBasicGetArrayItemSupplier">I</a>&nbsp;autoAck()</pre>
 <div class="block">It means that server should consider messages acknowledged once delivered.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -884,7 +926,7 @@ extends <a href="../../../../core/api/steps/SequentialGetStepSupplier.GetObjectF
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
