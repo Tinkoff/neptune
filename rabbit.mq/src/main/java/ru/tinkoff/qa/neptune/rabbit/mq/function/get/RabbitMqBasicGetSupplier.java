@@ -109,11 +109,10 @@ public class RabbitMqBasicGetSupplier {
      * @param <T>    is a type of deserialized message
      * @return an instance of {@link RabbitMqBasicGetSupplier}
      */
-    @Deprecated
     @Description("Message body")
     public static <T> RabbitMqBasicGetIterableItemSupplier.Mapped<T, T> rabbitBody(String queue,
                                                                                    Class<T> classT) {
-        return new RabbitMqBasicGetIterableItemSupplier.Mapped<>(new GetFromQueue(queue).andThen(new GetDeserializedData<>(classT)), t -> t);
+        return rabbitIterableItem("Message body",queue,classT);
     }
 
     /**
@@ -124,7 +123,6 @@ public class RabbitMqBasicGetSupplier {
      * @return an instance of {@link RabbitMqBasicGetSupplier}
      * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
      */
-    @Deprecated
     public static <T> RabbitMqBasicGetIterableItemSupplier.Mapped<T, T> rabbitBody(Class<T> classT) {
         return rabbitBody(DEFAULT_QUEUE_NAME.get(), classT);
     }
@@ -137,11 +135,10 @@ public class RabbitMqBasicGetSupplier {
      * @param <T>   is a type of deserialized message
      * @return an instance of {@link RabbitMqBasicGetSupplier}
      */
-    @Deprecated
     @Description("Message body")
     public static <T> RabbitMqBasicGetIterableItemSupplier.Mapped<T, T> rabbitBody(String queue,
                                                                                    TypeReference<T> typeT) {
-        return new RabbitMqBasicGetIterableItemSupplier.Mapped<>(new GetFromQueue(queue).andThen(new GetDeserializedData<>(typeT)), t -> t);
+        return rabbitIterableItem("Message body", queue, typeT);
     }
 
     /**
@@ -152,7 +149,6 @@ public class RabbitMqBasicGetSupplier {
      * @return an instance of {@link RabbitMqBasicGetSupplier}
      * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
      */
-    @Deprecated
     public static <T> RabbitMqBasicGetIterableItemSupplier.Mapped<T, T> rabbitBody(TypeReference<T> typeT) {
         return rabbitBody(DEFAULT_QUEUE_NAME.get(), typeT);
     }

@@ -21,6 +21,7 @@ import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapture
 import static ru.tinkoff.qa.neptune.core.api.steps.selections.ItemsCountCondition.isEqual;
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetArraySupplier.rabbitArray;
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetIterableSupplier.rabbitIterable;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetIterableSupplier.rabbitIterableOfRawMessages;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
 
 public class GetResultWithConditionTest extends BaseCaptorTest {
@@ -190,6 +191,15 @@ public class GetResultWithConditionTest extends BaseCaptorTest {
         asList(result).forEach(dto->{
             assertThat(dto.getName(), containsString("PREFIX"));
         });
+    }
+
+    @Test
+    public void test13() {
+        var result = rabbitMqStepContext.read(
+                rabbitIterableOfRawMessages()
+                        .autoAck());
+
+        assertThat(result, hasSize(1));
     }
 }
 

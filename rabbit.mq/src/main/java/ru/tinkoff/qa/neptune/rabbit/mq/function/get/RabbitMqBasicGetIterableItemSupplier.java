@@ -123,7 +123,6 @@ public abstract class RabbitMqBasicGetIterableItemSupplier<M, T, I extends Rabbi
      * @param toGet       describes how to get desired value
      * @param <M>         is a type of deserialized message
      * @param <T>         is a type of item of iterable
-     * @param <S>         is a type of iterable
      * @return an instance of {@link RabbitMqBasicGetIterableItemSupplier}
      * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
      */
@@ -140,7 +139,6 @@ public abstract class RabbitMqBasicGetIterableItemSupplier<M, T, I extends Rabbi
      * @param description is description of value to get
      * @param queue       is a queue to read
      * @param classT      is a class of a value to deserialize message
-     * @param <T>         is a type of item of iterable
      * @return an instance of {@link RabbitMqBasicGetIterableItemSupplier}
      */
     public static <M> Mapped<M, M> rabbitIterableItem(
@@ -155,7 +153,6 @@ public abstract class RabbitMqBasicGetIterableItemSupplier<M, T, I extends Rabbi
      *
      * @param description is description of value to get
      * @param classT      is a class of a value to deserialize message
-     * @param <T>         is a type of item of iterable
      * @param <M>         is a type of iterable
      * @return an instance of {@link RabbitMqBasicGetIterableItemSupplier}
      * @see RabbitMQRoutingProperties#DEFAULT_QUEUE_NAME
@@ -204,8 +201,8 @@ public abstract class RabbitMqBasicGetIterableItemSupplier<M, T, I extends Rabbi
      * @param charset is a required charset
      */
     @Description("String message")
-    public static Mapped<String, String> rabbitRawMessage(String queue, Charset charset) {
-        return new Mapped<>(new GetFromQueue(queue).andThen(getStringResult(charset)), t -> t);
+    public static StringMessage rabbitRawMessage(String queue, Charset charset) {
+        return new StringMessage(new GetFromQueue(queue).andThen(getStringResult(charset)));
     }
 
     /**
@@ -213,7 +210,7 @@ public abstract class RabbitMqBasicGetIterableItemSupplier<M, T, I extends Rabbi
      *
      * @param charset is a required charset
      */
-    public static Mapped<String, String> rabbitRawMessage(Charset charset) {
+    public static StringMessage rabbitRawMessage(Charset charset) {
         return rabbitRawMessage(DEFAULT_QUEUE_NAME.get(), charset);
     }
 
@@ -222,14 +219,14 @@ public abstract class RabbitMqBasicGetIterableItemSupplier<M, T, I extends Rabbi
      *
      * @param queue is a queue to read
      */
-    public static Mapped<String, String> rabbitRawMessage(String queue) {
+    public static StringMessage rabbitRawMessage(String queue) {
         return rabbitRawMessage(queue, UTF_8);
     }
 
     /**
      Creates a step that gets string body of message. It gets required value from default queue.
      */
-    public static Mapped<String, String> rabbitRawMessage() {
+    public static StringMessage rabbitRawMessage() {
         return rabbitRawMessage(UTF_8);
     }
 
@@ -276,6 +273,14 @@ public abstract class RabbitMqBasicGetIterableItemSupplier<M, T, I extends Rabbi
 
         public Mapped<M, T> withDataTransformer(DataTransformer transformer) {
             return super.withDataTransformer(transformer);
+        }
+    }
+
+    public final static class StringMessage extends RabbitMqBasicGetIterableItemSupplier<String, String, StringMessage> {
+
+        protected StringMessage(GetFromQueue.MergeProperty<List<String>> getFromQueue) {
+            super(getFromQueue, s -> s);
+            withDataTransformer(new StringDataTransformer());
         }
     }
 }

@@ -13,13 +13,16 @@ import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 import ru.tinkoff.qa.neptune.rabbit.mq.captors.MessagesCaptor;
 import ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties;
 
+import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetDeserializedData.getStringResult;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Retrieve:")
@@ -191,6 +194,29 @@ public abstract class RabbitMqBasicGetIterableSupplier<M, R, S extends RabbitMqB
         return rabbitIterable(description, DEFAULT_QUEUE_NAME.get(), typeT);
     }
 
+    /**
+     * Creates a step that receives a collection of string messages.
+     *
+     * @param queue   is a queue to read
+     * @param charset is a required charset
+     */
+    @Description("String message")
+    public static StringMessages rabbitIterableOfRawMessages(String queue, Charset charset){
+        return new StringMessages(new GetFromQueue(queue).andThen(getStringResult(charset)));
+    }
+
+    public static StringMessages rabbitIterableOfRawMessages(Charset charset){
+        return rabbitIterableOfRawMessages(DEFAULT_QUEUE_NAME.get(), charset);
+    }
+
+    public static StringMessages rabbitIterableOfRawMessages(String queue){
+        return rabbitIterableOfRawMessages(queue, UTF_8);
+    }
+
+    public static StringMessages rabbitIterableOfRawMessages(){
+        return rabbitIterableOfRawMessages(UTF_8);
+    }
+
     @Override
     public S timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
@@ -231,6 +257,13 @@ public abstract class RabbitMqBasicGetIterableSupplier<M, R, S extends RabbitMqB
         @Override
         public Mapped<M, T> withDataTransformer(DataTransformer transformer) {
             return super.withDataTransformer(transformer);
+        }
+    }
+
+    public final static class StringMessages extends RabbitMqBasicGetIterableSupplier<String, String, StringMessages> {
+        private StringMessages(GetFromQueue.MergeProperty<List<String>> getFromQueue) {
+            super(getFromQueue, s -> s);
+            withDataTransformer(new StringDataTransformer());
         }
     }
 }
