@@ -15,6 +15,7 @@ import static java.time.Duration.ofSeconds;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anEmptyMap;
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.fail;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.MapEntryMatcher.mapEntry;
@@ -61,12 +62,16 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
 
         rabbitMqStepContext.read(rabbitIterable("Values of fields 'name'",
-                new TypeReference<List<DraftDto>>() {},
+                new TypeReference<List<DraftDto>>() {
+                },
                 list -> list.stream().map(DraftDto::getName).collect(toList()))
                 .criteria("Value contains 'test", s -> s.contains("test")));
 
-        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("RabbitMQ message",
-                "[{\"name\":\"test2\"},{\"name\":\"test3\"}]")));
+        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Read RabbitMQ messages",
+                "#1\r\n\r\n" +
+                        "GetResponse(envelope=null, props=null, messageCount=0, body=(elided, 35 bytes long))\r\n" +
+                        "Body text:\r\n" +
+                        "[{\"name\":\"test2\"},{\"name\":\"test3\"}]")));
     }
 
     @Test
@@ -86,12 +91,16 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
 
         rabbitMqStepContext.read(rabbitIterable("Values of fields 'name'",
-                new TypeReference<List<DraftDto>>() {},
+                new TypeReference<List<DraftDto>>() {
+                },
                 list -> list.stream().map(DraftDto::getName).collect(toList()))
                 .criteria("Value contains 'test", s -> s.contains("test")));
 
-        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("RabbitMQ message",
-                "[{\"name\":\"test2\"},{\"name\":\"test3\"}]")));
+        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Read RabbitMQ messages",
+                "#1\r\n\r\n" +
+                        "GetResponse(envelope=null, props=null, messageCount=0, body=(elided, 35 bytes long))\r\n" +
+                        "Body text:\r\n" +
+                        "[{\"name\":\"test2\"},{\"name\":\"test3\"}]")));
     }
 
     @Test
@@ -114,9 +123,11 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
                 .criteria("Value contains 'test", s -> s.contains("fail"))
                 .timeOut(ofSeconds(5)));
 
-        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Read RabbitMQ messages", "#1\r\n" +
-                "\r\n" +
-                "[{\"name\":\"test2\"},{\"name\":\"test3\"}]")));
+        assertThat(CAUGHT_MESSAGES.get("Read RabbitMQ messages"), containsString(
+                "#1\r\n\r\n" +
+                        "GetResponse(envelope=null, props=null, messageCount=0, body=(elided, 35 bytes long))\r\n" +
+                        "Body text:\r\n" +
+                        "[{\"name\":\"test2\"},{\"name\":\"test3\"}]"));
     }
 
     @Test
@@ -142,9 +153,11 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
                 .criteria("Value contains 'test", s -> s.contains("fail"))
                 .timeOut(ofSeconds(5)));
 
-        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Read RabbitMQ messages", "#1\r\n" +
-                "\r\n" +
-                "[{\"name\":\"test2\"},{\"name\":\"test3\"}]")));
+        assertThat(CAUGHT_MESSAGES.get("Read RabbitMQ messages"), containsString(
+                "#1\r\n\r\n" +
+                        "GetResponse(envelope=null, props=null, messageCount=0, body=(elided, 35 bytes long))\r\n" +
+                        "Body text:\r\n" +
+                        "[{\"name\":\"test2\"},{\"name\":\"test3\"}]"));
     }
     
     @Test
