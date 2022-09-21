@@ -19,6 +19,7 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperti
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("GetResponse criteria")
 @MaxDepthOfReporting(0)
+@Description("Rabbit responses")
 public class GetResponseSupplier extends SequentialGetStepSupplier
         .GetListStepSupplier<RabbitMqStepContext, List<GetResponse>, GetResponse, GetResponseSupplier> {
 
@@ -30,14 +31,12 @@ public class GetResponseSupplier extends SequentialGetStepSupplier
 
     }
 
-    @Description("Rabbit responses")
-    public static GetResponseSupplier response(String queue) {
+    public static GetResponseSupplier responses(String queue) {
         return new GetResponseSupplier(new GetFromQueue(queue));
     }
 
-    @Description("Rabbit responses")
-    public static GetResponseSupplier response() {
-        return response(DEFAULT_QUEUE_NAME.get());
+    public static GetResponseSupplier responses() {
+        return responses(DEFAULT_QUEUE_NAME.get());
     }
 
     public <R> RabbitMqBasicGetListFromResponseSupplier<R, R, ?> thenGetList(String description, Function<GetResponse, R> getItemFunction) {

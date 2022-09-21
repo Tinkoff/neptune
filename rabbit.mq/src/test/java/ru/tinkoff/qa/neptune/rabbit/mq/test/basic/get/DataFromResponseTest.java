@@ -15,7 +15,7 @@ import static java.time.Duration.ofSeconds;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.when;
-import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetResponseSupplier.response;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetResponseSupplier.responses;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
 
 public class DataFromResponseTest extends BaseRabbitMqPreparations {
@@ -33,7 +33,7 @@ public class DataFromResponseTest extends BaseRabbitMqPreparations {
 
     @Test
     public void test1() {
-        var responses = rabbitMqStepContext.read(response()
+        var responses = rabbitMqStepContext.read(responses()
                 .timeOut(ofSeconds(5)));
 
         assertThat(responses, hasSize(0));
@@ -41,7 +41,7 @@ public class DataFromResponseTest extends BaseRabbitMqPreparations {
 
     @Test
     public void test2() {
-        var responses = rabbitMqStepContext.read(response("test_queue3")
+        var responses = rabbitMqStepContext.read(responses("test_queue3")
                 .criteria("Body contains test2", r -> new String(r.getBody()).contains("test2"))
                 .autoAck()
                 .timeOut(ofSeconds(5)));
@@ -51,7 +51,7 @@ public class DataFromResponseTest extends BaseRabbitMqPreparations {
 
     @Test
     public void test3() {
-        var responses = rabbitMqStepContext.read(response()
+        var responses = rabbitMqStepContext.read(responses()
                 .autoAck()
                 .timeOut(ofSeconds(50)));
 
@@ -60,7 +60,7 @@ public class DataFromResponseTest extends BaseRabbitMqPreparations {
 
     @Test
     public void test4() {
-        var responses = rabbitMqStepContext.read(response()
+        var responses = rabbitMqStepContext.read(responses()
                 .autoAck()
                 .thenGetItem("description", DraftDto.class));
 
@@ -69,7 +69,7 @@ public class DataFromResponseTest extends BaseRabbitMqPreparations {
 
     @Test
     public void test5() {
-        var responses = rabbitMqStepContext.read(response()
+        var responses = rabbitMqStepContext.read(responses()
                 .autoAck()
                 .thenGetItem("description", new TypeReference<DraftDto>() {
                 }));
@@ -79,7 +79,7 @@ public class DataFromResponseTest extends BaseRabbitMqPreparations {
 
     @Test
     public void test6() {
-        var responses = rabbitMqStepContext.read(response()
+        var responses = rabbitMqStepContext.read(responses()
                 .autoAck()
                 .timeOut(ofSeconds(5))
                 .thenGetList("description", DraftDto.class));
@@ -89,7 +89,7 @@ public class DataFromResponseTest extends BaseRabbitMqPreparations {
 
     @Test
     public void test7() {
-        var responses = rabbitMqStepContext.read(response()
+        var responses = rabbitMqStepContext.read(responses()
                 .autoAck()
                 .timeOut(ofSeconds(5))
                 .thenGetList("description", new TypeReference<DraftDto>() {
@@ -100,7 +100,7 @@ public class DataFromResponseTest extends BaseRabbitMqPreparations {
 
     @Test
     public void test8() {
-        var responses = rabbitMqStepContext.read(response()
+        var responses = rabbitMqStepContext.read(responses()
                 .autoAck()
                 .timeOut(ofSeconds(5))
                 .thenGetList("description", GetResponse::getBody));
@@ -110,7 +110,7 @@ public class DataFromResponseTest extends BaseRabbitMqPreparations {
 
     @Test
     public void test9() {
-        var responses = rabbitMqStepContext.read(response()
+        var responses = rabbitMqStepContext.read(responses()
                 .autoAck()
                 .thenGetItem("description", GetResponse::getMessageCount));
 
@@ -119,7 +119,7 @@ public class DataFromResponseTest extends BaseRabbitMqPreparations {
 
     @Test
     public void test10() {
-        var responses = rabbitMqStepContext.read(response()
+        var responses = rabbitMqStepContext.read(responses()
                 .autoAck()
                 .timeOut(ofSeconds(5))
                 .thenGetList("description", new TypeReference<DraftDto>() {
@@ -130,7 +130,7 @@ public class DataFromResponseTest extends BaseRabbitMqPreparations {
 
     @Test
     public void test11() {
-        var responses = rabbitMqStepContext.read(response()
+        var responses = rabbitMqStepContext.read(responses()
                 .autoAck()
                 .thenGetItem("description", new TypeReference<DraftDto>() {})
                 .withDataTransformer(new CustomMapper()));
