@@ -55,8 +55,8 @@ public class GetObjectCaptorTest extends BaseCaptorTest {
 
         rabbitMqStepContext.read(rabbitRawMessage());
 
-        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Read RabbitMQ messages",
-                "#1\r\n\r\n{\"name\":\"test\"}")));
+        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("RabbitMQ message",
+                "{\"name\":\"test\"}")));
     }
 
     @Test
