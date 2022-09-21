@@ -60,12 +60,13 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
 
         rabbitMqStepContext.read(rabbitIterableItem("Value of a field 'name'",
-                new TypeReference<List<DraftDto>>() {},
+                new TypeReference<List<DraftDto>>() {
+                },
                 list -> list.stream().map(DraftDto::getName).collect(toList()))
                 .criteria("Value contains 'test", s -> s.contains("test")));
 
-        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("RabbitMQ message",
-                "[{\"name\":\"test2\"},{\"name\":\"test3\"}]")));
+        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Read RabbitMQ messages",
+                "#1\r\n\r\n[{\"name\":\"test2\"},{\"name\":\"test3\"}]")));
     }
 
     @Test
@@ -85,12 +86,13 @@ public class GetIterableItemCaptorTest extends BaseCaptorTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
 
         rabbitMqStepContext.read(rabbitIterableItem("Value of a field 'name'",
-                new TypeReference<List<DraftDto>>() {},
+                new TypeReference<List<DraftDto>>() {
+                },
                 list -> list.stream().map(DraftDto::getName).collect(toList()))
                 .criteria("Value contains 'test", s -> s.contains("test")));
 
-        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("RabbitMQ message",
-                "[{\"name\":\"test2\"},{\"name\":\"test3\"}]")));
+        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Read RabbitMQ messages",
+                "#1\r\n\r\n[{\"name\":\"test2\"},{\"name\":\"test3\"}]")));
     }
 
     @Test

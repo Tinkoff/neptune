@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.rabbit.mq.function.declare;
 
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArguments;
 import ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties;
