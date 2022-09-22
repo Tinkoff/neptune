@@ -80,6 +80,14 @@ spring/spring.data/index.md
 ```
 
 ```{toctree}
+:caption: MQ
+:hidden:
+:maxdepth: 7
+
+mq/kafka/index.md
+```
+
+```{toctree}
 :caption: Базы данных
 :hidden:
 :maxdepth: 7
