@@ -108,7 +108,7 @@ public abstract class RabbitMqBasicGetItemFromResponseSupplier<R, M, I extends R
 
         final GetDeserializedData<M> getDeserializedData;
 
-        public RabbitMqBasicGetDeserializedItemFromRecordSupplier(GetDeserializedData<M> getDeserializedData, Function<M, R> convert) {
+        private RabbitMqBasicGetDeserializedItemFromRecordSupplier(GetDeserializedData<M> getDeserializedData, Function<M, R> convert) {
             super(getDeserializedData, convert);
             this.getDeserializedData = getDeserializedData;
         }
