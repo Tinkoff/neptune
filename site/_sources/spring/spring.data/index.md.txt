@@ -3,10 +3,11 @@
 Данный модуль объединяет возможности _Neptune_ и [Spring Data](https://spring.io/projects/spring-data).
 Является расширением [абстракций для работы с базами данных](./../../data.base/database.abstractions.md).
 
-
 ```{eval-rst}
 .. include:: spring_data_dependencies.rst
 ```
+
+[API](https://tinkoff.github.io/neptune/spring.data/index.html)
 
 Поддерживается работа с
 любыми [репозиториями](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories), которые
