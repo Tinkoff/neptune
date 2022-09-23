@@ -267,7 +267,7 @@ public abstract class RabbitMqBasicGetIterableItemSupplier<M, T, I extends Rabbi
 
     public final static class Mapped<M, T> extends RabbitMqBasicGetIterableItemSupplier<M, T, Mapped<M, T>> {
 
-        protected Mapped(GetFromQueue.MergeProperty<List<M>> getFromQueue, Function<M, T> function) {
+        private Mapped(GetFromQueue.MergeProperty<List<M>> getFromQueue, Function<M, T> function) {
             super(getFromQueue, function);
         }
 
@@ -278,7 +278,7 @@ public abstract class RabbitMqBasicGetIterableItemSupplier<M, T, I extends Rabbi
 
     public final static class StringMessage extends RabbitMqBasicGetIterableItemSupplier<String, String, StringMessage> {
 
-        protected StringMessage(GetFromQueue.MergeProperty<List<String>> getFromQueue) {
+        private StringMessage(GetFromQueue.MergeProperty<List<String>> getFromQueue) {
             super(getFromQueue, s -> s);
             withDataTransformer(new StringDataTransformer());
         }
