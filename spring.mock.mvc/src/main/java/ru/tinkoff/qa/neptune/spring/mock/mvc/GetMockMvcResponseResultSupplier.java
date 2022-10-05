@@ -27,6 +27,7 @@ import javax.xml.xpath.XPathExpressionException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,6 +35,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.list;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -939,7 +941,7 @@ public final class GetMockMvcResponseResultSupplier extends SequentialGetStepSup
         try {
             var request = c.getRequest();
             requestBody = nonNull(request) ? ofNullable(request.getContentAsByteArray())
-                    .map(String::new)
+                    .map(bytes -> new String(bytes, UTF_8))
                     .orElse(null) : null;
         } catch (Exception e) {
             e.printStackTrace();
