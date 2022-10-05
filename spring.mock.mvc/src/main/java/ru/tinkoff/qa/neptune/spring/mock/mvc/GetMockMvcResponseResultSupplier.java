@@ -27,7 +27,6 @@ import javax.xml.xpath.XPathExpressionException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
