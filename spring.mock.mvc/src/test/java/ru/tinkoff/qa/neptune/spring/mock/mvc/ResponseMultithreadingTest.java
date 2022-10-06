@@ -9,6 +9,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.*;
 
+import java.nio.charset.StandardCharsets;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.equalTo;
@@ -37,6 +39,11 @@ public class ResponseMultithreadingTest {
         @Override
         public String getContentAsString() {
             return "SUCCESS";
+        }
+
+        @Override
+        public byte[] getContentAsByteArray() {
+            return getContentAsString().getBytes(StandardCharsets.UTF_8);
         }
     };
     private final MvcResult result1 = new MvcResult() {
