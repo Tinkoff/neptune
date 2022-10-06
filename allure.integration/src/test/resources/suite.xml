@@ -20,4 +20,10 @@
             <class name="ru.tinkoff.qa.neptune.allure.AttachmentTest"/>
         </classes>
     </test>
+
+    <test name="Parameter mode test">
+        <classes>
+            <class name="ru.tinkoff.qa.neptune.allure.ParameterModeTest"/>
+        </classes>
+    </test>
 </suite>

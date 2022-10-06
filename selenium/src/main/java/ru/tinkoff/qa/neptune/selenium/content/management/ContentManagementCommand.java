@@ -44,7 +44,7 @@ public final class ContentManagementCommand extends SequentialActionSupplier<Sel
 
     public static ContentManagementCommand getCurrentCommand() {
         var result = CURRENT_COMMAND.get();
-        CURRENT_COMMAND.set(null);
+        CURRENT_COMMAND.remove();
         return result;
     }
 

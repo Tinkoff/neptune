@@ -17,8 +17,8 @@ public class FailedStepLifeCycleTest extends AbstractAllurePreparations {
     @DataProvider
     public static Object[][] data1() {
         return new Object[][]{
-                {new AssertionError("Test assertion error"), FAILED},
-                {new RuntimeException(), BROKEN}
+            {new AssertionError("Test assertion error"), FAILED},
+            {new RuntimeException(), BROKEN}
         };
     }
 

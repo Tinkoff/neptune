@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.http.api.response;
 
-import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -10,11 +9,9 @@ import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplier.response;
 
@@ -53,17 +50,5 @@ public final class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Iterab
     @Override
     public GetObjectsFromIterableBodyStepSupplier<T, R, S> pollingInterval(Duration timeOut) {
         return DefinesResponseCriteria.super.pollingInterval(timeOut);
-    }
-
-    @Override
-    public Function<HttpStepContext, List<R>> get() {
-        var fromVal = getFrom();
-        Criteria<HttpResponse<T>> responseCriteria = DefinesResponseCriteria.getResponseCriteriaForIterables(
-            fromVal,
-            getCriteria(),
-            getDescription());
-
-        ofNullable(responseCriteria).ifPresent(this::responseCriteria);
-        return super.get();
     }
 }

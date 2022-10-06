@@ -54,7 +54,7 @@ public class SuccessfulReturningValueTest extends AbstractAllurePreparations {
 
         assertThat(step.getStage(), is(RUNNING));
         assertThat(step.getParameters().stream().collect(toMap(Parameter::getName, Parameter::getValue)),
-                equalTo(params));
+            equalTo(params));
         assertThat(step.getStart(), instanceOf(Long.class));
         assertThat(step.getStop(), nullValue());
         var notFinished = step.getSteps().get(0);
@@ -63,7 +63,7 @@ public class SuccessfulReturningValueTest extends AbstractAllurePreparations {
         assertThat(notFinished.getStage(), is(RUNNING));
         assertThat(notFinished.getStatus(), is(Status.PASSED));
         assertThat(notFinished.getParameters().stream().collect(toMap(Parameter::getName, Parameter::getValue)),
-                hasEntry(equalTo("Returned object"), not(emptyOrNullString())));
+            hasEntry(equalTo("Returned object"), not(emptyOrNullString())));
     }
 
     @Test(dependsOnMethods = "successfulFinishingOfNestedStep")
@@ -78,7 +78,7 @@ public class SuccessfulReturningValueTest extends AbstractAllurePreparations {
         assertThat(step.getStage(), is(RUNNING));
         assertThat(step.getStatus(), is(Status.PASSED));
         assertThat(step.getParameters().stream().collect(toMap(Parameter::getName, Parameter::getValue)),
-                hasEntry(equalTo("Returned object"), not(emptyOrNullString())));
+            hasEntry(equalTo("Returned object"), not(emptyOrNullString())));
     }
 
     @Test(dependsOnMethods = "finishOfRootStep")

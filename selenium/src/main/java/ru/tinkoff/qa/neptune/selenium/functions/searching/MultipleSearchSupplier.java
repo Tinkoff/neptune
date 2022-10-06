@@ -6,10 +6,10 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
 import ru.tinkoff.qa.neptune.selenium.captors.ListOfWebElementImageCaptor;
@@ -100,12 +100,12 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
                     makeReadableBy = WidgetDescriptionMultipleValueGetter.class)
                     Class<T> tClass,
             @DescriptionFragment("textOrLabel") String textOrLabel) {
-        return new MultipleSearchSupplier<T>(
-                FindWidgets.widgets(tClass))
-                .criteria(OR(
-                        text(textOrLabel),
-                        labeled(textOrLabel)
-                ));
+        return new MultipleSearchSupplier<>(
+            FindWidgets.widgets(tClass))
+            .criteria(OR(
+                text(textOrLabel),
+                labeled(textOrLabel)
+            ));
     }
 
     /**
@@ -684,10 +684,5 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
     @Override
     public MultipleSearchSupplier<R> timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
-    }
-
-    @Override
-    public MultipleSearchSupplier<R> clone() {
-        return super.clone();
     }
 }

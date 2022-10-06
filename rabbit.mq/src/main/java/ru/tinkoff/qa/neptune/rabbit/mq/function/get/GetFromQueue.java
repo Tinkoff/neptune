@@ -1,106 +1,95 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.function.get;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.GetResponse;
-import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
+import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 
-import java.lang.reflect.Type;
-import java.nio.charset.Charset;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaultDataTransformer.RABBIT_MQ_DEFAULT_DATA_TRANSFORMER;
 
-final class GetFromQueue<T> implements Function<Channel, T>, StepParameterPojo {
+@SuppressWarnings("unchecked")
+final class GetFromQueue implements Function<RabbitMqStepContext, List<GetResponse>>, StepParameterPojo {
 
     @StepParameter("queue")
     private final String queue;
 
-    private final Charset charset;
-
-    @StepParameter(value = "Class to deserialize to", doNotReportNullValues = true)
-    private final Class<T> cls;
     @StepParameter("autoAck")
     private boolean autoAck;
 
-    private final TypeReference<T> typeRef;
+    private List<GetResponse> responses = new ArrayList<>();
 
-    @StepParameter(value = "Type to deserialize to", doNotReportNullValues = true)
-    final Type type;
-
-    private DataTransformer transformer;
-
-    private final LinkedList<String> readMessages = new LinkedList<>();
-
-    private GetFromQueue(String queue, Class<T> cls, TypeReference<T> typeRef, Charset charset) {
+    public GetFromQueue(String queue) {
         checkArgument(isNotBlank(queue), "Queue should be defined");
-        checkArgument(!(isNull(cls) && isNull(typeRef)), "Any class or type reference should be defined");
         this.queue = queue;
-        this.cls = cls;
-        this.typeRef = typeRef;
-        this.type = ofNullable(typeRef).map(TypeReference::getType).orElse(null);
-        this.charset = charset;
-    }
-
-
-    GetFromQueue(String queue, Class<T> cls) {
-        this(queue, cls, null, UTF_8);
-    }
-
-    GetFromQueue(String queue, TypeReference<T> typeRef) {
-        this(queue, null, typeRef, UTF_8);
-    }
-
-    static GetFromQueue<String> getStringResult(String queue, Charset charset) {
-        return new GetFromQueue<>(queue, String.class, null, charset);
     }
 
     @Override
-    public T apply(Channel input) {
-        var dataTransformer = ofNullable(this.transformer)
-            .orElseGet(RABBIT_MQ_DEFAULT_DATA_TRANSFORMER);
-        checkState(nonNull(dataTransformer), "Data transformer is not defined. Please invoke "
-            + "the '#withDataTransformer(DataTransformer)' method or define '"
-            + RABBIT_MQ_DEFAULT_DATA_TRANSFORMER.getName()
-            + "' property/env variable");
-
+    public List<GetResponse> apply(RabbitMqStepContext context) {
         try {
-            GetResponse getResponse = input.basicGet(queue, autoAck);
-
-            var msg = new String(getResponse.getBody(), charset);
-            if (!readMessages.contains(msg)) {
-                readMessages.addLast(msg);
-            }
-
-            if (cls != null) {
-                return dataTransformer.deserialize(msg, cls);
-            }
-            return dataTransformer.deserialize(msg, typeRef);
+            var input = context.getChannel();
+            responses.add(input.basicGet(queue, autoAck));
+            return responses;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    void setTransformer(DataTransformer transformer) {
-        this.transformer = transformer;
-    }
-
-    LinkedList<String> getMessages() {
-        return readMessages;
-    }
-
     void setAutoAck() {
         this.autoAck = true;
     }
+
+    @Override
+    public <V> MergeProperty<V> andThen(Function<? super List<GetResponse>, ? extends V> after) {
+        Objects.requireNonNull(after);
+        return new MergeProperty<>(this, (Function<List<GetResponse>, V>) after);
+    }
+
+    static class MergeProperty<T> implements Function<RabbitMqStepContext, T>, StepParameterPojo {
+        private final GetFromQueue before;
+        private final Function<List<GetResponse>, T> after;
+
+        public MergeProperty(GetFromQueue before, Function<List<GetResponse>, T> after) {
+            this.before = before;
+            this.after = after;
+        }
+
+        @Override
+        public T apply(RabbitMqStepContext context) {
+            return after.apply(before.apply(context));
+        }
+
+        @Override
+        public Map<String, String> getParameters() {
+            if (before != null && after instanceof StepParameterPojo) {
+                var parameters = before.getParameters();
+                parameters.putAll(((StepParameterPojo) after).getParameters());
+                return parameters;
+            }
+            return StepParameterPojo.super.getParameters();
+        }
+
+        public GetFromQueue getBefore() {
+            return before;
+        }
+
+        public Function<List<GetResponse>, T> getAfter() {
+            return after;
+        }
+    }
+
+    public List<String> getMessages() {
+        return responses.stream().map(response -> response.toString() +
+                "\r\n" +
+                "Body text:" + "\r\n" +
+                new String(response.getBody()))
+                .collect(toList());    }
 }

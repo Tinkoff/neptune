@@ -17,6 +17,10 @@ import static java.time.Duration.ofSeconds;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
+import static ru.tinkoff.qa.neptune.core.api.steps.AbsenceTest.TestGetArrayItemSupplier.getTestArrayItemSupplier;
+import static ru.tinkoff.qa.neptune.core.api.steps.AbsenceTest.TestGetArraySupplier.getTestArraySupplier;
+import static ru.tinkoff.qa.neptune.core.api.steps.AbsenceTest.TestGetListItemSupplier.getTestListItemSupplier;
+import static ru.tinkoff.qa.neptune.core.api.steps.AbsenceTest.TestGetListSupplier.getTestListSupplier;
 import static ru.tinkoff.qa.neptune.core.api.steps.AbsenceTest.TestGetSupplier.getTestSupplier;
 
 public class AbsenceTest {
@@ -38,22 +42,22 @@ public class AbsenceTest {
     public void test1() {
         var start = currentTimeMillis();
         assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsObject(ofSeconds(5)).run()), ofSeconds(10)),
-                is(true));
+            is(true));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
-                closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
+            closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
     }
 
     @Test
     public void test2() {
         var start = currentTimeMillis();
         assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsObject(ofMillis(0)).run())
-                        .timeOut(ofSeconds(5)),
+                    .timeOut(ofSeconds(5)),
                 ofSeconds(10)),
-                is(true));
+            is(true));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
-                closeTo(new BigDecimal(ofMillis(0).toMillis()), new BigDecimal(500)));
+            closeTo(new BigDecimal(ofMillis(0).toMillis()), new BigDecimal(500)));
     }
 
     @Test(expectedExceptions = StillPresentException.class)
@@ -61,11 +65,11 @@ public class AbsenceTest {
         var start = currentTimeMillis();
         try {
             assertThat(testContext.absenceOrThrow(getTestSupplier(new FunctionThatReturnsObject(ofSeconds(10)).run()), ofSeconds(5)),
-                    is(false));
+                is(false));
         } catch (Throwable t) {
             var end = currentTimeMillis();
             assertThat(new BigDecimal(end - start),
-                    closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
+                closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
             assertThat(t.getMessage(), containsString("Still present: TestGetSupplierDescription"));
             throw t;
         }
@@ -76,21 +80,21 @@ public class AbsenceTest {
     public void test4() {
         var start = currentTimeMillis();
         assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsArray(ofSeconds(5)).run()), ofSeconds(10)),
-                is(true));
+            is(true));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
-                closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
+            closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
     }
 
     @Test
     public void test5() {
         var start = currentTimeMillis();
         assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsArray(ofMillis(0)).run())
-                        .timeOut(ofSeconds(5)),
-                ofSeconds(10)), is(true));
+                .timeOut(ofSeconds(5)),
+            ofSeconds(10)), is(true));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
-                closeTo(new BigDecimal(ofMillis(0).toMillis()), new BigDecimal(500)));
+            closeTo(new BigDecimal(ofMillis(0).toMillis()), new BigDecimal(500)));
     }
 
     @Test(expectedExceptions = StillPresentException.class)
@@ -98,11 +102,11 @@ public class AbsenceTest {
         var start = currentTimeMillis();
         try {
             assertThat(testContext.absenceOrThrow(getTestSupplier(new FunctionThatReturnsArray(ofSeconds(10)).run()), ofSeconds(5)),
-                    is(false));
+                is(false));
         } catch (Throwable t) {
             var end = currentTimeMillis();
             assertThat(new BigDecimal(end - start),
-                    closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
+                closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
             assertThat(t.getMessage(), containsString("Still present: TestGetSupplierDescription"));
             throw t;
         }
@@ -114,21 +118,21 @@ public class AbsenceTest {
         var start = currentTimeMillis();
         assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsIterable(ofSeconds(5)).run()),
                 ofSeconds(10)),
-                is(true));
+            is(true));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
-                closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
+            closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
     }
 
     @Test
     public void test8() {
         var start = currentTimeMillis();
         assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsIterable(ofMillis(0)).run())
-                        .timeOut(ofSeconds(5)),
-                ofSeconds(10)), is(true));
+                .timeOut(ofSeconds(5)),
+            ofSeconds(10)), is(true));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
-                closeTo(new BigDecimal(ofMillis(0).toMillis()), new BigDecimal(500)));
+            closeTo(new BigDecimal(ofMillis(0).toMillis()), new BigDecimal(500)));
     }
 
     @Test(expectedExceptions = StillPresentException.class)
@@ -136,11 +140,11 @@ public class AbsenceTest {
         var start = currentTimeMillis();
         try {
             assertThat(testContext.absenceOrThrow(getTestSupplier(new FunctionThatReturnsIterable(ofSeconds(10)).run()), ofSeconds(5)),
-                    is(false));
+                is(false));
         } catch (Throwable t) {
             var end = currentTimeMillis();
             assertThat(new BigDecimal(end - start),
-                    closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
+                closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
             assertThat(t.getMessage(), containsString("Still present: TestGetSupplierDescription"));
             throw t;
         }
@@ -151,23 +155,23 @@ public class AbsenceTest {
     public void test10() {
         var start = currentTimeMillis();
         assertThat(testContext.absence(getTestSupplier(FAILED_EXCEPTION)
-                        .timeOut(ofSeconds(100)),
-                ofSeconds(5)), is(true));
+                .timeOut(ofSeconds(100)),
+            ofSeconds(5)), is(true));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
-                closeTo(new BigDecimal(ofMillis(0).toMillis()), new BigDecimal(500)));
+            closeTo(new BigDecimal(ofMillis(0).toMillis()), new BigDecimal(500)));
     }
 
     @Test
     public void test11() {
         var start = currentTimeMillis();
         assertThat(testContext.absence(getTestSupplier(FAILED_EXCEPTION)
-                        .timeOut(ofSeconds(100))
-                        .throwOnNoResult(),
-                ofSeconds(5)), is(true));
+                .timeOut(ofSeconds(100))
+                .throwOnNoResult(),
+            ofSeconds(5)), is(true));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
-                closeTo(new BigDecimal(ofMillis(0).toMillis()), new BigDecimal(500)));
+            closeTo(new BigDecimal(ofMillis(0).toMillis()), new BigDecimal(500)));
     }
 
     @Test
@@ -175,7 +179,7 @@ public class AbsenceTest {
         PresenceSuccessCaptor.CAUGHT.clear();
         AbcnceSuccessCaptor.CAUGHT.clear();
         assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsArray(ofSeconds(5)).run()), ofSeconds(10)),
-                is(true));
+            is(true));
 
         assertThat(PresenceSuccessCaptor.CAUGHT, empty());
         assertThat(AbcnceSuccessCaptor.CAUGHT, empty());
@@ -186,10 +190,42 @@ public class AbsenceTest {
         PresenceSuccessCaptor.CAUGHT.clear();
         AbcnceSuccessCaptor.CAUGHT.clear();
         assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsObject(ofSeconds(10)).run()), ofSeconds(5)),
-                is(false));
+            is(false));
 
         assertThat(PresenceSuccessCaptor.CAUGHT, contains(containsString("Present:")));
         assertThat(AbcnceSuccessCaptor.CAUGHT, empty());
+    }
+
+    @Test
+    public void test14() {
+        assertThat(testContext.absence(getTestListSupplier(o -> List.of(1, 2, 3))
+                    .returnListOfSize(4),
+                ofMillis(1)),
+            is(false));
+    }
+
+    @Test
+    public void test15() {
+        assertThat(testContext.absence(getTestArraySupplier(o -> new Object[]{1, 2, 3})
+                    .returnArrayOfLength(4),
+                ofMillis(1)),
+            is(false));
+    }
+
+    @Test
+    public void test16() {
+        assertThat(testContext.absence(getTestListItemSupplier(o -> List.of(1, 2, 3))
+                    .returnItemOfIndex(4),
+                ofMillis(1)),
+            is(false));
+    }
+
+    @Test
+    public void test17() {
+        assertThat(testContext.absence(getTestArrayItemSupplier(o -> new Object[]{1, 2, 3})
+                    .returnItemOfIndex(4),
+                ofMillis(1)),
+            is(false));
     }
 
     private static class FunctionThatReturnsObject implements Function<AbsenceTestContext, Object> {
@@ -317,6 +353,54 @@ public class AbsenceTest {
         @Description("TestGetSupplierDescription")
         public static <T> TestGetSupplier<?> getTestSupplier(Function<AbsenceTestContext, T> originalFunction) {
             return new TestGetSupplier<>(originalFunction);
+        }
+    }
+
+    static class TestGetListSupplier extends SequentialGetStepSupplier.GetListStepSupplier<AbsenceTestContext, List<Object>, Object, TestGetListSupplier> {
+
+        protected TestGetListSupplier(Function<AbsenceTestContext, List<Object>> originalFunction) {
+            super(originalFunction);
+        }
+
+        @Description("TestGetSupplierDescription")
+        public static TestGetListSupplier getTestListSupplier(Function<AbsenceTestContext, List<Object>> originalFunction) {
+            return new TestGetListSupplier(originalFunction);
+        }
+    }
+
+    static class TestGetArraySupplier extends SequentialGetStepSupplier.GetArrayStepSupplier<AbsenceTestContext, Object, TestGetArraySupplier> {
+
+        protected TestGetArraySupplier(Function<AbsenceTestContext, Object[]> originalFunction) {
+            super(originalFunction);
+        }
+
+        @Description("TestGetSupplierDescription")
+        public static TestGetArraySupplier getTestArraySupplier(Function<AbsenceTestContext, Object[]> originalFunction) {
+            return new TestGetArraySupplier(originalFunction);
+        }
+    }
+
+    static class TestGetListItemSupplier extends SequentialGetStepSupplier.GetObjectFromIterableStepSupplier<AbsenceTestContext, Object, TestGetListItemSupplier> {
+
+        protected <S extends Iterable<Object>> TestGetListItemSupplier(Function<AbsenceTestContext, S> originalFunction) {
+            super(originalFunction);
+        }
+
+        @Description("TestGetSupplierDescription")
+        public static TestGetListItemSupplier getTestListItemSupplier(Function<AbsenceTestContext, List<Object>> originalFunction) {
+            return new TestGetListItemSupplier(originalFunction);
+        }
+    }
+
+    static class TestGetArrayItemSupplier extends SequentialGetStepSupplier.GetObjectFromArrayStepSupplier<AbsenceTestContext, Object, TestGetArrayItemSupplier> {
+
+        protected TestGetArrayItemSupplier(Function<AbsenceTestContext, Object[]> originalFunction) {
+            super(originalFunction);
+        }
+
+        @Description("TestGetSupplierDescription")
+        public static TestGetArrayItemSupplier getTestArrayItemSupplier(Function<AbsenceTestContext, Object[]> originalFunction) {
+            return new TestGetArrayItemSupplier(originalFunction);
         }
     }
 

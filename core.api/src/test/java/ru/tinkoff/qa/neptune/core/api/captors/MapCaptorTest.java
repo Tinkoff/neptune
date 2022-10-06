@@ -51,16 +51,17 @@ public class MapCaptorTest {
         Map<Object, Object> value = (Map<Object, Object>) new MapCaptor().getCaptured(map);
         assertThat(value,
                 mapInOrder(
-                        mapEntry(nullValue(), "value"),
-                        mapEntry("key1", nullValue()),
-                        mapEntry(not(nullValue()), "value 2"),
-                        mapEntry("key2", not(nullValue())),
-                        mapEntry(List.of(1, 2, 3, 4), "value 3"),
-                        mapEntry("key3", List.of(1, 2, 3, 4)),
-                        mapEntry(Map.of(1, 2, 3, 4), "value 4"),
-                        mapEntry("key4", Map.of(1, 2, 3, 4)),
-                        mapEntry(new int[]{1, 2, 3, 4}, "value 4"),
-                        mapEntry("key5", new int[]{1, 2, 3, 4})
+                    mapEntry(nullValue(), "value"),
+                    mapEntry("key1", nullValue()),
+                    mapEntry(not(nullValue()), "value 2"),
+                    mapEntry("key2", not(nullValue())),
+                    mapEntry(List.of(1, 2, 3, 4), "value 3"),
+                    mapEntry("key3", List.of(1, 2, 3, 4)),
+                    mapEntry(Map.of(1, 2, 3, 4), "value 4"),
+                    mapEntry("key4", Map.of(1, 2, 3, 4)),
+                    mapEntry(new int[]{1, 2, 3, 4}, "value 4"),
+                    mapEntry("key5", new int[]{1, 2, 3, 4}),
+                    mapEntry(instanceOf(Object.class), instanceOf(Object.class))
                 ));
     }
 
@@ -82,16 +83,17 @@ public class MapCaptorTest {
         var value = new MapCaptor().getCaptured(map);
         var result = new MapCaptor().getData(value).toString().split("\r\n");
         assertThat(result, arrayContaining(
-                not(emptyOrNullString()),
-                not(emptyOrNullString()),
-                not(emptyOrNullString()),
-                not(emptyOrNullString()),
-                not(emptyOrNullString()),
-                not(emptyOrNullString()),
-                not(emptyOrNullString()),
-                not(emptyOrNullString()),
-                not(emptyOrNullString()),
-                not(emptyOrNullString())
+            not(emptyOrNullString()),
+            not(emptyOrNullString()),
+            not(emptyOrNullString()),
+            not(emptyOrNullString()),
+            not(emptyOrNullString()),
+            not(emptyOrNullString()),
+            not(emptyOrNullString()),
+            not(emptyOrNullString()),
+            not(emptyOrNullString()),
+            not(emptyOrNullString()),
+            not(emptyOrNullString())
         ));
     }
 }

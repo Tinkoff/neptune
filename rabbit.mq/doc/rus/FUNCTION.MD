@@ -17,6 +17,7 @@
   - [Удаление exchange](#Удаление-exchange)
   - [Удаление queue](#Удаление-queue)
 - [Получение сообщения](#Получение-сообщения)
+  - [Получение GetResponse](#Получение-GetResponse)
   - [Получение данных сообщения как Java-объект](#Получение-данных-сообщения-как-Java-объект)
     - [Получение сообщения в виде строки](#Получение-сообщения-в-виде-строки)
     - [Получение объекта при помощи десериализации](#Получение-объекта-при-помощи-десериализации)
@@ -394,6 +395,101 @@ public class MyTest {
 [здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги-которые-возвращают-результат).
 
 [к оглавлению документа](#Оглавление) [к списку документов](README.MD#Оглавление)
+
+### Получение GetResponse
+
+```java
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetResponseSupplier.response;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    // Возвращает сообщения из очереди.
+    List<GetResponse> result = rabbitMq().read(response()); //Значение очереди берется из DEFAULT_QUEUE_NAME
+    List<GetResponse> result = rabbitMq().read(response("test_queue")); //Можно указать самому
+  }
+}
+```
+
+```java
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetResponseSupplier.response;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    List<GetResponse> result = rabbitMq().read(response()
+            //можно указать, что auto acknowledge
+            .autoAck()
+            //можно указать время на получение ожидаемого результата = 5 секунд
+            .timeOut(ofSeconds(5))
+            //можно указать критерий, которому должен соответствовать текст сообщения
+            .criteria("Сriteria", s -> /*описание критерия*/)
+            //можно указать, что должно быть выброшено исключение, если результат не был получен
+            .throwOnNoResult());
+  }
+}
+```
+
+Так же существует возможность из полученных GetResponse-ов достать десериализованный объект или коллекцию объектов, для
+этого предусмотрены два метода thenGetItem и thenGetList соответственно.
+
+```java
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetResponseSupplier.response;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    DraftDto result1 = rabbitMq().read(response()
+            .thenGetItem("description", DraftDto.class));
+
+    DraftDto result2 = rabbitMq().read(response()
+            .thenGetItem("description", new TypeReference<DraftDto>() {
+            }));
+
+    String result3 = rabbitMq().read(response()
+            .thenGetItem("description", DraftDto.class, dto -> dto.getName()));
+
+    String result4 = rabbitMq().read(response()
+            .thenGetItem("description", new TypeReference<DraftDto>() {
+            }, dto -> dto.getName()));
+  }
+}
+```
+
+```java
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetResponseSupplier.response;
+
+public class MyTest {
+
+  @Test
+  public void myTest() {
+    List<DraftDto> result1 = rabbitMq().read(response()
+            .thenGetList("description", DraftDto.class));
+
+    List<DraftDto> result2 = rabbitMq().read(response()
+            .thenGetList("description", new TypeReference<DraftDto>() {
+            }));
+
+    List<String> result3 = rabbitMq().read(response()
+            .thenGetList("description", DraftDto.class, dto -> dto.getName()));
+
+    List<String> result4 = rabbitMq().read(response()
+            .thenGetList("description", new TypeReference<DraftDto>() {
+            }, dto -> dto.getName()));
+  }
+}
+```
 
 ### Получение данных сообщения как Java-объект
 
