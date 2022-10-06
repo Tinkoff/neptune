@@ -6,7 +6,7 @@ plugins {
 }
 
 ext {
-    globalVersion = '0.23.1-ALPHA'
+    globalVersion = '0.23.2-ALPHA'
 }
 
 repositories {
@@ -40,7 +40,7 @@ subprojects {
     }
 
     ext {
-        testNGVersion = '7.6.0'
+        testNGVersion = '7.6.1'
         junit5Version = '5.8.2'
         junit5PlatformVersion = '1.8.2'
         hamcrestVersion = '2.2'
@@ -51,7 +51,7 @@ subprojects {
         springVersion = '5.3.20'
         springDataVersion = '2.7.0'
         springBootVersion = '2.7.0'
-        bytybuddyVersion = '1.12.10'
+        bytybuddyVersion = '1.12.17'
         queryDslVersion = '5.0.0'
         globalVersion = version
     }

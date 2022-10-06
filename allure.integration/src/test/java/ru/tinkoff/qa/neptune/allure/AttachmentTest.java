@@ -32,10 +32,10 @@ public class AttachmentTest extends AbstractAllurePreparations {
         new AllureStringInjector().inject(new StringBuilder("ABCD"), "String attach");
         var step = storage.getStep(rootStepUUID).get();
         assertThat(step.getAttachments(),
-                iterableHasItems(1,
-                        getterReturns("getName", "String attach"),
-                        getterReturns("getSource", not(nullValue())),
-                        getterReturns("getType", "text/plain")));
+            iterableHasItems(1,
+                getterReturns("getName", "String attach"),
+                getterReturns("getSource", not(nullValue())),
+                getterReturns("getType", "text/plain")));
     }
 
     @Test
@@ -48,10 +48,10 @@ public class AttachmentTest extends AbstractAllurePreparations {
 
 
         assertThat(step.getAttachments(),
-                iterableHasItems(1,
-                        getterReturns("getName", "Image attach"),
-                        getterReturns("getSource", not(nullValue())),
-                        getterReturns("getType", "image/png")));
+            iterableHasItems(1,
+                getterReturns("getName", "Image attach"),
+                getterReturns("getSource", not(nullValue())),
+                getterReturns("getType", "image/png")));
     }
 
     @Test
@@ -62,10 +62,10 @@ public class AttachmentTest extends AbstractAllurePreparations {
         var step = storage.getStep(rootStepUUID).get();
 
         assertThat(step.getAttachments(),
-                iterableHasItems(1,
-                        getterReturns("getName", "File attach"),
-                        getterReturns("getSource", not(nullValue())),
-                        getterReturns("getType", "application/json")));
+            iterableHasItems(1,
+                getterReturns("getName", "File attach"),
+                getterReturns("getSource", not(nullValue())),
+                getterReturns("getType", "application/json")));
     }
 
     @Test(expectedExceptions = AllureResultsWriteException.class)
