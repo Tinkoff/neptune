@@ -12,6 +12,7 @@ import org.testng.annotations.*;
 import ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -64,11 +65,21 @@ public class ResponseTest {
         public String getContentAsString() {
             return "SUCCESS";
         }
+
+        @Override
+        public byte[] getContentAsByteArray() {
+            return getContentAsString().getBytes(StandardCharsets.UTF_8);
+        }
     };
     private final MockHttpServletResponse response2 = new MockHttpServletResponse() {
         @Override
         public String getContentAsString() {
             return "FAILURE";
+        }
+
+        @Override
+        public byte[] getContentAsByteArray() {
+            return getContentAsString().getBytes(StandardCharsets.UTF_8);
         }
     };
     private final MvcResult result1 = new MvcResult() {

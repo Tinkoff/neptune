@@ -24,7 +24,6 @@ import ru.tinkoff.qa.neptune.spring.mock.mvc.properties.SpringMockMvcDefaultResp
 import ru.tinkoff.qa.neptune.spring.mock.mvc.result.matchers.*;
 
 import javax.xml.xpath.XPathExpressionException;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
@@ -947,10 +946,11 @@ public final class GetMockMvcResponseResultSupplier extends SequentialGetStepSup
         }
 
         response = c.getResponse();
-        try {
-            responseBody = nonNull(response) ? response.getContentAsString() : null;
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+
+        var bytes = nonNull(response) ? response.getContentAsByteArray() : null;
+
+        if (nonNull(bytes) && bytes.length > 0) {
+            responseBody = new String(bytes, UTF_8);
         }
     }
 
