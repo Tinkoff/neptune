@@ -33,7 +33,6 @@ public class DeleteTest extends BaseHibernatePreparations {
         when(session.merge(TEST_ENTITIES.get(1))).thenReturn(TEST_ENTITIES.get(1));
 
         when(criteriaBuilder.createCriteriaDelete(TestEntity.class)).thenReturn(criteriaDelete);
-        when(session.createQuery(criteriaDelete)).thenReturn(query);
     }
 
     @Test
@@ -86,16 +85,6 @@ public class DeleteTest extends BaseHibernatePreparations {
             hibernate().delete("Test entities", TEST_ENTITIES);
             verify(session, times(1)).delete(TEST_ENTITIES.get(0));
             verify(session, times(1)).delete(TEST_ENTITIES.get(1));
-        }
-    }
-
-    @Test
-    public void deleteAllTest() {
-        try (var mockedStatic = Mockito.mockStatic(Persistence.class)) {
-            mockPersistence(mockedStatic);
-
-            hibernate().deleteAllFrom(TestEntity.class);
-            verify(session, times(1)).createQuery(criteriaDelete);
         }
     }
 

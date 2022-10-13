@@ -8,7 +8,6 @@ import ru.tinkoff.qa.neptune.database.abstractions.AbstractDatabaseStepContext;
 import ru.tinkoff.qa.neptune.database.abstractions.InsertQuery;
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
 import ru.tinkoff.qa.neptune.database.abstractions.UpdateAction;
-import ru.tinkoff.qa.neptune.hibernate.delete.DeleteAllFromStepSupplier;
 import ru.tinkoff.qa.neptune.hibernate.delete.DeleteByQueryStepSupplier;
 import ru.tinkoff.qa.neptune.hibernate.exception.HibernateConfigurationException;
 import ru.tinkoff.qa.neptune.hibernate.save.SaveStepSupplier;
@@ -275,11 +274,6 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
 
     public <R> HibernateContext delete(String description, Iterable<R> toDelete) {
         delete(DeleteByQueryStepSupplier.delete(description, toDelete));
-        return this;
-    }
-
-    public HibernateContext deleteAllFrom(Class<?> entityCls) {
-        delete(DeleteAllFromStepSupplier.deleteAllRecords(entityCls));
         return this;
     }
 
