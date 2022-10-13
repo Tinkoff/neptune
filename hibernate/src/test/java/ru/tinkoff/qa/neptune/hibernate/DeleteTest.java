@@ -33,7 +33,6 @@ public class DeleteTest extends BaseHibernatePreparations {
         when(session.merge(TEST_ENTITIES.get(1))).thenReturn(TEST_ENTITIES.get(1));
 
         when(criteriaBuilder.createCriteriaDelete(TestEntity.class)).thenReturn(criteriaDelete);
-        when(session.createQuery("delete from TestEntity")).thenReturn(query);
     }
 
     @Test
