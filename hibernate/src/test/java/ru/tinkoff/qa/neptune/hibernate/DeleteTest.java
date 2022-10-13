@@ -89,16 +89,6 @@ public class DeleteTest extends BaseHibernatePreparations {
         }
     }
 
-    @Test
-    public void deleteAllTest() {
-        try (var mockedStatic = Mockito.mockStatic(Persistence.class)) {
-            mockPersistence(mockedStatic);
-
-            hibernate().deleteAllFrom(TestEntity.class);
-            verify(session, times(1)).createQuery("delete from TestEntity");
-        }
-    }
-
     @AfterMethod(alwaysRun = true)
     public void clearInvocations() {
         Mockito.clearInvocations(session);
