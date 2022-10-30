@@ -10,11 +10,16 @@ import java.io.FileNotFoundException;
 
 import static com.google.common.io.Files.getFileExtension;
 import static io.qameta.allure.Allure.addAttachment;
+import static ru.tinkoff.qa.neptune.allure.lifecycle.ItemsToNotBeReported.toReport;
 
 public class AllureFileInjector implements CapturedFileInjector {
 
     @Override
     public void inject(File toBeInjected, String message) {
+        if (!toReport()) {
+            return;
+        }
+        
         String mime;
         Tika tika = new Tika();
 

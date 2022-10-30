@@ -45,7 +45,7 @@ subprojects {
         junit5PlatformVersion = '1.8.2'
         hamcrestVersion = '2.2'
         seleniumVersion = '4.2.1'
-        allureVersion = '2.18.1'
+        allureVersion = '2.19.0'
         jacksonVersion = '2.13.3'
         mockitoVersion = '4.3.1'
         springVersion = '5.3.20'

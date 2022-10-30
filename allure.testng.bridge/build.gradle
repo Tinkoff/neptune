@@ -1,11 +1,17 @@
 dependencies {
     api project(":testng.integration")
     api project(":allure.integration")
+    compileClasspath group: 'org.testng', name: 'testng', version: testNGVersion
     api (group: 'io.qameta.allure', name: 'allure-testng', version: allureVersion) {
         exclude group: 'org.aspectj', module: 'aspectjrt'
         exclude group: 'org.aspectj', module: 'aspectjweaver'
         exclude group: 'org.testng', module: 'testng'
     }
+
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit5Version
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit5Version
 }
 
 java {
@@ -51,4 +57,8 @@ publishing {
             }
         }
     }
+}
+
+test {
+   useJUnitPlatform()
 }
