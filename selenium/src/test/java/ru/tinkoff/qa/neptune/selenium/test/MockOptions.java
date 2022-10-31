@@ -8,12 +8,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import static ru.tinkoff.qa.neptune.selenium.test.enums.InitialPositions.POSITION_1;
-import static ru.tinkoff.qa.neptune.selenium.test.enums.InitialPositions.POSITION_2;
-import static ru.tinkoff.qa.neptune.selenium.test.enums.InitialPositions.POSITION_3;
-import static ru.tinkoff.qa.neptune.selenium.test.enums.InitialSizes.SIZE1;
-import static ru.tinkoff.qa.neptune.selenium.test.enums.InitialSizes.SIZE2;
-import static ru.tinkoff.qa.neptune.selenium.test.enums.InitialSizes.SIZE3;
+import static ru.tinkoff.qa.neptune.selenium.test.enums.InitialPositions.*;
+import static ru.tinkoff.qa.neptune.selenium.test.enums.InitialSizes.*;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles.HANDLE1;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles.HANDLE2;
 
@@ -74,11 +70,6 @@ public class MockOptions implements WebDriver.Options {
 
     @Override
     public WebDriver.Timeouts timeouts() {
-        return null;
-    }
-
-    @Override
-    public WebDriver.ImeHandler ime() {
         return null;
     }
 
