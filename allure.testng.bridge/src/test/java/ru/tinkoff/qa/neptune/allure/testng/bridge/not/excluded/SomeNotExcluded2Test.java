@@ -4,6 +4,7 @@ package ru.tinkoff.qa.neptune.allure.testng.bridge.not.excluded;
 import org.testng.annotations.*;
 
 import static java.lang.Thread.currentThread;
+import static org.testng.Assert.assertTrue;
 import static ru.tinkoff.qa.neptune.core.api.steps.Step.$;
 
 public class SomeNotExcluded2Test {
@@ -35,26 +36,26 @@ public class SomeNotExcluded2Test {
 
     @Test
     public void test21() {
-        $("Thread " + currentThread(), () -> {});
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @Test
     public void test22() {
-        $("Thread " + currentThread(), () -> {});
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @Test
     public void test23() {
-        $("Thread " + currentThread(), () -> {});
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @Test
     public void test24() {
-        $("Thread " + currentThread(), () -> {});
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @Test
     public void test25() {
-        $("Thread " + currentThread(), () -> {});
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 }

@@ -5,6 +5,7 @@ import ru.tinkoff.qa.neptune.allure.ExcludeFromAllureReport;
 import ru.tinkoff.qa.neptune.allure.testng.bridge.BasePreparing;
 
 import static java.lang.Thread.currentThread;
+import static org.testng.Assert.assertTrue;
 import static ru.tinkoff.qa.neptune.core.api.steps.Step.$;
 
 public class SomeMethodExcludedTest extends BasePreparing {
@@ -39,29 +40,29 @@ public class SomeMethodExcludedTest extends BasePreparing {
     @ExcludeFromAllureReport
     @Test
     public void test1() {
-        $("Thread " + currentThread(), () -> {});
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @ExcludeFromAllureReport
     @Test
     public void test2() {
-        $("Thread " + currentThread(), () -> {});
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
 
     @Test
     public void test3() {
-        $("Thread " + currentThread(), () -> {});
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @Test
     public void test4() {
-        $("Thread " + currentThread(), () -> {});
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @Test
     public void test5() {
-        $("Thread " + currentThread(), () -> {});
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     public static class NestedTest {
@@ -94,18 +95,18 @@ public class SomeMethodExcludedTest extends BasePreparing {
     @ExcludeFromAllureReport
     @Test
     public void test6() {
-        $("Thread " + currentThread(), () -> {});
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @ExcludeFromAllureReport
     @Test
     public void test7() {
-        $("Thread " + currentThread(), () -> {});
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
 
     @Test
     public void test8() {
-        $("Thread " + currentThread(), () -> {});
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 }

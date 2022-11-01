@@ -4,85 +4,86 @@ import org.junit.jupiter.api.*;
 import ru.tinkoff.qa.neptune.allure.jupiter.bridge.BasePreparing;
 
 import static java.lang.Thread.currentThread;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static ru.tinkoff.qa.neptune.core.api.steps.Step.$;
 
 public class SomeNotExcludedTest extends BasePreparing {
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         $("Thread " + currentThread(), () -> {});
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         $("Thread " + currentThread(), () -> {});
     }
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         $("Thread " + currentThread(), () -> {});
     }
 
     @AfterEach
-    public void afterEachExcluded() {
+    void afterEachExcluded() {
         $("Thread " + currentThread(), () -> {});
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         $("Thread " + currentThread(), () -> {});
     }
 
     @Test
-    public void test1() {
-        $("Thread " + currentThread(), () -> {});
+    void test1() {
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @Test
-    public void test2() {
-        $("Thread " + currentThread(), () -> {});
+    void test2() {
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
 
     @Test
-    public void test3() {
-        $("Thread " + currentThread(), () -> {});
+    void test3() {
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @Test
-    public void test4() {
-        $("Thread " + currentThread(), () -> {});
+    void test4() {
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @Test
-    public void test5() {
-        $("Thread " + currentThread(), () -> {});
+    void test5() {
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @Nested
-    public class NestedTest {
+    class NestedTest {
 
         @BeforeEach
-        public void beforeEachNested() {
-            $("Thread " + currentThread(), () -> {});
+        void beforeEachNested() {
+            $("Thread " + currentThread(), () -> assertTrue(true));
         }
 
         @Test
-        public void nestedTest1() {
-            $("Thread " + currentThread(), () -> {});
+        void nestedTest1() {
+            $("Thread " + currentThread(), () -> assertTrue(true));
         }
 
         @Nested
-        public class InnerNestedTest {
+        class InnerNestedTest {
 
             @BeforeEach
-            public void beforeEachInnerNested() {
-                $("Thread " + currentThread(), () -> {});
+            void beforeEachInnerNested() {
+                $("Thread " + currentThread(), () -> assertTrue(true));
             }
 
             @Test
-            public void innerNestedTest1() {
-                $("Thread " + currentThread(), () -> {});
+            void innerNestedTest1() {
+                $("Thread " + currentThread(), () -> assertTrue(true));
             }
         }
     }

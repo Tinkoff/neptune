@@ -16,3 +16,7 @@
 ## allure.testng.bridge. Аннотации
 
 - [Allure. Аннотации](./../../test_reports/allure/annotations.md)
+
+## Зависимости от TestNG
+
+См. [Таблицу соответствий версий Neptune и TestNG](./supported_versions.md)

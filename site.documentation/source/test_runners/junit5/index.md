@@ -19,6 +19,7 @@
 ```{toctree}
 :hidden:
 
+supported_versions.md
 settings.md
 allure.jupiter.bridge.md
 ```

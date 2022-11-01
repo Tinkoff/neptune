@@ -4,53 +4,54 @@ import org.junit.jupiter.api.*;
 import ru.tinkoff.qa.neptune.allure.jupiter.bridge.BasePreparing;
 
 import static java.lang.Thread.currentThread;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static ru.tinkoff.qa.neptune.core.api.steps.Step.$;
 
 public class SomePackageExcluded2Test extends BasePreparing {
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         $("Thread " + currentThread(), () -> {});
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         $("Thread " + currentThread(), () -> {});
     }
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         $("Thread " + currentThread(), () -> {});
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         $("Thread " + currentThread(), () -> {});
     }
 
     @Test
-    public void test1() {
-        $("Thread " + currentThread(), () -> {});
+    void test1() {
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @Test
-    public void test2() {
-        $("Thread " + currentThread(), () -> {});
+    void test2() {
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
 
     @Test
-    public void test3() {
-        $("Thread " + currentThread(), () -> {});
+    void test3() {
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @Test
-    public void test4() {
-        $("Thread " + currentThread(), () -> {});
+    void test4() {
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @Test
-    public void test5() {
-        $("Thread " + currentThread(), () -> {});
+    void test5() {
+        $("Thread " + currentThread(), () -> assertTrue(true));
     }
 }

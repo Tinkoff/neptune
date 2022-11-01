@@ -117,7 +117,7 @@ public final class ItemsToNotBeReported {
             || isClassExcluded(method.getDeclaringClass());
     }
 
-    public final static class ExcludedFixtureWrapper {
+    public static final class ExcludedFixtureWrapper {
 
         private final FixtureResult fixtureResult;
 

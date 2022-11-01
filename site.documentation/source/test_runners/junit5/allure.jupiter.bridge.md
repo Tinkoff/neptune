@@ -40,3 +40,7 @@ public class SomeTest {
 }
 ```
 
+## Зависимости от JUnit 5
+
+См. [Таблицу соответствий версий Neptune и JUnit5](./supported_versions.md)
+
