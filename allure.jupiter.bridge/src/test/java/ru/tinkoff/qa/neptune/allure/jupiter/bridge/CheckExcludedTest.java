@@ -3,8 +3,6 @@ package ru.tinkoff.qa.neptune.allure.jupiter.bridge;
 import io.qameta.allure.AllureResultsWriter;
 import io.qameta.allure.model.TestResult;
 import io.qameta.allure.model.TestResultContainer;
-import org.junit.platform.engine.discovery.ClassSelector;
-import org.junit.platform.engine.discovery.DiscoverySelectors;
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
 import org.mockito.Mock;
@@ -12,25 +10,15 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.allure.jupiter.bridge.excluded.clazz.SomeClassExcluded2Test;
-import ru.tinkoff.qa.neptune.allure.jupiter.bridge.excluded.clazz.SomeClassExcludedTest;
-import ru.tinkoff.qa.neptune.allure.jupiter.bridge.excluded.methods.SomeMethodExcluded2Test;
-import ru.tinkoff.qa.neptune.allure.jupiter.bridge.excluded.methods.SomeMethodExcludedTest;
-import ru.tinkoff.qa.neptune.allure.jupiter.bridge.fully.excluded.SomePackageExcluded1Test;
-import ru.tinkoff.qa.neptune.allure.jupiter.bridge.fully.excluded.SomePackageExcluded2Test;
-import ru.tinkoff.qa.neptune.allure.jupiter.bridge.fully.excluded.SomePackageExcluded3Test;
-import ru.tinkoff.qa.neptune.allure.jupiter.bridge.not.excluded.SomeNotExcluded2Test;
-import ru.tinkoff.qa.neptune.allure.jupiter.bridge.not.excluded.SomeNotExcludedTest;
 import ru.tinkoff.qa.neptune.allure.lifecycle.ItemsToNotBeReported;
 
 import java.lang.reflect.Field;
 import java.util.Set;
 
-import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyIterable;
-import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
+import static org.junit.platform.engine.discovery.DiscoverySelectors.selectPackage;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static ru.tinkoff.qa.neptune.allure.jupiter.bridge.NeptuneAllureExcludeTest.changeResultWriter;
@@ -63,19 +51,15 @@ public class CheckExcludedTest {
     @DataProvider
     public static Object[][] excludedClasses() {
         return new Object[][] {
-            {SomePackageExcluded1Test.class, SomePackageExcluded2Test.class, SomePackageExcluded3Test.class},
-            {SomeClassExcludedTest.class, SomeClassExcluded2Test.class}
+            {"ru.tinkoff.qa.neptune.allure.jupiter.bridge.fully.excluded"},
+            {"ru.tinkoff.qa.neptune.allure.jupiter.bridge.excluded.clazz"}
         };
     }
 
     @Test(dataProvider = "excludedClasses")
-    public void excludedTest(Class<?>... tests) {
-        var classSelectors = stream(tests)
-            .map(DiscoverySelectors::selectClass)
-            .toArray(ClassSelector[]::new);
-
+    public void excludedTest(String pack) {
         var request = LauncherDiscoveryRequestBuilder.request()
-            .selectors(classSelectors)
+            .selectors(selectPackage(pack))
             .build();
         var launcher = LauncherFactory.create();
         launcher.discover(request);
@@ -88,8 +72,7 @@ public class CheckExcludedTest {
     @SuppressWarnings("unchecked")
     public void excludedMethodsTest() throws Exception {
         var request = LauncherDiscoveryRequestBuilder.request()
-            .selectors(selectClass(SomeMethodExcludedTest.class),
-                selectClass(SomeMethodExcluded2Test.class))
+            .selectors(selectPackage("ru.tinkoff.qa.neptune.allure.jupiter.bridge.excluded.methods"))
             .build();
         var launcher = LauncherFactory.create();
         launcher.discover(request);
@@ -132,8 +115,7 @@ public class CheckExcludedTest {
     @SuppressWarnings("unchecked")
     public void notExcludedTest() throws Exception {
         var request = LauncherDiscoveryRequestBuilder.request()
-            .selectors(selectClass(SomeNotExcludedTest.class),
-                selectClass(SomeNotExcluded2Test.class))
+            .selectors(selectPackage("ru.tinkoff.qa.neptune.allure.jupiter.bridge.not.excluded"))
             .build();
         var launcher = LauncherFactory.create();
         launcher.discover(request);

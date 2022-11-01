@@ -12,19 +12,10 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.testng.TestNG;
-import org.testng.xml.XmlClass;
+import org.testng.xml.XmlPackage;
 import org.testng.xml.XmlSuite;
 import org.testng.xml.XmlTest;
 import ru.tinkoff.qa.neptune.allure.lifecycle.ItemsToNotBeReported;
-import ru.tinkoff.qa.neptune.allure.testng.bridge.excluded.clazz.SomeClassExcluded2Test;
-import ru.tinkoff.qa.neptune.allure.testng.bridge.excluded.clazz.SomeClassExcludedTest;
-import ru.tinkoff.qa.neptune.allure.testng.bridge.excluded.methods.SomeMethodExcluded2Test;
-import ru.tinkoff.qa.neptune.allure.testng.bridge.excluded.methods.SomeMethodExcludedTest;
-import ru.tinkoff.qa.neptune.allure.testng.bridge.fully.excluded.SomePackageExcluded1Test;
-import ru.tinkoff.qa.neptune.allure.testng.bridge.fully.excluded.SomePackageExcluded2Test;
-import ru.tinkoff.qa.neptune.allure.testng.bridge.fully.excluded.SomePackageExcluded3Test;
-import ru.tinkoff.qa.neptune.allure.testng.bridge.not.excluded.SomeNotExcluded2Test;
-import ru.tinkoff.qa.neptune.allure.testng.bridge.not.excluded.SomeNotExcludedTest;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -44,14 +35,14 @@ import static ru.tinkoff.qa.neptune.allure.testng.bridge.NeptuneAllureExcludeTes
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableOf;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class CheckExcludedTest {
+class CheckExcludedTest {
 
     @Mock
     private AllureResultsWriter mockWriter;
     private Field excludedField;
 
     @BeforeAll
-    public void beforeClass() throws Exception {
+    void beforeClass() throws Exception {
         openMocks(this);
         changeResultWriter(mockWriter);
 
@@ -61,23 +52,23 @@ public class CheckExcludedTest {
 
     @BeforeEach
     @SuppressWarnings("unchecked")
-    public void beforeMethod() throws Exception {
+    void beforeMethod() throws Exception {
         clearInvocations(mockWriter);
 
         var excluded = (Set<Object>) excludedField.get(ItemsToNotBeReported.class);
         excluded.clear();
     }
 
-    public static Stream<? extends Arguments> excludedClasses() {
+    static Stream<? extends Arguments> excludedClasses() {
         return Stream.of(
-            arguments(List.of(SomePackageExcluded1Test.class, SomePackageExcluded2Test.class, SomePackageExcluded3Test.class)),
-            arguments(List.of(SomeClassExcludedTest.class, SomeClassExcluded2Test.class))
+            arguments("ru.tinkoff.qa.neptune.allure.testng.bridge.fully.excluded"),
+            arguments("ru.tinkoff.qa.neptune.allure.testng.bridge.excluded.clazz")
         );
     }
 
     @ParameterizedTest
     @MethodSource("excludedClasses")
-    public void excludedTest(List<Class<?>> tests) {
+    void excludedTest(String pack) {
 
         TestNG testNG = new TestNG();
 
@@ -89,10 +80,10 @@ public class CheckExcludedTest {
 
         XmlTest test = new XmlTest(suite);
 
-        List<XmlClass> testClasses = new ArrayList<>();
-        tests.forEach(cls -> testClasses.add(new XmlClass(cls.getName())));
+        List<XmlPackage> testClasses = new ArrayList<>();
+        testClasses.add(new XmlPackage(pack));
 
-        test.setXmlClasses(testClasses);
+        test.setXmlPackages(testClasses);
         testSuites.add(suite);
 
         testNG.setXmlSuites(testSuites);
@@ -103,7 +94,7 @@ public class CheckExcludedTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void excludedMethodsTest() throws Exception {
+    void excludedMethodsTest() throws Exception {
         TestNG testNG = new TestNG();
 
         List<XmlSuite> testSuites = new ArrayList<>();
@@ -114,11 +105,10 @@ public class CheckExcludedTest {
 
         XmlTest test = new XmlTest(suite);
 
-        List<XmlClass> testClasses = new ArrayList<>();
-        testClasses.add(new XmlClass(SomeMethodExcludedTest.class.getName()));
-        testClasses.add(new XmlClass(SomeMethodExcluded2Test.class.getName()));
+        List<XmlPackage> testClasses = new ArrayList<>();
+        testClasses.add(new XmlPackage("ru.tinkoff.qa.neptune.allure.testng.bridge.excluded.methods"));
 
-        test.setXmlClasses(testClasses);
+        test.setXmlPackages(testClasses);
         testSuites.add(suite);
 
         testNG.setXmlSuites(testSuites);
@@ -152,7 +142,7 @@ public class CheckExcludedTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void notExcludedTest() throws Exception {
+    void notExcludedTest() throws Exception {
         TestNG testNG = new TestNG();
 
         List<XmlSuite> testSuites = new ArrayList<>();
@@ -163,11 +153,10 @@ public class CheckExcludedTest {
 
         XmlTest test = new XmlTest(suite);
 
-        List<XmlClass> testClasses = new ArrayList<>();
-        testClasses.add(new XmlClass(SomeNotExcludedTest.class.getName()));
-        testClasses.add(new XmlClass(SomeNotExcluded2Test.class.getName()));
+        List<XmlPackage> testClasses = new ArrayList<>();
+        testClasses.add(new XmlPackage("ru.tinkoff.qa.neptune.allure.testng.bridge.not.excluded"));
 
-        test.setXmlClasses(testClasses);
+        test.setXmlPackages(testClasses);
         testSuites.add(suite);
 
         testNG.setXmlSuites(testSuites);

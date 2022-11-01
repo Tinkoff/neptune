@@ -8,7 +8,7 @@ import static java.lang.Thread.currentThread;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static ru.tinkoff.qa.neptune.core.api.steps.Step.$;
 
-public class SomeMethodExcludedTest extends BasePreparing {
+class SomeMethodExcludedTest extends BasePreparing {
 
     @BeforeAll
     static void beforeAll() {

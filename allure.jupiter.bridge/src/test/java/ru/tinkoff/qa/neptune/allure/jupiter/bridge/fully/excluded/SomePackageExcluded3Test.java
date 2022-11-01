@@ -6,7 +6,7 @@ import static java.lang.Thread.currentThread;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static ru.tinkoff.qa.neptune.core.api.steps.Step.$;
 
-public class SomePackageExcluded3Test {
+class SomePackageExcluded3Test {
 
     @BeforeAll
     static void beforeAll() {

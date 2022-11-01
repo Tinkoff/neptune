@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static ru.tinkoff.qa.neptune.core.api.steps.Step.$;
 
 @ExcludeFromAllureReport
-public class SomeClassExcluded2Test {
+class SomeClassExcluded2Test {
 
     @BeforeAll
     static void beforeAll() {
