@@ -30,8 +30,8 @@ package org.my.pack;
 
 import ru.tinkoff.qa.neptune.allure.ExcludeFromAllureReport;
 
-//Из allure-отчета будут исключены все задекларированные 
-//тест-методы и методы фикстуры данного класса
+// Из allure-отчета будут исключены все задекларированные 
+// и унаследованные тест-методы и методы фикстуры данного класса
 @ExcludeFromAllureReport
 public class SomeTest {
 
