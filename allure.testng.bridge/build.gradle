@@ -59,6 +59,18 @@ publishing {
     }
 }
 
+javadoc {
+    destinationDir = file("${buildDir}/../../neptune.documentation/$project.name")
+
+    title = "Neptune Integration Of Allure and TestNG. v$globalVersion"
+    options.author true
+    options.links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
+    options.addStringOption 'Xdoclint:none', '-quiet'
+    options.memberLevel = JavadocMemberLevel.PROTECTED
+    options.bottom = "Copyright &copy; 2022 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+    options.addBooleanOption('html5', true)
+}
+
 test {
    useJUnitPlatform()
 }

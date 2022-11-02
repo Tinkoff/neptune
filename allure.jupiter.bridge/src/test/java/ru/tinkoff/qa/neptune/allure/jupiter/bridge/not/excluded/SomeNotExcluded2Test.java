@@ -9,53 +9,53 @@ import static ru.tinkoff.qa.neptune.core.api.steps.Step.$;
 class SomeNotExcluded2Test {
 
     @BeforeAll
-    public static void beforeAll2() {
+    static void beforeAll2() {
         $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @AfterAll
-    public static void afterAll2() {
+    static void afterAll2() {
         $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @BeforeEach
-    public void beforeEach2() {
+    void beforeEach2() {
         $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @AfterEach
-    public void afterEach2() {
+    void afterEach2() {
         $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @AfterEach
-    public void afterEachExcluded2() {
+    void afterEachExcluded2() {
         $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @Test
-    public void test21() {
+    void test21() {
         $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @Test
-    public void test22() {
+    void test22() {
         $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
 
     @Test
-    public void test23() {
+    void test23() {
         $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @Test
-    public void test24() {
+    void test24() {
         $("Thread " + currentThread(), () -> assertTrue(true));
     }
 
     @Test
-    public void test25() {
+    void test25() {
         $("Thread " + currentThread(), () -> assertTrue(true));
     }
 }

@@ -8,6 +8,8 @@
 .. include:: testng_allure_dependencies.rst
 ```
 
+[API](https://tinkoff.github.io/neptune/allure.testng.bridge/index.html)
+
 ## allure.testng.bridge. Свойства
 
 - [TestNG. Свойства](settings.md)
