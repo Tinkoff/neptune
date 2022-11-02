@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"ru.tinkoff.qa.neptune.allure.jupiter.bridge","l":"ExcludeFromAllureReportExtension"},{"p":"ru.tinkoff.qa.neptune.allure.jupiter.bridge","l":"NeptuneAllureExcludeTest"}]

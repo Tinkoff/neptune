@@ -1,6 +1,9 @@
 io.swagger.codegen.v3
 ru.tinkoff.qa.neptune.allure
+ru.tinkoff.qa.neptune.allure.jupiter.bridge
+ru.tinkoff.qa.neptune.allure.lifecycle
 ru.tinkoff.qa.neptune.allure.properties
+ru.tinkoff.qa.neptune.allure.testng.bridge
 ru.tinkoff.qa.neptune.check
 ru.tinkoff.qa.neptune.check.localization
 ru.tinkoff.qa.neptune.core.api.aspects

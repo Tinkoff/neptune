@@ -56,7 +56,7 @@ test_runners/junit5/index.md
 :hidden:
 :maxdepth: 7
 
-test_reports/allure.md
+test_reports/allure/index.md
 ```
 
 ```{toctree}
