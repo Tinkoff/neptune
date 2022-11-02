@@ -7,6 +7,14 @@ dependencies {
         exclude group: 'org.junit.jupiter', module: 'junit-jupiter-api'
         exclude group: 'org.junit.jupiter', module: 'junit-platform-launcher'
     }
+    compileClasspath group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
+    compileClasspath group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit5Version
+    compileClasspath group: 'org.junit.platform', name: 'junit-platform-launcher', version: junit5PlatformVersion
+
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit5Version
+    testImplementation group: 'org.junit.platform', name: 'junit-platform-launcher', version: junit5PlatformVersion
 }
 
 java {
@@ -52,4 +60,16 @@ publishing {
             }
         }
     }
+}
+
+javadoc {
+    destinationDir = file("${buildDir}/../../neptune.documentation/$project.name")
+
+    title = "Neptune Integration Of Allure and JUnut 5. v$globalVersion"
+    options.author true
+    options.links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
+    options.addStringOption 'Xdoclint:none', '-quiet'
+    options.memberLevel = JavadocMemberLevel.PROTECTED
+    options.bottom = "Copyright &copy; 2022 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+    options.addBooleanOption('html5', true)
 }

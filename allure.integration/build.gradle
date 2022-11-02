@@ -1,11 +1,15 @@
 dependencies {
-    api project(':core.api')
-    api (group: 'io.qameta.allure', name: 'allure-java-commons', version: allureVersion) {
+    compileClasspath project(':core.api')
+    compileClasspath (group: 'io.qameta.allure', name: 'allure-java-commons', version: allureVersion) {
         exclude group: 'org.aspectj', module: 'aspectjrt'
         exclude group: 'org.aspectj', module: 'aspectjweaver'
         exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
         exclude group: 'com.fasterxml.jackson.module', module: 'jackson-module-jaxb-annotations'
     }
+    testImplementation project(':core.api')
+    testImplementation group: 'io.qameta.allure', name: 'allure-java-commons', version: allureVersion
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockitoVersion
 }
 
 java {
