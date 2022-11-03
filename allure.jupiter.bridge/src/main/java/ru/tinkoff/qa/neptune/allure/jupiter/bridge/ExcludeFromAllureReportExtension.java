@@ -6,7 +6,6 @@ import org.junit.jupiter.api.extension.ReflectiveInvocationContext;
 
 import java.lang.reflect.Method;
 
-import static ru.tinkoff.qa.neptune.allure.jupiter.bridge.NeptuneAllureExcludeTest.getCurrentTestClass;
 import static ru.tinkoff.qa.neptune.allure.lifecycle.ItemsToNotBeReported.excludeFixtureIfNecessary;
 import static ru.tinkoff.qa.neptune.allure.lifecycle.ItemsToNotBeReported.excludeTestResultIfNecessary;
 
@@ -19,9 +18,10 @@ public class ExcludeFromAllureReportExtension implements InvocationInterceptor {
 
     private <T> T checkCurrentLifeCycleItemAndProceed(Invocation<T> invocation,
                                                       ReflectiveInvocationContext<Method> invocationContext,
+                                                      ExtensionContext extensionContext,
                                                       boolean isTest) throws Throwable {
         var method = invocationContext.getExecutable();
-        var target = getCurrentTestClass();
+        var target = extensionContext.getRequiredTestClass();
 
         if (isTest) {
             excludeTestResultIfNecessary(target, method);
@@ -37,48 +37,48 @@ public class ExcludeFromAllureReportExtension implements InvocationInterceptor {
     public void interceptBeforeAllMethod(InvocationInterceptor.Invocation<Void> invocation,
                                          ReflectiveInvocationContext<Method> invocationContext,
                                          ExtensionContext extensionContext) throws Throwable {
-        checkCurrentLifeCycleItemAndProceed(invocation, invocationContext, false);
+        checkCurrentLifeCycleItemAndProceed(invocation, invocationContext, extensionContext, false);
     }
 
     @Override
     public void interceptAfterAllMethod(Invocation<Void> invocation,
                                         ReflectiveInvocationContext<Method> invocationContext,
                                         ExtensionContext extensionContext) throws Throwable {
-        checkCurrentLifeCycleItemAndProceed(invocation, invocationContext, false);
+        checkCurrentLifeCycleItemAndProceed(invocation, invocationContext, extensionContext, false);
     }
 
     @Override
     public void interceptBeforeEachMethod(InvocationInterceptor.Invocation<Void> invocation,
                                           ReflectiveInvocationContext<Method> invocationContext,
                                           ExtensionContext extensionContext) throws Throwable {
-        checkCurrentLifeCycleItemAndProceed(invocation, invocationContext, false);
+        checkCurrentLifeCycleItemAndProceed(invocation, invocationContext, extensionContext, false);
     }
 
     @Override
     public void interceptAfterEachMethod(Invocation<Void> invocation,
                                          ReflectiveInvocationContext<Method> invocationContext,
                                          ExtensionContext extensionContext) throws Throwable {
-        checkCurrentLifeCycleItemAndProceed(invocation, invocationContext, false);
+        checkCurrentLifeCycleItemAndProceed(invocation, invocationContext, extensionContext, false);
     }
 
     @Override
     public void interceptTestMethod(Invocation<Void> invocation,
                                     ReflectiveInvocationContext<Method> invocationContext,
                                     ExtensionContext extensionContext) throws Throwable {
-        checkCurrentLifeCycleItemAndProceed(invocation, invocationContext, true);
+        checkCurrentLifeCycleItemAndProceed(invocation, invocationContext, extensionContext, true);
     }
 
     @Override
     public <T> T interceptTestFactoryMethod(Invocation<T> invocation,
                                             ReflectiveInvocationContext<Method> invocationContext,
                                             ExtensionContext extensionContext) throws Throwable {
-        return checkCurrentLifeCycleItemAndProceed(invocation, invocationContext, true);
+        return checkCurrentLifeCycleItemAndProceed(invocation, invocationContext, extensionContext, true);
     }
 
     @Override
     public void interceptTestTemplateMethod(Invocation<Void> invocation,
                                             ReflectiveInvocationContext<Method> invocationContext,
                                             ExtensionContext extensionContext) throws Throwable {
-        checkCurrentLifeCycleItemAndProceed(invocation, invocationContext, true);
+        checkCurrentLifeCycleItemAndProceed(invocation, invocationContext, extensionContext, true);
     }
 }
