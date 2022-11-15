@@ -1,8 +1,8 @@
 package ru.tinkoff.qa.neptune.selenium.functions.browser.proxy;
 
-import org.openqa.selenium.devtools.v106.network.Network;
-import org.openqa.selenium.devtools.v106.network.model.RequestWillBeSent;
-import org.openqa.selenium.devtools.v106.network.model.ResponseReceived;
+import org.openqa.selenium.devtools.v107.network.Network;
+import org.openqa.selenium.devtools.v107.network.model.RequestWillBeSent;
+import org.openqa.selenium.devtools.v107.network.model.ResponseReceived;
 
 import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;

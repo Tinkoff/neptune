@@ -2,9 +2,9 @@ package ru.tinkoff.qa.neptune.selenium;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.devtools.DevTools;
-import org.openqa.selenium.devtools.v106.network.Network;
-import org.openqa.selenium.devtools.v106.network.model.RequestWillBeSent;
-import org.openqa.selenium.devtools.v106.network.model.ResponseReceived;
+import org.openqa.selenium.devtools.v107.network.Network;
+import org.openqa.selenium.devtools.v107.network.model.RequestWillBeSent;
+import org.openqa.selenium.devtools.v107.network.model.ResponseReceived;
 import ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.HttpTraffic;
 
 import java.util.List;

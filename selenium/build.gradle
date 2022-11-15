@@ -6,7 +6,7 @@ dependencies {
         exclude group: 'com.google.code.gson', module: 'gson'
         exclude group: 'net.bytebuddy', module:'byte-buddy'
     }
-    implementation(group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '5.3.0') {
+    implementation(group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '5.3.1') {
         exclude group: 'org.seleniumhq.selenium'
         exclude group: 'org.apache.commons', module: 'commons-lang3'
         exclude group: 'org.jsoup', module: 'jsoup'
