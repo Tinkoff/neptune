@@ -14,6 +14,7 @@ import static io.qameta.allure.Allure.addAttachment;
 import static java.io.File.createTempFile;
 import static java.util.Optional.ofNullable;
 import static java.util.UUID.randomUUID;
+import static ru.tinkoff.qa.neptune.allure.lifecycle.ItemsToNotBeReported.toReport;
 
 public class AllureImageInjector implements CapturedImageInjector {
 
@@ -36,6 +37,10 @@ public class AllureImageInjector implements CapturedImageInjector {
 
     @Override
     public void inject(BufferedImage toBeInjected, String message) {
+        if (!toReport()) {
+            return;
+        }
+
         InputStream inputStream = inputStream(toBeInjected);
         addAttachment(message, "image/png", inputStream, "png");
     }

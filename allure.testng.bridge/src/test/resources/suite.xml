@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="Full test suite">
+
+    <test name="full concurrent test" parallel="methods">
+        <packages>
+            <package name="ru.tinkoff.qa.neptune.allure.testng.bridge.excluded.*"/>
+            <package name="ru.tinkoff.qa.neptune.allure.testng.bridge.fully.excluded"/>
+            <package name="ru.tinkoff.qa.neptune.allure.testng.bridge.not.excluded"/>
+        </packages>
+    </test>
+</suite>

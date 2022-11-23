@@ -93,7 +93,7 @@ public abstract class AbstractSetOfObjectsMatcher<S, R> extends NeptuneFeatureMa
             }
 
             if (found) {
-                toCheck.removeAll(foundElements);
+                toCheck.removeIf(foundElements::contains);
             } else if (toLogMismatches) {
                 appendMismatchDescription(new ObjectIsNotPresentMismatch(new Item(), m));
             }
