@@ -7,9 +7,9 @@ import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.header.internals.RecordHeaders;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 import ru.tinkoff.qa.neptune.kafka.captors.MessageCaptor;
@@ -20,7 +20,6 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.getCaptors;
-import static ru.tinkoff.qa.neptune.kafka.GetProducer.getProducer;
 import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAFKA_DEFAULT_DATA_TRANSFORMER;
 import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAFKA_KEY_TRANSFORMER;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaCallbackProperty.KAFKA_CALLBACK;
@@ -46,13 +45,13 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
 
     public KafkaSendRecordsActionSupplier() {
         super();
-        performOn(getProducer());
+        performOn(KafkaStepContext::createProducer);
     }
 
     /**
      * Sends an object to topic. This object is serialized to string message.
      *
-     * @param toSend is a object to be serialized and send to the topic
+     * @param toSend is an object to be serialized and send to the topic
      * @return an instance of {@link KafkaSendRecordsActionSupplier.Mapped}
      */
     public static Mapped kafkaSerializedMessage(Object toSend) {
@@ -123,20 +122,22 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
 
     @Override
     protected void howToPerform(KafkaProducer<String, String> producer) {
-        ProducerRecord<String, String> records;
+        try (producer) {
+            ProducerRecord<String, String> records;
 
-        records = new ProducerRecord<>(
-            topic,
-            partition,
-            timestamp,
-            key,
-            value,
-            headers);
+            records = new ProducerRecord<>(
+                topic,
+                partition,
+                timestamp,
+                key,
+                value,
+                headers);
 
-        if (callback == null) {
-            producer.send(records);
-        } else {
-            producer.send(records, callback);
+            if (callback == null) {
+                producer.send(records);
+            } else {
+                producer.send(records, callback);
+            }
         }
     }
 

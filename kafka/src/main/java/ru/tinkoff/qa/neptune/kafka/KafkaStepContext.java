@@ -10,33 +10,23 @@ import ru.tinkoff.qa.neptune.kafka.functions.poll.*;
 import ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier;
 
 import java.util.List;
-import java.util.Properties;
 
 import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
 import static ru.tinkoff.qa.neptune.kafka.properties.DefaultKafkaProperties.KAFKA_CONSUMER_PROPERTIES;
 import static ru.tinkoff.qa.neptune.kafka.properties.DefaultKafkaProperties.KAFKA_PRODUCER_PROPERTIES;
 
-
-@SuppressWarnings("unchecked")
 public class KafkaStepContext extends Context<KafkaStepContext> {
 
     public static KafkaStepContext kafka() {
         return getCreatedContextOrCreate(KafkaStepContext.class);
     }
 
-    public Properties getConsumerProperties() {
-        return KAFKA_CONSUMER_PROPERTIES.get();
-    }
 
-    public Properties getProducerProperties() {
-        return KAFKA_CONSUMER_PROPERTIES.get();
-    }
-
-    KafkaConsumer<String, String> createConsumer() {
+    public KafkaConsumer<String, String> createConsumer() {
         return new KafkaConsumer<>(KAFKA_CONSUMER_PROPERTIES.get(), new StringDeserializer(), new StringDeserializer());
     }
 
-    KafkaProducer<String, String> createProducer() {
+    public KafkaProducer<String, String> createProducer() {
         return new KafkaProducer<>(KAFKA_PRODUCER_PROPERTIES.get(), new StringSerializer(), new StringSerializer());
     }
 
