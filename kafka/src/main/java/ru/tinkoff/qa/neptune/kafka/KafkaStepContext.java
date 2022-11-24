@@ -5,7 +5,6 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.kafka.functions.poll.*;
 import ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier;
@@ -16,29 +15,18 @@ import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCre
 import static ru.tinkoff.qa.neptune.kafka.properties.DefaultKafkaProperties.KAFKA_CONSUMER_PROPERTIES;
 import static ru.tinkoff.qa.neptune.kafka.properties.DefaultKafkaProperties.KAFKA_PRODUCER_PROPERTIES;
 
-
-@SuppressWarnings("unchecked")
 public class KafkaStepContext extends Context<KafkaStepContext> {
-    private KafkaProducer<String, String> producer;
-    private KafkaConsumer<String, String> consumer;
 
     public static KafkaStepContext kafka() {
         return getCreatedContextOrCreate(KafkaStepContext.class);
     }
 
-    KafkaProducer<String, String> getProducer() {
-        return producer;
-    }
 
-    public KafkaConsumer<String, String> getConsumer() {
-        return consumer;
-    }
-
-    KafkaConsumer<String, String> createConsumer() {
+    public KafkaConsumer<String, String> createConsumer() {
         return new KafkaConsumer<>(KAFKA_CONSUMER_PROPERTIES.get(), new StringDeserializer(), new StringDeserializer());
     }
 
-    KafkaProducer<String, String> createProducer() {
+    public KafkaProducer<String, String> createProducer() {
         return new KafkaProducer<>(KAFKA_PRODUCER_PROPERTIES.get(), new StringSerializer(), new StringSerializer());
     }
 
@@ -50,22 +38,7 @@ public class KafkaStepContext extends Context<KafkaStepContext> {
      */
     @SuppressWarnings("unused")
     public KafkaStepContext send(KafkaSendRecordsActionSupplier<?, ?, ?> kafkaSendRecordsActionSupplier) {
-        producer = createProducer();
-        try (var producerVar = producer) {
-            return perform(kafkaSendRecordsActionSupplier);
-        } finally {
-            producer = null;
-        }
-    }
-
-    @SuppressWarnings("unused")
-    private <R> R pollPrivate(SequentialGetStepSupplier<KafkaStepContext, R, ?, ?, ?> pollStep) {
-        consumer = createConsumer();
-        try (var consumerVar = consumer) {
-            return get(pollStep);
-        } finally {
-            consumer = null;
-        }
+        return perform(kafkaSendRecordsActionSupplier);
     }
 
     /**
@@ -76,7 +49,7 @@ public class KafkaStepContext extends Context<KafkaStepContext> {
      * @return resulted array
      */
     public <T> T[] poll(KafkaPollArraySupplier<?, T, ?> kafkaPollArraySupplier) {
-        return pollPrivate(kafkaPollArraySupplier);
+        return get(kafkaPollArraySupplier);
     }
 
     /**
@@ -87,7 +60,7 @@ public class KafkaStepContext extends Context<KafkaStepContext> {
      * @return resulted value
      */
     public <T> T poll(KafkaPollIterableItemSupplier<?, T, ?> kafkaPollIterableItemSupplier) {
-        return pollPrivate(kafkaPollIterableItemSupplier);
+        return get(kafkaPollIterableItemSupplier);
     }
 
     /**
@@ -98,7 +71,7 @@ public class KafkaStepContext extends Context<KafkaStepContext> {
      * @return resulted list
      */
     public <T> List<T> poll(KafkaPollIterableSupplier<?, T, ?> kafkaPollIterableSupplier) {
-        return pollPrivate(kafkaPollIterableSupplier);
+        return get(kafkaPollIterableSupplier);
     }
 
     /**
@@ -108,14 +81,14 @@ public class KafkaStepContext extends Context<KafkaStepContext> {
      * @return List<ConsumerRecord < String, String>>
      */
     public List<ConsumerRecord<String, String>> poll(GetRecordSupplier recordSupplier) {
-        return pollPrivate(recordSupplier);
+        return get(recordSupplier);
     }
 
     public <T> List<T> poll(KafkaPollListFromRecordSupplier<T, ?, ?> recordSupplier) {
-        return pollPrivate(recordSupplier);
+        return get(recordSupplier);
     }
 
     public <T> T poll(KafkaPollItemFromRecordSupplier<T, ?, ?> recordSupplier) {
-        return pollPrivate(recordSupplier);
+        return get(recordSupplier);
     }
 }

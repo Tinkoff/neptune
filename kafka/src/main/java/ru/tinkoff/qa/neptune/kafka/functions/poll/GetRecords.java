@@ -17,10 +17,10 @@ import static java.util.stream.StreamSupport.stream;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty.DEFAULT_TOPICS_FOR_POLL;
 
 @SuppressWarnings("unchecked")
-public class GetRecords implements Function<KafkaStepContext, List<ConsumerRecord<String, String>>>, StepParameterPojo {
+class GetRecords implements Function<KafkaStepContext, List<ConsumerRecord<String, String>>>, StepParameterPojo {
+
     @StepParameter(value = "topics", makeReadableBy = TopicValueGetter.class)
     private final String[] topics;
-
     private List<KafkaRecordWrapper> readRecords = new ArrayList<>();
 
     public GetRecords(String[] topics) {
@@ -29,25 +29,28 @@ public class GetRecords implements Function<KafkaStepContext, List<ConsumerRecor
 
     @Override
     public List<ConsumerRecord<String, String>> apply(KafkaStepContext context) {
-        var kafkaConsumer = context.getConsumer();
-        kafkaConsumer.subscribe(asList(topics));
+        var kafkaConsumer = context.createConsumer();
 
-        ConsumerRecords<String, String> consumerRecords = kafkaConsumer.poll(ofNanos(1));
-        Set<TopicPartition> partitions = consumerRecords.partitions();
+        try (kafkaConsumer) {
+            kafkaConsumer.subscribe(asList(topics));
 
-        if (partitions.isEmpty()) {
-            return new ArrayList<>();
-        }
+            ConsumerRecords<String, String> consumerRecords = kafkaConsumer.poll(ofNanos(1));
+            Set<TopicPartition> partitions = consumerRecords.partitions();
 
-        readRecords.addAll(stream(consumerRecords.spliterator(), false)
+            if (partitions.isEmpty()) {
+                return new ArrayList<>();
+            }
+
+            readRecords.addAll(stream(consumerRecords.spliterator(), false)
                 .map(KafkaRecordWrapper::new)
                 .collect(toList()));
 
-        readRecords = readRecords.stream().distinct().collect(toList());
+            readRecords = readRecords.stream().distinct().collect(toList());
 
-        return readRecords.stream()
+            return readRecords.stream()
                 .map(KafkaRecordWrapper::getConsumerRecord)
                 .collect(toList());
+        }
     }
 
     @Override
@@ -56,7 +59,6 @@ public class GetRecords implements Function<KafkaStepContext, List<ConsumerRecor
         return new MergeProperty<>(this, (Function<List<ConsumerRecord<String, String>>, V>) after);
     }
 
-    @SuppressWarnings("unchecked")
     static class MergeProperty<T> implements Function<KafkaStepContext, T>, StepParameterPojo {
 
         private final GetRecords before;
