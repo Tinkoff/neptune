@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.kafka.functions.poll;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.Deserializer;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
@@ -9,13 +9,13 @@ import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.time.Duration.ofNanos;
 import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty.DEFAULT_TOPICS_FOR_POLL;
@@ -31,38 +31,38 @@ class GetRecords<K, V> implements Function<KafkaStepContext, List<ConsumerRecord
 
     private Deserializer<V> valueDeserializer;
 
+    private KafkaConsumer<K, V> kafkaConsumer;
+
     public GetRecords(String[] topics) {
         this.topics = topics.length == 0 ? DEFAULT_TOPICS_FOR_POLL.get() : topics;
     }
 
     @Override
     public List<ConsumerRecord<K, V>> apply(KafkaStepContext context) {
-        var kafkaConsumer = context.createConsumer(
+        kafkaConsumer = ofNullable(kafkaConsumer).orElseGet(() -> context.createConsumer(
             new InnerDeserializer<>(keyDeserializer),
-            new InnerDeserializer<>(valueDeserializer)
+            new InnerDeserializer<>(valueDeserializer))
         );
 
-        try (kafkaConsumer) {
-            kafkaConsumer.subscribe(asList(topics));
+        kafkaConsumer.subscribe(asList(topics));
 
-            var consumerRecords = kafkaConsumer.poll(ofNanos(1));
-            Set<TopicPartition> partitions = consumerRecords.partitions();
+        var consumerRecords = kafkaConsumer.poll(ofNanos(1));
+        var partitions = consumerRecords.partitions();
 
-            if (partitions.isEmpty()) {
-                return new ArrayList<>();
-            }
-
-            readRecords.addAll(stream(consumerRecords.spliterator(), false)
-                .filter(r -> nonNull(r.key()) && nonNull(r.value()))
-                .map(KafkaRecordWrapper::new)
-                .collect(toList()));
-
-            readRecords = readRecords.stream().distinct().collect(toList());
-
-            return readRecords.stream()
-                .map(KafkaRecordWrapper::getConsumerRecord)
-                .collect(toList());
+        if (partitions.isEmpty()) {
+            return new ArrayList<>();
         }
+
+        readRecords.addAll(stream(consumerRecords.spliterator(), false)
+            .filter(r -> nonNull(r.key()) && nonNull(r.value()))
+            .map(KafkaRecordWrapper::new)
+            .collect(toList()));
+
+        readRecords = readRecords.stream().distinct().collect(toList());
+
+        return readRecords.stream()
+            .map(KafkaRecordWrapper::getConsumerRecord)
+            .collect(toList());
     }
 
     public <K2> GetRecords<K2, V> setKeyDeserializer(Deserializer<K2> keyDeserializer) {
@@ -79,7 +79,11 @@ class GetRecords<K, V> implements Function<KafkaStepContext, List<ConsumerRecord
         return thisRef;
     }
 
-    public List<String> getMessages() {
+    KafkaConsumer<K, V> getKafkaConsumer() {
+        return kafkaConsumer;
+    }
+
+    List<String> getMessages() {
         return readRecords.stream().map(KafkaRecordWrapper::toString).collect(toList());
     }
 
