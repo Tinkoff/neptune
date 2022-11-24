@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.kafka.functions.poll;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
@@ -10,8 +11,9 @@ import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 import java.util.*;
 import java.util.function.Function;
 
-import static java.time.Duration.ofNanos;
+import static java.time.Duration.ofMillis;
 import static java.util.Arrays.asList;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty.DEFAULT_TOPICS_FOR_POLL;
@@ -27,30 +29,29 @@ class GetRecords implements Function<KafkaStepContext, List<ConsumerRecord<Strin
         this.topics = topics.length == 0 ? DEFAULT_TOPICS_FOR_POLL.get() : topics;
     }
 
+    private KafkaConsumer<String, String> kafkaConsumer;
+
     @Override
     public List<ConsumerRecord<String, String>> apply(KafkaStepContext context) {
-        var kafkaConsumer = context.createConsumer();
+        kafkaConsumer = ofNullable(kafkaConsumer).orElseGet(context::createConsumer);
 
-        try (kafkaConsumer) {
-            kafkaConsumer.subscribe(asList(topics));
+        kafkaConsumer.subscribe(asList(topics));
+        ConsumerRecords<String, String> consumerRecords = kafkaConsumer.poll(ofMillis(100));
+        Set<TopicPartition> partitions = consumerRecords.partitions();
 
-            ConsumerRecords<String, String> consumerRecords = kafkaConsumer.poll(ofNanos(1));
-            Set<TopicPartition> partitions = consumerRecords.partitions();
-
-            if (partitions.isEmpty()) {
-                return new ArrayList<>();
-            }
-
-            readRecords.addAll(stream(consumerRecords.spliterator(), false)
-                .map(KafkaRecordWrapper::new)
-                .collect(toList()));
-
-            readRecords = readRecords.stream().distinct().collect(toList());
-
-            return readRecords.stream()
-                .map(KafkaRecordWrapper::getConsumerRecord)
-                .collect(toList());
+        if (partitions.isEmpty()) {
+            return new ArrayList<>();
         }
+
+        readRecords.addAll(stream(consumerRecords.spliterator(), false)
+            .map(KafkaRecordWrapper::new)
+            .collect(toList()));
+
+        readRecords = readRecords.stream().distinct().collect(toList());
+
+        return readRecords.stream()
+            .map(KafkaRecordWrapper::getConsumerRecord)
+            .collect(toList());
     }
 
     @Override
