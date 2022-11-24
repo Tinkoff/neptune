@@ -2,6 +2,8 @@ package ru.tinkoff.qa.neptune.kafka.functions.poll;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.common.serialization.Deserializer;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -22,28 +24,60 @@ import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollListFromRecord
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("ConsumerRecord criteria")
 @MaxDepthOfReporting(0)
-public class GetRecordSupplier extends SequentialGetStepSupplier.GetListStepSupplier<KafkaStepContext, List<ConsumerRecord<String, String>>, ConsumerRecord<String, String>, GetRecordSupplier> {
+public class GetRecordSupplier<K, V> extends SequentialGetStepSupplier.GetListStepSupplier<KafkaStepContext, List<ConsumerRecord<K, V>>, ConsumerRecord<K, V>, GetRecordSupplier<K, V>> {
 
-    final GetRecords function;
+    final GetRecords<K, V> function;
 
-    protected GetRecordSupplier(GetRecords originalFunction) {
+    protected GetRecordSupplier(GetRecords<K, V> originalFunction) {
         super(originalFunction);
         this.function = originalFunction;
     }
 
     @Description("{description}")
-    public static GetRecordSupplier consumerRecords(
-            @DescriptionFragment(value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
-            ) String description,
-            String... topics) {
+    public static GetRecordSupplier<String, String> consumerRecords(
+        @DescriptionFragment(value = "description",
+            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
+        ) String description,
+        String... topics) {
         checkArgument(isNotBlank(description), "Description should be defined");
-        return new GetRecordSupplier(new GetRecords(topics));
+        return new GetRecordSupplier<>(new GetRecords<>(topics)
+            .setKeyDeserializer(new StringDeserializer())
+            .setValueDeserializer(new StringDeserializer()));
     }
 
     @Description("Kafka messages")
-    public static GetRecordSupplier records(String... topics) {
-        return new GetRecordSupplier(new GetRecords(topics));
+    public static GetRecordSupplier<String, String> records(String... topics) {
+        return new GetRecordSupplier<>(new GetRecords<>(topics)
+            .setKeyDeserializer(new StringDeserializer())
+            .setValueDeserializer(new StringDeserializer()));
+    }
+
+    /**
+     * Defines new deserializer for message keys
+     *
+     * @param deserializer new deserializer for message keys
+     * @param <K2>         new type of message keys
+     * @return self-reference
+     */
+    @SuppressWarnings("unchecked")
+    public <K2> GetRecordSupplier<K2, V> withKeyDeserializer(Deserializer<K2> deserializer) {
+        var keyFunction = (GetRecords<K2, V>) this.function;
+        keyFunction.setKeyDeserializer(deserializer);
+        return (GetRecordSupplier<K2, V>) this;
+    }
+
+    /**
+     * Defines new deserializer for message values
+     *
+     * @param deserializer new deserializer for message values
+     * @param <V2>         new type of message values
+     * @return self-reference
+     */
+    @SuppressWarnings("unchecked")
+    public <V2> GetRecordSupplier<K, V2> withValueDeserializer(Deserializer<V2> deserializer) {
+        var valueFunction = (GetRecords<K, V2>) this.function;
+        valueFunction.setKeyDeserializer(deserializer);
+        return (GetRecordSupplier<K, V2>) this;
     }
 
     /**

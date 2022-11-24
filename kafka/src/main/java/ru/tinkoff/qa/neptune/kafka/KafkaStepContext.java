@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.kafka;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.kafka.functions.poll.*;
@@ -11,6 +11,7 @@ import ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier
 
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
 import static ru.tinkoff.qa.neptune.kafka.properties.DefaultKafkaProperties.KAFKA_CONSUMER_PROPERTIES;
 import static ru.tinkoff.qa.neptune.kafka.properties.DefaultKafkaProperties.KAFKA_PRODUCER_PROPERTIES;
@@ -22,8 +23,11 @@ public class KafkaStepContext extends Context<KafkaStepContext> {
     }
 
 
-    public KafkaConsumer<String, String> createConsumer() {
-        return new KafkaConsumer<>(KAFKA_CONSUMER_PROPERTIES.get(), new StringDeserializer(), new StringDeserializer());
+    public <K, V> KafkaConsumer<K, V> createConsumer(Deserializer<K> keyDeserializer,
+                                                     Deserializer<V> valueDeserializer) {
+        checkNotNull(keyDeserializer);
+        checkNotNull(valueDeserializer);
+        return new KafkaConsumer<>(KAFKA_CONSUMER_PROPERTIES.get(), keyDeserializer, valueDeserializer);
     }
 
     public KafkaProducer<String, String> createProducer() {
