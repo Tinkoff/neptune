@@ -8,14 +8,15 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.kafka.DraftDto;
 
+import java.time.Duration;
 import java.util.Map;
 
-import static java.time.Duration.ofNanos;
 import static java.time.Duration.ofSeconds;
 import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anEmptyMap;
 import static org.hamcrest.Matchers.startsWith;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.fail;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.MapEntryMatcher.mapEntry;
@@ -37,7 +38,7 @@ public class GetArrayCaptorTest extends BaseCaptorTest {
         ConsumerRecord consumerRecord1 = new ConsumerRecord("testTopic", 1, 0, null, "{\"name\":\"testName1\"}");
         ConsumerRecord consumerRecord2 = new ConsumerRecord("testTopic", 1, 0, null, "{\"name\":\"testName2\"}");
 
-        when(kafkaConsumer.poll(ofNanos(1)))
+        when(kafkaConsumer.poll(any(Duration.class)))
             .thenReturn(new ConsumerRecords<>(Map.of(topicPartition, of(consumerRecord1, consumerRecord2))));
 
     }
