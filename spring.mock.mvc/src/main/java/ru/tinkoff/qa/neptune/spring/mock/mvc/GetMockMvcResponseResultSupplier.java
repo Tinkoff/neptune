@@ -24,7 +24,6 @@ import ru.tinkoff.qa.neptune.spring.mock.mvc.properties.SpringMockMvcDefaultResp
 import ru.tinkoff.qa.neptune.spring.mock.mvc.result.matchers.*;
 
 import javax.xml.xpath.XPathExpressionException;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
@@ -34,6 +33,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.list;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -939,17 +939,18 @@ public final class GetMockMvcResponseResultSupplier extends SequentialGetStepSup
         try {
             var request = c.getRequest();
             requestBody = nonNull(request) ? ofNullable(request.getContentAsByteArray())
-                    .map(String::new)
+                    .map(bytes -> new String(bytes, UTF_8))
                     .orElse(null) : null;
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         response = c.getResponse();
-        try {
-            responseBody = nonNull(response) ? response.getContentAsString() : null;
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+
+        var bytes = nonNull(response) ? response.getContentAsByteArray() : null;
+
+        if (nonNull(bytes) && bytes.length > 0) {
+            responseBody = new String(bytes, UTF_8);
         }
     }
 

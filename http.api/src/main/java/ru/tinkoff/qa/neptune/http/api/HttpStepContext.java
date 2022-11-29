@@ -63,7 +63,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
         uris.forEach(uri -> {
             var indexedCookies = cookieStore.get(uri);
             indexedCookies.forEach(c -> newStore.add(uri, c));
-            allCookies.removeAll(indexedCookies);
+            allCookies.removeIf(indexedCookies::contains);
         });
 
         allCookies.forEach(c -> newStore.add(null, c));

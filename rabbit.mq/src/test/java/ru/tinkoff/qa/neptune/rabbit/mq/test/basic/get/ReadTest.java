@@ -17,7 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.*;
-import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetSupplier.rabbitBody;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetIterableItemSupplier.rabbitIterableItem;
 
 public class ReadTest extends BaseRabbitMqPreparations {
 
@@ -41,7 +41,8 @@ public class ReadTest extends BaseRabbitMqPreparations {
 
     @Test(description = "Checking method call with default mapper")
     public void readTest1() throws IOException {
-        var dto = rabbitMqStepContext.read(rabbitBody("queue",
+        var dto = rabbitMqStepContext.read(rabbitIterableItem("Test data",
+            "queue",
                 DraftDto.class)
                 .autoAck());
 
@@ -51,7 +52,8 @@ public class ReadTest extends BaseRabbitMqPreparations {
 
     @Test(description = "Checking method call with custom mapper")
     public void readTest2() throws IOException {
-        var dto = rabbitMqStepContext.read(rabbitBody(
+        var dto = rabbitMqStepContext.read(rabbitIterableItem(
+            "Test data",
                 "test",
                 DraftDto.class)
                 .withDataTransformer(new CustomMapper()));
@@ -62,7 +64,8 @@ public class ReadTest extends BaseRabbitMqPreparations {
 
     @Test(description = "Checking method call with custom mapper")
     public void readTest3() {
-        var dtos = rabbitMqStepContext.read(rabbitBody(
+        var dtos = rabbitMqStepContext.read(
+            rabbitIterableItem("Test data",
                 "test2",
                 new TypeReference<List<DraftDto>>() {
                 })

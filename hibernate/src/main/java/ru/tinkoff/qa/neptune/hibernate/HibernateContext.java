@@ -8,7 +8,6 @@ import ru.tinkoff.qa.neptune.database.abstractions.AbstractDatabaseStepContext;
 import ru.tinkoff.qa.neptune.database.abstractions.InsertQuery;
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
 import ru.tinkoff.qa.neptune.database.abstractions.UpdateAction;
-import ru.tinkoff.qa.neptune.hibernate.delete.DeleteAllFromStepSupplier;
 import ru.tinkoff.qa.neptune.hibernate.delete.DeleteByQueryStepSupplier;
 import ru.tinkoff.qa.neptune.hibernate.exception.HibernateConfigurationException;
 import ru.tinkoff.qa.neptune.hibernate.save.SaveStepSupplier;
@@ -278,11 +277,6 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
         return this;
     }
 
-    public HibernateContext deleteAllFrom(Class<?> entityCls) {
-        delete(DeleteAllFromStepSupplier.deleteAllRecords(entityCls));
-        return this;
-    }
-
     @Override
     protected <R, S, Q extends SequentialGetStepSupplier<HibernateContext, S, ?, ?, ?> & SelectQuery<S>> S update(Q query, UpdateAction<R>... actions) {
         return get(((SaveStepSupplier<?, S, R>) query).setUpdates(actions));
@@ -363,105 +357,6 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
         return super.presenceOfOrThrow(setDescription(description, by), toIgnore);
     }
 
-    @SafeVarargs
-    public final <S, R> boolean presenceOf(String description,
-                                           GetObjectFromEntity<S, R> toGet,
-                                           Class<? extends Throwable>... toIgnore) {
-        return super.presenceOf(setDescription(description, toGet), toIgnore);
-    }
-
-    @SafeVarargs
-    public final <S, R> boolean presenceOfOrThrow(String description,
-                                                  GetObjectFromEntity<S, R> toGet,
-                                                  Class<? extends Throwable>... toIgnore) {
-        return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
-    }
-
-    @SafeVarargs
-    public final <ITEM, S extends Iterable<ITEM>, R> boolean presenceOf(String description,
-                                                                        GetIterableFromEntity<ITEM, S, R> toGet,
-                                                                        Class<? extends Throwable>... toIgnore) {
-        return super.presenceOf(setDescription(description, toGet), toIgnore);
-    }
-
-    @SafeVarargs
-    public final <ITEM, S extends Iterable<ITEM>, R> boolean presenceOfOrThrow(String description,
-                                                                               GetIterableFromEntity<ITEM, S, R> toGet,
-                                                                               Class<? extends Throwable>... toIgnore) {
-        return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
-    }
-
-    @SafeVarargs
-    public final <ITEM, R> boolean presenceOf(String description,
-                                              GetArrayFromEntity<ITEM, R> toGet,
-                                              Class<? extends Throwable>... toIgnore) {
-        return super.presenceOf(setDescription(description, toGet), toIgnore);
-    }
-
-    @SafeVarargs
-    public final <ITEM, R> boolean presenceOfOrThrow(String description,
-                                                     GetArrayFromEntity<ITEM, R> toGet,
-                                                     Class<? extends Throwable>... toIgnore) {
-        return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
-    }
-
-    @SafeVarargs
-    public final <ITEM, R> boolean presenceOf(String description,
-                                              GetItemOfIterableFromEntity<ITEM, ? extends Iterable<ITEM>, R> toGet,
-                                              Class<? extends Throwable>... toIgnore) {
-        return super.presenceOf(setDescription(description, toGet), toIgnore);
-    }
-
-    @SafeVarargs
-    public final <ITEM, R> boolean presenceOfOrThrow(String description,
-                                                     GetItemOfIterableFromEntity<ITEM, ? extends Iterable<ITEM>, R> toGet,
-                                                     Class<? extends Throwable>... toIgnore) {
-        return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
-    }
-
-    @SafeVarargs
-    public final <ITEM, R> boolean presenceOf(String description,
-                                        GetItemOfArrayFromEntity<ITEM, R> toGet,
-                                        Class<? extends Throwable>... toIgnore) {
-        return super.presenceOf(setDescription(description, toGet), toIgnore);
-    }
-
-    @SafeVarargs
-    public final <ITEM, R> boolean presenceOfOrThrow(String description,
-                                               GetItemOfArrayFromEntity<ITEM, R> toGet,
-                                               Class<? extends Throwable>... toIgnore) {
-        return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
-    }
-
-    @SafeVarargs
-    public final <ITEM, R> boolean presenceOf(String description,
-                                        GetIterableFromEntities<ITEM, R> toGet,
-                                        Class<? extends Throwable>... toIgnore) {
-        return super.presenceOf(setDescription(description, toGet), toIgnore);
-    }
-
-    @SafeVarargs
-    public final <ITEM, R> boolean presenceOfOrThrow(String description,
-                                               GetIterableFromEntities<ITEM, R> toGet,
-                                               Class<? extends Throwable>... toIgnore) {
-        return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
-    }
-
-    @SafeVarargs
-    public final <ITEM, R> boolean presenceOf(String description,
-                                        GetIterableItemFromEntities<ITEM, R> toGet,
-                                        Class<? extends Throwable>... toIgnore) {
-        return super.presenceOf(setDescription(description, toGet), toIgnore);
-    }
-
-    @SafeVarargs
-    public final <ITEM, R> boolean presenceOfOrThrow(String description,
-                                               GetIterableItemFromEntities<ITEM, R> toGet,
-                                               Class<? extends Throwable>... toIgnore) {
-        return super.presenceOfOrThrow(setDescription(description, toGet), toIgnore);
-    }
-
-
     public <R> boolean absenceOf(String description,
                                  SelectOneStepSupplier<R> by,
                                  Duration timeOut) {
@@ -484,96 +379,5 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
                                         SelectManyStepSupplier<R> by,
                                         Duration timeOut) {
         return super.absenceOfOrThrow(setDescription(description, by), timeOut);
-    }
-
-
-    public <S, R> boolean absenceOf(String description,
-                                    GetObjectFromEntity<S, R> toGet,
-                                    Duration timeOut) {
-        return super.absenceOf(setDescription(description, toGet), timeOut);
-    }
-
-    public <S, R> boolean absenceOfOrThrow(String description,
-                                           GetObjectFromEntity<S, R> toGet,
-                                           Duration timeOut) {
-        return super.absenceOfOrThrow(setDescription(description, toGet), timeOut);
-    }
-
-
-    public <ITEM, S extends Iterable<ITEM>, R> boolean absenceOf(String description,
-                                                                 GetIterableFromEntity<ITEM, S, R> toGet,
-                                                                 Duration timeOut) {
-        return super.absenceOf(setDescription(description, toGet), timeOut);
-    }
-
-    public <ITEM, S extends Iterable<ITEM>, R> boolean absenceOfOrThrow(String description,
-                                                                        GetIterableFromEntity<ITEM, S, R> toGet,
-                                                                        Duration timeOut) {
-        return super.absenceOfOrThrow(setDescription(description, toGet), timeOut);
-    }
-
-
-    public <ITEM, R> boolean absenceOf(String description,
-                                       GetArrayFromEntity<ITEM, R> toGet,
-                                       Duration timeOut) {
-        return super.absenceOf(setDescription(description, toGet), timeOut);
-    }
-
-    public <ITEM, R> boolean absenceOfOrThrow(String description,
-                                              GetArrayFromEntity<ITEM, R> toGet,
-                                              Duration timeOut) {
-        return super.absenceOfOrThrow(setDescription(description, toGet), timeOut);
-    }
-
-
-    public <ITEM, R> boolean absenceOf(String description,
-                                       GetItemOfIterableFromEntity<ITEM, ? extends Iterable<ITEM>, R> toGet,
-                                       Duration timeOut) {
-        return super.absenceOf(setDescription(description, toGet), timeOut);
-    }
-
-    public <ITEM, R> boolean absenceOfOrThrow(String description,
-                                              GetItemOfIterableFromEntity<ITEM, ? extends Iterable<ITEM>, R> toGet,
-                                              Duration timeOut) {
-        return super.absenceOfOrThrow(setDescription(description, toGet), timeOut);
-    }
-
-
-    public <ITEM, R> boolean absenceOf(String description,
-                                       GetItemOfArrayFromEntity<ITEM, R> toGet,
-                                       Duration timeOut) {
-        return super.absenceOf(setDescription(description, toGet), timeOut);
-    }
-
-    public <ITEM, R> boolean absenceOfOrThrow(String description,
-                                              GetItemOfArrayFromEntity<ITEM, R> toGet,
-                                              Duration timeOut) {
-        return super.absenceOfOrThrow(setDescription(description, toGet), timeOut);
-    }
-
-
-    public <ITEM, R> boolean absenceOf(String description,
-                                       GetIterableFromEntities<ITEM, R> toGet,
-                                       Duration timeOut) {
-        return super.absenceOf(setDescription(description, toGet), timeOut);
-    }
-
-    public <ITEM, R> boolean absenceOfOrThrow(String description,
-                                              GetIterableFromEntities<ITEM, R> toGet,
-                                              Duration timeOut) {
-        return super.absenceOfOrThrow(setDescription(description, toGet), timeOut);
-    }
-
-
-    public <ITEM, R> boolean absenceOf(String description,
-                                       GetIterableItemFromEntities<ITEM, R> toGet,
-                                       Duration timeOut) {
-        return super.absenceOf(setDescription(description, toGet), timeOut);
-    }
-
-    public <ITEM, R> boolean absenceOfOrThrow(String description,
-                                              GetIterableItemFromEntities<ITEM, R> toGet,
-                                              Duration timeOut) {
-        return super.absenceOfOrThrow(setDescription(description, toGet), timeOut);
     }
 }

@@ -1,11 +1,17 @@
 dependencies {
     api project(":testng.integration")
     api project(":allure.integration")
+    compileClasspath group: 'org.testng', name: 'testng', version: testNGVersion
     api (group: 'io.qameta.allure', name: 'allure-testng', version: allureVersion) {
         exclude group: 'org.aspectj', module: 'aspectjrt'
         exclude group: 'org.aspectj', module: 'aspectjweaver'
         exclude group: 'org.testng', module: 'testng'
     }
+
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit5Version
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit5Version
 }
 
 java {
@@ -51,4 +57,20 @@ publishing {
             }
         }
     }
+}
+
+javadoc {
+    destinationDir = file("${buildDir}/../../neptune.documentation/$project.name")
+
+    title = "Neptune Integration Of Allure and TestNG. v$globalVersion"
+    options.author true
+    options.links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
+    options.addStringOption 'Xdoclint:none', '-quiet'
+    options.memberLevel = JavadocMemberLevel.PROTECTED
+    options.bottom = "Copyright &copy; 2022 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+    options.addBooleanOption('html5', true)
+}
+
+test {
+   useJUnitPlatform()
 }

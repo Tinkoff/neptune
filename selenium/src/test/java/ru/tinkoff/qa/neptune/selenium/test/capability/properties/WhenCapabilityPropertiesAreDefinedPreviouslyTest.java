@@ -132,9 +132,9 @@ public class WhenCapabilityPropertiesAreDefinedPreviouslyTest {
 
         FirefoxOptions firefoxOptions = (FirefoxOptions) FIREFOX.get();
         assertThat("Browser info", firefoxOptions.getBrowserName(), is(Browser.FIREFOX.browserName()));
-        assertThat("Platform info", firefoxOptions.getPlatform(), is(MAC));
+        assertThat("Platform info", firefoxOptions.getPlatformName(), is(MAC));
         assertThat("Browser version info", firefoxOptions.getCapability("browserVersion"),
-                is("60"));
+            is("60"));
         assertThat("Firefox profile", firefoxOptions.getProfile(), notNullValue());
     }
 

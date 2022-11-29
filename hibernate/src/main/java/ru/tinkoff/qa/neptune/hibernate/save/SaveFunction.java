@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import ru.tinkoff.qa.neptune.hibernate.HibernateContext;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -23,14 +24,17 @@ public abstract class SaveFunction<R, RESULT> implements Function<HibernateConte
 
     public void saveObjects(HibernateContext context) {
         var savedList = new ArrayList<R>();
-        var sessions = new ArrayList<Session>();
+        var sessions = new HashSet<Session>();
 
         for (var toSave : listToSave) {
             var sessionFactory = context.getSessionFactoryByEntity(toSave.getClass());
             var session = sessionFactory.getCurrentSession();
             sessions.add(session);
             var persistenceUnitUtil = sessionFactory.getPersistenceUnitUtil();
-            session.beginTransaction();
+
+            if (!session.getTransaction().isActive()) {
+                session.beginTransaction();
+            }
 
             if (persistenceUnitUtil.getIdentifier(toSave) != null) {
                 var obj = session.merge(toSave);

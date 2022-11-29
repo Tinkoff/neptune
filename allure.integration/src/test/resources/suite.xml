@@ -20,4 +20,23 @@
             <class name="ru.tinkoff.qa.neptune.allure.AttachmentTest"/>
         </classes>
     </test>
+
+    <test name="Parameter mode test">
+        <classes>
+            <class name="ru.tinkoff.qa.neptune.allure.ParameterModeTest"/>
+        </classes>
+    </test>
+
+    <test name="Current life cycle test">
+        <classes>
+            <class name="ru.tinkoff.qa.neptune.allure.CurrentLifecycleItemTest"/>
+        </classes>
+    </test>
+
+    <test name="Excuded Lifecycle items">
+        <classes>
+            <class name="ru.tinkoff.qa.neptune.allure.ExcludedLifeCycleReportingTest"/>
+            <class name="ru.tinkoff.qa.neptune.allure.WriterTest"/>
+        </classes>
+    </test>
 </suite>

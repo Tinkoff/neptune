@@ -1,6 +1,7 @@
 dependencies {
     api project(':core.api')
-    api group: 'org.testng', name: 'testng', version: testNGVersion
+    compileClasspath group: 'org.testng', name: 'testng', version: testNGVersion
+    testImplementation group: 'org.testng', name: 'testng', version: testNGVersion
 }
 
 java {

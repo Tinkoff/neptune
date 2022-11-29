@@ -87,7 +87,7 @@ public class HamcrestAspect {
             String newDescription = calculateDescription(matcher, joinPoint);
             return Matchers.describedAs(newDescription, matcher);
         } finally {
-            IS_CALCULATION_STARTED.set(null);
+            IS_CALCULATION_STARTED.remove();
         }
     }
 

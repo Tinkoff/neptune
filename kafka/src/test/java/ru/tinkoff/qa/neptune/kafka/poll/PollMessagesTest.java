@@ -10,13 +10,14 @@ import ru.tinkoff.qa.neptune.kafka.CustomMapper;
 import ru.tinkoff.qa.neptune.kafka.DraftDto;
 import ru.tinkoff.qa.neptune.kafka.KafkaBasePreparations;
 
+import java.time.Duration;
 import java.util.Map;
 
-import static java.time.Duration.ofNanos;
 import static java.time.Duration.ofSeconds;
 import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsEachItemMatcher.eachOfArray;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsEachItemMatcher.eachOfIterable;
@@ -47,7 +48,7 @@ public class PollMessagesTest extends KafkaBasePreparations {
         consumerRecord2 = new ConsumerRecord("testTopic", 1, 0, null, "{\"1\":1}");
         consumerRecord3 = new ConsumerRecord("testTopic", 1, 0, null, "{\"name\":\"Condition\"}");
 
-        when(kafkaConsumer.poll(ofNanos(1)))
+        when(kafkaConsumer.poll(any(Duration.class)))
                 .thenReturn(new ConsumerRecords<>(Map.of(topicPartition, of(consumerRecord1, consumerRecord2, consumerRecord3))));
 
     }

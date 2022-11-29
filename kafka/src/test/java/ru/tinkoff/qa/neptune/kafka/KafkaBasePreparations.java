@@ -26,7 +26,7 @@ public class KafkaBasePreparations {
         kafka = new KafkaStepContext() {
 
             @Override
-            KafkaConsumer<String, String> createConsumer() {
+            public KafkaConsumer<String, String> createConsumer() {
                 return kafkaConsumer;
             }
 
