@@ -31,6 +31,10 @@ class GetRecords implements Function<KafkaStepContext, List<ConsumerRecord<Strin
 
     private KafkaConsumer<String, String> kafkaConsumer;
 
+    public KafkaConsumer<String, String> getKafkaConsumer() {
+        return kafkaConsumer;
+    }
+
     @Override
     public List<ConsumerRecord<String, String>> apply(KafkaStepContext context) {
         kafkaConsumer = ofNullable(kafkaConsumer).orElseGet(context::createConsumer);
