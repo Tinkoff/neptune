@@ -4,10 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 import ru.tinkoff.qa.neptune.kafka.captors.AllMessagesCaptor;
@@ -180,11 +180,13 @@ public abstract class KafkaPollArraySupplier<M, R, S extends KafkaPollArraySuppl
         if (t == null || t.length == 0) {
             messages = getFromTopics.getBefore().getMessages();
         }
+        getFromTopics.getBefore().getKafkaConsumer().close();
     }
 
     @Override
     protected void onFailure(KafkaStepContext m, Throwable throwable) {
         messages = getFromTopics.getBefore().getMessages();
+        getFromTopics.getBefore().getKafkaConsumer().close();
     }
 
     public final static class Mapped<M, T> extends KafkaPollArraySupplier<M, T, Mapped<M, T>> {
