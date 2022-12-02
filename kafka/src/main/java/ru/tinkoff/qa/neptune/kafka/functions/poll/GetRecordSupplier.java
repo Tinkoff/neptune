@@ -189,6 +189,16 @@ public class GetRecordSupplier<K, V> extends SequentialGetStepSupplier.GetListSt
     }
 
     @Override
+    protected void onSuccess(List<ConsumerRecord<String, String>> records) {
+        function.getKafkaConsumer().close();
+    }
+
+    @Override
+    protected void onFailure(KafkaStepContext context, Throwable throwable) {
+        function.getKafkaConsumer().close();
+    }
+
+    @Override
     public GetRecordSupplier timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
     }
