@@ -5,14 +5,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 
+@Deprecated(forRemoval = true)
 public class DefaultMapper implements DataTransformer {
 
     private final Gson gson;
 
     public DefaultMapper() {
         this.gson = new GsonBuilder()
-                //Указываем нужные настройки
-                .create();
+            .create();
     }
 
     @Override

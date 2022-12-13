@@ -12,37 +12,25 @@ import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-@SequentialGetStepSupplier.DefineGetImperativeParameterName("Poll:")
-@SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
+@SequentialGetStepSupplier.DefineGetImperativeParameterName
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Object criteria")
 @MaxDepthOfReporting(0)
 @SuppressWarnings({"rawtypes", "unchecked"})
-public abstract class KafkaPollListFromRecordSupplier<R, M, S extends KafkaPollListFromRecordSupplier<R, M, S>>
-        extends SequentialGetStepSupplier.GetListChainedStepSupplier<KafkaStepContext,
-        List<R>,
-        List<ConsumerRecord<String, String>>,
-        R,
-        S> {
+public class KafkaPollListFromRecordSupplier<K, V, R, S extends KafkaPollListFromRecordSupplier<K, V, R, S>>
+    extends SequentialGetStepSupplier.GetListChainedStepSupplier<KafkaStepContext,
+    List<R>,
+    List<ConsumerRecord<K, V>>,
+    R,
+    S> {
     public static final String NO_DESC_ERROR_TEXT = "Description should be defined";
 
-    private KafkaPollListFromRecordSupplier(Function<ConsumerRecord<String, String>, R> getItemFunction) {
-        super(list -> list.stream().map(getItemFunction).collect(toList()));
-    }
-
-    private KafkaPollListFromRecordSupplier(Function<List<ConsumerRecord<String, String>>, List<M>> f1, Function<M, R> conversion) {
-        super(f1.andThen(ms -> ms.stream().map(conversion).collect(Collectors.toList())));
-    }
-
-    @Override
-    protected S from(
-            SequentialGetStepSupplier<KafkaStepContext, ? extends List<ConsumerRecord<String, String>>, ?, ?, ?> from) {
-        return super.from(from);
+    private KafkaPollListFromRecordSupplier(Function<ConsumerRecord<K, V>, R> f) {
+        super(list -> list.stream().map(new KafkaSafeFunction<>(f)).collect(toList()));
     }
 
     /**
@@ -54,14 +42,13 @@ public abstract class KafkaPollListFromRecordSupplier<R, M, S extends KafkaPollL
      * @return KafkaPollDeserializedFromSupplier
      */
     @Description("{description}")
-    static <R> KafkaPollListFromRecordSupplier<R, R, ?> listFromRecords(
-            @DescriptionFragment(value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
-            ) String description,
-            Function<ConsumerRecord<String, String>, R> f) {
+    static <K, V, R> KafkaPollListFromRecordSupplier<K, V, R, ?> listFromRecords(
+        @DescriptionFragment(value = "description",
+            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
+        ) String description,
+        Function<ConsumerRecord<K, V>, R> f) {
         checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
-        return new KafkaPollListFromRecordSupplier(f) {
-        };
+        return new KafkaPollListFromRecordSupplier(f);
     }
 
     /**
@@ -74,15 +61,18 @@ public abstract class KafkaPollListFromRecordSupplier<R, M, S extends KafkaPollL
      * @param <M>         is a type of deserialized message
      * @return KafkaPollDeserializedFromSupplier
      */
+    @Deprecated(forRemoval = true)
     @Description("{description}")
-    static <R, M> KafkaPollDeserializedFromSupplier<R, M> listFromRecords(
-            @DescriptionFragment(value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
-            ) String description,
-            Class<M> cls,
-            Function<M, R> conversion) {
+    static <K, V, M, R> KafkaPollDeserializedFromSupplier<K, V, M, R> listFromRecords(
+        @DescriptionFragment(value = "description",
+            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
+        ) String description,
+        Class<M> cls,
+        Function<M, R> conversion,
+        GetRecordSupplier<K, V> getRecordSupplier) {
         checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
-        return new KafkaPollDeserializedFromSupplier<>(new GetDeserializedData<>(cls), conversion);
+        return new KafkaPollDeserializedFromSupplier<K, V, M, R>(new Conversion<>(conversion, cls, null))
+            .from(getRecordSupplier);
     }
 
     /**
@@ -95,29 +85,38 @@ public abstract class KafkaPollListFromRecordSupplier<R, M, S extends KafkaPollL
      * @param <M>         is a type of deserialized message
      * @return KafkaPollDeserializedFromSupplier
      */
+    @Deprecated(forRemoval = true)
     @Description("{description}")
-    static <R, M> KafkaPollDeserializedFromSupplier<R, M> listFromRecords(
-            @DescriptionFragment(value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
-            ) String description,
-            TypeReference<M> typeT,
-            Function<M, R> conversion) {
+    static <K, V, M, R> KafkaPollDeserializedFromSupplier<K, V, M, R> listFromRecords(
+        @DescriptionFragment(value = "description",
+            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
+        ) String description,
+        TypeReference<M> typeT,
+        Function<M, R> conversion,
+        GetRecordSupplier<K, V> getRecordSupplier) {
         checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
-        return new KafkaPollDeserializedFromSupplier<>(new GetDeserializedData<>(typeT), conversion);
+        return new KafkaPollDeserializedFromSupplier<K, V, M, R>(new Conversion<>(conversion, null, typeT))
+            .from(getRecordSupplier);
     }
 
-    public static final class KafkaPollDeserializedFromSupplier<R, M>
-            extends KafkaPollListFromRecordSupplier<R, M, KafkaPollDeserializedFromSupplier<R, M>> {
+    S from(GetRecordSupplier<K, V> from) {
+        return super.from(from);
+    }
 
-        final GetDeserializedData<M> getDeserializedData;
+    @Deprecated(forRemoval = true)
+    public static final class KafkaPollDeserializedFromSupplier<K, V, M, R>
+        extends KafkaPollListFromRecordSupplier<K, V, R, KafkaPollDeserializedFromSupplier<K, V, M, R>> {
 
-        private KafkaPollDeserializedFromSupplier(GetDeserializedData<M> getDeserializedData, Function<M, R> conversion) {
-            super(getDeserializedData, conversion);
-            this.getDeserializedData = getDeserializedData;
+        private Conversion<K, V, M, R> conversion;
+
+        private KafkaPollDeserializedFromSupplier(Conversion<K, V, M, R> conversion) {
+            super(conversion);
+            this.conversion = conversion;
         }
 
-        public KafkaPollDeserializedFromSupplier<R, M> withDataTransformer(DataTransformer transformer) {
-            getDeserializedData.setTransformer(transformer);
+        @Deprecated(forRemoval = true)
+        public KafkaPollDeserializedFromSupplier<K, V, M, R> withDataTransformer(DataTransformer transformer) {
+            conversion.setTransformer(transformer);
             return this;
         }
     }

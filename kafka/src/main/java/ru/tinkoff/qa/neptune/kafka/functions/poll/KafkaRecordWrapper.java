@@ -1,25 +1,21 @@
 package ru.tinkoff.qa.neptune.kafka.functions.poll;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
-import java.util.Map;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-@SuppressWarnings("unchecked")
 final class KafkaRecordWrapper<K, V> {
 
     private final ConsumerRecord<K, V> consumerRecord;
-    private final Map<String, ?> recordAsMap;
+    private final String recordAsString;
 
     KafkaRecordWrapper(ConsumerRecord<K, V> consumerRecord) {
         checkNotNull(consumerRecord);
         this.consumerRecord = consumerRecord;
-        var mapper = new ObjectMapper();
-        recordAsMap = mapper.convertValue(consumerRecord, Map.class);
+        recordAsString = new Gson().toJson(consumerRecord);
     }
 
     ConsumerRecord<K, V> getConsumerRecord() {
@@ -32,20 +28,15 @@ final class KafkaRecordWrapper<K, V> {
             return false;
         }
 
-        return Objects.equals(recordAsMap, ((KafkaRecordWrapper<?, ?>) obj).recordAsMap);
+        return Objects.equals(recordAsString, ((KafkaRecordWrapper<?, ?>) obj).recordAsString);
     }
 
     @Override
     public int hashCode() {
-        return recordAsMap.hashCode();
+        return recordAsString.hashCode();
     }
 
     public String toString() {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(recordAsMap);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException(e);
-        }
+        return "ConsumerRecord(" + recordAsString + ")";
     }
 }

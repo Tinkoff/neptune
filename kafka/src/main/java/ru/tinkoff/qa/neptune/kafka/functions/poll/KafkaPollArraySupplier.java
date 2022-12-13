@@ -1,6 +1,9 @@
 package ru.tinkoff.qa.neptune.kafka.functions.poll;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.common.serialization.Deserializer;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
@@ -20,6 +23,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.ArrayUtils.add;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -30,19 +34,19 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria for every item of resulted array")
 @MaxDepthOfReporting(0)
 @SuppressWarnings({"unchecked", "rawtypes"})
-public abstract class KafkaPollArraySupplier<M, R, S extends KafkaPollArraySupplier<M, R, S>> extends SequentialGetStepSupplier
-        .GetArrayStepSupplier<KafkaStepContext, R, S> {
+public class KafkaPollArraySupplier<K, V, R, S extends KafkaPollArraySupplier<K, V, R, S>> extends SequentialGetStepSupplier
+    .GetArrayStepSupplier<KafkaStepContext, R, S> {
     public static final String NO_DESC_ERROR_TEXT = "Description should be defined";
 
-    private GetRecords.MergeProperty getFromTopics;
+    private final GetRecords<K, V> getRecords;
 
     @CaptureOnSuccess(by = AllMessagesCaptor.class)
     @CaptureOnFailure(by = AllMessagesCaptor.class)
     List<String> messages;
 
-    protected KafkaPollArraySupplier(GetRecords.MergeProperty<List<M>> getFromTopics, Function<M, R> originalFunction, Class<R> componentClass) {
+    private KafkaPollArraySupplier(GetRecords<K, V> getFromTopics, Class<R> componentClass, Function<ConsumerRecord<K, V>, R> f) {
         super(getFromTopics.andThen(list -> {
-            var listT = list.stream().map(originalFunction).collect(toList());
+            var listT = list.stream().map(new KafkaSafeFunction<>(f)).collect(toList());
             R[] ts = (R[]) Array.newInstance(componentClass, 0);
 
             for (var t : listT) {
@@ -51,7 +55,233 @@ public abstract class KafkaPollArraySupplier<M, R, S extends KafkaPollArraySuppl
 
             return ts;
         }));
-        this.getFromTopics = getFromTopics;
+        this.getRecords = getFromTopics;
+    }
+
+    private KafkaPollArraySupplier(Deserializer<K> keyDeserializer,
+                                   Deserializer<V> valueDeserializer,
+                                   Class<R> componentClass,
+                                   Function<ConsumerRecord<K, V>, R> f) {
+        this(new GetRecords<>()
+                .setKeyDeserializer(keyDeserializer)
+                .setValueDeserializer(valueDeserializer),
+            componentClass, f);
+    }
+
+    /**
+     * Creates a step that returns array of values which are calculated by data of read messages.
+     *
+     * @param description       is description of value to get
+     * @param keyDeserializer   deserializer for key
+     * @param valueDeserializer deserializer for value
+     * @param componentClass    is a class of array item
+     * @param f                 describes how to get array item from a message
+     * @param <K>               type of deserialized key
+     * @param <V>               type of deserialized value
+     * @param <R>               is a type of array item
+     * @return an instance of {@link KafkaPollArraySupplier}
+     */
+    @Description("{description}")
+    public static <K, V, R> KafkaPollArraySupplier<K, V, R, ?> kafkaArray(
+        @DescriptionFragment(value = "description",
+            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
+        ) String description,
+        Deserializer<K> keyDeserializer,
+        Deserializer<V> valueDeserializer,
+        Class<R> componentClass,
+        Function<ConsumerRecord<K, V>, R> f) {
+        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
+        return new KafkaPollArraySupplier<>(keyDeserializer, valueDeserializer, componentClass, f);
+    }
+
+    /**
+     * Creates a step that returns array of values which are calculated by data of read messages.
+     *
+     * @param description       is description of value to get
+     * @param keyDeserializer   deserializer for key
+     * @param valueDeserializer deserializer for value
+     * @param typeReference     reference to type of array item
+     * @param f                 describes how to get array item from a message
+     * @param <K>               type of deserialized key
+     * @param <V>               type of deserialized value
+     * @param <R>               is a type of array item
+     * @return an instance of {@link KafkaPollArraySupplier}
+     */
+    public static <K, V, R> KafkaPollArraySupplier<K, V, R, ?> kafkaArray(
+        String description,
+        Deserializer<K> keyDeserializer,
+        Deserializer<V> valueDeserializer,
+        TypeReference<R> typeReference,
+        Function<ConsumerRecord<K, V>, R> f) {
+        return kafkaArray(description,
+            keyDeserializer,
+            valueDeserializer,
+            (Class) (typeReference.getType() instanceof ParameterizedType ? ((ParameterizedType) typeReference.getType()).getRawType() : typeReference.getType()),
+            f);
+    }
+
+    /**
+     * Creates a step that returns array of values which are calculated by key data of read messages.
+     *
+     * @param description     is description of value to get
+     * @param keyDeserializer deserializer for key
+     * @param componentClass  is a class of array item
+     * @param f               describes how to get array item from message key
+     * @param <K>             type of deserialized key
+     * @param <R>             is a type of array item
+     * @return an instance of {@link KafkaPollArraySupplier}
+     */
+    public static <K, R> KafkaPollArraySupplier<K, ?, R, ?> kafkaArrayKeyData(String description,
+                                                                              Deserializer<K> keyDeserializer,
+                                                                              Class<R> componentClass,
+                                                                              Function<K, R> f) {
+        return kafkaArray(description,
+            keyDeserializer,
+            new StringDeserializer(),
+            componentClass,
+            msg -> f.apply(msg.key()));
+    }
+
+    /**
+     * Creates a step that returns array of values which are calculated by key data of read messages.
+     *
+     * @param description     is description of value to get
+     * @param keyDeserializer deserializer for key
+     * @param typeReference   reference to type of array item
+     * @param f               describes how to get array item from message key
+     * @param <K>             type of deserialized key
+     * @param <R>             is a type of array item
+     * @return an instance of {@link KafkaPollArraySupplier}
+     */
+    public static <K, R> KafkaPollArraySupplier<K, ?, R, ?> kafkaArrayKeyData(String description,
+                                                                              Deserializer<K> keyDeserializer,
+                                                                              TypeReference<R> typeReference,
+                                                                              Function<K, R> f) {
+        return kafkaArray(description,
+            keyDeserializer,
+            new StringDeserializer(),
+            typeReference,
+            msg -> f.apply(msg.key()));
+    }
+
+    /**
+     * Creates a step that returns array of values which are calculated by key data of read messages.
+     *
+     * @param description     is description of value to get
+     * @param componentClass  is a class of array item
+     * @param keyDeserializer deserializer for key
+     * @param <K>             type of deserialized key
+     * @return an instance of {@link KafkaPollArraySupplier}
+     */
+    public static <K> KafkaPollArraySupplier<K, ?, K, ?> kafkaArrayKeyData(String description,
+                                                                           Class<K> componentClass,
+                                                                           Deserializer<K> keyDeserializer) {
+        return kafkaArrayKeyData(description,
+            keyDeserializer,
+            componentClass,
+            k -> k);
+    }
+
+    /**
+     * Creates a step that returns array of values which are calculated by key data of read messages.
+     *
+     * @param description     is description of value to get
+     * @param typeReference   reference to type of array item
+     * @param keyDeserializer deserializer for key
+     * @param <K>             type of deserialized key
+     * @return an instance of {@link KafkaPollArraySupplier}
+     */
+    public static <K> KafkaPollArraySupplier<K, ?, K, ?> kafkaArrayKeyData(String description,
+                                                                           TypeReference<K> typeReference,
+                                                                           Deserializer<K> keyDeserializer) {
+        return kafkaArrayKeyData(description,
+            keyDeserializer,
+            typeReference,
+            k -> k);
+    }
+
+    /**
+     * Creates a step that returns array of values which are calculated by value data of read messages.
+     *
+     * @param description       is description of value to get
+     * @param valueDeserializer deserializer for value
+     * @param componentClass    is a class of array item
+     * @param f                 describes how to get array item from a message value
+     * @param <V>               type of deserialized value
+     * @param <R>               is a type of array item
+     * @return an instance of {@link KafkaPollArraySupplier}
+     */
+    public static <V, R> KafkaPollArraySupplier<?, V, R, ?> kafkaArrayValueData(
+        String description,
+        Deserializer<V> valueDeserializer,
+        Class<R> componentClass,
+        Function<V, R> f) {
+        return kafkaArray(description,
+            new StringDeserializer(),
+            valueDeserializer,
+            componentClass,
+            msg -> f.apply(msg.value()));
+    }
+
+    /**
+     * Creates a step that returns array of values which are calculated by value data of read messages.
+     *
+     * @param description       is description of value to get
+     * @param valueDeserializer deserializer for value
+     * @param typeReference     reference to type of array item
+     * @param f                 describes how to get array item from a message value
+     * @param <V>               type of deserialized value
+     * @param <R>               is a type of array item
+     * @return an instance of {@link KafkaPollArraySupplier}
+     */
+    public static <V, R> KafkaPollArraySupplier<?, V, R, ?> kafkaArrayValueData(
+        String description,
+        Deserializer<V> valueDeserializer,
+        TypeReference<R> typeReference,
+        Function<V, R> f) {
+        return kafkaArray(description,
+            new StringDeserializer(),
+            valueDeserializer,
+            typeReference,
+            msg -> f.apply(msg.value()));
+    }
+
+    /**
+     * Creates a step that returns array of values which are calculated by value data of read messages.
+     *
+     * @param description       is description of value to get
+     * @param componentClass    is a class of array item
+     * @param valueDeserializer deserializer for value
+     * @param <V>               type of deserialized value
+     * @return an instance of {@link KafkaPollArraySupplier}
+     */
+    public static <V> KafkaPollArraySupplier<?, V, V, ?> kafkaArrayValueData(
+        String description,
+        Class<V> componentClass,
+        Deserializer<V> valueDeserializer) {
+        return kafkaArrayValueData(description,
+            valueDeserializer,
+            componentClass,
+            v -> v);
+    }
+
+    /**
+     * Creates a step that returns array of values which are calculated by value data of read messages.
+     *
+     * @param description       is description of value to get
+     * @param typeReference     reference to type of array item
+     * @param valueDeserializer deserializer for value
+     * @param <V>               type of deserialized value
+     * @return an instance of {@link KafkaPollArraySupplier}
+     */
+    public static <V> KafkaPollArraySupplier<?, V, V, ?> kafkaArrayValueData(
+        String description,
+        TypeReference<V> typeReference,
+        Deserializer<V> valueDeserializer) {
+        return kafkaArrayValueData(description,
+            valueDeserializer,
+            typeReference,
+            v -> v);
     }
 
     /**
@@ -69,19 +299,23 @@ public abstract class KafkaPollArraySupplier<M, R, S extends KafkaPollArraySuppl
      * @param <T>            is a type of item of array
      * @return an instance of {@link KafkaPollArraySupplier.Mapped}
      */
+    @Deprecated(forRemoval = true)
     @Description("{description}")
     public static <M, T> Mapped<M, T> kafkaArray(
-            @DescriptionFragment(value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
-            ) String description,
-            Class<M> classT,
-            Class<T> componentClass,
-            Function<M, T> toGet,
-            String... topics) {
+        @DescriptionFragment(value = "description",
+            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
+        ) String description,
+        Class<M> classT,
+        Class<T> componentClass,
+        Function<M, T> toGet,
+        String... topics) {
         checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
-        return new KafkaPollArraySupplier.Mapped<>(new GetRecords(topics).andThen(new GetDeserializedData<>(classT)),
-                toGet,
-                componentClass);
+        var result = new KafkaPollArraySupplier.Mapped<>(componentClass,
+            new Conversion<>(toGet, classT, null));
+        if (nonNull(topics) && topics.length > 0) {
+            result.fromTopics(topics);
+        }
+        return result;
     }
 
     /**
@@ -99,17 +333,24 @@ public abstract class KafkaPollArraySupplier<M, R, S extends KafkaPollArraySuppl
      * @param <T>            is a type of item of array
      * @return an instance of {@link KafkaPollArraySupplier.Mapped}
      */
+    @Deprecated(forRemoval = true)
     @Description("{description}")
     public static <M, T> Mapped<M, T> kafkaArray(
-            @DescriptionFragment(value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
-            ) String description,
-            TypeReference<M> typeT,
-            Class<T> componentClass,
-            Function<M, T> toGet,
-            String... topics) {
+        @DescriptionFragment(value = "description",
+            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
+        ) String description,
+        TypeReference<M> typeT,
+        Class<T> componentClass,
+        Function<M, T> toGet,
+        String... topics) {
         checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
-        return new KafkaPollArraySupplier.Mapped<>(new GetRecords(topics).andThen(new GetDeserializedData<>(typeT)), toGet, componentClass);
+        var result = new KafkaPollArraySupplier.Mapped<>(componentClass,
+            new Conversion<>(toGet, null, typeT));
+
+        if (nonNull(topics) && topics.length > 0) {
+            result.fromTopics(topics);
+        }
+        return result;
     }
 
     /**
@@ -124,10 +365,11 @@ public abstract class KafkaPollArraySupplier<M, R, S extends KafkaPollArraySuppl
      * @param <T>         is a type of deserialized message
      * @return an instance of {@link KafkaPollArraySupplier.Mapped}
      */
+    @Deprecated(forRemoval = true)
     public static <T> Mapped<T, T> kafkaArray(
-            String description,
-            Class<T> classT,
-            String... topics) {
+        String description,
+        Class<T> classT,
+        String... topics) {
         return kafkaArray(description, classT, classT, ts -> ts, topics);
     }
 
@@ -143,10 +385,11 @@ public abstract class KafkaPollArraySupplier<M, R, S extends KafkaPollArraySuppl
      * @param <T>         is a type of deserialized message
      * @return an instance of {@link KafkaPollArraySupplier.Mapped}
      */
+    @Deprecated(forRemoval = true)
     public static <T> Mapped<T, T> kafkaArray(
-            String description,
-            TypeReference<T> typeT,
-            String... topics) {
+        String description,
+        TypeReference<T> typeT,
+        String... topics) {
         var clazz = (Class) (typeT.getType() instanceof ParameterizedType ? ((ParameterizedType) typeT.getType()).getRawType() : typeT.getType());
         return kafkaArray(description, typeT, clazz, ts -> ts, topics);
     }
@@ -157,12 +400,48 @@ public abstract class KafkaPollArraySupplier<M, R, S extends KafkaPollArraySuppl
      * It is not necessary to define {@code topics}. If there is no topic defined then value of the property
      * {@link KafkaDefaultTopicsForPollProperty#DEFAULT_TOPICS_FOR_POLL} is used.
      *
-     * @param topics      are topics to get messages from
-     * @return an instance of {@link KafkaPollArraySupplier.StringMessages}
+     * @param topics are topics to get messages from
+     * @return an instance of {@link KafkaPollArraySupplier}
+     */
+    @Deprecated(forRemoval = true)
+    @Description("String messages")
+    public static KafkaPollArraySupplier<String, String, String, ?> kafkaArrayOfRawMessages(String... topics) {
+        var result = new KafkaPollArraySupplier(new StringDeserializer(),
+            new StringDeserializer(),
+            String.class,
+            (Function<ConsumerRecord<String, String>, String>) ConsumerRecord::value);
+
+        if (nonNull(topics) && topics.length > 0) {
+            result.fromTopics(topics);
+        }
+        return result;
+    }
+
+    /**
+     * Creates a step that returns array of string contents of messages.
+     *
+     * @return an instance of {@link KafkaPollArraySupplier}
      */
     @Description("String messages")
-    public static StringMessages kafkaArrayOfRawMessages(String... topics) {
-        return new StringMessages(new GetRecords(topics).andThen(new GetDeserializedData<>(String.class)));
+    public static KafkaPollArraySupplier<String, String, String, ?> kafkaArrayOfRawMessages() {
+        return new KafkaPollArraySupplier(new StringDeserializer(),
+            new StringDeserializer(),
+            String.class,
+            (Function<ConsumerRecord<String, String>, String>) ConsumerRecord::value);
+    }
+
+    /**
+     * Defines topics to subscribe.
+     * <p></p>
+     * If there is no topic defined by this method then value of the property
+     * {@link KafkaDefaultTopicsForPollProperty#DEFAULT_TOPICS_FOR_POLL} is used.
+     *
+     * @param topics topics to subscribe
+     * @return self-reference
+     */
+    public KafkaPollArraySupplier<K, V, R, ?> fromTopics(String... topics) {
+        getRecords.topics(topics);
+        return this;
     }
 
     @Override
@@ -170,41 +449,34 @@ public abstract class KafkaPollArraySupplier<M, R, S extends KafkaPollArraySuppl
         return super.timeOut(timeOut);
     }
 
-    S withDataTransformer(DataTransformer dataTransformer) {
-        ((GetDeserializedData<M>) getFromTopics.getAfter()).setTransformer(dataTransformer);
-        return (S) this;
-    }
-
     @Override
     protected void onSuccess(R[] t) {
         if (t == null || t.length == 0) {
-            messages = getFromTopics.getBefore().getMessages();
+            messages = getRecords.getMessages();
         }
-        getFromTopics.getBefore().getKafkaConsumer().close();
+        getRecords.closeConsumer();
     }
 
     @Override
     protected void onFailure(KafkaStepContext m, Throwable throwable) {
-        messages = getFromTopics.getBefore().getMessages();
-        getFromTopics.getBefore().getKafkaConsumer().close();
+        messages = getRecords.getMessages();
+        getRecords.closeConsumer();
     }
 
-    public final static class Mapped<M, T> extends KafkaPollArraySupplier<M, T, Mapped<M, T>> {
+    @Deprecated(forRemoval = true)
+    public final static class Mapped<M, T> extends KafkaPollArraySupplier<String, String, T, Mapped<M, T>> {
 
-        private Mapped(GetRecords.MergeProperty<List<M>> getFromTopics, Function<M, T> originalFunction, Class<T> componentClass) {
-            super(getFromTopics, originalFunction, componentClass);
+        private final Conversion<String, String, M, T> conversion;
+
+        private Mapped(Class<T> componentClass, Conversion<String, String, M, T> conversion) {
+            super(new StringDeserializer(), new StringDeserializer(), componentClass, conversion);
+            this.conversion = conversion;
         }
 
+        @Deprecated(forRemoval = true)
         public Mapped<M, T> withDataTransformer(DataTransformer transformer) {
-            return super.withDataTransformer(transformer);
-        }
-    }
-
-    public final static class StringMessages extends KafkaPollArraySupplier<String, String, StringMessages> {
-
-        private StringMessages(GetRecords.MergeProperty<List<String>> getFromTopics) {
-            super(getFromTopics, s -> s, String.class);
-            withDataTransformer(new StringDataTransformer());
+            conversion.setTransformer(transformer);
+            return this;
         }
     }
 }

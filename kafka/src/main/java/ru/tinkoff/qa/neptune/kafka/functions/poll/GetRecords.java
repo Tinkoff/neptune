@@ -11,10 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.time.Duration.ofNanos;
 import static java.util.Arrays.asList;
-import static java.util.Objects.nonNull;
+import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
@@ -24,7 +25,7 @@ import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollPr
 class GetRecords<K, V> implements Function<KafkaStepContext, List<ConsumerRecord<K, V>>>, StepParameterPojo {
 
     @StepParameter(value = "topics", makeReadableBy = TopicValueGetter.class)
-    private final String[] topics;
+    private String[] topics;
     private List<KafkaRecordWrapper<K, V>> readRecords = new ArrayList<>();
 
     private Deserializer<K> keyDeserializer;
@@ -33,18 +34,15 @@ class GetRecords<K, V> implements Function<KafkaStepContext, List<ConsumerRecord
 
     private KafkaConsumer<K, V> kafkaConsumer;
 
-    public GetRecords(String[] topics) {
-        this.topics = topics.length == 0 ? DEFAULT_TOPICS_FOR_POLL.get() : topics;
-    }
-
     @Override
     public List<ConsumerRecord<K, V>> apply(KafkaStepContext context) {
         kafkaConsumer = ofNullable(kafkaConsumer).orElseGet(() -> context.createConsumer(
-            new InnerDeserializer<>(keyDeserializer),
-            new InnerDeserializer<>(valueDeserializer))
+            keyDeserializer,
+            valueDeserializer)
         );
 
-        kafkaConsumer.subscribe(asList(topics));
+        var topicsToSubscribe = (isNull(topics) || topics.length == 0) ? DEFAULT_TOPICS_FOR_POLL.get() : topics;
+        kafkaConsumer.subscribe(asList(topicsToSubscribe));
 
         var consumerRecords = kafkaConsumer.poll(ofNanos(1));
         var partitions = consumerRecords.partitions();
@@ -54,7 +52,6 @@ class GetRecords<K, V> implements Function<KafkaStepContext, List<ConsumerRecord
         }
 
         readRecords.addAll(stream(consumerRecords.spliterator(), false)
-            .filter(r -> nonNull(r.key()) && nonNull(r.value()))
             .map(KafkaRecordWrapper::new)
             .collect(toList()));
 
@@ -65,44 +62,32 @@ class GetRecords<K, V> implements Function<KafkaStepContext, List<ConsumerRecord
             .collect(toList());
     }
 
-    public <K2> GetRecords<K2, V> setKeyDeserializer(Deserializer<K2> keyDeserializer) {
+    <K2> GetRecords<K2, V> setKeyDeserializer(Deserializer<K2> keyDeserializer) {
         checkNotNull(keyDeserializer);
         var thisRef = (GetRecords<K2, V>) this;
         thisRef.keyDeserializer = keyDeserializer;
         return thisRef;
     }
 
-    public <V2> GetRecords<K, V2> setValueDeserializer(Deserializer<V2> valueDeserializer) {
+    <V2> GetRecords<K, V2> setValueDeserializer(Deserializer<V2> valueDeserializer) {
         checkNotNull(valueDeserializer);
         var thisRef = (GetRecords<K, V2>) this;
         thisRef.valueDeserializer = valueDeserializer;
         return thisRef;
     }
 
-    KafkaConsumer<K, V> getKafkaConsumer() {
-        return kafkaConsumer;
+    void topics(String... topics) {
+        checkNotNull(topics);
+        checkArgument(topics.length > 0, "At least one topic should be defined");
+        this.topics = topics;
+    }
+
+    void closeConsumer() {
+        ofNullable(kafkaConsumer).ifPresent(KafkaConsumer::close);
     }
 
     List<String> getMessages() {
         return readRecords.stream().map(KafkaRecordWrapper::toString).collect(toList());
     }
 
-    private static final class InnerDeserializer<T> implements Deserializer<T> {
-
-        private final Deserializer<T> wrapped;
-
-        private InnerDeserializer(Deserializer<T> wrapped) {
-            this.wrapped = wrapped;
-        }
-
-        @Override
-        public T deserialize(String topic, byte[] data) {
-            try {
-                return wrapped.deserialize(topic, data);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-    }
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.toMap;
 
+@Deprecated(forRemoval = true)
 public class CustomMapper implements DataTransformer {
 
     private final ObjectMapper mapper;
@@ -26,8 +27,8 @@ public class CustomMapper implements DataTransformer {
             });
 
             var newMap = map.entrySet()
-                    .stream()
-                    .collect(toMap(Map.Entry::getKey, v -> "PREFIX" + v.getValue()));
+                .stream()
+                .collect(toMap(Map.Entry::getKey, v -> "PREFIX" + v.getValue()));
 
             var json = mapper.writeValueAsString(newMap);
             return mapper.readValue(json, cls);
@@ -43,8 +44,8 @@ public class CustomMapper implements DataTransformer {
             });
 
             var newMap = map.entrySet()
-                    .stream()
-                    .collect(toMap(Map.Entry::getKey, v -> "PREFIX" + v.getValue()));
+                .stream()
+                .collect(toMap(Map.Entry::getKey, v -> "PREFIX" + v.getValue()));
 
             var json = mapper.writeValueAsString(newMap);
             return mapper.readValue(json, type);
