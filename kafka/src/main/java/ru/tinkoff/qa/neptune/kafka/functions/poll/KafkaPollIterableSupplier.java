@@ -1,10 +1,8 @@
 package ru.tinkoff.qa.neptune.kafka.functions.poll;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
@@ -20,7 +18,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -29,8 +26,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Object criteria")
 @MaxDepthOfReporting(0)
 @CaptureOnSuccess(by = ReceivedListCaptor.class)
-public class KafkaPollIterableSupplier<K, V, R, I extends KafkaPollIterableSupplier<K, V, R, I>>
-    extends SequentialGetStepSupplier.GetListStepSupplier<KafkaStepContext, List<R>, R, I> {
+public final class KafkaPollIterableSupplier<K, V, R>
+    extends SequentialGetStepSupplier.GetListStepSupplier<KafkaStepContext, List<R>, R, KafkaPollIterableSupplier<K, V, R>> {
 
     public static final String NO_DESC_ERROR_TEXT = "Description should be defined";
 
@@ -63,7 +60,7 @@ public class KafkaPollIterableSupplier<K, V, R, I extends KafkaPollIterableSuppl
      * @return an instance of {@link KafkaPollIterableSupplier}
      */
     @Description("{description}")
-    public static <K, V, R> KafkaPollIterableSupplier<K, V, R, ?> kafkaList(
+    public static <K, V, R> KafkaPollIterableSupplier<K, V, R> kafkaList(
         @DescriptionFragment(value = "description",
             makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
         ) String description,
@@ -84,7 +81,7 @@ public class KafkaPollIterableSupplier<K, V, R, I extends KafkaPollIterableSuppl
      * @param <R>             is a type of list item
      * @return an instance of {@link KafkaPollIterableSupplier}
      */
-    public static <K, R> KafkaPollIterableSupplier<K, ?, R, ?> kafkaListKeyData(
+    public static <K, R> KafkaPollIterableSupplier<K, ?, R> kafkaListKeyData(
         String description,
         Deserializer<K> keyDeserializer,
         Function<K, R> f) {
@@ -99,7 +96,7 @@ public class KafkaPollIterableSupplier<K, V, R, I extends KafkaPollIterableSuppl
      * @param <K>             type of deserialized key
      * @return an instance of {@link KafkaPollIterableSupplier}
      */
-    public static <K> KafkaPollIterableSupplier<K, ?, K, ?> kafkaListKeyData(
+    public static <K> KafkaPollIterableSupplier<K, ?, K> kafkaListKeyData(
         String description,
         Deserializer<K> keyDeserializer) {
         return kafkaListKeyData(description, keyDeserializer, k -> k);
@@ -115,7 +112,7 @@ public class KafkaPollIterableSupplier<K, V, R, I extends KafkaPollIterableSuppl
      * @param <R>               is a type of list item
      * @return an instance of {@link KafkaPollIterableSupplier}
      */
-    public static <V, R> KafkaPollIterableSupplier<?, V, R, ?> kafkaListValueData(
+    public static <V, R> KafkaPollIterableSupplier<?, V, R> kafkaListValueData(
         String description,
         Deserializer<V> valueDeserializer,
         Function<V, R> f) {
@@ -130,137 +127,10 @@ public class KafkaPollIterableSupplier<K, V, R, I extends KafkaPollIterableSuppl
      * @param <V>               type of deserialized value
      * @return an instance of {@link KafkaPollIterableSupplier}
      */
-    public static <V> KafkaPollIterableSupplier<?, V, V, ?> kafkaListValueData(
+    public static <V> KafkaPollIterableSupplier<?, V, V> kafkaListValueData(
         String description,
         Deserializer<V> valueDeserializer) {
         return kafkaListValueData(description, valueDeserializer, v -> v);
-    }
-
-    /**
-     * Creates a step that returns iterable of values which are calculated by data of read messages.
-     * <p></p>
-     * It is not necessary to define {@code topics}. If there is no topic defined then value of the property
-     * {@link KafkaDefaultTopicsForPollProperty#DEFAULT_TOPICS_FOR_POLL} is used.
-     *
-     * @param description is description of value to get
-     * @param cls         is a class of a value to deserialize a message from topics
-     * @param toGet       describes how to get desired value
-     * @param topics      are topics to get messages from
-     * @param <M>         is a type of deserialized message
-     * @param <T>         is a type of item of iterable
-     * @return an instance of {@link KafkaPollIterableSupplier.Mapped}
-     */
-    @Deprecated(forRemoval = true)
-    @Description("{description}")
-    public static <M, T> Mapped<M, T> kafkaIterable(
-            @DescriptionFragment(value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
-            ) String description,
-            Class<M> cls,
-            Function<M, T> toGet,
-            String... topics) {
-        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
-
-        var result = new KafkaPollIterableSupplier.Mapped<>(new Conversion<>(toGet, cls, null));
-
-        if (nonNull(topics) && topics.length > 0) {
-            result.fromTopics(topics);
-        }
-        return result;
-    }
-
-    /**
-     * Creates a step that returns iterable of values which are calculated by data of read messages.
-     * <p></p>
-     * It is not necessary to define {@code topics}. If there is no topic defined then value of the property
-     * {@link KafkaDefaultTopicsForPollProperty#DEFAULT_TOPICS_FOR_POLL} is used.
-     *
-     * @param description is description of value to get
-     * @param typeT       is a reference to type of value to deserialize message
-     * @param toGet       describes how to get desired value
-     * @param topics      are topics to get messages from
-     * @param <M>         is a type of deserialized message
-     * @param <T>         is a type of item of iterable
-     * @return an instance of {@link KafkaPollIterableSupplier.Mapped}
-     */
-    @Deprecated(forRemoval = true)
-    @Description("{description}")
-    public static <M, T> Mapped<M, T> kafkaIterable(
-            @DescriptionFragment(value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
-            ) String description,
-            TypeReference<M> typeT,
-            Function<M, T> toGet,
-            String... topics) {
-        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
-        var result = new KafkaPollIterableSupplier.Mapped<>(new Conversion<>(toGet, null, typeT));
-
-        if (nonNull(topics) && topics.length > 0) {
-            result.fromTopics(topics);
-        }
-        return result;
-    }
-
-    /**
-     * Creates a step that returns iterable of deserialized messages.
-     * <p></p>
-     * It is not necessary to define {@code topics}. If there is no topic defined then value of the property
-     * {@link KafkaDefaultTopicsForPollProperty#DEFAULT_TOPICS_FOR_POLL} is used.
-     *
-     * @param description is description of value to get
-     * @param typeT       is a reference to type of value to deserialize message
-     * @param topics      are topics to get messages from
-     * @param <T>         is a type of deserialized message
-     * @return an instance of {@link KafkaPollIterableSupplier.Mapped}
-     */
-    @Deprecated(forRemoval = true)
-    public static <T> Mapped<T, T> kafkaIterable(
-            String description,
-            TypeReference<T> typeT,
-            String... topics) {
-        return kafkaIterable(description, typeT, ts -> ts, topics);
-    }
-
-    /**
-     * Creates a step that returns iterable of deserialized messages.
-     * <p></p>
-     * It is not necessary to define {@code topics}. If there is no topic defined then value of the property
-     * {@link KafkaDefaultTopicsForPollProperty#DEFAULT_TOPICS_FOR_POLL} is used.
-     *
-     * @param description is description of value to get
-     * @param cls         is a class of a value to deserialize a message from topics
-     * @param topics      are topics to get messages from
-     * @param <T>         is a type of deserialized message
-     * @return an instance of {@link KafkaPollIterableSupplier.Mapped}
-     */
-    @Deprecated(forRemoval = true)
-    public static <T> Mapped<T, T> kafkaIterable(
-            String description,
-            Class<T> cls,
-            String... topics) {
-        return kafkaIterable(description, cls, ts -> ts, topics);
-    }
-
-    /**
-     * Creates a step that returns iterable of string contents of messages.
-     * <p></p>
-     * It is not necessary to define {@code topics}. If there is no topic defined then value of the property
-     * {@link KafkaDefaultTopicsForPollProperty#DEFAULT_TOPICS_FOR_POLL} is used.
-     *
-     * @param topics are topics to get messages from
-     * @return an instance of {@link KafkaPollIterableSupplier}
-     */
-    @Deprecated(forRemoval = true)
-    @Description("String messages")
-    public static KafkaPollIterableSupplier<String, String, String, ?> kafkaRawMessages(String... topics) {
-        var result = new KafkaPollIterableSupplier<>(new StringDeserializer(),
-            new StringDeserializer(),
-            ConsumerRecord::value);
-
-        if (nonNull(topics) && topics.length > 0) {
-            result.fromTopics(topics);
-        }
-        return result;
     }
 
     /**
@@ -272,13 +142,13 @@ public class KafkaPollIterableSupplier<K, V, R, I extends KafkaPollIterableSuppl
      * @param topics topics to subscribe
      * @return self-reference
      */
-    public KafkaPollIterableSupplier<K, V, R, ?> fromTopics(String... topics) {
+    public KafkaPollIterableSupplier<K, V, R> fromTopics(String... topics) {
         getRecords.topics(topics);
         return this;
     }
 
     @Override
-    public I timeOut(Duration timeOut) {
+    public KafkaPollIterableSupplier<K, V, R> timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
     }
 
@@ -290,21 +160,5 @@ public class KafkaPollIterableSupplier<K, V, R, I extends KafkaPollIterableSuppl
     @Override
     protected void onFailure(KafkaStepContext m, Throwable throwable) {
         getRecords.closeConsumer();
-    }
-
-    public final static class Mapped<M, T> extends KafkaPollIterableSupplier<String, String, T, Mapped<M, T>> {
-
-        private final Conversion<String, String, M, T> conversion;
-
-        private Mapped(Conversion<String, String, M, T> conversion) {
-            super(new StringDeserializer(), new StringDeserializer(), conversion);
-            this.conversion = conversion;
-        }
-
-        @Deprecated(forRemoval = true)
-        public Mapped<M, T> withDataTransformer(DataTransformer transformer) {
-            conversion.setTransformer(transformer);
-            return this;
-        }
     }
 }

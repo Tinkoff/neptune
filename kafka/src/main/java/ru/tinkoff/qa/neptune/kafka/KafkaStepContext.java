@@ -59,7 +59,7 @@ public class KafkaStepContext extends Context<KafkaStepContext> {
      * @param <T>                    is a type of array item
      * @return resulted array
      */
-    public <T> T[] poll(KafkaPollArraySupplier<?, ?, T, ?> kafkaPollArraySupplier) {
+    public <T> T[] poll(KafkaPollArraySupplier<?, ?, T> kafkaPollArraySupplier) {
         return get(kafkaPollArraySupplier);
     }
 
@@ -70,7 +70,7 @@ public class KafkaStepContext extends Context<KafkaStepContext> {
      * @param <T>                           is a type of resulted value
      * @return resulted value
      */
-    public <T> T poll(KafkaPollIterableItemSupplier<?, ?, T, ?> kafkaPollIterableItemSupplier) {
+    public <T> T poll(KafkaPollIterableItemSupplier<?, ?, T> kafkaPollIterableItemSupplier) {
         return get(kafkaPollIterableItemSupplier);
     }
 
@@ -81,7 +81,7 @@ public class KafkaStepContext extends Context<KafkaStepContext> {
      * @param <T>                       is a type of list item
      * @return resulted list
      */
-    public <T> List<T> poll(KafkaPollIterableSupplier<?, ?, T, ?> kafkaPollIterableSupplier) {
+    public <T> List<T> poll(KafkaPollIterableSupplier<?, ?, T> kafkaPollIterableSupplier) {
         return get(kafkaPollIterableSupplier);
     }
 
@@ -95,11 +95,11 @@ public class KafkaStepContext extends Context<KafkaStepContext> {
         return get(recordSupplier);
     }
 
-    public <T> List<T> poll(KafkaPollListFromRecordSupplier<?, ?, T, ?> recordSupplier) {
+    public <T> List<T> poll(KafkaPollListFromRecordSupplier<?, ?, T> recordSupplier) {
         return get(recordSupplier);
     }
 
-    public <T> T poll(KafkaPollItemFromRecordSupplier<?, ?, T, ?> recordSupplier) {
+    public <T> T poll(KafkaPollItemFromRecordSupplier<?, ?, T> recordSupplier) {
         return get(recordSupplier);
     }
 }
