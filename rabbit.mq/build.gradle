@@ -1,11 +1,18 @@
+configurations {
+    bundleGeneration
+}
+
 dependencies {
     api project(':core.api')
-    api group: 'com.rabbitmq', name: 'amqp-client', version: '5.14.2'
-    testImplementation  group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+    compileOnly group: 'com.rabbitmq', name: 'amqp-client', version: '5.13.0'
+    bundleGeneration group: 'com.rabbitmq', name: 'amqp-client', version: '5.13.0'
+    testImplementation group: 'com.rabbitmq', name: 'amqp-client', version: '5.16.0'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockitoVersion
 }
 
 task generateBundle(type: JavaExec)  {
+    classpath = configurations.bundleGeneration + sourceSets.main.compileClasspath
     classpath sourceSets.main.runtimeClasspath
     main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
     args "ru_RU",

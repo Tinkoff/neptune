@@ -17,12 +17,14 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+@SequentialGetStepSupplier.DefineGetImperativeParameterName
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria for every item of resulted list")
 public abstract class RabbitMqBasicGetListFromResponseSupplier<R, M, S extends RabbitMqBasicGetListFromResponseSupplier<R, M, S>>
-        extends SequentialGetStepSupplier.GetListChainedStepSupplier<RabbitMqStepContext,
-        List<R>,
-        List<GetResponse>,
-        R,
-        S> {
+    extends SequentialGetStepSupplier.GetListChainedStepSupplier<RabbitMqStepContext,
+    List<R>,
+    List<GetResponse>,
+    R,
+    S> {
 
     public static final String NO_DESC_ERROR_TEXT = "Description should be defined";
 
@@ -49,10 +51,10 @@ public abstract class RabbitMqBasicGetListFromResponseSupplier<R, M, S extends R
      */
     @Description("{description}")
     static <R> RabbitMqBasicGetListFromResponseSupplier<R, R, ?> listFromRecords(
-            @DescriptionFragment(value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
-            ) String description,
-            Function<GetResponse, R> f) {
+        @DescriptionFragment(value = "description",
+            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
+        ) String description,
+        Function<GetResponse, R> f) {
         checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         return new RabbitMqBasicGetListFromResponseSupplier(f) {
         };
@@ -70,11 +72,11 @@ public abstract class RabbitMqBasicGetListFromResponseSupplier<R, M, S extends R
      */
     @Description("{description}")
     static <R, M> RabbitMqBasicGetDeserializedFromSupplier<R, M> listFromRecords(
-            @DescriptionFragment(value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
-            ) String description,
-            Class<M> cls,
-            Function<M, R> conversion) {
+        @DescriptionFragment(value = "description",
+            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
+        ) String description,
+        Class<M> cls,
+        Function<M, R> conversion) {
         checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         return new RabbitMqBasicGetDeserializedFromSupplier<>(new GetDeserializedData<>(cls), conversion);
     }
@@ -91,17 +93,17 @@ public abstract class RabbitMqBasicGetListFromResponseSupplier<R, M, S extends R
      */
     @Description("{description}")
     static <R, M> RabbitMqBasicGetDeserializedFromSupplier<R, M> listFromRecords(
-            @DescriptionFragment(value = "description",
-                    makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
-            ) String description,
-            TypeReference<M> typeT,
-            Function<M, R> conversion) {
+        @DescriptionFragment(value = "description",
+            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
+        ) String description,
+        TypeReference<M> typeT,
+        Function<M, R> conversion) {
         checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
         return new RabbitMqBasicGetDeserializedFromSupplier<>(new GetDeserializedData<>(typeT), conversion);
     }
 
     public static final class RabbitMqBasicGetDeserializedFromSupplier<R, M>
-            extends RabbitMqBasicGetListFromResponseSupplier<R, M, RabbitMqBasicGetDeserializedFromSupplier<R, M>> {
+        extends RabbitMqBasicGetListFromResponseSupplier<R, M, RabbitMqBasicGetDeserializedFromSupplier<R, M>> {
 
         final GetDeserializedData<M> getDeserializedData;
 

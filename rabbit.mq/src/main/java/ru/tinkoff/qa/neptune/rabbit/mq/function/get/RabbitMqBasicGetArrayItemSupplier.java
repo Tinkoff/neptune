@@ -26,7 +26,7 @@ import static org.apache.commons.lang3.ArrayUtils.add;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
 
-@SequentialGetStepSupplier.DefineGetImperativeParameterName("Retrieve:")
+@SequentialGetStepSupplier.DefineGetImperativeParameterName("Get from RabbitMQ:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Object criteria")
 @MaxDepthOfReporting(0)

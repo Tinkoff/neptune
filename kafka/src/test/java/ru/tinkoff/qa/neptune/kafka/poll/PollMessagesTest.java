@@ -33,7 +33,6 @@ import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSuppli
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.kafkaRawMessages;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty.DEFAULT_TOPICS_FOR_POLL;
 
-@Deprecated(forRemoval = true)
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class PollMessagesTest extends KafkaBasePreparations {
     TopicPartition topicPartition;

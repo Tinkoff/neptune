@@ -3,12 +3,14 @@ package ru.tinkoff.qa.neptune.kafka.functions.poll;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
+import ru.tinkoff.qa.neptune.kafka.captors.ReceivedListCaptor;
 
 import java.util.List;
 import java.util.function.Function;
@@ -21,6 +23,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Object criteria")
 @MaxDepthOfReporting(0)
 @SuppressWarnings({"rawtypes", "unchecked"})
+@CaptureOnSuccess(by = ReceivedListCaptor.class)
 public class KafkaPollListFromRecordSupplier<K, V, R, S extends KafkaPollListFromRecordSupplier<K, V, R, S>>
     extends SequentialGetStepSupplier.GetListChainedStepSupplier<KafkaStepContext,
     List<R>,

@@ -4,7 +4,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.common.serialization.Deserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
+import org.apache.kafka.common.serialization.Serializer;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.kafka.functions.poll.*;
 import ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier;
@@ -34,8 +34,11 @@ public class KafkaStepContext extends Context<KafkaStepContext> {
             new InnerDeserializer<>(valueDeserializer));
     }
 
-    public KafkaProducer<String, String> createProducer() {
-        return new KafkaProducer<>(KAFKA_PRODUCER_PROPERTIES.get(), new StringSerializer(), new StringSerializer());
+    public <K, V> KafkaProducer<K, V> createProducer(Serializer<K> keySerializer,
+                                                     Serializer<V> valueSerializer) {
+        return new KafkaProducer<>(ofNullable(KAFKA_PRODUCER_PROPERTIES.get()).orElseGet(Properties::new),
+            keySerializer,
+            valueSerializer);
     }
 
     /**

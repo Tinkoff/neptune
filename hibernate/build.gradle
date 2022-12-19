@@ -9,9 +9,9 @@ configurations {
 dependencies {
     api(project(":database.abstractions"))
     api project(':core.api')
-    compileClasspath group: 'org.hibernate', name: 'hibernate-core', version: '5.6.0.Final'
-    compileClasspath group: 'com.querydsl', name: 'querydsl-core', version: queryDslVersion
-    compileClasspath group: 'com.querydsl', name: 'querydsl-jpa', version: queryDslVersion
+    compileOnly group: 'org.hibernate', name: 'hibernate-core', version: '5.6.0.Final'
+    compileOnly group: 'com.querydsl', name: 'querydsl-core', version: queryDslVersion
+    compileOnly group: 'com.querydsl', name: 'querydsl-jpa', version: queryDslVersion
 
     testImplementation group: 'org.hibernate', name: 'hibernate-core', version: '5.6.0.Final'
     testImplementation group: 'com.querydsl', name: 'querydsl-core', version: queryDslVersion

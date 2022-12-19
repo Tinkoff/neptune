@@ -5,7 +5,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
@@ -13,11 +12,10 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
-import ru.tinkoff.qa.neptune.kafka.captors.AllMessagesCaptor;
+import ru.tinkoff.qa.neptune.kafka.captors.KafkaObjectResultCaptor;
 import ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -25,19 +23,16 @@ import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-@SequentialGetStepSupplier.DefineGetImperativeParameterName("Poll:")
+@SequentialGetStepSupplier.DefineGetImperativeParameterName("Get from Kafka:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Object criteria")
 @MaxDepthOfReporting(0)
+@CaptureOnSuccess(by = KafkaObjectResultCaptor.class)
 public class KafkaPollIterableItemSupplier<K, V, R, I extends KafkaPollIterableItemSupplier<K, V, R, I>>
     extends SequentialGetStepSupplier.GetObjectFromIterableStepSupplier<KafkaStepContext, R, I> {
 
     public static final String NO_DESC_ERROR_TEXT = "Description should be defined";
     private final GetRecords<K, V> getRecords;
-
-    @CaptureOnSuccess(by = AllMessagesCaptor.class)
-    @CaptureOnFailure(by = AllMessagesCaptor.class)
-    List<String> messages;
 
     private KafkaPollIterableItemSupplier(GetRecords<K, V> getFromTopics, Function<ConsumerRecord<K, V>, R> f) {
         super(getFromTopics.andThen(list -> list.stream().map(new KafkaSafeFunction<>(f)).collect(toList())));
@@ -266,18 +261,6 @@ public class KafkaPollIterableItemSupplier<K, V, R, I extends KafkaPollIterableI
     }
 
     /**
-     * Creates a step that returns a string content of a message.
-     *
-     * @return an instance of {@link KafkaPollIterableItemSupplier}
-     */
-    @Description("String message")
-    public static KafkaPollIterableItemSupplier<String, String, String, ?> kafkaRawMessage() {
-        return new KafkaPollIterableItemSupplier<>(new StringDeserializer(),
-            new StringDeserializer(),
-            ConsumerRecord::value);
-    }
-
-    /**
      * Defines topics to subscribe
      * <p></p>
      * If there is no topic defined by this method then value of the property
@@ -298,15 +281,11 @@ public class KafkaPollIterableItemSupplier<K, V, R, I extends KafkaPollIterableI
 
     @Override
     protected void onSuccess(R t) {
-        if (t == null) {
-            messages = getRecords.getMessages();
-        }
         getRecords.closeConsumer();
     }
 
     @Override
     protected void onFailure(KafkaStepContext m, Throwable throwable) {
-        messages = getRecords.getMessages();
         getRecords.closeConsumer();
     }
 

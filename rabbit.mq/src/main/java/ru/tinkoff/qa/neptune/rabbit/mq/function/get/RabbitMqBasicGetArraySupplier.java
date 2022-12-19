@@ -4,10 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 import ru.tinkoff.qa.neptune.rabbit.mq.captors.MessagesCaptor;
@@ -25,7 +25,7 @@ import static org.apache.commons.lang3.ArrayUtils.add;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
 
-@SequentialGetStepSupplier.DefineGetImperativeParameterName("Retrieve:")
+@SequentialGetStepSupplier.DefineGetImperativeParameterName("Get from RabbitMQ:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria for every item of resulted array")
 @MaxDepthOfReporting(0)
@@ -217,7 +217,7 @@ public abstract class RabbitMqBasicGetArraySupplier<M, R, S extends RabbitMqBasi
      * @param queue are queue to get messages from
      * @return an instance of {@link RabbitMqBasicGetArraySupplier.StringMessages}
      */
-    @Description("String messages")
+    @Description("Texts of messages")
     public static StringMessages rabbitArrayOfRawMessages(String queue) {
         return new StringMessages(new GetFromQueue(queue).andThen(new GetDeserializedData<>(String.class)));
     }

@@ -1,15 +1,15 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.function.declare;
 
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 
 import java.io.IOException;
 
 import static ru.tinkoff.qa.neptune.rabbit.mq.GetChannel.getChannel;
 
-@SequentialGetStepSupplier.DefineGetImperativeParameterName("Declare:")
+@SequentialGetStepSupplier.DefineGetImperativeParameterName("Declare in RabbitMQ:")
 @MaxDepthOfReporting(0)
 @Description("Server named queue")
 public final class ServerNamedQueueSequentialGetSupplier

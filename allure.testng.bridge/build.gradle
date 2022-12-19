@@ -1,7 +1,7 @@
 dependencies {
     api project(":testng.integration")
     api project(":allure.integration")
-    compileClasspath group: 'org.testng', name: 'testng', version: testNGVersion
+    compileOnly group: 'org.testng', name: 'testng', version: testNGVersion
     api (group: 'io.qameta.allure', name: 'allure-testng', version: allureVersion) {
         exclude group: 'org.aspectj', module: 'aspectjrt'
         exclude group: 'org.aspectj', module: 'aspectjweaver'

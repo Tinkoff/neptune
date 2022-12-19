@@ -1,6 +1,6 @@
 dependencies {
     api project(':core.api')
-    compileClasspath group: 'org.testng', name: 'testng', version: testNGVersion
+    compileOnly group: 'org.testng', name: 'testng', version: testNGVersion
     testImplementation group: 'org.testng', name: 'testng', version: testNGVersion
 }
 

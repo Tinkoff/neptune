@@ -3,9 +3,9 @@ package ru.tinkoff.qa.neptune.rabbit.mq.function.publish;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 import ru.tinkoff.qa.neptune.rabbit.mq.captors.MessageCaptor;
@@ -29,7 +29,7 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperti
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqAMQPProperty.RABBIT_AMQP_PROPERTY;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqDefaultDataTransformer.RABBIT_MQ_DEFAULT_DATA_TRANSFORMER;
 
-@SequentialActionSupplier.DefinePerformImperativeParameterName("Publish:")
+@SequentialActionSupplier.DefinePerformImperativeParameterName("Publish in RabbitMQ:")
 @MaxDepthOfReporting(0)
 @Description("message")
 @SuppressWarnings("unchecked")

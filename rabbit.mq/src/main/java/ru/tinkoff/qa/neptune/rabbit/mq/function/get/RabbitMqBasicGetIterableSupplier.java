@@ -25,9 +25,9 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetDeserializedData.getStringResult;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
 
-@SequentialGetStepSupplier.DefineGetImperativeParameterName("Retrieve:")
+@SequentialGetStepSupplier.DefineGetImperativeParameterName("Get from RabbitMQ:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
-@SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria for every item of resulted iterable")
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria for every item of resulted list")
 @MaxDepthOfReporting(0)
 @SuppressWarnings("unchecked")
 public abstract class RabbitMqBasicGetIterableSupplier<M, R, S extends RabbitMqBasicGetIterableSupplier<M, R, S>> extends
@@ -200,7 +200,7 @@ public abstract class RabbitMqBasicGetIterableSupplier<M, R, S extends RabbitMqB
      * @param queue   is a queue to read
      * @param charset is a required charset
      */
-    @Description("String message")
+    @Description("Texts of messages")
     public static StringMessages rabbitIterableOfRawMessages(String queue, Charset charset){
         return new StringMessages(new GetFromQueue(queue).andThen(getStringResult(charset)));
     }

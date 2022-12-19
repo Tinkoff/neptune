@@ -1,18 +1,22 @@
 package ru.tinkoff.qa.neptune.kafka.functions.poll;
 
+import com.google.gson.Gson;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.Deserializer;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.join;
 import static java.time.Duration.ofNanos;
 import static java.util.Arrays.asList;
 import static java.util.Objects.isNull;
@@ -86,8 +90,40 @@ class GetRecords<K, V> implements Function<KafkaStepContext, List<ConsumerRecord
         ofNullable(kafkaConsumer).ifPresent(KafkaConsumer::close);
     }
 
-    List<String> getMessages() {
-        return readRecords.stream().map(KafkaRecordWrapper::toString).collect(toList());
+    public static class TopicValueGetter implements ParameterValueGetter<String[]> {
+        @Override
+        public String getParameterValue(String[] fieldValue) {
+            return join(",", fieldValue);
+        }
     }
 
+    static final class KafkaRecordWrapper<K, V> {
+
+        private final ConsumerRecord<K, V> consumerRecord;
+        private final String recordAsString;
+
+        KafkaRecordWrapper(ConsumerRecord<K, V> consumerRecord) {
+            checkNotNull(consumerRecord);
+            this.consumerRecord = consumerRecord;
+            recordAsString = new Gson().toJson(consumerRecord);
+        }
+
+        ConsumerRecord<K, V> getConsumerRecord() {
+            return consumerRecord;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof GetRecords.KafkaRecordWrapper)) {
+                return false;
+            }
+
+            return Objects.equals(recordAsString, ((KafkaRecordWrapper<?, ?>) obj).recordAsString);
+        }
+
+        @Override
+        public int hashCode() {
+            return recordAsString.hashCode();
+        }
+    }
 }

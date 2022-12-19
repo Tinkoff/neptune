@@ -15,7 +15,7 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetItemF
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetListFromResponseSupplier.listFromRecords;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
 
-@SequentialGetStepSupplier.DefineGetImperativeParameterName("Retrieve:")
+@SequentialGetStepSupplier.DefineGetImperativeParameterName("Get from RabbitMQ:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("GetResponse criteria")
 @MaxDepthOfReporting(0)

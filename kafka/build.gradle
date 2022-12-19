@@ -1,7 +1,13 @@
+configurations {
+    bundleGeneration
+}
+
 dependencies {
     api project(':core.api')
-    api group: 'org.apache.kafka', name: 'kafka-clients', version: '3.2.0'
-    testImplementation  group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+    compileOnly group: 'org.apache.kafka', name: 'kafka-clients', version: '3.1.1'
+    bundleGeneration(group: 'org.apache.kafka', name: 'kafka-clients', version: '3.1.1')
+    testImplementation group: 'org.apache.kafka', name: 'kafka-clients', version: '3.3.1'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockitoVersion
 }
 
@@ -11,6 +17,7 @@ java {
 }
 
 task generateBundle(type: JavaExec)  {
+    classpath = configurations.bundleGeneration + sourceSets.main.compileClasspath
     classpath sourceSets.main.runtimeClasspath
     main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
     args "ru_RU",

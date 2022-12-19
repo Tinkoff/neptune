@@ -1,6 +1,6 @@
 dependencies {
-    compileClasspath project(':core.api')
-    compileClasspath (group: 'io.qameta.allure', name: 'allure-java-commons', version: allureVersion) {
+    compileOnly project(':core.api')
+    compileOnly(group: 'io.qameta.allure', name: 'allure-java-commons', version: allureVersion) {
         exclude group: 'org.aspectj', module: 'aspectjrt'
         exclude group: 'org.aspectj', module: 'aspectjweaver'
         exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'

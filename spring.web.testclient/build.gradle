@@ -37,14 +37,14 @@ processResources {
 dependencies {
     api project(':core.api')
     api project(':neptune-spring-boot-starter')
-    compileClasspath(group: 'org.springframework', name: 'spring-test', version: springVersion)
-    compileClasspath group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
-    compileClasspath(group: 'org.springframework', name: 'spring-web', version: springVersion)
-    compileClasspath(group: 'org.springframework', name: 'spring-webmvc', version: springVersion)
+    compileOnly(group: 'org.springframework', name: 'spring-test', version: springVersion)
+    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+    compileOnly(group: 'org.springframework', name: 'spring-web', version: springVersion)
+    compileOnly(group: 'org.springframework', name: 'spring-webmvc', version: springVersion)
     testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockitoVersion
 
-    compileClasspath(group: 'org.springframework', name: 'spring-webflux', version: springVersion)
+    compileOnly(group: 'org.springframework', name: 'spring-webflux', version: springVersion)
 
     testImplementation('io.projectreactor.tools:blockhound:1.0.6.RELEASE')
     testImplementation('io.projectreactor:reactor-test:3.4.18')
