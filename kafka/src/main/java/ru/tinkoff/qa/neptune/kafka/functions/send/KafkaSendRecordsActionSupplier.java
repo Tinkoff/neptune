@@ -28,7 +28,7 @@ import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAF
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaCallbackProperty.KAFKA_CALLBACK;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicForSendProperty.DEFAULT_TOPIC_FOR_SEND;
 
-@SequentialActionSupplier.DefinePerformImperativeParameterName("Send:")
+@SequentialActionSupplier.DefinePerformImperativeParameterName("Send to Kafka:")
 @MaxDepthOfReporting(0)
 @Description("message.")
 @SuppressWarnings("unchecked")
@@ -60,7 +60,8 @@ public class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRecordsActi
         checkNotNull(keySerializer);
         this.valueSerializer = valueSerializer;
         this.value = value;
-        performOn(kafkaStepContext -> kafkaStepContext.createProducer(keySerializer, valueSerializer));
+        this.keySerializer = keySerializer;
+        performOn(kafkaStepContext -> kafkaStepContext.createProducer(this.keySerializer, valueSerializer));
     }
 
     /**
@@ -68,6 +69,7 @@ public class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRecordsActi
      *
      * @param toSend is an object to be serialized and send to the topic
      * @return an instance of {@link KafkaSendRecordsActionSupplier.Mapped}
+     * @deprecated use {@link #producerRecord(Serializer, Object)}
      */
     @Deprecated(forRemoval = true)
     public static Mapped kafkaSerializedMessage(Object toSend) {
@@ -79,9 +81,33 @@ public class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRecordsActi
      *
      * @param message is a message to send
      * @return an instance of {@link KafkaSendRecordsActionSupplier}
+     * @deprecated use {@link #producerRecord(String)}
      */
+    @Deprecated(forRemoval = true)
     public static KafkaSendRecordsActionSupplier<String, String, ?> kafkaTextMessage(String message) {
-        return new KafkaSendRecordsActionSupplier<>(new StringSerializer(), new StringSerializer(), message);
+        return producerRecord(message);
+    }
+
+    /**
+     * Sends a message to topic.
+     *
+     * @param valueSerializer is a serializer value
+     * @param value           is message value
+     * @param <V>             is a type of message value
+     * @return an instance of {@link KafkaSendRecordsActionSupplier}
+     */
+    public static <V> KafkaSendRecordsActionSupplier<String, V, ?> producerRecord(Serializer<V> valueSerializer, V value) {
+        return new KafkaSendRecordsActionSupplier<>(new StringSerializer(), valueSerializer, value);
+    }
+
+    /**
+     * Sends a message to topic as text.
+     *
+     * @param value is message value
+     * @return an instance of {@link KafkaSendRecordsActionSupplier}
+     */
+    public static KafkaSendRecordsActionSupplier<String, String, ?> producerRecord(String value) {
+        return producerRecord(new StringSerializer(), value);
     }
 
     public T topic(String topic) {

@@ -63,7 +63,7 @@ public class KafkaPollIterableSupplier<K, V, R, I extends KafkaPollIterableSuppl
      * @return an instance of {@link KafkaPollIterableSupplier}
      */
     @Description("{description}")
-    public static <K, V, R> KafkaPollIterableSupplier<K, V, R, ?> kafkaList(
+    public static <K, V, R> KafkaPollIterableSupplier<K, V, R, ?> consumedList(
         @DescriptionFragment(value = "description",
             makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
         ) String description,
@@ -84,25 +84,33 @@ public class KafkaPollIterableSupplier<K, V, R, I extends KafkaPollIterableSuppl
      * @param <R>             is a type of list item
      * @return an instance of {@link KafkaPollIterableSupplier}
      */
-    public static <K, R> KafkaPollIterableSupplier<K, ?, R, ?> kafkaListKeyData(
+    public static <K, R> KafkaPollIterableSupplier<K, ?, R, ?> consumedListKeyData(
         String description,
         Deserializer<K> keyDeserializer,
         Function<K, R> f) {
-        return kafkaList(description, keyDeserializer, new StringDeserializer(), msg -> f.apply(msg.key()));
+        return consumedList(description, keyDeserializer, new StringDeserializer(), msg -> f.apply(msg.key()));
     }
 
     /**
-     * Creates a step that returns list of values which are calculated by key data of read messages.
+     * Creates a step that returns list of message keys.
      *
-     * @param description     is description of value to get
      * @param keyDeserializer deserializer for key
      * @param <K>             type of deserialized key
      * @return an instance of {@link KafkaPollIterableSupplier}
      */
-    public static <K> KafkaPollIterableSupplier<K, ?, K, ?> kafkaListKeyData(
-        String description,
+    @Description("Message keys")
+    public static <K> KafkaPollIterableSupplier<K, ?, K, ?> consumedKeys(
         Deserializer<K> keyDeserializer) {
-        return kafkaListKeyData(description, keyDeserializer, k -> k);
+        return new KafkaPollIterableSupplier<>(keyDeserializer, new StringDeserializer(), ConsumerRecord::key);
+    }
+
+    /**
+     * Creates a step that returns list of string keys.
+     *
+     * @return an instance of {@link KafkaPollIterableSupplier}
+     */
+    public static <K> KafkaPollIterableSupplier<String, ?, String, ?> consumedKeys() {
+        return consumedKeys(new StringDeserializer());
     }
 
     /**
@@ -115,25 +123,33 @@ public class KafkaPollIterableSupplier<K, V, R, I extends KafkaPollIterableSuppl
      * @param <R>               is a type of list item
      * @return an instance of {@link KafkaPollIterableSupplier}
      */
-    public static <V, R> KafkaPollIterableSupplier<?, V, R, ?> kafkaListValueData(
+    public static <V, R> KafkaPollIterableSupplier<?, V, R, ?> consumedListValueData(
         String description,
         Deserializer<V> valueDeserializer,
         Function<V, R> f) {
-        return kafkaList(description, new StringDeserializer(), valueDeserializer, msg -> f.apply(msg.value()));
+        return consumedList(description, new StringDeserializer(), valueDeserializer, msg -> f.apply(msg.value()));
     }
 
     /**
-     * Creates a step that returns list of values which are calculated by value data of read messages.
+     * Creates a step that returns list of message values.
      *
-     * @param description       is description of value to get
      * @param valueDeserializer deserializer for value
      * @param <V>               type of deserialized value
      * @return an instance of {@link KafkaPollIterableSupplier}
      */
-    public static <V> KafkaPollIterableSupplier<?, V, V, ?> kafkaListValueData(
-        String description,
+    @Description("Message values")
+    public static <V> KafkaPollIterableSupplier<?, V, V, ?> consumedValues(
         Deserializer<V> valueDeserializer) {
-        return kafkaListValueData(description, valueDeserializer, v -> v);
+        return new KafkaPollIterableSupplier<>(new StringDeserializer(), valueDeserializer, ConsumerRecord::value);
+    }
+
+    /**
+     * Creates a step that returns list of message string values.
+     *
+     * @return an instance of {@link KafkaPollIterableSupplier}
+     */
+    public static KafkaPollIterableSupplier<?, String, String, ?> consumedValues() {
+        return consumedValues(new StringDeserializer());
     }
 
     /**
@@ -251,11 +267,8 @@ public class KafkaPollIterableSupplier<K, V, R, I extends KafkaPollIterableSuppl
      * @return an instance of {@link KafkaPollIterableSupplier}
      */
     @Deprecated(forRemoval = true)
-    @Description("String messages")
-    public static KafkaPollIterableSupplier<String, String, String, ?> kafkaRawMessages(String... topics) {
-        var result = new KafkaPollIterableSupplier<>(new StringDeserializer(),
-            new StringDeserializer(),
-            ConsumerRecord::value);
+    public static KafkaPollIterableSupplier<?, String, String, ?> kafkaRawMessages(String... topics) {
+        var result = consumedValues();
 
         if (nonNull(topics) && topics.length > 0) {
             result.fromTopics(topics);
