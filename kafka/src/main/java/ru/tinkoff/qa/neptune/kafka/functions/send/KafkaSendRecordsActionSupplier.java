@@ -133,16 +133,25 @@ public class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRecordsActi
         return selfReference;
     }
 
+    /**
+     * @deprecated use {@link #key(Object, Serializer)}
+     */
     @Deprecated(forRemoval = true)
     public KafkaSendRecordsActionSupplier<String, V, ?> key(String key) {
         return key(key, new StringSerializer());
     }
 
+    /**
+     * @deprecated use {@link #key(Object, Serializer)}
+     */
     @Deprecated(forRemoval = true)
     public KafkaSendRecordsActionSupplier<String, V, ?> key(Object key, DataTransformer dataTransformer) {
         return key(dataTransformer.serialize(key));
     }
 
+    /**
+     * @deprecated use {@link #key(Object, Serializer)}
+     */
     @Deprecated(forRemoval = true)
     public KafkaSendRecordsActionSupplier<String, V, ?> key(Object key) {
         var transformer = KAFKA_KEY_TRANSFORMER.get();

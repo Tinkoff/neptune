@@ -82,7 +82,7 @@ public class KafkaPollIterableItemSupplier<K, V, R, I extends KafkaPollIterableI
      * @param <R>             is a type of list item
      * @return an instance of {@link KafkaPollIterableItemSupplier}
      */
-    public static <K, R> KafkaPollIterableItemSupplier<K, ?, R, ?> consumedItemKeyData(
+    public static <K, R> KafkaPollIterableItemSupplier<K, String, R, ?> consumedItemKeyData(
         String description,
         Deserializer<K> keyDeserializer,
         Function<K, R> f) {
@@ -97,7 +97,7 @@ public class KafkaPollIterableItemSupplier<K, V, R, I extends KafkaPollIterableI
      * @return an instance of {@link KafkaPollIterableItemSupplier}
      */
     @Description("Message key")
-    public static <K> KafkaPollIterableItemSupplier<K, ?, K, ?> consumedKey(
+    public static <K> KafkaPollIterableItemSupplier<K, String, K, ?> consumedKey(
         Deserializer<K> keyDeserializer) {
         return new KafkaPollIterableItemSupplier<>(keyDeserializer, new StringDeserializer(), ConsumerRecord::key);
     }
@@ -107,7 +107,7 @@ public class KafkaPollIterableItemSupplier<K, V, R, I extends KafkaPollIterableI
      *
      * @return an instance of {@link KafkaPollIterableItemSupplier}
      */
-    public static KafkaPollIterableItemSupplier<String, ?, String, ?> consumedKey() {
+    public static KafkaPollIterableItemSupplier<String, String, String, ?> consumedKey() {
         return consumedKey(new StringDeserializer());
     }
 
@@ -121,7 +121,7 @@ public class KafkaPollIterableItemSupplier<K, V, R, I extends KafkaPollIterableI
      * @param <R>               is a type of list item
      * @return an instance of {@link KafkaPollIterableItemSupplier}
      */
-    public static <V, R> KafkaPollIterableItemSupplier<?, V, R, ?> consumedItemValueData(
+    public static <V, R> KafkaPollIterableItemSupplier<String, V, R, ?> consumedItemValueData(
         String description,
         Deserializer<V> valueDeserializer,
         Function<V, R> f) {
@@ -136,7 +136,7 @@ public class KafkaPollIterableItemSupplier<K, V, R, I extends KafkaPollIterableI
      * @return an instance of {@link KafkaPollIterableItemSupplier}
      */
     @Description("Message value")
-    public static <V> KafkaPollIterableItemSupplier<?, V, V, ?> consumedValue(
+    public static <V> KafkaPollIterableItemSupplier<String, V, V, ?> consumedValue(
         Deserializer<V> valueDeserializer) {
         return new KafkaPollIterableItemSupplier<>(new StringDeserializer(), valueDeserializer, ConsumerRecord::value);
     }
@@ -146,7 +146,7 @@ public class KafkaPollIterableItemSupplier<K, V, R, I extends KafkaPollIterableI
      *
      * @return an instance of {@link KafkaPollIterableItemSupplier}
      */
-    public static <V> KafkaPollIterableItemSupplier<?, String, String, ?> consumedValue() {
+    public static <V> KafkaPollIterableItemSupplier<String, String, String, ?> consumedValue() {
         return consumedValue(new StringDeserializer());
     }
 

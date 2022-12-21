@@ -5,6 +5,9 @@ import ru.tinkoff.qa.neptune.core.api.properties.PropertyDescription;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
 import ru.tinkoff.qa.neptune.core.api.properties.object.ObjectByClassPropertySupplier;
 
+/**
+ * @deprecated it won't be supported anymore
+ */
 @Deprecated(forRemoval = true)
 public enum DefaultDataTransformers implements ObjectByClassPropertySupplier<DataTransformer> {
 

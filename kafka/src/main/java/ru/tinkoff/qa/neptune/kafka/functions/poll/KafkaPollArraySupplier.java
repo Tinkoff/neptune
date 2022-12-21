@@ -126,10 +126,10 @@ public class KafkaPollArraySupplier<K, V, R, S extends KafkaPollArraySupplier<K,
      * @param <R>             is a type of array item
      * @return an instance of {@link KafkaPollArraySupplier}
      */
-    public static <K, R> KafkaPollArraySupplier<K, ?, R, ?> consumedArrayKeyData(String description,
-                                                                                 Deserializer<K> keyDeserializer,
-                                                                                 Class<R> componentClass,
-                                                                                 Function<K, R> f) {
+    public static <K, R> KafkaPollArraySupplier<K, String, R, ?> consumedArrayKeyData(String description,
+                                                                                      Deserializer<K> keyDeserializer,
+                                                                                      Class<R> componentClass,
+                                                                                      Function<K, R> f) {
         return consumedArray(description,
             keyDeserializer,
             new StringDeserializer(),
@@ -148,10 +148,10 @@ public class KafkaPollArraySupplier<K, V, R, S extends KafkaPollArraySupplier<K,
      * @param <R>             is a type of array item
      * @return an instance of {@link KafkaPollArraySupplier}
      */
-    public static <K, R> KafkaPollArraySupplier<K, ?, R, ?> consumedArrayKeyData(String description,
-                                                                                 Deserializer<K> keyDeserializer,
-                                                                                 TypeReference<R> typeReference,
-                                                                                 Function<K, R> f) {
+    public static <K, R> KafkaPollArraySupplier<K, String, R, ?> consumedArrayKeyData(String description,
+                                                                                      Deserializer<K> keyDeserializer,
+                                                                                      TypeReference<R> typeReference,
+                                                                                      Function<K, R> f) {
         return consumedArray(description,
             keyDeserializer,
             new StringDeserializer(),
@@ -168,7 +168,7 @@ public class KafkaPollArraySupplier<K, V, R, S extends KafkaPollArraySupplier<K,
      * @return an instance of {@link KafkaPollArraySupplier}
      */
     @Description("Keys as array")
-    public static <K> KafkaPollArraySupplier<K, ?, K, ?> consumedArrayKeys(Class<K> componentClass,
+    public static <K> KafkaPollArraySupplier<K, String, K, ?> consumedArrayKeys(Class<K> componentClass,
                                                                            Deserializer<K> keyDeserializer) {
         return new KafkaPollArraySupplier<>(
             keyDeserializer,
@@ -185,7 +185,7 @@ public class KafkaPollArraySupplier<K, V, R, S extends KafkaPollArraySupplier<K,
      * @param <K>             type of deserialized key
      * @return an instance of {@link KafkaPollArraySupplier}
      */
-    public static <K> KafkaPollArraySupplier<K, ?, K, ?> consumedArrayKeys(TypeReference<K> typeReference,
+    public static <K> KafkaPollArraySupplier<K, String, K, ?> consumedArrayKeys(TypeReference<K> typeReference,
                                                                            Deserializer<K> keyDeserializer) {
         return consumedArrayKeys(
             (Class) (typeReference.getType() instanceof ParameterizedType ? ((ParameterizedType) typeReference.getType()).getRawType() : typeReference.getType()),
@@ -197,7 +197,7 @@ public class KafkaPollArraySupplier<K, V, R, S extends KafkaPollArraySupplier<K,
      *
      * @return an instance of {@link KafkaPollArraySupplier}
      */
-    public static KafkaPollArraySupplier<String, ?, String, ?> consumedArrayKeys() {
+    public static KafkaPollArraySupplier<String, String, String, ?> consumedArrayKeys() {
         return consumedArrayKeys(String.class, new StringDeserializer());
     }
 
@@ -212,7 +212,7 @@ public class KafkaPollArraySupplier<K, V, R, S extends KafkaPollArraySupplier<K,
      * @param <R>               is a type of array item
      * @return an instance of {@link KafkaPollArraySupplier}
      */
-    public static <V, R> KafkaPollArraySupplier<?, V, R, ?> consumedArrayValueData(
+    public static <V, R> KafkaPollArraySupplier<String, V, R, ?> consumedArrayValueData(
         String description,
         Deserializer<V> valueDeserializer,
         Class<R> componentClass,
@@ -235,7 +235,7 @@ public class KafkaPollArraySupplier<K, V, R, S extends KafkaPollArraySupplier<K,
      * @param <R>               is a type of array item
      * @return an instance of {@link KafkaPollArraySupplier}
      */
-    public static <V, R> KafkaPollArraySupplier<?, V, R, ?> consumedArrayValueData(
+    public static <V, R> KafkaPollArraySupplier<String, V, R, ?> consumedArrayValueData(
         String description,
         Deserializer<V> valueDeserializer,
         TypeReference<R> typeReference,
@@ -256,7 +256,7 @@ public class KafkaPollArraySupplier<K, V, R, S extends KafkaPollArraySupplier<K,
      * @return an instance of {@link KafkaPollArraySupplier}
      */
     @Description("Values as array")
-    public static <V> KafkaPollArraySupplier<?, V, V, ?> consumedArrayValues(
+    public static <V> KafkaPollArraySupplier<String, V, V, ?> consumedArrayValues(
         Class<V> componentClass,
         Deserializer<V> valueDeserializer) {
         return new KafkaPollArraySupplier<>(new StringDeserializer(),
@@ -273,7 +273,7 @@ public class KafkaPollArraySupplier<K, V, R, S extends KafkaPollArraySupplier<K,
      * @param <V>               type of deserialized value
      * @return an instance of {@link KafkaPollArraySupplier}
      */
-    public static <V> KafkaPollArraySupplier<?, V, V, ?> consumedArrayValues(
+    public static <V> KafkaPollArraySupplier<String, V, V, ?> consumedArrayValues(
         TypeReference<V> typeReference,
         Deserializer<V> valueDeserializer) {
         return consumedArrayValues(
@@ -286,7 +286,7 @@ public class KafkaPollArraySupplier<K, V, R, S extends KafkaPollArraySupplier<K,
      *
      * @return an instance of {@link KafkaPollArraySupplier}
      */
-    public static KafkaPollArraySupplier<?, String, String, ?> consumedArrayValues() {
+    public static KafkaPollArraySupplier<String, String, String, ?> consumedArrayValues() {
         return consumedArrayValues(String.class, new StringDeserializer());
     }
 
