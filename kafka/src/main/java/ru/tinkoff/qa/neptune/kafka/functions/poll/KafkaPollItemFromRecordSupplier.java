@@ -1,8 +1,6 @@
 package ru.tinkoff.qa.neptune.kafka.functions.poll;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;

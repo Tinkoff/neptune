@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.kafka.functions.poll;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -29,11 +28,11 @@ import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollListFromRecord
 @SequentialGetStepSupplier.DefineCriteriaParameterName("ConsumerRecord criteria")
 @MaxDepthOfReporting(0)
 @CaptureOnSuccess(by = KafkaConsumerRecordsCaptor.class)
-public class GetRecordSupplier<K, V> extends SequentialGetStepSupplier.GetListStepSupplier<KafkaStepContext, List<ConsumerRecord<K, V>>, ConsumerRecord<K, V>, GetRecordSupplier<K, V>> {
+public final class GetRecordSupplier<K, V> extends SequentialGetStepSupplier.GetListStepSupplier<KafkaStepContext, List<ConsumerRecord<K, V>>, ConsumerRecord<K, V>, GetRecordSupplier<K, V>> {
 
     private final GetRecords<K, V> function;
 
-    protected GetRecordSupplier(GetRecords<K, V> originalFunction) {
+    private GetRecordSupplier(GetRecords<K, V> originalFunction) {
         super(originalFunction);
         this.function = originalFunction;
     }
@@ -106,60 +105,8 @@ public class GetRecordSupplier<K, V> extends SequentialGetStepSupplier.GetListSt
      * @param <R>             is a type of item of iterable
      * @return KafkaPollListFromRecordSupplier
      */
-    public <R> KafkaPollListFromRecordSupplier<K, V, R, ?> thenGetList(String description, Function<ConsumerRecord<K, V>, R> getItemFunction) {
+    public <R> KafkaPollListFromRecordSupplier<K, V, R> thenGetList(String description, Function<ConsumerRecord<K, V>, R> getItemFunction) {
         return listFromRecords(description, getItemFunction).from(this);
-    }
-
-    /**
-     * @param description is description of value to get
-     * @param cls         is a class of a value to deserialize a message from topics
-     * @param conversion  describes how to get desired value
-     * @param <R>         is a type of item of iterable
-     * @param <M>         is a type of deserialized message
-     * @return KafkaPollListFromRecordSupplier.KafkaPollDeserializedFromSupplier
-     * @deprecated use {@link #thenGetList(String, Function)} instead
-     */
-    @Deprecated(forRemoval = true)
-    public <M, R> KafkaPollListFromRecordSupplier.KafkaPollDeserializedFromSupplier<K, V, M, R> thenGetList(String description, Class<M> cls, Function<M, R> conversion) {
-        return listFromRecords(description, cls, conversion, this);
-    }
-
-    /**
-     * @param description is description of value to get
-     * @param typeT       is a reference to type of value to deserialize message
-     * @param conversion  describes how to get desired value
-     * @param <R>         is a type of item of iterable
-     * @param <M>         is a type of deserialized message
-     * @return KafkaPollListFromRecordSupplier.KafkaPollDeserializedFromSupplier
-     * @deprecated use {@link #thenGetList(String, Function)} instead
-     */
-    @Deprecated(forRemoval = true)
-    public <R, M> KafkaPollListFromRecordSupplier.KafkaPollDeserializedFromSupplier<K, V, M, R> thenGetList(String description, TypeReference<M> typeT, Function<M, R> conversion) {
-        return listFromRecords(description, typeT, conversion, this);
-    }
-
-    /**
-     * @param description is description of value to get
-     * @param cls         is a class of a value to deserialize a message from topics
-     * @param <R>         is a type of deserialized message
-     * @return KafkaPollListFromRecordSupplier.KafkaPollDeserializedFromSupplier
-     * @deprecated use {@link #thenGetList(String, Function)} instead
-     */
-    @Deprecated(forRemoval = true)
-    public <R> KafkaPollListFromRecordSupplier.KafkaPollDeserializedFromSupplier<K, V, R, R> thenGetList(String description, Class<R> cls) {
-        return thenGetList(description, cls, f -> f);
-    }
-
-    /**
-     * @param description is description of value to get
-     * @param typeT       is a reference to type of value to deserialize message
-     * @param <R>         is a type of deserialized message
-     * @return KafkaPollListFromRecordSupplier.KafkaPollDeserializedFromSupplier
-     * @deprecated use {@link #thenGetList(String, Function)} instead
-     */
-    @Deprecated(forRemoval = true)
-    public <R> KafkaPollListFromRecordSupplier.KafkaPollDeserializedFromSupplier<K, V, R, R> thenGetList(String description, TypeReference<R> typeT) {
-        return thenGetList(description, typeT, f -> f);
     }
 
     /**
@@ -168,60 +115,8 @@ public class GetRecordSupplier<K, V> extends SequentialGetStepSupplier.GetListSt
      * @param <R>         is a type of item
      * @return KafkaPollItemFromRecordSupplier
      */
-    public <R> KafkaPollItemFromRecordSupplier<K, V, R, ?> thenGetItem(String description, Function<ConsumerRecord<K, V>, R> function) {
+    public <R> KafkaPollItemFromRecordSupplier<K, V, R> thenGetItem(String description, Function<ConsumerRecord<K, V>, R> function) {
         return itemFromRecords(description, function).from(this);
-    }
-
-    /**
-     * @param description is description of value to get
-     * @param cls         is a class of a value to deserialize a message from topics
-     * @param function    describes how to get desired value
-     * @param <R>         is a type of resulted value
-     * @param <M>         is a type of deserialized message
-     * @return KafkaPollItemFromRecordSupplier.KafkaPollDeserializedItemFromRecordSupplier
-     * @deprecated use {@link #thenGetItem(String, Function)} instead
-     */
-    @Deprecated(forRemoval = true)
-    public <R, M> KafkaPollItemFromRecordSupplier.KafkaPollDeserializedItemFromRecordSupplier<K, V, M, R> thenGetItem(String description, Class<M> cls, Function<M, R> function) {
-        return itemFromRecords(description, cls, function, this);
-    }
-
-    /**
-     * @param description is description of value to get
-     * @param typeT       is a reference to type of value to deserialize message
-     * @param function    describes how to get desired value
-     * @param <R>         is a type of resulted value
-     * @param <M>         is a type of deserialized message
-     * @return KafkaPollItemFromRecordSupplier.KafkaPollDeserializedItemFromRecordSupplier
-     * @deprecated use {@link #thenGetItem(String, Function)} instead
-     */
-    @Deprecated(forRemoval = true)
-    public <R, M> KafkaPollItemFromRecordSupplier.KafkaPollDeserializedItemFromRecordSupplier<K, V, M, R> thenGetItem(String description, TypeReference<M> typeT, Function<M, R> function) {
-        return itemFromRecords(description, typeT, function, this);
-    }
-
-    /**
-     * @param description is description of value to get
-     * @param typeT       is a reference to type of value to deserialize message
-     * @param <R>         is a type of deserialized message
-     * @return KafkaPollItemFromRecordSupplier.KafkaPollDeserializedItemFromRecordSupplier
-     * @deprecated use {@link #thenGetItem(String, Function)} instead
-     */
-    @Deprecated(forRemoval = true)
-    public <R> KafkaPollItemFromRecordSupplier.KafkaPollDeserializedItemFromRecordSupplier<K, V, R, R> thenGetItem(String description, TypeReference<R> typeT) {
-        return thenGetItem(description, typeT, f -> f);
-    }
-
-    /**
-     * @param description is description of value to get
-     * @param cls         is a class of a value to deserialize a message from topics
-     * @param <R>         is a type of deserialized message
-     * @return KafkaPollItemFromRecordSupplier.KafkaPollDeserializedItemFromRecordSupplier
-     * @deprecated use {@link #thenGetItem(String, Function)} instead
-     */
-    @Deprecated(forRemoval = true)
-    public <R> KafkaPollItemFromRecordSupplier.KafkaPollDeserializedItemFromRecordSupplier<K, V, R, R> thenGetItem(String description, Class<R> cls) {
-        return thenGetItem(description, cls, f -> f);
     }
 
     @Override
