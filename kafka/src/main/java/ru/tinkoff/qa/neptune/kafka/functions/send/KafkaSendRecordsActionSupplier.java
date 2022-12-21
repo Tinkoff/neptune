@@ -61,7 +61,7 @@ public class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRecordsActi
         this.valueSerializer = valueSerializer;
         this.value = value;
         this.keySerializer = keySerializer;
-        performOn(kafkaStepContext -> kafkaStepContext.createProducer(this.keySerializer, valueSerializer));
+        performOn(kafkaStepContext -> kafkaStepContext.createProducer(this.keySerializer, this.valueSerializer));
     }
 
     /**

@@ -38,6 +38,9 @@ public class GetRecordSupplier<K, V> extends SequentialGetStepSupplier.GetListSt
         this.function = originalFunction;
     }
 
+    /**
+     * @deprecated use {@link #consumerRecords()} or {@link #consumerRecords(Deserializer, Deserializer)} instead
+     */
     @Deprecated(forRemoval = true)
     @Description("{description}")
     public static GetRecordSupplier<String, String> consumerRecords(
@@ -56,6 +59,9 @@ public class GetRecordSupplier<K, V> extends SequentialGetStepSupplier.GetListSt
         return result;
     }
 
+    /**
+     * @deprecated use {@link #consumerRecords()} or {@link #consumerRecords(Deserializer, Deserializer)} instead
+     */
     @Deprecated(forRemoval = true)
     @Description("Kafka messages")
     public static GetRecordSupplier<String, String> records(String... topics) {
@@ -96,7 +102,7 @@ public class GetRecordSupplier<K, V> extends SequentialGetStepSupplier.GetListSt
 
     /**
      * @param description     is description of value to get
-     * @param getItemFunction
+     * @param getItemFunction describes how get resulted list item from each {@link ConsumerRecord}
      * @param <R>             is a type of item of iterable
      * @return KafkaPollListFromRecordSupplier
      */
@@ -158,7 +164,7 @@ public class GetRecordSupplier<K, V> extends SequentialGetStepSupplier.GetListSt
 
     /**
      * @param description is description of value to get
-     * @param function    describes how to get desired value
+     * @param function    describes how to get desired value from each {@link ConsumerRecord}
      * @param <R>         is a type of item
      * @return KafkaPollItemFromRecordSupplier
      */

@@ -109,7 +109,7 @@ public class KafkaPollIterableSupplier<K, V, R, I extends KafkaPollIterableSuppl
      *
      * @return an instance of {@link KafkaPollIterableSupplier}
      */
-    public static <K> KafkaPollIterableSupplier<String, String, String, ?> consumedKeys() {
+    public static KafkaPollIterableSupplier<String, String, String, ?> consumedKeys() {
         return consumedKeys(new StringDeserializer());
     }
 
