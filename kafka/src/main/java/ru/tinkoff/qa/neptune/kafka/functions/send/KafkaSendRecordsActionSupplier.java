@@ -125,7 +125,7 @@ public class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRecordsActi
         return (T) this;
     }
 
-    public <K2> KafkaSendRecordsActionSupplier<K2, V, ?> key(K2 key, Serializer<K2> keySerializer) {
+    public <K2> KafkaSendRecordsActionSupplier<K2, V, ?> setKey(K2 key, Serializer<K2> keySerializer) {
         checkNotNull(keySerializer);
         KafkaSendRecordsActionSupplier<K2, V, ?> selfReference = (KafkaSendRecordsActionSupplier<K2, V, ?>) this;
         selfReference.keySerializer = keySerializer;
@@ -133,16 +133,21 @@ public class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRecordsActi
         return selfReference;
     }
 
-    /**
-     * @deprecated use {@link #key(Object, Serializer)}
-     */
-    @Deprecated(forRemoval = true)
-    public KafkaSendRecordsActionSupplier<String, V, ?> key(String key) {
-        return key(key, new StringSerializer());
+    public KafkaSendRecordsActionSupplier<K, V, ?> setKey(K key) {
+        this.key = key;
+        return this;
     }
 
     /**
-     * @deprecated use {@link #key(Object, Serializer)}
+     * @deprecated use {@link #setKey(Object, Serializer)} or {@link #setKey(Object)}
+     */
+    @Deprecated(forRemoval = true)
+    public KafkaSendRecordsActionSupplier<String, V, ?> key(String key) {
+        return setKey(key, new StringSerializer());
+    }
+
+    /**
+     * @deprecated use {@link #setKey(Object, Serializer)} or {@link #setKey(Object)}
      */
     @Deprecated(forRemoval = true)
     public KafkaSendRecordsActionSupplier<String, V, ?> key(Object key, DataTransformer dataTransformer) {
@@ -150,7 +155,7 @@ public class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRecordsActi
     }
 
     /**
-     * @deprecated use {@link #key(Object, Serializer)}
+     * @deprecated use {@link #setKey(Object, Serializer)} or {@link #setKey(Object)}
      */
     @Deprecated(forRemoval = true)
     public KafkaSendRecordsActionSupplier<String, V, ?> key(Object key) {
