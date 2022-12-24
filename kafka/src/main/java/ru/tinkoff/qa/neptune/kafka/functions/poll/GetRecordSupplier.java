@@ -6,9 +6,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 import ru.tinkoff.qa.neptune.kafka.captors.KafkaConsumerRecordsCaptor;
 import ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty;
@@ -17,9 +15,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.function.Function;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollItemFromRecordSupplier.itemFromRecords;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollListFromRecordSupplier.listFromRecords;
 
@@ -35,41 +30,6 @@ public final class GetRecordSupplier<K, V> extends SequentialGetStepSupplier.Get
     private GetRecordSupplier(GetRecords<K, V> originalFunction) {
         super(originalFunction);
         this.function = originalFunction;
-    }
-
-    /**
-     * @deprecated use {@link #consumerRecords()} or {@link #consumerRecords(Deserializer, Deserializer)} instead
-     */
-    @Deprecated(forRemoval = true)
-    @Description("{description}")
-    public static GetRecordSupplier<String, String> consumerRecords(
-        @DescriptionFragment(value = "description",
-            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
-        ) String description,
-        String... topics) {
-        checkArgument(isNotBlank(description), "Description should be defined");
-        var result = new GetRecordSupplier<>(new GetRecords<>()
-            .setKeyDeserializer(new StringDeserializer())
-            .setValueDeserializer(new StringDeserializer()));
-
-        if (nonNull(topics) && topics.length > 0) {
-            result.fromTopics(topics);
-        }
-        return result;
-    }
-
-    /**
-     * @deprecated use {@link #consumerRecords()} or {@link #consumerRecords(Deserializer, Deserializer)} instead
-     */
-    @Deprecated(forRemoval = true)
-    @Description("Kafka messages")
-    public static GetRecordSupplier<String, String> records(String... topics) {
-        var result = consumerRecords();
-
-        if (nonNull(topics) && topics.length > 0) {
-            result.fromTopics(topics);
-        }
-        return result;
     }
 
     @Description("Kafka consumer records")

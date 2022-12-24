@@ -1,22 +1,16 @@
 package ru.tinkoff.qa.neptune.kafka.captors;
 
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.common.TopicPartition;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import ru.tinkoff.qa.neptune.kafka.KafkaBasePreparations;
 
-import java.time.Duration;
-import java.util.Map;
-
-import static java.util.List.of;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.anEmptyMap;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
 import static ru.tinkoff.qa.neptune.kafka.captors.TestStringInjector.CAUGHT_MESSAGES;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
 public class BaseCaptorTest extends KafkaBasePreparations {
 
     TopicPartition topicPartition;
@@ -27,14 +21,23 @@ public class BaseCaptorTest extends KafkaBasePreparations {
         CAUGHT_MESSAGES.clear();
     }
 
-    @BeforeClass(dependsOnMethods = "setUp")
-    public void beforeClass() {
-        topicPartition = new TopicPartition("testTopic", 1);
-        ConsumerRecord consumerRecord1 = new ConsumerRecord("testTopic", 1, 0, null, "{\"name\":\"testName1\"}");
-        ConsumerRecord consumerRecord2 = new ConsumerRecord("testTopic", 1, 0, null, "{\"name\":\"testName2\"}");
+    @DataProvider
+    public static Object[][] resultData() {
+        return new Object[][]{
+            {null, anEmptyMap()},
+            {SUCCESS, not(anEmptyMap())},
+            {FAILURE, anEmptyMap()},
+            {SUCCESS_AND_FAILURE, not(anEmptyMap())},
+        };
+    }
 
-        when(kafkaConsumer.poll(any(Duration.class)))
-            .thenReturn(new ConsumerRecords<>(Map.of(topicPartition, of(consumerRecord1, consumerRecord2))));
-
+    @DataProvider
+    public static Object[][] noResultData() {
+        return new Object[][]{
+            {null},
+            {SUCCESS},
+            {FAILURE},
+            {SUCCESS_AND_FAILURE},
+        };
     }
 }

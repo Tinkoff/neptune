@@ -48,7 +48,7 @@ public class KafkaStepContext extends Context<KafkaStepContext> {
      * @return self-reference
      */
     @SuppressWarnings("unused")
-    public KafkaStepContext send(KafkaSendRecordsActionSupplier<?, ?, ?> kafkaSendRecordsActionSupplier) {
+    public KafkaStepContext send(KafkaSendRecordsActionSupplier<?, ?> kafkaSendRecordsActionSupplier) {
         return perform(kafkaSendRecordsActionSupplier);
     }
 
