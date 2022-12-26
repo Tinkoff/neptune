@@ -14,6 +14,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 
 import java.util.Map;
+import java.util.Properties;
 
 import static java.util.List.of;
 import static org.mockito.ArgumentMatchers.any;
@@ -54,14 +55,20 @@ public class KafkaBasePreparations {
 
     protected KafkaStepContext kafka;
 
+    protected Properties consumerProps;
+    protected Properties producerProperties;
+
     @BeforeClass
     public void setUp() {
         openMocks(this);
         kafka = new KafkaStepContext() {
 
             @Override
-            public <K, V> KafkaConsumer<K, V> createConsumer(Deserializer<K> kDeserializer,
-                                                             Deserializer<V> vDeserializer) {
+            <K, V> KafkaConsumer<K, V> createConsumer(Deserializer<K> kDeserializer,
+                                                      Deserializer<V> vDeserializer,
+                                                      Properties properties) {
+
+                consumerProps = properties;
 
                 if (kDeserializer instanceof SomeDeserializer && vDeserializer instanceof SomeDeserializer) {
                     return (KafkaConsumer<K, V>) consumerWithDeserializedKeyAndValue;
@@ -79,8 +86,10 @@ public class KafkaBasePreparations {
             }
 
             @Override
-            public <K, V> KafkaProducer<K, V> createProducer(Serializer<K> keySerializer,
-                                                             Serializer<V> valueSerializer) {
+            <K, V> KafkaProducer<K, V> createProducer(Serializer<K> keySerializer,
+                                                      Serializer<V> valueSerializer,
+                                                      Properties properties) {
+                producerProperties = properties;
                 if (keySerializer instanceof SomeSerializer && valueSerializer instanceof SomeSerializer) {
                     return (KafkaProducer<K, V>) producerWithDeserializedKeyAndValue;
                 }

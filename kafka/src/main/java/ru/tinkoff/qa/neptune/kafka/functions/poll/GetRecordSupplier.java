@@ -60,6 +60,20 @@ public final class GetRecordSupplier<K, V> extends SequentialGetStepSupplier.Get
     }
 
     /**
+     * Defines consumer property value
+     *
+     * @see <a href="https://kafka.apache.org/documentation/#consumerconfigs">Consumer Configs</a>
+     *
+     * @param property a property name
+     * @param value a property value
+     * @return self-reference
+     */
+    public GetRecordSupplier<K, V> setProperty(String property, String value) {
+        function.setProperty(property, value);
+        return this;
+    }
+
+    /**
      * @param description     is description of value to get
      * @param getItemFunction describes how get resulted list item from each {@link ConsumerRecord}
      * @param <R>             is a type of item of iterable

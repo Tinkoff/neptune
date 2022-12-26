@@ -177,4 +177,18 @@ public final class KafkaPollIterableSupplier<K, V, R>
     protected void onFailure(KafkaStepContext m, Throwable throwable) {
         getRecords.closeConsumer();
     }
+
+    /**
+     * Defines consumer property value
+     *
+     * @see <a href="https://kafka.apache.org/documentation/#consumerconfigs">Consumer Configs</a>
+     *
+     * @param property a property name
+     * @param value a property value
+     * @return self-reference
+     */
+    public KafkaPollIterableSupplier<K, V, R> setProperty(String property, String value) {
+        getRecords.setProperty(property, value);
+        return this;
+    }
 }

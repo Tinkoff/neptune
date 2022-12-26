@@ -5,6 +5,7 @@ import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.ShortSerializer;
 import org.testng.annotations.Test;
 
+import java.util.Map;
 import java.util.Properties;
 import java.util.function.Supplier;
 
@@ -19,7 +20,7 @@ public class KafkaProducerCreationTest {
     public void createProducerTest() throws Exception {
         try {
             KAFKA_PRODUCER_PROPERTIES.accept(TestProducerProperties.class);
-            var producer = kafka().createProducer(new ShortSerializer(), new LongSerializer());
+            var producer = kafka().createProducer(new ShortSerializer(), new LongSerializer(), (Map<String, String>) null);
 
             var keySerializer = KafkaProducer.class.getDeclaredField("keySerializer");
             var valueSerializer = KafkaProducer.class.getDeclaredField("valueSerializer");

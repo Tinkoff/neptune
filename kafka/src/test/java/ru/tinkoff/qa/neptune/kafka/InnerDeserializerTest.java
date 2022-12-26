@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.kafka;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.testng.annotations.Test;
 
+import java.util.Map;
 import java.util.Properties;
 import java.util.function.Supplier;
 
@@ -35,7 +36,7 @@ public class InnerDeserializerTest {
         try {
             KAFKA_CONSUMER_PROPERTIES.accept(TestConsumerProperties.class);
             var consumer = kafka().createConsumer((topic, data) -> null,
-                (topic, data) -> null);
+                (topic, data) -> null, (Map<String, String>) null);
 
             var keyDeserializer = KafkaConsumer.class.getDeclaredField("keyDeserializer");
             var valueDeserializer = KafkaConsumer.class.getDeclaredField("valueDeserializer");

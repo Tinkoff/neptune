@@ -7,7 +7,11 @@ import ru.tinkoff.qa.neptune.kafka.KafkaBasePreparations;
 import ru.tinkoff.qa.neptune.kafka.SomeDeserializer;
 
 import static java.util.List.of;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
+import static org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableInOrder;
@@ -94,5 +98,17 @@ public class PollListTest extends KafkaBasePreparations {
         DEFAULT_TOPICS_FOR_POLL.accept("someTopic,someTopic2");
         kafka.poll(consumedKeys(new StringDeserializer()));
         verify(consumerRaw, times(1)).subscribe(of("someTopic", "someTopic2"));
+    }
+
+    @Test
+    public void defineAdditionalProperty() {
+        var groupId = randomAlphabetic(20);
+        kafka.poll(consumedKeys()
+            .fromTopics("testTopic")
+            .setProperty(GROUP_ID_CONFIG, groupId));
+
+        assertThat(consumerProps, hasEntry(
+            equalTo(GROUP_ID_CONFIG),
+            equalTo(groupId)));
     }
 }

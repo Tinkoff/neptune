@@ -16,9 +16,14 @@ import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 import ru.tinkoff.qa.neptune.kafka.captors.ProducerRecordKeyCaptor;
 import ru.tinkoff.qa.neptune.kafka.captors.ProducerRecordValueCaptor;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.getCaptors;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaCallbackProperty.KAFKA_CALLBACK;
@@ -38,14 +43,16 @@ public class KafkaSendRecordsActionSupplier<K, V> extends SequentialActionSuppli
     @StepParameter("topic")
     private String topic = DEFAULT_TOPIC_FOR_SEND.get();
 
-    @StepParameter("partition")
+    @StepParameter(value = "partition", doNotReportNullValues = true)
     private Integer partition;
 
-    @StepParameter("timestamp")
+    @StepParameter(value = "timestamp", doNotReportNullValues = true)
     private Long timestamp;
 
-    @StepParameter("headers")
-    private final Headers headers = new RecordHeaders();
+    @StepParameter(value = "headers", doNotReportNullValues = true)
+    private Headers headers;
+
+    private Map<String, String> additionalProperties;
 
     private Callback callback  = KAFKA_CALLBACK.get();
 
@@ -56,7 +63,7 @@ public class KafkaSendRecordsActionSupplier<K, V> extends SequentialActionSuppli
         this.valueSerializer = valueSerializer;
         this.value = value;
         this.keySerializer = keySerializer;
-        performOn(kafkaStepContext -> kafkaStepContext.createProducer(this.keySerializer, this.valueSerializer));
+        performOn(kafkaStepContext -> kafkaStepContext.createProducer(this.keySerializer, this.valueSerializer, additionalProperties));
     }
 
     /**
@@ -111,11 +118,13 @@ public class KafkaSendRecordsActionSupplier<K, V> extends SequentialActionSuppli
     }
 
     public KafkaSendRecordsActionSupplier<K, V> header(Header header) {
+        this.headers = ofNullable(headers).orElseGet(RecordHeaders::new);
         this.headers.add(header);
         return this;
     }
 
     public KafkaSendRecordsActionSupplier<K, V> header(String key, byte[] bytes) {
+        this.headers = ofNullable(headers).orElseGet(RecordHeaders::new);
         this.headers.add(key, bytes);
         return this;
     }
@@ -148,7 +157,7 @@ public class KafkaSendRecordsActionSupplier<K, V> extends SequentialActionSuppli
                 timestamp,
                 key,
                 value,
-                headers);
+                ofNullable(headers).orElseGet(RecordHeaders::new));
 
             if (callback == null) {
                 producer.send(producerRecord);
@@ -156,5 +165,29 @@ public class KafkaSendRecordsActionSupplier<K, V> extends SequentialActionSuppli
                 producer.send(producerRecord, callback);
             }
         }
+    }
+
+    @Override
+    public Map<String, String> getParameters() {
+        var result =  super.getParameters();
+        ofNullable(additionalProperties).ifPresent(result::putAll);
+        return result;
+    }
+
+    /**
+     * Defines producer property value
+     *
+     * @see <a href="https://kafka.apache.org/documentation/#producerconfigs">Producer Configs</a>
+     *
+     * @param property a property name
+     * @param value a property value
+     * @return self-reference
+     */
+    public KafkaSendRecordsActionSupplier<K, V> setProperty(String property, String value) {
+        checkArgument(isNotBlank(property), "Property name should not be empty or null");
+        checkArgument(isNotBlank(value), "Property value should not be empty or null");
+        additionalProperties = ofNullable(additionalProperties).orElseGet(LinkedHashMap::new);
+        additionalProperties.put(property, value);
+        return this;
     }
 }

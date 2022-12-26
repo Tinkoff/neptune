@@ -9,9 +9,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -23,6 +21,7 @@ import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty.DEFAULT_TOPICS_FOR_POLL;
 
 @SuppressWarnings("unchecked")
@@ -30,6 +29,9 @@ class GetRecords<K, V> implements Function<KafkaStepContext, List<ConsumerRecord
 
     @StepParameter(value = "topics", makeReadableBy = TopicValueGetter.class)
     private String[] topics;
+
+    private Map<String, String> additionalProperties;
+
     private List<KafkaRecordWrapper<K, V>> readRecords = new ArrayList<>();
 
     private Deserializer<K> keyDeserializer;
@@ -42,7 +44,8 @@ class GetRecords<K, V> implements Function<KafkaStepContext, List<ConsumerRecord
     public List<ConsumerRecord<K, V>> apply(KafkaStepContext context) {
         kafkaConsumer = ofNullable(kafkaConsumer).orElseGet(() -> context.createConsumer(
             keyDeserializer,
-            valueDeserializer)
+            valueDeserializer,
+            additionalProperties)
         );
 
         var topicsToSubscribe = (isNull(topics) || topics.length == 0) ? DEFAULT_TOPICS_FOR_POLL.get() : topics;
@@ -88,6 +91,19 @@ class GetRecords<K, V> implements Function<KafkaStepContext, List<ConsumerRecord
 
     void closeConsumer() {
         ofNullable(kafkaConsumer).ifPresent(KafkaConsumer::close);
+    }
+
+    void setProperty(String propertyName, String propertyValue) {
+        checkArgument(isNotBlank(propertyName), "Property name should not be empty or null");
+        checkArgument(isNotBlank(propertyValue), "Property value should not be empty or null");
+        additionalProperties = ofNullable(additionalProperties).orElseGet(LinkedHashMap::new);
+        additionalProperties.put(propertyName, propertyValue);
+    }
+
+    public Map<String, String> getParameters() {
+        var result = StepParameterPojo.super.getParameters();
+        ofNullable(additionalProperties).ifPresent(result::putAll);
+        return result;
     }
 
     public static class TopicValueGetter implements ParameterValueGetter<String[]> {

@@ -11,6 +11,7 @@
 :hidden:
 
 settings/index.md
+poll/index.md
 ```
 
 [API](https://tinkoff.github.io/neptune/kafka/index.html)

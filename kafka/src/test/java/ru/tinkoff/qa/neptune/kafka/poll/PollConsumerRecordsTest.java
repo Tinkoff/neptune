@@ -7,6 +7,8 @@ import ru.tinkoff.qa.neptune.kafka.SomeDeserializer;
 
 import static java.time.Duration.ofSeconds;
 import static java.util.List.of;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
+import static org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.times;
@@ -69,7 +71,8 @@ public class PollConsumerRecordsTest extends KafkaBasePreparations {
 
     @Test
     public void getItemTest() {
-        var names = kafka.poll(consumerRecords(new SomeDeserializer(),
+        var names = kafka.poll(consumerRecords(
+            new SomeDeserializer(),
             new SomeDeserializer())
             .fromTopics("testTopic")
             .criteria("Has value contains \"Some Value\"", cr -> cr.value().getName().contains("Some Value"))
@@ -78,5 +81,17 @@ public class PollConsumerRecordsTest extends KafkaBasePreparations {
             .criteria("Has value == \"Some Value\"", s -> s.equals("Some Value")));
 
         assertThat(names, equalTo("Some Value"));
+    }
+
+    @Test
+    public void defineAdditionalProperty() {
+        var groupId = randomAlphabetic(20);
+        kafka.poll(consumerRecords()
+            .fromTopics("testTopic")
+            .setProperty(GROUP_ID_CONFIG, groupId));
+
+        assertThat(consumerProps, hasEntry(
+            equalTo(GROUP_ID_CONFIG),
+            equalTo(groupId)));
     }
 }
