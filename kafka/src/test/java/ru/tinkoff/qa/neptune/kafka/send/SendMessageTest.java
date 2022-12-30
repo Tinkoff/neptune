@@ -16,7 +16,6 @@ import ru.tinkoff.qa.neptune.kafka.SomeSerializer;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.kafka.clients.producer.ProducerConfig.MAX_REQUEST_SIZE_CONFIG;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -24,7 +23,6 @@ import static org.hamcrest.Matchers.hasEntry;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static ru.tinkoff.qa.neptune.kafka.DefaultCallBackSupplier.CALLBACK;
-import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.consumedKeys;
 import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.producerRecord;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaCallbackProperty.KAFKA_CALLBACK;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicForSendProperty.DEFAULT_TOPIC_FOR_SEND;
