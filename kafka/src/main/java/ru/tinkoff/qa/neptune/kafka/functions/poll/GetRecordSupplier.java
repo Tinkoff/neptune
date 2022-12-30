@@ -7,6 +7,7 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 import ru.tinkoff.qa.neptune.kafka.captors.KafkaConsumerRecordsCaptor;
 import ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty;
@@ -26,6 +27,12 @@ import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollListFromRecord
 public final class GetRecordSupplier<K, V> extends SequentialGetStepSupplier.GetListStepSupplier<KafkaStepContext, List<ConsumerRecord<K, V>>, ConsumerRecord<K, V>, GetRecordSupplier<K, V>> {
 
     private final GetRecords<K, V> function;
+
+    @StepParameter(value = "Exclude consumer records with null-values")
+    boolean excludeRecordsWithNullValues;
+
+    @StepParameter(value = "Exclude consumer records with null-keys")
+    boolean excludeRecordsWithNullKeys;
 
     private GetRecordSupplier(GetRecords<K, V> originalFunction) {
         super(originalFunction);
@@ -56,6 +63,34 @@ public final class GetRecordSupplier<K, V> extends SequentialGetStepSupplier.Get
      */
     public GetRecordSupplier<K, V> fromTopics(String... topics) {
         function.topics(topics);
+        return this;
+    }
+
+    /**
+     * Says to exclude records with null values (values of records are empty or not properly deserialized)
+     * from the result.
+     * <p></p>
+     * All records (with null and non-null values) are included in result by default.
+     *
+     * @return self-reference
+     */
+    public GetRecordSupplier<K, V> excludeWithNullValues() {
+        excludeRecordsWithNullValues = true;
+        function.excludeNullValues();
+        return this;
+    }
+
+    /**
+     * Says to exclude records with null keys (keys of records are empty or not properly deserialized)
+     * from the result.
+     * <p></p>
+     * All records (with null and non-null keys) are included in result by default.
+     *
+     * @return self-reference
+     */
+    public GetRecordSupplier<K, V> excludeWithNullKeys() {
+        excludeRecordsWithNullKeys = true;
+        function.excludeNullKeys();
         return this;
     }
 

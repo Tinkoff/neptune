@@ -114,7 +114,10 @@ public class KafkaBasePreparations {
                         new DraftDto().setName("Some Value")),
                     new ConsumerRecord<>("testTopic", 1, 0,
                         new DraftDto().setName("Some Key2"),
-                        new DraftDto().setName("Some Value2"))))));
+                        new DraftDto().setName("Some Value2")),
+                    new ConsumerRecord<>("testTopic", 1, 0,
+                        null,
+                        null)))));
 
         when(consumerWithDeserializedKey.poll(any()))
             .thenReturn(new ConsumerRecords<>(Map.of(topicPartition,
@@ -123,7 +126,10 @@ public class KafkaBasePreparations {
                         "Some String Value 1"),
                     new ConsumerRecord<>("testTopic", 1, 0,
                         new DraftDto().setName("Some Key2"),
-                        "Some String Value 2")))));
+                        "Some String Value 2"),
+                    new ConsumerRecord<>("testTopic", 1, 0,
+                        null,
+                        null)))));
 
         when(consumerWithDeserializedValue.poll(any()))
             .thenReturn(new ConsumerRecords<>(Map.of(topicPartition,
@@ -132,7 +138,10 @@ public class KafkaBasePreparations {
                         new DraftDto().setName("Some Value")),
                     new ConsumerRecord<>("testTopic", 1, 0,
                         "Some String Key 2",
-                        new DraftDto().setName("Some Value2"))))));
+                        new DraftDto().setName("Some Value2")),
+                    new ConsumerRecord<>("testTopic", 1, 0,
+                        null,
+                        null)))));
 
         when(consumerRaw.poll(any()))
             .thenReturn(new ConsumerRecords<>(Map.of(topicPartition,
@@ -141,7 +150,10 @@ public class KafkaBasePreparations {
                         "Some String Value 1"),
                     new ConsumerRecord<>("testTopic", 1, 0,
                         "Some String Key 2",
-                        "Some String Value 2")))));
+                        "Some String Value 2"),
+                    new ConsumerRecord<>("testTopic", 1, 0,
+                        null,
+                        null)))));
     }
 
     @BeforeMethod

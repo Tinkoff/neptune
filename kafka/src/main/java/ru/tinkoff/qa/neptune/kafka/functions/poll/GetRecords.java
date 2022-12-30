@@ -18,6 +18,7 @@ import static java.lang.String.join;
 import static java.time.Duration.ofNanos;
 import static java.util.Arrays.asList;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
@@ -29,6 +30,10 @@ class GetRecords<K, V> implements Function<KafkaStepContext, List<ConsumerRecord
 
     @StepParameter(value = "topics", makeReadableBy = TopicValueGetter.class)
     private String[] topics;
+
+    private boolean excludeNullValues;
+
+    private boolean excludeNullKeys;
 
     private Map<String, String> additionalProperties;
 
@@ -59,6 +64,22 @@ class GetRecords<K, V> implements Function<KafkaStepContext, List<ConsumerRecord
         }
 
         readRecords.addAll(stream(consumerRecords.spliterator(), false)
+                .filter(cr -> {
+                    boolean result = true;
+                    if (excludeNullKeys) {
+                        result = nonNull(cr.key());
+                    }
+
+                    if (!result) {
+                        return false;
+                    }
+
+                    if (excludeNullValues) {
+                        result = nonNull(cr.value());
+                    }
+
+                    return result;
+                })
             .map(KafkaRecordWrapper::new)
             .collect(toList()));
 
@@ -104,6 +125,14 @@ class GetRecords<K, V> implements Function<KafkaStepContext, List<ConsumerRecord
         var result = StepParameterPojo.super.getParameters();
         ofNullable(additionalProperties).ifPresent(result::putAll);
         return result;
+    }
+
+    void excludeNullValues() {
+        this.excludeNullValues = true;
+    }
+
+    void excludeNullKeys() {
+        this.excludeNullKeys = true;
     }
 
     public static class TopicValueGetter implements ParameterValueGetter<String[]> {

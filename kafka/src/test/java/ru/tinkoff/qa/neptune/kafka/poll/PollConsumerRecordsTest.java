@@ -13,8 +13,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableInOrder;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableOf;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsEachItemMatcher.eachOfIterable;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.pojo.PojoGetterReturnsMatcher.getterReturns;
 import static ru.tinkoff.qa.neptune.kafka.functions.poll.GetRecordSupplier.consumerRecords;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty.DEFAULT_TOPICS_FOR_POLL;
@@ -25,9 +25,14 @@ public class PollConsumerRecordsTest extends KafkaBasePreparations {
     public void pollStringKeyValueRecords() {
         var consumedRecords = kafka.poll(consumerRecords()
             .fromTopics("testTopic"));
-        assertThat(consumedRecords, hasSize(2));
-        assertThat(consumedRecords, eachOfIterable(getterReturns("key", instanceOf(String.class))));
-        assertThat(consumedRecords, eachOfIterable(getterReturns("value", instanceOf(String.class))));
+        assertThat(consumedRecords, iterableInOrder(
+            getterReturns("key", instanceOf(String.class)),
+            getterReturns("key", instanceOf(String.class)),
+            getterReturns("key", nullValue())));
+        assertThat(consumedRecords, iterableInOrder(
+            getterReturns("value", instanceOf(String.class)),
+            getterReturns("value", instanceOf(String.class)),
+            getterReturns("value", nullValue())));
     }
 
     @Test
@@ -36,9 +41,30 @@ public class PollConsumerRecordsTest extends KafkaBasePreparations {
             new SomeDeserializer(),
             new SomeDeserializer())
             .fromTopics("testTopic"));
-        assertThat(consumedRecords, hasSize(2));
-        assertThat(consumedRecords, eachOfIterable(getterReturns("key", instanceOf(DraftDto.class))));
-        assertThat(consumedRecords, eachOfIterable(getterReturns("value", instanceOf(DraftDto.class))));
+        assertThat(consumedRecords, iterableInOrder(
+            getterReturns("key", instanceOf(DraftDto.class)),
+            getterReturns("key", instanceOf(DraftDto.class)),
+            getterReturns("key", nullValue())));
+        assertThat(consumedRecords, iterableInOrder(
+            getterReturns("value", instanceOf(DraftDto.class)),
+            getterReturns("value", instanceOf(DraftDto.class)),
+            getterReturns("value", nullValue())));
+    }
+
+    @Test
+    public void pollWithExclusionOfNullKeysAndValues() {
+        var consumedRecords = kafka.poll(consumerRecords(
+            new SomeDeserializer(),
+            new SomeDeserializer())
+            .fromTopics("testTopic")
+            .excludeWithNullValues()
+            .excludeWithNullKeys());
+        assertThat(consumedRecords, iterableInOrder(
+            getterReturns("key", instanceOf(DraftDto.class)),
+            getterReturns("key", instanceOf(DraftDto.class))));
+        assertThat(consumedRecords, iterableInOrder(
+            getterReturns("value", instanceOf(DraftDto.class)),
+            getterReturns("value", instanceOf(DraftDto.class))));
     }
 
     @Test
