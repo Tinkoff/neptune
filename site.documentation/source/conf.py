@@ -19,7 +19,7 @@
 from typing import Dict, Any
 
 project = 'Neptune'
-copyright = '2022, S.Tikhomirov'
+copyright = '2023, S.Tikhomirov'
 author = 'S.Tikhomirov'
 
 
@@ -41,7 +41,8 @@ extensions = [
     "sphinx_copybutton",
     "sphinx_design",
     "sphinx_inline_tabs",
-    "sphinx.ext.autosectionlabel"
+    "sphinx.ext.autosectionlabel",
+    "sphinx_toolbox.collapse"
 ]
 
 myst_heading_anchors = 7
@@ -91,4 +92,12 @@ html_theme_options: Dict[str, Any] = {
             "class": "",
         },
     ],
+}
+
+highlight_language = 'java'
+highlight_options = {
+    'properties': {'stripall': True},
+    'java': {'startinline': True},
+    'groovy': {'startinline': True},
+    'xml': {'startinline': True},
 }

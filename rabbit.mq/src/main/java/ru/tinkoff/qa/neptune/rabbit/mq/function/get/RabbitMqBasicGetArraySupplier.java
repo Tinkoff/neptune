@@ -15,15 +15,15 @@ import ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
-import java.time.Duration;
+import java.nio.charset.Charset;import java.time.Duration;
 import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.stream.Collectors.toList;
+import static java.nio.charset.StandardCharsets.UTF_8;import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.ArrayUtils.add;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
+import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetDeserializedData.getStringResult;import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
 
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Get from RabbitMQ:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
@@ -215,15 +215,36 @@ public abstract class RabbitMqBasicGetArraySupplier<M, R, S extends RabbitMqBasi
      * Creates a step that returns array of string contents of messages.
      *
      * @param queue are queue to get messages from
+     * @param charset is a required charset
      * @return an instance of {@link RabbitMqBasicGetArraySupplier.StringMessages}
      */
     @Description("Texts of messages")
+    public static StringMessages rabbitArrayOfRawMessages(String queue, Charset charset) {
+        return new StringMessages(new GetFromQueue(queue).andThen(getStringResult(charset)));
+    }
+
+    /**
+     * Creates a step that returns array of string contents of messages.
+     *
+     * @param charset is a required charset
+     * @return an instance of {@link RabbitMqBasicGetArraySupplier.StringMessages}
+     */
+    public static StringMessages rabbitArrayOfRawMessages(Charset charset) {
+        return rabbitArrayOfRawMessages(DEFAULT_QUEUE_NAME.get(), charset);
+    }
+
+    /**
+     * Creates a step that returns array of string contents of messages.
+     *
+     * @param queue are queue to get messages from
+     * @return an instance of {@link RabbitMqBasicGetArraySupplier.StringMessages}
+     */
     public static StringMessages rabbitArrayOfRawMessages(String queue) {
-        return new StringMessages(new GetFromQueue(queue).andThen(new GetDeserializedData<>(String.class)));
+        return rabbitArrayOfRawMessages(queue, UTF_8);
     }
 
     public static StringMessages rabbitArrayOfRawMessages() {
-        return rabbitArrayOfRawMessages(DEFAULT_QUEUE_NAME.get());
+        return rabbitArrayOfRawMessages(UTF_8);
     }
 
     @Override

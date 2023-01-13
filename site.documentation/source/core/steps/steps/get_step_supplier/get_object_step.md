@@ -1,5 +1,7 @@
 # Возврат объекта (`java.lang.Object` и его наследники)
 
+[Шаги, которые возвращают объект](../../../../quick_start/steps/pattern_steps/get_step/steps_which_return_object.md)
+
 ## Без возможности указания критериев
 
 ```{eval-rst}

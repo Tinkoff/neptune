@@ -5,7 +5,7 @@
 - [Свойство DEFAULT_TOPIC_FOR_SEND](settings/DEFAULT_TOPIC_FOR_SEND.md)
 - [KAFKA_PRODUCER_PROPERTIES](settings/KAFKA_PRODUCER_PROPERTIES.md)
 - [KAFKA_CALL_BACK](settings/KAFKA_CALL_BACK.md)
-- [Шаги, выполняющие действие](./../../core/steps/steps/action_supplier.md)
+- [Шаги, выполняющие действие](../../quick_start/steps/pattern_steps/action_steps.md)
 
 ```java
 import static org.apache.kafka.clients.producer.ProducerConfig.MAX_REQUEST_SIZE_CONFIG;
@@ -57,8 +57,6 @@ public class MyTest {
 Ниже упрощенный пример, если надо оправить сообщение с текстовым значением
 
 ```java
-import static org.apache.kafka.clients.producer.ProducerConfig.MAX_REQUEST_SIZE_CONFIG;
-
 import static ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka;
 import static ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.producerRecord;
 

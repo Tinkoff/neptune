@@ -2,8 +2,7 @@
 
 Важно:
 
-- [Контекст](./../../../core/steps/context/index.md)
-- [Шаги, возвращающие объекты](./../../../core/steps/steps/get_step_supplier/index.md)
+- [Шаги, возвращающие объекты](../../../quick_start/steps/pattern_steps/get_step/index.md)
 
 В описанных примерах все операции описаны с использованием интерфейса-репозитория
 

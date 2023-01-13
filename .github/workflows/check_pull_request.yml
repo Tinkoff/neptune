@@ -45,3 +45,8 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
         ./gradlew sonarqube -x build -Psonar.pullrequest.provider=github -Psonar.pullrequest.github.repository=Tinkoff/neptune
+
+    - name: Check site
+      run: |
+        pip3 install -r ./site.documentation/requirements.txt
+        sphinx-build ./site.documentation/source ./neptune.documentation/site -W     
