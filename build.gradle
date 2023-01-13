@@ -177,7 +177,7 @@ task aggregatedJavadocs(type: Javadoc, description: 'Generate javadocs from all 
     options.addStringOption 'Xdoclint:none', '-quiet'
     destinationDir = file("${buildDir}/../neptune.documentation/")
     options.memberLevel = JavadocMemberLevel.PROTECTED
-    options.bottom = "Copyright &copy; 2022 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+    options.bottom = "Copyright &copy; 2023 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
 
     subprojects.each { proj ->
         proj.tasks.withType(Javadoc).each { javadocTask ->
