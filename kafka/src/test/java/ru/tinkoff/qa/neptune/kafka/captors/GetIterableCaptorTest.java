@@ -15,14 +15,10 @@ import static java.time.Duration.ofSeconds;
 import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anEmptyMap;
-import static org.hamcrest.Matchers.startsWith;
+import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.fail;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.MapEntryMatcher.mapEntry;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.arrayInOrder;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.mapOf;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.text.StringContainsWithSeparator.withSeparator;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
 import static ru.tinkoff.qa.neptune.kafka.captors.TestStringInjector.CAUGHT_MESSAGES;
@@ -30,7 +26,6 @@ import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSuppli
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class GetIterableCaptorTest extends BaseCaptorTest {
-    TopicPartition topicPartition;
 
     @BeforeClass(dependsOnMethods = "setUp")
     public void beforeClass() {
@@ -62,7 +57,7 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
             },
             "testTopic"));
 
-        assertThat(CAUGHT_MESSAGES, anEmptyMap());
+        assertThat(CAUGHT_MESSAGES, not(anEmptyMap()));
     }
 
     @Test
@@ -86,7 +81,7 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
             },
             "testTopic"));
 
-        assertThat(CAUGHT_MESSAGES, anEmptyMap());
+        assertThat(CAUGHT_MESSAGES, not(anEmptyMap()));
     }
 
     @Test
@@ -104,18 +99,13 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
     public void test6() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
 
-        kafka.poll(kafkaIterable("test description",
+        var result = kafka.poll(kafkaIterable("test description",
             new TypeReference<DraftDto>() {
             },
             "testTopic")
             .criteria("name = 'kek'", d -> d.getName().equals("kek")));
 
-        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry(
-            "All received Kafka messages",
-            withSeparator(
-                "\r\n\r\n",
-                arrayInOrder(startsWith("ConsumerRecord("), startsWith("ConsumerRecord("))
-            ))));
+        assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
 
     @Test
@@ -141,12 +131,7 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
             "testTopic")
             .criteria("name = 'kek'", d -> d.getName().equals("kek")));
 
-        assertThat(CAUGHT_MESSAGES, mapOf(mapEntry(
-            "All received Kafka messages",
-            withSeparator(
-                "\r\n\r\n",
-                arrayInOrder(startsWith("ConsumerRecord("), startsWith("ConsumerRecord("))
-            ))));
+        assertThat(CAUGHT_MESSAGES, anEmptyMap());
     }
 
     @Test
@@ -204,11 +189,7 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
                 .timeOut(ofSeconds(5))
                 .throwOnNoResult());
         } catch (Exception e) {
-            assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("All received Kafka messages",
-                withSeparator(
-                    "\r\n\r\n",
-                    arrayInOrder(startsWith("ConsumerRecord("), startsWith("ConsumerRecord("))
-                ))));
+            assertThat(CAUGHT_MESSAGES, anEmptyMap());
             return;
         }
 
@@ -229,12 +210,7 @@ public class GetIterableCaptorTest extends BaseCaptorTest {
                 .timeOut(ofSeconds(5))
                 .throwOnNoResult());
         } catch (Exception e) {
-            assertThat(CAUGHT_MESSAGES, mapOf(mapEntry(
-                "All received Kafka messages",
-                withSeparator(
-                    "\r\n\r\n",
-                    arrayInOrder(startsWith("ConsumerRecord("), startsWith("ConsumerRecord("))
-                ))));
+            assertThat(CAUGHT_MESSAGES, anEmptyMap());
             return;
         }
 

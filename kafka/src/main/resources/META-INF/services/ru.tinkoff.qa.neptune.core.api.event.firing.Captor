@@ -1,2 +1,6 @@
-ru.tinkoff.qa.neptune.kafka.captors.AllMessagesCaptor
-ru.tinkoff.qa.neptune.kafka.captors.MessageCaptor
+ru.tinkoff.qa.neptune.kafka.captors.KafkaConsumerRecordsCaptor
+ru.tinkoff.qa.neptune.kafka.captors.ProducerRecordKeyCaptor
+ru.tinkoff.qa.neptune.kafka.captors.ProducerRecordValueCaptor
+ru.tinkoff.qa.neptune.kafka.captors.KafkaObjectResultCaptor
+ru.tinkoff.qa.neptune.kafka.captors.ReceivedArrayCaptor
+ru.tinkoff.qa.neptune.kafka.captors.ReceivedListCaptor

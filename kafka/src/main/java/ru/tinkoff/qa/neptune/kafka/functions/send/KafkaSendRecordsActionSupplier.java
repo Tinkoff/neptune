@@ -6,18 +6,21 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.header.internals.RecordHeaders;
+import org.apache.kafka.common.serialization.Serializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
-import ru.tinkoff.qa.neptune.kafka.captors.MessageCaptor;
+import ru.tinkoff.qa.neptune.kafka.captors.ProducerRecordKeyCaptor;
+import ru.tinkoff.qa.neptune.kafka.captors.ProducerRecordValueCaptor;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.getCaptors;
 import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAFKA_DEFAULT_DATA_TRANSFORMER;
@@ -25,27 +28,40 @@ import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAF
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaCallbackProperty.KAFKA_CALLBACK;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicForSendProperty.DEFAULT_TOPIC_FOR_SEND;
 
-@SequentialActionSupplier.DefinePerformImperativeParameterName("Send:")
+@SequentialActionSupplier.DefinePerformImperativeParameterName("Send to Kafka:")
 @MaxDepthOfReporting(0)
 @Description("message.")
 @SuppressWarnings("unchecked")
-public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRecordsActionSupplier<K, V, T>> extends SequentialActionSupplier<KafkaStepContext, KafkaProducer<String, String>, T> {
+public class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRecordsActionSupplier<K, V, T>> extends SequentialActionSupplier<KafkaStepContext, KafkaProducer<K, V>, KafkaSendRecordsActionSupplier<K, V, T>> {
+
+    private final Serializer<V> valueSerializer;
+    //TODO make private and final after refactor
+    V value;
+    private K key;
+    private Serializer<K> keySerializer;
+
     @StepParameter("topic")
     private String topic = DEFAULT_TOPIC_FOR_SEND.get();
-    String value;
+
     @StepParameter("partition")
     private Integer partition;
+
     @StepParameter("timestamp")
     private Long timestamp;
-    @StepParameter("key")
-    private String key;
+
     @StepParameter("headers")
     private final Headers headers = new RecordHeaders();
+
     private Callback callback  = KAFKA_CALLBACK.get();
 
-    public KafkaSendRecordsActionSupplier() {
+    private KafkaSendRecordsActionSupplier(Serializer<K> keySerializer, Serializer<V> valueSerializer, V value) {
         super();
-        performOn(KafkaStepContext::createProducer);
+        checkNotNull(valueSerializer);
+        checkNotNull(keySerializer);
+        this.valueSerializer = valueSerializer;
+        this.value = value;
+        this.keySerializer = keySerializer;
+        performOn(kafkaStepContext -> kafkaStepContext.createProducer(this.keySerializer, this.valueSerializer));
     }
 
     /**
@@ -53,7 +69,9 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
      *
      * @param toSend is an object to be serialized and send to the topic
      * @return an instance of {@link KafkaSendRecordsActionSupplier.Mapped}
+     * @deprecated use {@link #producerRecord(Serializer, Object)}
      */
+    @Deprecated(forRemoval = true)
     public static Mapped kafkaSerializedMessage(Object toSend) {
         return new Mapped(toSend);
     }
@@ -62,10 +80,34 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
      * Sends a message to topic.
      *
      * @param message is a message to send
-     * @return an instance of {@link KafkaSendRecordsActionSupplier.StringMessage}
+     * @return an instance of {@link KafkaSendRecordsActionSupplier}
+     * @deprecated use {@link #producerRecord(String)}
      */
-    public static StringMessage kafkaTextMessage(String message) {
-        return new StringMessage(message);
+    @Deprecated(forRemoval = true)
+    public static KafkaSendRecordsActionSupplier<String, String, ?> kafkaTextMessage(String message) {
+        return producerRecord(message);
+    }
+
+    /**
+     * Sends a message to topic.
+     *
+     * @param valueSerializer is a serializer value
+     * @param value           is message value
+     * @param <V>             is a type of message value
+     * @return an instance of {@link KafkaSendRecordsActionSupplier}
+     */
+    public static <V> KafkaSendRecordsActionSupplier<String, V, ?> producerRecord(Serializer<V> valueSerializer, V value) {
+        return new KafkaSendRecordsActionSupplier<>(new StringSerializer(), valueSerializer, value);
+    }
+
+    /**
+     * Sends a message to topic as text.
+     *
+     * @param value is message value
+     * @return an instance of {@link KafkaSendRecordsActionSupplier}
+     */
+    public static KafkaSendRecordsActionSupplier<String, String, ?> producerRecord(String value) {
+        return producerRecord(new StringSerializer(), value);
     }
 
     public T topic(String topic) {
@@ -83,21 +125,45 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
         return (T) this;
     }
 
-    public T key(String key) {
-        this.key = key;
-        return (T) this;
+    public <K2> KafkaSendRecordsActionSupplier<K2, V, ?> setKey(K2 key, Serializer<K2> keySerializer) {
+        checkNotNull(keySerializer);
+        KafkaSendRecordsActionSupplier<K2, V, ?> selfReference = (KafkaSendRecordsActionSupplier<K2, V, ?>) this;
+        selfReference.keySerializer = keySerializer;
+        selfReference.key = key;
+        return selfReference;
     }
 
-    public T key(Object key, DataTransformer dataTransformer) {
+    public KafkaSendRecordsActionSupplier<K, V, ?> setKey(K key) {
+        this.key = key;
+        return this;
+    }
+
+    /**
+     * @deprecated use {@link #setKey(Object, Serializer)} or {@link #setKey(Object)}
+     */
+    @Deprecated(forRemoval = true)
+    public KafkaSendRecordsActionSupplier<String, V, ?> key(String key) {
+        return setKey(key, new StringSerializer());
+    }
+
+    /**
+     * @deprecated use {@link #setKey(Object, Serializer)} or {@link #setKey(Object)}
+     */
+    @Deprecated(forRemoval = true)
+    public KafkaSendRecordsActionSupplier<String, V, ?> key(Object key, DataTransformer dataTransformer) {
         return key(dataTransformer.serialize(key));
     }
 
-    public T key(Object key) {
+    /**
+     * @deprecated use {@link #setKey(Object, Serializer)} or {@link #setKey(Object)}
+     */
+    @Deprecated(forRemoval = true)
+    public KafkaSendRecordsActionSupplier<String, V, ?> key(Object key) {
         var transformer = KAFKA_KEY_TRANSFORMER.get();
         checkState(nonNull(transformer), "Key transformer is not defined. Please invoke "
-                + "the '#key(Object key, DataTransformer dataTransformer)' method or define '"
-                + KAFKA_KEY_TRANSFORMER.getName()
-                + "' property/env variable");
+            + "the '#key(Object key, DataTransformer dataTransformer)' method or define '"
+            + KAFKA_KEY_TRANSFORMER.getName()
+            + "' property/env variable");
         return key(key, transformer);
     }
 
@@ -121,11 +187,16 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
     }
 
     @Override
-    protected void howToPerform(KafkaProducer<String, String> producer) {
-        try (producer) {
-            ProducerRecord<String, String> records;
+    @SuppressWarnings("unchecked")
+    protected void onStart(KafkaStepContext kafkaStepContext) {
+        catchValue(key, getCaptors(new Class[]{ProducerRecordKeyCaptor.class}));
+        catchValue(value, getCaptors(new Class[]{ProducerRecordValueCaptor.class}));
+    }
 
-            records = new ProducerRecord<>(
+    @Override
+    protected void howToPerform(KafkaProducer<K, V> producer) {
+        try (producer) {
+            var producerRecord = new ProducerRecord<>(
                 topic,
                 partition,
                 timestamp,
@@ -134,25 +205,19 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
                 headers);
 
             if (callback == null) {
-                producer.send(records);
+                producer.send(producerRecord);
             } else {
-                producer.send(records, callback);
+                producer.send(producerRecord, callback);
             }
         }
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    protected void onStart(KafkaStepContext kafkaStepContext) {
-        catchValue(value, getCaptors(new Class[]{MessageCaptor.class}));
-    }
-
-    public static final class Mapped extends KafkaSendRecordsActionSupplier<Object, Object, Mapped> {
+    public static final class Mapped extends KafkaSendRecordsActionSupplier<String, String, Mapped> {
         private final Object toSend;
         private DataTransformer transformer;
 
         private Mapped(Object toSend) {
-            super();
+            super(new StringSerializer(), new StringSerializer(), null);
             checkNotNull(toSend);
             this.toSend = toSend;
         }
@@ -173,15 +238,6 @@ public abstract class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRe
 
             value = transformer.serialize(toSend);
             super.onStart(kafkaStepContext);
-        }
-    }
-
-    public static final class StringMessage extends KafkaSendRecordsActionSupplier<Object, Object, StringMessage> {
-
-        private StringMessage(String message) {
-            super();
-            checkArgument(isNotBlank(message), "Message to publish should not be blank");
-            value = message;
         }
     }
 }

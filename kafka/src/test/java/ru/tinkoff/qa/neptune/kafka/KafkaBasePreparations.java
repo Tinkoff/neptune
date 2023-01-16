@@ -2,6 +2,8 @@ package ru.tinkoff.qa.neptune.kafka;
 
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.common.serialization.Deserializer;
+import org.apache.kafka.common.serialization.Serializer;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -26,12 +28,14 @@ public class KafkaBasePreparations {
         kafka = new KafkaStepContext() {
 
             @Override
-            public KafkaConsumer<String, String> createConsumer() {
+            public <K, V> KafkaConsumer<K, V> createConsumer(Deserializer<K> kDeserializer,
+                                                             Deserializer<V> vDeserializer) {
                 return kafkaConsumer;
             }
 
             @Override
-            public KafkaProducer<String, String> createProducer() {
+            public <K, V> KafkaProducer<K, V> createProducer(Serializer<K> keySerializer,
+                                                             Serializer<V> valueSerializer) {
                 return kafkaProducer;
             }
         };

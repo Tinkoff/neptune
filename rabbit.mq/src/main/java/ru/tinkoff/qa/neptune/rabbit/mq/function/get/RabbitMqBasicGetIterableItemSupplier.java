@@ -26,7 +26,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetDeserializedData.getStringResult;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_QUEUE_NAME;
 
-@SequentialGetStepSupplier.DefineGetImperativeParameterName("Retrieve:")
+@SequentialGetStepSupplier.DefineGetImperativeParameterName("Get from RabbitMQ:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Object criteria")
 @MaxDepthOfReporting(0)
@@ -34,7 +34,6 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperti
 public abstract class RabbitMqBasicGetIterableItemSupplier<M, T, I extends RabbitMqBasicGetIterableItemSupplier<M, T, I>>
         extends SequentialGetStepSupplier.GetObjectFromIterableStepSupplier<RabbitMqStepContext, T, I> {
 
-    public static final String NO_DESC_ERROR_TEXT = "Description should be defined";
     final GetFromQueue.MergeProperty getFromQueue;
 
     @CaptureOnSuccess(by = MessageCaptor.class)
@@ -200,7 +199,7 @@ public abstract class RabbitMqBasicGetIterableItemSupplier<M, T, I extends Rabbi
      * @param queue   is a queue to read
      * @param charset is a required charset
      */
-    @Description("String message")
+    @Description("Text of message")
     public static StringMessage rabbitRawMessage(String queue, Charset charset) {
         return new StringMessage(new GetFromQueue(queue).andThen(getStringResult(charset)));
     }

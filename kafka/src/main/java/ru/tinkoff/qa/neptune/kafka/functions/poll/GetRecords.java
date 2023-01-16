@@ -1,47 +1,55 @@
 package ru.tinkoff.qa.neptune.kafka.functions.poll;
 
+import com.google.gson.Gson;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.serialization.Deserializer;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
-import static java.time.Duration.ofMillis;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.join;
+import static java.time.Duration.ofNanos;
 import static java.util.Arrays.asList;
+import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty.DEFAULT_TOPICS_FOR_POLL;
 
 @SuppressWarnings("unchecked")
-class GetRecords implements Function<KafkaStepContext, List<ConsumerRecord<String, String>>>, StepParameterPojo {
+class GetRecords<K, V> implements Function<KafkaStepContext, List<ConsumerRecord<K, V>>>, StepParameterPojo {
 
     @StepParameter(value = "topics", makeReadableBy = TopicValueGetter.class)
-    private final String[] topics;
-    private List<KafkaRecordWrapper> readRecords = new ArrayList<>();
+    private String[] topics;
+    private List<KafkaRecordWrapper<K, V>> readRecords = new ArrayList<>();
 
-    public GetRecords(String[] topics) {
-        this.topics = topics.length == 0 ? DEFAULT_TOPICS_FOR_POLL.get() : topics;
-    }
+    private Deserializer<K> keyDeserializer;
 
-    private KafkaConsumer<String, String> kafkaConsumer;
+    private Deserializer<V> valueDeserializer;
 
-    public KafkaConsumer<String, String> getKafkaConsumer() {
-        return kafkaConsumer;
-    }
+    private KafkaConsumer<K, V> kafkaConsumer;
 
     @Override
-    public List<ConsumerRecord<String, String>> apply(KafkaStepContext context) {
-        kafkaConsumer = ofNullable(kafkaConsumer).orElseGet(context::createConsumer);
+    public List<ConsumerRecord<K, V>> apply(KafkaStepContext context) {
+        kafkaConsumer = ofNullable(kafkaConsumer).orElseGet(() -> context.createConsumer(
+            keyDeserializer,
+            valueDeserializer)
+        );
 
-        kafkaConsumer.subscribe(asList(topics));
-        ConsumerRecords<String, String> consumerRecords = kafkaConsumer.poll(ofMillis(100));
-        Set<TopicPartition> partitions = consumerRecords.partitions();
+        var topicsToSubscribe = (isNull(topics) || topics.length == 0) ? DEFAULT_TOPICS_FOR_POLL.get() : topics;
+        kafkaConsumer.subscribe(asList(topicsToSubscribe));
+
+        var consumerRecords = kafkaConsumer.poll(ofNanos(1));
+        var partitions = consumerRecords.partitions();
 
         if (partitions.isEmpty()) {
             return new ArrayList<>();
@@ -58,47 +66,64 @@ class GetRecords implements Function<KafkaStepContext, List<ConsumerRecord<Strin
             .collect(toList());
     }
 
-    @Override
-    public <V> MergeProperty<V> andThen(Function<? super List<ConsumerRecord<String, String>>, ? extends V> after) {
-        Objects.requireNonNull(after);
-        return new MergeProperty<>(this, (Function<List<ConsumerRecord<String, String>>, V>) after);
+    <K2> GetRecords<K2, V> setKeyDeserializer(Deserializer<K2> keyDeserializer) {
+        checkNotNull(keyDeserializer);
+        var thisRef = (GetRecords<K2, V>) this;
+        thisRef.keyDeserializer = keyDeserializer;
+        return thisRef;
     }
 
-    static class MergeProperty<T> implements Function<KafkaStepContext, T>, StepParameterPojo {
+    <V2> GetRecords<K, V2> setValueDeserializer(Deserializer<V2> valueDeserializer) {
+        checkNotNull(valueDeserializer);
+        var thisRef = (GetRecords<K, V2>) this;
+        thisRef.valueDeserializer = valueDeserializer;
+        return thisRef;
+    }
 
-        private final GetRecords before;
-        private final Function<List<ConsumerRecord<String, String>>, T> after;
+    void topics(String... topics) {
+        checkNotNull(topics);
+        checkArgument(topics.length > 0, "At least one topic should be defined");
+        this.topics = topics;
+    }
 
-        protected MergeProperty(GetRecords f,
-                                Function<List<ConsumerRecord<String, String>>, T> f2) {
-            this.before = f;
-            this.after = f2;
+    void closeConsumer() {
+        ofNullable(kafkaConsumer).ifPresent(KafkaConsumer::close);
+    }
+
+    public static class TopicValueGetter implements ParameterValueGetter<String[]> {
+        @Override
+        public String getParameterValue(String[] fieldValue) {
+            return join(",", fieldValue);
+        }
+    }
+
+    static final class KafkaRecordWrapper<K, V> {
+
+        private final ConsumerRecord<K, V> consumerRecord;
+        private final String recordAsString;
+
+        KafkaRecordWrapper(ConsumerRecord<K, V> consumerRecord) {
+            checkNotNull(consumerRecord);
+            this.consumerRecord = consumerRecord;
+            recordAsString = new Gson().toJson(consumerRecord);
         }
 
-        public T apply(KafkaStepContext k) {
-            return after.apply(before.apply(k));
+        ConsumerRecord<K, V> getConsumerRecord() {
+            return consumerRecord;
         }
 
         @Override
-        public Map<String, String> getParameters() {
-            if (before != null && after instanceof StepParameterPojo) {
-                var parameters = before.getParameters();
-                parameters.putAll(((StepParameterPojo) after).getParameters());
-                return parameters;
+        public boolean equals(Object obj) {
+            if (!(obj instanceof GetRecords.KafkaRecordWrapper)) {
+                return false;
             }
-            return StepParameterPojo.super.getParameters();
+
+            return Objects.equals(recordAsString, ((KafkaRecordWrapper<?, ?>) obj).recordAsString);
         }
 
-        public GetRecords getBefore() {
-            return before;
+        @Override
+        public int hashCode() {
+            return recordAsString.hashCode();
         }
-
-        public Function<List<ConsumerRecord<String, String>>, T> getAfter() {
-            return after;
-        }
-    }
-
-    public List<String> getMessages() {
-        return readRecords.stream().map(r -> r.getConsumerRecord().toString()).collect(toList());
     }
 }

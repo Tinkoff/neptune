@@ -1,6 +1,6 @@
 dependencies {
     api project(':core.api')
-    compileClasspath(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
+    compileOnly(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
 }
 
 tasks.withType(JavaCompile) {

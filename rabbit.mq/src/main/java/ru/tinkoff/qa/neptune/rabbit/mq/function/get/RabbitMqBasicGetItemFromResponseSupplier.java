@@ -3,10 +3,10 @@ package ru.tinkoff.qa.neptune.rabbit.mq.function.get;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.rabbitmq.client.GetResponse;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 
@@ -18,8 +18,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-@SequentialGetStepSupplier.DefineGetImperativeParameterName("Get:")
-@SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
+@SequentialGetStepSupplier.DefineGetImperativeParameterName
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Object criteria")
 @MaxDepthOfReporting(0)
 @SuppressWarnings({"rawtypes", "unchecked"})

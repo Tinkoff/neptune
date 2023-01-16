@@ -1,15 +1,15 @@
 dependencies {
     api project(":jupiter.integration")
     api project(":allure.integration")
-    api (group: 'io.qameta.allure', name: 'allure-junit5', version: allureVersion) {
+    api(group: 'io.qameta.allure', name: 'allure-junit5', version: allureVersion) {
         exclude group: 'org.aspectj', module: 'aspectjrt'
         exclude group: 'org.aspectj', module: 'aspectjweaver'
         exclude group: 'org.junit.jupiter', module: 'junit-jupiter-api'
         exclude group: 'org.junit.jupiter', module: 'junit-platform-launcher'
     }
-    compileClasspath group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
-    compileClasspath group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit5Version
-    compileClasspath group: 'org.junit.platform', name: 'junit-platform-launcher', version: junit5PlatformVersion
+    compileOnly group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
+    compileOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit5Version
+    compileOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: junit5PlatformVersion
 
     testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
