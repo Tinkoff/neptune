@@ -25,7 +25,6 @@ KAFKA_PRODUCER_PROPERTIES=org.my.pack.MyProducerPropertiesSupplier
 ```
 
 ```java
-import java.net.*;
 
 import static ru.tinkoff.qa.neptune.kafka.properties
         .DefaultKafkaProperties.KAFKA_PRODUCER_PROPERTIES;

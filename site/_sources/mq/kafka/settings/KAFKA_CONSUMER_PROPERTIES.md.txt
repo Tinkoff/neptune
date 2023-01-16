@@ -25,7 +25,6 @@ KAFKA_CONSUMER_PROPERTIES=org.my.pack.MyConsumerPropertiesSupplier
 ```
 
 ```java
-import java.net.*;
 
 import static ru.tinkoff.qa.neptune.kafka.properties
         .DefaultKafkaProperties.KAFKA_CONSUMER_PROPERTIES;

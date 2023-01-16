@@ -1,7 +1,6 @@
 # Возврат листа
 
-В ходе выполнения данного шага получается `java.lang.Iterable`, который преобразуется в `java.util.List` и возвращается 
-в виде результата.
+[Шаги, которые возвращают лист](../../../../quick_start/steps/pattern_steps/get_step/steps_which_return_list.md)
 
 ```{eval-rst}
 .. include:: get_list_step_supplier.rst
@@ -10,6 +9,3 @@
 ```{eval-rst}
 .. include:: get_list_step_supplier_chained.rst
 ```
-
-⚠️ Описанные выше дополнительные опции с номерами 1, 2, 3, 4, 5 игнорируются в случае, когда объекты классов наследников
-передаются в качестве значений аргументов методов `.presence*` и `.absence*` [контекста](./../../context/index.md). 

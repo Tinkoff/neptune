@@ -5,7 +5,7 @@
 - [QueryByExampleExecutor](https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/query/QueryByExampleExecutor.html)
 - [ReactiveQueryByExampleExecutor](https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/query/ReactiveQueryByExampleExecutor.html)
 
-Параметры данной операции аналогичны параметрам [операции выбора по id](Id.md).
+Возможности данной операции аналогичны возможностям [операции выбора по id](Id.md).
 
 ## Example. Выбор записи.
 
