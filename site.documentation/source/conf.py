@@ -19,7 +19,7 @@
 from typing import Dict, Any
 
 project = 'Neptune'
-copyright = '2022, S.Tikhomirov'
+copyright = '2023, S.Tikhomirov'
 author = 'S.Tikhomirov'
 
 
@@ -41,7 +41,8 @@ extensions = [
     "sphinx_copybutton",
     "sphinx_design",
     "sphinx_inline_tabs",
-    "sphinx.ext.autosectionlabel"
+    "sphinx.ext.autosectionlabel",
+    "sphinx_toolbox.collapse"
 ]
 
 myst_heading_anchors = 7
@@ -93,7 +94,10 @@ html_theme_options: Dict[str, Any] = {
     ],
 }
 
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+highlight_language = 'java'
+highlight_options = {
+    'properties': {'stripall': True},
+    'java': {'startinline': True},
+    'groovy': {'startinline': True},
+    'xml': {'startinline': True},
+}

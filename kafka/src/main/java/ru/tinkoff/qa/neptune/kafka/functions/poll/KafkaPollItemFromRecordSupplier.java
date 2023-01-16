@@ -1,8 +1,6 @@
 package ru.tinkoff.qa.neptune.kafka.functions.poll;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
@@ -24,8 +22,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @MaxDepthOfReporting(0)
 @SuppressWarnings({"rawtypes", "unchecked"})
 @CaptureOnSuccess(by = KafkaObjectResultCaptor.class)
-public class KafkaPollItemFromRecordSupplier<K, V, R, I extends KafkaPollItemFromRecordSupplier<K, V, R, I>>
-    extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<KafkaStepContext, R, List<ConsumerRecord<K, V>>, I> {
+public final class KafkaPollItemFromRecordSupplier<K, V, R>
+    extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<KafkaStepContext, R, List<ConsumerRecord<K, V>>, KafkaPollItemFromRecordSupplier<K, V, R>> {
 
     public static final String NO_DESC_ERROR_TEXT = "Description should be defined";
 
@@ -34,7 +32,7 @@ public class KafkaPollItemFromRecordSupplier<K, V, R, I extends KafkaPollItemFro
     }
 
     @Description("{description}")
-    static <K, V, R> KafkaPollItemFromRecordSupplier<K, V, R, ?> itemFromRecords(
+    static <K, V, R> KafkaPollItemFromRecordSupplier<K, V, R> itemFromRecords(
         @DescriptionFragment(value = "description",
             makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
         ) String description,
@@ -43,53 +41,7 @@ public class KafkaPollItemFromRecordSupplier<K, V, R, I extends KafkaPollItemFro
         return new KafkaPollItemFromRecordSupplier(f);
     }
 
-    @Deprecated(forRemoval = true)
-    @Description("{description}")
-    static <K, V, R, M> KafkaPollDeserializedItemFromRecordSupplier<K, V, M, R> itemFromRecords(
-        @DescriptionFragment(value = "description",
-            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
-        ) String description,
-        Class<M> cls,
-        Function<M, R> conversion,
-        GetRecordSupplier<K, V> getRecordSupplier) {
-        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
-        return new KafkaPollDeserializedItemFromRecordSupplier<K, V, M, R>(new Conversion<>(conversion, cls, null))
-            .from(getRecordSupplier);
-    }
-
-    @Deprecated(forRemoval = true)
-    @Description("{description}")
-    static <K, V, R, M> KafkaPollDeserializedItemFromRecordSupplier<K, V, M, R> itemFromRecords(
-        @DescriptionFragment(value = "description",
-            makeReadableBy = ParameterValueGetter.TranslatedDescriptionParameterValueGetter.class
-        ) String description,
-        TypeReference<M> typeT,
-        Function<M, R> conversion,
-        GetRecordSupplier<K, V> getRecordSupplier) {
-        checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
-        return new KafkaPollDeserializedItemFromRecordSupplier<K, V, M, R>(new Conversion<>(conversion, null, typeT))
-            .from(getRecordSupplier);
-    }
-
-    I from(GetRecordSupplier<K, V> from) {
+    KafkaPollItemFromRecordSupplier<K, V, R> from(GetRecordSupplier<K, V> from) {
         return super.from(from);
-    }
-
-    @Deprecated(forRemoval = true)
-    public static final class KafkaPollDeserializedItemFromRecordSupplier<K, V, M, R>
-        extends KafkaPollItemFromRecordSupplier<K, V, R, KafkaPollDeserializedItemFromRecordSupplier<K, V, M, R>> {
-
-        private Conversion<K, V, M, R> conversion;
-
-        private KafkaPollDeserializedItemFromRecordSupplier(Conversion<K, V, M, R> conversion) {
-            super(conversion);
-            this.conversion = conversion;
-        }
-
-        @Deprecated(forRemoval = true)
-        public KafkaPollDeserializedItemFromRecordSupplier<K, V, M, R> withDataTransformer(DataTransformer transformer) {
-            conversion.setTransformer(transformer);
-            return this;
-        }
     }
 }

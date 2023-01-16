@@ -6,7 +6,7 @@ plugins {
 }
 
 ext {
-    globalVersion = '0.24.6-MIGRATION-ALPHA'
+    globalVersion = '0.24.6-ALPHA'
 }
 
 repositories {
@@ -71,7 +71,7 @@ subprojects {
         api group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion
         api group: 'commons-validator', name: 'commons-validator', version: '1.7'
         api group: 'commons-io', name: 'commons-io', version: '2.11.0'
-        api group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
+        implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
         implementation group: 'io.github.classgraph', name: 'classgraph', version: '4.8.149'
         testImplementation group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion
         compileOnly group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion
@@ -177,7 +177,7 @@ task aggregatedJavadocs(type: Javadoc, description: 'Generate javadocs from all 
     options.addStringOption 'Xdoclint:none', '-quiet'
     destinationDir = file("${buildDir}/../neptune.documentation/")
     options.memberLevel = JavadocMemberLevel.PROTECTED
-    options.bottom = "Copyright &copy; 2022 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+    options.bottom = "Copyright &copy; 2023 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
 
     subprojects.each { proj ->
         proj.tasks.withType(Javadoc).each { javadocTask ->

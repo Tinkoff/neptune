@@ -1,7 +1,6 @@
 # Возврат элемента массива
 
-В ходе выполнения данного шага вычисляется массив, и один из его элементов возвращается
-в виде результата.
+[Шаги, которые возвращают элемент из массива](../../../../quick_start/steps/pattern_steps/get_step/steps_which_return_array_item.md)
 
 ```{eval-rst}
 .. include:: get_object_from_array_step_supplier.rst
@@ -10,6 +9,3 @@
 ```{eval-rst}
 .. include:: get_object_from_array_step_supplier_chained.rst
 ```
-
-⚠️ Описанные выше дополнительные опции с номерами 1, 2, 3 игнорируются в случае, когда объекты классов наследников
-передаются в качестве значений аргументов методов `.presence*` и `.absence*` [контекста](./../../context/index.md). 

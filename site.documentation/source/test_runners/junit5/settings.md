@@ -4,9 +4,9 @@
 
 ## JUNIT5_REFRESH_BEFORE
 
-Основная статья: [Обновление контекстов](./../../core/steps/context/refresh.rst)
+Основная статья: [Обновление контекстов](./../../core/steps/context/refresh.md)
 
-Основная статья: [Обновление контекстов](./../../core/steps/context/refresh.rst)
+Основная статья: [Обновление контекстов](./../../core/steps/context/refresh.md)
 
 Свойство указывает, перед каким методами следует обновить контекст. Типы этих методов описываются перечислением `ru.tinkoff.qa.neptune.jupiter.integration.properties.RefreshEachTimeBefore`:
 - `ALL_STARTING` перед методами, отмеченными `@BeforeAll`

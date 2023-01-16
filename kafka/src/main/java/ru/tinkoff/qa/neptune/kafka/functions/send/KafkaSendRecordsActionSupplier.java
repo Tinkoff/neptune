@@ -8,7 +8,6 @@ import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
@@ -17,14 +16,16 @@ import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 import ru.tinkoff.qa.neptune.kafka.captors.ProducerRecordKeyCaptor;
 import ru.tinkoff.qa.neptune.kafka.captors.ProducerRecordValueCaptor;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.getCaptors;
-import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAFKA_DEFAULT_DATA_TRANSFORMER;
-import static ru.tinkoff.qa.neptune.kafka.properties.DefaultDataTransformers.KAFKA_KEY_TRANSFORMER;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaCallbackProperty.KAFKA_CALLBACK;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicForSendProperty.DEFAULT_TOPIC_FOR_SEND;
 
@@ -32,25 +33,26 @@ import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicForSendPro
 @MaxDepthOfReporting(0)
 @Description("message.")
 @SuppressWarnings("unchecked")
-public class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRecordsActionSupplier<K, V, T>> extends SequentialActionSupplier<KafkaStepContext, KafkaProducer<K, V>, KafkaSendRecordsActionSupplier<K, V, T>> {
+public class KafkaSendRecordsActionSupplier<K, V> extends SequentialActionSupplier<KafkaStepContext, KafkaProducer<K, V>, KafkaSendRecordsActionSupplier<K, V>> {
 
     private final Serializer<V> valueSerializer;
-    //TODO make private and final after refactor
-    V value;
+    private final V value;
     private K key;
     private Serializer<K> keySerializer;
 
     @StepParameter("topic")
     private String topic = DEFAULT_TOPIC_FOR_SEND.get();
 
-    @StepParameter("partition")
+    @StepParameter(value = "partition", doNotReportNullValues = true)
     private Integer partition;
 
-    @StepParameter("timestamp")
+    @StepParameter(value = "timestamp", doNotReportNullValues = true)
     private Long timestamp;
 
-    @StepParameter("headers")
-    private final Headers headers = new RecordHeaders();
+    @StepParameter(value = "headers", doNotReportNullValues = true)
+    private Headers headers;
+
+    private Map<String, String> additionalProperties;
 
     private Callback callback  = KAFKA_CALLBACK.get();
 
@@ -61,31 +63,7 @@ public class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRecordsActi
         this.valueSerializer = valueSerializer;
         this.value = value;
         this.keySerializer = keySerializer;
-        performOn(kafkaStepContext -> kafkaStepContext.createProducer(this.keySerializer, this.valueSerializer));
-    }
-
-    /**
-     * Sends an object to topic. This object is serialized to string message.
-     *
-     * @param toSend is an object to be serialized and send to the topic
-     * @return an instance of {@link KafkaSendRecordsActionSupplier.Mapped}
-     * @deprecated use {@link #producerRecord(Serializer, Object)}
-     */
-    @Deprecated(forRemoval = true)
-    public static Mapped kafkaSerializedMessage(Object toSend) {
-        return new Mapped(toSend);
-    }
-
-    /**
-     * Sends a message to topic.
-     *
-     * @param message is a message to send
-     * @return an instance of {@link KafkaSendRecordsActionSupplier}
-     * @deprecated use {@link #producerRecord(String)}
-     */
-    @Deprecated(forRemoval = true)
-    public static KafkaSendRecordsActionSupplier<String, String, ?> kafkaTextMessage(String message) {
-        return producerRecord(message);
+        performOn(kafkaStepContext -> kafkaStepContext.createProducer(this.keySerializer, this.valueSerializer, additionalProperties));
     }
 
     /**
@@ -96,7 +74,7 @@ public class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRecordsActi
      * @param <V>             is a type of message value
      * @return an instance of {@link KafkaSendRecordsActionSupplier}
      */
-    public static <V> KafkaSendRecordsActionSupplier<String, V, ?> producerRecord(Serializer<V> valueSerializer, V value) {
+    public static <V> KafkaSendRecordsActionSupplier<String, V> producerRecord(Serializer<V> valueSerializer, V value) {
         return new KafkaSendRecordsActionSupplier<>(new StringSerializer(), valueSerializer, value);
     }
 
@@ -106,84 +84,58 @@ public class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRecordsActi
      * @param value is message value
      * @return an instance of {@link KafkaSendRecordsActionSupplier}
      */
-    public static KafkaSendRecordsActionSupplier<String, String, ?> producerRecord(String value) {
+    public static KafkaSendRecordsActionSupplier<String, String> producerRecord(String value) {
         return producerRecord(new StringSerializer(), value);
     }
 
-    public T topic(String topic) {
+    public KafkaSendRecordsActionSupplier<K, V> topic(String topic) {
+        checkNotNull(topic);
         this.topic = topic;
-        return (T) this;
+        return this;
     }
 
-    public T partition(Integer partition) {
+    public KafkaSendRecordsActionSupplier<K, V> partition(Integer partition) {
         this.partition = partition;
-        return (T) this;
+        return this;
     }
 
-    public T timestamp(Long timestamp) {
+    public KafkaSendRecordsActionSupplier<K, V> timestamp(Long timestamp) {
         this.timestamp = timestamp;
-        return (T) this;
+        return this;
     }
 
-    public <K2> KafkaSendRecordsActionSupplier<K2, V, ?> setKey(K2 key, Serializer<K2> keySerializer) {
+    public <K2> KafkaSendRecordsActionSupplier<K2, V> setKey(K2 key, Serializer<K2> keySerializer) {
         checkNotNull(keySerializer);
-        KafkaSendRecordsActionSupplier<K2, V, ?> selfReference = (KafkaSendRecordsActionSupplier<K2, V, ?>) this;
+        KafkaSendRecordsActionSupplier<K2, V> selfReference = (KafkaSendRecordsActionSupplier<K2, V>) this;
         selfReference.keySerializer = keySerializer;
         selfReference.key = key;
         return selfReference;
     }
 
-    public KafkaSendRecordsActionSupplier<K, V, ?> setKey(K key) {
+    public KafkaSendRecordsActionSupplier<K, V> setKey(K key) {
         this.key = key;
         return this;
     }
 
-    /**
-     * @deprecated use {@link #setKey(Object, Serializer)} or {@link #setKey(Object)}
-     */
-    @Deprecated(forRemoval = true)
-    public KafkaSendRecordsActionSupplier<String, V, ?> key(String key) {
-        return setKey(key, new StringSerializer());
-    }
-
-    /**
-     * @deprecated use {@link #setKey(Object, Serializer)} or {@link #setKey(Object)}
-     */
-    @Deprecated(forRemoval = true)
-    public KafkaSendRecordsActionSupplier<String, V, ?> key(Object key, DataTransformer dataTransformer) {
-        return key(dataTransformer.serialize(key));
-    }
-
-    /**
-     * @deprecated use {@link #setKey(Object, Serializer)} or {@link #setKey(Object)}
-     */
-    @Deprecated(forRemoval = true)
-    public KafkaSendRecordsActionSupplier<String, V, ?> key(Object key) {
-        var transformer = KAFKA_KEY_TRANSFORMER.get();
-        checkState(nonNull(transformer), "Key transformer is not defined. Please invoke "
-            + "the '#key(Object key, DataTransformer dataTransformer)' method or define '"
-            + KAFKA_KEY_TRANSFORMER.getName()
-            + "' property/env variable");
-        return key(key, transformer);
-    }
-
-    public T header(Header header) {
+    public KafkaSendRecordsActionSupplier<K, V> header(Header header) {
+        this.headers = ofNullable(headers).orElseGet(RecordHeaders::new);
         this.headers.add(header);
-        return (T) this;
+        return this;
     }
 
-    public T header(String key, byte[] bytes) {
+    public KafkaSendRecordsActionSupplier<K, V> header(String key, byte[] bytes) {
+        this.headers = ofNullable(headers).orElseGet(RecordHeaders::new);
         this.headers.add(key, bytes);
-        return (T) this;
+        return this;
     }
 
-    public T header(String key, String value) {
+    public KafkaSendRecordsActionSupplier<K, V> header(String key, String value) {
         return header(key, value.getBytes());
     }
 
-    public T callback(Callback callback) {
+    public KafkaSendRecordsActionSupplier<K, V> callback(Callback callback) {
         this.callback = callback;
-        return (T) this;
+        return this;
     }
 
     @Override
@@ -195,6 +147,9 @@ public class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRecordsActi
 
     @Override
     protected void howToPerform(KafkaProducer<K, V> producer) {
+        checkState(nonNull(topic), "Topic is not defined. Please define the "
+            + DEFAULT_TOPIC_FOR_SEND.getName()
+            + " or use the #topic(String) method");
         try (producer) {
             var producerRecord = new ProducerRecord<>(
                 topic,
@@ -202,7 +157,7 @@ public class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRecordsActi
                 timestamp,
                 key,
                 value,
-                headers);
+                ofNullable(headers).orElseGet(RecordHeaders::new));
 
             if (callback == null) {
                 producer.send(producerRecord);
@@ -212,32 +167,27 @@ public class KafkaSendRecordsActionSupplier<K, V, T extends KafkaSendRecordsActi
         }
     }
 
-    public static final class Mapped extends KafkaSendRecordsActionSupplier<String, String, Mapped> {
-        private final Object toSend;
-        private DataTransformer transformer;
+    @Override
+    public Map<String, String> getParameters() {
+        var result =  super.getParameters();
+        ofNullable(additionalProperties).ifPresent(result::putAll);
+        return result;
+    }
 
-        private Mapped(Object toSend) {
-            super(new StringSerializer(), new StringSerializer(), null);
-            checkNotNull(toSend);
-            this.toSend = toSend;
-        }
-
-        public Mapped dataTransformer(DataTransformer dataTransformer) {
-            this.transformer = dataTransformer;
-            return this;
-        }
-
-        @Override
-        protected void onStart(KafkaStepContext kafkaStepContext) {
-            var transformer = ofNullable(this.transformer)
-                    .orElseGet(KAFKA_DEFAULT_DATA_TRANSFORMER);
-            checkState(nonNull(transformer), "Data transformer is not defined. Please invoke "
-                    + "the '#withDataTransformer(DataTransformer)' method or define '"
-                    + KAFKA_DEFAULT_DATA_TRANSFORMER.getName()
-                    + "' property/env variable");
-
-            value = transformer.serialize(toSend);
-            super.onStart(kafkaStepContext);
-        }
+    /**
+     * Defines producer property value
+     *
+     * @see <a href="https://kafka.apache.org/documentation/#producerconfigs">Producer Configs</a>
+     *
+     * @param property a property name
+     * @param value a property value
+     * @return self-reference
+     */
+    public KafkaSendRecordsActionSupplier<K, V> setProperty(String property, String value) {
+        checkArgument(isNotBlank(property), "Property name should not be empty or null");
+        checkArgument(isNotBlank(value), "Property value should not be empty or null");
+        additionalProperties = ofNullable(additionalProperties).orElseGet(LinkedHashMap::new);
+        additionalProperties.put(property, value);
+        return this;
     }
 }

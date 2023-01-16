@@ -115,51 +115,7 @@ public class MyTest {
                 // SPRING_DATA_SLEEPING_TIME_UNIT и 
                 // SPRING_DATA_SLEEPING_TIME_VALUE
                 .pollingInterval(ofMillis(200))
-                // Можно указать, что должно быть выброшено исключение, 
-                // если записей нет совсем или нет ни одной записи, 
-                // которая бы соответствовала перечисленным 
-                // критериям. 
-                // Иначе - вернется null или пустая коллекция.
-                .throwOnNoResult()
-                //ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:
-                //можно указать сколько объектов,
-                //которые соответствуют критериям,
-                //нужно вернуть
-                .returnListOfSize(3)
-                //-------------------------------------------
-                //можно указать, до элемента с каким индексом
-                //нужно собрать результирующие элементы,
-                //индекс - индекс объекта в наборе элементов, 
-                //которые соответствуют критериям 
-                .returnBeforeIndex(7)
-                //.returnAfterIndex(8) либо после какого элемента
-                //----------------------------------------------
-                //Либо можно перечислить индексы элементов, 
-                // которые следует вернуть.
-                //Индексы - индексы объектов в наборе элементов, 
-                //которые соответствуют критериям 
-                .returnItemsOfIndexes(0, 3, 5)
-                //-----------------------------------------------
-                //можно указать, при достижении какого количества 
-                //ВСЕХ объектов, которые соответствуют критериям, 
-                //должен быть возвращен результат 
-                //----------------------------------------------
-                .returnIfEntireSize(isEqual(8))
-                //можно указать, при достижении каких условий,
-                //которым должен соответствовать лист ВСЕХ объектов,
-                //соответствующих критериям,
-                //можно возвращать результирующий лист/суб-лист 
-                .returnOnCondition("Описание условия", list -> {
-                    /*предикат, как работает критерий*/
-                })
-            //так же доступны returnOnConditionOr(criteria...), 
-            // returnOnConditionOnlyOne(criteria...)
-            // returnOnConditionNot(criteria...)
-            //------------------------------------------
-            //Если за отведенное время не нашлось столько подходящих объектов, 
-            // чтобы вернуть результат, или вся полученная коллекция не соответствует 
-            // каким-то критериям,
-            //будет выброшено исключение с подробным описанием
+                //другие опциональные параметры
         );
     }
 }
@@ -168,13 +124,15 @@ public class MyTest {
 Про свойства / переменные окружения `SPRING_DATA_SLEEPING_TIME_UNIT`, `SPRING_DATA_SLEEPING_TIME_VALUE`,
 `SPRING_DATA_SLEEPING_TIME_UNIT` и `SPRING_DATA_SLEEPING_TIME_VALUE` можно прочитать [здесь](./../settings.md).
 
+```{eval-rst}
+.. include:: ../../../shared_docs/steps_return_list_optiotal_parameters_async.rst
+```
+
 ## Выбор данных записи, полученной по ID
 
 ```java
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.List;
 
 import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
 import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byId;
@@ -214,7 +172,26 @@ public class MyTest {
                 // Иначе - вернется null
                 .throwOnNoResult()
         );
+    }
 
+}
+```
+
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
+import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byId;
+
+@SpringBootTest
+public class MyTest {
+
+    @Autowired
+    private TestRepository testRepository;
+
+    @Test
+    public void myTest() {
         List<String> listData = springData().find(
             "Test list",
             byId(testRepository, 1L)
@@ -226,59 +203,32 @@ public class MyTest {
                 //Указывается, как извлекаются данные из
                 //записи
                 .thenGetList(TestEntity::getListData)
-                // Можно указать один-несколько критериев, 
-                // которым должен соответствовать каждый элемент, 
-                // попадающий в результирующий лист.
-                // Так же доступны criteriaOr(criteria...), 
-                // criteriaOnlyOne(criteria...)
-                // criteriaNot(criteria...)
-                .criteria("Item contains 'Some'", s -> s.contains("Some"))
-                // Можно указать, что должно быть выброшено исключение,
-                // если выбранная запись не содержат данные,
-                // которые бы соответствовали перечисленным
-                // критериям. Иначе - вернется null или пустая коллекция.
-                .throwOnNoResult()
-                //ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:
-                //можно указать сколько объектов,
-                //которые соответствуют критериям,
-                //нужно вернуть
-                .returnListOfSize(3)
-                //-------------------------------------------
-                //можно указать, до элемента с каким индексом
-                //нужно собрать результирующие элементы,
-                //индекс - индекс объекта в наборе элементов, 
-                //которые соответствуют критериям 
-                .returnBeforeIndex(7)
-                //.returnAfterIndex(8) либо после какого элемента
-                //----------------------------------------------
-                //Либо можно перечислить индексы элементов, 
-                // которые следует вернуть.
-                //Индексы - индексы объектов в наборе элементов, 
-                //которые соответствуют критериям 
-                .returnItemsOfIndexes(0, 3, 5)
-                //-----------------------------------------------
-                //можно указать, при достижении какого количества 
-                //ВСЕХ объектов, которые соответствуют критериям, 
-                //должен быть возвращен результат 
-                //----------------------------------------------
-                .returnIfEntireSize(isEqual(8))
-                //можно указать, при достижении каких условий,
-                //которым должен соответствовать набор ВСЕХ объектов,
-                //соответствующих критериям,
-                //можно возвращать результирующий лист/суб-лист 
-                .returnOnCondition("Описание условия", list -> {
-                    /*предикат, как работает критерий*/
-                })
-            //так же доступны returnOnConditionOr(criteria...), 
-            // returnOnConditionOnlyOne(criteria...)
-            // returnOnConditionNot(criteria...)
-            //------------------------------------------
-            //Если не нашлось столько подходящих объектов, 
-            // чтобы вернуть результат, или вся полученная коллекция не соответствует 
-            // каким-то критериям,
-            //будет выброшено исключение с подробным описанием
+                // далее можно указать опциональные 
+                // уточняющие параметры
         );
+    }
+}
+```
 
+```{eval-rst}
+.. include:: ../../../shared_docs/steps_return_list_optiotal_parameters_sync.rst
+```
+
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
+import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byId;
+
+@SpringBootTest
+public class MyTest {
+
+    @Autowired
+    private TestRepository testRepository;
+
+    @Test
+    public void myTest() {        
         String[] arrayData = springData().find(
             "Test array",
             byId(testRepository, 1L)
@@ -290,58 +240,32 @@ public class MyTest {
                 //Указывается, как извлекаются данные из
                 //записи
                 .thenGetArray(TestEntity::getArrayData)
-                //Можно указать один или несколько критериев, 
-                //которым должен соответствовать
-                //каждый элемент результирующего массива.
-                // Так же доступны criteriaOr(criteria...), 
-                // criteriaOnlyOne(criteria...)
-                // criteriaNot(criteria...)
-                .criteria("Item contains 'Some'", s -> s.contains("Some"))
-                // Можно указать, что должно быть выброшено исключение,
-                // если выбранная запись не содержат данные, 
-                // которые бы соответствовали перечисленным
-                // критериям. Иначе - вернется null или пустой массив.
-                .throwOnNoResult()
-                //ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:
-                //можно указать сколько объектов,
-                //которые соответствуют критериям,
-                //нужно вернуть
-                .returnArrayOfLength(3)
-                //-------------------------------------------
-                //можно указать, до элемента с каким индексом
-                //нужно собрать результирующие элементы,
-                //индекс - индекс объекта в наборе элементов, 
-                //которые соответствуют критериям 
-                .returnBeforeIndex(7)
-                //.returnAfterIndex(8) либо после какого элемента
-                //----------------------------------------------
-                //Либо можно перечислить индексы элементов, 
-                // которые следует вернуть.
-                //Индексы - индексы объектов в наборе элементов, 
-                //которые соответствуют критериям 
-                .returnItemsOfIndexes(0, 3, 5)
-                //-----------------------------------------------
-                //можно указать, при достижении какого количества
-                //ВСЕХ объектов, которые соответствуют критериям, 
-                //должен быть возвращен результат 
-                //----------------------------------------------
-                .returnIfEntireLength(isEqual(8))
-                //можно указать, при достижении каких условий,
-                //которым должен соответствовать массив ВСЕХ объектов,
-                //соответствующих критериям,
-                //можно возвращать результирующий массив/суб-массив
-                .returnOnCondition("Описание условия", array -> {
-                    /*предикат, как работает критерий*/
-                })
-            //так же доступны returnOnConditionOr(criteria...), 
-            // returnOnConditionOnlyOne(criteria...)
-            // returnOnConditionNot(criteria...)
-            //------------------------------------------
-            //Если не нашлось столько подходящих объектов, чтобы вернуть результат,
-            //или весь полученный массив не соответствует каким-то критериям
-            // будет выброшено исключение с подробным описанием
+                // далее можно указать опциональные 
+                // уточняющие параметры
         );
+    }
+}
+```
 
+```{eval-rst}
+.. include:: ../../../shared_docs/steps_return_array_optiotal_parameters_sync.rst
+```
+
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
+import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byId;
+
+@SpringBootTest
+public class MyTest {
+
+    @Autowired
+    private TestRepository testRepository;
+
+    @Test
+    public void myTest() {        
         String listItem = springData().find(
             "Test list item",
             byId(testRepository, 1L)
@@ -352,46 +276,32 @@ public class MyTest {
                 //из данных найденной записи, собранных в набор.
                 //Указывается, как извлекаются данные из записи
                 .thenGetIterableItem(TestEntity::getListData)
-                //Можно указать один или несколько критериев, 
-                //которым должен соответствовать
-                //результирующий элемент из набора.
-                // Так же доступны criteriaOr(criteria...), 
-                // criteriaOnlyOne(criteria...)
-                // criteriaNot(criteria...)
-                .criteria("Contains 'Some'", s -> s.contains("Some"))
-                // Можно указать, что должно быть выброшено исключение,
-                // если выбранная запись не содержат данные, 
-                // которые бы соответствовали перечисленным
-                // критериям. Иначе - вернется null
-                .throwOnNoResult()
-                //ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:
-                //Можно указать индекс элемента, который следует вернуть.
-                //Индекс - индекс объекта в наборе элементов, 
-                //которые соответствуют критериям 
-                .returnItemOfIndex(1)
-                //-----------------------------------------------
-                //можно указать, при достижении какого количества 
-                //ВСЕХ объектов, которые соответствуют критериям, 
-                //должен быть возвращен результат 
-                //----------------------------------------------
-                .returnIfEntireSize(isEqual(8))
-                //можно указать, при достижении каких условий,
-                //которым должен соответствовать набор ВСЕХ объектов,
-                //соответствующих критериям,
-                //можно возвращать результирующий элемент 
-                .returnOnCondition("Описание условия", iterable -> {
-                    /*предикат, как работает критерий*/
-                })
-            //так же доступны returnOnConditionOr(criteria...), 
-            // returnOnConditionOnlyOne(criteria...)
-            // returnOnConditionNot(criteria...)
-            //------------------------------------------
-            //Если не нашлось столько подходящих объектов, чтобы вернуть результат,
-            //или вся полученная коллекция не соответствует каким-то критериям
-            // будет выброшено исключение с подробным описанием
-
+                // далее можно указать опциональные 
+                // уточняющие параметры
         );
+    }
+}
+```
 
+```{eval-rst}
+.. include:: ../../../shared_docs/steps_return_iterable_item_optiotal_parameters_sync.rst
+```
+
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
+import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byId;
+
+@SpringBootTest
+public class MyTest {
+
+    @Autowired
+    private TestRepository testRepository;
+
+    @Test
+    public void myTest() {        
         String arrayItem = springData().find(
             "Test array item",
             byId(testRepository, 1L)
@@ -402,46 +312,15 @@ public class MyTest {
                 //из данных найденной записи, собранных в массив
                 //Указывается, как извлекаются данные из записи
                 .thenGetArrayItem(TestEntity::getArrayData)
-                //Можно указать один или несколько критериев, 
-                //которым должен соответствовать
-                //результирующий элемент из массива.
-                // Так же доступны criteriaOr(criteria...), 
-                // criteriaOnlyOne(criteria...)
-                // criteriaNot(criteria...)
-                .criteria("Item contains 'Some'", s -> s.contains("Some"))
-                // Можно указать, что должно быть выброшено исключение,
-                // если выбранная запись не содержат данные, 
-                // которые бы соответствовали перечисленным
-                // критериям. Иначе - вернется null
-                .throwOnNoResult()
-                //ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:
-                //Можно указать индекс элемента, который следует вернуть.
-                //Индекс - индекс объекта в наборе элементов, 
-                //которые соответствуют критериям 
-                .returnItemOfIndex(1)
-                //-----------------------------------------------
-                //можно указать, при достижении какого количества
-                //ВСЕХ объектов, которые соответствуют критериям, 
-                //должен быть возвращен результат 
-                //----------------------------------------------
-                .returnIfEntireLength(isEqual(8))
-                //можно указать, при достижении каких условий,
-                //которым должен соответствовать набор ВСЕХ объектов,
-                //соответствующих критериям,
-                //можно возвращать результирующий элемент
-                .returnOnCondition("Описание условия", array -> {
-                    /*предикат, как работает критерий*/
-                })
-            //так же доступны returnOnConditionOr(criteria...), 
-            // returnOnConditionOnlyOne(criteria...)
-            // returnOnConditionNot(criteria...)
-            //------------------------------------------
-            //Если не нашлось столько подходящих объектов, чтобы вернуть результат,
-            // или весь полученный массив не соответствует каким-то критериям
-            // будет выброшено исключение с подробным описанием
+                // далее можно указать опциональные 
+                // уточняющие параметры
         );
     }
 }
+```
+
+```{eval-rst}
+.. include:: ../../../shared_docs/steps_return_array_item_optiotal_parameters_sync.rst
 ```
 
 ## Выбор данных записей, полученных по ID
@@ -478,59 +357,32 @@ public class MyTest {
                 //Указывается, как извлекаются данные из
                 //каждой записи
                 .thenGetList(TestEntity::getName)
-                // Можно указать один-несколько критериев, 
-                // которым должен соответствовать каждый элемент, 
-                // попадающий в результирующий лист.
-                // Так же доступны criteriaOr(criteria...), 
-                // criteriaOnlyOne(criteria...)
-                // criteriaNot(criteria...)
-                .criteria("contains 'Some'", s -> s.contains("Some"))
-                // Можно указать, что должно быть выброшено исключение,
-                // если данные записей не содержат элементы, которые бы 
-                // соответствовали перечисленным критериям. 
-                // Иначе - вернется null или пустая коллекция.
-                .throwOnNoResult()
-                //ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:
-                //можно указать сколько объектов,
-                //которые соответствуют критериям,
-                //нужно вернуть
-                .returnListOfSize(3)
-                //-------------------------------------------
-                //можно указать, до элемента с каким индексом
-                //нужно собрать результирующие элементы,
-                //индекс - индекс объекта в наборе элементов, 
-                //которые соответствуют критериям 
-                .returnBeforeIndex(7)
-                //.returnAfterIndex(8) либо после какого элемента
-                //----------------------------------------------
-                //Либо можно перечислить индексы элементов, 
-                // которые следует вернуть.
-                //Индексы - индексы объектов в наборе элементов, 
-                //которые соответствуют критериям 
-                .returnItemsOfIndexes(0, 3, 5)
-                //-----------------------------------------------
-                //можно указать, при достижении какого количества 
-                //ВСЕХ объектов, которые соответствуют критериям, 
-                //должен быть возвращен результат 
-                //----------------------------------------------
-                .returnIfEntireSize(isEqual(8))
-                //можно указать, при достижении каких условий,
-                //которым должен соответствовать набор ВСЕХ объектов,
-                //соответствующих критериям,
-                //можно возвращать результирующий лист/суб-лист 
-                .returnOnCondition("Описание условия", list -> {
-                    /*предикат, как работает критерий*/
-                })
-            //так же доступны returnOnConditionOr(criteria...), 
-            // returnOnConditionOnlyOne(criteria...)
-            // returnOnConditionNot(criteria...)
-            //------------------------------------------
-            //Если не нашлось столько подходящих объектов, 
-            // чтобы вернуть результат, или вся полученная коллекция не соответствует 
-            // каким-то критериям,
-            //будет выброшено исключение с подробным описанием
+                // далее можно указать опциональные 
+                // уточняющие параметры
         );
+    }
+}
+```
 
+```{eval-rst}
+.. include:: ../../../shared_docs/steps_return_list_optiotal_parameters_sync.rst
+```
+
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
+import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byId;
+
+@SpringBootTest
+public class MyTest {
+
+    @Autowired
+    private TestRepository testRepository;
+
+    @Test
+    public void myTest() {        
         String name = springData().find(
             "Test name",
             byIds(testRepository, 1L, 2L)
@@ -543,46 +395,15 @@ public class MyTest {
                 //Указывается, как извлекаются данные из
                 //каждой записи
                 .thenGetIterableItem(TestEntity::getName)
-                //Можно указать один или несколько критериев, 
-                //которым должен соответствовать
-                //результирующий элемент из набора.
-                // Так же доступны criteriaOr(criteria...), 
-                // criteriaOnlyOne(criteria...)
-                // criteriaNot(criteria...)
-                .criteria("Name contains 'Some'", s -> s.contains("Some"))
-                // Можно указать, что должно быть выброшено исключение,
-                // если выбранные записи не содержат данные, 
-                // которые бы соответствовали перечисленным
-                // критериям. Иначе - вернется null
-                .throwOnNoResult()
-                //ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:
-                //Можно указать индекс элемента, который следует вернуть.
-                //Индекс - индекс объекта в наборе элементов, 
-                //которые соответствуют критериям 
-                .returnItemOfIndex(1)
-                //-----------------------------------------------
-                //можно указать, при достижении какого количества 
-                //ВСЕХ объектов, которые соответствуют критериям, 
-                //должен быть возвращен результат 
-                //----------------------------------------------
-                .returnIfEntireSize(isEqual(8))
-                //можно указать, при достижении каких условий,
-                //которым должен соответствовать набор ВСЕХ объектов,
-                //соответствующих критериям,
-                //можно возвращать результирующий элемент 
-                .returnOnCondition("Описание условия", iterable -> {
-                    /*предикат, как работает критерий*/
-                })
-            //так же доступны returnOnConditionOr(criteria...), 
-            // returnOnConditionOnlyOne(criteria...)
-            // returnOnConditionNot(criteria...)
-            //------------------------------------------
-            //Если не нашлось столько подходящих объектов, чтобы вернуть результат,
-            //или вся полученная коллекция не соответствует каким-то критериям
-            // будет выброшено исключение с подробным описанием          
+                // далее можно указать опциональные 
+                // уточняющие параметры
         );
     }
 }
+```
+
+```{eval-rst}
+.. include:: ../../../shared_docs/steps_return_iterable_item_optiotal_parameters_sync.rst
 ```
 
 ## Наличие или отсутствие записей, найденных по ID
