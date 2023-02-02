@@ -1,13 +1,13 @@
 package ru.tinkoff.qa.neptune.core.api.steps.selections;
 
+import ru.tinkoff.qa.neptune.core.api.steps.SelfDescribed;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
-abstract class Direction {
+abstract class Direction extends SelfDescribed {
 
     @DescriptionFragment("indexFrom")
     private final int indexFrom;
@@ -16,11 +16,6 @@ abstract class Direction {
 
     Direction(int indexFrom) {
         this.indexFrom = indexFrom;
-    }
-
-    @Override
-    public String toString() {
-        return translate(this);
     }
 
     int getIndexFrom() {

@@ -4,7 +4,7 @@ configurations {
 
 dependencies {
     api(project(":database.abstractions"))
-    api project(':core.api')
+    implementation(project(":core.api"))
     compileOnly(group: 'org.springframework.data', name: 'spring-data-commons', version: springDataVersion)
     testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockitoVersion

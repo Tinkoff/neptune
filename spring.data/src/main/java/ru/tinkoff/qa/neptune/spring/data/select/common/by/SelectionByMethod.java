@@ -11,7 +11,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.ClassLoader.getSystemClassLoader;
 import static java.lang.reflect.Proxy.newProxyInstance;
 import static org.springframework.util.ClassUtils.getAllInterfaces;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @SuppressWarnings("unchecked")
 @Description("Select by method invocation")
@@ -40,11 +39,6 @@ public final class SelectionByMethod<R, ID, T extends Repository<R, ID>, RESULT>
 
     public Object[] getParameters() {
         return parameters;
-    }
-
-    @Override
-    public String toString() {
-        return translate(this);
     }
 
     public static class RepositoryMethodInvocationHandler implements InvocationHandler {

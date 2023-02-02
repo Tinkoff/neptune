@@ -7,7 +7,6 @@ import ru.tinkoff.qa.neptune.hibernate.HibernateContext;
 import ru.tinkoff.qa.neptune.hibernate.HibernateFunction;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 
 @Description("By query string")
@@ -23,11 +22,6 @@ public abstract class SelectionByQuery<R, RESULT> extends HibernateFunction<R, R
         if (parameters.length != 0) {
             this.parameters = parameters;
         }
-    }
-
-    @Override
-    public String toString() {
-        return translate(this);
     }
 
     public static <R> SelectASingleByQuery<R> getSingleByQuery(Class<R> entity, String queryString, Object... parameters) {

@@ -17,13 +17,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.CalculatorSteps.calculator;
 import static ru.tinkoff.qa.neptune.core.api.steps.Step.$;
 
 public class EventFiringTest {
-
-    private static final SequentialGetStepSupplier<CalculatorSteps, Number, ?, ?, ?> CALCULATION =
-            subtractFromResultOf(100,
-                    divideByResultOf(0.5,
-                            multiplyByResultOf(11,
-                                    divideByResultOf(-6,
-                                            number(9)))));
+            ;
     private static boolean toReport = true;
 
     private void prepare() {
@@ -38,12 +32,20 @@ public class EventFiringTest {
 
         if (toReport) {
             $("Result of numeric operations", () -> {
-                var result = calculator().evaluate(CALCULATION);
+                var result = calculator().evaluate(subtractFromResultOf(100,
+                    divideByResultOf(0.5,
+                        multiplyByResultOf(11,
+                            divideByResultOf(-6,
+                                number(9))))));
                 return result.floatValue() + 5F;
             });
         }
         else {
-            var f = ((Get<CalculatorSteps, Number>) CALCULATION.get());
+            var f = ((Get<CalculatorSteps, Number>) subtractFromResultOf(100,
+                divideByResultOf(0.5,
+                    multiplyByResultOf(11,
+                        divideByResultOf(-6,
+                            number(9))))).get());
             var func = f.turnReportingOff();
             $("Result of numeric operations", () -> {
                 var result = calculator().evaluate(func);

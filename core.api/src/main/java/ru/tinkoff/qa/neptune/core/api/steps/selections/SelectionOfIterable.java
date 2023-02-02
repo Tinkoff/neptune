@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.core.api.steps.selections;
 import com.google.common.collect.Iterables;
 import org.apache.commons.lang3.ArrayUtils;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.SelfDescribed;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.conditions.ResultSelection;
@@ -18,14 +19,13 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.SPACE;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @SuppressWarnings("unchecked")
 abstract class SelectionOfIterable<T, R, THIS extends SelectionOfIterable<T, R, THIS>>
     extends ResultSelection<T, R> {
 
     private final List<Criteria<T>> notMatched = new ArrayList<>();
-    @StepParameter("Return the result when total count of got items is")
+    @StepParameter(value = "Return the result when total count of got items is", doNotReportNullValues = true)
     ItemsCountCondition whenCount;
     LinkedList<Criteria<T>> additionalConditionsForIterable = new LinkedList<>();
     private boolean wasNull;
@@ -163,10 +163,6 @@ abstract class SelectionOfIterable<T, R, THIS extends SelectionOfIterable<T, R, 
     }
 
     @Description("Return if set of got items matches")
-    private static final class OnCondition {
-        @Override
-        public String toString() {
-            return translate(this);
-        }
+    private static final class OnCondition extends SelfDescribed {
     }
 }

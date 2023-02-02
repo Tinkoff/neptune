@@ -1,0 +1,5 @@
+ru.tinkoff.qa.neptune.core.api.agent.StepActionTransformParameters
+ru.tinkoff.qa.neptune.core.api.agent.HamcrestTransformParameters
+ru.tinkoff.qa.neptune.core.api.agent.CombinableMatchersTransformParameters
+ru.tinkoff.qa.neptune.core.api.agent.StepGetTransformParameters
+ru.tinkoff.qa.neptune.core.api.agent.CriteriaTransformParameters

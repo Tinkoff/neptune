@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.core.api.localization;
 
+import net.bytebuddy.asm.Advice;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
@@ -8,6 +9,8 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
+import java.lang.reflect.Method;
+import java.util.List;
 import java.util.function.Supplier;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -17,58 +20,63 @@ import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 
 @SuppressWarnings("unused")
 public class BasicLocalizationTest {
+
     @DataProvider(parallel = true)
     public static Object[][] data1() {
         return new Object[][]{
-                {
-                        TestActionStepSupplier.methodWithoutAnnotation(),
-                        "Class Description ActionSupplier"
-                },
-                {
-                        TestActionStepSupplier.methodWithAnnotation(),
-                        "Method Description ActionSupplier"
-                },
-                {
-                        TestActionStepSupplier.methodWithCompositeAnnotation1("some string"),
-                        "Method with Composite Description + some string ActionSupplier"
-                },
-                {
-                        TestActionStepSupplier.methodWithCompositeAnnotation2("some string1", "some string2"),
-                        "Method with Composite Description + some string1,some string2 ActionSupplier"
-                },
-                {
-                        TestActionStepSupplier.methodWithCompositeAnnotation3("some string1", "some string2"),
-                        "Method with Composite Description + some string1,some string2 ActionSupplier"
-                },
-                {
-                        TestGetStepSupplier.methodWithoutAnnotation(),
-                        "Class Description GetSupplier"
-                },
-                {
-                        TestGetStepSupplier.methodWithAnnotation(),
-                        "Method Description GetSupplier"
-                },
-                {
-                        TestGetStepSupplier.methodWithCompositeAnnotation1("some string"),
-                        "Method with Composite Description + some string GetSupplier"
-                },
-                {
-                        TestGetStepSupplier.methodWithCompositeAnnotation2("some string1", "some string2"),
-                        "Method with Composite Description + some string1,some string2 GetSupplier"
-                },
-                {
-                        TestGetStepSupplier.methodWithCompositeAnnotation3("some string1", "some string2"),
-                        "Method with Composite Description + some string1,some string2 GetSupplier"
-                }
+            {
+                TestActionStepSupplier.methodWithoutAnnotation(),
+                "Class Description ActionSupplier"
+            },
+            {
+                TestActionStepSupplier.methodWithAnnotation(),
+                "Method Description ActionSupplier"
+            },
+            {
+                TestActionStepSupplier.methodWithCompositeAnnotation1("some string"),
+                "Method with Composite Description + some string ActionSupplier"
+            },
+            {
+                TestActionStepSupplier.methodWithCompositeAnnotation2("some string1", "some string2"),
+                "Method with Composite Description + some string1,some string2 ActionSupplier"
+            },
+            {
+                TestActionStepSupplier.methodWithCompositeAnnotation3("some string1", "some string2"),
+                "Method with Composite Description + some string1,some string2 ActionSupplier"
+            },
+            {
+                TestGetStepSupplier.methodWithoutAnnotation(),
+                "Class Description GetSupplier"
+            },
+            {
+                TestGetStepSupplier.methodWithAnnotation(),
+                "Method Description GetSupplier"
+            },
+            {
+                TestGetStepSupplier.methodWithCompositeAnnotation1("some string"),
+                "Method with Composite Description + some string GetSupplier"
+            },
+            {
+                TestGetStepSupplier.methodWithCompositeAnnotation2("some string1", "some string2"),
+                "Method with Composite Description + some string1,some string2 GetSupplier"
+            },
+            {
+                TestGetStepSupplier.methodWithCompositeAnnotation3("some string1", "some string2"),
+                "Method with Composite Description + some string1,some string2 GetSupplier"
+            },
+            {
+                TestGetStepSupplier.methodDelegator(),
+                "Real method which was invoked"
+            }
         };
     }
 
     @DataProvider(parallel = true)
     public static Object[][] data2() {
         return new Object[][]{
-                {someCriteriaWithoutAnnotation(), "not described criteria"},
-                {someCriteriaWithAnnotation(), "This is some criteria Method"},
-                {someCriteriaWithCompositeAnnotation("sss"), "This is some criteria Method with DescriptionFragment sss"}
+            {someCriteriaWithoutAnnotation(), "not described criteria"},
+            {someCriteriaWithAnnotation(), "This is some criteria Method"},
+            {someCriteriaWithCompositeAnnotation("sss"), "This is some criteria Method with DescriptionFragment sss"}
         };
     }
 
@@ -80,6 +88,7 @@ public class BasicLocalizationTest {
     @Test(dataProvider = "data2")
     public void test2(Criteria<Object> criteria, String value) {
         var p = TestGetStepSupplier.methodWithoutAnnotation().criteria(criteria).getParameters();
+        arrayContaining(List.of(1, 3, "String"));
         assertThat(p, aMapWithSize(1));
         assertThat(p, hasEntry(equalTo("Criteria"), equalTo(value)));
     }
@@ -134,6 +143,15 @@ public class BasicLocalizationTest {
             return new TestGetStepSupplier();
         }
 
+        @Description("Real method which was invoked")
+        public static TestGetStepSupplier methodDelegate(String a, String b) {
+            return new TestGetStepSupplier();
+        }
+
+        public static TestGetStepSupplier methodDelegator() {
+            return methodDelegate("a", "b");
+        }
+
         @Description("Method Description GetSupplier")
         public static TestGetStepSupplier methodWithAnnotation() {
             return new TestGetStepSupplier();
@@ -171,6 +189,47 @@ public class BasicLocalizationTest {
         @Description("This is some criteria Method with DescriptionFragment {element}")
         public static <T> Criteria<T> someCriteriaWithCompositeAnnotation(@DescriptionFragment("element") String element) {
             return condition(o -> true);
+        }
+    }
+
+
+    public static class MethodInterceptor {
+        @Advice.OnMethodEnter
+        public static void interceptEnter(
+            @Advice.Origin Method method
+            /*@AllArguments Object[] args,
+            @SuperCall Callable<?> zuper*/) throws Exception {
+            System.out.println("Entered " + method);
+            /*if (isStatic(method.getModifiers()) &&
+                ((returned instanceof SequentialGetStepSupplier)
+                    || (returned instanceof SequentialActionSupplier)
+                    || (returned instanceof Criteria))) {
+                var description = translate(returned, method, args);
+                if (description != null) {
+                    Method setDescription = returned.getClass().getDeclaredMethod("setDescription", String.class);
+                    setDescription.setAccessible(true);
+                    setDescription.invoke(returned, description);
+                }
+            }*/
+        }
+
+        @Advice.OnMethodExit
+        public static void interceptExit(
+            @Advice.Origin Method method
+            /*@AllArguments Object[] args,
+            @SuperCall Callable<?> zuper*/) throws Exception {
+            System.out.println("Exited " + method);
+            /*if (isStatic(method.getModifiers()) &&
+                ((returned instanceof SequentialGetStepSupplier)
+                    || (returned instanceof SequentialActionSupplier)
+                    || (returned instanceof Criteria))) {
+                var description = translate(returned, method, args);
+                if (description != null) {
+                    Method setDescription = returned.getClass().getDeclaredMethod("setDescription", String.class);
+                    setDescription.setAccessible(true);
+                    setDescription.invoke(returned, description);
+                }
+            }*/
         }
     }
 

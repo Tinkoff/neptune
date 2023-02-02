@@ -7,8 +7,6 @@ import ru.tinkoff.qa.neptune.hibernate.HibernateFunction;
 import javax.persistence.criteria.Order;
 import java.util.List;
 
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
-
 @Description("As page")
 public final class SelectionAsPage<R> extends HibernateFunction<R, Iterable<R>> {
 
@@ -18,11 +16,6 @@ public final class SelectionAsPage<R> extends HibernateFunction<R, Iterable<R>> 
 
     public SelectionAsPage(Class<R> entity) {
         super(entity);
-    }
-
-    @Override
-    public String toString() {
-        return translate(this);
     }
 
     @Override

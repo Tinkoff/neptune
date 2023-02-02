@@ -1,7 +1,6 @@
 plugins {
     id 'java'
     id 'jacoco'
-    id "io.freefair.aspectj.post-compile-weaving" version "5.3.3.3"
     id "org.sonarqube" version "3.3"
 }
 
@@ -26,7 +25,6 @@ subprojects {
     apply plugin: 'java-library'
     apply plugin: 'signing'
     apply plugin: 'jacoco'
-    apply plugin: "io.freefair.aspectj.post-compile-weaving"
 
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
@@ -51,13 +49,9 @@ subprojects {
         springVersion = '5.3.20'
         springDataVersion = '2.7.0'
         springBootVersion = '2.7.0'
-        bytybuddyVersion = '1.12.18'
+        bytybuddyVersion = '1.12.22'
         queryDslVersion = '5.0.0'
         globalVersion = version
-    }
-
-    configurations {
-        agent
     }
 
     dependencies {
@@ -76,11 +70,9 @@ subprojects {
         testImplementation group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion
         compileOnly group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion
         implementation group: 'org.apache.tika', name: 'tika-core', version: '2.4.0'
-        implementation group: 'org.aspectj', name: 'aspectjrt', version: '1.9.6'
-        implementation group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.6'
-        agent group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.6'
         implementation group: 'org.objenesis', name: 'objenesis', version: '3.3'
         implementation group: 'net.bytebuddy', name: 'byte-buddy', version: bytybuddyVersion
+        implementation group: 'net.bytebuddy', name: 'byte-buddy-agent', version: bytybuddyVersion
     }
 
     test {
@@ -96,8 +88,19 @@ subprojects {
 
         jacoco {
             excludes += [
-                    'org.hamcrest.*',
-                    'ru.tinkoff.qa.neptune.data.base.api.*'
+                    'ru.tinkoff.qa.neptune.core.api.agent.DescribedStepInterceptor',
+                    'ru.tinkoff.qa.neptune.core.api.agent.HamcrestTransformParameters.HamcrestInterceptor',
+                    'ru.tinkoff.qa.neptune.core.api.agent.CombinableMatchersTransformParameters.HamcrestCombinableInterceptor',
+                    'ru.tinkoff.qa.neptune.check.localization.*',
+                    'ru.tinkoff.qa.neptune.database.abstractions.localization.*',
+                    'ru.tinkoff.qa.neptune.hibernate.localization.*',
+                    'ru.tinkoff.qa.neptune.http.api.localization.*',
+                    'ru.tinkoff.qa.neptune.kafka.localization.*',
+                    'ru.tinkoff.qa.neptune.retrofit2.localization.*',
+                    'ru.tinkoff.qa.neptune.selenium.localization.*',
+                    'ru.tinkoff.qa.neptune.spring.data.localization.*',
+                    'ru.tinkoff.qa.neptune.spring.mock.mvc.localization.*',
+                    'ru.tinkoff.qa.neptune.spring.web.testclient.localization.*'
             ]
         }
     }
@@ -114,24 +117,22 @@ subprojects {
         classDirectories.setFrom(classDirectories.files.collect {
             fileTree(dir: it,
                     exclude: [
-                            '**/org/hamcrest/**',
-                            '**/**AjcClosure**',
+                            '**/**$HamcrestCombinableInterceptor.class',
+                            '**/**$HamcrestInterceptor.class',
+                            '**/DescribedStepInterceptor.class',
+                            '**/check/localization/**',
+                            '**/database/abstractions/localization/**',
+                            '**/hibernate/localization/**',
+                            '**/http/api/localization/**',
+                            '**/kafka/localization/**',
+                            '**/retrofit2/localization/**',
+                            '**/selenium/localization/**',
+                            '**/spring/data/localization/**',
+                            '**/spring/mock/mvc/localization/**',
+                            '**/spring/web/testclient/localization/**'
                     ]
             )
         })
-    }
-}
-
-configure(subprojects.findAll {
-    it.name != 'core.api'
-            && it.name != 'allure.integration'
-            && it.name != 'allure.jupiter.bridge'
-            && it.name != 'allure.testng.bridge'
-            && it.name != 'neptune.swagger.codegen'
-            && it.name != 'testng.integration'
-}) {
-    dependencies {
-        aspect(project(":core.api"))
     }
 }
 
@@ -144,8 +145,19 @@ task jacocoOverallReport(type: JacocoReport, group: 'Coverage reports') {
     classDirectories.from = files(subprojects.sourceSets.main.output).files.collect {
         fileTree(dir: it,
                 exclude: [
-                        '**/org/hamcrest/**',
-                        '**/**AjcClosure**',
+                        '**/**$HamcrestCombinableInterceptor.class',
+                        '**/**$HamcrestInterceptor.class',
+                        '**/DescribedStepInterceptor.class',
+                        '**/check/localization/**',
+                        '**/database/abstractions/localization/**',
+                        '**/hibernate/localization/**',
+                        '**/http/api/localization/**',
+                        '**/kafka/localization/**',
+                        '**/retrofit2/localization/**',
+                        '**/selenium/localization/**',
+                        '**/spring/data/localization/**',
+                        '**/spring/mock/mvc/localization/**',
+                        '**/spring/web/testclient/localization/**'
                 ]
         )
     }

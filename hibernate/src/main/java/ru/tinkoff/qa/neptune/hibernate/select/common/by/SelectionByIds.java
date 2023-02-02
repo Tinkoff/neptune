@@ -12,7 +12,6 @@ import java.util.ArrayList;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @SuppressWarnings("unchecked")
 @Description("id(s) {ids}")
@@ -37,11 +36,6 @@ public abstract class SelectionByIds<R, ID extends Serializable, RESULT> extends
 
     public static <R, ID extends Serializable> SelectionByIds<R, ID, Iterable<R>> getIterableByIds(Class<R> clazz, ID... ids) {
         return new SelectIterableById<>(clazz, ids);
-    }
-
-    @Override
-    public String toString() {
-        return translate(this);
     }
 
     private static final class SelectASingleById<R, ID extends Serializable> extends SelectionByIds<R, ID, R> {

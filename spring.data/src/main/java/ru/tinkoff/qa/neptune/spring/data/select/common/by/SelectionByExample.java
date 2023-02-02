@@ -10,7 +10,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
 
 import static java.util.Objects.isNull;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @SuppressWarnings("unchecked")
 @Description("By example")
@@ -34,11 +33,6 @@ public abstract class SelectionByExample<R, ID, T extends Repository<R, ID>, RES
 
     protected final Example<R> getExample() {
         return Example.of(probe, matcher);
-    }
-
-    @Override
-    public String toString() {
-        return translate(this);
     }
 
     public void setProbe(R probe) {

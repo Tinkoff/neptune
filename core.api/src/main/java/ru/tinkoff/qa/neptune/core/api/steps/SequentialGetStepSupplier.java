@@ -1422,10 +1422,6 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     }
 
     @Description("Got items")
-    private static final class GotItems {
-
-        public String toString() {
-            return translate(this);
-        }
+    private static final class GotItems extends SelfDescribed {
     }
 }

@@ -8,7 +8,6 @@ import javax.persistence.criteria.Order;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @Description("all by ordering")
 public final class SelectionByOrder<R> extends HibernateFunction<R, Iterable<R>> {
@@ -19,11 +18,6 @@ public final class SelectionByOrder<R> extends HibernateFunction<R, Iterable<R>>
         super(entity);
         checkNotNull(orders);
         this.orders = orders;
-    }
-
-    @Override
-    public String toString() {
-        return translate(this);
     }
 
     @Override

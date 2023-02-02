@@ -2,7 +2,6 @@ dependencies {
     api project(":jupiter.integration")
     api project(":allure.integration")
     api(group: 'io.qameta.allure', name: 'allure-junit5', version: allureVersion) {
-        exclude group: 'org.aspectj', module: 'aspectjrt'
         exclude group: 'org.aspectj', module: 'aspectjweaver'
         exclude group: 'org.junit.jupiter', module: 'junit-jupiter-api'
         exclude group: 'org.junit.jupiter', module: 'junit-platform-launcher'

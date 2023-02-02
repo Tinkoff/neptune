@@ -3,7 +3,7 @@ configurations {
 }
 
 dependencies {
-    api project(':core.api')
+    implementation(project(":core.api"))
     api project(':neptune-spring-boot-starter')
     compileOnly(group: 'org.springframework', name: 'spring-test', version: springVersion)
     compileOnly(group: 'org.springframework', name: 'spring-web', version: springVersion)

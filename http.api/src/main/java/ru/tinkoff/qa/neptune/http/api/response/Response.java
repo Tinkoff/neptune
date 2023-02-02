@@ -1,6 +1,8 @@
 package ru.tinkoff.qa.neptune.http.api.response;
 
+import ru.tinkoff.qa.neptune.core.api.steps.SelfDescribed;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import javax.net.ssl.SSLSession;
 import java.net.URI;
@@ -10,11 +12,10 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Optional;
 
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
+@Description("Http response {response}")
+class Response<T, R> extends SelfDescribed implements HttpResponse<T> {
 
-@Description("Http response")
-class Response<T, R> implements HttpResponse<T> {
-
+    @DescriptionFragment("response")
     private final HttpResponse<T> response;
     private final R calculated;
 
@@ -61,10 +62,6 @@ class Response<T, R> implements HttpResponse<T> {
     @Override
     public HttpClient.Version version() {
         return response.version();
-    }
-
-    public String toString() {
-        return translate(this) + " " + response.toString();
     }
 
     R getCalculated() {

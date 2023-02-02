@@ -7,7 +7,6 @@ import ru.tinkoff.qa.neptune.hibernate.HibernateFunction;
 import javax.persistence.criteria.CriteriaQuery;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @Description("by JPA criteria")
 public abstract class SelectionByCriteria<R, RESULT> extends HibernateFunction<R, RESULT> {
@@ -18,11 +17,6 @@ public abstract class SelectionByCriteria<R, RESULT> extends HibernateFunction<R
         super(entity);
         checkNotNull(criteriaQuery);
         this.criteriaQuery = criteriaQuery;
-    }
-
-    @Override
-    public String toString() {
-        return translate(this);
     }
 
     public static <R> SelectASingleByCriteria<R> getSingleByCriteria(Class<R> entity, CriteriaQuery<R> criteriaQuery) {

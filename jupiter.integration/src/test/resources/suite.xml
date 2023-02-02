@@ -10,7 +10,7 @@
 
     <test name="Test of instantiation and invocation when no fixture methods">
         <classes>
-            <class name="ru.tinkoff.qa.neptune.jupiter.integration.Junit5TestFinishingTestWithNoFixtureMethod"/>
+            <class name="ru.tinkoff.qa.neptune.jupiter.integration.Junit5FinishingTestWithNoFixtureMethodTest"/>
         </classes>
     </test>
 </suite>

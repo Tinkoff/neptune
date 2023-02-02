@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.jupiter.integration;
 
 import org.junit.jupiter.api.Test;
 
-public class TestWithoutFixtureMethod extends BaseJunit5Test {
+public class TestWithoutFixtureMethod {
 
     @Test
     public void test1() {

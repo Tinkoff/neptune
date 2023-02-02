@@ -1,5 +1,5 @@
 dependencies {
-    api project(':core.api')
+    implementation(project(":core.api"))
     api (group: 'org.seleniumhq.selenium', name: 'selenium-java', version: seleniumVersion) {
         exclude group: 'org.seleniumhq.selenium', module: 'htmlunit-driver'
         exclude group: 'com.google.guava', module: 'guava'
@@ -21,6 +21,7 @@ test {
 }
 
 task generateBundle(type: JavaExec)  {
+    classpath = sourceSets.main.compileClasspath
     classpath sourceSets.main.runtimeClasspath
     main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
     args "ru_RU",

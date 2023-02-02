@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.rabbitmq.client.GetResponse;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext;
 
 import java.time.Duration;
@@ -18,7 +17,6 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperti
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Get from RabbitMQ:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("GetResponse criteria")
-@MaxDepthOfReporting(0)
 @Description("Rabbit responses")
 public class GetResponseSupplier extends SequentialGetStepSupplier
         .GetListStepSupplier<RabbitMqStepContext, List<GetResponse>, GetResponse, GetResponseSupplier> {

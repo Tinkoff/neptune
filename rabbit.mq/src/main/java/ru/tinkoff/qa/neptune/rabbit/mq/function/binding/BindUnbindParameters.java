@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.function.binding;
 
 import com.rabbitmq.client.Channel;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.SelfDescribed;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 import ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArguments;
@@ -10,7 +10,6 @@ import ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_ROUTING_KEY_NAME;
 
 /**
@@ -19,7 +18,7 @@ import static ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperti
  * @param <T> is a type of subclass
  */
 @SuppressWarnings("unchecked")
-public abstract class BindUnbindParameters<T extends BindUnbindParameters<T>> implements StepParameterPojo {
+public abstract class BindUnbindParameters<T extends BindUnbindParameters<T>> extends SelfDescribed implements StepParameterPojo {
 
     @StepParameter("routingKey")
     String routingKey = "";
@@ -64,9 +63,4 @@ public abstract class BindUnbindParameters<T extends BindUnbindParameters<T>> im
     abstract void bind(Channel value);
 
     abstract void unbind(Channel value);
-
-    @Override
-    public final String toString() {
-        return translate(this);
-    }
 }

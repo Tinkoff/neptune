@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.spring.data;
 
 
 import org.springframework.data.repository.Repository;
+import ru.tinkoff.qa.neptune.core.api.steps.SelfDescribed;
 
 import java.util.function.Function;
 
@@ -10,7 +11,7 @@ import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.joining;
 import static org.springframework.util.ClassUtils.getAllInterfaces;
 
-public abstract class SpringDataFunction<INPUT, RESULT> implements Function<INPUT, RESULT> {
+public abstract class SpringDataFunction<INPUT, RESULT> extends SelfDescribed implements Function<INPUT, RESULT> {
 
     private final Class<?>[] supported;
 

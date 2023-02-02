@@ -9,7 +9,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
 @Tag("Junit5")
-public class DependencyInjectionTest extends BaseJunit5Test {
+public class DependencyInjectionTest {
 
     private int a;
     private int b;

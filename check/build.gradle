@@ -1,5 +1,5 @@
 dependencies {
-    api project(':core.api')
+    implementation(project(":core.api"))
 }
 
 task javadocJar(type: Jar) {
