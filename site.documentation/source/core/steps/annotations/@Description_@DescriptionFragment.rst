@@ -102,16 +102,20 @@
    package org.my.pack;
 
    import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+   import ru.tinkoff.qa.neptune.core.api.steps.SelfDescribed;
 
    import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
-   @Description("Some custom pojo")
-   public class MyCustomObject {
+   @Description("Some custom pojo {a} {b}")
+   public class MyCustomObject extends SelfDescribed {
 
-       public String toString() {
-           //Вызов метода, предназначенного для перевода/локализации
-           return translate(this);
-       }
+       @DescriptionFragment("a") //значение, которое,
+       //формирует динамическое название. Название фрагмента
+       //должно соответствовать маске параметра, заключенного в {}
+       private final Object a;
+
+       @DescriptionFragment("b")
+       private final Object b;
    }
 
 
