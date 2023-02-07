@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.kafka.functions.poll;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.Deserializer;
@@ -8,6 +8,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
+import ru.tinkoff.qa.neptune.kafka.jackson.desrializer.KafkaJacksonModule;
 
 import java.util.*;
 import java.util.function.Function;
@@ -144,13 +145,19 @@ class GetRecords<K, V> implements Function<KafkaStepContext, List<ConsumerRecord
 
     static final class KafkaRecordWrapper<K, V> {
 
+        private static final ObjectMapper MAPPER = new ObjectMapper().registerModule(new KafkaJacksonModule());
+
         private final ConsumerRecord<K, V> consumerRecord;
         private final String recordAsString;
 
         KafkaRecordWrapper(ConsumerRecord<K, V> consumerRecord) {
             checkNotNull(consumerRecord);
             this.consumerRecord = consumerRecord;
-            recordAsString = new Gson().toJson(consumerRecord);
+            try {
+                recordAsString = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(consumerRecord);
+            } catch (Exception e) {
+                throw new IllegalStateException(e);
+            }
         }
 
         ConsumerRecord<K, V> getConsumerRecord() {
