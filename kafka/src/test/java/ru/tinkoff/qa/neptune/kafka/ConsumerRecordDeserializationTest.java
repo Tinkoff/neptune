@@ -11,6 +11,7 @@ import ru.tinkoff.qa.neptune.kafka.jackson.desrializer.KafkaJacksonModule;
 import java.util.Date;
 import java.util.Optional;
 
+import static java.nio.ByteBuffer.allocateDirect;
 import static org.apache.kafka.common.record.TimestampType.LOG_APPEND_TIME;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -61,11 +62,34 @@ public class ConsumerRecordDeserializationTest {
                 "{\n" +
                     "  \"topic\" : \"testTopic\",\n" +
                     "  \"partition\" : 1,\n" +
+                    "  \"leaderEpoch\" : null,\n" +
                     "  \"offset\" : 1,\n" +
                     "  \"headers\" : { },\n" +
                     "  \"key\" : null,\n" +
                     "  \"value\" : null\n" +
-                    "}"},
+                    "}"
+            },
+
+            {new ConsumerRecord<>("testTopic", 1,
+                1L,
+                new Date().getTime(),
+                null,
+                0,
+                0,
+                allocateDirect(5),
+                allocateDirect(5),
+                new RecordHeaders(),
+                Optional.empty()),
+                "{\n" +
+                    "  \"topic\" : \"testTopic\",\n" +
+                    "  \"partition\" : 1,\n" +
+                    "  \"leaderEpoch\" : null,\n" +
+                    "  \"offset\" : 1,\n" +
+                    "  \"headers\" : { },\n" +
+                    "  \"key\" : \"\\\"AAAAAAA=\\\"\",\n" +
+                    "  \"value\" : \"\\\"AAAAAAA=\\\"\"\n" +
+                    "}"
+            },
         };
     }
 
