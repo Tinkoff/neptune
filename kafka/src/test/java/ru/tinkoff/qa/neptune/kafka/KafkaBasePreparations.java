@@ -5,6 +5,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.header.internals.RecordHeader;
+import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -13,10 +15,13 @@ import org.mockito.Mock;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 
+import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 
 import static java.util.List.of;
+import static org.apache.kafka.common.record.TimestampType.LOG_APPEND_TIME;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.when;
@@ -109,51 +114,171 @@ public class KafkaBasePreparations {
         var topicPartition = new TopicPartition("testTopic", 1);
         when(consumerWithDeserializedKeyAndValue.poll(any()))
             .thenReturn(new ConsumerRecords<>(Map.of(topicPartition,
-                of(new ConsumerRecord<>("testTopic", 1, 0,
+                of(new ConsumerRecord<>("testTopic", 1,
+                        1L,
+                        new Date().getTime(),
+                        LOG_APPEND_TIME,
+                        0,
+                        0,
                         new DraftDto().setName("Some Key"),
-                        new DraftDto().setName("Some Value")),
-                    new ConsumerRecord<>("testTopic", 1, 0,
+                        new DraftDto().setName("Some Value"),
+                        new RecordHeaders()
+                            .add(new RecordHeader("header1", "value1".getBytes()))
+                            .add(new RecordHeader("header1", "value2".getBytes()))
+                            .add(new RecordHeader("header2", "value1".getBytes())),
+                        Optional.of(5)),
+                    new ConsumerRecord<>("testTopic", 1,
+                        1L,
+                        new Date().getTime(),
+                        LOG_APPEND_TIME,
+                        0,
+                        0,
                         new DraftDto().setName("Some Key2"),
-                        new DraftDto().setName("Some Value2")),
-                    new ConsumerRecord<>("testTopic", 1, 0,
+                        new DraftDto().setName("Some Value2"),
+                        new RecordHeaders()
+                            .add(new RecordHeader("header1", "value1".getBytes()))
+                            .add(new RecordHeader("header1", "value2".getBytes()))
+                            .add(new RecordHeader("header2", "value1".getBytes())),
+                        Optional.of(5)),
+                    new ConsumerRecord<>("testTopic", 1,
+                        1L,
+                        new Date().getTime(),
+                        LOG_APPEND_TIME,
+                        0,
+                        0,
                         null,
-                        null)))));
+                        null,
+                        new RecordHeaders()
+                            .add(new RecordHeader("header1", "value1".getBytes()))
+                            .add(new RecordHeader("header1", "value2".getBytes()))
+                            .add(new RecordHeader("header2", "value1".getBytes())),
+                        Optional.of(5))))));
 
         when(consumerWithDeserializedKey.poll(any()))
             .thenReturn(new ConsumerRecords<>(Map.of(topicPartition,
-                of(new ConsumerRecord<>("testTopic", 1, 0,
+                of(new ConsumerRecord<>("testTopic", 1,
+                        1L,
+                        new Date().getTime(),
+                        LOG_APPEND_TIME,
+                        0,
+                        0,
                         new DraftDto().setName("Some Key"),
-                        "Some String Value 1"),
-                    new ConsumerRecord<>("testTopic", 1, 0,
+                        "Some String Value 1",
+                        new RecordHeaders()
+                            .add(new RecordHeader("header1", "value1".getBytes()))
+                            .add(new RecordHeader("header1", "value2".getBytes()))
+                            .add(new RecordHeader("header2", "value1".getBytes())),
+                        Optional.of(5)),
+                    new ConsumerRecord<>("testTopic", 1,
+                        1L,
+                        new Date().getTime(),
+                        LOG_APPEND_TIME,
+                        0,
+                        0,
                         new DraftDto().setName("Some Key2"),
-                        "Some String Value 2"),
-                    new ConsumerRecord<>("testTopic", 1, 0,
+                        "Some String Value 2",
+                        new RecordHeaders()
+                            .add(new RecordHeader("header1", "value1".getBytes()))
+                            .add(new RecordHeader("header1", "value2".getBytes()))
+                            .add(new RecordHeader("header2", "value1".getBytes())),
+                        Optional.of(5)),
+                    new ConsumerRecord<>("testTopic", 1,
+                        1L,
+                        new Date().getTime(),
+                        LOG_APPEND_TIME,
+                        0,
+                        0,
                         null,
-                        null)))));
+                        null,
+                        new RecordHeaders()
+                            .add(new RecordHeader("header1", "value1".getBytes()))
+                            .add(new RecordHeader("header1", "value2".getBytes()))
+                            .add(new RecordHeader("header2", "value1".getBytes())),
+                        Optional.of(5))))));
 
         when(consumerWithDeserializedValue.poll(any()))
             .thenReturn(new ConsumerRecords<>(Map.of(topicPartition,
-                of(new ConsumerRecord<>("testTopic", 1, 0,
+                of(new ConsumerRecord<>("testTopic", 1,
+                        1L,
+                        new Date().getTime(),
+                        LOG_APPEND_TIME,
+                        0,
+                        0,
                         "Some String Key 1",
-                        new DraftDto().setName("Some Value")),
-                    new ConsumerRecord<>("testTopic", 1, 0,
+                        new DraftDto().setName("Some Value"),
+                        new RecordHeaders()
+                            .add(new RecordHeader("header1", "value1".getBytes()))
+                            .add(new RecordHeader("header1", "value2".getBytes()))
+                            .add(new RecordHeader("header2", "value1".getBytes())),
+                        Optional.of(5)),
+                    new ConsumerRecord<>("testTopic", 1,
+                        1L,
+                        new Date().getTime(),
+                        LOG_APPEND_TIME,
+                        0,
+                        0,
                         "Some String Key 2",
-                        new DraftDto().setName("Some Value2")),
-                    new ConsumerRecord<>("testTopic", 1, 0,
+                        new DraftDto().setName("Some Value2"),
+                        new RecordHeaders()
+                            .add(new RecordHeader("header1", "value1".getBytes()))
+                            .add(new RecordHeader("header1", "value2".getBytes()))
+                            .add(new RecordHeader("header2", "value1".getBytes())),
+                        Optional.of(5)),
+                    new ConsumerRecord<>("testTopic", 1,
+                        1L,
+                        new Date().getTime(),
+                        LOG_APPEND_TIME,
+                        0,
+                        0,
                         null,
-                        null)))));
+                        null,
+                        new RecordHeaders()
+                            .add(new RecordHeader("header1", "value1".getBytes()))
+                            .add(new RecordHeader("header1", "value2".getBytes()))
+                            .add(new RecordHeader("header2", "value1".getBytes())),
+                        Optional.of(5))))));
 
         when(consumerRaw.poll(any()))
             .thenReturn(new ConsumerRecords<>(Map.of(topicPartition,
-                of(new ConsumerRecord<>("testTopic", 1, 0,
+                of(new ConsumerRecord<>("testTopic", 1,
+                        1L,
+                        new Date().getTime(),
+                        LOG_APPEND_TIME,
+                        0,
+                        0,
                         "Some String Key 1",
-                        "Some String Value 1"),
-                    new ConsumerRecord<>("testTopic", 1, 0,
+                        "Some String Value 1",
+                        new RecordHeaders()
+                            .add(new RecordHeader("header1", "value1".getBytes()))
+                            .add(new RecordHeader("header1", "value2".getBytes()))
+                            .add(new RecordHeader("header2", "value1".getBytes())),
+                        Optional.of(5)),
+                    new ConsumerRecord<>("testTopic", 1,
+                        1L,
+                        new Date().getTime(),
+                        LOG_APPEND_TIME,
+                        0,
+                        0,
                         "Some String Key 2",
-                        "Some String Value 2"),
-                    new ConsumerRecord<>("testTopic", 1, 0,
+                        "Some String Value 2",
+                        new RecordHeaders()
+                            .add(new RecordHeader("header1", "value1".getBytes()))
+                            .add(new RecordHeader("header1", "value2".getBytes()))
+                            .add(new RecordHeader("header2", "value1".getBytes())),
+                        Optional.of(5)),
+                    new ConsumerRecord<>("testTopic", 1,
+                        1L,
+                        new Date().getTime(),
+                        LOG_APPEND_TIME,
+                        0,
+                        0,
                         null,
-                        null)))));
+                        null,
+                        new RecordHeaders()
+                            .add(new RecordHeader("header1", "value1".getBytes()))
+                            .add(new RecordHeader("header1", "value2".getBytes()))
+                            .add(new RecordHeader("header2", "value1".getBytes())),
+                        Optional.of(5))))));
     }
 
     @BeforeMethod

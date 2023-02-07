@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.kafka.captors;
 
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 interface KafkaValueCaptor {
 
@@ -9,7 +10,12 @@ interface KafkaValueCaptor {
         if (caught instanceof String) {
             value = (String) caught;
         } else {
-            value = new GsonBuilder().setPrettyPrinting().create().toJson(caught);
+            try {
+                value = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(caught);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                return null;
+            }
         }
         return new StringBuilder(value);
     }

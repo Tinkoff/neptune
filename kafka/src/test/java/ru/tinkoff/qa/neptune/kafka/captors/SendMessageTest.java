@@ -19,7 +19,7 @@ public class SendMessageTest extends BaseCaptorTest {
             .topic("Test"));
 
         assertThat(CAUGHT_MESSAGES, mapOf(mapEntry("Producer Record Value", "{\n" +
-            "  \"name\": \"test\"\n" +
+            "  \"name\" : \"test\"\n" +
             "}")));
     }
 
@@ -33,7 +33,7 @@ public class SendMessageTest extends BaseCaptorTest {
         assertThat(CAUGHT_MESSAGES, mapOf(
             mapEntry("Producer Record Key", "Some key"),
             mapEntry("Producer Record Value", "{\n" +
-                "  \"name\": \"test\"\n" +
+                "  \"name\" : \"test\"\n" +
                 "}")));
     }
 }
