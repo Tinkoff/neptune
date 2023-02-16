@@ -10,8 +10,8 @@
 
 ## Пишем первый JUnit5-тест
 
-Ниже варианты, с помощью которых можно добавлять новые тесты, используя текущий модуль
-
+Если свойство [junit.jupiter.extensions.autodetection.enabled](https://junit.org/junit5/docs/current/user-guide/#extensions-registration-automatic-enabling)`=true`, 
+то ничего особенного делать не нужно, иначе можно поступить как примере ниже  
 ```{eval-rst}
 .. include:: junit5_first_test.rst
 ```

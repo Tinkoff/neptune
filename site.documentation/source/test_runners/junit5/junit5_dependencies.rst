@@ -25,6 +25,13 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+           <groupId>org.junit.platform</groupId>
+           <artifactId>junit-platform-launcher</artifactId>
+           <version>[1.8.0,)</version>
+           <scope>test</scope>
+        </dependency>
+
 .. code-block:: groovy
    :caption: Добавить в build.gradle
 
@@ -32,4 +39,5 @@
         testImplementation  group: 'ru.tinkoff.qa.neptune', name: 'jupiter.integration', version: LATEST_RELEASE_OR_BETA_VERSION
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '[5.8.0,)' //диапазон поддерживаемых версий
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '[5.8.0,)' //диапазон поддерживаемых версий
+        testImplementation group: 'org.junit.platform', name: 'junit-platform-launcher', version: '[1.8.0,)' //диапазон поддерживаемых версий
     }
