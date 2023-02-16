@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.mockito;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -44,6 +45,10 @@ public final class VerificationExecutionData {
             var thrown = THROWN.get();
 
             try {
+                if (isNull(wanted) || isNull(stepName)) {
+                    return;
+                }
+
                 $(stepName + " " + wanted + ofNullable(mode).map(o -> SPACE + o).orElse(EMPTY), () -> {
                     if (nonNull(thrown)) {
                         if (thrown instanceof RuntimeException) {
