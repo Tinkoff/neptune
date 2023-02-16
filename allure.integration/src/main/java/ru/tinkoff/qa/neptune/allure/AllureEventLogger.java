@@ -2,17 +2,15 @@ package ru.tinkoff.qa.neptune.allure;
 
 import io.qameta.allure.AllureLifecycle;
 import io.qameta.allure.model.Parameter;
-import io.qameta.allure.model.Status;
 import io.qameta.allure.model.StepResult;
 import ru.tinkoff.qa.neptune.core.api.event.firing.EventLogger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
-import static io.qameta.allure.Allure.*;
+import static io.qameta.allure.Allure.addAttachment;
+import static io.qameta.allure.Allure.getLifecycle;
 import static io.qameta.allure.model.Parameter.Mode.DEFAULT;
 import static io.qameta.allure.model.Parameter.Mode.MASKED;
 import static io.qameta.allure.model.Status.BROKEN;
@@ -20,6 +18,8 @@ import static io.qameta.allure.model.Status.PASSED;
 import static io.qameta.allure.util.ResultsUtils.getStatus;
 import static io.qameta.allure.util.ResultsUtils.getStatusDetails;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.allure.lifecycle.ItemsToNotBeReported.toReport;
@@ -103,8 +103,7 @@ public class AllureEventLogger implements EventLogger {
 
     static class StepEventLogger implements EventLogger {
         private final AllureLifecycle allureLifecycle = getLifecycle();
-        private final LinkedList<String> stepUIIDs = new LinkedList<>();
-        private final HashMap<String, Status> results = new HashMap<>();
+        private final static ThreadLocal<Boolean> IS_PASSED = new ThreadLocal<>();
 
         @Override
         public void fireTheEventStarting(String message, Map<String, String> parameters) {
@@ -117,75 +116,76 @@ public class AllureEventLogger implements EventLogger {
                     .map(e -> createParameter(e.getKey(), e.getValue()))
                     .collect(toList()));
 
-            if (getStepUIIDs().isEmpty()) {
-                getAllureLifecycle().startStep(uuid, result);
+            var caseOrStep = getAllureLifecycle().getCurrentTestCaseOrStep().orElse(null);
+            if (nonNull(caseOrStep)) {
+                getAllureLifecycle().startStep(caseOrStep, uuid, result);
             } else {
-                getAllureLifecycle().startStep(getStepUIIDs().getLast(), uuid, result);
+                getAllureLifecycle().startStep(uuid, result);
             }
-            getStepUIIDs().addLast(uuid);
-            getResults().put(uuid, null);
         }
 
         @Override
         public void fireThrownException(Throwable throwable) {
 
-            if (getStepUIIDs().isEmpty()) {
+            var caseOrStep = getAllureLifecycle().getCurrentTestCaseOrStep().orElse(null);
+            if (isNull(caseOrStep)) {
                 return;
             }
 
-            var uuid = getStepUIIDs().getLast();
-            getAllureLifecycle().updateStep(uuid, s -> s
+            getAllureLifecycle().updateStep(caseOrStep, s -> s
                 .setStatus(getStatus(throwable).orElse(BROKEN))
                 .setStatusDetails(getStatusDetails(throwable).orElse(null)));
-            getResults().put(uuid, getStatus(throwable).orElse(BROKEN));
 
             var bos = new ByteArrayOutputStream();
             var ps = new PrintStream(bos, true, UTF_8);
             throwable.printStackTrace(ps);
             String data = bos.toString(UTF_8);
             addAttachment("Thrown exception:", data);
+            IS_PASSED.set(false);
         }
 
         @Override
         public void fireReturnedValue(String resultDescription, Object returned) {
 
-            if (getStepUIIDs().isEmpty()) {
+            var caseOrStep = getAllureLifecycle().getCurrentTestCaseOrStep().orElse(null);
+            if (isNull(caseOrStep)) {
                 return;
             }
 
-            var uuid = getStepUIIDs().getLast();
-            getAllureLifecycle().updateStep(uuid, s -> s.setStatus(PASSED)
+            getAllureLifecycle().updateStep(caseOrStep, s -> s.setStatus(PASSED)
                 .getParameters()
                 .add(createParameter(resultDescription, stringValueOfObjectOrArray(returned))));
-            getResults().put(uuid, PASSED);
+
+            IS_PASSED.set(true);
         }
 
         @Override
         public void fireEventFinishing() {
 
-            if (getStepUIIDs().isEmpty()) {
+            var caseOrStep = getAllureLifecycle().getCurrentTestCaseOrStep().orElse(null);
+            if (isNull(caseOrStep)) {
                 return;
             }
 
-            var uuid = getStepUIIDs().getLast();
-            getAllureLifecycle().updateStep(uuid, stepResult -> {
-                if (getResults().get(uuid) == null) {
+            if (isNull(IS_PASSED.get())) {
+
+                getAllureLifecycle().updateStep(caseOrStep, stepResult -> {
                     stepResult.setStatus(PASSED);
-                }
-            });
-            getAllureLifecycle().stopStep(uuid);
-            getStepUIIDs().removeLast();
+                });
+            }
+            IS_PASSED.remove();
+            getAllureLifecycle().stopStep(caseOrStep);
         }
 
         @Override
         public void addParameters(Map<String, String> parameters) {
 
-            if (getStepUIIDs().isEmpty()) {
+            var caseOrStep = getAllureLifecycle().getCurrentTestCaseOrStep().orElse(null);
+            if (isNull(caseOrStep)) {
                 return;
             }
 
-            var uuid = getStepUIIDs().getLast();
-            getAllureLifecycle().updateStep(uuid, stepResult -> {
+            getAllureLifecycle().updateStep(caseOrStep, stepResult -> {
                 var params = stepResult.getParameters();
                 params.addAll(parameters
                     .entrySet()
@@ -199,14 +199,6 @@ public class AllureEventLogger implements EventLogger {
 
         AllureLifecycle getAllureLifecycle() {
             return allureLifecycle;
-        }
-
-        LinkedList<String> getStepUIIDs() {
-            return stepUIIDs;
-        }
-
-        Map<String, Status> getResults() {
-            return results;
         }
     }
 }

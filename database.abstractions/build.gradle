@@ -1,5 +1,5 @@
 dependencies {
-    implementation(project(":core.api"))
+    api(project(":core.api"))
     compileOnly(group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0')
 }
 

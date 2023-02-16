@@ -13,7 +13,7 @@ import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.trans
 
 public class DescribedStepInterceptor {
 
-    @Advice.OnMethodExit
+    @Advice.OnMethodExit(inline = false)
     public static void interceptExit(
         @Advice.Origin Method method,
         @Advice.AllArguments Object[] args,

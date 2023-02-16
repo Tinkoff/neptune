@@ -12,7 +12,7 @@ import java.util.function.Function;
 
 import static java.util.Objects.nonNull;
 
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class ConsumerRecordSerializer extends JsonSerializer<ConsumerRecord> {
 
     private void writeSerializedProperty(String property,

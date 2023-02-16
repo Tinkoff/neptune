@@ -5,7 +5,7 @@ plugins {
 }
 
 ext {
-    globalVersion = '0.24.7-ALPHA'
+    globalVersion = '0.25.0-MIGRATION-ALPHA'
 }
 
 repositories {
@@ -42,14 +42,14 @@ subprojects {
         junit5Version = '5.8.2'
         junit5PlatformVersion = '1.8.2'
         hamcrestVersion = '2.2'
-        seleniumVersion = '4.6.0'
-        allureVersion = '2.19.0'
+        seleniumVersion = '4.8.0'
+        allureVersion = '2.21.0'
         jacksonVersion = '2.13.3'
         mockitoVersion = '4.8.1'
         springVersion = '5.3.20'
         springDataVersion = '2.7.0'
         springBootVersion = '2.7.0'
-        bytybuddyVersion = '1.12.22'
+        bytebuddyVersion = '1.13.0'
         queryDslVersion = '5.0.0'
         globalVersion = version
     }
@@ -66,13 +66,11 @@ subprojects {
         api group: 'commons-validator', name: 'commons-validator', version: '1.7'
         api group: 'commons-io', name: 'commons-io', version: '2.11.0'
         implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
-        implementation group: 'io.github.classgraph', name: 'classgraph', version: '4.8.149'
+        implementation group: 'io.github.classgraph', name: 'classgraph', version: '4.8.154'
         testImplementation group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion
         compileOnly group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion
         implementation group: 'org.apache.tika', name: 'tika-core', version: '2.4.0'
         implementation group: 'org.objenesis', name: 'objenesis', version: '3.3'
-        implementation group: 'net.bytebuddy', name: 'byte-buddy', version: bytybuddyVersion
-        implementation group: 'net.bytebuddy', name: 'byte-buddy-agent', version: bytybuddyVersion
     }
 
     test {
@@ -88,7 +86,6 @@ subprojects {
 
         jacoco {
             excludes += [
-                    'ru.tinkoff.qa.neptune.core.api.agent.DescribedStepInterceptor',
                     'ru.tinkoff.qa.neptune.core.api.agent.HamcrestTransformParameters.HamcrestInterceptor',
                     'ru.tinkoff.qa.neptune.core.api.agent.CombinableMatchersTransformParameters.HamcrestCombinableInterceptor',
                     'ru.tinkoff.qa.neptune.check.localization.*',
@@ -100,7 +97,8 @@ subprojects {
                     'ru.tinkoff.qa.neptune.selenium.localization.*',
                     'ru.tinkoff.qa.neptune.spring.data.localization.*',
                     'ru.tinkoff.qa.neptune.spring.mock.mvc.localization.*',
-                    'ru.tinkoff.qa.neptune.spring.web.testclient.localization.*'
+                    'ru.tinkoff.qa.neptune.spring.web.testclient.localization.*',
+                    'ru.tinkoff.qa.neptune.mockito.localization.*'
             ]
         }
     }
@@ -119,7 +117,6 @@ subprojects {
                     exclude: [
                             '**/**$HamcrestCombinableInterceptor.class',
                             '**/**$HamcrestInterceptor.class',
-                            '**/DescribedStepInterceptor.class',
                             '**/check/localization/**',
                             '**/database/abstractions/localization/**',
                             '**/hibernate/localization/**',
@@ -129,7 +126,8 @@ subprojects {
                             '**/selenium/localization/**',
                             '**/spring/data/localization/**',
                             '**/spring/mock/mvc/localization/**',
-                            '**/spring/web/testclient/localization/**'
+                            '**/spring/web/testclient/localization/**',
+                            '**/mockito/localization/**'
                     ]
             )
         })
@@ -147,7 +145,6 @@ task jacocoOverallReport(type: JacocoReport, group: 'Coverage reports') {
                 exclude: [
                         '**/**$HamcrestCombinableInterceptor.class',
                         '**/**$HamcrestInterceptor.class',
-                        '**/DescribedStepInterceptor.class',
                         '**/check/localization/**',
                         '**/database/abstractions/localization/**',
                         '**/hibernate/localization/**',
@@ -157,7 +154,8 @@ task jacocoOverallReport(type: JacocoReport, group: 'Coverage reports') {
                         '**/selenium/localization/**',
                         '**/spring/data/localization/**',
                         '**/spring/mock/mvc/localization/**',
-                        '**/spring/web/testclient/localization/**'
+                        '**/spring/web/testclient/localization/**',
+                        '**/mockito/localization/**'
                 ]
         )
     }

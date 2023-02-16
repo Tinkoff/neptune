@@ -1,41 +1,28 @@
-configurations {
-    bundleGeneration
-}
-
-dependencies {
-    api(project(":core.api"))
-    compileOnly group: 'org.apache.kafka', name: 'kafka-clients', version: '3.1.1'
-    bundleGeneration(group: 'org.apache.kafka', name: 'kafka-clients', version: '3.1.1')
-    testImplementation group: 'org.apache.kafka', name: 'kafka-clients', version: '3.3.1'
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
-    testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockitoVersion
-}
-
 java {
     withJavadocJar()
     withSourcesJar()
 }
 
-task generateBundle(type: JavaExec)  {
-    classpath = configurations.bundleGeneration + sourceSets.main.compileClasspath
-    classpath sourceSets.main.runtimeClasspath
-    main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
-    args "ru_RU",
-            "$projectDir/src/main/resources",
-            "false",
-            "kafka"
+dependencies {
+    api(project(":core.api"))
+    compileOnly group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+    compileOnly group: 'org.mockito', name: 'mockito-inline', version: mockitoVersion
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit5Version
+    testImplementation('org.junit.platform:junit-platform-launcher')
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.1.1'
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: '5.1.1'
+    implementation group: 'net.bytebuddy', name: 'byte-buddy', version: bytebuddyVersion
 }
 
-processResources {
-    doLast {
-        generateBundle.exec()
-    }
+test {
+    useJUnitPlatform()
 }
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = 'kafka'
+            artifactId = 'mockito.integration'
             from components.java
             repositories {
                 maven {
@@ -45,7 +32,7 @@ publishing {
             }
             pom {
                 packaging = 'jar'
-                name = 'kafka'
+                name = 'mockito.integration'
                 version = version
                 url = 'https://github.com/tinkoff/neptune'
                 licenses {
@@ -56,12 +43,6 @@ publishing {
                     }
                 }
                 developers {
-                    developer {
-                        name = 'Andrew Charykov'
-                        email = 'a.s.charykov@yandex.ru'
-                        url = 'https://github.com/AndrewCharykov'
-                        id = 'AndrewCharykov'
-                    }
                     developer {
                         id = 'TikhomirovSergey'
                         name = 'Sergey Tikhomirov'
@@ -81,11 +62,27 @@ publishing {
 javadoc {
     destinationDir = file("${buildDir}/../../neptune.documentation/$project.name")
 
-    title = "Neptune Kafka. v$globalVersion"
+    title = "Neptune Mockito Integration API. v$globalVersion"
     options.author true
     options.links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
     options.addStringOption 'Xdoclint:none', '-quiet'
     options.memberLevel = JavadocMemberLevel.PROTECTED
     options.bottom = "Copyright &copy; 2023 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
     options.addBooleanOption('html5', true)
+}
+
+task generateBundle(type: JavaExec) {
+    classpath = sourceSets.main.compileClasspath
+    classpath sourceSets.main.runtimeClasspath
+    main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
+    args "ru_RU",
+            "$projectDir/src/main/resources",
+            "false",
+            "mockito"
+}
+
+processResources {
+    doLast {
+        generateBundle.exec()
+    }
 }

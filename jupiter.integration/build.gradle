@@ -2,11 +2,11 @@ dependencies {
     api project(':core.api')
     compileOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit5Version
     compileOnly group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
-    compileOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: junit5PlatformVersion
+    compileOnly('org.junit.platform:junit-platform-launcher')
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit5Version
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
-    testImplementation group: 'org.junit.platform', name: 'junit-platform-launcher', version: junit5PlatformVersion
+    testImplementation('org.junit.platform:junit-platform-launcher')
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit5Version
 }
 

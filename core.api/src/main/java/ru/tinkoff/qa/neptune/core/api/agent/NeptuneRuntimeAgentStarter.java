@@ -46,6 +46,7 @@ public final class NeptuneRuntimeAgentStarter {
             .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
             .with(AgentBuilder.DescriptionStrategy.SuperTypeLoading.Default.POOL_FIRST)
             .ignore(nameStartsWith("net.bytebuddy."))
+            .ignore(nameStartsWith("java."))
             .ignore(nameStartsWith("com.sun."))
             .ignore(nameStartsWith("org.testng."))
             .ignore(nameStartsWith("org.junit."))
