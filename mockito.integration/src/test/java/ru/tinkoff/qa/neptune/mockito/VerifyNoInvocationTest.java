@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.mockito;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -10,6 +11,13 @@ import static org.mockito.Mockito.*;
 import static ru.tinkoff.qa.neptune.mockito.TestEventLogger.*;
 
 public class VerifyNoInvocationTest {
+
+    @BeforeEach
+    void afterMethod() {
+        stepNames.get().clear();
+        thrown.remove();
+        isFinished.remove();
+    }
 
     @Test
     void verifyNoInteractionsTest() {
