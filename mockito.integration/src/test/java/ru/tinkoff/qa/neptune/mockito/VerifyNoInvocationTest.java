@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.mockito;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -10,17 +9,12 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 import static ru.tinkoff.qa.neptune.mockito.TestEventLogger.*;
 
-public class VerifyNoInvocationTest extends MockitoPreparations {
-
-    @AfterEach
-    void clean() {
-        clearInvocations(someClass);
-    }
+public class VerifyNoInvocationTest {
 
     @Test
     void verifyNoInteractionsTest() {
+        var someClass = mock(SomeClass.class, "Test instance");
         verifyNoInteractions(someClass);
-
         assertThat(stepNames.get(), contains(new VerifyNoInteractions() + " Test instance"));
         assertThat(thrown.get(), nullValue());
         assertThat(isFinished.get(), is(true));
@@ -28,8 +22,8 @@ public class VerifyNoInvocationTest extends MockitoPreparations {
 
     @Test
     void verifyNoMoreInteractionsTest() {
+        var someClass = mock(SomeClass.class, "Test instance");
         verifyNoMoreInteractions(someClass);
-
         assertThat(stepNames.get(), contains(new VerifyNoMoreInteractions() + " Test instance"));
         assertThat(thrown.get(), nullValue());
         assertThat(isFinished.get(), is(true));
@@ -37,6 +31,7 @@ public class VerifyNoInvocationTest extends MockitoPreparations {
 
     @Test
     public void verifyInOrderNoInteractionsTest() {
+        var someClass = mock(SomeClass.class, "Test instance");
         inOrder(someClass).verifyNoMoreInteractions();
 
         assertThat(stepNames.get(), contains(new VerifyNoMoreInteractionsInOrder() + " Test instance"));
@@ -80,6 +75,7 @@ public class VerifyNoInvocationTest extends MockitoPreparations {
     @Test
     void verifyNoInteractionsThrowsExceptionTest() {
         try {
+            var someClass = mock(SomeClass.class, "Test instance");
             someClass.doSomething(5);
             verifyNoInteractions(someClass);
         } catch (Throwable t) {
@@ -94,6 +90,7 @@ public class VerifyNoInvocationTest extends MockitoPreparations {
     @Test
     void verifyNoMoreInteractionsThrowsExceptionTest() {
         try {
+            var someClass = mock(SomeClass.class, "Test instance");
             someClass.doSomething(5);
             verifyNoMoreInteractions(someClass);
         } catch (Throwable t) {
@@ -108,6 +105,7 @@ public class VerifyNoInvocationTest extends MockitoPreparations {
     @Test
     public void verifyInOrderNoInteractionsThrowsExceptionTest() {
         try {
+            var someClass = mock(SomeClass.class, "Test instance");
             someClass.doSomething(5);
             inOrder(someClass).verifyNoMoreInteractions();
         } catch (Throwable t) {

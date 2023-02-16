@@ -1,26 +1,44 @@
 package ru.tinkoff.qa.neptune.mockito;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.parallel.Execution;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.Mock;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
+import static org.junit.jupiter.api.parallel.ExecutionMode.CONCURRENT;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.openMocks;
 import static ru.tinkoff.qa.neptune.mockito.TestEventLogger.*;
 
-public class VerifyTest extends MockitoPreparations {
+@TestInstance(PER_CLASS)
+@Execution(CONCURRENT)
+public class VerifyTest {
 
     @Captor
     private ArgumentCaptor<Object> captor;
 
-    @Override
+    @Mock(name = "Test instance")
+    SomeClass someClass;
+
+    @BeforeEach
+    void afterMethod() {
+        stepNames.get().clear();
+        thrown.remove();
+        isFinished.remove();
+    }
+
     @BeforeAll
     void prepare() {
-        super.prepare();
+        openMocks(this);
         someClass.getSomething();
         someClass.doSomething(5);
     }
