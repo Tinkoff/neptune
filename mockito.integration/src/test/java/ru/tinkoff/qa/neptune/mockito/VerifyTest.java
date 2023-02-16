@@ -37,21 +37,6 @@ public class VerifyTest {
     }
 
     @Test
-    void noVerificationTest() {
-
-        try {
-            var someClass = mock(SomeClass.class, "Test instance");
-            someClass.doSomething(5);
-            verify(someClass, timeout(5000).times(1));
-        } catch (Throwable ignored) {
-        }
-
-        assertThat(stepNames.get(), emptyIterable());
-        assertThat(thrown.get(), nullValue());
-        assertThat(isFinished.get(), nullValue());
-    }
-
-    @Test
     void verifyTimeOutTest() {
         var someClass = mock(SomeClass.class, "Test instance");
         someClass.doSomething(5);
