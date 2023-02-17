@@ -1,9 +1,11 @@
-package ru.tinkoff.qa.neptune.core.api.localization;
+package ru.tinkoff.qa.neptune.check.localization;
 
 import io.github.classgraph.ClassGraph;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
+import ru.tinkoff.qa.neptune.core.api.localization.BindToPartition;
+import ru.tinkoff.qa.neptune.core.api.localization.BundleFillerExtension;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
@@ -15,7 +17,7 @@ import static java.util.Comparator.comparing;
 import static java.util.List.of;
 import static java.util.stream.Collectors.toList;
 
-@BindToPartition("core")
+@BindToPartition("check")
 public class HamcrestMatchersBundleExtension extends BundleFillerExtension {
 
     public HamcrestMatchersBundleExtension() {

@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api.agent;
+package ru.tinkoff.qa.neptune.check.agent;
 
 import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.localization.LocalizationByResourceBundle;

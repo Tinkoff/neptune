@@ -6,7 +6,6 @@
             <class name="ru.tinkoff.qa.neptune.core.api.localization.BasicLocalizationTest"/>
             <class name="ru.tinkoff.qa.neptune.core.api.localization.TranslateByResourceBundleTest"/>
             <class name="ru.tinkoff.qa.neptune.core.api.localization.OtherLocalisationEngineTest"/>
-            <class name="ru.tinkoff.qa.neptune.core.api.localization.MatcherLocalizationTest"/>
             <class name="ru.tinkoff.qa.neptune.core.api.localization.BundleFillerFullTest"/>
             <class name="ru.tinkoff.qa.neptune.core.api.localization.BundleFillerPartialTest"/>
         </classes>
