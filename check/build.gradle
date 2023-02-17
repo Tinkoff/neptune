@@ -1,5 +1,11 @@
+configurations {
+    bundleGeneration
+}
+
 dependencies {
     api(project(":core.api"))
+    bundleGeneration(group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion)
+    implementation group: 'net.bytebuddy', name: 'byte-buddy', version: bytebuddyVersion
 }
 
 task javadocJar(type: Jar) {
@@ -7,13 +13,20 @@ task javadocJar(type: Jar) {
     from javadoc
 }
 
-task generateBundle(type: JavaExec)  {
+task generateBundle(type: JavaExec) {
+    classpath = configurations.bundleGeneration + sourceSets.main.compileClasspath
     classpath sourceSets.main.runtimeClasspath
     main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
     args "ru_RU",
             "$projectDir/src/main/resources",
             "false",
             "check"
+}
+
+processResources {
+    doLast {
+        generateBundle.exec()
+    }
 }
 
 java {

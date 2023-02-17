@@ -4,7 +4,6 @@ public final class CoreLocalizationBundlePartition extends LocalizationBundlePar
 
     public CoreLocalizationBundlePartition() {
         super("core",
-                "ru.tinkoff.qa.neptune.core.api",
-                "org.hamcrest");
+            "ru.tinkoff.qa.neptune.core.api");
     }
 }

@@ -1,8 +1,10 @@
-package ru.tinkoff.qa.neptune.core.api.localization;
+package ru.tinkoff.qa.neptune.check.test;
 
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.core.api.localization.LocalizationByResourceBundle;
+import ru.tinkoff.qa.neptune.core.api.localization.StepLocalization;
 
 import java.util.Locale;
 

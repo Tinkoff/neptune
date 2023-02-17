@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api.agent;
+package ru.tinkoff.qa.neptune.check.agent;
 
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.description.method.MethodDescription;
@@ -9,12 +9,13 @@ import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.CombinableMatcher;
 import org.hamcrest.core.DescribedAs;
+import ru.tinkoff.qa.neptune.core.api.agent.NeptuneTransformParameters;
 
 import java.lang.reflect.Method;
 
 import static net.bytebuddy.matcher.ElementMatchers.*;
-import static ru.tinkoff.qa.neptune.core.api.agent.HamcrestLocalizationHelper.calculateDescription;
-import static ru.tinkoff.qa.neptune.core.api.agent.HamcrestLocalizationHelper.isLocalizationUsed;
+import static ru.tinkoff.qa.neptune.check.agent.HamcrestLocalizationHelper.calculateDescription;
+import static ru.tinkoff.qa.neptune.check.agent.HamcrestLocalizationHelper.isLocalizationUsed;
 
 public class HamcrestTransformParameters implements NeptuneTransformParameters {
 
