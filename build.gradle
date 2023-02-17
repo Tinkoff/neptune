@@ -85,19 +85,20 @@ subprojects {
         finalizedBy jacocoTestReport
 
         jacoco {
-            excludes += [
-                    'ru.tinkoff.qa.neptune.check.agent.*',
-                    'ru.tinkoff.qa.neptune.check.localization.*',
-                    'ru.tinkoff.qa.neptune.database.abstractions.localization.*',
-                    'ru.tinkoff.qa.neptune.hibernate.localization.*',
-                    'ru.tinkoff.qa.neptune.http.api.localization.*',
-                    'ru.tinkoff.qa.neptune.kafka.localization.*',
-                    'ru.tinkoff.qa.neptune.retrofit2.localization.*',
-                    'ru.tinkoff.qa.neptune.selenium.localization.*',
-                    'ru.tinkoff.qa.neptune.spring.data.localization.*',
-                    'ru.tinkoff.qa.neptune.spring.mock.mvc.localization.*',
-                    'ru.tinkoff.qa.neptune.spring.web.testclient.localization.*',
-                    'ru.tinkoff.qa.neptune.mockito.localization.*'
+            excludes = [
+                    '**/**$HamcrestCombinableInterceptor.class',
+                    '**/**$HamcrestInterceptor.class',
+                    '**/check/localization/**',
+                    '**/database/abstractions/localization/**',
+                    '**/hibernate/localization/**',
+                    '**/http/api/localization/**',
+                    '**/kafka/localization/**',
+                    '**/retrofit2/localization/**',
+                    '**/selenium/localization/**',
+                    '**/spring/data/localization/**',
+                    '**/spring/mock/mvc/localization/**',
+                    '**/spring/web/testclient/localization/**',
+                    '**/mockito/localization/**'
             ]
         }
     }
@@ -114,7 +115,6 @@ subprojects {
         classDirectories.setFrom(classDirectories.files.collect {
             fileTree(dir: it,
                     exclude: [
-                            '**/check/agent/**',
                             '**/**$HamcrestCombinableInterceptor.class',
                             '**/**$HamcrestInterceptor.class',
                             '**/check/localization/**',
@@ -143,7 +143,8 @@ task jacocoOverallReport(type: JacocoReport, group: 'Coverage reports') {
     classDirectories.from = files(subprojects.sourceSets.main.output).files.collect {
         fileTree(dir: it,
                 exclude: [
-                        '**/check/agent/**',
+                        '**/**$HamcrestCombinableInterceptor.class',
+                        '**/**$HamcrestInterceptor.class',
                         '**/check/localization/**',
                         '**/database/abstractions/localization/**',
                         '**/hibernate/localization/**',
