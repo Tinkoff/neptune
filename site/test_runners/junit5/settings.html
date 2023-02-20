@@ -240,6 +240,10 @@
 </ul>
 </li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Mockito</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../mockito/index.html">Интеграция с Mockito</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Spring Boot</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../spring/spring.boot.sterter.html">Neptune Spring boot starter</a></li>
@@ -400,6 +404,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../core/dependency_injection.html">Внедрение зависимостей</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../core/hooks.html">Хуки</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../core/class_binding.html">Связывание классов</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../core/aspects.html">Аспекты</a></li>
 </ul>
 </li>
 </ul>
@@ -437,10 +442,13 @@
         <article role="main">
           <section class="tex2jax_ignore mathjax_ignore" id="junit5">
 <h1>Настройки интеграции с JUnit5<a class="headerlink" href="#junit5" title="Permalink to this heading">#</a></h1>
+<p>Необходимо включить свойство <a class="reference external" href="https://junit.org/junit5/docs/current/user-guide/#extensions-registration-automatic-enabling">junit.jupiter.extensions.autodetection.enabled</a></p>
+<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="na">junit.jupiter.extensions.autodetection.enabled</span><span class="o">=</span><span class="s">true</span><span class="w"></span>
+</pre></div>
+</div>
 <p>Ниже список свойств, который дополняет <a class="reference internal" href="../../quick_start/settings/index.html"><span class="doc std std-doc">базовые</span></a></p>
 <section id="junit5-refresh-before">
 <h2>JUNIT5_REFRESH_BEFORE<a class="headerlink" href="#junit5-refresh-before" title="Permalink to this heading">#</a></h2>
-<p>Основная статья: <a class="reference internal" href="../../core/steps/context/refresh.html"><span class="doc std std-doc">Обновление контекстов</span></a></p>
 <p>Основная статья: <a class="reference internal" href="../../core/steps/context/refresh.html"><span class="doc std std-doc">Обновление контекстов</span></a></p>
 <p>Свойство указывает, перед каким методами следует обновить контекст. Типы этих методов описываются перечислением <code class="docutils literal notranslate"><span class="pre">ru.tinkoff.qa.neptune.jupiter.integration.properties.RefreshEachTimeBefore</span></code>:</p>
 <ul class="simple">

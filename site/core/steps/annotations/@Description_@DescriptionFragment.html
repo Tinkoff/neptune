@@ -240,6 +240,10 @@
 </ul>
 </li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Mockito</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../mockito/index.html">Интеграция с Mockito</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Spring Boot</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../spring/spring.boot.sterter.html">Neptune Spring boot starter</a></li>
@@ -400,6 +404,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../dependency_injection.html">Внедрение зависимостей</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../hooks.html">Хуки</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../class_binding.html">Связывание классов</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../aspects.html">Аспекты</a></li>
 </ul>
 </li>
 </ul>
@@ -538,16 +543,20 @@
 <div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.Description</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SelfDescribed</span><span class="p">;</span><span class="w"></span>
 
 <span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate</span><span class="p">;</span><span class="w"></span>
 
-<span class="nd">@Description</span><span class="p">(</span><span class="s">&quot;Some custom pojo&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyCustomObject</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@Description</span><span class="p">(</span><span class="s">&quot;Some custom pojo {a} {b}&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyCustomObject</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">SelfDescribed</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">toString</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//Вызов метода, предназначенного для перевода/локализации</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">translate</span><span class="p">(</span><span class="k">this</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;a&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//значение, которое,</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//формирует динамическое название. Название фрагмента</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//должно соответствовать маске параметра, заключенного в {}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;b&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">b</span><span class="p">;</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>

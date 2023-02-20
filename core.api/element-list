@@ -1,4 +1,6 @@
-ru.tinkoff.qa.neptune.core.api.aspects
+ru.tinkoff.qa.neptune.core.api.agent
+ru.tinkoff.qa.neptune.core.api.agent.junit.platform
+ru.tinkoff.qa.neptune.core.api.agent.testng
 ru.tinkoff.qa.neptune.core.api.binding
 ru.tinkoff.qa.neptune.core.api.cleaning
 ru.tinkoff.qa.neptune.core.api.concurrency

@@ -240,6 +240,10 @@
 </ul>
 </li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Mockito</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../mockito/index.html">Интеграция с Mockito</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Spring Boot</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../spring/spring.boot.sterter.html">Neptune Spring boot starter</a></li>
@@ -400,6 +404,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../core/dependency_injection.html">Внедрение зависимостей</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../core/hooks.html">Хуки</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../core/class_binding.html">Связывание классов</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../core/aspects.html">Аспекты</a></li>
 </ul>
 </li>
 </ul>
@@ -436,22 +441,7 @@
         </div>
         <article role="main">
           <div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-text">Можно унаследовать базовый тест-класс</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.junit.jupiter.api.Test</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.jupiter.integration.BaseJunit5Test</span><span class="p">;</span><span class="w"></span>
-
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">BaseJunit5Test</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="c1">//some checks</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-</pre></div>
-</div>
-</div>
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">Можно подключить расширение</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-text">Можно подключить расширение</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
 <div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.junit.jupiter.api.Test</span><span class="p">;</span><span class="w"></span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">org.junit.jupiter.api.extension.ExtendWith</span><span class="p">;</span><span class="w"></span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.jupiter.integration.BaseJunit5Test</span><span class="p">;</span><span class="w"></span>
@@ -465,14 +455,6 @@
 <span class="w">      </span><span class="c1">//some checks</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
-</pre></div>
-</div>
-</div>
-<div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-text">Можно настроить SPI в <cite>test/resources/</cite> и в файл <cite>org.junit.jupiter.api.extension.Extension</cite> внести запись <cite>ru.tinkoff.qa.neptune.jupiter.integration.NeptuneJUnit5Extension</cite>. После этого ничего с кодом делать не нужно</span><a class="headerlink" href="#id3" title="Permalink to this code">#</a></div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ META-INF
-├── services
-    ├── org.junit.jupiter.api.extension.Extension
 </pre></div>
 </div>
 </div>

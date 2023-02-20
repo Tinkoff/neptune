@@ -240,6 +240,10 @@
 </ul>
 </li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Mockito</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../mockito/index.html">Интеграция с Mockito</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Spring Boot</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../spring/spring.boot.sterter.html">Neptune Spring boot starter</a></li>
@@ -400,6 +404,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../core/dependency_injection.html">Внедрение зависимостей</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../core/hooks.html">Хуки</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../core/class_binding.html">Связывание классов</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/aspects.html">Аспекты</a></li>
 </ul>
 </li>
 </ul>
@@ -443,6 +448,14 @@
          <span class="nt">&lt;version&gt;</span>${LATEST_RELEASE_OR_BETA_VERSION}<span class="nt">&lt;/version&gt;</span>
          <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
      <span class="nt">&lt;/dependency&gt;</span>
+
+     <span class="cm">&lt;!--Минимально необходимый набор зависимостей от hamcrest--&gt;</span>
+     <span class="nt">&lt;dependency&gt;</span>
+         <span class="nt">&lt;groupId&gt;</span>org.hamcrest<span class="nt">&lt;/groupId&gt;</span>
+         <span class="nt">&lt;artifactId&gt;</span>${artefact.name.from.hamcrest.group}<span class="nt">&lt;/artifactId&gt;</span>
+         <span class="nt">&lt;version&gt;</span>${actual.hamcrest.version}<span class="nt">&lt;/version&gt;</span>
+         <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+     <span class="nt">&lt;/dependency&gt;</span>
 </pre></div>
 </div>
 </div>
@@ -450,6 +463,7 @@
 <div class="code-block-caption"><span class="caption-text">Добавить в build.gradle</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
 <div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="n">dependencies</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
 <span class="w">     </span><span class="n">testImplementation</span><span class="w">  </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;ru.tinkoff.qa.neptune&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;check&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="n">LATEST_RELEASE_OR_BETA_VERSION</span><span class="w"></span>
+<span class="w">     </span><span class="n">testImplementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;org.hamcrest&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;artefact.name.from.hamcrest.group&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="s1">&#39;actual.hamcrest.version&#39;</span><span class="w"></span>
 <span class="w"> </span><span class="o">}</span><span class="w"></span>
 </pre></div>
 </div>

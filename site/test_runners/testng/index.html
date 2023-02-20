@@ -137,7 +137,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -239,6 +239,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../common_matchers/combine.html">Объединения матчеров AND, OR, XOR, NOT</a></li>
 </ul>
 </li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Mockito</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../mockito/index.html">Интеграция с Mockito</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Spring Boot</span></p>
 <ul>
@@ -400,6 +404,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../core/dependency_injection.html">Внедрение зависимостей</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../core/hooks.html">Хуки</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../core/class_binding.html">Связывание классов</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../core/aspects.html">Аспекты</a></li>
 </ul>
 </li>
 </ul>
@@ -429,7 +434,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -438,8 +443,8 @@
           <section class="tex2jax_ignore mathjax_ignore" id="testng">
 <h1>TestNG<a class="headerlink" href="#testng" title="Permalink to this heading">#</a></h1>
 <p>Интеграция <em>Neptune</em> и <a class="reference external" href="https://testng.org/doc/">TestNG</a>.</p>
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">Добавить в maven/dependencies</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Добавить в maven/dependencies</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span>     <span class="nt">&lt;dependency&gt;</span>
          <span class="nt">&lt;groupId&gt;</span>ru.tinkoff.qa.neptune<span class="nt">&lt;/groupId&gt;</span>
          <span class="nt">&lt;artifactId&gt;</span>testng.integration<span class="nt">&lt;/artifactId&gt;</span>
@@ -458,8 +463,8 @@
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-text">Добавить в build.gradle</span><a class="headerlink" href="#id3" title="Permalink to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Добавить в build.gradle</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
 <div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="n">dependencies</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
 <span class="w">     </span><span class="n">testImplementation</span><span class="w">  </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;ru.tinkoff.qa.neptune&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;testng.integration&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="n">LATEST_RELEASE_OR_BETA_VERSION</span><span class="w"></span>
 <span class="w">     </span><span class="n">testImplementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;org.testng&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;testng&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="s1">&#39;[7.4.0,)&#39;</span><span class="w"> </span><span class="c1">//диапазон поддерживаемых версий</span><span class="w"></span>
@@ -468,53 +473,8 @@
 </div>
 </div>
 <p><a class="reference external" href="https://tinkoff.github.io/neptune/testng.integration/index.html">API</a></p>
-<section id="id1">
-<h2>Пишем первый TestNG-тест<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
-<p>Ниже варианты, с помощью которых можно добавлять новые тесты, используя текущий модуль</p>
-<div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">Можно унаследовать базовый тест-класс</span><a class="headerlink" href="#id4" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.testng.annotations.Test</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.testng.integration.BaseTestNgTest</span><span class="p">;</span><span class="w"></span>
-
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">BaseTestNgTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="c1">//some checks</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-</pre></div>
-</div>
-</div>
-<div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">Можно подключить лисенер</span><a class="headerlink" href="#id5" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.testng.annotations.Test</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">org.testng.annotations.Listeners</span><span class="p">;</span><span class="w"></span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.testng.integration.DefaultTestRunningListener</span><span class="p">;</span><span class="w"></span>
-
-<span class="nd">@Listeners</span><span class="p">(</span><span class="n">DefaultTestRunningListener</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="c1">//some checks</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-</pre></div>
-</div>
-</div>
-<div class="literal-block-wrapper docutils container" id="id6">
-<div class="code-block-caption"><span class="caption-text">Можно настроить SPI в <cite>test/resources/</cite> и в файл <cite>org.testng.ITestNGListener</cite> внести запись <cite>ru.tinkoff.qa.neptune.testng.integration.DefaultTestRunningListener</cite>. После этого ничего с кодом делать не нужно</span><a class="headerlink" href="#id6" title="Permalink to this code">#</a></div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ META-INF
-├── services
-    ├── org.testng.ITestNGListener
-</pre></div>
-</div>
-</div>
 <div class="toctree-wrapper compound">
 </div>
-</section>
 </section>
 
         </article>
@@ -567,27 +527,8 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer">
+    <aside class="toc-drawer no-toc">
       
-      
-      <div class="toc-sticky toc-scroll">
-        <div class="toc-title-container">
-          <span class="toc-title">
-            Contents
-          </span>
-        </div>
-        <div class="toc-tree-container">
-          <div class="toc-tree">
-            <ul>
-<li><a class="reference internal" href="#">TestNG</a><ul>
-<li><a class="reference internal" href="#id1">Пишем первый TestNG-тест</a></li>
-</ul>
-</li>
-</ul>
-
-          </div>
-        </div>
-      </div>
       
       
     </aside>

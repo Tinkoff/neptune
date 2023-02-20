@@ -5,8 +5,11 @@ ru.tinkoff.qa.neptune.allure.lifecycle
 ru.tinkoff.qa.neptune.allure.properties
 ru.tinkoff.qa.neptune.allure.testng.bridge
 ru.tinkoff.qa.neptune.check
+ru.tinkoff.qa.neptune.check.agent
 ru.tinkoff.qa.neptune.check.localization
-ru.tinkoff.qa.neptune.core.api.aspects
+ru.tinkoff.qa.neptune.core.api.agent
+ru.tinkoff.qa.neptune.core.api.agent.junit.platform
+ru.tinkoff.qa.neptune.core.api.agent.testng
 ru.tinkoff.qa.neptune.core.api.binding
 ru.tinkoff.qa.neptune.core.api.cleaning
 ru.tinkoff.qa.neptune.core.api.concurrency
@@ -121,6 +124,8 @@ ru.tinkoff.qa.neptune.kafka.functions.send
 ru.tinkoff.qa.neptune.kafka.jackson.desrializer
 ru.tinkoff.qa.neptune.kafka.localization
 ru.tinkoff.qa.neptune.kafka.properties
+ru.tinkoff.qa.neptune.mockito
+ru.tinkoff.qa.neptune.mockito.localization
 ru.tinkoff.qa.neptune.rabbit.mq
 ru.tinkoff.qa.neptune.rabbit.mq.captors
 ru.tinkoff.qa.neptune.rabbit.mq.function.binding

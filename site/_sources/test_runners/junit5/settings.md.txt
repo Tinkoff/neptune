@@ -1,10 +1,14 @@
 # Настройки интеграции с JUnit5
 
+Необходимо включить свойство [junit.jupiter.extensions.autodetection.enabled](https://junit.org/junit5/docs/current/user-guide/#extensions-registration-automatic-enabling)
+
+```properties
+junit.jupiter.extensions.autodetection.enabled=true
+```
+
 Ниже список свойств, который дополняет [базовые](./../../quick_start/settings/index.md)
 
 ## JUNIT5_REFRESH_BEFORE
-
-Основная статья: [Обновление контекстов](./../../core/steps/context/refresh.md)
 
 Основная статья: [Обновление контекстов](./../../core/steps/context/refresh.md)
 

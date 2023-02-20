@@ -240,6 +240,10 @@
 </ul>
 </li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Mockito</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../mockito/index.html">Интеграция с Mockito</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Spring Boot</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../spring/spring.boot.sterter.html">Neptune Spring boot starter</a></li>
@@ -400,6 +404,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../core/dependency_injection.html">Внедрение зависимостей</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../core/hooks.html">Хуки</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../core/class_binding.html">Связывание классов</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../core/aspects.html">Аспекты</a></li>
 </ul>
 </li>
 </ul>
@@ -460,6 +465,13 @@
          <span class="nt">&lt;version&gt;</span>[5.8.0,)<span class="nt">&lt;/version&gt;</span>
          <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
      <span class="nt">&lt;/dependency&gt;</span>
+
+     <span class="nt">&lt;dependency&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.junit.platform<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>junit-platform-launcher<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>[1.8.0,)<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+     <span class="nt">&lt;/dependency&gt;</span>
 </pre></div>
 </div>
 </div>
@@ -470,6 +482,7 @@
 <span class="w">     </span><span class="c1">//Минимально необходимый набор зависимостей от junit5</span><span class="w"></span>
 <span class="w">     </span><span class="n">testImplementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;org.junit.jupiter&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;junit-jupiter-api&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="s1">&#39;[5.8.0,)&#39;</span><span class="w"> </span><span class="c1">//диапазон поддерживаемых версий</span><span class="w"></span>
 <span class="w">     </span><span class="n">testImplementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;org.junit.jupiter&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;junit-jupiter-engine&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="s1">&#39;[5.8.0,)&#39;</span><span class="w"> </span><span class="c1">//диапазон поддерживаемых версий</span><span class="w"></span>
+<span class="w">     </span><span class="n">testImplementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;org.junit.platform&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;junit-platform-launcher&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="s1">&#39;[1.8.0,)&#39;</span><span class="w"> </span><span class="c1">//диапазон поддерживаемых версий</span><span class="w"></span>
 <span class="w"> </span><span class="o">}</span><span class="w"></span>
 </pre></div>
 </div>

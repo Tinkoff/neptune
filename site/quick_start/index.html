@@ -240,6 +240,10 @@
 </ul>
 </li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Mockito</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../mockito/index.html">Интеграция с Mockito</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Spring Boot</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../spring/spring.boot.sterter.html">Neptune Spring boot starter</a></li>
@@ -400,6 +404,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../core/dependency_injection.html">Внедрение зависимостей</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../core/hooks.html">Хуки</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../core/class_binding.html">Связывание классов</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/aspects.html">Аспекты</a></li>
 </ul>
 </li>
 </ul>
@@ -444,7 +449,23 @@
 <li><p>Maven или gradle</p></li>
 <li><p>⚠️ <em>Необходим доступ к maven-репозиторию <a class="reference external" href="https://nexus-new.tcsbank.ru/repository/mvn-bigops-qa">https://nexus-new.tcsbank.ru/repository/mvn-bigops-qa</a></em>.
 Если доступа нет, то рекомендуется необходимые модули собрать локально. См <a class="reference internal" href="start_to_contribute.html"><span class="doc std std-doc">документ для контрибъюторов</span></a></p></li>
+</ul>
+<p>Первые действия:</p>
+<ul class="simple">
+<li><p>В зависимости от используемого тест-раннера:</p>
+<ul>
+<li><p>если репортинг не нужен, то доступны интеграции Neptune c <a class="reference internal" href="../test_runners/junit5/index.html"><span class="doc std std-doc">Junit 5</span></a> и
+<a class="reference internal" href="../test_runners/testng/index.html"><span class="doc std std-doc">TestNG</span></a></p></li>
+<li><p>если репортинг имеет значение, то доступны:</p>
+<ul>
+<li><p><a class="reference internal" href="../test_runners/junit5/allure.jupiter.bridge.html"><span class="doc std std-doc">Интеграция Junit5 + Allure</span></a></p></li>
+<li><p><a class="reference internal" href="../test_runners/testng/allure.testng.bridge.html"><span class="doc std std-doc">Интеграция NestNG + Allure</span></a></p></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><p>Указать в зависимостях необходимые модули. Описание каждого модуля см. соответствующей секции документации.</p></li>
+<li><p>указать необходимые <a class="reference internal" href="settings/index.html"><span class="doc std std-doc">настройки</span></a></p></li>
 </ul>
 <div class="toctree-wrapper compound">
 </div>

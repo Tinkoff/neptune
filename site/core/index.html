@@ -240,6 +240,10 @@
 </ul>
 </li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Mockito</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../mockito/index.html">Интеграция с Mockito</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Spring Boot</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../spring/spring.boot.sterter.html">Neptune Spring boot starter</a></li>
@@ -400,6 +404,7 @@
 <li class="toctree-l2"><a class="reference internal" href="dependency_injection.html">Внедрение зависимостей</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hooks.html">Хуки</a></li>
 <li class="toctree-l2"><a class="reference internal" href="class_binding.html">Связывание классов</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aspects.html">Аспекты</a></li>
 </ul>
 </li>
 </ul>
@@ -437,7 +442,8 @@
         <article role="main">
           <section id="neptune-core">
 <h1>Neptune Core<a class="headerlink" href="#neptune-core" title="Permalink to this heading">#</a></h1>
-<p>Тул кит, на основе которого построены все модули <em>Neptune</em>.</p>
+<p>Тул кит, на основе которого построены все модули <em>Neptune</em>,
+который эти модули предоставляют транзитивно для создания расширений.</p>
 <section id="id1">
 <h2>Что описано в данном разделе<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
@@ -455,53 +461,16 @@
    <span class="nt">&lt;version&gt;</span>${LATEST_RELEASE_OR_BETA_VERSION}<span class="nt">&lt;/version&gt;</span>
    <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
-
-<span class="cm">&lt;!--In case if you are going to implement our own functionality--&gt;</span>
-<span class="nt">&lt;dependency&gt;</span>
-   <span class="nt">&lt;groupId&gt;</span>org.aspectj<span class="nt">&lt;/groupId&gt;</span>
-   <span class="nt">&lt;artifactId&gt;</span>aspectjweaver<span class="nt">&lt;/artifactId&gt;</span>
-   <span class="nt">&lt;version&gt;</span>${aspectj.version}<span class="nt">&lt;/version&gt;</span>
-   <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span>
-</pre></div>
-</div>
-</div>
-<div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-text">plugins, если необходимо реализовать свою функциональность используя Neptune Core</span><a class="headerlink" href="#id3" title="Permalink to this code">#</a></div>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;plugin&gt;</span>
-   <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
-   <span class="nt">&lt;artifactId&gt;</span>maven-surefire-plugin<span class="nt">&lt;/artifactId&gt;</span>
-   <span class="nt">&lt;version&gt;</span>3.0.0-M5<span class="nt">&lt;/version&gt;</span>
-   <span class="nt">&lt;configuration&gt;</span>
-      <span class="nt">&lt;argLine&gt;</span>
-          -javaagent:&quot;${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar&quot;
-      <span class="nt">&lt;/argLine&gt;</span>
-   <span class="nt">&lt;/configuration&gt;</span>
-<span class="nt">&lt;/plugin&gt;</span>
 </pre></div>
 </div>
 </div>
 </section>
 <section id="gradle">
 <h2>Gradle<a class="headerlink" href="#gradle" title="Permalink to this heading">#</a></h2>
-<div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">build.gradle</span><a class="headerlink" href="#id4" title="Permalink to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">build.gradle</span><a class="headerlink" href="#id3" title="Permalink to this code">#</a></div>
 <div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="n">dependencies</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
 <span class="w">     </span><span class="n">testImplementation</span><span class="w">  </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;ru.tinkoff.qa.neptune&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;core.api&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="n">LATEST_RELEASE_OR_BETA_VERSION</span><span class="w"></span>
-<span class="w"> </span><span class="o">}</span><span class="w"></span>
-</pre></div>
-</div>
-</div>
-<div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">build.gradle, если необходимо реализовать свою функциональность используя Neptune Core</span><a class="headerlink" href="#id5" title="Permalink to this code">#</a></div>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="n">plugins</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
-<span class="w">     </span><span class="n">id</span><span class="w"> </span><span class="s2">&quot;io.freefair.aspectj.post-compile-weaving&quot;</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s1">&#39;ACTUAL_PLUGIN_VERSION&#39;</span><span class="w"></span>
-<span class="w"> </span><span class="o">}</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">dependencies</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
-<span class="w">     </span><span class="n">testInpath</span><span class="o">(</span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;ru.tinkoff.qa.neptune&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;core.api&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="s1">&#39;NEPTUNE_BETA_OR_RELEASE&#39;</span><span class="o">)</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">transitive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="w"></span>
-<span class="w">     </span><span class="o">}</span><span class="w"></span>
 <span class="w"> </span><span class="o">}</span><span class="w"></span>
 </pre></div>
 </div>
