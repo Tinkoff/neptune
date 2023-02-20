@@ -85,6 +85,9 @@ common_matchers/index.md
 
 ```{toctree}
 :caption: Mockito
+:hidden:
+:maxdepth: 7
+
 mockito/index.md
 ```
 
