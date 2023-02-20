@@ -18,16 +18,16 @@ import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCre
 import static ru.tinkoff.qa.neptune.jupiter.integration.properties.Junit5RefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
 import static ru.tinkoff.qa.neptune.jupiter.integration.properties.RefreshEachTimeBefore.*;
 
-public class Junit5TestFinishingTestWithNoFixtureMethod {
+public class Junit5FinishingTestWithNoFixtureMethodTest {
 
     @DataProvider
     public static Object[][] data() {
         return new Object[][]{
-                {null, 3},
-                {of(ALL_STARTING), 0},
-                {of(EACH_STARTING), 0},
-                {of(TEST_STARTING), 3},
-                {asList(RefreshEachTimeBefore.values()), 3}
+            {null, 3},
+            {of(ALL_STARTING), 0},
+            {of(EACH_STARTING), 0},
+            {of(TEST_STARTING), 3},
+            {asList(RefreshEachTimeBefore.values()), 3}
 
         };
     }

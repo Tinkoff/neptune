@@ -4,18 +4,11 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.hibernate.HibernateContext;
 import ru.tinkoff.qa.neptune.hibernate.HibernateFunction;
 
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
-
 @Description("all")
 public final class SelectAll<R> extends HibernateFunction<R, Iterable<R>> {
 
     public SelectAll(Class<R> entity) {
         super(entity);
-    }
-
-    @Override
-    public String toString() {
-        return translate(this);
     }
 
     @Override

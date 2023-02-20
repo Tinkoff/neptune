@@ -1,12 +1,11 @@
 package ru.tinkoff.qa.neptune.core.api.steps.selections.mismatch.dictionary;
 
+import ru.tinkoff.qa.neptune.core.api.steps.SelfDescribed;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
-
 @Description("Index [{index}] is out of got items count [{count}]")
-public final class IndexIsOut {
+public final class IndexIsOut extends SelfDescribed {
 
     @DescriptionFragment("index")
     final int index;
@@ -17,10 +16,5 @@ public final class IndexIsOut {
     public IndexIsOut(int index, int count) {
         this.index = index;
         this.count = count;
-    }
-
-    @Override
-    public String toString() {
-        return translate(this);
     }
 }

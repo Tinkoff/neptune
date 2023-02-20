@@ -7,8 +7,6 @@ import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
 
 import java.util.ArrayList;
 
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
-
 @Description("As page")
 public final class SelectionAsPage<R, ID, T extends PagingAndSortingRepository<R, ID>> extends SpringDataFunction<T, Iterable<R>> {
 
@@ -16,11 +14,6 @@ public final class SelectionAsPage<R, ID, T extends PagingAndSortingRepository<R
 
     public SelectionAsPage() {
         super(PagingAndSortingRepository.class);
-    }
-
-    @Override
-    public String toString() {
-        return translate(this);
     }
 
     @Override

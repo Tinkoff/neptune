@@ -8,7 +8,7 @@ import static java.lang.Thread.currentThread;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 @TestInstance(PER_CLASS)
-public class BaseJunit5IntegrationTest extends BaseJunit5Test {
+public class BaseJunit5IntegrationTest {
 
     @BeforeAll
     public static void beforeAllStatic() {

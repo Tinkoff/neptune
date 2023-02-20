@@ -15,12 +15,6 @@
 - [JUnit 5. Свойства](settings.md)
 - [Allure. Свойства](./../../test_reports/allure/settings.md)
 
-Рекомендуется включить свойство [junit.jupiter.extensions.autodetection.enabled](https://junit.org/junit5/docs/current/user-guide/#extensions-registration-automatic-enabling)
-
-```properties
-junit.jupiter.extensions.autodetection.enabled=true
-```
-
 ## allure.jupiter.bridge. Аннотации
 
 - [Allure. Аннотации](./../../test_reports/allure/annotations.md)

@@ -1,8 +1,14 @@
 dependencies {
-    inpath(group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion)  {
-        transitive = false
-    }
-    testAspect(sourceSets.main.output)
+    compileOnly group: 'org.testng', name: 'testng', version: testNGVersion
+    compileOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: junit5PlatformVersion
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit5Version
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
+    testImplementation('org.junit.platform:junit-platform-launcher')
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockitoVersion
+
+    implementation group: 'net.bytebuddy', name: 'byte-buddy', version: bytebuddyVersion
+    implementation group: 'net.bytebuddy', name: 'byte-buddy-agent', version: bytebuddyVersion
 }
 
 java {
@@ -11,6 +17,7 @@ java {
 }
 
 task generateBundle(type: JavaExec)  {
+    classpath = sourceSets.main.compileClasspath
     classpath sourceSets.main.runtimeClasspath
     main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
     args "ru_RU",

@@ -11,7 +11,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @SuppressWarnings("unchecked")
 @Description("all by sorting '{sort}'")
@@ -22,16 +21,11 @@ public final class SelectionBySorting<R, ID, T extends Repository<R, ID>> extend
 
     public SelectionBySorting(Sort sort) {
         super(PagingAndSortingRepository.class,
-                ReactiveSortingRepository.class,
-                RxJava2SortingRepository.class,
-                RxJava3SortingRepository.class);
+            ReactiveSortingRepository.class,
+            RxJava2SortingRepository.class,
+            RxJava3SortingRepository.class);
         checkNotNull(sort);
         this.sort = sort;
-    }
-
-    @Override
-    public String toString() {
-        return translate(this);
     }
 
     @Override

@@ -3,7 +3,7 @@ configurations {
 }
 
 dependencies {
-    api project(':core.api')
+    api(project(":core.api"))
     compileOnly group: 'com.rabbitmq', name: 'amqp-client', version: '5.13.0'
     bundleGeneration group: 'com.rabbitmq', name: 'amqp-client', version: '5.13.0'
     testImplementation group: 'com.rabbitmq', name: 'amqp-client', version: '5.16.0'

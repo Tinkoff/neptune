@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.core.api.steps.selections;
 
+import ru.tinkoff.qa.neptune.core.api.steps.SelfDescribed;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
@@ -9,9 +10,8 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
-public abstract class ItemsCountCondition {
+public abstract class ItemsCountCondition extends SelfDescribed {
 
     private ItemsCountCondition() {
         super();
@@ -88,11 +88,6 @@ public abstract class ItemsCountCondition {
 
         int getCount() {
             return count;
-        }
-
-        @Override
-        public String toString() {
-            return translate(this);
         }
     }
 
@@ -201,35 +196,19 @@ public abstract class ItemsCountCondition {
     }
 
     @Description("Greater than")
-    private static final class GreaterThan {
-        @Override
-        public String toString() {
-            return translate(this);
-        }
+    private static final class GreaterThan extends SelfDescribed {
     }
 
     @Description("Greater than or equal")
-    private static final class GreaterThanOrEqual {
-        @Override
-        public String toString() {
-            return translate(this);
-        }
+    private static final class GreaterThanOrEqual extends SelfDescribed {
     }
 
     @Description("Lesser than")
-    private static final class LesserThan {
-        @Override
-        public String toString() {
-            return translate(this);
-        }
+    private static final class LesserThan extends SelfDescribed {
     }
 
     @Description("Lesser than or equal")
-    private static final class LesserThanOrEqual {
-        @Override
-        public String toString() {
-            return translate(this);
-        }
+    private static final class LesserThanOrEqual extends SelfDescribed {
     }
 
     public static final class WhenCountGreater extends WhenCountBetween {

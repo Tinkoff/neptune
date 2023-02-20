@@ -10,7 +10,6 @@ import ru.tinkoff.qa.neptune.hibernate.HibernateFunction;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @Description("By predicate")
 @SuppressWarnings("unchecked")
@@ -29,11 +28,6 @@ public abstract class SelectByPredicateFunction<R, RESULT> extends HibernateFunc
 
     public Predicate getPredicate() {
         return predicate;
-    }
-
-    @Override
-    public String toString() {
-        return translate(this);
     }
 
     public static final class SelectOneByPredicate<R> extends SelectByPredicateFunction<R, R> {

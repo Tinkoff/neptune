@@ -10,11 +10,8 @@ import ru.tinkoff.qa.neptune.hibernate.HibernateFunction;
 
 import java.util.List;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Preconditions.*;
 import static java.util.Objects.nonNull;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @Description("By order specifiers")
 @SuppressWarnings("unchecked")
@@ -65,10 +62,5 @@ public final class SelectByOrderedFunction<R> extends HibernateFunction<R, Itera
         session.getTransaction().commit();
 
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return translate(this);
     }
 }

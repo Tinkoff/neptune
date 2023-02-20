@@ -3,7 +3,7 @@ configurations {
 }
 
 dependencies {
-    api project(':core.api')
+    api(project(":core.api"))
     api project(':neptune-spring-boot-starter')
     compileOnly(group: 'org.springframework', name: 'spring-test', version: springVersion)
     compileOnly(group: 'org.springframework', name: 'spring-web', version: springVersion)
@@ -20,6 +20,7 @@ dependencies {
     testImplementation(group: 'org.springframework', name: 'spring-web', version: springVersion)
     testImplementation(group: 'org.springframework', name: 'spring-webmvc', version: springVersion)
     testImplementation('com.jayway.jsonpath:json-path:2.7.0')
+    implementation group: 'net.bytebuddy', name: 'byte-buddy', version: bytebuddyVersion
 }
 
 java {

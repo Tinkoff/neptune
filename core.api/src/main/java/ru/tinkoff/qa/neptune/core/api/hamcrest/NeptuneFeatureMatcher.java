@@ -1,7 +1,11 @@
 package ru.tinkoff.qa.neptune.core.api.hamcrest;
 
-import org.hamcrest.*;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.StringDescription;
+import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.hamcrest.internal.ReflectiveTypeFinder;
+import ru.tinkoff.qa.neptune.core.api.steps.SelfDescribed;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -19,7 +23,7 @@ import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.trans
  *
  * @param <T> is a type of checked objects
  */
-public abstract class NeptuneFeatureMatcher<T> extends BaseMatcher<T> {
+public abstract class NeptuneFeatureMatcher<T> extends SelfDescribed implements Matcher<T> {
 
     private static final ReflectiveTypeFinder TYPE_FINDER = new ReflectiveTypeFinder("featureMatches", 1, 0);
 
@@ -127,17 +131,17 @@ public abstract class NeptuneFeatureMatcher<T> extends BaseMatcher<T> {
         description.appendText(toString());
     }
 
-    public String toString() {
-        return translate(this);
-    }
-
     @Override
     public final void describeMismatch(Object item, Description mismatchDescription) {
         mismatchDescription
-                .appendText(mismatchDescriptions
-                        .stream()
-                        .map(Object::toString)
-                        .distinct()
-                        .collect(joining("\r\n")));
+            .appendText(mismatchDescriptions
+                .stream()
+                .map(Object::toString)
+                .distinct()
+                .collect(joining("\r\n")));
+    }
+
+    @Override
+    public void _dont_implement_Matcher___instead_extend_BaseMatcher_() {
     }
 }

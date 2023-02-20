@@ -7,13 +7,12 @@ import org.springframework.data.repository.reactive.RxJava2CrudRepository;
 import org.springframework.data.repository.reactive.RxJava3CrudRepository;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
-import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
 import ru.tinkoff.qa.neptune.database.abstractions.dictionary.ObjectArrayParameterValueGetter;
+import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.asList;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @SuppressWarnings("unchecked")
 @Description("id(s) {ids}")
@@ -25,9 +24,9 @@ public abstract class SelectionByIds<R, ID, T extends Repository<R, ID>, RESULT>
     @SafeVarargs
     private SelectionByIds(ID... ids) {
         super(CrudRepository.class,
-                ReactiveCrudRepository.class,
-                RxJava2CrudRepository.class,
-                RxJava3CrudRepository.class);
+            ReactiveCrudRepository.class,
+            RxJava2CrudRepository.class,
+            RxJava3CrudRepository.class);
         checkNotNull(ids);
         checkArgument(ids.length > 0, "Should be defined at least one id");
         this.ids = ids;
@@ -39,11 +38,6 @@ public abstract class SelectionByIds<R, ID, T extends Repository<R, ID>, RESULT>
 
     public static <R, ID, T extends Repository<R, ID>> SelectionByIds<R, ID, T, Iterable<R>> getIterableByIds(ID... ids) {
         return new SelectIterableById<>(ids);
-    }
-
-    @Override
-    public String toString() {
-        return translate(this);
     }
 
     private static final class SelectASingleById<R, ID, T

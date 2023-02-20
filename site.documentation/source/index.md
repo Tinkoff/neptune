@@ -84,6 +84,11 @@ common_matchers/index.md
 ```
 
 ```{toctree}
+:caption: Mockito
+mockito/index.md
+```
+
+```{toctree}
 :caption: Spring Boot
 :hidden:
 :maxdepth: 7

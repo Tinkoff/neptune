@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.rabbit.mq.function.declare;
 
 import com.rabbitmq.client.Channel;
+import ru.tinkoff.qa.neptune.core.api.steps.SelfDescribed;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 import ru.tinkoff.qa.neptune.rabbit.mq.AdditionalArguments;
@@ -13,7 +14,7 @@ import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @SuppressWarnings("unchecked")
-public abstract class DeclareParameters<T extends DeclareParameters<T>> implements StepParameterPojo {
+public abstract class DeclareParameters<T extends DeclareParameters<T>> extends SelfDescribed implements StepParameterPojo {
 
     @StepParameter(value = "durable", doNotReportNullValues = true)
     private boolean durable;
@@ -83,11 +84,6 @@ public abstract class DeclareParameters<T extends DeclareParameters<T>> implemen
             result.putAll(StepParameterPojo.super.getParameters());
         }
         return result;
-    }
-
-    @Override
-    public final String toString() {
-        return translate(this);
     }
 
     boolean isAutoDelete() {

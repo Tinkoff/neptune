@@ -1,5 +1,5 @@
 dependencies {
-    api project(':core.api')
+    api(project(":core.api"))
     api group: 'com.fasterxml.jackson.module', name: 'jackson-module-parameter-names', version: jacksonVersion
     api group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: jacksonVersion
     api group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion
@@ -12,6 +12,7 @@ java {
 }
 
 task generateBundle(type: JavaExec)  {
+    classpath = sourceSets.main.compileClasspath
     classpath sourceSets.main.runtimeClasspath
     main = "ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator"
     args "ru_RU",

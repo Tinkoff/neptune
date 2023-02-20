@@ -1,13 +1,12 @@
 package ru.tinkoff.qa.neptune.testng.integration.test;
 
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.testng.integration.BaseTestNgTest;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
-public class DependencyInjectionTest extends BaseTestNgTest {
+public class DependencyInjectionTest {
 
     private int a;
     private int b;

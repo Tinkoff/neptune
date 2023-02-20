@@ -6,7 +6,6 @@
             <class name="ru.tinkoff.qa.neptune.core.api.localization.BasicLocalizationTest"/>
             <class name="ru.tinkoff.qa.neptune.core.api.localization.TranslateByResourceBundleTest"/>
             <class name="ru.tinkoff.qa.neptune.core.api.localization.OtherLocalisationEngineTest"/>
-            <class name="ru.tinkoff.qa.neptune.core.api.localization.MatcherLocalizationTest"/>
             <class name="ru.tinkoff.qa.neptune.core.api.localization.BundleFillerFullTest"/>
             <class name="ru.tinkoff.qa.neptune.core.api.localization.BundleFillerPartialTest"/>
         </classes>
@@ -43,5 +42,11 @@
         <packages>
             <package name="ru.tinkoff.qa.neptune.core.api.captors.*"/>
         </packages>
+    </test>
+
+    <test name="Junit 5 run agent test">
+        <classes>
+            <class name="ru.tinkoff.qa.neptune.core.api.junit5.TestNGStartJunit5Test"/>
+        </classes>
     </test>
 </suite>

@@ -10,11 +10,11 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 
 @SuppressWarnings("unchecked")
 @Description("By predicate")
-public abstract class SelectByPredicateFunction<R, ID, T extends Repository<R, ID>, RESULT> extends SpringDataFunction<T, RESULT> {
+public abstract class SelectByPredicateFunction<R, ID, T extends Repository<R, ID>, RESULT>
+    extends SpringDataFunction<T, RESULT> {
 
     final Predicate predicate;
 
@@ -26,11 +26,6 @@ public abstract class SelectByPredicateFunction<R, ID, T extends Repository<R, I
 
     public Predicate getPredicate() {
         return predicate;
-    }
-
-    @Override
-    public String toString() {
-        return translate(this);
     }
 
     public static final class SelectOneByPredicate<R, ID, T extends Repository<R, ID>> extends SelectByPredicateFunction<R, ID, T, R> {

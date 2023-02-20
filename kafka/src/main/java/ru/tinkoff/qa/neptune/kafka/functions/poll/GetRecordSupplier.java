@@ -6,7 +6,6 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 import ru.tinkoff.qa.neptune.kafka.captors.KafkaConsumerRecordsCaptor;
@@ -22,7 +21,6 @@ import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollListFromRecord
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Get from Kafka:")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("ConsumerRecord criteria")
-@MaxDepthOfReporting(0)
 @CaptureOnSuccess(by = KafkaConsumerRecordsCaptor.class)
 public final class GetRecordSupplier<K, V> extends SequentialGetStepSupplier.GetListStepSupplier<KafkaStepContext, List<ConsumerRecord<K, V>>, ConsumerRecord<K, V>, GetRecordSupplier<K, V>> {
 

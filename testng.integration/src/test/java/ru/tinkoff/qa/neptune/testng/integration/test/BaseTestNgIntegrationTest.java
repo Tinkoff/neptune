@@ -1,12 +1,11 @@
 package ru.tinkoff.qa.neptune.testng.integration.test;
 
-import ru.tinkoff.qa.neptune.testng.integration.BaseTestNgTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 
-public class BaseTestNgIntegrationTest extends BaseTestNgTest {
+public class BaseTestNgIntegrationTest {
 
     @BeforeSuite
     public static void beforeSuiteStatic() {
