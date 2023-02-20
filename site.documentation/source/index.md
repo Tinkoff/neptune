@@ -12,6 +12,8 @@ _Neptune_ - инструмент, который был разработан д�
 
 - для проектов, разрабатывающие софт на базе [Spring Boot](https://spring.io/projects/spring-boot)
 
+- для проектов, разрабатывающие софт на базе [Micronaut](https://micronaut.io/) (пока в планах)
+
 - для QA-инженеров
 
 ## Почему Neptune?
@@ -85,6 +87,9 @@ common_matchers/index.md
 
 ```{toctree}
 :caption: Mockito
+:hidden:
+:maxdepth: 7
+
 mockito/index.md
 ```
 
