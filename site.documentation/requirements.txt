@@ -5,7 +5,7 @@ autodocsumm==0.2.9
 Babel==2.10.3
 beautifulsoup4==4.11.1
 CacheControl==0.12.11
-certifi==2022.6.15
+certifi==2022.12.7
 charset-normalizer==2.0.12
 cssutils==2.6.0
 dict2css==0.3.0
