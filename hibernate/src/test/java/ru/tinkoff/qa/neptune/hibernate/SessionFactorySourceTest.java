@@ -17,6 +17,7 @@ import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -42,7 +43,7 @@ public class SessionFactorySourceTest {
     public void customSessionFactorySourceTest() {
         SESSION_FACTORY_SOURCE_PROPERTY.accept(CustomSessionFactorySource.class);
         var factories = hibernate().getSessionFactories();
-        assertThat(factories, contains(FACTORIES.get(0), FACTORIES.get(1)));
+        assertThat(factories, containsInAnyOrder(FACTORIES.toArray()));
     }
 
     @Test
