@@ -1,8 +1,8 @@
 # HIBERNATE_CONFIG_FILENAMES
 
 В свойстве через запятую перечисляются названия необходимых `*.cfg.xml`-файлов с настройками подключения.
-Применяется если значение свойства [SESSION_FACTORY_SOURCE.md](SESSION_FACTORY_SOURCE.md) равно дефолтному и
-[USE_JPA_CONFIG.md](USE_JPA_CONFIG.md)`=false`
+Применяется если значение свойства [SESSION_FACTORY_SOURCE](SESSION_FACTORY_SOURCE.md) равно дефолтному и
+[USE_JPA_CONFIG](USE_JPA_CONFIG.md)`=false`
 
 Пример *.cfg.xml:
 
