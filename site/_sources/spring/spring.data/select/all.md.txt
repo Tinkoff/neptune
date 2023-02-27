@@ -1,4 +1,4 @@
-# Все записи
+# Spring data. Все записи
 
 Может быть выполнено, если интерфейс-репозиторий расширяет один или несколько из перечисленных:
 
@@ -190,7 +190,7 @@ public class MyTest {
                 // SPRING_DATA_WAITING_FOR_SELECTION_RESULT_TIME_UNIT 
                 // и SPRING_DATA_WAITING_FOR_SELECTION_RESULT_TIME_VALUE
                 .timeOut(ofSeconds(5))
-            //Прочие описанные настройки выше 
+            //Прочие описанные выше 
             //настройки и параметры игнорируются здесь
         );
         
@@ -221,7 +221,7 @@ public class MyTest {
                     "Name == 'Some name'", 
                     testEntity -> testEntity.getName().equals("Some name"))
                 .criteria("ID > 10", testEntity -> testEntity.getId() > 10L),
-            //Прочие описанные настройки выше 
+            //Прочие описанные выше 
             //настройки и параметры игнорируются здесь
             //----------------------------------------
             //время, за которое записи должны исчезнуть

@@ -20,9 +20,7 @@
    :caption: Добавить в build.gradle
 
     dependencies {
-           dependencies {
-           //необходимо иметь в classpath
-           implementation group: 'org.springframework.data', name: 'spring-data-commons', version: '[2.7.0,)' //диапазон поддерживаемых версий
-           testImplementation  group: 'ru.tinkoff.qa.neptune', name: 'spring.data', version: LATEST_RELEASE_OR_BETA_VERSION
-       }
+        //необходимо иметь в classpath
+        implementation group: 'org.springframework.data', name: 'spring-data-commons', version: '[2.7.0,)' //диапазон поддерживаемых версий
+        testImplementation  group: 'ru.tinkoff.qa.neptune', name: 'spring.data', version: LATEST_RELEASE_OR_BETA_VERSION
     }

@@ -78,6 +78,7 @@ ru.tinkoff.qa.neptune.hibernate.select.common
 ru.tinkoff.qa.neptune.hibernate.select.common.by
 ru.tinkoff.qa.neptune.hibernate.select.querydsl
 ru.tinkoff.qa.neptune.hibernate.select.querydsl.by
+ru.tinkoff.qa.neptune.hibernate.session.factory
 ru.tinkoff.qa.neptune.http.api
 ru.tinkoff.qa.neptune.http.api.captors.request
 ru.tinkoff.qa.neptune.http.api.captors.response

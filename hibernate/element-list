@@ -9,3 +9,4 @@ ru.tinkoff.qa.neptune.hibernate.select.common
 ru.tinkoff.qa.neptune.hibernate.select.common.by
 ru.tinkoff.qa.neptune.hibernate.select.querydsl
 ru.tinkoff.qa.neptune.hibernate.select.querydsl.by
+ru.tinkoff.qa.neptune.hibernate.session.factory
