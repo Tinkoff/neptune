@@ -1,7 +1,7 @@
 # USE_JPA_CONFIG
 
 Значение `true` данного свойства означает, что подключения к базам данных конфигурируются с помощью `META-INF/persistence.xml` (спецификация Java Persistence API).
-Данное свойство применяется, если значение свойства [SESSION_FACTORY_SOURCE.md](SESSION_FACTORY_SOURCE.md) равно дефолтному.
+Данное свойство применяется, если значение свойства [SESSION_FACTORY_SOURCE](SESSION_FACTORY_SOURCE.md) равно дефолтному.
 
 ```properties
 #Значение свойства указывается так
