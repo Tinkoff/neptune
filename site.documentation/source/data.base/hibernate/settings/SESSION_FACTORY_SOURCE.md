@@ -6,12 +6,12 @@
 Значение по умолчанию `ru.tinkoff.qa.neptune.hibernate.session.factory.DefaultSessionFactorySource`. Если другое значение свойства не указано,
 то следует указать значения следующих свойств:
 
-- [USE_JPA_CONFIG.md](USE_JPA_CONFIG.md)
-- [PERSISTENCE_UNITS.md](PERSISTENCE_UNITS.md)
+- [USE_JPA_CONFIG](USE_JPA_CONFIG.md)
+- [PERSISTENCE_UNITS](PERSISTENCE_UNITS.md)
 
 либо
 
-- [HIBERNATE_CONFIG_FILENAMES.md](HIBERNATE_CONFIG_FILENAMES.md)
+- [HIBERNATE_CONFIG_FILENAMES](HIBERNATE_CONFIG_FILENAMES.md)
 
 Ниже пример того, как указывается значение свойства `SESSION_FACTORY_SOURCE`, отличное от дефолтного
 

@@ -1,8 +1,8 @@
 # PERSISTENCE_UNITS
 
 В свойстве через запятую перечисляются необходимые подключенные источники.
-Применяется если значение свойства [SESSION_FACTORY_SOURCE.md](SESSION_FACTORY_SOURCE.md) равно дефолтному и 
-[USE_JPA_CONFIG.md](USE_JPA_CONFIG.md)`=true`
+Применяется если значение свойства [SESSION_FACTORY_SOURCE](SESSION_FACTORY_SOURCE.md) равно дефолтному и 
+[USE_JPA_CONFIG](USE_JPA_CONFIG.md)`=true`
 
 Пример persistence.xml:
 
