@@ -32,11 +32,10 @@ import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.NO_DESC_ERROR_TEX
 @IncludeParamsOfInnerGetterStep
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Delete:")
 public abstract class DeleteByQueryStepSupplier<R>
-        extends SequentialGetStepSupplier.GetObjectStepSupplier<HibernateContext, Void, DeleteByQueryStepSupplier<R>>
+        extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<HibernateContext, Void, R, DeleteByQueryStepSupplier<R>>
         implements SelectQuery<Void> {
 
     protected DeleteEntities<R> f;
-    protected R toDelete;
 
     @CaptureOnSuccess(by = DataCaptor.class)
     @CaptureOnFailure(by = DataCaptor.class)
@@ -90,6 +89,19 @@ public abstract class DeleteByQueryStepSupplier<R>
         return new DeleteManyStepSupplier<>(toDelete);
     }
 
+    @Override
+    protected void onStart(R toDelete) {
+        if (isNull(toDelete)) {
+            return;
+        }
+
+        if (toDelete instanceof Iterable) {
+            deleted = serializeObjects(ALWAYS, (Iterable<?>) toDelete).collect(Collectors.toList());
+        } else {
+            deleted = of(serializeObject(ALWAYS, toDelete));
+        }
+    }
+
     @IncludeParamsOfInnerGetterStep
     private static class DeleteOneStepSupplier<R> extends DeleteByQueryStepSupplier<R> {
 
@@ -97,22 +109,12 @@ public abstract class DeleteByQueryStepSupplier<R>
 
         protected DeleteOneStepSupplier(R toDelete) {
             super(new DeleteEntities.DeleteOne<>());
-            this.toDelete = toDelete;
+            from(toDelete);
         }
 
         protected DeleteOneStepSupplier(SelectOneStepSupplier<R> select) {
             super(new DeleteEntities.DeleteOne<>());
-            this.select = select;
-        }
-
-        @Override
-        protected void onStart(HibernateContext context) {
-            if (select != null) {
-                toDelete = select.get().apply(context);
-            }
-            f.setToDelete(toDelete);
-
-            super.onStart(context);
+            from(select);
         }
     }
 
@@ -123,35 +125,12 @@ public abstract class DeleteByQueryStepSupplier<R>
 
         protected DeleteManyStepSupplier(Iterable<R> toDelete) {
             super(new DeleteEntities.DeleteMany<>());
-            this.toDelete = toDelete;
+            from(toDelete);
         }
 
         protected DeleteManyStepSupplier(SelectManyStepSupplier<R> select) {
             super(new DeleteEntities.DeleteMany<>());
-            this.select = select;
-        }
-
-        @Override
-        protected void onStart(HibernateContext context) {
-            if (select != null) {
-                toDelete = select.get().apply(context);
-            }
-            f.setToDelete(toDelete);
-
-            super.onStart(context);
-        }
-    }
-
-    @Override
-    protected void onStart(HibernateContext context) {
-        if (isNull(toDelete)) {
-            return;
-        }
-
-        if (toDelete instanceof Iterable) {
-            deleted = serializeObjects(ALWAYS, (Iterable<?>) toDelete).collect(Collectors.toList());
-        } else {
-            deleted = of(serializeObject(ALWAYS, toDelete));
+            from(select);
         }
     }
 }

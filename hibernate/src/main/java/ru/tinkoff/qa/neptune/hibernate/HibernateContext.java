@@ -2,26 +2,21 @@ package ru.tinkoff.qa.neptune.hibernate;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.UnknownEntityTypeException;
-import org.hibernate.cfg.Configuration;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.database.abstractions.AbstractDatabaseStepContext;
 import ru.tinkoff.qa.neptune.database.abstractions.InsertQuery;
 import ru.tinkoff.qa.neptune.database.abstractions.SelectQuery;
 import ru.tinkoff.qa.neptune.database.abstractions.UpdateAction;
 import ru.tinkoff.qa.neptune.hibernate.delete.DeleteByQueryStepSupplier;
-import ru.tinkoff.qa.neptune.hibernate.exception.HibernateConfigurationException;
 import ru.tinkoff.qa.neptune.hibernate.save.SaveStepSupplier;
 import ru.tinkoff.qa.neptune.hibernate.select.*;
+import ru.tinkoff.qa.neptune.hibernate.session.factory.DefaultSessionFactorySource;
 
-import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.metamodel.EntityType;
 import java.time.Duration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -30,9 +25,7 @@ import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.steps.context.ContextFactory.getCreatedContextOrCreate;
-import static ru.tinkoff.qa.neptune.hibernate.properties.HibernateConfigFilenames.HIBERNATE_CONFIG_FILENAMES;
-import static ru.tinkoff.qa.neptune.hibernate.properties.PersistenceUnits.PERSISTENCE_UNITS;
-import static ru.tinkoff.qa.neptune.hibernate.properties.UseJpaConfig.USE_JPA_CONFIG;
+import static ru.tinkoff.qa.neptune.hibernate.properties.SessionFactorySourceProperty.SESSION_FACTORY_SOURCE_PROPERTY;
 
 @SuppressWarnings("unchecked")
 public class HibernateContext extends AbstractDatabaseStepContext<HibernateContext> {
@@ -40,7 +33,7 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
     public static final String NO_DESC_ERROR_TEXT = "Description should be defined";
 
     private static final HibernateContext context = getCreatedContextOrCreate(HibernateContext.class);
-    private final Set<SessionFactory> sessionFactorySet = new HashSet<>();
+    private final Set<SessionFactory> sessionFactorySetDefault = new HashSet<>();
 
     public static HibernateContext hibernate() {
         return context;
@@ -48,35 +41,18 @@ public class HibernateContext extends AbstractDatabaseStepContext<HibernateConte
 
     @Override
     public void stop() {
-        sessionFactorySet.forEach(SessionFactory::close);
+        sessionFactorySetDefault.forEach(SessionFactory::close);
+        sessionFactorySetDefault.clear();
     }
 
     public Set<SessionFactory> getSessionFactories() {
-        if (sessionFactorySet.isEmpty()) {
-            if (USE_JPA_CONFIG.get()) {
-                if (PERSISTENCE_UNITS.get() != null) {
-                    PERSISTENCE_UNITS.get().forEach(unit -> {
-                        var entityManagerFactory = Persistence.createEntityManagerFactory(unit);
-                        var sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
-                        sessionFactorySet.add(sessionFactory);
-                    });
-                } else {
-                    throw new HibernateConfigurationException("Persistence units are not defined in properties file");
-                }
-            } else {
-                if (HIBERNATE_CONFIG_FILENAMES.get() != null) {
-                    HIBERNATE_CONFIG_FILENAMES.get().forEach(configFile -> {
-                        var configuration = new Configuration().addFile(configFile);
-                        var sessionFactory = configuration.buildSessionFactory();
-                        sessionFactorySet.add(sessionFactory);
-                    });
-                } else {
-                    throw new HibernateConfigurationException("Hibernate configuration files are not defined in " +
-                            "properties file");
-                }
-            }
+        var sourceProperty = SESSION_FACTORY_SOURCE_PROPERTY.get();
+
+        if (sourceProperty instanceof DefaultSessionFactorySource) {
+            return sourceProperty.fillSessionFactories(sessionFactorySetDefault);
         }
-        return sessionFactorySet;
+
+        return sourceProperty.fillSessionFactories(new LinkedHashSet<>());
     }
 
     public CriteriaBuilder getCriteriaBuilder(Class<?> entityCls) {

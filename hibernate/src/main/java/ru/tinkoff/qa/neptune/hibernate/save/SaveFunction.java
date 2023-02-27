@@ -2,32 +2,28 @@ package ru.tinkoff.qa.neptune.hibernate.save;
 
 import com.google.common.base.Function;
 import org.hibernate.Session;
-import ru.tinkoff.qa.neptune.hibernate.HibernateContext;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.stream.StreamSupport;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.stream.Collectors.toList;
+import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate;
 
 @SuppressWarnings("unchecked")
-public abstract class SaveFunction<R, RESULT> implements Function<HibernateContext, RESULT> {
+public abstract class SaveFunction<R, RESULT> implements Function<R, RESULT> {
 
-    protected Iterable<R> listToSave;
 
     private SaveFunction() {
     }
 
-    public void setToSave(Iterable<R> listToSave) {
-        checkNotNull(listToSave);
-        this.listToSave = listToSave;
-    }
-
-    public void saveObjects(HibernateContext context) {
-        var savedList = new ArrayList<R>();
+    public List<Object> saveObjects(Iterable<Object> listToSave) {
+        var savedList = new ArrayList<>();
         var sessions = new HashSet<Session>();
 
         for (var toSave : listToSave) {
-            var sessionFactory = context.getSessionFactoryByEntity(toSave.getClass());
+            var sessionFactory = hibernate().getSessionFactoryByEntity(toSave.getClass());
             var session = sessionFactory.getCurrentSession();
             sessions.add(session);
             var persistenceUnitUtil = sessionFactory.getPersistenceUnitUtil();
@@ -41,7 +37,7 @@ public abstract class SaveFunction<R, RESULT> implements Function<HibernateConte
                 session.saveOrUpdate(obj);
             } else {
                 var id = session.save(toSave);
-                toSave = (R) session.get(toSave.getClass(), id);
+                toSave = session.get(toSave.getClass(), id);
             }
             savedList.add(toSave);
         }
@@ -50,7 +46,7 @@ public abstract class SaveFunction<R, RESULT> implements Function<HibernateConte
             session.getTransaction().commit();
         }
 
-        listToSave = savedList;
+        return savedList;
     }
 
     static class SaveOne<R> extends SaveFunction<R, R> {
@@ -60,22 +56,21 @@ public abstract class SaveFunction<R, RESULT> implements Function<HibernateConte
         }
 
         @Override
-        public R apply(HibernateContext context) {
-            saveObjects(context);
-            return listToSave.iterator().next();
+        public R apply(R input) {
+            return (R) saveObjects(List.of(input)).get(0);
         }
     }
 
-    static class SaveMany<R> extends SaveFunction<R, Iterable<R>> {
+    static class SaveMany<R> extends SaveFunction<Iterable<R>, Iterable<R>> {
 
         SaveMany() {
             super();
         }
 
         @Override
-        public Iterable<R> apply(HibernateContext context) {
-            saveObjects(context);
-            return listToSave;
+        public Iterable<R> apply(Iterable<R> input) {
+            return (Iterable<R>) saveObjects(StreamSupport.stream(input.spliterator(), false)
+                .collect(toList()));
         }
     }
 }

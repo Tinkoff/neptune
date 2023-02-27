@@ -1,58 +1,44 @@
-# Spring data. По ID
+# Hibernate. По ID
 
-Может быть выполнено, если интерфейс-репозиторий расширяет один или несколько из перечисленных:
-
-- [CrudRepository](https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/CrudRepository.html)
-- [ReactiveCrudRepository](https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/reactive/ReactiveCrudRepository.html)
-- [RxJava2CrudRepository](https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/reactive/RxJava2CrudRepository.html)
-- [RxJava3CrudRepository](https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/reactive/RxJava3CrudRepository.html)
-
-## Выбор одной записи по ID
+## Выбор записи по ID
 
 ```java
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import ru.tinkoff.qa.neptune.hibernate.model.TestEntity;
 
-import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
-import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byId;
+import static java.time.Duration.ofMillis;
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate;
+import static ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byId;
 
-@SpringBootTest
 public class MyTest {
 
-    @Autowired
-    private TestRepository testRepository;
-
     @Test
-    public void myTest() {
-        TestEntity entity = springData().find(
+    public void test() {
+        TestEntity entity = hibernate().select(
             //описание того ЧТО выбирается,
             //в свободной форме или бизнес
             //терминологии
             "Test entity",
-            byId(testRepository, 1L)
+            byId(TestEntity.class, 1L)
                 //можно указать один-несколько критериев,
                 //которым должна соответствовать отобранная запись
                 // Так же доступны criteriaOr(criteria...), 
                 // criteriaOnlyOne(criteria...)
                 // criteriaNot(criteria...)
-                .criteria(
-                    "Name == 'Some name'",
-                    testEntity -> testEntity.getName().equals("Some name")
-                )
-                // можно указать время, 
+                .criteria("Name == 'Some name'", testEntity -> testEntity.getName().equals("Some name"))
+                //можно указать время, 
                 // за которое подходящая запись должна быть выбрана,
-                // если оно отличается от того, 
+                // если оно отличается от того,
                 // что указано в свойствах/переменных окружения
-                // SPRING_DATA_WAITING_FOR_SELECTION_RESULT_TIME_UNIT 
-                // и SPRING_DATA_WAITING_FOR_SELECTION_RESULT_TIME_VALUE
+                // HIBERNATE_WAITING_FOR_SELECTION_RESULT_TIME_UNIT 
+                // и HIBERNATE_WAITING_FOR_SELECTION_RESULT_TIME_VALUE
                 .timeOut(ofSeconds(5))
                 //можно указать время интервала между попытками получить
                 // необходимый результат в рамках отведенного для этого времени, 
                 // если значение этого интервала
                 //должно отличаться от того, 
                 // что указано в свойствах/переменных окружения
-                // SPRING_DATA_SLEEPING_TIME_UNIT и 
-                // SPRING_DATA_SLEEPING_TIME_VALUE
+                // HIBERNATE_SLEEPING_TIME_UNIT и HIBERNATE_SLEEPING_TIME_VALUE
                 .pollingInterval(ofMillis(200))
                 //Можно указать, что должно быть выброшено исключение, 
                 // если записи с требуемым ID нет совсем 
@@ -63,34 +49,32 @@ public class MyTest {
 }
 ```
 
-Про свойства / переменные окружения `SPRING_DATA_SLEEPING_TIME_UNIT`, `SPRING_DATA_SLEEPING_TIME_VALUE`,
-`SPRING_DATA_SLEEPING_TIME_UNIT` и `SPRING_DATA_SLEEPING_TIME_VALUE` можно прочитать [здесь](./../settings.md).
+Про свойства / переменные окружения `HIBERNATE_SLEEPING_TIME_UNIT`, `HIBERNATE_SLEEPING_TIME_VALUE`,
+`HIBERNATE_SLEEPING_TIME_UNIT` и `HIBERNATE_SLEEPING_TIME_VALUE` можно прочитать [здесь](./../settings/Hibernate_WaitingTime.md).
 
-## Выбор нескольких записей по ID
+## Выбор записей по ID
 
 ```java
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import ru.tinkoff.qa.neptune.hibernate.model.TestEntity;
 
 import java.util.List;
 
-import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
-import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byIds;
+import static java.time.Duration.ofMillis;
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate;
+import static ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byIds;
 
-@SpringBootTest
+
 public class MyTest {
-
-    @Autowired
-    private TestRepository testRepository;
 
     @Test
     public void myTest() {
-        List<TestEntity> entities = springData().find(
+        List<TestEntity> entities = hibernate().select(
             //описание того ЧТО выбирается,
             //в свободной форме или бизнес
             //терминологии
             "Test entities",
-            byIds(testRepository, 1L, 2L)
+            byIds(TestEntity.class, 1L, 2L)
                 //можно указать один-несколько критериев,
                 //которым должны соответствовать отобранные записи
                 // Так же доступны criteriaOr(criteria...), 
@@ -104,16 +88,15 @@ public class MyTest {
                 // за которое подходящие записи должны быть выбраны,
                 // если оно отличается от того, 
                 // что указано в свойствах/переменных окружения
-                // SPRING_DATA_WAITING_FOR_SELECTION_RESULT_TIME_UNIT 
-                // и SPRING_DATA_WAITING_FOR_SELECTION_RESULT_TIME_VALUE
+                // HIBERNATE_WAITING_FOR_SELECTION_RESULT_TIME_UNIT 
+                // и HIBERNATE_WAITING_FOR_SELECTION_RESULT_TIME_VALUE
                 .timeOut(ofSeconds(5))
                 //можно указать время интервала между попытками получить
                 // необходимый результат в рамках отведенного для этого времени, 
                 // если значение этого интервала
                 //должно отличаться от того, 
                 // что указано в свойствах/переменных окружения
-                // SPRING_DATA_SLEEPING_TIME_UNIT и 
-                // SPRING_DATA_SLEEPING_TIME_VALUE
+                // HIBERNATE_SLEEPING_TIME_UNIT и HIBERNATE_SLEEPING_TIME_VALUE
                 .pollingInterval(ofMillis(200))
                 //другие опциональные параметры
         );
@@ -121,36 +104,33 @@ public class MyTest {
 }
 ```
 
-Про свойства / переменные окружения `SPRING_DATA_SLEEPING_TIME_UNIT`, `SPRING_DATA_SLEEPING_TIME_VALUE`,
-`SPRING_DATA_SLEEPING_TIME_UNIT` и `SPRING_DATA_SLEEPING_TIME_VALUE` можно прочитать [здесь](./../settings.md).
+Про свойства / переменные окружения `HIBERNATE_SLEEPING_TIME_UNIT`, `HIBERNATE_SLEEPING_TIME_VALUE`,
+`HIBERNATE_SLEEPING_TIME_UNIT` и `HIBERNATE_SLEEPING_TIME_VALUE` можно прочитать [здесь](./../settings/Hibernate_WaitingTime.md).
 
 ```{eval-rst}
 .. include:: ../../../shared_docs/steps_return_list_optiotal_parameters_async.rst
 ```
 
-## Выбор данных записи, полученной по ID
+## Выбор данных записи по ID
 
 ```java
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import ru.tinkoff.qa.neptune.hibernate.model.TestEntity;
 
-import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
-import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byId;
+import static java.time.Duration.ofMillis;
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate;
+import static ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byId;
 
-@SpringBootTest
 public class MyTest {
-
-    @Autowired
-    private TestRepository testRepository;
 
     @Test
     public void myTest() {
-        String name = springData().find(
+        String name = hibernate().select(
             //описание того ЧТО выбирается,
             //в свободной форме или бизнес
             //терминологии
             "Test name",
-            byId(testRepository, 1L)
+            byId(TestEntity.class, 1L)
                 //---------------------------------------
                 //необходимые параметры для выбора записи
                 //---------------------------------------
@@ -178,23 +158,22 @@ public class MyTest {
 ```
 
 ```java
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import ru.tinkoff.qa.neptune.hibernate.model.TestEntity;
 
-import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
-import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byId;
+import java.util.List;
 
-@SpringBootTest
+import static java.time.Duration.ofMillis;
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate;
+import static ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byId;
+
 public class MyTest {
-
-    @Autowired
-    private TestRepository testRepository;
 
     @Test
     public void myTest() {
-        List<String> listData = springData().find(
+        List<String> listData = hibernate().select(
             "Test list",
-            byId(testRepository, 1L)
+            byId(TestEntity.class, 1L)
                 //---------------------------------------
                 //необходимые параметры для выбора записи
                 //---------------------------------------
@@ -215,23 +194,20 @@ public class MyTest {
 ```
 
 ```java
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import ru.tinkoff.qa.neptune.hibernate.model.TestEntity;
 
-import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
-import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byId;
+import static java.time.Duration.ofMillis;
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate;
+import static ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byId;
 
-@SpringBootTest
 public class MyTest {
-
-    @Autowired
-    private TestRepository testRepository;
 
     @Test
     public void myTest() {        
-        String[] arrayData = springData().find(
+        String[] arrayData = hibernate().select(
             "Test array",
-            byId(testRepository, 1L)
+             byId(TestEntity.class, 1L)
                 //---------------------------------------
                 //необходимые параметры для выбора записи
                 //---------------------------------------
@@ -252,23 +228,21 @@ public class MyTest {
 ```
 
 ```java
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import ru.tinkoff.qa.neptune.hibernate.model.TestEntity;
 
-import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
-import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byId;
+import static java.time.Duration.ofMillis;
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate;
+import static ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byId;
 
-@SpringBootTest
+
 public class MyTest {
-
-    @Autowired
-    private TestRepository testRepository;
 
     @Test
     public void myTest() {        
-        String listItem = springData().find(
+        String listItem = hibernate().select(
             "Test list item",
-            byId(testRepository, 1L)
+            byId(TestEntity.class, 1L)
                 //---------------------------------------
                 //необходимые параметры для выбора записи
                 //---------------------------------------
@@ -288,23 +262,20 @@ public class MyTest {
 ```
 
 ```java
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import ru.tinkoff.qa.neptune.hibernate.model.TestEntity;
 
-import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
-import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byId;
+import static java.time.Duration.ofMillis;
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate;
+import static ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byId;
 
-@SpringBootTest
 public class MyTest {
-
-    @Autowired
-    private TestRepository testRepository;
 
     @Test
     public void myTest() {        
-        String arrayItem = springData().find(
+        String arrayItem = hibernate().select(
             "Test array item",
-            byId(testRepository, 1L)
+            byId(TestEntity.class, 1L)
                 //---------------------------------------
                 //необходимые параметры для выбора записи
                 //---------------------------------------
@@ -323,31 +294,28 @@ public class MyTest {
 .. include:: ../../../shared_docs/steps_return_array_item_optiotal_parameters_sync.rst
 ```
 
-## Выбор данных записей, полученных по ID
+## Выбор данных записей по ID
 
 ```java
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import ru.tinkoff.qa.neptune.hibernate.model.TestEntity;
 
 import java.util.List;
 
-import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
-import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byIds;
+import static java.time.Duration.ofMillis;
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate;
+import static ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byIds;
 
-@SpringBootTest
 public class MyTest {
-
-    @Autowired
-    private TestRepository testRepository;
 
     @Test
     public void myTest() {
-        List<String> names = springData().find(
+        List<String> names = hibernate().select(
             //описание того ЧТО следует получить,
             //в свободной форме или бизнес
             //терминологии
             "Test names",
-            byIds(testRepository, 1L, 2L)
+            byIds(TestEntity.class, 1L, 2L)
                 //
                 //Необходимые параметры
                 //
@@ -369,23 +337,20 @@ public class MyTest {
 ```
 
 ```java
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import ru.tinkoff.qa.neptune.hibernate.model.TestEntity;
 
-import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
-import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byId;
+import static java.time.Duration.ofMillis;
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate;
+import static ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byIds;
 
-@SpringBootTest
 public class MyTest {
-
-    @Autowired
-    private TestRepository testRepository;
 
     @Test
     public void myTest() {        
-        String name = springData().find(
+        String name = hibernate().select(
             "Test name",
-            byIds(testRepository, 1L, 2L)
+            byIds(TestEntity.class, 1L, 2L)
                 //
                 //Необходимые параметры
                 //
@@ -406,33 +371,29 @@ public class MyTest {
 .. include:: ../../../shared_docs/steps_return_iterable_item_optiotal_parameters_sync.rst
 ```
 
-## Наличие или отсутствие записей, найденных по ID
+## Наличие или отсутствие записей по ID
 
 ```java
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import ru.tinkoff.qa.neptune.hibernate.model.TestEntity;
+import javax.persistence.QueryTimeoutException;
 
-import static ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData;
-import static ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byId;
+import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate;
+import static ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byIds;
 
-@SpringBootTest
 public class MyTest {
-
-    @Autowired
-    private TestRepository testRepository;
 
     @Test
     public void presenceTest() {
 
         //Если запись была или появилась через некоторое время - вернется true. 
         // Иначе - false.
-        boolean isPresent = springData().presenceOf(
+        boolean isPresent = hibernate().presenceOf(
             //описание того ЧТО должно 
             // присутствовать, в свободной форме 
             // или бизнес терминологии
             "Test entity",
-            byId(testRepository, 1L)
-            //или byIds(testRepository, 1L, 2L)    
+            byId(TestEntity.class, 1L)
+            //или byIds(TestEntity.class, 1L, 2L)    
                 //можно указать один-несколько критериев,
                 //которым должны соответствовать записи,
                 //присутствующие на начало выполнения шага 
@@ -446,19 +407,24 @@ public class MyTest {
                 // за которое подходящие записи должны появиться,
                 // если оно отличается от того, 
                 // что указано в свойствах/переменных окружения
-                // SPRING_DATA_WAITING_FOR_SELECTION_RESULT_TIME_UNIT 
-                // и SPRING_DATA_WAITING_FOR_SELECTION_RESULT_TIME_VALUE
+                // HIBERNATE_WAITING_FOR_SELECTION_RESULT_TIME_UNIT 
+                // и HIBERNATE_WAITING_FOR_SELECTION_RESULT_TIME_VALUE
                 .timeOut(ofSeconds(5))
-            //Прочие описанные настройки выше 
+            //Прочие описанные выше 
             //настройки и параметры игнорируются здесь
+            ,
+            //Можно перечислить классы исключений, 
+            //которые должны быть проигнорированы 
+            //в ходе выполнения шага
+            QueryTimeoutException.class
         );
 
         //Если запись была или появилась в течение - вернется true. Иначе - выбросится исключение.
-        var isPresent2 = springData().presenceOfOrThrow(
+        var isPresent2 = hibernate().presenceOfOrThrow(
             "Test entity",
             //опционально критерии и время
-            byId(testRepository, 1L)
-            //или byIds(testRepository, 1L, 2L)  
+            byId(TestEntity.class, 1L)
+            //или byIds(TestEntity.class, 1L, 2L)  
         );
     }
 
@@ -468,13 +434,13 @@ public class MyTest {
         //Если записи не было или она перестала определяться 
         // через некоторое время - вернется true 
         // Иначе - false.
-        boolean isAbsent = springData().absenceOf(
+        boolean isAbsent = hibernate().absenceOf(
             //описание того ЧТО должно 
             // отсутствовать, в свободной форме 
             // или бизнес терминологии
             "Test entity",
-            byId(testRepository, 1L)
-            //или byIds(testRepository, 1L, 2L)  
+            byId(TestEntity.class, 1L)
+            //или byIds(TestEntity.class, 1L, 2L)  
                 //можно указать один-несколько критериев,
                 //которым должны соответствовать записи,
                 //отсутствующие на начало выполнения шага 
@@ -492,10 +458,10 @@ public class MyTest {
         //Если записи не было или она перестала определяться 
         // через некоторое время - вернется true 
         // Иначе - выбросится исключение.
-        boolean isAbsent2 = springData().absenceOfOrThrow(
+        boolean isAbsent2 = hibernate().absenceOfOrThrow(
             "Test entity",
-            byId(testRepository, 1L),
-            //или byIds(testRepository, 1L, 2L)
+            byId(TestEntity.class, 1L),
+            //или byIds(TestEntity.class, 1L, 2L) 
             //опционально,
             //можно указать критерии
             ofSeconds(10));

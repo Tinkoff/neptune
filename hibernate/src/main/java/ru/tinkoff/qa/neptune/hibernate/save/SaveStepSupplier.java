@@ -32,18 +32,15 @@ import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.NO_DESC_ERROR_TEX
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Save:")
 @CaptureOnSuccess(by = DataCaptor.class)
 public abstract class SaveStepSupplier<INPUT, RESULT, R>
-        extends SequentialGetStepSupplier.GetObjectStepSupplier<HibernateContext, RESULT, SaveStepSupplier<INPUT, RESULT, R>>
+        extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<HibernateContext, RESULT, INPUT, SaveStepSupplier<INPUT, RESULT, R>>
         implements InsertQuery<RESULT>,
         SelectQuery<RESULT> {
 
     protected SaveFunction<R, RESULT> f;
-    protected INPUT toSave;
-
     List<UpdateAction<R>> updates = of();
 
-    protected SaveStepSupplier(SaveFunction<R, RESULT> originalFunction) {
+    protected SaveStepSupplier(SaveFunction<INPUT, RESULT> originalFunction) {
         super(originalFunction);
-        this.f = originalFunction;
     }
 
     public static <R> SaveStepSupplier<R, R, R> save(
@@ -111,52 +108,37 @@ public abstract class SaveStepSupplier<INPUT, RESULT, R>
     @IncludeParamsOfInnerGetterStep
     private static class SaveOneStepSupplier<R> extends SaveStepSupplier<R, R, R> {
 
-        protected SelectOneStepSupplier<R> select;
-
         protected SaveOneStepSupplier(R toSave) {
             super(new SaveFunction.SaveOne<>());
-            this.toSave = toSave;
+            from(toSave);
         }
 
         protected SaveOneStepSupplier(SelectOneStepSupplier<R> select) {
             super(new SaveFunction.SaveOne<>());
-            this.select = select;
+            from(select);
         }
 
         @Override
-        protected void onStart(HibernateContext context) {
-            if (select != null) {
-                toSave = select.get().apply(context);
-            }
-            f.setToSave(List.of(toSave));
-
+        protected void onStart(R toSave) {
             updates.forEach(u -> u.performUpdate(of(toSave)));
-            super.onStart(context);
         }
     }
 
     @IncludeParamsOfInnerGetterStep
     private static class SaveManyStepSupplier<R> extends SaveStepSupplier<Iterable<R>, Iterable<R>, R> {
 
-        protected SelectManyStepSupplier<R> select;
-
         protected SaveManyStepSupplier(Iterable<R> toSave) {
             super(new SaveFunction.SaveMany<>());
-            this.toSave = toSave;
+            from(toSave);
         }
 
         protected SaveManyStepSupplier(SelectManyStepSupplier<R> select) {
             super(new SaveFunction.SaveMany<>());
-            this.select = select;
+            from(select);
         }
 
         @Override
-        protected void onStart(HibernateContext context) {
-            if (select != null) {
-                toSave = select.get().apply(context);
-            }
-            f.setToSave(toSave);
-
+        protected void onStart(Iterable<R> toSave) {
             updates.forEach(u -> u.performUpdate(newArrayList(toSave)));
         }
     }

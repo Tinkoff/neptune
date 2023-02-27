@@ -1,9 +1,7 @@
-Neptune Hibernate Integration API
+.. code-block:: xml
+   :caption: maven/dependencies
 
-## Maven
-
-```xml
-    <dependencies>
+   <dependencies>
         <dependency>
             <!--it is necessary to have this in classpath-->
             <!--or anything that depends on this transitively-->
@@ -31,7 +29,14 @@ Neptune Hibernate Integration API
             <!-- scope is needed when main functionality doesn't use QueryDsl -->
             <scope>test</scope>
         </dependency>
-    
+
+        <dependency>
+            <groupId>ru.tinkoff.qa.neptune</groupId>
+            <artifactId>hibernate</artifactId>
+            <version>${LATEST_RELEASE_OR_BETA_VERSION}</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>ru.tinkoff.qa.neptune</groupId>
             <artifactId>hibernate</artifactId>
@@ -39,11 +44,10 @@ Neptune Hibernate Integration API
             <scope>test</scope>
         </dependency>
     </dependencies>
-```
 
-## Gradle
+.. code-block:: groovy
+   :caption: Добавить в build.gradle
 
-```groovy
     dependencies {
         //it is necessary to have this in classpath
         //or anything that depends on this transitively
@@ -54,13 +58,6 @@ Neptune Hibernate Integration API
         //When main functionality doesn't use QueryDsl then 'testImplementation' is ok
         implementation group: 'com.querydsl', name: 'querydsl-core', version: '[5.0.0,)' //range of supported versions
         implementation group: 'com.querydsl', name: 'querydsl-jpa', version: '[5.0.0,)'
-    
-        testImplementation group: 'ru.tinkoff.qa.neptune', name: 'hibernate', version: LATEST_RELEASE_OR_BETA_VERSION    
+
+        testImplementation group: 'ru.tinkoff.qa.neptune', name: 'hibernate', version: LATEST_RELEASE_OR_BETA_VERSION
     }
-```
-
-[Краткая документация на русском](./doc/rus/README.MD)
-
-[Brief documentation in English](./doc/eng/README.MD)
-
-[API overview](https://tinkoff.github.io/neptune/hibernate/index.html)

@@ -29,11 +29,9 @@
    :caption: Добавить в build.gradle
 
     dependencies {
-           dependencies {
-           //необходимо иметь в classpath
-           implementation group: 'org.springframework.boot', name: 'spring-boot-starter', version: '[2.6.1,)' //диапазон поддерживаемых версий
-           //необходимо иметь в test classpath
-           testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '[2.6.1,)' //диапазон поддерживаемых версий
-           testImplementation  group: 'ru.tinkoff.qa.neptune', name: 'spring.mock.mvc', version: LATEST_RELEASE_OR_BETA_VERSION
-       }
+        //необходимо иметь в classpath
+        implementation group: 'org.springframework.boot', name: 'spring-boot-starter', version: '[2.6.1,)' //диапазон поддерживаемых версий
+        //необходимо иметь в test classpath
+        testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '[2.6.1,)' //диапазон поддерживаемых версий
+        testImplementation  group: 'ru.tinkoff.qa.neptune', name: 'spring.mock.mvc', version: LATEST_RELEASE_OR_BETA_VERSION
     }

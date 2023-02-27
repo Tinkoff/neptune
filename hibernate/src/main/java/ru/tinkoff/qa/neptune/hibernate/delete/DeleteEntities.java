@@ -1,20 +1,16 @@
 package ru.tinkoff.qa.neptune.hibernate.delete;
 
 import com.google.common.base.Function;
-import ru.tinkoff.qa.neptune.hibernate.HibernateContext;
 
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate;
 
 
-abstract class DeleteEntities<R> implements Function<HibernateContext, Void> {
+abstract class DeleteEntities<R> implements Function<R, Void> {
 
-    protected R toDelete;
+    //protected R toDelete;
 
     private DeleteEntities() {
-    }
-
-    public void setToDelete(R toDelete) {
-        this.toDelete = toDelete;
     }
 
     static class DeleteOne<R> extends DeleteEntities<R> {
@@ -24,9 +20,9 @@ abstract class DeleteEntities<R> implements Function<HibernateContext, Void> {
         }
 
         @Override
-        public Void apply(HibernateContext context) {
+        public Void apply(R toDelete) {
             ofNullable(toDelete).ifPresent(deleteSingle -> {
-                var sessionFactory = context.getSessionFactoryByEntity(deleteSingle.getClass());
+                var sessionFactory = hibernate().getSessionFactoryByEntity(deleteSingle.getClass());
                 var session = sessionFactory.getCurrentSession();
                 session.beginTransaction();
                 var obj = session.merge(deleteSingle);
@@ -45,9 +41,9 @@ abstract class DeleteEntities<R> implements Function<HibernateContext, Void> {
         }
 
         @Override
-        public Void apply(HibernateContext context) {
+        public Void apply(Iterable<R> toDelete) {
             ofNullable(toDelete).ifPresent(toDeleteList -> toDeleteList.forEach(toDeleteSingle -> {
-                var sessionFactory = context.getSessionFactoryByEntity(toDeleteSingle.getClass());
+                var sessionFactory = hibernate().getSessionFactoryByEntity(toDeleteSingle.getClass());
                 var session = sessionFactory.getCurrentSession();
                 session.beginTransaction();
                 var obj = session.merge(toDeleteSingle);

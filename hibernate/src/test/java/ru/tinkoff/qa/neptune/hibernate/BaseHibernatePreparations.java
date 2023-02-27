@@ -25,7 +25,7 @@ import static java.util.List.of;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
-import static ru.tinkoff.qa.neptune.hibernate.properties.PersistenceUnits.PERSISTENCE_UNITS;
+import static ru.tinkoff.qa.neptune.hibernate.properties.ConnectionConfig.PERSISTENCE_UNITS;
 import static ru.tinkoff.qa.neptune.hibernate.properties.UseJpaConfig.USE_JPA_CONFIG;
 
 public class BaseHibernatePreparations {
