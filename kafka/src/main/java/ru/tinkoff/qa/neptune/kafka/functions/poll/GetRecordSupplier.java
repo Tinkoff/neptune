@@ -9,7 +9,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 import ru.tinkoff.qa.neptune.kafka.captors.KafkaConsumerRecordsCaptor;
-import ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty;
 
 import java.time.Duration;
 import java.util.List;
@@ -22,9 +21,11 @@ import static ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollListFromRecord
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("ConsumerRecord criteria")
 @CaptureOnSuccess(by = KafkaConsumerRecordsCaptor.class)
-public final class GetRecordSupplier<K, V> extends SequentialGetStepSupplier.GetListStepSupplier<KafkaStepContext, List<ConsumerRecord<K, V>>, ConsumerRecord<K, V>, GetRecordSupplier<K, V>> {
+public final class GetRecordSupplier<K, V>
+    extends SequentialGetStepSupplier.GetListStepSupplier<KafkaStepContext, List<ConsumerRecord<K, V>>, ConsumerRecord<K, V>, GetRecordSupplier<K, V>>
+    implements PollStep<GetRecordSupplier<K, V>> {
 
-    private final GetRecords<K, V> function;
+    private final PollFunction<K, V, List<ConsumerRecord<K, V>>> function;
 
     @StepParameter(value = "Exclude consumer records with null-values")
     boolean excludeRecordsWithNullValues;
@@ -32,36 +33,22 @@ public final class GetRecordSupplier<K, V> extends SequentialGetStepSupplier.Get
     @StepParameter(value = "Exclude consumer records with null-keys")
     boolean excludeRecordsWithNullKeys;
 
-    private GetRecordSupplier(GetRecords<K, V> originalFunction) {
+    private GetRecordSupplier(GetRecords<K, V> originalFunction,
+                              Deserializer<K> keyDeserializer,
+                              Deserializer<V> valueDeserializer) {
         super(originalFunction);
-        this.function = originalFunction;
+        this.function = new PollFunction<>(originalFunction, keyDeserializer, valueDeserializer);
     }
 
     @Description("Kafka consumer records")
     public static <K, V> GetRecordSupplier<K, V> consumerRecords(Deserializer<K> keyDeserializer,
                                                                  Deserializer<V> valueDeserializer) {
-        return new GetRecordSupplier<>(new GetRecords<>()
-            .setKeyDeserializer(keyDeserializer)
-            .setValueDeserializer(valueDeserializer));
+        return new GetRecordSupplier<>(new GetRecords<>(), keyDeserializer, valueDeserializer);
     }
 
     public static GetRecordSupplier<String, String> consumerRecords() {
         return consumerRecords(new StringDeserializer(),
             new StringDeserializer());
-    }
-
-    /**
-     * Defines topics to subscribe
-     * <p></p>
-     * If there is no topic defined then value of the property
-     * {@link KafkaDefaultTopicsForPollProperty#DEFAULT_TOPICS_FOR_POLL} is used.
-     *
-     * @param topics topics to subscribe
-     * @return self-reference
-     */
-    public GetRecordSupplier<K, V> fromTopics(String... topics) {
-        function.topics(topics);
-        return this;
     }
 
     /**
@@ -93,20 +80,6 @@ public final class GetRecordSupplier<K, V> extends SequentialGetStepSupplier.Get
     }
 
     /**
-     * Defines consumer property value
-     *
-     * @see <a href="https://kafka.apache.org/documentation/#consumerconfigs">Consumer Configs</a>
-     *
-     * @param property a property name
-     * @param value a property value
-     * @return self-reference
-     */
-    public GetRecordSupplier<K, V> setProperty(String property, String value) {
-        function.setProperty(property, value);
-        return this;
-    }
-
-    /**
      * @param description     is description of value to get
      * @param getItemFunction describes how get resulted list item from each {@link ConsumerRecord}
      * @param <R>             is a type of item of iterable
@@ -127,17 +100,11 @@ public final class GetRecordSupplier<K, V> extends SequentialGetStepSupplier.Get
     }
 
     @Override
-    protected void onSuccess(List<ConsumerRecord<K, V>> records) {
-        function.closeConsumer();
-    }
-
-    @Override
-    protected void onFailure(KafkaStepContext context, Throwable throwable) {
-        function.closeConsumer();
-    }
-
-    @Override
     public GetRecordSupplier<K, V> timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
+    }
+
+    public Function<KafkaStepContext, List<ConsumerRecord<K, V>>> get() {
+        return function.setDelegateTo(super.get());
     }
 }

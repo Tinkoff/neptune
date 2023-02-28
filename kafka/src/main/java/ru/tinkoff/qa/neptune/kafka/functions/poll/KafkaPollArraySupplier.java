@@ -12,7 +12,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 import ru.tinkoff.qa.neptune.kafka.captors.ReceivedArrayCaptor;
-import ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
@@ -31,13 +30,18 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @MaxDepthOfReporting(0)
 @CaptureOnSuccess(by = ReceivedArrayCaptor.class)
 @SuppressWarnings({"unchecked", "rawtypes"})
-public final class KafkaPollArraySupplier<K, V, R> extends SequentialGetStepSupplier
-    .GetArrayStepSupplier<KafkaStepContext, R, KafkaPollArraySupplier<K, V, R>> {
+public final class KafkaPollArraySupplier<K, V, R>
+    extends SequentialGetStepSupplier.GetArrayStepSupplier<KafkaStepContext, R, KafkaPollArraySupplier<K, V, R>>
+    implements PollStep<KafkaPollArraySupplier<K, V, R>> {
     public static final String NO_DESC_ERROR_TEXT = "Description should be defined";
 
-    private final GetRecords<K, V> getRecords;
+    private final PollFunction<K, V, R[]> function;
 
-    private KafkaPollArraySupplier(GetRecords<K, V> getFromTopics, Class<R> componentClass, Function<ConsumerRecord<K, V>, R> f) {
+    private KafkaPollArraySupplier(GetRecords<K, V> getFromTopics,
+                                   Deserializer<K> keyDeserializer,
+                                   Deserializer<V> valueDeserializer,
+                                   Class<R> componentClass,
+                                   Function<ConsumerRecord<K, V>, R> f) {
         super(getFromTopics.andThen(list -> {
             var listT = list.stream().map(new KafkaSafeFunction<>(f)).collect(toList());
             R[] ts = (R[]) Array.newInstance(componentClass, 0);
@@ -48,17 +52,7 @@ public final class KafkaPollArraySupplier<K, V, R> extends SequentialGetStepSupp
 
             return ts;
         }));
-        this.getRecords = getFromTopics;
-    }
-
-    private KafkaPollArraySupplier(Deserializer<K> keyDeserializer,
-                                   Deserializer<V> valueDeserializer,
-                                   Class<R> componentClass,
-                                   Function<ConsumerRecord<K, V>, R> f) {
-        this(new GetRecords<>()
-                .setKeyDeserializer(keyDeserializer)
-                .setValueDeserializer(valueDeserializer),
-            componentClass, f);
+        this.function = new PollFunction<>(getFromTopics, keyDeserializer, valueDeserializer);
     }
 
     /**
@@ -84,7 +78,7 @@ public final class KafkaPollArraySupplier<K, V, R> extends SequentialGetStepSupp
         Class<R> componentClass,
         Function<ConsumerRecord<K, V>, R> f) {
         checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
-        return new KafkaPollArraySupplier<>(keyDeserializer, valueDeserializer, componentClass, f);
+        return new KafkaPollArraySupplier<>(new GetRecords<>(), keyDeserializer, valueDeserializer, componentClass, f);
     }
 
     /**
@@ -169,6 +163,7 @@ public final class KafkaPollArraySupplier<K, V, R> extends SequentialGetStepSupp
     public static <K> KafkaPollArraySupplier<K, String, K> consumedArrayKeys(Class<K> componentClass,
                                                                              Deserializer<K> keyDeserializer) {
         return new KafkaPollArraySupplier<>(
+            new GetRecords<>(),
             keyDeserializer,
             new StringDeserializer(),
             componentClass,
@@ -257,7 +252,9 @@ public final class KafkaPollArraySupplier<K, V, R> extends SequentialGetStepSupp
     public static <V> KafkaPollArraySupplier<String, V, V> consumedArrayValues(
         Class<V> componentClass,
         Deserializer<V> valueDeserializer) {
-        return new KafkaPollArraySupplier<>(new StringDeserializer(),
+        return new KafkaPollArraySupplier<>(
+            new GetRecords<>(),
+            new StringDeserializer(),
             valueDeserializer,
             componentClass,
             ConsumerRecord::value);
@@ -288,46 +285,13 @@ public final class KafkaPollArraySupplier<K, V, R> extends SequentialGetStepSupp
         return consumedArrayValues(String.class, new StringDeserializer());
     }
 
-    /**
-     * Defines topics to subscribe.
-     * <p></p>
-     * If there is no topic defined by this method then value of the property
-     * {@link KafkaDefaultTopicsForPollProperty#DEFAULT_TOPICS_FOR_POLL} is used.
-     *
-     * @param topics topics to subscribe
-     * @return self-reference
-     */
-    public KafkaPollArraySupplier<K, V, R> fromTopics(String... topics) {
-        getRecords.topics(topics);
-        return this;
-    }
-
     @Override
     public KafkaPollArraySupplier<K, V, R> timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
     }
 
     @Override
-    protected void onSuccess(R[] t) {
-        getRecords.closeConsumer();
-    }
-
-    @Override
-    protected void onFailure(KafkaStepContext m, Throwable throwable) {
-        getRecords.closeConsumer();
-    }
-
-    /**
-     * Defines consumer property value
-     *
-     * @see <a href="https://kafka.apache.org/documentation/#consumerconfigs">Consumer Configs</a>
-     *
-     * @param property a property name
-     * @param value a property value
-     * @return self-reference
-     */
-    public KafkaPollArraySupplier<K, V, R> setProperty(String property, String value) {
-        getRecords.setProperty(property, value);
-        return this;
+    public Function<KafkaStepContext, R[]> get() {
+        return function.setDelegateTo(super.get());
     }
 }
