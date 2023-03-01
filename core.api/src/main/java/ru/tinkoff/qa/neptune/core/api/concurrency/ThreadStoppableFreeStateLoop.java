@@ -29,7 +29,9 @@ class ThreadStoppableFreeStateLoop extends Thread {
             }
             try {
                 sleep(1);
-            } catch (InterruptedException ignored) {
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                currentThread().interrupt();
             }
         }
 

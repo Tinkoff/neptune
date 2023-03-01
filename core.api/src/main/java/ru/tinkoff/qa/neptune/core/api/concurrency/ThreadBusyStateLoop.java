@@ -46,7 +46,9 @@ class ThreadBusyStateLoop extends Thread {
                         && !isBusy(threadToListenTo)) {
                     break;
                 }
-            } catch (InterruptedException ignored) {
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                currentThread().interrupt();
             }
         } while (true);
         container.setFree(FREE_RESOURCES_ON_INACTIVITY_AFTER.get().toMillis());

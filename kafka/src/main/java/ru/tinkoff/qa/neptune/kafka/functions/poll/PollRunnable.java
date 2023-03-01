@@ -10,6 +10,7 @@ import ru.tinkoff.qa.neptune.kafka.jackson.desrializer.KafkaJacksonModule;
 import java.util.*;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.Thread.currentThread;
 import static java.lang.Thread.sleep;
 import static java.time.Duration.ofNanos;
 import static java.util.Arrays.asList;
@@ -49,7 +50,8 @@ final class PollRunnable<K, V> implements Runnable {
             try {
                 sleep(50);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
+                currentThread().interrupt();
             }
         }
     }
@@ -108,9 +110,8 @@ final class PollRunnable<K, V> implements Runnable {
                                         Deserializer<V> valueDeserializer,
                                         boolean latest) {
         var additional = new LinkedHashMap<>(additionalProperties);
-        if (!additional.containsKey(GROUP_ID_CONFIG)) {
-            additional.put(GROUP_ID_CONFIG, randomUUID().toString());
-        }
+
+        additional.computeIfAbsent(GROUP_ID_CONFIG, s -> randomUUID().toString());
 
         if (latest) {
             additional.put(AUTO_OFFSET_RESET_CONFIG, "latest");

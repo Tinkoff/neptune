@@ -56,6 +56,7 @@ final class PollFunction<K, V, T> implements Function<KafkaStepContext, T>, Step
 
         try {
             while (!pollRunnable.isPolling() && isNull(pollRunnable.getThrown())) {
+                //this block is for the waiting valuable status of the polling
             }
 
             if (nonNull(toPollWith)) {
@@ -93,6 +94,7 @@ final class PollFunction<K, V, T> implements Function<KafkaStepContext, T>, Step
         additionalProperties.put(propertyName, propertyValue);
     }
 
+    @Override
     public Map<String, String> getParameters() {
         var result = StepParameterPojo.super.getParameters();
         result.putAll(additionalProperties);

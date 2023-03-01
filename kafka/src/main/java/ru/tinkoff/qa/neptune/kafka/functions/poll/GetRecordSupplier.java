@@ -104,6 +104,7 @@ public final class GetRecordSupplier<K, V>
         return super.timeOut(timeOut);
     }
 
+    @Override
     public Function<KafkaStepContext, List<ConsumerRecord<K, V>>> get() {
         return function.setDelegateTo(super.get());
     }

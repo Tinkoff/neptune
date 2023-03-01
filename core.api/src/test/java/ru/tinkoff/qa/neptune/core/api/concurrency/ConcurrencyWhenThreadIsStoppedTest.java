@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import static java.lang.System.currentTimeMillis;
+import static java.lang.Thread.currentThread;
 import static java.lang.Thread.sleep;
 import static java.time.Duration.ofSeconds;
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -29,6 +30,7 @@ public class ConcurrencyWhenThreadIsStoppedTest extends BaseConcurrencyTest {
                     sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    currentThread().interrupt();
                 }
             }
         });

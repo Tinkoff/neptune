@@ -91,7 +91,7 @@ public final class ToGetConditionalHelper {
                     sleep(sleeping.toMillis());
                 } catch (InterruptedException e) {
                     currentThread().interrupt();
-                    throw new RuntimeException(e);
+                    throw new IllegalStateException(e);
                 }
                 currentMillis = currentTimeMillis();
             }
