@@ -10,6 +10,7 @@ import ru.tinkoff.qa.neptune.kafka.jackson.desrializer.KafkaJacksonModule;
 import java.util.*;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.Thread.sleep;
 import static java.time.Duration.ofNanos;
 import static java.util.Arrays.asList;
 import static java.util.Objects.isNull;
@@ -20,7 +21,6 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG;
-import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty.DEFAULT_TOPICS_FOR_POLL;
 
 final class PollRunnable<K, V> implements Runnable {
 
@@ -37,50 +37,58 @@ final class PollRunnable<K, V> implements Runnable {
     private boolean toPoll = true;
     private Throwable thrown;
 
-    private List<KafkaRecordWrapper<K, V>> readRecords = new ArrayList<>();
+    private final LinkedHashSet<KafkaRecordWrapper<K, V>> readRecords = new LinkedHashSet<>();
 
     @Override
     public void run() {
-        var topicsToSubscribe = (isNull(topics) || topics.length == 0) ? DEFAULT_TOPICS_FOR_POLL.get() : topics;
-        kafkaConsumer.subscribe(asList(topicsToSubscribe));
+        readRecords.clear();
+        kafkaConsumer.subscribe(isNull(topics) ? null : asList(topics));
 
         while (toPoll) {
-            synchronized (this) {
-                try {
-                    var consumerRecords = kafkaConsumer.poll(ofNanos(1));
-
-                    readRecords.addAll(stream(consumerRecords.spliterator(), false)
-                        .filter(cr -> {
-                            boolean result = true;
-                            if (excludeNullKeys) {
-                                result = nonNull(cr.key());
-                            }
-
-                            if (!result) {
-                                return false;
-                            }
-
-                            if (excludeNullValues) {
-                                result = nonNull(cr.value());
-                            }
-
-                            return result;
-                        })
-                        .map(KafkaRecordWrapper::new)
-                        .collect(toList()));
-
-                    readRecords = readRecords.stream().distinct().collect(toList());
-                    isPolling = true;
-                } catch (Throwable t) {
-                    thrown = t;
-                    throw t;
-                }
+            poll();
+            try {
+                sleep(50);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
+        }
+    }
+
+    private synchronized void poll() {
+        try {
+            var consumerRecords = kafkaConsumer.poll(ofNanos(1));
+
+            stream(consumerRecords.spliterator(), false)
+                .filter(cr -> {
+                    boolean result = true;
+                    if (excludeNullKeys) {
+                        result = nonNull(cr.key());
+                    }
+
+                    if (!result) {
+                        return false;
+                    }
+
+                    if (excludeNullValues) {
+                        result = nonNull(cr.value());
+                    }
+
+                    return result;
+                })
+                .map(KafkaRecordWrapper::new)
+                .forEach(readRecords::add);
+
+            isPolling = true;
+        } catch (Throwable t) {
+            thrown = t;
+            throw t;
         }
     }
 
     synchronized void stopPolling() {
         toPoll = false;
+        isPolling = false;
+        thrown = null;
         ofNullable(kafkaConsumer).ifPresent(KafkaConsumer::close);
     }
 
@@ -110,10 +118,10 @@ final class PollRunnable<K, V> implements Runnable {
             additional.put(AUTO_OFFSET_RESET_CONFIG, "earliest");
         }
 
-        kafkaConsumer = ofNullable(kafkaConsumer).orElseGet(() -> context.createConsumer(
+        kafkaConsumer = context.createConsumer(
             keyDeserializer,
             valueDeserializer,
-            additionalProperties)
+            additional
         );
 
         return this;
@@ -132,7 +140,7 @@ final class PollRunnable<K, V> implements Runnable {
         return isPolling;
     }
 
-    List<ConsumerRecord<K, V>> getConsumedRecords() {
+    synchronized List<ConsumerRecord<K, V>> getConsumedRecords() {
         return readRecords.stream().map(KafkaRecordWrapper::getConsumerRecord).collect(toList());
     }
 

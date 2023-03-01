@@ -25,7 +25,7 @@ final class GetRecords<K, V> implements Function<KafkaStepContext, List<Consumer
         }
 
         var thrown = pollRunnable.getThrown();
-        if (nonNull(thrown)) {
+        if (nonNull(pollRunnable.getThrown())) {
             throw new KafkaException(thrown);
         }
 

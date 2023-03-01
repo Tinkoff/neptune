@@ -13,9 +13,11 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.join;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.steps.Step.$;
+import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty.DEFAULT_TOPICS_FOR_POLL;
 
 final class PollFunction<K, V, T> implements Function<KafkaStepContext, T>, StepParameterPojo {
 
@@ -24,7 +26,7 @@ final class PollFunction<K, V, T> implements Function<KafkaStepContext, T>, Step
     private final Deserializer<K> keyDeserializer;
     private final Deserializer<V> valueDeserializer;
     @StepParameter(value = "topics", makeReadableBy = TopicValueGetter.class)
-    String[] topics;
+    String[] topics = DEFAULT_TOPICS_FOR_POLL.get();
     private boolean excludeNullValues;
     private boolean excludeNullKeys;
     private Function<KafkaStepContext, T> delegateTo;
@@ -37,6 +39,7 @@ final class PollFunction<K, V, T> implements Function<KafkaStepContext, T>, Step
         this.keyDeserializer = keyDeserializer;
         this.valueDeserializer = valueDeserializer;
         getRecords.setPollRunnable(pollRunnable);
+        pollRunnable.setTopics(topics);
     }
 
     @Override
@@ -52,6 +55,9 @@ final class PollFunction<K, V, T> implements Function<KafkaStepContext, T>, Step
         new Thread(pollRunnable).start();
 
         try {
+            while (!pollRunnable.isPolling() && isNull(pollRunnable.getThrown())) {
+            }
+
             if (nonNull(toPollWith)) {
                 $(pollWithDescription, toPollWith);
             }

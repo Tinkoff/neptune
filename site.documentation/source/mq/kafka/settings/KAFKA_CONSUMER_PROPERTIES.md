@@ -38,8 +38,8 @@ public class SomeClass {
 }
 ```
 
-⚠️ Если модуль используется для тестирования Spring-приложения вместе с инструментами [Spring Test](https://docs.spring.io/spring-framework/docs/current/reference/html/testing.html),
-то необходимо указывать свойство `auto.offset.reset` со значением `earliest`.
+Ниже пример, если модуль используется для тестирования Spring-приложения вместе с
+инструментами [Spring Test](https://docs.spring.io/spring-framework/docs/current/reference/html/testing.html)
 
 ```java
 import ru.tinkoff.qa.neptune.core.api.properties.object.ObjectPropertySupplier;
@@ -68,8 +68,6 @@ public class MySpringConsumerPropertiesSupplier
         //Логика получения свойств консъюмера и заполнения
         //результирующего объекта properties
         //....
-        //Обязательно указываем auto.offset.reset == earliest
-        properties.setProperty("auto.offset.reset", "earliest");
         //какая-то дополнительная логика
         //....
         return properties;
