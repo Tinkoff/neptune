@@ -11,7 +11,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.kafka.KafkaStepContext;
 import ru.tinkoff.qa.neptune.kafka.captors.KafkaObjectResultCaptor;
-import ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty;
 
 import java.time.Duration;
 import java.util.function.Function;
@@ -26,23 +25,18 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @MaxDepthOfReporting(0)
 @CaptureOnSuccess(by = KafkaObjectResultCaptor.class)
 public final class KafkaPollIterableItemSupplier<K, V, R>
-    extends SequentialGetStepSupplier.GetObjectFromIterableStepSupplier<KafkaStepContext, R, KafkaPollIterableItemSupplier<K, V, R>> {
+    extends SequentialGetStepSupplier.GetObjectFromIterableStepSupplier<KafkaStepContext, R, KafkaPollIterableItemSupplier<K, V, R>>
+    implements PollStep<KafkaPollIterableItemSupplier<K, V, R>> {
 
     public static final String NO_DESC_ERROR_TEXT = "Description should be defined";
-    private final GetRecords<K, V> getRecords;
+    private final PollFunction<K, V, R> function;
 
-    private KafkaPollIterableItemSupplier(GetRecords<K, V> getFromTopics, Function<ConsumerRecord<K, V>, R> f) {
-        super(getFromTopics.andThen(list -> list.stream().map(new KafkaSafeFunction<>(f)).collect(toList())));
-        this.getRecords = getFromTopics;
-    }
-
-    private KafkaPollIterableItemSupplier(Deserializer<K> keyDeserializer,
+    private KafkaPollIterableItemSupplier(GetRecords<K, V> getFromTopics,
+                                          Deserializer<K> keyDeserializer,
                                           Deserializer<V> valueDeserializer,
                                           Function<ConsumerRecord<K, V>, R> f) {
-        this(new GetRecords<>()
-                .setKeyDeserializer(keyDeserializer)
-                .setValueDeserializer(valueDeserializer),
-            f);
+        super(getFromTopics.andThen(list -> list.stream().map(new KafkaSafeFunction<>(f)).collect(toList())));
+        this.function = new PollFunction<>(getFromTopics, keyDeserializer, valueDeserializer);
     }
 
     /**
@@ -66,7 +60,7 @@ public final class KafkaPollIterableItemSupplier<K, V, R>
         Deserializer<V> valueDeserializer,
         Function<ConsumerRecord<K, V>, R> f) {
         checkArgument(isNotBlank(description), NO_DESC_ERROR_TEXT);
-        return new KafkaPollIterableItemSupplier<>(keyDeserializer, valueDeserializer, f);
+        return new KafkaPollIterableItemSupplier<>(new GetRecords<>(), keyDeserializer, valueDeserializer, f);
     }
 
     /**
@@ -96,7 +90,10 @@ public final class KafkaPollIterableItemSupplier<K, V, R>
     @Description("Message key")
     public static <K> KafkaPollIterableItemSupplier<K, String, K> consumedKey(
         Deserializer<K> keyDeserializer) {
-        return new KafkaPollIterableItemSupplier<>(keyDeserializer, new StringDeserializer(), ConsumerRecord::key);
+        return new KafkaPollIterableItemSupplier<>(new GetRecords<>(),
+            keyDeserializer,
+            new StringDeserializer(),
+            ConsumerRecord::key);
     }
 
     /**
@@ -135,7 +132,10 @@ public final class KafkaPollIterableItemSupplier<K, V, R>
     @Description("Message value")
     public static <V> KafkaPollIterableItemSupplier<String, V, V> consumedValue(
         Deserializer<V> valueDeserializer) {
-        return new KafkaPollIterableItemSupplier<>(new StringDeserializer(), valueDeserializer, ConsumerRecord::value);
+        return new KafkaPollIterableItemSupplier<>(new GetRecords<>(),
+            new StringDeserializer(),
+            valueDeserializer,
+            ConsumerRecord::value);
     }
 
     /**
@@ -147,46 +147,13 @@ public final class KafkaPollIterableItemSupplier<K, V, R>
         return consumedValue(new StringDeserializer());
     }
 
-    /**
-     * Defines topics to subscribe
-     * <p></p>
-     * If there is no topic defined by this method then value of the property
-     * {@link KafkaDefaultTopicsForPollProperty#DEFAULT_TOPICS_FOR_POLL} is used.
-     *
-     * @param topics topics to subscribe
-     * @return self-reference
-     */
-    public KafkaPollIterableItemSupplier<K, V, R> fromTopics(String... topics) {
-        getRecords.topics(topics);
-        return this;
-    }
-
     @Override
     public KafkaPollIterableItemSupplier<K, V, R> timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
     }
 
     @Override
-    protected void onSuccess(R t) {
-        getRecords.closeConsumer();
-    }
-
-    @Override
-    protected void onFailure(KafkaStepContext m, Throwable throwable) {
-        getRecords.closeConsumer();
-    }
-
-    /**
-     * Defines consumer property value
-     *
-     * @see <a href="https://kafka.apache.org/documentation/#consumerconfigs">Consumer Configs</a>
-     *
-     * @param property a property name
-     * @param value a property value
-     * @return self-reference
-     */
-    public KafkaPollIterableItemSupplier<K, V, R> setProperty(String property, String value) {
-        getRecords.setProperty(property, value);
-        return this;
+    public Function<KafkaStepContext, R> get() {
+        return function.setDelegateTo(super.get());
     }
 }
