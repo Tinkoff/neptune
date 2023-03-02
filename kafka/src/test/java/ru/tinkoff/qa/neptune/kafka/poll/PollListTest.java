@@ -7,13 +7,15 @@ import ru.tinkoff.qa.neptune.kafka.DraftDto;
 import ru.tinkoff.qa.neptune.kafka.KafkaBasePreparations;
 import ru.tinkoff.qa.neptune.kafka.SomeDeserializer;
 
+import java.util.Date;
+
 import static java.util.List.of;
+import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.testng.AssertJUnit.fail;
@@ -140,17 +142,30 @@ public class PollListTest extends KafkaBasePreparations {
             }
         };
 
+        var invocationContainer = new InvocationContainer();
+        doAnswer(invocation -> {
+            if (isNull(invocationContainer.getPollingInvokedAt())) {
+                invocationContainer.setPollingInvokedAt(new Date());
+            }
+            return RAW_CONSUMER_RECORDS;
+        }).when(consumerRaw).poll(any());
+
         try (var stepClass = mockStatic(Step.class)) {
+            stepClass.when(() -> Step.$("Some action", runnable)).thenAnswer(invocation -> {
+                invocationContainer.setStepInvokedAt(new Date());
+                return null;
+            });
+
             kafka.poll(consumedKeys()
                 .fromTopics("testTopic")
                 .pollLatestWith("Some action", runnable));
 
-            var order = inOrder(consumerRaw, Step.class);
+            verify(consumerRaw, atLeast(1)).poll(any());
+            stepClass.verify(() -> Step.$("Some action", runnable), times(1));
 
-            order.verify(consumerRaw, atLeast(1)).poll(any());
-            order.verify(stepClass,
-                () -> Step.$("Some action", runnable),
-                times(1));
+            assertThat(invocationContainer.getStepInvokedAt().getTime(),
+                greaterThanOrEqualTo(invocationContainer.getPollingInvokedAt().getTime())
+            );
 
             assertThat(consumerProps,
                 mapIncludes(

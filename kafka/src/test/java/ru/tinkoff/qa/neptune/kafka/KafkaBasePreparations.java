@@ -63,6 +63,49 @@ public class KafkaBasePreparations {
     protected Properties consumerProps;
     protected Properties producerProperties;
 
+    private static final TopicPartition TOPIC_PARTITION = new TopicPartition("testTopic", 1);
+
+    protected final static ConsumerRecords<String, String> RAW_CONSUMER_RECORDS = new ConsumerRecords<>(Map.of(TOPIC_PARTITION,
+        of(new ConsumerRecord<>("testTopic", 1,
+                1L,
+                new Date().getTime(),
+                LOG_APPEND_TIME,
+                0,
+                0,
+                "Some String Key 1",
+                "Some String Value 1",
+                new RecordHeaders()
+                    .add(new RecordHeader("header1", "value1".getBytes()))
+                    .add(new RecordHeader("header1", "value2".getBytes()))
+                    .add(new RecordHeader("header2", "value1".getBytes())),
+                Optional.of(5)),
+            new ConsumerRecord<>("testTopic", 1,
+                1L,
+                new Date().getTime(),
+                LOG_APPEND_TIME,
+                0,
+                0,
+                "Some String Key 2",
+                "Some String Value 2",
+                new RecordHeaders()
+                    .add(new RecordHeader("header1", "value1".getBytes()))
+                    .add(new RecordHeader("header1", "value2".getBytes()))
+                    .add(new RecordHeader("header2", "value1".getBytes())),
+                Optional.of(5)),
+            new ConsumerRecord<>("testTopic", 1,
+                1L,
+                new Date().getTime(),
+                LOG_APPEND_TIME,
+                0,
+                0,
+                null,
+                null,
+                new RecordHeaders()
+                    .add(new RecordHeader("header1", "value1".getBytes()))
+                    .add(new RecordHeader("header1", "value2".getBytes()))
+                    .add(new RecordHeader("header2", "value1".getBytes())),
+                Optional.of(5)))));
+
     @BeforeClass
     public void setUp() {
         openMocks(this);
@@ -111,9 +154,8 @@ public class KafkaBasePreparations {
             }
         };
 
-        var topicPartition = new TopicPartition("testTopic", 1);
         when(consumerWithDeserializedKeyAndValue.poll(any()))
-            .thenReturn(new ConsumerRecords<>(Map.of(topicPartition,
+            .thenReturn(new ConsumerRecords<>(Map.of(TOPIC_PARTITION,
                 of(new ConsumerRecord<>("testTopic", 1,
                         1L,
                         new Date().getTime(),
@@ -155,7 +197,7 @@ public class KafkaBasePreparations {
                         Optional.of(5))))));
 
         when(consumerWithDeserializedKey.poll(any()))
-            .thenReturn(new ConsumerRecords<>(Map.of(topicPartition,
+            .thenReturn(new ConsumerRecords<>(Map.of(TOPIC_PARTITION,
                 of(new ConsumerRecord<>("testTopic", 1,
                         1L,
                         new Date().getTime(),
@@ -197,7 +239,7 @@ public class KafkaBasePreparations {
                         Optional.of(5))))));
 
         when(consumerWithDeserializedValue.poll(any()))
-            .thenReturn(new ConsumerRecords<>(Map.of(topicPartition,
+            .thenReturn(new ConsumerRecords<>(Map.of(TOPIC_PARTITION,
                 of(new ConsumerRecord<>("testTopic", 1,
                         1L,
                         new Date().getTime(),
@@ -239,46 +281,7 @@ public class KafkaBasePreparations {
                         Optional.of(5))))));
 
         when(consumerRaw.poll(any()))
-            .thenReturn(new ConsumerRecords<>(Map.of(topicPartition,
-                of(new ConsumerRecord<>("testTopic", 1,
-                        1L,
-                        new Date().getTime(),
-                        LOG_APPEND_TIME,
-                        0,
-                        0,
-                        "Some String Key 1",
-                        "Some String Value 1",
-                        new RecordHeaders()
-                            .add(new RecordHeader("header1", "value1".getBytes()))
-                            .add(new RecordHeader("header1", "value2".getBytes()))
-                            .add(new RecordHeader("header2", "value1".getBytes())),
-                        Optional.of(5)),
-                    new ConsumerRecord<>("testTopic", 1,
-                        1L,
-                        new Date().getTime(),
-                        LOG_APPEND_TIME,
-                        0,
-                        0,
-                        "Some String Key 2",
-                        "Some String Value 2",
-                        new RecordHeaders()
-                            .add(new RecordHeader("header1", "value1".getBytes()))
-                            .add(new RecordHeader("header1", "value2".getBytes()))
-                            .add(new RecordHeader("header2", "value1".getBytes())),
-                        Optional.of(5)),
-                    new ConsumerRecord<>("testTopic", 1,
-                        1L,
-                        new Date().getTime(),
-                        LOG_APPEND_TIME,
-                        0,
-                        0,
-                        null,
-                        null,
-                        new RecordHeaders()
-                            .add(new RecordHeader("header1", "value1".getBytes()))
-                            .add(new RecordHeader("header1", "value2".getBytes()))
-                            .add(new RecordHeader("header2", "value1".getBytes())),
-                        Optional.of(5))))));
+            .thenReturn(RAW_CONSUMER_RECORDS);
     }
 
     @BeforeMethod
