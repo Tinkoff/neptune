@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.kafka.functions.poll;
 
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty;
 
 import static java.util.Arrays.stream;
@@ -41,6 +42,8 @@ interface PollStep<T extends PollStep<T>> {
      * @param property a property name
      * @param value    a property value
      * @return self-reference
+     * @throws IllegalArgumentException on attempt to define {@link ConsumerConfig#AUTO_OFFSET_RESET_CONFIG}
+     * because it is defined automatically on the starting of the step. So this has no sense.
      * @see <a href="https://kafka.apache.org/documentation/#consumerconfigs">Consumer Configs</a>
      */
     default T setProperty(String property, String value) {
@@ -49,13 +52,15 @@ interface PollStep<T extends PollStep<T>> {
     }
 
     /**
-     * Defines an action. When it is performed then the polling should be started.
+     * Defines an action to be performed on the starting of the polling. It is supposed the polled messages
+     * is the result of the action. Also, it changes the property {@link ConsumerConfig#AUTO_OFFSET_RESET_CONFIG}
+     * of current consumer to 'latest'. Without {@code pollLatestWith(String, Runnable)} the value 'earliest' is used.
      *
      * @param description description of performed action
      * @param action      is the action to be performed
      * @return self-reference
      */
-    default T pollWith(String description, Runnable action) {
+    default T pollLatestWith(String description, Runnable action) {
         getPollFunction(this).pollWith(description, action);
         return (T) this;
     }

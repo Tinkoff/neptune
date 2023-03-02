@@ -15,6 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
+import static org.testng.AssertJUnit.fail;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.MapEntryMatcher.mapEntry;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableInOrder;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.iterables.SetOfObjectsConsistsOfMatcher.iterableOf;
@@ -151,7 +152,7 @@ public class PollConsumerRecordsTest extends KafkaBasePreparations {
         try (var stepClass = mockStatic(Step.class)) {
             kafka.poll(consumerRecords()
                 .fromTopics("testTopic")
-                .pollWith("Some action", runnable));
+                .pollLatestWith("Some action", runnable));
 
             var order = inOrder(consumerRaw, Step.class);
 
@@ -166,5 +167,13 @@ public class PollConsumerRecordsTest extends KafkaBasePreparations {
                     mapEntry(AUTO_OFFSET_RESET_CONFIG, "latest")
                 ));
         }
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void defineAutoOffsetReset() {
+        kafka.poll(consumerRecords()
+            .fromTopics("testTopic")
+            .setProperty(AUTO_OFFSET_RESET_CONFIG, "some value"));
+        fail("Exception was expected");
     }
 }

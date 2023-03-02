@@ -16,6 +16,7 @@ import static java.lang.String.join;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG;
 import static ru.tinkoff.qa.neptune.core.api.steps.Step.$;
 import static ru.tinkoff.qa.neptune.kafka.properties.KafkaDefaultTopicsForPollProperty.DEFAULT_TOPICS_FOR_POLL;
 
@@ -91,6 +92,8 @@ final class PollFunction<K, V, T> implements Function<KafkaStepContext, T>, Step
     void setProperty(String propertyName, String propertyValue) {
         checkArgument(isNotBlank(propertyName), "Property name should not be empty or null");
         checkArgument(isNotBlank(propertyValue), "Property value should not be empty or null");
+        checkArgument(!propertyName.trim().equalsIgnoreCase(AUTO_OFFSET_RESET_CONFIG),
+            "It is illegal to define the " + AUTO_OFFSET_RESET_CONFIG + " property");
         additionalProperties.put(propertyName, propertyValue);
     }
 
