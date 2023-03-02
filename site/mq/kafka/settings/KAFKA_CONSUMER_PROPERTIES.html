@@ -496,8 +496,8 @@
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-<p>⚠️ Если модуль используется для тестирования Spring-приложения вместе с инструментами <a class="reference external" href="https://docs.spring.io/spring-framework/docs/current/reference/html/testing.html">Spring Test</a>,
-то необходимо указывать свойство <code class="docutils literal notranslate"><span class="pre">auto.offset.reset</span></code> со значением <code class="docutils literal notranslate"><span class="pre">earliest</span></code>.</p>
+<p>Ниже пример, если модуль используется для тестирования Spring-приложения вместе с
+инструментами <a class="reference external" href="https://docs.spring.io/spring-framework/docs/current/reference/html/testing.html">Spring Test</a></p>
 <div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.object.ObjectPropertySupplier</span><span class="p">;</span><span class="w"></span>
 
 <span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.boot.starter.application</span><span class="w"></span>
@@ -524,8 +524,6 @@
 <span class="w">        </span><span class="c1">//Логика получения свойств консъюмера и заполнения</span><span class="w"></span>
 <span class="w">        </span><span class="c1">//результирующего объекта properties</span><span class="w"></span>
 <span class="w">        </span><span class="c1">//....</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//Обязательно указываем auto.offset.reset == earliest</span><span class="w"></span>
-<span class="w">        </span><span class="n">properties</span><span class="p">.</span><span class="na">setProperty</span><span class="p">(</span><span class="s">&quot;auto.offset.reset&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;earliest&quot;</span><span class="p">);</span><span class="w"></span>
 <span class="w">        </span><span class="c1">//какая-то дополнительная логика</span><span class="w"></span>
 <span class="w">        </span><span class="c1">//....</span><span class="w"></span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">properties</span><span class="p">;</span><span class="w"></span>

@@ -505,9 +505,20 @@
 <span class="w">                </span><span class="p">.</span><span class="na">fromTopics</span><span class="p">(</span><span class="s">&quot;testTopic&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;testTopic2&quot;</span><span class="p">)</span><span class="w"></span>
 <span class="w">                </span><span class="c1">//Можно указать свойства и их значения,</span><span class="w"></span>
 <span class="w">                </span><span class="c1">//которые могут дополнить/заменить свойства, </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//получаемые при помощи KAFKA_CONSUMER_PROPERTIES</span><span class="w"></span>
+<span class="w">                </span><span class="c1">//получаемые при помощи KAFKA_CONSUMER_PROPERTIES.</span><span class="w"></span>
+<span class="w">                </span><span class="c1">//ВНИМАНИЕ!!!!! Нельзя указывать свойство `auto.offset.reset`. </span><span class="w"></span>
+<span class="w">                </span><span class="c1">// Это приведет к IllegalArgumentException</span><span class="w"></span>
 <span class="w">                </span><span class="p">.</span><span class="na">setProperty</span><span class="p">(</span><span class="n">GROUP_ID_CONFIG</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;someGroupId&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//уточняющие параметры</span><span class="w"></span>
+<span class="w">                </span><span class="c1">//Можно указать действие, с момента начала выполнения которого</span><span class="w"></span>
+<span class="w">                </span><span class="c1">//начнется чтение сообщений из топиков. Предполагается, что прочитанные сообщения - </span><span class="w"></span>
+<span class="w">                </span><span class="c1">//результат указанного действия. При этом свойство `auto.offset.reset` текущего консъюмера</span><span class="w"></span>
+<span class="w">                </span><span class="c1">//меняется на `latest`. Если действие не указывать, будут прочитаны все сообщения из топиков,</span><span class="w"></span>
+<span class="w">                </span><span class="c1">//и значение свойства `auto.offset.reset` текущего консъюмера равно `earliest`</span><span class="w"></span>
+<span class="w">                </span><span class="p">.</span><span class="na">pollLatestWith</span><span class="p">(</span><span class="s">&quot;Название или описание действия&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="c1">//тут можно выполнять шаги из других контекстов </span><span class="w"></span>
+<span class="w">                    </span><span class="c1">//или другой исполняемый код.</span><span class="w"></span>
+<span class="w">                </span><span class="p">})</span><span class="w"></span>
+<span class="w">                </span><span class="c1">//другие уточняющие параметры</span><span class="w"></span>
 <span class="w">        </span><span class="p">);</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
@@ -718,9 +729,20 @@
 <span class="w">                </span><span class="p">.</span><span class="na">fromTopics</span><span class="p">(</span><span class="s">&quot;testTopic&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;testTopic2&quot;</span><span class="p">)</span><span class="w"></span>
 <span class="w">                </span><span class="c1">//Можно указать свойства и их значения,</span><span class="w"></span>
 <span class="w">                </span><span class="c1">//которые могут дополнить/заменить свойства, </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//получаемые при помощи KAFKA_CONSUMER_PROPERTIES</span><span class="w"></span>
+<span class="w">                </span><span class="c1">//получаемые при помощи KAFKA_CONSUMER_PROPERTIES.</span><span class="w"></span>
+<span class="w">                </span><span class="c1">//ВНИМАНИЕ!!!!! Нельзя указывать свойство `auto.offset.reset`. </span><span class="w"></span>
+<span class="w">                </span><span class="c1">// Это приведет к IllegalArgumentException</span><span class="w"></span>
 <span class="w">                </span><span class="p">.</span><span class="na">setProperty</span><span class="p">(</span><span class="n">GROUP_ID_CONFIG</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;someGroupId&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//уточняющие параметры</span><span class="w"></span>
+<span class="w">                </span><span class="c1">//Можно указать действие, с момента начала выполнения которого</span><span class="w"></span>
+<span class="w">                </span><span class="c1">//начнется чтение сообщений из топиков. Предполагается, что прочитанные сообщения - </span><span class="w"></span>
+<span class="w">                </span><span class="c1">//результат указанного действия. При этом свойство `auto.offset.reset` текущего консъюмера</span><span class="w"></span>
+<span class="w">                </span><span class="c1">//меняется на `latest`. Если действие не указывать, будут прочитаны все сообщения из топиков,</span><span class="w"></span>
+<span class="w">                </span><span class="c1">//и значение свойства `auto.offset.reset` текущего консъюмера равно `earliest`</span><span class="w"></span>
+<span class="w">                </span><span class="p">.</span><span class="na">pollLatestWith</span><span class="p">(</span><span class="s">&quot;Название или описание действия&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="c1">//тут можно выполнять шаги из других контекстов </span><span class="w"></span>
+<span class="w">                    </span><span class="c1">//или другой исполняемый код.</span><span class="w"></span>
+<span class="w">                </span><span class="p">})</span><span class="w"></span>
+<span class="w">                </span><span class="c1">//другие уточняющие параметры</span><span class="w"></span>
 <span class="w">        </span><span class="p">);</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
@@ -953,8 +975,19 @@
 <span class="w">                </span><span class="p">.</span><span class="na">fromTopics</span><span class="p">(</span><span class="s">&quot;testTopic&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;testTopic2&quot;</span><span class="p">)</span><span class="w"></span>
 <span class="w">                </span><span class="c1">//Можно указать свойства и их значения,</span><span class="w"></span>
 <span class="w">                </span><span class="c1">//которые могут дополнить/заменить свойства, </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//получаемые при помощи KAFKA_CONSUMER_PROPERTIES</span><span class="w"></span>
+<span class="w">                </span><span class="c1">//получаемые при помощи KAFKA_CONSUMER_PROPERTIES.</span><span class="w"></span>
+<span class="w">                </span><span class="c1">//ВНИМАНИЕ!!!!! Нельзя указывать свойство `auto.offset.reset`. </span><span class="w"></span>
+<span class="w">                </span><span class="c1">// Это приведет к IllegalArgumentException</span><span class="w"></span>
 <span class="w">                </span><span class="p">.</span><span class="na">setProperty</span><span class="p">(</span><span class="n">GROUP_ID_CONFIG</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;someGroupId&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="c1">//Можно указать действие, с момента начала выполнения которого</span><span class="w"></span>
+<span class="w">                </span><span class="c1">//начнется чтение сообщений из топиков. Предполагается, что прочитанные сообщения - </span><span class="w"></span>
+<span class="w">                </span><span class="c1">//результат указанного действия. При этом свойство `auto.offset.reset` текущего консъюмера</span><span class="w"></span>
+<span class="w">                </span><span class="c1">//меняется на `latest`. Если действие не указывать, будут прочитаны все сообщения из топиков,</span><span class="w"></span>
+<span class="w">                </span><span class="c1">//и значение свойства `auto.offset.reset` текущего консъюмера равно `earliest`</span><span class="w"></span>
+<span class="w">                </span><span class="p">.</span><span class="na">pollLatestWith</span><span class="p">(</span><span class="s">&quot;Название или описание действия&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="c1">//тут можно выполнять шаги из других контекстов </span><span class="w"></span>
+<span class="w">                    </span><span class="c1">//или другой исполняемый код.</span><span class="w"></span>
+<span class="w">                </span><span class="p">})</span><span class="w"></span>
 <span class="w">                </span><span class="c1">//опции, уточняющие результат</span><span class="w"></span>
 <span class="w">        </span><span class="p">);</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
