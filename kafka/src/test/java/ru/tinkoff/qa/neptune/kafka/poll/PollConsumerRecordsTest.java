@@ -6,6 +6,9 @@ import ru.tinkoff.qa.neptune.kafka.DraftDto;
 import ru.tinkoff.qa.neptune.kafka.KafkaBasePreparations;
 import ru.tinkoff.qa.neptune.kafka.SomeDeserializer;
 
+import java.util.Date;
+
+import static java.util.Objects.isNull;
 import static java.time.Duration.ofSeconds;
 import static java.util.List.of;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
@@ -149,17 +152,30 @@ public class PollConsumerRecordsTest extends KafkaBasePreparations {
             }
         };
 
+        var invocationContainer = new InvocationContainer();
+        doAnswer(invocation -> {
+            if (isNull(invocationContainer.getPollingInvokedAt())) {
+                invocationContainer.setPollingInvokedAt(new Date());
+            }
+            return RAW_CONSUMER_RECORDS;
+        }).when(consumerRaw).poll(any());
+
         try (var stepClass = mockStatic(Step.class)) {
+            stepClass.when(() -> Step.$("Some action", runnable)).thenAnswer(invocation -> {
+                invocationContainer.setStepInvokedAt(new Date());
+                return null;
+            });
+
             kafka.poll(consumerRecords()
                 .fromTopics("testTopic")
                 .pollLatestWith("Some action", runnable));
 
-            var order = inOrder(consumerRaw, Step.class);
+            verify(consumerRaw, atLeast(1)).poll(any());
+            stepClass.verify(() -> Step.$("Some action", runnable), times(1));
 
-            order.verify(consumerRaw, atLeast(1)).poll(any());
-            order.verify(stepClass,
-                () -> Step.$("Some action", runnable),
-                times(1));
+            assertThat(invocationContainer.getStepInvokedAt().getTime(),
+                greaterThanOrEqualTo(invocationContainer.getPollingInvokedAt().getTime())
+            );
 
             assertThat(consumerProps,
                 mapIncludes(
