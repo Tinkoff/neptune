@@ -103,10 +103,10 @@ public class DefaultCapabilityPropertiesTest {
         assertThat("Chrome options info", capabilities, hasKey("goog:chromeOptions"));
 
         Map<String, ?> args = (Map<String, ?>) capabilities.get("goog:chromeOptions");
-        assertThat("arguments", (List<String>) args.get("args"), contains("--use-fake-device-for-media-stream",
-                "--start-maximized",
-                "--enable-automation",
-                "--disable-web-security"));
+        assertThat("arguments", (List<String>) args.get("args"), hasItems("--use-fake-device-for-media-stream",
+            "--start-maximized",
+            "--enable-automation",
+            "--disable-web-security"));
         assertThat("experimental Option", args.get("experimentalOption"), equalTo(new HashMap<>()));
         assertThat("binary", args.get("binary"), equalTo("path/to/file"));
 
