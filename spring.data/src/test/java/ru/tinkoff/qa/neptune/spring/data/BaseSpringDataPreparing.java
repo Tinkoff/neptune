@@ -2,9 +2,6 @@ package ru.tinkoff.qa.neptune.spring.data;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
-import io.reactivex.Flowable;
-import io.reactivex.Maybe;
-import io.reactivex.Single;
 import org.mockito.Mock;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -48,14 +45,7 @@ public class BaseSpringDataPreparing {
     Flux<TestEntity> mockFlux;
     @Mock
     Mono<List<TestEntity>> listMono;
-    @Mock
-    TestRxJava2SortingRepository testRxJava2SortingRepository;
-    @Mock
-    Maybe<TestEntity> mockMaybe;
-    @Mock
-    Flowable<TestEntity> mockFlowable;
-    @Mock
-    Single<List<TestEntity>> mockSingle;
+
     @Mock
     TestRxJava3SortingRepository testRxJava3SortingRepository;
     @Mock
@@ -86,12 +76,6 @@ public class BaseSpringDataPreparing {
         when(mockFlux.collectList()).thenReturn(listMono);
         when(listMono.block()).thenReturn(TEST_ENTITIES);
 
-        when(testRxJava2SortingRepository.findById(1L)).thenReturn(mockMaybe);
-        when(mockMaybe.blockingGet()).thenReturn(TEST_ENTITIES.get(0));
-        when(testRxJava2SortingRepository.findAllById(of(1L, 2L))).thenReturn(mockFlowable);
-        when(mockFlowable.toList()).thenReturn(mockSingle);
-        when(mockSingle.blockingGet()).thenReturn(TEST_ENTITIES);
-
         when(testRxJava3SortingRepository.findById(1L)).thenReturn(mockMaybe2);
         when(mockMaybe2.blockingGet()).thenReturn(TEST_ENTITIES.get(0));
         when(testRxJava3SortingRepository.findAllById(of(1L, 2L))).thenReturn(mockFlowable2);
@@ -100,7 +84,6 @@ public class BaseSpringDataPreparing {
 
         when(testRepository.findAll(any(Sort.class))).thenReturn(TEST_ENTITIES);
         when(reactiveCrudRepository.findAll(any(Sort.class))).thenReturn(mockFlux);
-        when(testRxJava2SortingRepository.findAll(any(Sort.class))).thenReturn(mockFlowable);
         when(testRxJava3SortingRepository.findAll(any(Sort.class))).thenReturn(mockFlowable2);
 
         when(testRepository.findAll(any(PageRequest.class))).thenReturn(mockPage);
@@ -153,7 +136,6 @@ public class BaseSpringDataPreparing {
 
         when(testRepository.findAll()).thenReturn(TEST_ENTITIES);
         when(reactiveCrudRepository.findAll()).thenReturn(mockFlux);
-        when(testRxJava2SortingRepository.findAll()).thenReturn(mockFlowable);
         when(testRxJava3SortingRepository.findAll()).thenReturn(mockFlowable2);
     }
 }

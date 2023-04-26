@@ -3,7 +3,6 @@ package ru.tinkoff.qa.neptune.spring.data.save;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.data.repository.reactive.RxJava2CrudRepository;
 import org.springframework.data.repository.reactive.RxJava3CrudRepository;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
 
@@ -16,7 +15,6 @@ abstract class SaveFunction<R, ID, T extends Repository<R, ID>, INPUT, RESULT> e
     private SaveFunction(T repo) {
         super(CrudRepository.class,
                 ReactiveCrudRepository.class,
-                RxJava2CrudRepository.class,
                 RxJava3CrudRepository.class);
         this.repo = repo;
     }
@@ -35,10 +33,6 @@ abstract class SaveFunction<R, ID, T extends Repository<R, ID>, INPUT, RESULT> e
 
             if (repo instanceof ReactiveCrudRepository) {
                 return ((ReactiveCrudRepository<R, ID>) repo).save(toSave).block();
-            }
-
-            if (repo instanceof RxJava2CrudRepository) {
-                return ((RxJava2CrudRepository<R, ID>) repo).save(toSave).blockingGet();
             }
 
             if (repo instanceof RxJava3CrudRepository) {
@@ -63,10 +57,6 @@ abstract class SaveFunction<R, ID, T extends Repository<R, ID>, INPUT, RESULT> e
 
             if (repo instanceof ReactiveCrudRepository) {
                 return ((ReactiveCrudRepository<R, ID>) repo).saveAll(toSave).collectList().block();
-            }
-
-            if (repo instanceof RxJava2CrudRepository) {
-                return ((RxJava2CrudRepository<R, ID>) repo).saveAll(toSave).toList().blockingGet();
             }
 
             if (repo instanceof RxJava3CrudRepository) {

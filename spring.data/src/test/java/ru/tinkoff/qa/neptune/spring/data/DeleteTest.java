@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.spring.data;
 
-import io.reactivex.Completable;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -19,16 +18,10 @@ public class DeleteTest extends BaseSpringDataPreparing {
     private Mono<Void> mockOneVoidMono;
 
     @Mock
-    private Completable mockOneCompletable;
-
-    @Mock
     private io.reactivex.rxjava3.core.Completable mockOneCompletable2;
 
     @Mock
     private Mono<Void> mockAllVoidMono;
-
-    @Mock
-    private Completable mockAllCompletable;
 
     @Mock
     private io.reactivex.rxjava3.core.Completable mockAllCompletable2;
@@ -39,23 +32,18 @@ public class DeleteTest extends BaseSpringDataPreparing {
         super.prepareClass();
 
         when(reactiveCrudRepository.delete(TEST_ENTITIES.get(0))).thenReturn(mockOneVoidMono);
-        when(testRxJava2SortingRepository.delete(TEST_ENTITIES.get(0))).thenReturn(mockOneCompletable);
         when(testRxJava3SortingRepository.delete(TEST_ENTITIES.get(0))).thenReturn(mockOneCompletable2);
 
         when(reactiveCrudRepository.deleteAll(TEST_ENTITIES)).thenReturn(mockAllVoidMono);
-        when(testRxJava2SortingRepository.deleteAll(TEST_ENTITIES)).thenReturn(mockAllCompletable);
         when(testRxJava3SortingRepository.deleteAll(TEST_ENTITIES)).thenReturn(mockAllCompletable2);
 
         when(reactiveCrudRepository.deleteById(1L)).thenReturn(mockOneVoidMono);
-        when(testRxJava2SortingRepository.deleteById(1L)).thenReturn(mockOneCompletable);
         when(testRxJava3SortingRepository.deleteById(1L)).thenReturn(mockOneCompletable2);
 
         when(reactiveCrudRepository.deleteAllById(of(1L, 2L))).thenReturn(mockAllVoidMono);
-        when(testRxJava2SortingRepository.deleteAllById(of(1L, 2L))).thenReturn(mockAllCompletable);
         when(testRxJava3SortingRepository.deleteAllById(of(1L, 2L))).thenReturn(mockAllCompletable2);
 
         when(reactiveCrudRepository.deleteAll()).thenReturn(mockAllVoidMono);
-        when(testRxJava2SortingRepository.deleteAll()).thenReturn(mockAllCompletable);
         when(testRxJava3SortingRepository.deleteAll()).thenReturn(mockAllCompletable2);
     }
 
@@ -70,13 +58,6 @@ public class DeleteTest extends BaseSpringDataPreparing {
         springData().delete("Test entity", byId(reactiveCrudRepository, 1L));
         verify(reactiveCrudRepository, times(1)).delete(TEST_ENTITIES.get(0));
         verify(mockOneVoidMono, times(1)).block();
-    }
-
-    @Test
-    public void deleteOneByQueryTest3() {
-        springData().delete("Test entity", byId(testRxJava2SortingRepository, 1L));
-        verify(testRxJava2SortingRepository, times(1)).delete(TEST_ENTITIES.get(0));
-        verify(mockOneCompletable, times(1)).blockingGet();
     }
 
     @Test
@@ -97,13 +78,6 @@ public class DeleteTest extends BaseSpringDataPreparing {
         springData().delete("Test entities", byIds(reactiveCrudRepository, 1L, 2L));
         verify(reactiveCrudRepository, times(1)).deleteAll(TEST_ENTITIES);
         verify(mockAllVoidMono, times(1)).block();
-    }
-
-    @Test
-    public void deleteAllByQueryTest3() {
-        springData().delete("Test entities", byIds(testRxJava2SortingRepository, 1L, 2L));
-        verify(testRxJava2SortingRepository, times(1)).deleteAll(TEST_ENTITIES);
-        verify(mockAllCompletable, times(1)).blockingGet();
     }
 
     @Test
@@ -128,15 +102,6 @@ public class DeleteTest extends BaseSpringDataPreparing {
                 TEST_ENTITIES.get(0));
         verify(reactiveCrudRepository, times(1)).delete(TEST_ENTITIES.get(0));
         verify(mockOneVoidMono, times(1)).block();
-    }
-
-    @Test
-    public void deleteOneTest3() {
-        springData().delete("Test entity",
-                testRxJava2SortingRepository,
-                TEST_ENTITIES.get(0));
-        verify(testRxJava2SortingRepository, times(1)).delete(TEST_ENTITIES.get(0));
-        verify(mockOneCompletable, times(1)).blockingGet();
     }
 
     @Test
@@ -166,15 +131,6 @@ public class DeleteTest extends BaseSpringDataPreparing {
     }
 
     @Test
-    public void deleteVarArgTest3() {
-        springData().delete("Test entities",
-                testRxJava2SortingRepository,
-                TEST_ENTITIES.get(0), TEST_ENTITIES.get(1));
-        verify(testRxJava2SortingRepository, times(1)).deleteAll(TEST_ENTITIES);
-        verify(mockAllCompletable, times(1)).blockingGet();
-    }
-
-    @Test
     public void deleteVarArgTest4() {
         springData().delete("Test entities",
                 testRxJava3SortingRepository,
@@ -198,15 +154,6 @@ public class DeleteTest extends BaseSpringDataPreparing {
                 TEST_ENTITIES);
         verify(reactiveCrudRepository, times(1)).deleteAll(TEST_ENTITIES);
         verify(mockAllVoidMono, times(1)).block();
-    }
-
-    @Test
-    public void deleteIterableTest3() {
-        springData().delete("Test entities",
-                testRxJava2SortingRepository,
-                TEST_ENTITIES);
-        verify(testRxJava2SortingRepository, times(1)).deleteAll(TEST_ENTITIES);
-        verify(mockAllCompletable, times(1)).blockingGet();
     }
 
     @Test
@@ -236,15 +183,6 @@ public class DeleteTest extends BaseSpringDataPreparing {
     }
 
     @Test
-    public void deleteOneByIdsTest3() {
-        springData().deleteByIds("Test entity",
-                testRxJava2SortingRepository,
-                1L);
-        verify(testRxJava2SortingRepository, times(1)).deleteById(1L);
-        verify(mockOneCompletable, times(1)).blockingGet();
-    }
-
-    @Test
     public void deleteOneByIdsTest4() {
         springData().deleteByIds("Test entity",
                 testRxJava3SortingRepository,
@@ -271,15 +209,6 @@ public class DeleteTest extends BaseSpringDataPreparing {
     }
 
     @Test
-    public void deleteAllByIdsTest3() {
-        springData().deleteByIds("Test entities",
-                testRxJava2SortingRepository,
-                1L, 2L);
-        verify(testRxJava2SortingRepository, times(1)).deleteAllById(of(1L, 2L));
-        verify(mockAllCompletable, times(1)).blockingGet();
-    }
-
-    @Test
     public void deleteAllByIdsTest4() {
         springData().deleteByIds("Test entities",
                 testRxJava3SortingRepository,
@@ -299,13 +228,6 @@ public class DeleteTest extends BaseSpringDataPreparing {
         springData().deleteAllFrom(reactiveCrudRepository);
         verify(reactiveCrudRepository, times(1)).deleteAll();
         verify(mockAllVoidMono, times(1)).block();
-    }
-
-    @Test
-    public void deleteAllTest3() {
-        springData().deleteAllFrom(testRxJava2SortingRepository);
-        verify(testRxJava2SortingRepository, times(1)).deleteAll();
-        verify(mockAllCompletable, times(1)).blockingGet();
     }
 
     @Test

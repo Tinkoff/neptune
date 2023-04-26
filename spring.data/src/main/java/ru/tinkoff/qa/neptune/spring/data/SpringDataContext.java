@@ -3,7 +3,6 @@ package ru.tinkoff.qa.neptune.spring.data;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.data.repository.reactive.RxJava2CrudRepository;
 import org.springframework.data.repository.reactive.RxJava3CrudRepository;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.database.abstractions.AbstractDatabaseStepContext;
@@ -364,21 +363,6 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
      * @param <T>         is a type of repository
      * @return self-reference
      */
-    public <R, ID, T extends RxJava2CrudRepository<R, ID>> SpringDataContext delete(String description, T repository, R... toDelete) {
-        return delete(description, (Repository<R, ID>) repository, toDelete);
-    }
-
-    /**
-     * Performs the deleting of one or more instances of entity-class
-     *
-     * @param description is a description of objects to be deleted
-     * @param repository  is a repository to delete data from
-     * @param toDelete    are objects to be deleted
-     * @param <R>         is a type of entity-class
-     * @param <ID>        is a type of entity ID
-     * @param <T>         is a type of repository
-     * @return self-reference
-     */
     public <R, ID, T extends RxJava3CrudRepository<R, ID>> SpringDataContext delete(String description, T repository, R... toDelete) {
         return delete(description, (Repository<R, ID>) repository, toDelete);
     }
@@ -415,21 +399,6 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
      * @return self-reference
      */
     public <R, ID, T extends ReactiveCrudRepository<R, ID>> SpringDataContext delete(String description, T repository, Iterable<R> toDelete) {
-        return delete(description, (Repository<R, ID>) repository, toDelete);
-    }
-
-    /**
-     * Performs the deleting of iterable of instances of entity-class
-     *
-     * @param description is a description of objects to be deleted
-     * @param repository  is a repository to delete data from
-     * @param toDelete    are objects to be deleted
-     * @param <R>         is a type of entity-class
-     * @param <ID>        is a type of entity ID
-     * @param <T>         is a type of repository
-     * @return self-reference
-     */
-    public <R, ID, T extends RxJava2CrudRepository<R, ID>> SpringDataContext delete(String description, T repository, Iterable<R> toDelete) {
         return delete(description, (Repository<R, ID>) repository, toDelete);
     }
 
@@ -494,21 +463,6 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
      * @param <T>         is a type of repository
      * @return self-reference
      */
-    public <R, ID, T extends RxJava2CrudRepository<R, ID>> SpringDataContext deleteByIds(String description, T repository, ID... toDelete) {
-        return deleteByIds(description, (Repository<R, ID>) repository, toDelete);
-    }
-
-    /**
-     * Performs the deleting of one or more instances of entity-class by known IDs
-     *
-     * @param description is a description of objects to be deleted
-     * @param repository  is a repository to delete data from
-     * @param toDelete    IDs of objects to be deleted
-     * @param <R>         is a type of entity-class
-     * @param <ID>        is a type of entity ID
-     * @param <T>         is a type of repository
-     * @return self-reference
-     */
     public <R, ID, T extends RxJava3CrudRepository<R, ID>> SpringDataContext deleteByIds(String description, T repository, ID... toDelete) {
         return deleteByIds(description, (Repository<R, ID>) repository, toDelete);
     }
@@ -550,19 +504,6 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
      * @return self-reference
      */
     public <R, ID, T extends ReactiveCrudRepository<R, ID>> SpringDataContext deleteAllFrom(T repository) {
-        return deleteAllFrom((Repository<R, ID>) repository);
-    }
-
-    /**
-     * Performs the deleting of all objets from a repository
-     *
-     * @param repository is a repository to delete data from
-     * @param <R>        is a type of entity-class
-     * @param <ID>       is a type of entity ID
-     * @param <T>        is a type of repository
-     * @return self-reference
-     */
-    public <R, ID, T extends RxJava2CrudRepository<R, ID>> SpringDataContext deleteAllFrom(T repository) {
         return deleteAllFrom((Repository<R, ID>) repository);
     }
 
@@ -798,92 +739,6 @@ public class SpringDataContext extends AbstractDatabaseStepContext<SpringDataCon
                                                                                    T repository,
                                                                                    Iterable<R> toSave,
                                                                                    UpdateAction<R>... updateActions) {
-        return update(SaveStepSupplier.save(description, repository, toSave), updateActions);
-    }
-
-    /**
-     * Performs the saving of a (new or previously selected and changed) instance of entity-class
-     *
-     * @param description description of an object to be saved
-     * @param repository  is a repository
-     * @param toSave      is an object to be saved
-     * @param <R>         is a type of entity-class
-     * @param <ID>        is a type of entity ID
-     * @param <T>         is a type of repository
-     * @return saved object
-     */
-    public <R, ID, T extends RxJava2CrudRepository<R, ID>> R save(String description, T repository, R toSave) {
-        return insert(SaveStepSupplier.save(description, repository, toSave));
-    }
-
-    /**
-     * Performs the saving of iterable of (new or previously selected and changed) instances of entity-class
-     *
-     * @param description description of objects to be saved
-     * @param repository  is a repository
-     * @param toSave      are objects to be saved
-     * @param <R>         is a type of entity-class
-     * @param <ID>        is a type of entity ID
-     * @param <T>         is a type of repository
-     * @return iterable of saved objects
-     */
-    public <R, ID, T extends RxJava2CrudRepository<R, ID>> Iterable<R> save(String description, T repository, Iterable<R> toSave) {
-        return insert(SaveStepSupplier.save(description, repository, toSave));
-    }
-
-    /**
-     * Performs the saving of (new or previously selected and changed) instances of entity-class
-     *
-     * @param description description of objects to be saved
-     * @param repository  is a repository
-     * @param toSave      are objects to be saved
-     * @param <R>         is a type of entity-class
-     * @param <ID>        is a type of entity ID
-     * @param <T>         is a type of repository
-     * @return iterable of saved objects
-     */
-    public <R, ID, T extends RxJava2CrudRepository<R, ID>> Iterable<R> save(String description, T repository, R... toSave) {
-        checkNotNull(toSave);
-        return save(description, repository, asList(toSave));
-    }
-
-    /**
-     * Performs the changing and saving of an instance of entity-class
-     *
-     * @param description   description of an object to be changed and saved
-     * @param repository    is a repository
-     * @param toSave        is an object to be saved
-     * @param updateActions describe changes
-     * @param <R>           is a type of entity-class
-     * @param <ID>          is a type of entity ID
-     * @param <T>           is a type of repository
-     * @return changed and saved object
-     */
-    @SafeVarargs
-    public final <R, ID, T extends RxJava2CrudRepository<R, ID>> R save(String description,
-                                                                        T repository,
-                                                                        R toSave,
-                                                                        UpdateAction<R>... updateActions) {
-        return update(SaveStepSupplier.save(description, repository, toSave), updateActions);
-    }
-
-    /**
-     * Performs the changing and saving of iterable of instances of entity-class
-     *
-     * @param description   description of objects to be changed and saved
-     * @param repository    is a repository
-     * @param toSave        are objects to be changed and saved
-     * @param updateActions describe changes
-     * @param <R>           is a type of entity-class
-     * @param <ID>          is a type of entity ID
-     * @param <T>           is a type of repository
-     * @return iterable of changed and saved objects
-     */
-    @SafeVarargs
-    public final <R, ID, T extends RxJava2CrudRepository<R, ID>> Iterable<R> save(String description,
-                                                                                  T repository,
-                                                                                  Iterable<R> toSave,
-                                                                                  UpdateAction<R>... updateActions) {
         return update(SaveStepSupplier.save(description, repository, toSave), updateActions);
     }
 

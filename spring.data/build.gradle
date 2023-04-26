@@ -9,7 +9,6 @@ dependencies {
     testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockitoVersion
     compileOnly(group: 'org.springframework', name: 'spring-context', version: springVersion)
-    compileOnly(group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.21')
     compileOnly('io.projectreactor.tools:blockhound:1.0.6.RELEASE')
     compileOnly('io.projectreactor:reactor-test:3.4.18')
     compileOnly(group: 'io.micrometer', name: 'micrometer-core', version: '1.7.5')
@@ -17,7 +16,6 @@ dependencies {
     compileOnly(group: 'com.querydsl', name: 'querydsl-core', version: queryDslVersion)
 
     testImplementation(group: 'org.springframework', name: 'spring-context', version: springVersion)
-    testImplementation(group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.21')
     testImplementation('io.projectreactor.tools:blockhound:1.0.6.RELEASE')
     testImplementation('io.projectreactor:reactor-test:3.4.12')
     testImplementation(group: 'io.micrometer', name: 'micrometer-core', version: '1.7.5')

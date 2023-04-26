@@ -3,11 +3,8 @@ package ru.tinkoff.qa.neptune.spring.data.delete;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.data.repository.reactive.RxJava2CrudRepository;
 import org.springframework.data.repository.reactive.RxJava3CrudRepository;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
-
-import static java.util.Objects.nonNull;
 
 @SuppressWarnings("unchecked")
 abstract class DeleteEntities<INPUT, R, ID, T extends Repository<R, ID>> extends SpringDataFunction<INPUT, Void> {
@@ -17,7 +14,6 @@ abstract class DeleteEntities<INPUT, R, ID, T extends Repository<R, ID>> extends
     private DeleteEntities(T repo) {
         super(CrudRepository.class,
                 ReactiveCrudRepository.class,
-                RxJava2CrudRepository.class,
                 RxJava3CrudRepository.class);
         this.repo = repo;
     }
@@ -37,14 +33,6 @@ abstract class DeleteEntities<INPUT, R, ID, T extends Repository<R, ID>> extends
 
             if (repo instanceof ReactiveCrudRepository) {
                 ((ReactiveCrudRepository<R, ID>) repo).delete(r).block();
-                return null;
-            }
-
-            if (repo instanceof RxJava2CrudRepository) {
-                var thrown = ((RxJava2CrudRepository<R, ID>) repo).delete(r).blockingGet();
-                if (nonNull(thrown)) {
-                    throw new RuntimeException(thrown);
-                }
                 return null;
             }
 
@@ -72,14 +60,6 @@ abstract class DeleteEntities<INPUT, R, ID, T extends Repository<R, ID>> extends
 
             if (repo instanceof ReactiveCrudRepository) {
                 ((ReactiveCrudRepository<R, ID>) repo).deleteAll(rs).block();
-                return null;
-            }
-
-            if (repo instanceof RxJava2CrudRepository) {
-                var thrown = ((RxJava2CrudRepository<R, ID>) repo).deleteAll(rs).blockingGet();
-                if (nonNull(thrown)) {
-                    throw new RuntimeException(thrown);
-                }
                 return null;
             }
 

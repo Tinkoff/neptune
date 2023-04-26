@@ -3,11 +3,8 @@ package ru.tinkoff.qa.neptune.spring.data.delete;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.data.repository.reactive.RxJava2CrudRepository;
 import org.springframework.data.repository.reactive.RxJava3CrudRepository;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
-
-import static java.util.Objects.nonNull;
 
 @SuppressWarnings("unchecked")
 public final class DeleteAll<R, ID, T extends Repository<R, ID>> extends SpringDataFunction<T, Void> {
@@ -15,7 +12,6 @@ public final class DeleteAll<R, ID, T extends Repository<R, ID>> extends SpringD
     DeleteAll() {
         super(CrudRepository.class,
                 ReactiveCrudRepository.class,
-                RxJava2CrudRepository.class,
                 RxJava3CrudRepository.class);
     }
 
@@ -28,14 +24,6 @@ public final class DeleteAll<R, ID, T extends Repository<R, ID>> extends SpringD
 
         if (t instanceof ReactiveCrudRepository) {
             return ((ReactiveCrudRepository<R, ID>) t).deleteAll().block();
-        }
-
-        if (t instanceof RxJava2CrudRepository) {
-            var thrown = ((RxJava2CrudRepository<R, ID>) t).deleteAll().blockingGet();
-            if (nonNull(thrown)) {
-                throw new RuntimeException(thrown);
-            }
-            return null;
         }
 
         if (t instanceof RxJava3CrudRepository) {
