@@ -1,2 +1,4 @@
 ru.tinkoff.qa.neptune.spring.web.testclient.localization.SpringAssertionPartition
 ru.tinkoff.qa.neptune.spring.web.testclient.localization.SpringWebTestClientPartition
+ru.tinkoff.qa.neptune.spring.web.testclient.localization.SpringWebTestClientPartitionTemporal
+ru.tinkoff.qa.neptune.spring.web.testclient.localization.SpringAssertionTemporal

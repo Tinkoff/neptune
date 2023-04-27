@@ -9,6 +9,8 @@ dependencies {
     compileOnly(group: 'org.springframework', name: 'spring-web', version: springVersion)
     compileOnly(group: 'org.springframework', name: 'spring-webmvc', version: springVersion)
     compileOnly(group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1')
+    compileOnly group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '6.0.0'
+
 
     bundleGeneration(group: 'org.springframework', name: 'spring-web', version: springVersion)
     bundleGeneration(group: 'org.springframework', name: 'spring-webmvc', version: springVersion)
@@ -21,6 +23,8 @@ dependencies {
     testImplementation(group: 'org.springframework', name: 'spring-webmvc', version: springVersion)
     testImplementation('com.jayway.jsonpath:json-path:2.7.0')
     implementation group: 'net.bytebuddy', name: 'byte-buddy', version: bytebuddyVersion
+    testImplementation group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '6.0.0'
+
 }
 
 java {

@@ -1,2 +1,4 @@
 ru.tinkoff.qa.neptune.spring.mock.mvc.localization.SpringMockMvcPartition
+ru.tinkoff.qa.neptune.spring.mock.mvc.localization.SpringMockMvcPartitionTemporal
 ru.tinkoff.qa.neptune.spring.mock.mvc.localization.SpringResultMatcherPartition
+ru.tinkoff.qa.neptune.spring.mock.mvc.localization.SpringResultMatcherPartitionTemporal
