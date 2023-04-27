@@ -87,18 +87,7 @@ subprojects {
         jacoco {
             excludes = [
                     '**/**$HamcrestCombinableInterceptor.class',
-                    '**/**$HamcrestInterceptor.class',
-                    '**/check/localization/**',
-                    '**/database/abstractions/localization/**',
-                    '**/hibernate/localization/**',
-                    '**/http/api/localization/**',
-                    '**/kafka/localization/**',
-                    '**/retrofit2/localization/**',
-                    '**/selenium/localization/**',
-                    '**/spring/data/localization/**',
-                    '**/spring/mock/mvc/localization/**',
-                    '**/spring/web/testclient/localization/**',
-                    '**/mockito/localization/**'
+                    '**/**$HamcrestInterceptor.class'
             ]
         }
     }
@@ -116,18 +105,7 @@ subprojects {
             fileTree(dir: it,
                     exclude: [
                             '**/**$HamcrestCombinableInterceptor.class',
-                            '**/**$HamcrestInterceptor.class',
-                            '**/check/localization/**',
-                            '**/database/abstractions/localization/**',
-                            '**/hibernate/localization/**',
-                            '**/http/api/localization/**',
-                            '**/kafka/localization/**',
-                            '**/retrofit2/localization/**',
-                            '**/selenium/localization/**',
-                            '**/spring/data/localization/**',
-                            '**/spring/mock/mvc/localization/**',
-                            '**/spring/web/testclient/localization/**',
-                            '**/mockito/localization/**'
+                            '**/**$HamcrestInterceptor.class'
                     ]
             )
         })
@@ -145,17 +123,6 @@ task jacocoOverallReport(type: JacocoReport, group: 'Coverage reports') {
                 exclude: [
                         '**/**$HamcrestCombinableInterceptor.class',
                         '**/**$HamcrestInterceptor.class',
-                        '**/check/localization/**',
-                        '**/database/abstractions/localization/**',
-                        '**/hibernate/localization/**',
-                        '**/http/api/localization/**',
-                        '**/kafka/localization/**',
-                        '**/retrofit2/localization/**',
-                        '**/selenium/localization/**',
-                        '**/spring/data/localization/**',
-                        '**/spring/mock/mvc/localization/**',
-                        '**/spring/web/testclient/localization/**',
-                        '**/mockito/localization/**'
                 ]
         )
     }
