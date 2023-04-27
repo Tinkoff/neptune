@@ -3,7 +3,6 @@ package ru.tinkoff.qa.neptune.spring.data.select.common.by;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.data.repository.reactive.RxJava2CrudRepository;
 import org.springframework.data.repository.reactive.RxJava3CrudRepository;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -25,7 +24,6 @@ public abstract class SelectionByIds<R, ID, T extends Repository<R, ID>, RESULT>
     private SelectionByIds(ID... ids) {
         super(CrudRepository.class,
             ReactiveCrudRepository.class,
-            RxJava2CrudRepository.class,
             RxJava3CrudRepository.class);
         checkNotNull(ids);
         checkArgument(ids.length > 0, "Should be defined at least one id");
@@ -58,10 +56,6 @@ public abstract class SelectionByIds<R, ID, T extends Repository<R, ID>, RESULT>
                 return ((ReactiveCrudRepository<R, ID>) t).findById(id).block();
             }
 
-            if (t instanceof RxJava2CrudRepository) {
-                return ((RxJava2CrudRepository<R, ID>) t).findById(id).blockingGet();
-            }
-
             if (t instanceof RxJava3CrudRepository) {
                 return ((RxJava3CrudRepository<R, ID>) t).findById(id).blockingGet();
             }
@@ -85,10 +79,6 @@ public abstract class SelectionByIds<R, ID, T extends Repository<R, ID>, RESULT>
 
             if (t instanceof ReactiveCrudRepository) {
                 return ((ReactiveCrudRepository<R, ID>) t).findAllById(asList(ids)).collectList().block();
-            }
-
-            if (t instanceof RxJava2CrudRepository) {
-                return ((RxJava2CrudRepository<R, ID>) t).findAllById(asList(ids)).toList().blockingGet();
             }
 
             if (t instanceof RxJava3CrudRepository) {

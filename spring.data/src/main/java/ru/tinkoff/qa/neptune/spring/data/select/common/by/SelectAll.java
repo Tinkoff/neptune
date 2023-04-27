@@ -3,7 +3,6 @@ package ru.tinkoff.qa.neptune.spring.data.select.common.by;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.data.repository.reactive.RxJava2CrudRepository;
 import org.springframework.data.repository.reactive.RxJava3CrudRepository;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
@@ -15,7 +14,6 @@ public final class SelectAll<R, ID, T extends Repository<R, ID>> extends SpringD
     public SelectAll() {
         super(CrudRepository.class,
             ReactiveCrudRepository.class,
-            RxJava2CrudRepository.class,
             RxJava3CrudRepository.class);
     }
 
@@ -27,10 +25,6 @@ public final class SelectAll<R, ID, T extends Repository<R, ID>> extends SpringD
 
         if (t instanceof ReactiveCrudRepository) {
             return ((ReactiveCrudRepository<R, ID>) t).findAll().collectList().block();
-        }
-
-        if (t instanceof RxJava2CrudRepository) {
-            return ((RxJava2CrudRepository<R, ID>) t).findAll().toList().blockingGet();
         }
 
         if (t instanceof RxJava3CrudRepository) {

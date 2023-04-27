@@ -4,13 +4,11 @@ import com.google.common.collect.Iterables;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.data.repository.reactive.RxJava2CrudRepository;
 import org.springframework.data.repository.reactive.RxJava3CrudRepository;
 import ru.tinkoff.qa.neptune.spring.data.SpringDataFunction;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Objects.nonNull;
 
 @SuppressWarnings("unchecked")
 abstract class DeleteByIds<R, ID, T extends Repository<R, ID>> extends SpringDataFunction<T, Void> {
@@ -18,7 +16,6 @@ abstract class DeleteByIds<R, ID, T extends Repository<R, ID>> extends SpringDat
     private DeleteByIds() {
         super(CrudRepository.class,
                 ReactiveCrudRepository.class,
-                RxJava2CrudRepository.class,
                 RxJava3CrudRepository.class);
     }
 
@@ -41,14 +38,6 @@ abstract class DeleteByIds<R, ID, T extends Repository<R, ID>> extends SpringDat
 
             if (t instanceof ReactiveCrudRepository) {
                 return ((ReactiveCrudRepository<R, ID>) t).deleteById(id).block();
-            }
-
-            if (t instanceof RxJava2CrudRepository) {
-                var thrown = ((RxJava2CrudRepository<R, ID>) t).deleteById(id).blockingGet();
-                if (nonNull(thrown)) {
-                    throw new RuntimeException(thrown);
-                }
-                return null;
             }
 
             if (t instanceof RxJava3CrudRepository) {
@@ -80,14 +69,6 @@ abstract class DeleteByIds<R, ID, T extends Repository<R, ID>> extends SpringDat
 
             if (t instanceof ReactiveCrudRepository) {
                 return ((ReactiveCrudRepository<R, ID>) t).deleteAllById(ids).block();
-            }
-
-            if (t instanceof RxJava2CrudRepository) {
-                var thrown = ((RxJava2CrudRepository<R, ID>) t).deleteAllById(ids).blockingGet();
-                if (nonNull(thrown)) {
-                    throw new RuntimeException(thrown);
-                }
-                return null;
             }
 
             if (t instanceof RxJava3CrudRepository) {

@@ -34,14 +34,6 @@ public class SelectTest extends BaseSpringDataPreparing {
     }
 
     @Test
-    public void selectByIdTest3() {
-        var entity = springData().find("Test entity",
-                byId(testRxJava2SortingRepository, 1L));
-
-        assertThat(entity, is(TEST_ENTITIES.get(0)));
-    }
-
-    @Test
     public void selectByIdTest4() {
         var entity = springData().find("Test entity",
                 byId(testRxJava3SortingRepository, 1L));
@@ -66,14 +58,6 @@ public class SelectTest extends BaseSpringDataPreparing {
     }
 
     @Test
-    public void selectByIdSTest3() {
-        var entities = springData().find("Test entities",
-                byIds(testRxJava2SortingRepository, 1L, 2L));
-
-        assertThat(entities, is(TEST_ENTITIES));
-    }
-
-    @Test
     public void selectByIdSTest4() {
         var entities = springData().find("Test entities",
                 byIds(testRxJava3SortingRepository, 1L, 2L));
@@ -93,14 +77,6 @@ public class SelectTest extends BaseSpringDataPreparing {
     public void selectBySortingTest2() {
         var entities = springData().find("Test entities",
                 allBySorting(reactiveCrudRepository, ASC, "id", "name"));
-
-        assertThat(entities, is(TEST_ENTITIES));
-    }
-
-    @Test
-    public void selectBySortingTest3() {
-        var entities = springData().find("Test entities",
-                allBySorting(testRxJava2SortingRepository, ASC, "id", "name"));
 
         assertThat(entities, is(TEST_ENTITIES));
     }
@@ -373,14 +349,6 @@ public class SelectTest extends BaseSpringDataPreparing {
     public void selectAllTest2() {
         var entities = springData().find("Test entities",
                 all(reactiveCrudRepository));
-
-        assertThat(entities, is(TEST_ENTITIES));
-    }
-
-    @Test
-    public void selectAllTest3() {
-        var entities = springData().find("Test entities",
-                all(testRxJava2SortingRepository));
 
         assertThat(entities, is(TEST_ENTITIES));
     }
