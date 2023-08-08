@@ -464,64 +464,64 @@
         <article role="main">
           <section class="tex2jax_ignore mathjax_ignore" id="webtestclient-request-response">
 <h1>WebTestClient. Request / Response<a class="headerlink" href="#webtestclient-request-response" title="Permalink to this heading">#</a></h1>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.web.testclient</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">WebTestClientContext</span><span class="p">.</span><span class="na">webTestClient</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span>
+<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.web.testclient</span>
+<span class="w">    </span><span class="p">.</span><span class="na">WebTestClientContext</span><span class="p">.</span><span class="na">webTestClient</span><span class="p">;</span>
 
-<span class="nd">@SpringBootTest</span><span class="w"></span>
-<span class="nd">@AutoConfigureWebTestClient</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@SpringBootTest</span>
+<span class="nd">@AutoConfigureWebTestClient</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Простая отправка запроса&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">webTestClient</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//описывается запрос:</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// метод (GET, POST, PUT или Delete)</span><span class="w"></span>
-<span class="w">            </span><span class="n">send</span><span class="p">(</span><span class="n">webClient</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">webClient</span><span class="p">.</span><span class="na">post</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">uri</span><span class="p">(</span><span class="s">&quot;/something&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">MediaType</span><span class="p">.</span><span class="na">APPLICATION_JSON</span><span class="p">)</span><span class="w"> </span><span class="c1">//и</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//параметры</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">accept</span><span class="p">(</span><span class="n">MediaType</span><span class="p">.</span><span class="na">APPLICATION_JSON</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">body</span><span class="p">(</span><span class="n">Mono</span><span class="p">.</span><span class="na">just</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">()),</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">.</span><span class="na">class</span><span class="p">),</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Опциональный параметр, который можно не указывать.</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//От его наличия зависит, как будут сформированы </span><span class="w"></span>
-<span class="w">            </span><span class="c1">//ожидания к контенту ответа, как к dto, или </span><span class="w"></span>
-<span class="w">            </span><span class="c1">//как к тексту/массиву байтов</span><span class="w"></span>
-<span class="w">            </span><span class="n">Dto</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Простая отправка запроса&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">webTestClient</span><span class="p">(</span>
+<span class="w">            </span><span class="c1">//описывается запрос:</span>
+<span class="w">            </span><span class="c1">// метод (GET, POST, PUT или Delete)</span>
+<span class="w">            </span><span class="n">send</span><span class="p">(</span><span class="n">webClient</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">webClient</span><span class="p">.</span><span class="na">post</span><span class="p">()</span>
+<span class="w">            </span><span class="p">.</span><span class="na">uri</span><span class="p">(</span><span class="s">&quot;/something&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">MediaType</span><span class="p">.</span><span class="na">APPLICATION_JSON</span><span class="p">)</span><span class="w"> </span><span class="c1">//и</span>
+<span class="w">            </span><span class="c1">//параметры</span>
+<span class="w">            </span><span class="p">.</span><span class="na">accept</span><span class="p">(</span><span class="n">MediaType</span><span class="p">.</span><span class="na">APPLICATION_JSON</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="na">body</span><span class="p">(</span><span class="n">Mono</span><span class="p">.</span><span class="na">just</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">()),</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">.</span><span class="na">class</span><span class="p">),</span>
+<span class="w">            </span><span class="c1">//Опциональный параметр, который можно не указывать.</span>
+<span class="w">            </span><span class="c1">//От его наличия зависит, как будут сформированы </span>
+<span class="w">            </span><span class="c1">//ожидания к контенту ответа, как к dto, или </span>
+<span class="w">            </span><span class="c1">//как к тексту/массиву байтов</span>
+<span class="w">            </span><span class="n">Dto</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Ниже пример с явным использованием объекта <code class="docutils literal notranslate"><span class="pre">org.springframework.test.web.reactive.server.WebTestClient</span></code></p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.test.web.reactive.server.WebTestClient</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.test.web.reactive.server.WebTestClient</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.web.testclient</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">WebTestClientContext</span><span class="p">.</span><span class="na">webTestClient</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span>
+<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.web.testclient</span>
+<span class="w">    </span><span class="p">.</span><span class="na">WebTestClientContext</span><span class="p">.</span><span class="na">webTestClient</span><span class="p">;</span>
 
-<span class="nd">@SpringBootTest</span><span class="w"></span>
-<span class="nd">@AutoConfigureWebTestClient</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@SpringBootTest</span>
+<span class="nd">@AutoConfigureWebTestClient</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Autowired</span><span class="w"> </span><span class="c1">//Или любой другой вариант</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">WebTestClient</span><span class="w"> </span><span class="n">client</span><span class="p">;</span><span class="w"> </span><span class="c1">//инициализации поля или переменной</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Autowired</span><span class="w"> </span><span class="c1">//Или любой другой вариант</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">WebTestClient</span><span class="w"> </span><span class="n">client</span><span class="p">;</span><span class="w"> </span><span class="c1">//инициализации поля или переменной</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Простая отправка запроса&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">webTestClient</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="n">send</span><span class="p">(</span><span class="n">client</span><span class="p">,</span><span class="w"> </span><span class="c1">//явная передача объекта WebTestClient</span><span class="w"></span>
-<span class="w">            </span><span class="n">webClient</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">webClient</span><span class="p">.</span><span class="na">post</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">uri</span><span class="p">(</span><span class="s">&quot;/something&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">MediaType</span><span class="p">.</span><span class="na">APPLICATION_JSON</span><span class="p">)</span><span class="w"> </span><span class="c1">//и</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">accept</span><span class="p">(</span><span class="n">MediaType</span><span class="p">.</span><span class="na">APPLICATION_JSON</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">body</span><span class="p">(</span><span class="n">Mono</span><span class="p">.</span><span class="na">just</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">()),</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">.</span><span class="na">class</span><span class="p">),</span><span class="w"></span>
-<span class="w">            </span><span class="n">Dto</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Простая отправка запроса&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">webTestClient</span><span class="p">(</span>
+<span class="w">            </span><span class="n">send</span><span class="p">(</span><span class="n">client</span><span class="p">,</span><span class="w"> </span><span class="c1">//явная передача объекта WebTestClient</span>
+<span class="w">            </span><span class="n">webClient</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">webClient</span><span class="p">.</span><span class="na">post</span><span class="p">()</span>
+<span class="w">            </span><span class="p">.</span><span class="na">uri</span><span class="p">(</span><span class="s">&quot;/something&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">MediaType</span><span class="p">.</span><span class="na">APPLICATION_JSON</span><span class="p">)</span><span class="w"> </span><span class="c1">//и</span>
+<span class="w">            </span><span class="p">.</span><span class="na">accept</span><span class="p">(</span><span class="n">MediaType</span><span class="p">.</span><span class="na">APPLICATION_JSON</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="na">body</span><span class="p">(</span><span class="n">Mono</span><span class="p">.</span><span class="na">just</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">()),</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">.</span><span class="na">class</span><span class="p">),</span>
+<span class="w">            </span><span class="n">Dto</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <section id="webtestclient">
@@ -540,101 +540,101 @@ expect_</a>
 .</p></li>
 </ul>
 <p>Ниже простой пример</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.web.testclient</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">WebTestClientContext</span><span class="p">.</span><span class="na">webTestClient</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span>
+<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.web.testclient</span>
+<span class="w">    </span><span class="p">.</span><span class="na">WebTestClientContext</span><span class="p">.</span><span class="na">webTestClient</span><span class="p">;</span>
 
-<span class="nd">@SpringBootTest</span><span class="w"></span>
-<span class="nd">@AutoConfigureWebTestClient</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@SpringBootTest</span>
+<span class="nd">@AutoConfigureWebTestClient</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Пример описания ожидаемого ответа&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">webTestClient</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="n">send</span><span class="p">(</span><span class="n">webClient</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">webClient</span><span class="p">.</span><span class="na">post</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">uri</span><span class="p">(</span><span class="s">&quot;/something&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">MediaType</span><span class="p">.</span><span class="na">APPLICATION_JSON</span><span class="p">)</span><span class="w"> </span><span class="c1">//и</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">accept</span><span class="p">(</span><span class="n">MediaType</span><span class="p">.</span><span class="na">APPLICATION_JSON</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">body</span><span class="p">(</span><span class="n">Mono</span><span class="p">.</span><span class="na">just</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">()),</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">.</span><span class="na">class</span><span class="p">))</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// Часто используемые ожидания имеют  </span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">expectStatus</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span><span class="w"> </span><span class="c1">//упрощенную запись</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">expectContentType</span><span class="p">(</span><span class="n">APPLICATION_JSON</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">/////////////////////////////////////////</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Так же, при необходимости, есть возможности описывать</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//ожидания в функциональном стиле</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">expectStatus</span><span class="p">(</span><span class="n">statusAssertions</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//некое вычисление или алгоритм</span><span class="w"></span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">statusAssertions</span><span class="p">.</span><span class="na">isOk</span><span class="p">();</span><span class="w"></span>
-<span class="w">            </span><span class="p">})</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">expectContent</span><span class="p">(</span><span class="n">headerAssertions</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//некое вычисление или алгоритм</span><span class="w"></span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">headerAssertions</span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">APPLICATION_JSON</span><span class="p">);</span><span class="w"></span>
-<span class="w">            </span><span class="p">})</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Пример описания ожидаемого ответа&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">webTestClient</span><span class="p">(</span>
+<span class="w">            </span><span class="n">send</span><span class="p">(</span><span class="n">webClient</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">webClient</span><span class="p">.</span><span class="na">post</span><span class="p">()</span>
+<span class="w">            </span><span class="p">.</span><span class="na">uri</span><span class="p">(</span><span class="s">&quot;/something&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">MediaType</span><span class="p">.</span><span class="na">APPLICATION_JSON</span><span class="p">)</span><span class="w"> </span><span class="c1">//и</span>
+<span class="w">            </span><span class="p">.</span><span class="na">accept</span><span class="p">(</span><span class="n">MediaType</span><span class="p">.</span><span class="na">APPLICATION_JSON</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="na">body</span><span class="p">(</span><span class="n">Mono</span><span class="p">.</span><span class="na">just</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">()),</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">.</span><span class="na">class</span><span class="p">))</span>
+<span class="w">            </span><span class="c1">// Часто используемые ожидания имеют  </span>
+<span class="w">            </span><span class="p">.</span><span class="na">expectStatus</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span><span class="w"> </span><span class="c1">//упрощенную запись</span>
+<span class="w">            </span><span class="p">.</span><span class="na">expectContentType</span><span class="p">(</span><span class="n">APPLICATION_JSON</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">/////////////////////////////////////////</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">            </span><span class="c1">//Так же, при необходимости, есть возможности описывать</span>
+<span class="w">            </span><span class="c1">//ожидания в функциональном стиле</span>
+<span class="w">            </span><span class="p">.</span><span class="na">expectStatus</span><span class="p">(</span><span class="n">statusAssertions</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">//некое вычисление или алгоритм</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">statusAssertions</span><span class="p">.</span><span class="na">isOk</span><span class="p">();</span>
+<span class="w">            </span><span class="p">})</span>
+<span class="w">            </span><span class="p">.</span><span class="na">expectContent</span><span class="p">(</span><span class="n">headerAssertions</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">//некое вычисление или алгоритм</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">headerAssertions</span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">APPLICATION_JSON</span><span class="p">);</span>
+<span class="w">            </span><span class="p">})</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Пример описания ожидания к телу ответа, которое прочитано как текст/массив байтов</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.web.testclient</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">WebTestClientContext</span><span class="p">.</span><span class="na">webTestClient</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span>
+<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.web.testclient</span>
+<span class="w">    </span><span class="p">.</span><span class="na">WebTestClientContext</span><span class="p">.</span><span class="na">webTestClient</span><span class="p">;</span>
 
-<span class="nd">@SpringBootTest</span><span class="w"></span>
-<span class="nd">@AutoConfigureWebTestClient</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@SpringBootTest</span>
+<span class="nd">@AutoConfigureWebTestClient</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Пример описания ожидаемого ответа, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;чье тело прочитано как текст/массив байтов&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">webTestClient</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="n">send</span><span class="p">(</span><span class="n">webClient</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">webClient</span><span class="p">.</span><span class="na">post</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">uri</span><span class="p">(</span><span class="s">&quot;/something&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">MediaType</span><span class="p">.</span><span class="na">APPLICATION_JSON</span><span class="p">)</span><span class="w"> </span><span class="c1">//и</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">accept</span><span class="p">(</span><span class="n">MediaType</span><span class="p">.</span><span class="na">APPLICATION_JSON</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">body</span><span class="p">(</span><span class="n">Mono</span><span class="p">.</span><span class="na">just</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">()),</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">.</span><span class="na">class</span><span class="p">))</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//можно описывать ожидания к json/xml тексту</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//или к массиву байтов    </span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">expectBodyJsonPathEquals</span><span class="p">(</span><span class="s">&quot;some.path&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Пример описания ожидаемого ответа, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">            </span><span class="s">&quot;чье тело прочитано как текст/массив байтов&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">webTestClient</span><span class="p">(</span>
+<span class="w">            </span><span class="n">send</span><span class="p">(</span><span class="n">webClient</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">webClient</span><span class="p">.</span><span class="na">post</span><span class="p">()</span>
+<span class="w">            </span><span class="p">.</span><span class="na">uri</span><span class="p">(</span><span class="s">&quot;/something&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">MediaType</span><span class="p">.</span><span class="na">APPLICATION_JSON</span><span class="p">)</span><span class="w"> </span><span class="c1">//и</span>
+<span class="w">            </span><span class="p">.</span><span class="na">accept</span><span class="p">(</span><span class="n">MediaType</span><span class="p">.</span><span class="na">APPLICATION_JSON</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="na">body</span><span class="p">(</span><span class="n">Mono</span><span class="p">.</span><span class="na">just</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">()),</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">.</span><span class="na">class</span><span class="p">))</span>
+<span class="w">            </span><span class="c1">//можно описывать ожидания к json/xml тексту</span>
+<span class="w">            </span><span class="c1">//или к массиву байтов    </span>
+<span class="w">            </span><span class="p">.</span><span class="na">expectBodyJsonPathEquals</span><span class="p">(</span><span class="s">&quot;some.path&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Пример описания ожидания к телу ответа, которое прочитано как DTO</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.*</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.web.testclient</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">WebTestClientContext</span><span class="p">.</span><span class="na">webTestClient</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span>
+<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.web.testclient</span>
+<span class="w">    </span><span class="p">.</span><span class="na">WebTestClientContext</span><span class="p">.</span><span class="na">webTestClient</span><span class="p">;</span>
 
-<span class="nd">@SpringBootTest</span><span class="w"></span>
-<span class="nd">@AutoConfigureWebTestClient</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@SpringBootTest</span>
+<span class="nd">@AutoConfigureWebTestClient</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Пример описания ожидаемого ответа, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;чье тело прочитано как DTO&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">webTestClient</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="n">send</span><span class="p">(</span><span class="n">webClient</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">webClient</span><span class="p">.</span><span class="na">post</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">uri</span><span class="p">(</span><span class="s">&quot;/something&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">MediaType</span><span class="p">.</span><span class="na">APPLICATION_JSON</span><span class="p">)</span><span class="w"> </span><span class="c1">//и</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">accept</span><span class="p">(</span><span class="n">MediaType</span><span class="p">.</span><span class="na">APPLICATION_JSON</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">body</span><span class="p">(</span><span class="n">Mono</span><span class="p">.</span><span class="na">just</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">()),</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">.</span><span class="na">class</span><span class="p">),</span><span class="w"> </span><span class="n">Dto</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//ожидание для всего тела     </span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">expectBody</span><span class="p">(</span><span class="n">equalTo</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Dto</span><span class="p">()))</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//описание того, ЧТО проверяется    </span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">expectBody</span><span class="p">(</span><span class="s">&quot;Some field value&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//описываем, как получить проверяемое значение</span><span class="w"></span>
-<span class="w">            </span><span class="n">Dto</span><span class="p">::</span><span class="n">someField</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">equalTo</span><span class="p">(</span><span class="n">someValue</span><span class="p">))</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Пример описания ожидаемого ответа, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">            </span><span class="s">&quot;чье тело прочитано как DTO&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">webTestClient</span><span class="p">(</span>
+<span class="w">            </span><span class="n">send</span><span class="p">(</span><span class="n">webClient</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">webClient</span><span class="p">.</span><span class="na">post</span><span class="p">()</span>
+<span class="w">            </span><span class="p">.</span><span class="na">uri</span><span class="p">(</span><span class="s">&quot;/something&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">MediaType</span><span class="p">.</span><span class="na">APPLICATION_JSON</span><span class="p">)</span><span class="w"> </span><span class="c1">//и</span>
+<span class="w">            </span><span class="p">.</span><span class="na">accept</span><span class="p">(</span><span class="n">MediaType</span><span class="p">.</span><span class="na">APPLICATION_JSON</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="na">body</span><span class="p">(</span><span class="n">Mono</span><span class="p">.</span><span class="na">just</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">()),</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">.</span><span class="na">class</span><span class="p">),</span><span class="w"> </span><span class="n">Dto</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//ожидание для всего тела     </span>
+<span class="w">            </span><span class="p">.</span><span class="na">expectBody</span><span class="p">(</span><span class="n">equalTo</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Dto</span><span class="p">()))</span>
+<span class="w">            </span><span class="c1">//описание того, ЧТО проверяется    </span>
+<span class="w">            </span><span class="p">.</span><span class="na">expectBody</span><span class="p">(</span><span class="s">&quot;Some field value&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="c1">//описываем, как получить проверяемое значение</span>
+<span class="w">            </span><span class="n">Dto</span><span class="p">::</span><span class="n">someField</span><span class="p">,</span>
+<span class="w">            </span><span class="n">equalTo</span><span class="p">(</span><span class="n">someValue</span><span class="p">))</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
@@ -646,423 +646,423 @@ expect_</a>
 </ul>
 <section id="id2">
 <h3>Прочитанное как текст / массив байтов<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">WebTestClientContext</span><span class="p">.</span><span class="na">webTestClient</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span>
+<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span>
+<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">WebTestClientContext</span><span class="p">.</span><span class="na">webTestClient</span><span class="p">;</span>
 
-<span class="nd">@SpringBootTest</span><span class="w"></span>
-<span class="nd">@AutoConfigureWebTestClient</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//когда не указано, в какие объекты должна </span><span class="w"></span>
-<span class="c1">//происходить десериализация тела ответа</span><span class="w"></span>
+<span class="nd">@SpringBootTest</span>
+<span class="nd">@AutoConfigureWebTestClient</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//когда не указано, в какие объекты должна </span>
+<span class="c1">//происходить десериализация тела ответа</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//по умолчанию тело ответа представляется как массив байтов</span><span class="w"></span>
-<span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">webTestClient</span><span class="p">(</span><span class="n">send</span><span class="p">(</span><span class="cm">/*параметры запроса*/</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//ожидания</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">thenGetBody</span><span class="p">()</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//по умолчанию тело ответа представляется как массив байтов</span>
+<span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">webTestClient</span><span class="p">(</span><span class="n">send</span><span class="p">(</span><span class="cm">/*параметры запроса*/</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//ожидания</span>
+<span class="w">            </span><span class="p">.</span><span class="na">thenGetBody</span><span class="p">()</span>
+<span class="w">        </span><span class="p">);</span>
 
-<span class="w">        </span><span class="c1">//так же можно вернуть тело ответа в виде строки</span><span class="w"></span>
-<span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">body2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">webTestClient</span><span class="p">(</span><span class="n">send</span><span class="p">(</span><span class="cm">/*параметры запроса*/</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//ожидания</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">thenGetBodyAsString</span><span class="p">()</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//так же можно вернуть тело ответа в виде строки</span>
+<span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">body2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">webTestClient</span><span class="p">(</span><span class="n">send</span><span class="p">(</span><span class="cm">/*параметры запроса*/</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//ожидания</span>
+<span class="w">            </span><span class="p">.</span><span class="na">thenGetBodyAsString</span><span class="p">()</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
 <section id="dto">
 <h3>Прочитанное как DTO<a class="headerlink" href="#dto" title="Permalink to this heading">#</a></h3>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">WebTestClientContext</span><span class="p">.</span><span class="na">webTestClient</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span>
+<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span>
+<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">WebTestClientContext</span><span class="p">.</span><span class="na">webTestClient</span><span class="p">;</span>
 
-<span class="nd">@SpringBootTest</span><span class="w"></span>
-<span class="nd">@AutoConfigureWebTestClient</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@SpringBootTest</span>
+<span class="nd">@AutoConfigureWebTestClient</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">Dto</span><span class="w"> </span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">webTestClient</span><span class="p">(</span><span class="n">send</span><span class="p">(</span><span class="cm">/*параметры запроса*/</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//так же можно использовать</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//org.springframework.core.ParameterizedTypeReference</span><span class="w"></span>
-<span class="w">            </span><span class="n">Dto</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//ожидания</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">thenGetBody</span><span class="p">());</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Dto</span><span class="w"> </span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">webTestClient</span><span class="p">(</span><span class="n">send</span><span class="p">(</span><span class="cm">/*параметры запроса*/</span><span class="p">,</span>
+<span class="w">            </span><span class="c1">//так же можно использовать</span>
+<span class="w">            </span><span class="c1">//org.springframework.core.ParameterizedTypeReference</span>
+<span class="w">            </span><span class="n">Dto</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//ожидания</span>
+<span class="w">            </span><span class="p">.</span><span class="na">thenGetBody</span><span class="p">());</span>
 
-<span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">webTestClient</span><span class="p">(</span><span class="n">send</span><span class="p">(</span><span class="cm">/*параметры запроса*/</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">Dto</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//ожидания</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// описание объекта, который следует получить    </span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">thenGetValue</span><span class="p">(</span><span class="s">&quot;Value of the field &#39;getSomeValue&#39;&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//описание получаемого результата в виде функции</span><span class="w"></span>
-<span class="w">            </span><span class="n">Dto</span><span class="p">::</span><span class="n">getSomeValue</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// можно указать один или несколько критериев,  </span><span class="w"></span>
-<span class="w">            </span><span class="c1">// которым должен соответствовать получаемый объект.</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// Так же доступны criteriaOr(criteria...), </span><span class="w"></span>
-<span class="w">            </span><span class="c1">// criteriaOnlyOne(criteria...)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// criteriaNot(criteria...)    </span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;получаемый объект&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dto</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="w">            </span><span class="p">})</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//можно указать, что должно быть выброшено исключение,  </span><span class="w"></span>
-<span class="w">            </span><span class="c1">// если получаемый объект пустой / null / не соответствует</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// перечисленным критериям    </span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">webTestClient</span><span class="p">(</span><span class="n">send</span><span class="p">(</span><span class="cm">/*параметры запроса*/</span><span class="p">,</span>
+<span class="w">            </span><span class="n">Dto</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//ожидания</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">            </span><span class="c1">// описание объекта, который следует получить    </span>
+<span class="w">            </span><span class="p">.</span><span class="na">thenGetValue</span><span class="p">(</span><span class="s">&quot;Value of the field &#39;getSomeValue&#39;&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="c1">//описание получаемого результата в виде функции</span>
+<span class="w">            </span><span class="n">Dto</span><span class="p">::</span><span class="n">getSomeValue</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">// можно указать один или несколько критериев,  </span>
+<span class="w">            </span><span class="c1">// которым должен соответствовать получаемый объект.</span>
+<span class="w">            </span><span class="c1">// Так же доступны criteriaOr(criteria...), </span>
+<span class="w">            </span><span class="c1">// criteriaOnlyOne(criteria...)</span>
+<span class="w">            </span><span class="c1">// criteriaNot(criteria...)    </span>
+<span class="w">            </span><span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">            </span><span class="s">&quot;которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">            </span><span class="s">&quot;получаемый объект&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dto</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="w">            </span><span class="p">})</span>
+<span class="w">            </span><span class="c1">//можно указать, что должно быть выброшено исключение,  </span>
+<span class="w">            </span><span class="c1">// если получаемый объект пустой / null / не соответствует</span>
+<span class="w">            </span><span class="c1">// перечисленным критериям    </span>
+<span class="w">            </span><span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
 <section id="list">
 <h3>List<a class="headerlink" href="#list" title="Permalink to this heading">#</a></h3>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">WebTestClientContext</span><span class="p">.</span><span class="na">webTestClient</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span>
+<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span>
+<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">WebTestClientContext</span><span class="p">.</span><span class="na">webTestClient</span><span class="p">;</span>
 
-<span class="nd">@SpringBootTest</span><span class="w"></span>
-<span class="nd">@AutoConfigureWebTestClient</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@SpringBootTest</span>
+<span class="nd">@AutoConfigureWebTestClient</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">webTestClient</span><span class="p">(</span><span class="n">send</span><span class="p">(</span><span class="cm">/*параметры запроса*/</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//так же можно использовать</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//org.springframework.core.ParameterizedTypeReference</span><span class="w"></span>
-<span class="w">            </span><span class="n">Dto</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//ожидания</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//описание листа, который следует получить</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">thenGetList</span><span class="p">(</span><span class="s">&quot;Value of the field &#39;listValue&#39;&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//описание получения списка в виде функции</span><span class="w"></span>
-<span class="w">            </span><span class="n">Dto</span><span class="p">::</span><span class="n">listValue</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//дополнительные уточняющие параметры    </span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">webTestClient</span><span class="p">(</span><span class="n">send</span><span class="p">(</span><span class="cm">/*параметры запроса*/</span><span class="p">,</span>
+<span class="w">            </span><span class="c1">//так же можно использовать</span>
+<span class="w">            </span><span class="c1">//org.springframework.core.ParameterizedTypeReference</span>
+<span class="w">            </span><span class="n">Dto</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//ожидания</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">            </span><span class="c1">//описание листа, который следует получить</span>
+<span class="w">            </span><span class="p">.</span><span class="na">thenGetList</span><span class="p">(</span><span class="s">&quot;Value of the field &#39;listValue&#39;&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="c1">//описание получения списка в виде функции</span>
+<span class="w">            </span><span class="n">Dto</span><span class="p">::</span><span class="n">listValue</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//дополнительные уточняющие параметры    </span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <details class="summary-">
-<summary>Уточняющие параметры шага, который возвращает лист. Шаг не предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать</span><span class="w"></span>
-<span class="c1">//каждый элемент результирующего листа.</span><span class="w"></span>
-<span class="c1">// Так же доступны criteriaOr(criteria...),</span><span class="w"></span>
-<span class="c1">// criteriaOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// criteriaNot(criteria...)</span><span class="w"></span>
-<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;каждый элемент, который попадет в результирующий лист&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//Можно указать, что должно быть выброшено исключение,</span><span class="w"></span>
-<span class="c1">// если непустой лист не удалось получить (не было ни одного элемента,</span><span class="w"></span>
-<span class="c1">//который бы соответствовал перечисленным критериям,</span><span class="w"></span>
-<span class="c1">// или непустой лист просто не был получен)</span><span class="w"></span>
-<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span><span class="w"></span>
-<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//1. можно указать сколько объектов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//нужно вернуть</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnListOfSize</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//2. можно указать, до элемента с каким индексом</span><span class="w"></span>
-<span class="c1">//нужно собрать результирующие элементы,</span><span class="w"></span>
-<span class="c1">//индекс - индекс объекта в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnBeforeIndex</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//.returnAfterIndex(8) либо после какого элемента</span><span class="w"></span>
-<span class="c1">//----------------------------------------------</span><span class="w"></span>
-<span class="c1">//3. Либо можно перечислить индексы элементов,</span><span class="w"></span>
-<span class="c1">// которые следует вернуть.</span><span class="w"></span>
-<span class="c1">//Индексы - индексы объектов в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnItemsOfIndexes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//4. можно указать, при достижении какого количества</span><span class="w"></span>
-<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//должен быть возвращен результат</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//5. можно указать, при достижении каких условий,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать лист ВСЕХ объектов,</span><span class="w"></span>
-<span class="c1">//соответствующих критериям,</span><span class="w"></span>
-<span class="c1">//можно возвращать результирующий лист/суб-лист</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span><span class="w"></span>
-<span class="c1">// returnOnConditionOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// returnOnConditionNot(criteria...)</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span><span class="w"></span>
-<span class="c1">//или весь суб-лист подходящих по критериям элементов,</span><span class="w"></span>
-<span class="c1">// который должен вернуться как результат,</span><span class="w"></span>
-<span class="c1">// не соответствует каким-то критериям -</span><span class="w"></span>
-<span class="c1">// будет выброшено исключение с подробным описанием</span><span class="w"></span>
+<summary>Уточняющие параметры шага, который возвращает лист. Шаг не предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span>
+<span class="c1">//которым должен соответствовать</span>
+<span class="c1">//каждый элемент результирующего листа.</span>
+<span class="c1">// Так же доступны criteriaOr(criteria...),</span>
+<span class="c1">// criteriaOnlyOne(criteria...)</span>
+<span class="c1">// criteriaNot(criteria...)</span>
+<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="s">&quot;каждый элемент, который попадет в результирующий лист&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//Можно указать, что должно быть выброшено исключение,</span>
+<span class="c1">// если непустой лист не удалось получить (не было ни одного элемента,</span>
+<span class="c1">//который бы соответствовал перечисленным критериям,</span>
+<span class="c1">// или непустой лист просто не был получен)</span>
+<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span>
+<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//1. можно указать сколько объектов,</span>
+<span class="c1">//которые соответствуют критериям,</span>
+<span class="c1">//нужно вернуть</span>
+<span class="p">.</span><span class="na">returnListOfSize</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//2. можно указать, до элемента с каким индексом</span>
+<span class="c1">//нужно собрать результирующие элементы,</span>
+<span class="c1">//индекс - индекс объекта в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnBeforeIndex</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="c1">//.returnAfterIndex(8) либо после какого элемента</span>
+<span class="c1">//----------------------------------------------</span>
+<span class="c1">//3. Либо можно перечислить индексы элементов,</span>
+<span class="c1">// которые следует вернуть.</span>
+<span class="c1">//Индексы - индексы объектов в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnItemsOfIndexes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//4. можно указать, при достижении какого количества</span>
+<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span>
+<span class="c1">//должен быть возвращен результат</span>
+<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//5. можно указать, при достижении каких условий,</span>
+<span class="c1">//которым должен соответствовать лист ВСЕХ объектов,</span>
+<span class="c1">//соответствующих критериям,</span>
+<span class="c1">//можно возвращать результирующий лист/суб-лист</span>
+<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span>
+<span class="c1">// returnOnConditionOnlyOne(criteria...)</span>
+<span class="c1">// returnOnConditionNot(criteria...)</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span>
+<span class="c1">//или весь суб-лист подходящих по критериям элементов,</span>
+<span class="c1">// который должен вернуться как результат,</span>
+<span class="c1">// не соответствует каким-то критериям -</span>
+<span class="c1">// будет выброшено исключение с подробным описанием</span>
 </pre></div>
 </div>
 </details></section>
 <section id="id3">
 <h3>Массив<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">WebTestClientContext</span><span class="p">.</span><span class="na">webTestClient</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span>
+<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span>
+<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">WebTestClientContext</span><span class="p">.</span><span class="na">webTestClient</span><span class="p">;</span>
 
-<span class="nd">@SpringBootTest</span><span class="w"></span>
-<span class="nd">@AutoConfigureWebTestClient</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@SpringBootTest</span>
+<span class="nd">@AutoConfigureWebTestClient</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">webTestClient</span><span class="p">(</span><span class="n">send</span><span class="p">(</span><span class="cm">/*параметры запроса*/</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//так же можно использовать</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//org.springframework.core.ParameterizedTypeReference</span><span class="w"></span>
-<span class="w">            </span><span class="n">Dto</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//ожидания</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//описание листа, который следует получить</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">thenGetArray</span><span class="p">(</span><span class="s">&quot;Value of the field &#39;arrayValue&#39;&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//описание получения списка в виде функции</span><span class="w"></span>
-<span class="w">            </span><span class="n">Dto</span><span class="p">::</span><span class="n">arrayValue</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//дополнительные уточняющие параметры            </span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">webTestClient</span><span class="p">(</span><span class="n">send</span><span class="p">(</span><span class="cm">/*параметры запроса*/</span><span class="p">,</span>
+<span class="w">            </span><span class="c1">//так же можно использовать</span>
+<span class="w">            </span><span class="c1">//org.springframework.core.ParameterizedTypeReference</span>
+<span class="w">            </span><span class="n">Dto</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//ожидания</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">            </span><span class="c1">//описание листа, который следует получить</span>
+<span class="w">            </span><span class="p">.</span><span class="na">thenGetArray</span><span class="p">(</span><span class="s">&quot;Value of the field &#39;arrayValue&#39;&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="c1">//описание получения списка в виде функции</span>
+<span class="w">            </span><span class="n">Dto</span><span class="p">::</span><span class="n">arrayValue</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//дополнительные уточняющие параметры            </span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <details class="summary-">
-<summary>Уточняющие параметры шага, который возвращает массив. Шаг не предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать</span><span class="w"></span>
-<span class="c1">//каждый элемент результирующего массива.</span><span class="w"></span>
-<span class="c1">// Так же доступны criteriaOr(criteria...),</span><span class="w"></span>
-<span class="c1">// criteriaOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// criteriaNot(criteria...)</span><span class="w"></span>
-<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;каждый элемент, который попадет в результирующий массив&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Можно указать, что должно быть выброшено исключение,</span><span class="w"></span>
-<span class="c1">// если непустой массив не удалось получить (не было ни одного элемента,</span><span class="w"></span>
-<span class="c1">//который бы соответствовал перечисленным критериям,</span><span class="w"></span>
-<span class="c1">// или непустой массив просто не был получен)</span><span class="w"></span>
-<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span><span class="w"></span>
-<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//1. можно указать сколько объектов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//нужно вернуть</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnArrayOfLength</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//2. можно указать, до элемента с каким индексом</span><span class="w"></span>
-<span class="c1">//нужно собрать результирующие элементы,</span><span class="w"></span>
-<span class="c1">//индекс - индекс объекта в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnBeforeIndex</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//.returnAfterIndex(8) либо после какого элемента</span><span class="w"></span>
-<span class="c1">//----------------------------------------------</span><span class="w"></span>
-<span class="c1">//3. Либо можно перечислить индексы элементов,</span><span class="w"></span>
-<span class="c1">// которые следует вернуть.</span><span class="w"></span>
-<span class="c1">//Индексы - индексы объектов в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnItemsOfIndexes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-----------------------------------------------</span><span class="w"></span>
-<span class="c1">//4. можно указать, при достижении какого количества</span><span class="w"></span>
-<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//должен быть возвращен результат</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnIfEntireLength</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//5. можно указать, при достижении каких условий,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать массив ВСЕХ объектов,</span><span class="w"></span>
-<span class="c1">//соответствующих критериям,</span><span class="w"></span>
-<span class="c1">//можно возвращать результирующий массив/суб-массив</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span><span class="w"></span>
-<span class="c1">// returnOnConditionOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// returnOnConditionNot(criteria...)</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span><span class="w"></span>
-<span class="c1">//или весь суб-массив подходящих по критериям элементов,</span><span class="w"></span>
-<span class="c1">// который должен вернуться как результат,</span><span class="w"></span>
-<span class="c1">// не соответствует каким-то критериям -</span><span class="w"></span>
-<span class="c1">// будет выброшено исключение с подробным описанием</span><span class="w"></span>
+<summary>Уточняющие параметры шага, который возвращает массив. Шаг не предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span>
+<span class="c1">//которым должен соответствовать</span>
+<span class="c1">//каждый элемент результирующего массива.</span>
+<span class="c1">// Так же доступны criteriaOr(criteria...),</span>
+<span class="c1">// criteriaOnlyOne(criteria...)</span>
+<span class="c1">// criteriaNot(criteria...)</span>
+<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="s">&quot;каждый элемент, который попадет в результирующий массив&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Можно указать, что должно быть выброшено исключение,</span>
+<span class="c1">// если непустой массив не удалось получить (не было ни одного элемента,</span>
+<span class="c1">//который бы соответствовал перечисленным критериям,</span>
+<span class="c1">// или непустой массив просто не был получен)</span>
+<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span>
+<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//1. можно указать сколько объектов,</span>
+<span class="c1">//которые соответствуют критериям,</span>
+<span class="c1">//нужно вернуть</span>
+<span class="p">.</span><span class="na">returnArrayOfLength</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//2. можно указать, до элемента с каким индексом</span>
+<span class="c1">//нужно собрать результирующие элементы,</span>
+<span class="c1">//индекс - индекс объекта в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnBeforeIndex</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="c1">//.returnAfterIndex(8) либо после какого элемента</span>
+<span class="c1">//----------------------------------------------</span>
+<span class="c1">//3. Либо можно перечислить индексы элементов,</span>
+<span class="c1">// которые следует вернуть.</span>
+<span class="c1">//Индексы - индексы объектов в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnItemsOfIndexes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span>
+<span class="c1">//-----------------------------------------------</span>
+<span class="c1">//4. можно указать, при достижении какого количества</span>
+<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span>
+<span class="c1">//должен быть возвращен результат</span>
+<span class="p">.</span><span class="na">returnIfEntireLength</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//5. можно указать, при достижении каких условий,</span>
+<span class="c1">//которым должен соответствовать массив ВСЕХ объектов,</span>
+<span class="c1">//соответствующих критериям,</span>
+<span class="c1">//можно возвращать результирующий массив/суб-массив</span>
+<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span>
+<span class="c1">// returnOnConditionOnlyOne(criteria...)</span>
+<span class="c1">// returnOnConditionNot(criteria...)</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span>
+<span class="c1">//или весь суб-массив подходящих по критериям элементов,</span>
+<span class="c1">// который должен вернуться как результат,</span>
+<span class="c1">// не соответствует каким-то критериям -</span>
+<span class="c1">// будет выброшено исключение с подробным описанием</span>
 </pre></div>
 </div>
 </details></section>
 <section id="iterable">
 <h3>Элемент Iterable<a class="headerlink" href="#iterable" title="Permalink to this heading">#</a></h3>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">WebTestClientContext</span><span class="p">.</span><span class="na">webTestClient</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span>
+<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span>
+<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">WebTestClientContext</span><span class="p">.</span><span class="na">webTestClient</span><span class="p">;</span>
 
-<span class="nd">@SpringBootTest</span><span class="w"></span>
-<span class="nd">@AutoConfigureWebTestClient</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@SpringBootTest</span>
+<span class="nd">@AutoConfigureWebTestClient</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">webTestClient</span><span class="p">(</span><span class="n">send</span><span class="p">(</span><span class="cm">/*параметры запроса*/</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//так же можно использовать</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//org.springframework.core.ParameterizedTypeReference</span><span class="w"></span>
-<span class="w">            </span><span class="n">Dto</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//ожидания</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//описание объекта, который следует получить</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">thenGetValueFromIterable</span><span class="p">(</span><span class="s">&quot;A value from &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;the field &#39;listValue&#39;&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//описание получения списка в виде функции</span><span class="w"></span>
-<span class="w">            </span><span class="n">Dto</span><span class="p">::</span><span class="n">listValue</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//дополнительные уточняющие параметры     </span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">webTestClient</span><span class="p">(</span><span class="n">send</span><span class="p">(</span><span class="cm">/*параметры запроса*/</span><span class="p">,</span>
+<span class="w">            </span><span class="c1">//так же можно использовать</span>
+<span class="w">            </span><span class="c1">//org.springframework.core.ParameterizedTypeReference</span>
+<span class="w">            </span><span class="n">Dto</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//ожидания</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">            </span><span class="c1">//описание объекта, который следует получить</span>
+<span class="w">            </span><span class="p">.</span><span class="na">thenGetValueFromIterable</span><span class="p">(</span><span class="s">&quot;A value from &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">            </span><span class="s">&quot;the field &#39;listValue&#39;&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="c1">//описание получения списка в виде функции</span>
+<span class="w">            </span><span class="n">Dto</span><span class="p">::</span><span class="n">listValue</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//дополнительные уточняющие параметры     </span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <details class="summary-iterable">
-<summary>Уточняющие параметры шага, который возвращает элемент Iterable<?>. Шаг не предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать</span><span class="w"></span>
-<span class="c1">//результирующий элемент из набора.</span><span class="w"></span>
-<span class="c1">// Так же доступны criteriaOr(criteria...),</span><span class="w"></span>
-<span class="c1">// criteriaOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// criteriaNot(criteria...)</span><span class="w"></span>
-<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;результирующий элемент из набора&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Можно указать, что должно быть выброшено исключение,</span><span class="w"></span>
-<span class="c1">// если не был получен результирующий элемент (не было ни одного элемента,</span><span class="w"></span>
-<span class="c1">//который бы соответствовал перечисленным критериям,</span><span class="w"></span>
-<span class="c1">// или непустой набор просто не был получен)</span><span class="w"></span>
-<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span><span class="w"></span>
-<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//1. Можно указать индекс элемента, который следует вернуть.</span><span class="w"></span>
-<span class="c1">//Индекс - индекс объекта в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnItemOfIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-----------------------------------------------</span><span class="w"></span>
-<span class="c1">//2. можно указать, при достижении какого количества</span><span class="w"></span>
-<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//должен быть возвращен результат</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//3. можно указать, при достижении каких условий,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать набор ВСЕХ объектов,</span><span class="w"></span>
-<span class="c1">//соответствующих критериям,</span><span class="w"></span>
-<span class="c1">//можно возвращать результирующий элемент</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">iterable</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span><span class="w"></span>
-<span class="c1">// returnOnConditionOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// returnOnConditionNot(criteria...)</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span><span class="w"></span>
-<span class="c1">//или весь набор подходящих по критериям элементов,</span><span class="w"></span>
-<span class="c1">// из которого должен быть взят результат,</span><span class="w"></span>
-<span class="c1">// не соответствует каким-то критериям -</span><span class="w"></span>
-<span class="c1">// будет выброшено исключение с подробным описанием</span><span class="w"></span>
+<summary>Уточняющие параметры шага, который возвращает элемент Iterable<?>. Шаг не предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span>
+<span class="c1">//которым должен соответствовать</span>
+<span class="c1">//результирующий элемент из набора.</span>
+<span class="c1">// Так же доступны criteriaOr(criteria...),</span>
+<span class="c1">// criteriaOnlyOne(criteria...)</span>
+<span class="c1">// criteriaNot(criteria...)</span>
+<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="s">&quot;результирующий элемент из набора&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Можно указать, что должно быть выброшено исключение,</span>
+<span class="c1">// если не был получен результирующий элемент (не было ни одного элемента,</span>
+<span class="c1">//который бы соответствовал перечисленным критериям,</span>
+<span class="c1">// или непустой набор просто не был получен)</span>
+<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span>
+<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//1. Можно указать индекс элемента, который следует вернуть.</span>
+<span class="c1">//Индекс - индекс объекта в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnItemOfIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">//-----------------------------------------------</span>
+<span class="c1">//2. можно указать, при достижении какого количества</span>
+<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span>
+<span class="c1">//должен быть возвращен результат</span>
+<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//3. можно указать, при достижении каких условий,</span>
+<span class="c1">//которым должен соответствовать набор ВСЕХ объектов,</span>
+<span class="c1">//соответствующих критериям,</span>
+<span class="c1">//можно возвращать результирующий элемент</span>
+<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">iterable</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span>
+<span class="c1">// returnOnConditionOnlyOne(criteria...)</span>
+<span class="c1">// returnOnConditionNot(criteria...)</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span>
+<span class="c1">//или весь набор подходящих по критериям элементов,</span>
+<span class="c1">// из которого должен быть взят результат,</span>
+<span class="c1">// не соответствует каким-то критериям -</span>
+<span class="c1">// будет выброшено исключение с подробным описанием</span>
 </pre></div>
 </div>
 </details></section>
 <section id="id4">
 <h3>Элемент массива<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">WebTestClientContext</span><span class="p">.</span><span class="na">webTestClient</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span>
+<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">SendRequestAction</span><span class="p">.</span><span class="na">send</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring</span>
+<span class="w">    </span><span class="p">.</span><span class="na">web</span><span class="p">.</span><span class="na">testclient</span><span class="p">.</span><span class="na">WebTestClientContext</span><span class="p">.</span><span class="na">webTestClient</span><span class="p">;</span>
 
-<span class="nd">@SpringBootTest</span><span class="w"></span>
-<span class="nd">@AutoConfigureWebTestClient</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@SpringBootTest</span>
+<span class="nd">@AutoConfigureWebTestClient</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">webTestClient</span><span class="p">(</span><span class="n">send</span><span class="p">(</span><span class="cm">/*параметры запроса*/</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//так же можно использовать</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//org.springframework.core.ParameterizedTypeReference</span><span class="w"></span>
-<span class="w">            </span><span class="n">Dto</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//ожидания</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//описание объекта, который следует получить</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">thenGetValueFromArray</span><span class="p">(</span><span class="s">&quot;A value from  &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;the field &#39;arrayValue&#39;&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//описание получения списка в виде функции</span><span class="w"></span>
-<span class="w">            </span><span class="n">Dto</span><span class="p">::</span><span class="n">arrayValue</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//дополнительные уточняющие параметры     </span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">webTestClient</span><span class="p">(</span><span class="n">send</span><span class="p">(</span><span class="cm">/*параметры запроса*/</span><span class="p">,</span>
+<span class="w">            </span><span class="c1">//так же можно использовать</span>
+<span class="w">            </span><span class="c1">//org.springframework.core.ParameterizedTypeReference</span>
+<span class="w">            </span><span class="n">Dto</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//ожидания</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">            </span><span class="c1">//описание объекта, который следует получить</span>
+<span class="w">            </span><span class="p">.</span><span class="na">thenGetValueFromArray</span><span class="p">(</span><span class="s">&quot;A value from  &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">            </span><span class="s">&quot;the field &#39;arrayValue&#39;&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="c1">//описание получения списка в виде функции</span>
+<span class="w">            </span><span class="n">Dto</span><span class="p">::</span><span class="n">arrayValue</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//дополнительные уточняющие параметры     </span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <details class="summary-">
-<summary>Уточняющие параметры шага, который возвращает элемент массива. Шаг не предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать</span><span class="w"></span>
-<span class="c1">//результирующий элемент из массива.</span><span class="w"></span>
-<span class="c1">// Так же доступны criteriaOr(criteria...),</span><span class="w"></span>
-<span class="c1">// criteriaOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// criteriaNot(criteria...)</span><span class="w"></span>
-<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;результирующий элемент из массива&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//-----------------------------------------------</span><span class="w"></span>
-<span class="c1">//Можно указать, что должно быть выброшено исключение,</span><span class="w"></span>
-<span class="c1">// если не был получен результирующий элемент (не было ни одного элемента,</span><span class="w"></span>
-<span class="c1">// который бы соответствовал перечисленным критериям,</span><span class="w"></span>
-<span class="c1">// или непустой массив просто не был получен)</span><span class="w"></span>
-<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span><span class="w"></span>
-<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span><span class="w"></span>
-<span class="c1">//-----------------------------------------------</span><span class="w"></span>
-<span class="c1">//1. Можно указать индекс элемента, который следует вернуть.</span><span class="w"></span>
-<span class="c1">//Индекс - индекс объекта в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnItemOfIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-----------------------------------------------</span><span class="w"></span>
-<span class="c1">//2. можно указать, при достижении какого количества</span><span class="w"></span>
-<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//должен быть возвращен результат</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnIfEntireLength</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//-----------------------------------------------</span><span class="w"></span>
-<span class="c1">//3. можно указать, при достижении каких условий,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать набор ВСЕХ объектов,</span><span class="w"></span>
-<span class="c1">//соответствующих критериям,</span><span class="w"></span>
-<span class="c1">//можно возвращать результирующий элемент</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span><span class="w"></span>
-<span class="c1">// returnOnConditionOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// returnOnConditionNot(criteria...)</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span><span class="w"></span>
-<span class="c1">//или весь суб-массив подходящих по критериям элементов,</span><span class="w"></span>
-<span class="c1">// из которого должен быть взят результат,</span><span class="w"></span>
-<span class="c1">// не соответствует каким-то критериям -</span><span class="w"></span>
-<span class="c1">// будет выброшено исключение с подробным описанием</span><span class="w"></span>
+<summary>Уточняющие параметры шага, который возвращает элемент массива. Шаг не предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span>
+<span class="c1">//которым должен соответствовать</span>
+<span class="c1">//результирующий элемент из массива.</span>
+<span class="c1">// Так же доступны criteriaOr(criteria...),</span>
+<span class="c1">// criteriaOnlyOne(criteria...)</span>
+<span class="c1">// criteriaNot(criteria...)</span>
+<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="s">&quot;результирующий элемент из массива&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//-----------------------------------------------</span>
+<span class="c1">//Можно указать, что должно быть выброшено исключение,</span>
+<span class="c1">// если не был получен результирующий элемент (не было ни одного элемента,</span>
+<span class="c1">// который бы соответствовал перечисленным критериям,</span>
+<span class="c1">// или непустой массив просто не был получен)</span>
+<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span>
+<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span>
+<span class="c1">//-----------------------------------------------</span>
+<span class="c1">//1. Можно указать индекс элемента, который следует вернуть.</span>
+<span class="c1">//Индекс - индекс объекта в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnItemOfIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">//-----------------------------------------------</span>
+<span class="c1">//2. можно указать, при достижении какого количества</span>
+<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span>
+<span class="c1">//должен быть возвращен результат</span>
+<span class="p">.</span><span class="na">returnIfEntireLength</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+<span class="c1">//-----------------------------------------------</span>
+<span class="c1">//3. можно указать, при достижении каких условий,</span>
+<span class="c1">//которым должен соответствовать набор ВСЕХ объектов,</span>
+<span class="c1">//соответствующих критериям,</span>
+<span class="c1">//можно возвращать результирующий элемент</span>
+<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span>
+<span class="c1">// returnOnConditionOnlyOne(criteria...)</span>
+<span class="c1">// returnOnConditionNot(criteria...)</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span>
+<span class="c1">//или весь суб-массив подходящих по критериям элементов,</span>
+<span class="c1">// из которого должен быть взят результат,</span>
+<span class="c1">// не соответствует каким-то критериям -</span>
+<span class="c1">// будет выброшено исключение с подробным описанием</span>
 </pre></div>
 </div>
 </details></section>

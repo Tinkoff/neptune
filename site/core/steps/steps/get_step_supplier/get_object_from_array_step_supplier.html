@@ -464,34 +464,34 @@
         <article role="main">
           <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Шаг, который возвращает непустой (!=null) объект из массива</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.function.Function</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.function.Function</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">extends</span><span class="w"></span>
-<span class="w">        </span><span class="n">SequentialGetStepSupplier</span><span class="w"></span>
-<span class="w">        </span><span class="p">.</span><span class="na">GetObjectFromArrayStepSupplier</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">extends</span>
+<span class="w">        </span><span class="n">SequentialGetStepSupplier</span>
+<span class="w">        </span><span class="p">.</span><span class="na">GetObjectFromArrayStepSupplier</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyGetStepSupplier</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">this</span><span class="p">(</span><span class="n">myTestContext</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//описываем функцию,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//которая выполняет действия,</span><span class="w"></span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="c1">//и возвращает массив,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//откуда будет взят подходящий по критериям</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//элемент</span><span class="w"></span>
-<span class="w">        </span><span class="p">});</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyGetStepSupplier</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">this</span><span class="p">(</span><span class="n">myTestContext</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//описываем функцию,</span>
+<span class="w">            </span><span class="c1">//которая выполняет действия,</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="c1">//и возвращает массив,</span>
+<span class="w">            </span><span class="c1">//откуда будет взят подходящий по критериям</span>
+<span class="w">            </span><span class="c1">//элемент</span>
+<span class="w">        </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyGetStepSupplier</span><span class="p">(</span><span class="n">Function</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">[]&gt;</span><span class="w"> </span><span class="n">originalFunction</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//либо передаем функцию снаружи</span><span class="w"></span>
-<span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="n">originalFunction</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyGetStepSupplier</span><span class="p">(</span><span class="n">Function</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">[]&gt;</span><span class="w"> </span><span class="n">originalFunction</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//либо передаем функцию снаружи</span>
+<span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="n">originalFunction</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="c1">//при необходимости, можно сделать доступными методы timeOut и pollingInterval</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//при необходимости, можно переопределить методы onStart, onSuccess, onFailure</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//при необходимости, можно сделать доступными методы timeOut и pollingInterval</span>
+<span class="w">    </span><span class="c1">//при необходимости, можно переопределить методы onStart, onSuccess, onFailure</span>
 
-<span class="w">    </span><span class="c1">//добавляем свои методы, если нужны</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//добавляем свои методы, если нужны</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>

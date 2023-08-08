@@ -467,68 +467,68 @@
 <p>Настройка предоставляет свойства, которые используются kafka клиентом для
 создания инстанса <code class="docutils literal notranslate"><span class="pre">org.apache.kafka.clients.consumer.KafkaConsumer</span></code>.</p>
 <p>Примеры properties можно посмотреть <a class="reference external" href="https://kafka.apache.org/documentation/#consumerconfigs">тут</a></p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.object.ObjectPropertySupplier</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.object.ObjectPropertySupplier</span><span class="p">;</span>
 
-<span class="c1">//Создаем поставщика, который будет поставлять объект класса Properties</span><span class="w"></span>
+<span class="c1">//Создаем поставщика, который будет поставлять объект класса Properties</span>
 <span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyConsumerPropertiesSupplier</span><span class="w"> </span>
-<span class="w">    </span><span class="kd">implements</span><span class="w"> </span><span class="n">ObjectPropertySupplier</span><span class="o">&lt;</span><span class="n">Properties</span><span class="p">,</span><span class="w"> </span><span class="n">Supplier</span><span class="o">&lt;</span><span class="n">Properties</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kd">implements</span><span class="w"> </span><span class="n">ObjectPropertySupplier</span><span class="o">&lt;</span><span class="n">Properties</span><span class="p">,</span><span class="w"> </span><span class="n">Supplier</span><span class="o">&lt;</span><span class="n">Properties</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Properties</span><span class="w"> </span><span class="nf">get</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//Тут создается объект, который будет использован клиентом</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Properties</span><span class="w"> </span><span class="nf">get</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//Тут создается объект, который будет использован клиентом</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c">#Значение свойства указывается так</span><span class="w"></span>
-<span class="na">KAFKA_CONSUMER_PROPERTIES</span><span class="o">=</span><span class="s">org.my.pack.MyConsumerPropertiesSupplier</span><span class="w"></span>
+<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c1">#Значение свойства указывается так</span>
+<span class="na">KAFKA_CONSUMER_PROPERTIES</span><span class="o">=</span><span class="s">org.my.pack.MyConsumerPropertiesSupplier</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.properties</span><span class="w"></span>
-<span class="w">        </span><span class="p">.</span><span class="na">DefaultKafkaProperties</span><span class="p">.</span><span class="na">KAFKA_CONSUMER_PROPERTIES</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.properties</span>
+<span class="w">        </span><span class="p">.</span><span class="na">DefaultKafkaProperties</span><span class="p">.</span><span class="na">KAFKA_CONSUMER_PROPERTIES</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeClass</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeClass</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someVoid</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//пример доступа до значения свойства</span><span class="w"></span>
-<span class="w">        </span><span class="n">Properties</span><span class="w"> </span><span class="n">consumerProperties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">KAFKA_CONSUMER_PROPERTIES</span><span class="p">.</span><span class="na">get</span><span class="p">();</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someVoid</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//пример доступа до значения свойства</span>
+<span class="w">        </span><span class="n">Properties</span><span class="w"> </span><span class="n">consumerProperties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">KAFKA_CONSUMER_PROPERTIES</span><span class="p">.</span><span class="na">get</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Ниже пример, если модуль используется для тестирования Spring-приложения вместе с
 инструментами <a class="reference external" href="https://docs.spring.io/spring-framework/docs/current/reference/html/testing.html">Spring Test</a></p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.object.ObjectPropertySupplier</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.object.ObjectPropertySupplier</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.boot.starter.application</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">contexts</span><span class="p">.</span><span class="na">CurrentApplicationContextTestExecutionListener</span><span class="p">.</span><span class="na">getCurrentApplicationContext</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.boot.starter.application</span>
+<span class="w">    </span><span class="p">.</span><span class="na">contexts</span><span class="p">.</span><span class="na">CurrentApplicationContextTestExecutionListener</span><span class="p">.</span><span class="na">getCurrentApplicationContext</span><span class="p">;</span>
 
 
-<span class="c1">//Создаем поставщика, который будет поставлять объект класса Properties</span><span class="w"></span>
+<span class="c1">//Создаем поставщика, который будет поставлять объект класса Properties</span>
 <span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MySpringConsumerPropertiesSupplier</span><span class="w"> </span>
-<span class="w">    </span><span class="kd">implements</span><span class="w"> </span><span class="n">ObjectPropertySupplier</span><span class="o">&lt;</span><span class="n">Properties</span><span class="p">,</span><span class="w"> </span><span class="n">Supplier</span><span class="o">&lt;</span><span class="n">Properties</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kd">implements</span><span class="w"> </span><span class="n">ObjectPropertySupplier</span><span class="o">&lt;</span><span class="n">Properties</span><span class="p">,</span><span class="w"> </span><span class="n">Supplier</span><span class="o">&lt;</span><span class="n">Properties</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Properties</span><span class="w"> </span><span class="nf">get</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//текущий контекст приложения</span><span class="w"></span>
-<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getCurrentApplicationContext</span><span class="p">();</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//Далее извлекаем необходимые бины,</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//при помощи которых можно получить свойства для консъюмера.</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Properties</span><span class="w"> </span><span class="nf">get</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//текущий контекст приложения</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getCurrentApplicationContext</span><span class="p">();</span>
+<span class="w">        </span><span class="c1">//Далее извлекаем необходимые бины,</span>
+<span class="w">        </span><span class="c1">//при помощи которых можно получить свойства для консъюмера.</span>
 
-<span class="w">        </span><span class="c1">//....</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//алгоритм получения бинов от контекста приложения </span><span class="w"></span>
+<span class="w">        </span><span class="c1">//....</span>
+<span class="w">        </span><span class="c1">//алгоритм получения бинов от контекста приложения </span>
 <span class="w">        </span>
-<span class="w">        </span><span class="c1">//То, что нужно заполнить и вернуть</span><span class="w"></span>
-<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">properties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Properties</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//То, что нужно заполнить и вернуть</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">properties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Properties</span><span class="p">();</span>
 <span class="w">        </span>
-<span class="w">        </span><span class="c1">//Логика получения свойств консъюмера и заполнения</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//результирующего объекта properties</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//....</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//какая-то дополнительная логика</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//....</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">properties</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//Логика получения свойств консъюмера и заполнения</span>
+<span class="w">        </span><span class="c1">//результирующего объекта properties</span>
+<span class="w">        </span><span class="c1">//....</span>
+<span class="w">        </span><span class="c1">//какая-то дополнительная логика</span>
+<span class="w">        </span><span class="c1">//....</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">properties</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Полезная ссылка: <a class="reference internal" href="../../../spring/spring.boot.sterter.html"><span class="doc std std-doc">Neptune Spring boot starter</span></a></p>

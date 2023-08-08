@@ -470,43 +470,43 @@
 <h2>Связывание без учета наследования<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
 <div class="literal-block-wrapper docutils container" id="id5">
 <div class="code-block-caption"><span class="caption-text">Продуктовый код</span><a class="headerlink" href="#id5" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">A</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">     </span><span class="c1">//реализация и логика</span><span class="w"></span>
-<span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">A</span><span class="w"> </span><span class="p">{</span>
+<span class="w">     </span><span class="c1">//реализация и логика</span>
+<span class="w"> </span><span class="p">}</span>
 
-<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">B</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">     </span><span class="c1">//реализация и логика</span><span class="w"></span>
-<span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">B</span><span class="w"> </span><span class="p">{</span>
+<span class="w">     </span><span class="c1">//реализация и логика</span>
+<span class="w"> </span><span class="p">}</span>
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id6">
 <div class="code-block-caption"><span class="caption-text">Связь между тестовым и продуктовыми классами</span><a class="headerlink" href="#id6" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.binding.Bind</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.binding.Bind</span><span class="p">;</span>
 
-<span class="w"> </span><span class="nd">@Bind</span><span class="p">(</span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w"> </span><span class="nd">@Bind</span><span class="p">(</span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">B</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">C</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//Данный класс как-то надо привязать к А и B</span><span class="w"></span>
-<span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w"> </span><span class="nd">@Bind</span><span class="p">(</span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w"> </span><span class="nd">@Bind</span><span class="p">(</span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">B</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">C</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//Данный класс как-то надо привязать к А и B</span>
+<span class="w"> </span><span class="p">}</span>
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id7">
 <div class="code-block-caption"><span class="caption-text">Связь между полем тестового класса и продуктовыми классами</span><a class="headerlink" href="#id7" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.binding.Bind</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.binding.Bind</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">D</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">D</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">   </span><span class="nd">@Bind</span><span class="p">(</span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">   </span><span class="nd">@Bind</span><span class="p">(</span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">B</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">   </span><span class="kd">private</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">f</span><span class="p">;</span><span class="w"> </span><span class="c1">//Данное поле как-то надо привязать к А и B</span><span class="w"></span>
-<span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">   </span><span class="nd">@Bind</span><span class="p">(</span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">   </span><span class="nd">@Bind</span><span class="p">(</span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">B</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">   </span><span class="kd">private</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">f</span><span class="p">;</span><span class="w"> </span><span class="c1">//Данное поле как-то надо привязать к А и B</span>
+<span class="w"> </span><span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -515,31 +515,31 @@
 <h2>Связывание с учетом наследования<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
 <div class="literal-block-wrapper docutils container" id="id8">
 <div class="code-block-caption"><span class="caption-text">Продуктовый код</span><a class="headerlink" href="#id8" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">E</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">   </span><span class="c1">//реализация и логика</span><span class="w"></span>
-<span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">E</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="c1">//реализация и логика</span>
+<span class="w"> </span><span class="p">}</span>
 
-<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">F</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">   </span><span class="c1">//реализация и логика</span><span class="w"></span>
-<span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">F</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="c1">//реализация и логика</span>
+<span class="w"> </span><span class="p">}</span>
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id9">
 <div class="code-block-caption"><span class="caption-text">Связь. Пример</span><a class="headerlink" href="#id9" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.binding.Bind</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.binding.Bind</span><span class="p">;</span>
 
-<span class="w"> </span><span class="nd">@Bind</span><span class="p">(</span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"></span>
-<span class="w">         </span><span class="n">withSubclasses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="c1">//привязка к классам-наследникам</span><span class="w"></span>
-<span class="w">         </span><span class="c1">//можно перечислить, какие наследники класса A должны быть исключены</span><span class="w"></span>
-<span class="w">         </span><span class="n">exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">E</span><span class="p">.</span><span class="na">class</span><span class="p">})</span><span class="w"></span>
-<span class="w"> </span><span class="c1">//точно так же можно аннотировать поля</span><span class="w"></span>
-<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">G</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w"> </span><span class="nd">@Bind</span><span class="p">(</span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A</span><span class="p">.</span><span class="na">class</span><span class="p">,</span>
+<span class="w">         </span><span class="n">withSubclasses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="c1">//привязка к классам-наследникам</span>
+<span class="w">         </span><span class="c1">//можно перечислить, какие наследники класса A должны быть исключены</span>
+<span class="w">         </span><span class="n">exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">E</span><span class="p">.</span><span class="na">class</span><span class="p">})</span>
+<span class="w"> </span><span class="c1">//точно так же можно аннотировать поля</span>
+<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">G</span><span class="w"> </span><span class="p">{</span>
+<span class="w"> </span><span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -548,22 +548,22 @@
 <h2>Пример получения связанных элементов кода<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h2>
 <div class="literal-block-wrapper docutils container" id="id10">
 <div class="code-block-caption"><span class="caption-text">Получение связанных элемента кода</span><a class="headerlink" href="#id10" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">java.lang.reflect.AnnotatedElement</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">java.lang.reflect.AnnotatedElement</span><span class="p">;</span>
+<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.binding.Bind.DefaultBindReader.getBoundTo</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.binding.Bind.DefaultBindReader.getBoundTo</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeCode</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeCode</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">   </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someMethod</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">     </span><span class="c1">//получает список связанных классов и полей</span><span class="w"></span>
-<span class="w">     </span><span class="n">List</span><span class="o">&lt;</span><span class="n">AnnotatedElement</span><span class="o">&gt;</span><span class="w"> </span><span class="n">annotatedElements</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getBoundTo</span><span class="p">(</span><span class="n">A</span><span class="p">.</span><span class="na">class</span><span class="p">);</span><span class="w"></span>
+<span class="w">   </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someMethod</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">     </span><span class="c1">//получает список связанных классов и полей</span>
+<span class="w">     </span><span class="n">List</span><span class="o">&lt;</span><span class="n">AnnotatedElement</span><span class="o">&gt;</span><span class="w"> </span><span class="n">annotatedElements</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getBoundTo</span><span class="p">(</span><span class="n">A</span><span class="p">.</span><span class="na">class</span><span class="p">);</span>
 
-<span class="w">     </span><span class="c1">//Обработки связей реализована для каждого модуля Neptune по-своему</span><span class="w"></span>
-<span class="w">   </span><span class="p">}</span><span class="w"></span>
-<span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="c1">//Обработки связей реализована для каждого модуля Neptune по-своему</span>
+<span class="w">   </span><span class="p">}</span>
+<span class="w"> </span><span class="p">}</span>
 </pre></div>
 </div>
 </div>

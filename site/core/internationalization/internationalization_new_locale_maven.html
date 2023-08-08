@@ -465,38 +465,38 @@
           <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">maven. build/plugins</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;plugin&gt;</span>
-     <span class="nt">&lt;groupId&gt;</span>org.codehaus.mojo<span class="nt">&lt;/groupId&gt;</span>
-     <span class="nt">&lt;artifactId&gt;</span>exec-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
-     <span class="nt">&lt;version&gt;</span>3.0.0<span class="nt">&lt;/version&gt;</span>
-     <span class="nt">&lt;executions&gt;</span>
-          <span class="nt">&lt;execution&gt;</span>
-              <span class="nt">&lt;id&gt;</span>generate properties<span class="nt">&lt;/id&gt;</span>
-              <span class="nt">&lt;phase&gt;</span>compile<span class="nt">&lt;/phase&gt;</span>
-              <span class="nt">&lt;goals&gt;</span>
-                  <span class="nt">&lt;goal&gt;</span>java<span class="nt">&lt;/goal&gt;</span>
-              <span class="nt">&lt;/goals&gt;</span>
-              <span class="nt">&lt;configuration&gt;</span>
-                  <span class="nt">&lt;mainClass&gt;</span>ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator<span class="nt">&lt;/mainClass&gt;</span>
-                  <span class="nt">&lt;arguments&gt;</span>
-                       <span class="cm">&lt;!--Нужная локаль--&gt;</span>
-                       <span class="nt">&lt;argument&gt;</span>de_DE<span class="nt">&lt;/argument&gt;</span>
-                       <span class="cm">&lt;!--или ${basedir}/src/main/resources--&gt;</span>
-                       <span class="cm">&lt;!--или любая другая директория--&gt;</span>
-                       <span class="nt">&lt;argument&gt;</span>${basedir}/src/test/resources<span class="nt">&lt;/argument&gt;</span>
-                       <span class="cm">&lt;!--кастомный бандл (true) или дефолтный (false)--&gt;</span>
-                       <span class="cm">&lt;!--В данном случае false--&gt;</span>
-                       <span class="nt">&lt;argument&gt;</span>false<span class="nt">&lt;/argument&gt;</span>
-                       <span class="cm">&lt;!--Имя бандла, который надо сформировать--&gt;</span>
-                       <span class="cm">&lt;!--У каждого модуля Neptune уникальный набор имен бандлов--&gt;</span>
-                       <span class="cm">&lt;!--Имена бандлов можно не указывать, тогда сформируются бандлы для--&gt;</span>
-                       <span class="cm">&lt;!--всех подключенных модулей--&gt;</span>
-                       <span class="nt">&lt;argument&gt;</span>name_of_the_module<span class="nt">&lt;/argument&gt;</span>
-                       <span class="cm">&lt;!--и так далее, имена нужных бандлов--&gt;</span>
-                       <span class="nt">&lt;argument&gt;</span>name_of_the_modul2<span class="nt">&lt;/argument&gt;</span>
-                  <span class="nt">&lt;/arguments&gt;</span>
-              <span class="nt">&lt;/configuration&gt;</span>
-          <span class="nt">&lt;/execution&gt;</span>
-     <span class="nt">&lt;/executions&gt;</span>
+<span class="w">     </span><span class="nt">&lt;groupId&gt;</span>org.codehaus.mojo<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">     </span><span class="nt">&lt;artifactId&gt;</span>exec-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">     </span><span class="nt">&lt;version&gt;</span>3.0.0<span class="nt">&lt;/version&gt;</span>
+<span class="w">     </span><span class="nt">&lt;executions&gt;</span>
+<span class="w">          </span><span class="nt">&lt;execution&gt;</span>
+<span class="w">              </span><span class="nt">&lt;id&gt;</span>generate<span class="w"> </span>properties<span class="nt">&lt;/id&gt;</span>
+<span class="w">              </span><span class="nt">&lt;phase&gt;</span>compile<span class="nt">&lt;/phase&gt;</span>
+<span class="w">              </span><span class="nt">&lt;goals&gt;</span>
+<span class="w">                  </span><span class="nt">&lt;goal&gt;</span>java<span class="nt">&lt;/goal&gt;</span>
+<span class="w">              </span><span class="nt">&lt;/goals&gt;</span>
+<span class="w">              </span><span class="nt">&lt;configuration&gt;</span>
+<span class="w">                  </span><span class="nt">&lt;mainClass&gt;</span>ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator<span class="nt">&lt;/mainClass&gt;</span>
+<span class="w">                  </span><span class="nt">&lt;arguments&gt;</span>
+<span class="w">                       </span><span class="cm">&lt;!--Нужная локаль--&gt;</span>
+<span class="w">                       </span><span class="nt">&lt;argument&gt;</span>de_DE<span class="nt">&lt;/argument&gt;</span>
+<span class="w">                       </span><span class="cm">&lt;!--или ${basedir}/src/main/resources--&gt;</span>
+<span class="w">                       </span><span class="cm">&lt;!--или любая другая директория--&gt;</span>
+<span class="w">                       </span><span class="nt">&lt;argument&gt;</span>${basedir}/src/test/resources<span class="nt">&lt;/argument&gt;</span>
+<span class="w">                       </span><span class="cm">&lt;!--кастомный бандл (true) или дефолтный (false)--&gt;</span>
+<span class="w">                       </span><span class="cm">&lt;!--В данном случае false--&gt;</span>
+<span class="w">                       </span><span class="nt">&lt;argument&gt;</span>false<span class="nt">&lt;/argument&gt;</span>
+<span class="w">                       </span><span class="cm">&lt;!--Имя бандла, который надо сформировать--&gt;</span>
+<span class="w">                       </span><span class="cm">&lt;!--У каждого модуля Neptune уникальный набор имен бандлов--&gt;</span>
+<span class="w">                       </span><span class="cm">&lt;!--Имена бандлов можно не указывать, тогда сформируются бандлы для--&gt;</span>
+<span class="w">                       </span><span class="cm">&lt;!--всех подключенных модулей--&gt;</span>
+<span class="w">                       </span><span class="nt">&lt;argument&gt;</span>name_of_the_module<span class="nt">&lt;/argument&gt;</span>
+<span class="w">                       </span><span class="cm">&lt;!--и так далее, имена нужных бандлов--&gt;</span>
+<span class="w">                       </span><span class="nt">&lt;argument&gt;</span>name_of_the_modul2<span class="nt">&lt;/argument&gt;</span>
+<span class="w">                  </span><span class="nt">&lt;/arguments&gt;</span>
+<span class="w">              </span><span class="nt">&lt;/configuration&gt;</span>
+<span class="w">          </span><span class="nt">&lt;/execution&gt;</span>
+<span class="w">     </span><span class="nt">&lt;/executions&gt;</span>
 <span class="nt">&lt;/plugin&gt;</span>
 </pre></div>
 </div>

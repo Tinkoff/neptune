@@ -466,97 +466,97 @@
 <h1>Для Throwable<a class="headerlink" href="#throwable" title="Permalink to this heading">#</a></h1>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Примеры использования матчера для проверки сообщения</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.MatcherAssert.assertThat</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.throwable</span><span class="w"></span>
-<span class="w">     </span><span class="p">.</span><span class="na">ThrowableMessageMatcher</span><span class="p">.</span><span class="na">throwableHasMessage</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.*</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.MatcherAssert.assertThat</span><span class="p">;</span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.throwable</span>
+<span class="w">     </span><span class="p">.</span><span class="na">ThrowableMessageMatcher</span><span class="p">.</span><span class="na">throwableHasMessage</span><span class="p">;</span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.*</span><span class="p">;</span>
 
-<span class="w"> </span><span class="c1">//пример использования</span><span class="w"></span>
-<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w"> </span><span class="c1">//пример использования</span>
+<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Проверка сообщения выброшенного исключения&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="n">Exception</span><span class="w"> </span><span class="n">someException</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="c1">//ловим исключение</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Проверка сообщения выброшенного исключения&quot;</span><span class="p">)</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">Exception</span><span class="w"> </span><span class="n">someException</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="c1">//ловим исключение</span>
 
-<span class="w">         </span><span class="c1">//проверка сообщения на строгое соответствие</span><span class="w"></span>
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">someException</span><span class="p">,</span><span class="w"> </span><span class="n">throwableHasMessage</span><span class="p">(</span><span class="s">&quot;Some message&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">         </span><span class="c1">//проверка сообщения на строгое соответствие</span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">someException</span><span class="p">,</span><span class="w"> </span><span class="n">throwableHasMessage</span><span class="p">(</span><span class="s">&quot;Some message&quot;</span><span class="p">));</span>
 
-<span class="w">         </span><span class="c1">//проверка сообщения на соответствие одному-нескольким переданным критериям</span><span class="w"></span>
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">someException</span><span class="p">,</span><span class="w"> </span><span class="n">startsWith</span><span class="p">(</span><span class="s">&quot;Some&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">endsWith</span><span class="p">(</span><span class="s">&quot;message&quot;</span><span class="p">));</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
-<span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">         </span><span class="c1">//проверка сообщения на соответствие одному-нескольким переданным критериям</span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">someException</span><span class="p">,</span><span class="w"> </span><span class="n">startsWith</span><span class="p">(</span><span class="s">&quot;Some&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">endsWith</span><span class="p">(</span><span class="s">&quot;message&quot;</span><span class="p">));</span>
+<span class="w">     </span><span class="p">}</span>
+<span class="w"> </span><span class="p">}</span>
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Примеры использования матчера для проверки причины</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.io.IOException</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.io.IOException</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.MatcherAssert.assertThat</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.throwable</span><span class="w"></span>
-<span class="w">     </span><span class="p">.</span><span class="na">ThrowableIsCausedByMatcher</span><span class="p">.</span><span class="na">hasRootCause</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.throwable</span><span class="w"></span>
-<span class="w">     </span><span class="p">.</span><span class="na">ThrowableIsCausedByMatcher</span><span class="p">.</span><span class="na">hasPrimaryCause</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.throwable</span><span class="w"></span>
-<span class="w">     </span><span class="p">.</span><span class="na">ThrowableMessageMatcher</span><span class="p">.</span><span class="na">throwableHasMessage</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.*</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.MatcherAssert.assertThat</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.throwable</span>
+<span class="w">     </span><span class="p">.</span><span class="na">ThrowableIsCausedByMatcher</span><span class="p">.</span><span class="na">hasRootCause</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.throwable</span>
+<span class="w">     </span><span class="p">.</span><span class="na">ThrowableIsCausedByMatcher</span><span class="p">.</span><span class="na">hasPrimaryCause</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.throwable</span>
+<span class="w">     </span><span class="p">.</span><span class="na">ThrowableMessageMatcher</span><span class="p">.</span><span class="na">throwableHasMessage</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.*</span><span class="p">;</span>
 
-<span class="c1">//пример использования</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="c1">//пример использования</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">  </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Проверка самой первой (взятой методом .getCause()) &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">          </span><span class="s">&quot;причины возникновения исключения&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">Exception</span><span class="w"> </span><span class="n">someException</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="c1">//ловим исключение</span><span class="w"></span>
+<span class="w">  </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Проверка самой первой (взятой методом .getCause()) &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">          </span><span class="s">&quot;причины возникновения исключения&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Exception</span><span class="w"> </span><span class="n">someException</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="c1">//ловим исключение</span>
 
-<span class="w">    </span><span class="c1">//проверка соответствия причины выброшенного исключения</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//одному-нескольким переданным критериям</span><span class="w"></span>
-<span class="w">    </span><span class="n">assertThat</span><span class="p">(</span><span class="n">someException</span><span class="p">,</span><span class="w"> </span><span class="n">hasPrimaryCause</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">IOException</span><span class="p">.</span><span class="na">class</span><span class="p">),</span><span class="w"></span>
-<span class="w">            </span><span class="n">throwableHasMessage</span><span class="p">(</span><span class="s">&quot;Some message&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//проверка соответствия причины выброшенного исключения</span>
+<span class="w">    </span><span class="c1">//одному-нескольким переданным критериям</span>
+<span class="w">    </span><span class="n">assertThat</span><span class="p">(</span><span class="n">someException</span><span class="p">,</span><span class="w"> </span><span class="n">hasPrimaryCause</span><span class="p">(</span>
+<span class="w">            </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">IOException</span><span class="p">.</span><span class="na">class</span><span class="p">),</span>
+<span class="w">            </span><span class="n">throwableHasMessage</span><span class="p">(</span><span class="s">&quot;Some message&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">));</span>
 
-<span class="w">    </span><span class="c1">//проверка класса причины выброшенного исключения</span><span class="w"></span>
-<span class="w">    </span><span class="n">assertThat</span><span class="p">(</span><span class="n">someException</span><span class="p">,</span><span class="w"> </span><span class="n">hasPrimaryCause</span><span class="p">(</span><span class="n">IOException</span><span class="p">.</span><span class="na">class</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//проверка класса причины выброшенного исключения</span>
+<span class="w">    </span><span class="n">assertThat</span><span class="p">(</span><span class="n">someException</span><span class="p">,</span><span class="w"> </span><span class="n">hasPrimaryCause</span><span class="p">(</span><span class="n">IOException</span><span class="p">.</span><span class="na">class</span><span class="p">));</span>
 
-<span class="w">    </span><span class="c1">//проверка класса и сообщения причины выброшенного исключения</span><span class="w"></span>
-<span class="w">    </span><span class="n">assertThat</span><span class="p">(</span><span class="n">someException</span><span class="p">,</span><span class="w"> </span><span class="n">hasPrimaryCause</span><span class="p">(</span><span class="n">IOException</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Some message&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//проверка класса и сообщения причины выброшенного исключения</span>
+<span class="w">    </span><span class="n">assertThat</span><span class="p">(</span><span class="n">someException</span><span class="p">,</span><span class="w"> </span><span class="n">hasPrimaryCause</span><span class="p">(</span><span class="n">IOException</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Some message&quot;</span><span class="p">));</span>
 
-<span class="w">    </span><span class="c1">//проверка класса и соответствия одному-нескольким переданным критериям сообщения</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//причины выброшенного исключения</span><span class="w"></span>
-<span class="w">    </span><span class="n">assertThat</span><span class="p">(</span><span class="n">someException</span><span class="p">,</span><span class="w"> </span><span class="n">hasPrimaryCause</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="n">IOException</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">startsWith</span><span class="p">(</span><span class="s">&quot;Some&quot;</span><span class="p">),</span><span class="w"></span>
-<span class="w">            </span><span class="n">endsWith</span><span class="p">(</span><span class="s">&quot;message&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="p">));</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//проверка класса и соответствия одному-нескольким переданным критериям сообщения</span>
+<span class="w">    </span><span class="c1">//причины выброшенного исключения</span>
+<span class="w">    </span><span class="n">assertThat</span><span class="p">(</span><span class="n">someException</span><span class="p">,</span><span class="w"> </span><span class="n">hasPrimaryCause</span><span class="p">(</span>
+<span class="w">            </span><span class="n">IOException</span><span class="p">.</span><span class="na">class</span><span class="p">,</span>
+<span class="w">            </span><span class="n">startsWith</span><span class="p">(</span><span class="s">&quot;Some&quot;</span><span class="p">),</span>
+<span class="w">            </span><span class="n">endsWith</span><span class="p">(</span><span class="s">&quot;message&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">));</span>
+<span class="w">  </span><span class="p">}</span>
 
-<span class="w">  </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Аналогично примеру выше. Проверяется, что среди исключений, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">          </span><span class="s">&quot;полученных последовательным вызовом .getCause(), есть то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">          </span><span class="s">&quot;которое удовлетворяет переданным критериям&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test2</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">Exception</span><span class="w"> </span><span class="n">someException</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="c1">//ловим исключение</span><span class="w"></span>
+<span class="w">  </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Аналогично примеру выше. Проверяется, что среди исключений, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">          </span><span class="s">&quot;полученных последовательным вызовом .getCause(), есть то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">          </span><span class="s">&quot;которое удовлетворяет переданным критериям&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test2</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Exception</span><span class="w"> </span><span class="n">someException</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="c1">//ловим исключение</span>
 
-<span class="w">    </span><span class="n">assertThat</span><span class="p">(</span><span class="n">someException</span><span class="p">,</span><span class="w"> </span><span class="n">hasRootCause</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">IOException</span><span class="p">.</span><span class="na">class</span><span class="p">),</span><span class="w"></span>
-<span class="w">            </span><span class="n">throwableHasMessage</span><span class="p">(</span><span class="s">&quot;Some message&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">assertThat</span><span class="p">(</span><span class="n">someException</span><span class="p">,</span><span class="w"> </span><span class="n">hasRootCause</span><span class="p">(</span>
+<span class="w">            </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">IOException</span><span class="p">.</span><span class="na">class</span><span class="p">),</span>
+<span class="w">            </span><span class="n">throwableHasMessage</span><span class="p">(</span><span class="s">&quot;Some message&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">));</span>
 
-<span class="w">    </span><span class="n">assertThat</span><span class="p">(</span><span class="n">someException</span><span class="p">,</span><span class="w"> </span><span class="n">hasRootCause</span><span class="p">(</span><span class="n">IOException</span><span class="p">.</span><span class="na">class</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">assertThat</span><span class="p">(</span><span class="n">someException</span><span class="p">,</span><span class="w"> </span><span class="n">hasRootCause</span><span class="p">(</span><span class="n">IOException</span><span class="p">.</span><span class="na">class</span><span class="p">));</span>
 
-<span class="w">    </span><span class="n">assertThat</span><span class="p">(</span><span class="n">someException</span><span class="p">,</span><span class="w"> </span><span class="n">hasRootCause</span><span class="p">(</span><span class="n">IOException</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Some message&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">assertThat</span><span class="p">(</span><span class="n">someException</span><span class="p">,</span><span class="w"> </span><span class="n">hasRootCause</span><span class="p">(</span><span class="n">IOException</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Some message&quot;</span><span class="p">));</span>
 
-<span class="w">    </span><span class="n">assertThat</span><span class="p">(</span><span class="n">someException</span><span class="p">,</span><span class="w"> </span><span class="n">hasRootCause</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="n">IOException</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">startsWith</span><span class="p">(</span><span class="s">&quot;Some&quot;</span><span class="p">),</span><span class="w"></span>
-<span class="w">            </span><span class="n">endsWith</span><span class="p">(</span><span class="s">&quot;message&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="p">));</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">assertThat</span><span class="p">(</span><span class="n">someException</span><span class="p">,</span><span class="w"> </span><span class="n">hasRootCause</span><span class="p">(</span>
+<span class="w">            </span><span class="n">IOException</span><span class="p">.</span><span class="na">class</span><span class="p">,</span>
+<span class="w">            </span><span class="n">startsWith</span><span class="p">(</span><span class="s">&quot;Some&quot;</span><span class="p">),</span>
+<span class="w">            </span><span class="n">endsWith</span><span class="p">(</span><span class="s">&quot;message&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">));</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>

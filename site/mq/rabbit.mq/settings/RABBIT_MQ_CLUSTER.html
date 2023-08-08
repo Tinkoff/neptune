@@ -467,21 +467,21 @@
 <p>Настройка позволяет указать список конечных точек, которые будут использоваться при подключении. Будет использоваться
 первая достижимая конечная точка. В случае сбоев подключения использование списка конечных точек позволяет приложению
 подключиться к другому узлу, если исходный узел не работает.</p>
-<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c">#Значение свойства указывается так</span><span class="w"></span>
-<span class="na">RABBIT_MQ_CLUSTER_PROPERTY</span><span class="o">=</span><span class="s">host:port,host:port</span><span class="w"></span>
+<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c1">#Значение свойства указывается так</span>
+<span class="na">RABBIT_MQ_CLUSTER_PROPERTY</span><span class="o">=</span><span class="s">host:port,host:port</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">com.rabbitmq.client.Address</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">com.rabbitmq.client.Address</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqClusterProperty.RABBIT_MQ_CLUSTER_PROPERTY</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMqClusterProperty.RABBIT_MQ_CLUSTER_PROPERTY</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeClass</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeClass</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someVoid</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//пример доступа до значения свойства</span><span class="w"></span>
-<span class="w">        </span><span class="n">Addreses</span><span class="o">[]</span><span class="w"> </span><span class="n">addresses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RABBIT_MQ_CLUSTER_PROPERTY</span><span class="p">.</span><span class="na">get</span><span class="p">();</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someVoid</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//пример доступа до значения свойства</span>
+<span class="w">        </span><span class="n">Addreses</span><span class="o">[]</span><span class="w"> </span><span class="n">addresses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RABBIT_MQ_CLUSTER_PROPERTY</span><span class="p">.</span><span class="na">get</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>

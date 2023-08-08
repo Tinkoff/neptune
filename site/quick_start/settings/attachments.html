@@ -472,24 +472,24 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">FAILURE</span></code> - если выполнившийся шаг выбросил исключение</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">SUCCESS_AND_FAILURE</span></code> - во всех случаях</p></li>
 </ul>
-<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c">#Значение свойства указывается так</span><span class="w"></span>
-<span class="na">DO_CAPTURES_OF</span><span class="o">=</span><span class="s">SUCCESS_AND_FAILURE</span><span class="w"></span>
+<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c1">#Значение свойства указывается так</span>
+<span class="na">DO_CAPTURES_OF</span><span class="o">=</span><span class="s">SUCCESS_AND_FAILURE</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.general</span><span class="w"></span>
-<span class="w">        </span><span class="p">.</span><span class="na">events</span><span class="p">.</span><span class="na">DoCapturesOf</span><span class="p">.</span><span class="na">DO_CAPTURES_OF_INSTANCE</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.general</span>
+<span class="w">        </span><span class="p">.</span><span class="na">events</span><span class="p">.</span><span class="na">DoCapturesOf</span><span class="p">.</span><span class="na">DO_CAPTURES_OF_INSTANCE</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeClass</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeClass</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someVoid</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//пример доступа до значения свойства</span><span class="w"></span>
-<span class="w">        </span><span class="n">CapturedEvents</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DO_CAPTURES_OF_INSTANCE</span><span class="p">.</span><span class="na">get</span><span class="p">();</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someVoid</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//пример доступа до значения свойства</span>
+<span class="w">        </span><span class="n">CapturedEvents</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DO_CAPTURES_OF_INSTANCE</span><span class="p">.</span><span class="na">get</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>

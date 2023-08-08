@@ -464,7 +464,7 @@
         <article role="main">
           <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Интерфейс, который надо реализовать</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">StepLocalization</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">StepLocalization</span><span class="w"> </span><span class="p">{</span>
 
 <span class="w">   </span><span class="cm">/**</span>
 <span class="cm">    * Makes translation by usage of a class.</span>
@@ -480,11 +480,11 @@
 <span class="cm">    * @param locale                    is a used locale</span>
 <span class="cm">    * @param &lt;T&gt;                       is a type of class</span>
 <span class="cm">    * @return translated text</span>
-<span class="cm">    */</span><span class="w"></span>
-<span class="w">   </span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">classTranslation</span><span class="p">(</span><span class="n">Class</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">clz</span><span class="p">,</span><span class="w"></span>
-<span class="w">                               </span><span class="n">String</span><span class="w"> </span><span class="n">template</span><span class="p">,</span><span class="w"></span>
-<span class="w">                               </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TemplateParameter</span><span class="o">&gt;</span><span class="w"> </span><span class="n">descriptionTemplateParams</span><span class="p">,</span><span class="w"></span>
-<span class="w">                               </span><span class="n">Locale</span><span class="w"> </span><span class="n">locale</span><span class="p">);</span><span class="w"></span>
+<span class="cm">    */</span>
+<span class="w">   </span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">classTranslation</span><span class="p">(</span><span class="n">Class</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">clz</span><span class="p">,</span>
+<span class="w">                               </span><span class="n">String</span><span class="w"> </span><span class="n">template</span><span class="p">,</span>
+<span class="w">                               </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TemplateParameter</span><span class="o">&gt;</span><span class="w"> </span><span class="n">descriptionTemplateParams</span><span class="p">,</span>
+<span class="w">                               </span><span class="n">Locale</span><span class="w"> </span><span class="n">locale</span><span class="p">);</span>
 
 <span class="w">   </span><span class="cm">/**</span>
 <span class="cm">    * Makes translation by usage of a method.</span>
@@ -503,11 +503,11 @@
 <span class="cm">    *                                  to be re-used for some reasons.</span>
 <span class="cm">    * @param locale                    is a used locale</span>
 <span class="cm">    * @return translated text</span>
-<span class="cm">    */</span><span class="w"></span>
-<span class="w">   </span><span class="n">String</span><span class="w"> </span><span class="nf">methodTranslation</span><span class="p">(</span><span class="n">Method</span><span class="w"> </span><span class="n">method</span><span class="p">,</span><span class="w"></span>
-<span class="w">                            </span><span class="n">String</span><span class="w"> </span><span class="n">template</span><span class="p">,</span><span class="w"></span>
-<span class="w">                            </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TemplateParameter</span><span class="o">&gt;</span><span class="w"> </span><span class="n">descriptionTemplateParams</span><span class="p">,</span><span class="w"></span>
-<span class="w">                            </span><span class="n">Locale</span><span class="w"> </span><span class="n">locale</span><span class="p">);</span><span class="w"></span>
+<span class="cm">    */</span>
+<span class="w">   </span><span class="n">String</span><span class="w"> </span><span class="nf">methodTranslation</span><span class="p">(</span><span class="n">Method</span><span class="w"> </span><span class="n">method</span><span class="p">,</span>
+<span class="w">                            </span><span class="n">String</span><span class="w"> </span><span class="n">template</span><span class="p">,</span>
+<span class="w">                            </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TemplateParameter</span><span class="o">&gt;</span><span class="w"> </span><span class="n">descriptionTemplateParams</span><span class="p">,</span>
+<span class="w">                            </span><span class="n">Locale</span><span class="w"> </span><span class="n">locale</span><span class="p">);</span>
 
 <span class="w">   </span><span class="cm">/**</span>
 <span class="cm">    * Makes translation by usage of other annotated element that differs from {@link Class} and {@link Method}</span>
@@ -517,10 +517,10 @@
 <span class="cm">    * @param locale         is a used locale</span>
 <span class="cm">    * @param &lt;T&gt;            is a type of member</span>
 <span class="cm">    * @return translated text</span>
-<span class="cm">    */</span><span class="w"></span>
-<span class="w">   </span><span class="o">&lt;</span><span class="n">T</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">AnnotatedElement</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">Member</span><span class="o">&gt;</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">memberTranslation</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">member</span><span class="p">,</span><span class="w"></span>
-<span class="w">                                                                  </span><span class="n">String</span><span class="w"> </span><span class="n">toBeTranslated</span><span class="p">,</span><span class="w"></span>
-<span class="w">                                                                  </span><span class="n">Locale</span><span class="w"> </span><span class="n">locale</span><span class="p">);</span><span class="w"></span>
+<span class="cm">    */</span>
+<span class="w">   </span><span class="o">&lt;</span><span class="n">T</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">AnnotatedElement</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">Member</span><span class="o">&gt;</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">memberTranslation</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">member</span><span class="p">,</span>
+<span class="w">                                                                  </span><span class="n">String</span><span class="w"> </span><span class="n">toBeTranslated</span><span class="p">,</span>
+<span class="w">                                                                  </span><span class="n">Locale</span><span class="w"> </span><span class="n">locale</span><span class="p">);</span>
 
 <span class="w">   </span><span class="cm">/**</span>
 <span class="cm">    * Makes translation of a text.</span>
@@ -528,16 +528,16 @@
 <span class="cm">    * @param text   to be translated</span>
 <span class="cm">    * @param locale is a used locale</span>
 <span class="cm">    * @return translated text</span>
-<span class="cm">    */</span><span class="w"></span>
-<span class="w">   </span><span class="n">String</span><span class="w"> </span><span class="nf">translation</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">text</span><span class="p">,</span><span class="w"> </span><span class="n">Locale</span><span class="w"> </span><span class="n">locale</span><span class="p">);</span><span class="w"></span>
-<span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="cm">    */</span>
+<span class="w">   </span><span class="n">String</span><span class="w"> </span><span class="nf">translation</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">text</span><span class="p">,</span><span class="w"> </span><span class="n">Locale</span><span class="w"> </span><span class="n">locale</span><span class="p">);</span>
+<span class="w"> </span><span class="p">}</span>
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Свойства которые следует заполнить</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
-<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="na">DEFAULT_LOCALIZATION_ENGINE</span><span class="o">=</span><span class="s">org.my.project.MyLocalizationEngine</span><span class="w"></span>
-<span class="na">DEFAULT_LOCALE</span><span class="o">=</span><span class="s">ru_RU</span><span class="w"></span>
+<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="na">DEFAULT_LOCALIZATION_ENGINE</span><span class="o">=</span><span class="s">org.my.project.MyLocalizationEngine</span>
+<span class="na">DEFAULT_LOCALE</span><span class="o">=</span><span class="s">ru_RU</span>
 </pre></div>
 </div>
 </div>

@@ -467,68 +467,68 @@
 <p>Перечисляет классы, расширяющие <a class="reference internal" href="../index.html"><span class="doc std std-doc">Captor</span></a>, чьи объекты создают аттачи, когда щаг выполняется успешно.</p>
 <section id="captureonsuccess-get-step">
 <h2>&#64;CaptureOnSuccess для <a class="reference internal" href="../../../steps/steps/get_step_supplier/index.html"><span class="doc std std-doc">get-step</span></a><a class="headerlink" href="#captureonsuccess-get-step" title="Permalink to this heading">#</a></h2>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess</span><span class="p">;</span>
 
-<span class="c1">//Тут следует указывать классы, чьи объекты могут получить данные </span><span class="w"></span>
-<span class="c1">//из R (сделать аттач из результата выполнения)</span><span class="w"></span>
-<span class="c1">//</span><span class="w"></span>
-<span class="c1">// Здесь можно указать несколько классов.</span><span class="w"></span>
-<span class="c1">// Можно указать абстрактные классы,</span><span class="w"></span>
-<span class="c1">// расширяющие Captor&lt;R, ?&gt;.</span><span class="w"></span>
-<span class="c1">// Если в classpath есть их неабстрактные наследники,</span><span class="w"></span>
-<span class="c1">// тогда они будут использованы автоматически.</span><span class="w"></span>
-<span class="c1">//</span><span class="w"></span>
-<span class="c1">// ВАЖНО: Наследники Captor&lt;R, ?&gt; не</span><span class="w"></span>
-<span class="c1">// должны иметь объявленных конструкторов,</span><span class="w"></span>
-<span class="c1">// или у них должны быть объявлены публичные конструкторы без параметров.</span><span class="w"></span>
-<span class="nd">@CaptureOnSuccess</span><span class="p">(</span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ExampleCaptor3</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="o">&gt;</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//любой подходящий наследник</span><span class="w"></span>
-<span class="w">        </span><span class="kd">extends</span><span class="w"> </span><span class="n">SequentialGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="p">,</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="c1">//Тут следует указывать классы, чьи объекты могут получить данные </span>
+<span class="c1">//из R (сделать аттач из результата выполнения)</span>
+<span class="c1">//</span>
+<span class="c1">// Здесь можно указать несколько классов.</span>
+<span class="c1">// Можно указать абстрактные классы,</span>
+<span class="c1">// расширяющие Captor&lt;R, ?&gt;.</span>
+<span class="c1">// Если в classpath есть их неабстрактные наследники,</span>
+<span class="c1">// тогда они будут использованы автоматически.</span>
+<span class="c1">//</span>
+<span class="c1">// ВАЖНО: Наследники Captor&lt;R, ?&gt; не</span>
+<span class="c1">// должны иметь объявленных конструкторов,</span>
+<span class="c1">// или у них должны быть объявлены публичные конструкторы без параметров.</span>
+<span class="nd">@CaptureOnSuccess</span><span class="p">(</span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ExampleCaptor3</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="o">&gt;</span>
+<span class="w">        </span><span class="c1">//любой подходящий наследник</span>
+<span class="w">        </span><span class="kd">extends</span><span class="w"> </span><span class="n">SequentialGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="p">,</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="c1">//Так же можно делать аттачи из значений нестатических полей</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//заполняемых в ходе выполнения шага</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@CaptureOnSuccess</span><span class="p">(</span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">ExampleCaptor4</span><span class="p">.</span><span class="na">class</span><span class="p">})</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">V</span><span class="w"> </span><span class="n">someValue</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//Так же можно делать аттачи из значений нестатических полей</span>
+<span class="w">    </span><span class="c1">//заполняемых в ходе выполнения шага</span>
+<span class="w">    </span><span class="nd">@CaptureOnSuccess</span><span class="p">(</span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">ExampleCaptor4</span><span class="p">.</span><span class="na">class</span><span class="p">})</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">V</span><span class="w"> </span><span class="n">someValue</span><span class="p">;</span>
 <span class="w">    </span>
-<span class="w">    </span><span class="c1">//реализация поведения</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//реализация поведения</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
 <section id="captureonsuccess-action-step">
 <h2>&#64;CaptureOnSuccess для <a class="reference internal" href="../../../steps/steps/action_supplier.html"><span class="doc std std-doc">action-step</span></a><a class="headerlink" href="#captureonsuccess-action-step" title="Permalink to this heading">#</a></h2>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier</span><span class="p">;</span>
 
-<span class="c1">//Тут следует указывать классы, чьи объекты могут получить данные </span><span class="w"></span>
-<span class="c1">//из R (сделать аттач из значения-объекта выполнения действия)</span><span class="w"></span>
-<span class="c1">//</span><span class="w"></span>
-<span class="c1">// Здесь можно указать несколько классов.</span><span class="w"></span>
-<span class="c1">// Можно указать абстрактные классы,</span><span class="w"></span>
-<span class="c1">// расширяющие Captor&lt;R, ?&gt;.</span><span class="w"></span>
-<span class="c1">// Если в classpath есть их неабстрактные наследники,</span><span class="w"></span>
-<span class="c1">// тогда они будут использованы автоматически.</span><span class="w"></span>
-<span class="c1">//</span><span class="w"></span>
-<span class="c1">// ВАЖНО: Наследники Captor&lt;R, ?&gt; не</span><span class="w"></span>
-<span class="c1">// должны иметь объявленных конструкторов,</span><span class="w"></span>
-<span class="c1">// или у них должны быть объявлены публичные конструкторы без параметров.</span><span class="w"></span>
-<span class="nd">@CaptureOnSuccess</span><span class="p">(</span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ExampleCaptor3</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
+<span class="c1">//Тут следует указывать классы, чьи объекты могут получить данные </span>
+<span class="c1">//из R (сделать аттач из значения-объекта выполнения действия)</span>
+<span class="c1">//</span>
+<span class="c1">// Здесь можно указать несколько классов.</span>
+<span class="c1">// Можно указать абстрактные классы,</span>
+<span class="c1">// расширяющие Captor&lt;R, ?&gt;.</span>
+<span class="c1">// Если в classpath есть их неабстрактные наследники,</span>
+<span class="c1">// тогда они будут использованы автоматически.</span>
+<span class="c1">//</span>
+<span class="c1">// ВАЖНО: Наследники Captor&lt;R, ?&gt; не</span>
+<span class="c1">// должны иметь объявленных конструкторов,</span>
+<span class="c1">// или у них должны быть объявлены публичные конструкторы без параметров.</span>
+<span class="nd">@CaptureOnSuccess</span><span class="p">(</span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ExampleCaptor3</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
 <span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyActionStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="o">&gt;</span><span class="w"> </span>
-<span class="w">    </span><span class="kd">extends</span><span class="w"> </span><span class="n">SequentialActionSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">MyActionStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kd">extends</span><span class="w"> </span><span class="n">SequentialActionSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">MyActionStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="c1">//Так же можно делать аттачи из значений нестатических полей</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//заполняемых в ходе выполнения шага</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@CaptureOnSuccess</span><span class="p">(</span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">ExampleCaptor4</span><span class="p">.</span><span class="na">class</span><span class="p">})</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">V</span><span class="w"> </span><span class="n">someValue</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//Так же можно делать аттачи из значений нестатических полей</span>
+<span class="w">    </span><span class="c1">//заполняемых в ходе выполнения шага</span>
+<span class="w">    </span><span class="nd">@CaptureOnSuccess</span><span class="p">(</span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">ExampleCaptor4</span><span class="p">.</span><span class="na">class</span><span class="p">})</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">V</span><span class="w"> </span><span class="n">someValue</span><span class="p">;</span>
 
-<span class="w">    </span><span class="c1">//реализация поведения</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//реализация поведения</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>

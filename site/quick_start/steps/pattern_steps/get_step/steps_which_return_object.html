@@ -464,70 +464,70 @@
         <article role="main">
           <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>Шаги, которые возвращают объект<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofSeconds</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofSeconds</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="c1">//В данном примере выполняется шаг, который</span><span class="w"></span>
-<span class="w">    </span><span class="c1">// возвращает нужный объект, </span><span class="w"></span>
-<span class="w">    </span><span class="c1">// если его удается вычислить, </span><span class="w"></span>
-<span class="w">    </span><span class="c1">// либо null - в противном случае.</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//В данном примере выполняется шаг, который</span>
+<span class="w">    </span><span class="c1">// возвращает нужный объект, </span>
+<span class="w">    </span><span class="c1">// если его удается вычислить, </span>
+<span class="w">    </span><span class="c1">// либо null - в противном случае.</span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">        </span><span class="c1">//схематичный вызов контекста, </span><span class="w"></span>
-<span class="w">        </span><span class="c1">// в рамках которого выполняется шаг</span><span class="w"></span>
-<span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">someContext</span><span class="p">()</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">something</span><span class="p">(</span><span class="cm">/*необходимые параметры*/</span><span class="p">)</span><span class="w"> </span><span class="c1">//вызов выполняемого</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//шага</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">someParam</span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="c1">//могут быть опциональные параметры,</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">someOtherParam</span><span class="p">(</span><span class="n">param2</span><span class="p">)</span><span class="w"> </span><span class="c1">//характерные для того или иного шага.</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// В зависимости от реализации, можно указать критерии, </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// с помощью которых проверяется, возвращаемое значение. </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// Если оно соответствует всем переданным критериям, </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// тогда вернется непустое значение, null - в противном случае.</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//    </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Критерий, записанный в свободной форме,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//в виде пояснительной строки и предиката.</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Объект ru.tinkoff.qa.neptune.core.api.steps.Criteria </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// создается внутри вызванного метода.</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Some criteria&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="cm">/* предикат*/</span><span class="p">})</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Критерий, записанный в свободной форме, </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// в виде пояснительной строки и предиката.</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Все это явно передано в виде объекта </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.steps.Criteria,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//созданного статическим методом </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.steps.Criteria#condition</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="n">condition</span><span class="p">(</span><span class="s">&quot;One more criteria&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="cm">/* предикат*/</span><span class="p">}))</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// Так же могут быть доступны criteriaOr(criteria...), </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// criteriaOnlyOne(criteria...)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// criteriaNot(criteria...)    </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//    </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// В зависимости от реализации, можно указать время ожидания</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// непустого (!= null) значения, которое соответствует критериям   </span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// Можно указать, что если непустой результат не удалось</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// получить, то должно быть выброшено исключение    </span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// В зависимости от реализации, шаг может вычислять</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// значение с использованием некоторых промежуточных </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// шагов, выполняемых в рамках того же контекста. </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// Так же, в зависимости от реализации, могут быть</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// использованы ранее вычисленные значения.</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// Не во всех реализациях этот метод может </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// быть публично доступен. Он может вызываться неявно</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// при создании объекта шага. Данный пример просто</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// показывает принцип.    </span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">someRootValue</span><span class="p">()</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//схематичный вызов контекста, </span>
+<span class="w">        </span><span class="c1">// в рамках которого выполняется шаг</span>
+<span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">someContext</span><span class="p">()</span>
+<span class="w">                </span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">something</span><span class="p">(</span><span class="cm">/*необходимые параметры*/</span><span class="p">)</span><span class="w"> </span><span class="c1">//вызов выполняемого</span>
+<span class="w">                </span><span class="c1">//шага</span>
+<span class="w">                </span><span class="p">.</span><span class="na">someParam</span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="c1">//могут быть опциональные параметры,</span>
+<span class="w">                </span><span class="p">.</span><span class="na">someOtherParam</span><span class="p">(</span><span class="n">param2</span><span class="p">)</span><span class="w"> </span><span class="c1">//характерные для того или иного шага.</span>
+<span class="w">                </span><span class="c1">// В зависимости от реализации, можно указать критерии, </span>
+<span class="w">                </span><span class="c1">// с помощью которых проверяется, возвращаемое значение. </span>
+<span class="w">                </span><span class="c1">// Если оно соответствует всем переданным критериям, </span>
+<span class="w">                </span><span class="c1">// тогда вернется непустое значение, null - в противном случае.</span>
+<span class="w">                </span><span class="c1">//    </span>
+<span class="w">                </span><span class="c1">//Критерий, записанный в свободной форме,</span>
+<span class="w">                </span><span class="c1">//в виде пояснительной строки и предиката.</span>
+<span class="w">                </span><span class="c1">//Объект ru.tinkoff.qa.neptune.core.api.steps.Criteria </span>
+<span class="w">                </span><span class="c1">// создается внутри вызванного метода.</span>
+<span class="w">                </span><span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Some criteria&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="cm">/* предикат*/</span><span class="p">})</span>
+<span class="w">                </span><span class="c1">//Критерий, записанный в свободной форме, </span>
+<span class="w">                </span><span class="c1">// в виде пояснительной строки и предиката.</span>
+<span class="w">                </span><span class="c1">//Все это явно передано в виде объекта </span>
+<span class="w">                </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.steps.Criteria,</span>
+<span class="w">                </span><span class="c1">//созданного статическим методом </span>
+<span class="w">                </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.steps.Criteria#condition</span>
+<span class="w">                </span><span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="n">condition</span><span class="p">(</span><span class="s">&quot;One more criteria&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="cm">/* предикат*/</span><span class="p">}))</span>
+<span class="w">                </span><span class="c1">// Так же могут быть доступны criteriaOr(criteria...), </span>
+<span class="w">                </span><span class="c1">// criteriaOnlyOne(criteria...)</span>
+<span class="w">                </span><span class="c1">// criteriaNot(criteria...)    </span>
+<span class="w">                </span><span class="c1">//    </span>
+<span class="w">                </span><span class="c1">// В зависимости от реализации, можно указать время ожидания</span>
+<span class="w">                </span><span class="c1">// непустого (!= null) значения, которое соответствует критериям   </span>
+<span class="w">                </span><span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">// Можно указать, что если непустой результат не удалось</span>
+<span class="w">                </span><span class="c1">// получить, то должно быть выброшено исключение    </span>
+<span class="w">                </span><span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span>
+<span class="w">                </span><span class="c1">// В зависимости от реализации, шаг может вычислять</span>
+<span class="w">                </span><span class="c1">// значение с использованием некоторых промежуточных </span>
+<span class="w">                </span><span class="c1">// шагов, выполняемых в рамках того же контекста. </span>
+<span class="w">                </span><span class="c1">// Так же, в зависимости от реализации, могут быть</span>
+<span class="w">                </span><span class="c1">// использованы ранее вычисленные значения.</span>
+<span class="w">                </span><span class="c1">// Не во всех реализациях этот метод может </span>
+<span class="w">                </span><span class="c1">// быть публично доступен. Он может вызываться неявно</span>
+<span class="w">                </span><span class="c1">// при создании объекта шага. Данный пример просто</span>
+<span class="w">                </span><span class="c1">// показывает принцип.    </span>
+<span class="w">                </span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">someRootValue</span><span class="p">()</span>
 <span class="w">                    </span><span class="cm">/*</span>
 <span class="cm">                     * опциональные параметры промежуточного шага</span>
-<span class="cm">                     */</span><span class="w"></span>
+<span class="cm">                     */</span>
 <span class="w">                </span><span class="p">))</span><span class="w">    </span>
 <span class="w">            </span><span class="p">);</span><span class="w"> </span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Про критерии подробно <a class="reference internal" href="../../criteria/index.html"><span class="doc std std-doc">здесь</span></a></p>

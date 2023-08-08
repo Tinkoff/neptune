@@ -466,45 +466,45 @@
 <h1>Объединение AND<a class="headerlink" href="#and" title="Permalink to this heading">#</a></h1>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Последовательное объединение</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition</span><span class="p">;</span>
 
 
-<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">     </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="kd">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">someContext</span><span class="p">()</span><span class="w"></span>
-<span class="w">             </span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">something</span><span class="p">(</span><span class="cm">/*необходимые параметры*/</span><span class="p">)</span><span class="w"></span>
-<span class="w">                 </span><span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Some criteria&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="cm">/* предикат*/</span><span class="p">})</span><span class="w"> </span><span class="c1">//В данном примере</span><span class="w"></span>
-<span class="w">                 </span><span class="c1">//все указанные критерии объединяются</span><span class="w"></span>
-<span class="w">                 </span><span class="c1">// в одно AND-выражение.</span><span class="w"></span>
-<span class="w">                 </span><span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="n">condition</span><span class="p">(</span><span class="s">&quot;One more criteria&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="cm">/* предикат*/</span><span class="p">})));</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@Test</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="kd">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">someContext</span><span class="p">()</span>
+<span class="w">             </span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">something</span><span class="p">(</span><span class="cm">/*необходимые параметры*/</span><span class="p">)</span>
+<span class="w">                 </span><span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Some criteria&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="cm">/* предикат*/</span><span class="p">})</span><span class="w"> </span><span class="c1">//В данном примере</span>
+<span class="w">                 </span><span class="c1">//все указанные критерии объединяются</span>
+<span class="w">                 </span><span class="c1">// в одно AND-выражение.</span>
+<span class="w">                 </span><span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="n">condition</span><span class="p">(</span><span class="s">&quot;One more criteria&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="cm">/* предикат*/</span><span class="p">})));</span>
+<span class="w">     </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Явное объединение нескольких критериев в один</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Criteria.AND</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Criteria.AND</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">myTestContext</span><span class="p">().</span><span class="na">retrieve</span><span class="p">(</span><span class="n">something</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="n">AND</span><span class="p">(</span><span class="w"></span>
-<span class="w">                     </span><span class="n">condition</span><span class="p">(</span><span class="s">&quot;Some criteria&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="cm">/* предикат*/</span><span class="p">}),</span><span class="w"></span>
-<span class="w">                     </span><span class="n">condition</span><span class="p">(</span><span class="s">&quot;One more criteria&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="cm">/* предикат*/</span><span class="p">})</span><span class="w"></span>
-<span class="w">                </span><span class="p">))</span><span class="w"></span>
-<span class="w">            </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">myTestContext</span><span class="p">().</span><span class="na">retrieve</span><span class="p">(</span><span class="n">something</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="n">AND</span><span class="p">(</span>
+<span class="w">                     </span><span class="n">condition</span><span class="p">(</span><span class="s">&quot;Some criteria&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="cm">/* предикат*/</span><span class="p">}),</span>
+<span class="w">                     </span><span class="n">condition</span><span class="p">(</span><span class="s">&quot;One more criteria&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="cm">/* предикат*/</span><span class="p">})</span>
+<span class="w">                </span><span class="p">))</span>
+<span class="w">            </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>

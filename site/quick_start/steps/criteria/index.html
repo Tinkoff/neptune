@@ -469,48 +469,48 @@
 <li><p><a class="reference internal" href="../pattern_steps/get_step/index.html"><span class="doc std std-doc">Шаблонизированные шаги, возвращающие результат (get-step)</span></a></p></li>
 <li><p><a class="reference internal" href="../fluent_steps/fluent_pattern_steps.html"><span class="doc std std-doc">Шаблонизированные произвольные шаги</span></a></p></li>
 </ul>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span>
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">someContext</span><span class="p">()</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">something</span><span class="p">(</span><span class="cm">/*необходимые параметры*/</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Критерий, записанный в свободной форме,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//в виде пояснительной строки и предиката.</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Объект ru.tinkoff.qa.neptune.core.api.steps.Criteria </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// создается внутри вызванного метода.</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Some criteria&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="cm">/* предикат*/</span><span class="p">})</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Критерий, записанный в свободной форме, </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// в виде пояснительной строки и предиката.</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Все это явно передано в виде объекта </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.steps.Criteria,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//созданного статическим методом </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.steps.Criteria#condition</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="n">condition</span><span class="p">(</span><span class="s">&quot;One more criteria&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="cm">/* предикат*/</span><span class="p">}))</span><span class="w"></span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">someContext</span><span class="p">()</span>
+<span class="w">                </span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">something</span><span class="p">(</span><span class="cm">/*необходимые параметры*/</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//Критерий, записанный в свободной форме,</span>
+<span class="w">                </span><span class="c1">//в виде пояснительной строки и предиката.</span>
+<span class="w">                </span><span class="c1">//Объект ru.tinkoff.qa.neptune.core.api.steps.Criteria </span>
+<span class="w">                </span><span class="c1">// создается внутри вызванного метода.</span>
+<span class="w">                </span><span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Some criteria&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="cm">/* предикат*/</span><span class="p">})</span>
+<span class="w">                </span><span class="c1">//Критерий, записанный в свободной форме, </span>
+<span class="w">                </span><span class="c1">// в виде пояснительной строки и предиката.</span>
+<span class="w">                </span><span class="c1">//Все это явно передано в виде объекта </span>
+<span class="w">                </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.steps.Criteria,</span>
+<span class="w">                </span><span class="c1">//созданного статическим методом </span>
+<span class="w">                </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.steps.Criteria#condition</span>
+<span class="w">                </span><span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="n">condition</span><span class="p">(</span><span class="s">&quot;One more criteria&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="cm">/* предикат*/</span><span class="p">}))</span>
 <span class="w">            </span><span class="p">);</span><span class="w"> </span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Некоторые модули Neptune включают утильные классы, играющие роль библиотек часто используемых критериев, позволяющие
 то же самое описывать как в примере ниже</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.some.module.pack.SomeCriteriaUtil.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.some.module.pack.SomeCriteriaUtil.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span>
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">someContext</span><span class="p">()</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">something</span><span class="p">(</span><span class="cm">/*необходимые параметры*/</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="n">someCriteria</span><span class="p">(</span><span class="cm">/*необходимые параметры*/</span><span class="p">))</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="n">oneMoreCriteria</span><span class="p">(</span><span class="cm">/*необходимые параметры*/</span><span class="p">))</span><span class="w"></span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">someContext</span><span class="p">()</span>
+<span class="w">                </span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">something</span><span class="p">(</span><span class="cm">/*необходимые параметры*/</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="n">someCriteria</span><span class="p">(</span><span class="cm">/*необходимые параметры*/</span><span class="p">))</span>
+<span class="w">                </span><span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="n">oneMoreCriteria</span><span class="p">(</span><span class="cm">/*необходимые параметры*/</span><span class="p">))</span>
 <span class="w">            </span><span class="p">);</span><span class="w"> </span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Описание дополнительных опций, которые предоставляют критерии</p>

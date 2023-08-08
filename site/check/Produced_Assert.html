@@ -464,47 +464,47 @@
         <article role="main">
           <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Проверка не самого значения, а производного от него результата</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofSeconds</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.*</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.check.CheckActionSupplier.check</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.check.MatchAction.match</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofSeconds</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.*</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.check.CheckActionSupplier.check</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.check.MatchAction.match</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">tezt</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">Integer</span><span class="w"> </span><span class="n">number</span><span class="p">;</span><span class="w"> </span><span class="c1">//= алгоритм и действия, чтобы получить число</span><span class="w"></span>
-<span class="w">        </span><span class="n">check</span><span class="p">(</span><span class="n">number</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="n">match</span><span class="p">(</span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">0</span><span class="p">)),</span><span class="w"></span>
-<span class="w">                </span><span class="n">match</span><span class="p">(</span><span class="s">&quot;Квадратный корень&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//пояснение, ЧТО проверяется</span><span class="w"></span>
-<span class="w">                      </span><span class="n">number</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">number</span><span class="p">.</span><span class="na">doubleValue</span><span class="p">()),</span><span class="w"> </span><span class="c1">//функция для получения</span><span class="w"></span>
-<span class="w">                      </span><span class="c1">//проверяемой производной величины</span><span class="w"></span>
-<span class="w">                      </span><span class="n">greaterThan</span><span class="p">(</span><span class="mf">2D</span><span class="p">)));</span><span class="w"> </span><span class="c1">//матчер</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">tezt</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Integer</span><span class="w"> </span><span class="n">number</span><span class="p">;</span><span class="w"> </span><span class="c1">//= алгоритм и действия, чтобы получить число</span>
+<span class="w">        </span><span class="n">check</span><span class="p">(</span><span class="n">number</span><span class="p">,</span>
+<span class="w">                </span><span class="n">match</span><span class="p">(</span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">0</span><span class="p">)),</span>
+<span class="w">                </span><span class="n">match</span><span class="p">(</span><span class="s">&quot;Квадратный корень&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//пояснение, ЧТО проверяется</span>
+<span class="w">                      </span><span class="n">number</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">number</span><span class="p">.</span><span class="na">doubleValue</span><span class="p">()),</span><span class="w"> </span><span class="c1">//функция для получения</span>
+<span class="w">                      </span><span class="c1">//проверяемой производной величины</span>
+<span class="w">                      </span><span class="n">greaterThan</span><span class="p">(</span><span class="mf">2D</span><span class="p">)));</span><span class="w"> </span><span class="c1">//матчер</span>
 
-<span class="w">        </span><span class="c1">//пример с пояснением. Оно должно описывать, ЧТО проверяется</span><span class="w"></span>
-<span class="w">        </span><span class="n">check</span><span class="p">(</span><span class="s">&quot;Число, которое было получено&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="n">number</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="n">match</span><span class="p">(</span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">0</span><span class="p">)),</span><span class="w"></span>
-<span class="w">                </span><span class="n">match</span><span class="p">(</span><span class="s">&quot;Квадратный корень&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//пояснение, ЧТО проверяется</span><span class="w"></span>
-<span class="w">                      </span><span class="n">number</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">number</span><span class="p">.</span><span class="na">doubleValue</span><span class="p">()),</span><span class="w"> </span><span class="c1">//функция для получения</span><span class="w"></span>
-<span class="w">                      </span><span class="c1">//проверяемой производной величины</span><span class="w"></span>
-<span class="w">                      </span><span class="n">greaterThan</span><span class="p">(</span><span class="mf">2D</span><span class="p">)));</span><span class="w"> </span><span class="c1">//матчер</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//пример с пояснением. Оно должно описывать, ЧТО проверяется</span>
+<span class="w">        </span><span class="n">check</span><span class="p">(</span><span class="s">&quot;Число, которое было получено&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="n">number</span><span class="p">,</span>
+<span class="w">                </span><span class="n">match</span><span class="p">(</span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">0</span><span class="p">)),</span>
+<span class="w">                </span><span class="n">match</span><span class="p">(</span><span class="s">&quot;Квадратный корень&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//пояснение, ЧТО проверяется</span>
+<span class="w">                      </span><span class="n">number</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">number</span><span class="p">.</span><span class="na">doubleValue</span><span class="p">()),</span><span class="w"> </span><span class="c1">//функция для получения</span>
+<span class="w">                      </span><span class="c1">//проверяемой производной величины</span>
+<span class="w">                      </span><span class="n">greaterThan</span><span class="p">(</span><span class="mf">2D</span><span class="p">)));</span><span class="w"> </span><span class="c1">//матчер</span>
 
-<span class="w">        </span><span class="c1">//пример для кейса, когда нужно указать время</span><span class="w"></span>
-<span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">obj</span><span class="p">;</span><span class="w"> </span><span class="c1">//= инициализация</span><span class="w"></span>
-<span class="w">        </span><span class="n">check</span><span class="p">(</span><span class="s">&quot;Проверяемый объект&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="n">obj</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="n">match</span><span class="p">(</span><span class="s">&quot;Какое-то вычислимое свойство&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                        </span><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="na">returnSomething</span><span class="p">(),</span><span class="w"></span>
-<span class="w">                        </span><span class="c1">//указывается время,</span><span class="w"></span>
-<span class="w">                        </span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span><span class="w"> </span><span class="c1">// за которое проверка</span><span class="w"></span>
-<span class="w">                        </span><span class="c1">//должна завершиться успешно</span><span class="w"></span>
-<span class="w">                        </span><span class="n">matcher</span><span class="p">));</span><span class="w"> </span><span class="c1">//матчер</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//пример для кейса, когда нужно указать время</span>
+<span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">obj</span><span class="p">;</span><span class="w"> </span><span class="c1">//= инициализация</span>
+<span class="w">        </span><span class="n">check</span><span class="p">(</span><span class="s">&quot;Проверяемый объект&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="n">obj</span><span class="p">,</span>
+<span class="w">                </span><span class="n">match</span><span class="p">(</span><span class="s">&quot;Какое-то вычислимое свойство&quot;</span><span class="p">,</span>
+<span class="w">                        </span><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="na">returnSomething</span><span class="p">(),</span>
+<span class="w">                        </span><span class="c1">//указывается время,</span>
+<span class="w">                        </span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span><span class="w"> </span><span class="c1">// за которое проверка</span>
+<span class="w">                        </span><span class="c1">//должна завершиться успешно</span>
+<span class="w">                        </span><span class="n">matcher</span><span class="p">));</span><span class="w"> </span><span class="c1">//матчер</span>
 
-<span class="w">        </span><span class="c1">//аналогично для matchAny, matchNot, matchOnlyOne</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//аналогично для matchAny, matchNot, matchOnlyOne</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="p">}</span><span class="w"></span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>

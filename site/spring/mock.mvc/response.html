@@ -464,68 +464,68 @@
         <article role="main">
           <section class="tex2jax_ignore mathjax_ignore" id="mock-mvc-request-response">
 <h1>Mock MVC. Request / Response<a class="headerlink" href="#mock-mvc-request-response" title="Permalink to this heading">#</a></h1>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.boot.test.context.SpringBootTest</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.boot.test.context.SpringBootTest</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.mock.web.MockHttpServletResponse</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.test.web.servlet.MockMvc</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.mock.web.MockHttpServletResponse</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.test.web.servlet.MockMvc</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.*</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.mock.mvc</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">GetMockMvcResponseResultSupplier</span><span class="p">.</span><span class="na">response</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.mock.mvc</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">MockMvcContext</span><span class="p">.</span><span class="na">mockMvcGet</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.*</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.mock.mvc</span>
+<span class="w">    </span><span class="p">.</span><span class="na">GetMockMvcResponseResultSupplier</span><span class="p">.</span><span class="na">response</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.mock.mvc</span>
+<span class="w">    </span><span class="p">.</span><span class="na">MockMvcContext</span><span class="p">.</span><span class="na">mockMvcGet</span><span class="p">;</span>
 
-<span class="nd">@SpringBootTest</span><span class="w"></span>
-<span class="nd">@AutoConfigureMockMvc</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@SpringBootTest</span>
+<span class="nd">@AutoConfigureMockMvc</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Простое выполнение запроса и получение ответа&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">MockHttpServletResponse</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mockMvcGet</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//описывается запрос:</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// метод (GET, POST, PUT или Delete)</span><span class="w"></span>
-<span class="w">            </span><span class="n">response</span><span class="p">(</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;/something&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//и</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">APPLICATION_JSON</span><span class="p">)</span><span class="w"> </span><span class="c1">//параметры</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">content</span><span class="p">(</span><span class="s">&quot;{\&quot;someString\&quot;:\&quot;1\&quot;}&quot;</span><span class="p">))</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Простое выполнение запроса и получение ответа&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">MockHttpServletResponse</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mockMvcGet</span><span class="p">(</span>
+<span class="w">            </span><span class="c1">//описывается запрос:</span>
+<span class="w">            </span><span class="c1">// метод (GET, POST, PUT или Delete)</span>
+<span class="w">            </span><span class="n">response</span><span class="p">(</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;/something&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//и</span>
+<span class="w">                </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">APPLICATION_JSON</span><span class="p">)</span><span class="w"> </span><span class="c1">//параметры</span>
+<span class="w">                </span><span class="p">.</span><span class="na">content</span><span class="p">(</span><span class="s">&quot;{\&quot;someString\&quot;:\&quot;1\&quot;}&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Ниже пример с явным использованием объекта <code class="docutils literal notranslate"><span class="pre">org.springframework.test.web.servlet.MockMvc</span></code></p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.boot.test.context.SpringBootTest</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.boot.test.context.SpringBootTest</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.mock.web.MockHttpServletResponse</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.test.web.servlet.MockMvc</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.mock.web.MockHttpServletResponse</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.test.web.servlet.MockMvc</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.*</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.mock.mvc</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">GetMockMvcResponseResultSupplier</span><span class="p">.</span><span class="na">response</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.mock.mvc</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">MockMvcContext</span><span class="p">.</span><span class="na">mockMvcGet</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.*</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.mock.mvc</span>
+<span class="w">    </span><span class="p">.</span><span class="na">GetMockMvcResponseResultSupplier</span><span class="p">.</span><span class="na">response</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.mock.mvc</span>
+<span class="w">    </span><span class="p">.</span><span class="na">MockMvcContext</span><span class="p">.</span><span class="na">mockMvcGet</span><span class="p">;</span>
 
-<span class="nd">@SpringBootTest</span><span class="w"></span>
-<span class="nd">@AutoConfigureMockMvc</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@SpringBootTest</span>
+<span class="nd">@AutoConfigureMockMvc</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Autowired</span><span class="w"> </span><span class="c1">//Или любой другой вариант</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">MockMvc</span><span class="w"> </span><span class="n">mockMvc</span><span class="p">;</span><span class="w"> </span><span class="c1">//инициализации поля или переменной</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Autowired</span><span class="w"> </span><span class="c1">//Или любой другой вариант</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">MockMvc</span><span class="w"> </span><span class="n">mockMvc</span><span class="p">;</span><span class="w"> </span><span class="c1">//инициализации поля или переменной</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Простое выполнение запроса и получение ответа&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">MockHttpServletResponse</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mockMvcGet</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="n">response</span><span class="p">(</span><span class="w"></span>
-<span class="w">                </span><span class="n">mockMvc</span><span class="p">,</span><span class="w"> </span><span class="c1">//явная передача объекта MockMvc</span><span class="w"></span>
-<span class="w">                </span><span class="n">get</span><span class="p">(</span><span class="s">&quot;/something&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                    </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">APPLICATION_JSON</span><span class="p">)</span><span class="w"></span>
-<span class="w">                    </span><span class="p">.</span><span class="na">content</span><span class="p">(</span><span class="s">&quot;{\&quot;someString\&quot;:\&quot;1\&quot;}&quot;</span><span class="p">))</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Простое выполнение запроса и получение ответа&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">MockHttpServletResponse</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mockMvcGet</span><span class="p">(</span>
+<span class="w">            </span><span class="n">response</span><span class="p">(</span>
+<span class="w">                </span><span class="n">mockMvc</span><span class="p">,</span><span class="w"> </span><span class="c1">//явная передача объекта MockMvc</span>
+<span class="w">                </span><span class="n">get</span><span class="p">(</span><span class="s">&quot;/something&quot;</span><span class="p">)</span>
+<span class="w">                    </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">APPLICATION_JSON</span><span class="p">)</span>
+<span class="w">                    </span><span class="p">.</span><span class="na">content</span><span class="p">(</span><span class="s">&quot;{\&quot;someString\&quot;:\&quot;1\&quot;}&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <section id="mock-mvc">
@@ -533,47 +533,47 @@
 <p>Методы, с помощью которых можно описать ожидаемый ответ, можно
 <a class="reference external" href="https://tinkoff.github.io/neptune/spring.mock.mvc/ru/tinkoff/qa/neptune/spring/mock/mvc/GetMockMvcResponseResultSupplier.html">посмотреть в документации. Названия методов начинаются на <em>expect</em></a>.</p>
 <p>Ниже простой пример</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.boot.test.context.SpringBootTest</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.boot.test.context.SpringBootTest</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.mock.web.MockHttpServletResponse</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.test.web.servlet.MockMvc</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.mock.web.MockHttpServletResponse</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.test.web.servlet.MockMvc</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.*</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.mock.mvc</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">GetMockMvcResponseResultSupplier</span><span class="p">.</span><span class="na">response</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.mock.mvc</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">MockMvcContext</span><span class="p">.</span><span class="na">mockMvcGet</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.*</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.mock.mvc</span>
+<span class="w">    </span><span class="p">.</span><span class="na">GetMockMvcResponseResultSupplier</span><span class="p">.</span><span class="na">response</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.mock.mvc</span>
+<span class="w">    </span><span class="p">.</span><span class="na">MockMvcContext</span><span class="p">.</span><span class="na">mockMvcGet</span><span class="p">;</span>
 
-<span class="nd">@SpringBootTest</span><span class="w"></span>
-<span class="nd">@AutoConfigureMockMvc</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@SpringBootTest</span>
+<span class="nd">@AutoConfigureMockMvc</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Простое выполнение запроса и получение ответа&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mockMvcGet</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="n">response</span><span class="p">(</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;/something&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">APPLICATION_JSON</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">content</span><span class="p">(</span><span class="s">&quot;{\&quot;someString\&quot;:\&quot;1\&quot;}&quot;</span><span class="p">))</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// Часто используемые ожидания имеют  </span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">expectStatus</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span><span class="w"> </span><span class="c1">//упрощенную запись</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">expectContent</span><span class="p">(</span><span class="n">containsString</span><span class="p">(</span><span class="s">&quot;SUCCESS&quot;</span><span class="p">))</span><span class="w"></span>
-<span class="w">                </span><span class="c1">/////////////////////////////////////////</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Так же, при необходимости, есть возможности описывать</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//ожидания в функциональном стиле</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">expectStatus</span><span class="p">(</span><span class="n">resultStatus</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//некое вычисление или алгоритм</span><span class="w"></span>
-<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">resultStatus</span><span class="p">.</span><span class="na">isOk</span><span class="p">();</span><span class="w"></span>
-<span class="w">                </span><span class="p">})</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">expectContent</span><span class="p">(</span><span class="n">contentResultMatchers</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//некое вычисление или алгоритм</span><span class="w"></span>
-<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">contentResultMatchers</span><span class="p">.</span><span class="na">string</span><span class="p">(</span><span class="n">containsString</span><span class="p">(</span><span class="s">&quot;SUCCESS&quot;</span><span class="p">));</span><span class="w"></span>
-<span class="w">                </span><span class="p">})</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Простое выполнение запроса и получение ответа&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mockMvcGet</span><span class="p">(</span>
+<span class="w">            </span><span class="n">response</span><span class="p">(</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;/something&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">APPLICATION_JSON</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="na">content</span><span class="p">(</span><span class="s">&quot;{\&quot;someString\&quot;:\&quot;1\&quot;}&quot;</span><span class="p">))</span>
+<span class="w">                </span><span class="c1">// Часто используемые ожидания имеют  </span>
+<span class="w">                </span><span class="p">.</span><span class="na">expectStatus</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span><span class="w"> </span><span class="c1">//упрощенную запись</span>
+<span class="w">                </span><span class="p">.</span><span class="na">expectContent</span><span class="p">(</span><span class="n">containsString</span><span class="p">(</span><span class="s">&quot;SUCCESS&quot;</span><span class="p">))</span>
+<span class="w">                </span><span class="c1">/////////////////////////////////////////</span>
+<span class="w">                </span><span class="c1">//</span>
+<span class="w">                </span><span class="c1">//Так же, при необходимости, есть возможности описывать</span>
+<span class="w">                </span><span class="c1">//ожидания в функциональном стиле</span>
+<span class="w">                </span><span class="p">.</span><span class="na">expectStatus</span><span class="p">(</span><span class="n">resultStatus</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="c1">//некое вычисление или алгоритм</span>
+<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">resultStatus</span><span class="p">.</span><span class="na">isOk</span><span class="p">();</span>
+<span class="w">                </span><span class="p">})</span>
+<span class="w">                </span><span class="p">.</span><span class="na">expectContent</span><span class="p">(</span><span class="n">contentResultMatchers</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="c1">//некое вычисление или алгоритм</span>
+<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">contentResultMatchers</span><span class="p">.</span><span class="na">string</span><span class="p">(</span><span class="n">containsString</span><span class="p">(</span><span class="s">&quot;SUCCESS&quot;</span><span class="p">));</span>
+<span class="w">                </span><span class="p">})</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>

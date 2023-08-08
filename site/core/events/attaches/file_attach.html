@@ -464,43 +464,43 @@
         <article role="main">
           <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>Аттач файла<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.captors.FileCaptor</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.captors.FileCaptor</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.io.File</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.io.File</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyFileCaptor</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">FileCaptor</span><span class="o">&lt;</span><span class="w"> </span><span class="c1">//&lt;- нужно унаследовать данный класс</span><span class="w"></span>
-<span class="w">        </span><span class="n">T</span><span class="w"> </span><span class="c1">//тип объекта, который может быть превращен в файл</span><span class="w"></span>
-<span class="w">        </span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyFileCaptor</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">FileCaptor</span><span class="o">&lt;</span><span class="w"> </span><span class="c1">//&lt;- нужно унаследовать данный класс</span>
+<span class="w">        </span><span class="n">T</span><span class="w"> </span><span class="c1">//тип объекта, который может быть превращен в файл</span>
+<span class="w">        </span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="nf">getCaptured</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">toBeCaptured</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">// Возвращает объект, с помощью которого формируется файл</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// если такой объект нельзя получить, метод должен возвращать null</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="nf">getCaptured</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">toBeCaptured</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">// Возвращает объект, с помощью которого формируется файл</span>
+<span class="w">        </span><span class="c1">// если такой объект нельзя получить, метод должен возвращать null</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">File</span><span class="w"> </span><span class="nf">getData</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">caught</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">// возвращает файл,</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// если такой объект нельзя получить, метод должен возвращать null</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">File</span><span class="w"> </span><span class="nf">getData</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">caught</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">// возвращает файл,</span>
+<span class="w">        </span><span class="c1">// если такой объект нельзя получить, метод должен возвращать null</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.captors.CapturedFileInjector</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.captors.CapturedFileInjector</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.io.File</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.io.File</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyFileInjector</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">CapturedFileInjector</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyFileInjector</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">CapturedFileInjector</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">inject</span><span class="p">(</span><span class="n">File</span><span class="w"> </span><span class="n">toBeInjected</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//логика прикрепления файла к отчету / логу</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">inject</span><span class="p">(</span><span class="n">File</span><span class="w"> </span><span class="n">toBeInjected</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//логика прикрепления файла к отчету / логу</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>

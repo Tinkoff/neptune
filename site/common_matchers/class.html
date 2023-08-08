@@ -466,21 +466,21 @@
 <h1>Для класса объекта<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Пример использования матчера для проверки равенства классов объектов</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.MatcherAssert.assertThat</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.ofclass</span><span class="w"></span>
-<span class="w">             </span><span class="p">.</span><span class="na">OfClassMatcher</span><span class="p">.</span><span class="na">isObjectOfClass</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.MatcherAssert.assertThat</span><span class="p">;</span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.ofclass</span>
+<span class="w">             </span><span class="p">.</span><span class="na">OfClassMatcher</span><span class="p">.</span><span class="na">isObjectOfClass</span><span class="p">;</span>
 
-<span class="w"> </span><span class="c1">//пример использования</span><span class="w"></span>
-<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w"> </span><span class="c1">//пример использования</span>
+<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Проверка того, что класс объекта равен ожидаемому классу&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="kd">var</span><span class="w"> </span><span class="n">someObject</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="c1">//инициализация или получение</span><span class="w"></span>
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">someObject</span><span class="p">,</span><span class="w"> </span><span class="n">isObjectOfClass</span><span class="p">(</span><span class="n">SomeClass</span><span class="p">.</span><span class="na">class</span><span class="p">));</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
-<span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Проверка того, что класс объекта равен ожидаемому классу&quot;</span><span class="p">)</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="kd">var</span><span class="w"> </span><span class="n">someObject</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="c1">//инициализация или получение</span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">someObject</span><span class="p">,</span><span class="w"> </span><span class="n">isObjectOfClass</span><span class="p">(</span><span class="n">SomeClass</span><span class="p">.</span><span class="na">class</span><span class="p">));</span>
+<span class="w">     </span><span class="p">}</span>
+<span class="w"> </span><span class="p">}</span>
 </pre></div>
 </div>
 </div>

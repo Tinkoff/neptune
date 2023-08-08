@@ -464,24 +464,24 @@
         <article role="main">
           <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">gradle</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">task</span><span class="w"> </span><span class="nf">generateBundle</span><span class="o">(</span><span class="nl">type:</span><span class="w"> </span><span class="n">JavaExec</span><span class="o">)</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">classpath</span><span class="w"> </span><span class="n">sourceSets</span><span class="o">.</span><span class="na">main</span><span class="o">.</span><span class="na">runtimeClasspath</span><span class="w"></span>
-<span class="w">    </span><span class="n">main</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//нужная локаль</span><span class="w"></span>
-<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="s2">&quot;ru_RU&quot;</span><span class="o">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//или $projectDir/src/main/resources</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//или любая другая директория</span><span class="w"></span>
-<span class="w">            </span><span class="s2">&quot;$projectDir/src/test/resources&quot;</span><span class="o">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//кастомный бандл (true) или дефолтный (false)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//В данном случае true</span><span class="w"></span>
-<span class="w">            </span><span class="kc">true</span><span class="o">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Имя бандла, который надо сформировать.</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//У каждого модуля Neptune уникальный набор имен бандлов</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Имена бандлов можно не указывать, тогда сформируются бандлы для</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//всех подключенных модулей</span><span class="w"></span>
-<span class="w">            </span><span class="n">name_of_the_module</span><span class="o">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//и так далее, имена нужных бандлов</span><span class="w"></span>
-<span class="w">            </span><span class="n">name_of_the_modul2</span><span class="w"></span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">task</span><span class="w"> </span><span class="nf">generateBundle</span><span class="o">(</span><span class="nl">type:</span><span class="w"> </span><span class="n">JavaExec</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">classpath</span><span class="w"> </span><span class="n">sourceSets</span><span class="o">.</span><span class="na">main</span><span class="o">.</span><span class="na">runtimeClasspath</span>
+<span class="w">    </span><span class="n">main</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ru.tinkoff.qa.neptune.core.api.localization.ResourceBundleGenerator&quot;</span>
+<span class="w">    </span><span class="c1">//нужная локаль</span>
+<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="s2">&quot;ru_RU&quot;</span><span class="o">,</span>
+<span class="w">            </span><span class="c1">//или $projectDir/src/main/resources</span>
+<span class="w">            </span><span class="c1">//или любая другая директория</span>
+<span class="w">            </span><span class="s2">&quot;$projectDir/src/test/resources&quot;</span><span class="o">,</span>
+<span class="w">            </span><span class="c1">//кастомный бандл (true) или дефолтный (false)</span>
+<span class="w">            </span><span class="c1">//В данном случае true</span>
+<span class="w">            </span><span class="kc">true</span><span class="o">,</span>
+<span class="w">            </span><span class="c1">//Имя бандла, который надо сформировать.</span>
+<span class="w">            </span><span class="c1">//У каждого модуля Neptune уникальный набор имен бандлов</span>
+<span class="w">            </span><span class="c1">//Имена бандлов можно не указывать, тогда сформируются бандлы для</span>
+<span class="w">            </span><span class="c1">//всех подключенных модулей</span>
+<span class="w">            </span><span class="n">name_of_the_module</span><span class="o">,</span>
+<span class="w">            </span><span class="c1">//и так далее, имена нужных бандлов</span>
+<span class="w">            </span><span class="n">name_of_the_modul2</span>
 </pre></div>
 </div>
 </div>

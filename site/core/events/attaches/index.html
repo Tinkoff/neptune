@@ -467,26 +467,26 @@
 <p>Ниже показан набор классов, который позволяет автоматизировать создание аттачей средмтвами <em>Neptune</em></p>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Пример класса, объекты которого извлекают данные для аттача</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.Captor</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.CapturedDataInjector</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.Captor</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.CapturedDataInjector</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyCaptor</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">S</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Captor</span><span class="o">&lt;</span><span class="w"> </span><span class="c1">// &lt;- нужно унаследовать данный класс</span><span class="w"></span>
-<span class="w">    </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="c1">//тип объекта, к</span><span class="w"></span>
-<span class="w">    </span><span class="n">S</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//тип объекта-аттача</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyCaptor</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">S</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Captor</span><span class="o">&lt;</span><span class="w"> </span><span class="c1">// &lt;- нужно унаследовать данный класс</span>
+<span class="w">    </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="c1">//тип объекта, к</span>
+<span class="w">    </span><span class="n">S</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//тип объекта-аттача</span>
 
-<span class="w">    </span><span class="c1">//самый общий конструктор</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//Добавлено для наглядности</span><span class="w"></span>
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyCaptor</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">message</span><span class="p">,</span><span class="w"> </span><span class="c1">//название/сообщение аттача</span><span class="w"></span>
-<span class="w">                      </span><span class="c1">//коллекция объектов,</span><span class="w"></span>
-<span class="w">                      </span><span class="n">List</span><span class="o">&lt;?</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">CapturedDataInjector</span><span class="o">&lt;</span><span class="n">S</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">injectors</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                      </span><span class="c1">// которые добавляют</span><span class="w"></span>
-<span class="w">                      </span><span class="c1">// аттачи непосредственно к отчету / логу.</span><span class="w"></span>
-<span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="n">message</span><span class="p">,</span><span class="w"> </span><span class="n">injectors</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//самый общий конструктор</span>
+<span class="w">    </span><span class="c1">//Добавлено для наглядности</span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyCaptor</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">message</span><span class="p">,</span><span class="w"> </span><span class="c1">//название/сообщение аттача</span>
+<span class="w">                      </span><span class="c1">//коллекция объектов,</span>
+<span class="w">                      </span><span class="n">List</span><span class="o">&lt;?</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">CapturedDataInjector</span><span class="o">&lt;</span><span class="n">S</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">injectors</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                      </span><span class="c1">// которые добавляют</span>
+<span class="w">                      </span><span class="c1">// аттачи непосредственно к отчету / логу.</span>
+<span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="n">message</span><span class="p">,</span><span class="w"> </span><span class="n">injectors</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="cm">/*</span>
 <span class="cm">    //Рекомендуется, чтобы класс-наследник Captor</span>
@@ -495,40 +495,40 @@
 <span class="cm">    public MyCaptor() {</span>
 <span class="cm">        super();</span>
 <span class="cm">    }</span>
-<span class="cm">    */</span><span class="w"></span>
+<span class="cm">    */</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">S</span><span class="w"> </span><span class="nf">getData</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">caught</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">// возвращает объект-аттач,</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// если такой объект нельзя получить, метод должен возвращать null</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">S</span><span class="w"> </span><span class="nf">getData</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">caught</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">// возвращает объект-аттач,</span>
+<span class="w">        </span><span class="c1">// если такой объект нельзя получить, метод должен возвращать null</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="nf">getCaptured</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">toBeCaptured</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">// Возвращает объект, с помощью которого формируется аттач</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// если такой объект нельзя получить, метод должен возвращать null</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="nf">getCaptured</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">toBeCaptured</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">// Возвращает объект, с помощью которого формируется аттач</span>
+<span class="w">        </span><span class="c1">// если такой объект нельзя получить, метод должен возвращать null</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-text">Пример класса, объекты которого создают аттач</span><a class="headerlink" href="#id3" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.CapturedDataInjector</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.CapturedDataInjector</span><span class="p">;</span>
 
-<span class="c1">//Класс объектов, которые добавляют аттач в лог / отчет о тесте.</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyInjector</span><span class="o">&lt;</span><span class="n">S</span><span class="o">&gt;</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//нужно реализовать этот интерфейс</span><span class="w"></span>
-<span class="w">        </span><span class="kd">implements</span><span class="w"> </span><span class="n">CapturedDataInjector</span><span class="o">&lt;</span><span class="n">S</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//S - Тип объекта, добавляемого как аттач</span><span class="w"></span>
+<span class="c1">//Класс объектов, которые добавляют аттач в лог / отчет о тесте.</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyInjector</span><span class="o">&lt;</span><span class="n">S</span><span class="o">&gt;</span>
+<span class="w">        </span><span class="c1">//нужно реализовать этот интерфейс</span>
+<span class="w">        </span><span class="kd">implements</span><span class="w"> </span><span class="n">CapturedDataInjector</span><span class="o">&lt;</span><span class="n">S</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//S - Тип объекта, добавляемого как аттач</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">inject</span><span class="p">(</span><span class="n">S</span><span class="w"> </span><span class="n">toBeInjected</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//логика добавления приложения к отчету / логу</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">inject</span><span class="p">(</span><span class="n">S</span><span class="w"> </span><span class="n">toBeInjected</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//логика добавления приложения к отчету / логу</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>

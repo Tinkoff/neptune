@@ -466,90 +466,90 @@
 <h1>Аннотации для шагов<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
 <p>В данном разделе описаны аннотации, связывающие <a class="reference internal" href="../../../steps/steps/index.html"><span class="doc std std-doc">шаги</span></a> и классы, создающие аттачи</p>
 <p>Для примера будем использовать следующие классы</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.Captor</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.Captor</span><span class="p">;</span>
 
-<span class="c1">//Предположим, что объект-контекст может содержать данные,</span><span class="w"></span>
-<span class="c1">// которые можно использовать как текстовое приложение к отчету о тесте</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ExampleCaptor</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Captor</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="c1">//Предположим, что объект-контекст может содержать данные,</span>
+<span class="c1">// которые можно использовать как текстовое приложение к отчету о тесте</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ExampleCaptor</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Captor</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">getData</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">caught</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">//возврат какой-то строки</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">getData</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">caught</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">//возврат какой-то строки</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="nf">getCaptured</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">toBeCaptured</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">//убеждаемся, что объект типа T или</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//что от объекта можно получить значение типа T,</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// и приводим объект к этому типу</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// или создаем объект этого типа</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="nf">getCaptured</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">toBeCaptured</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">//убеждаемся, что объект типа T или</span>
+<span class="w">        </span><span class="c1">//что от объекта можно получить значение типа T,</span>
+<span class="w">        </span><span class="c1">// и приводим объект к этому типу</span>
+<span class="w">        </span><span class="c1">// или создаем объект этого типа</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.Captor</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.Captor</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ExampleCaptor2</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Captor</span><span class="o">&lt;</span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ExampleCaptor2</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Captor</span><span class="o">&lt;</span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">getData</span><span class="p">(</span><span class="n">M</span><span class="w"> </span><span class="n">caught</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">//возврат какой-то строки</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">getData</span><span class="p">(</span><span class="n">M</span><span class="w"> </span><span class="n">caught</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">//возврат какой-то строки</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">M</span><span class="w"> </span><span class="nf">getCaptured</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">toBeCaptured</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">//убеждаемся, что объект типа M или</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//что от объекта можно получить значение типа M,</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// и приводим объект к этому типу</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// или создаем объект этого типа</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">M</span><span class="w"> </span><span class="nf">getCaptured</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">toBeCaptured</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">//убеждаемся, что объект типа M или</span>
+<span class="w">        </span><span class="c1">//что от объекта можно получить значение типа M,</span>
+<span class="w">        </span><span class="c1">// и приводим объект к этому типу</span>
+<span class="w">        </span><span class="c1">// или создаем объект этого типа</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.Captor</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.Captor</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ExampleCaptor3</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Captor</span><span class="o">&lt;</span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ExampleCaptor3</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Captor</span><span class="o">&lt;</span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">getData</span><span class="p">(</span><span class="n">R</span><span class="w"> </span><span class="n">caught</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">//возврат какой-то строки</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">getData</span><span class="p">(</span><span class="n">R</span><span class="w"> </span><span class="n">caught</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">//возврат какой-то строки</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="nf">getCaptured</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">toBeCaptured</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">//убеждаемся, что объект типа R или</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//что от объекта можно получить значение типа R,</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// и приводим объект к этому типу</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// или создаем объект этого типа</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="nf">getCaptured</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">toBeCaptured</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">//убеждаемся, что объект типа R или</span>
+<span class="w">        </span><span class="c1">//что от объекта можно получить значение типа R,</span>
+<span class="w">        </span><span class="c1">// и приводим объект к этому типу</span>
+<span class="w">        </span><span class="c1">// или создаем объект этого типа</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.Captor</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.Captor</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ExampleCaptor4</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Captor</span><span class="o">&lt;</span><span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ExampleCaptor4</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Captor</span><span class="o">&lt;</span><span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">getData</span><span class="p">(</span><span class="n">V</span><span class="w"> </span><span class="n">caught</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">//возврат какой-то строки</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">getData</span><span class="p">(</span><span class="n">V</span><span class="w"> </span><span class="n">caught</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">//возврат какой-то строки</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">V</span><span class="w"> </span><span class="nf">getCaptured</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">toBeCaptured</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">//убеждаемся, что объект типа V или</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//что от объекта можно получить значение типа V,</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// и приводим объект к этому типу</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// или создаем объект этого типа</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">V</span><span class="w"> </span><span class="nf">getCaptured</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">toBeCaptured</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">//убеждаемся, что объект типа V или</span>
+<span class="w">        </span><span class="c1">//что от объекта можно получить значение типа V,</span>
+<span class="w">        </span><span class="c1">// и приводим объект к этому типу</span>
+<span class="w">        </span><span class="c1">// или создаем объект этого типа</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <div class="toctree-wrapper compound">

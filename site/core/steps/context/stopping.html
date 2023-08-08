@@ -466,20 +466,20 @@
 <h1>Завершение / Остановка<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
 <p>Некоторые контексты могут занимать ресурсы, которые следует освобождать во время простоя (все тесты в наборе завершились,
 какие-либо из тестовых потоков завершились и т.п.).</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.context.Context</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.context.Context</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTestContext</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Context</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="o">&gt;</span><span class="w"></span>
-<span class="w">    </span><span class="kd">implements</span><span class="w"> </span><span class="n">Stoppable</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;---Необходимо реализовать данный интерфейс</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTestContext</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Context</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="kd">implements</span><span class="w"> </span><span class="n">Stoppable</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;---Необходимо реализовать данный интерфейс</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">stop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//логика освобождения ресурсов, занятых объектом контекста,</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//или уничтожения внутренних объектов, инкапсулированных объектом контекста</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">stop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//логика освобождения ресурсов, занятых объектом контекста,</span>
+<span class="w">        </span><span class="c1">//или уничтожения внутренних объектов, инкапсулированных объектом контекста</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Автоматическое завершение / остановка включается при указании <a class="reference internal" href="../../../quick_start/settings/resorces.html"><span class="doc std std-doc">соответствующих настроек</span></a></p>

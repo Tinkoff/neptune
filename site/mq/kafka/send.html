@@ -471,66 +471,66 @@
 <li><p><a class="reference internal" href="settings/KAFKA_CALL_BACK.html"><span class="doc std std-doc">KAFKA_CALL_BACK</span></a></p></li>
 <li><p><a class="reference internal" href="../../quick_start/steps/pattern_steps/action_steps.html"><span class="doc std std-doc">Шаги, выполняющие действие</span></a></p></li>
 </ul>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.apache.kafka.clients.producer.ProducerConfig.MAX_REQUEST_SIZE_CONFIG</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.apache.kafka.clients.producer.ProducerConfig.MAX_REQUEST_SIZE_CONFIG</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.producerRecord</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.producerRecord</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">kafka</span><span class="p">().</span><span class="na">send</span><span class="p">(</span><span class="n">producerRecord</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">SomeTypeSerializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//сериализатор для значения </span><span class="w"></span>
-<span class="w">            </span><span class="c1">//оправляемого сообщения</span><span class="w"></span>
-<span class="w">            </span><span class="n">someTypeInstance</span><span class="p">)</span><span class="w"> </span><span class="c1">//Значение отправляемого сообщения</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Можно указать топик, в который следует отправить сообщение.</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Если значение свойства DEFAULT_TOPIC_FOR_SEND непустое,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//и нет необходимости указывать другой топик для отправки,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//то метод можно не вызывать</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">topic</span><span class="p">(</span><span class="s">&quot;testTopic&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Метод вызывается, когда нужно передать кол-бэк,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//и он отличается от того, который полуют при помощи</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//свойства KAFKA_CALL_BACK</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">callback</span><span class="p">(</span><span class="n">customCallBack</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Можно указать свойства и их значения,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//которые могут дополнить/заменить свойства, </span><span class="w"></span>
-<span class="w">            </span><span class="c1">//получаемые при помощи KAFKA_PRODUCER_PROPERTIES</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">setProperty</span><span class="p">(</span><span class="n">MAX_REQUEST_SIZE_CONFIG</span><span class="p">,</span><span class="w"> </span><span class="n">requestSizeConf</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//по умолчанию считается, что ключ сообщения </span><span class="w"></span>
-<span class="w">            </span><span class="c1">//будет оправлен в виде текста, и ключ пустой</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">setKey</span><span class="p">(</span><span class="s">&quot;Some String&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//можно указать ключ в виде объекта,</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">setKey</span><span class="p">(</span><span class="n">someKeyInstance</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SomeKeyTypeSerializer</span><span class="p">())</span><span class="w"> </span><span class="c1">//либо</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//в виде объекта вместе с сериализатором, </span><span class="w"></span>
-<span class="w">            </span><span class="c1">// если тип нового объекта-ключа отличается от предыдущего</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//типа объектов-ключей.</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Опционально</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">partition</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//опционально</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">timestamp</span><span class="p">(</span><span class="mi">10L</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//опционально можно передать заголовки</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">header</span><span class="p">(</span><span class="s">&quot;Header key&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Value1&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//в разных форматах</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">header</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">RecordHeader</span><span class="p">(</span><span class="s">&quot;Header key2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Value2&quot;</span><span class="p">.</span><span class="na">getBytes</span><span class="p">()))</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">kafka</span><span class="p">().</span><span class="na">send</span><span class="p">(</span><span class="n">producerRecord</span><span class="p">(</span>
+<span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">SomeTypeSerializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//сериализатор для значения </span>
+<span class="w">            </span><span class="c1">//оправляемого сообщения</span>
+<span class="w">            </span><span class="n">someTypeInstance</span><span class="p">)</span><span class="w"> </span><span class="c1">//Значение отправляемого сообщения</span>
+<span class="w">            </span><span class="c1">//Можно указать топик, в который следует отправить сообщение.</span>
+<span class="w">            </span><span class="c1">//Если значение свойства DEFAULT_TOPIC_FOR_SEND непустое,</span>
+<span class="w">            </span><span class="c1">//и нет необходимости указывать другой топик для отправки,</span>
+<span class="w">            </span><span class="c1">//то метод можно не вызывать</span>
+<span class="w">            </span><span class="p">.</span><span class="na">topic</span><span class="p">(</span><span class="s">&quot;testTopic&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//Метод вызывается, когда нужно передать кол-бэк,</span>
+<span class="w">            </span><span class="c1">//и он отличается от того, который полуют при помощи</span>
+<span class="w">            </span><span class="c1">//свойства KAFKA_CALL_BACK</span>
+<span class="w">            </span><span class="p">.</span><span class="na">callback</span><span class="p">(</span><span class="n">customCallBack</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//Можно указать свойства и их значения,</span>
+<span class="w">            </span><span class="c1">//которые могут дополнить/заменить свойства, </span>
+<span class="w">            </span><span class="c1">//получаемые при помощи KAFKA_PRODUCER_PROPERTIES</span>
+<span class="w">            </span><span class="p">.</span><span class="na">setProperty</span><span class="p">(</span><span class="n">MAX_REQUEST_SIZE_CONFIG</span><span class="p">,</span><span class="w"> </span><span class="n">requestSizeConf</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//по умолчанию считается, что ключ сообщения </span>
+<span class="w">            </span><span class="c1">//будет оправлен в виде текста, и ключ пустой</span>
+<span class="w">            </span><span class="p">.</span><span class="na">setKey</span><span class="p">(</span><span class="s">&quot;Some String&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//можно указать ключ в виде объекта,</span>
+<span class="w">            </span><span class="p">.</span><span class="na">setKey</span><span class="p">(</span><span class="n">someKeyInstance</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SomeKeyTypeSerializer</span><span class="p">())</span><span class="w"> </span><span class="c1">//либо</span>
+<span class="w">            </span><span class="c1">//в виде объекта вместе с сериализатором, </span>
+<span class="w">            </span><span class="c1">// если тип нового объекта-ключа отличается от предыдущего</span>
+<span class="w">            </span><span class="c1">//типа объектов-ключей.</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">            </span><span class="c1">//Опционально</span>
+<span class="w">            </span><span class="p">.</span><span class="na">partition</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//опционально</span>
+<span class="w">            </span><span class="p">.</span><span class="na">timestamp</span><span class="p">(</span><span class="mi">10L</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//опционально можно передать заголовки</span>
+<span class="w">            </span><span class="p">.</span><span class="na">header</span><span class="p">(</span><span class="s">&quot;Header key&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Value1&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//в разных форматах</span>
+<span class="w">            </span><span class="p">.</span><span class="na">header</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">RecordHeader</span><span class="p">(</span><span class="s">&quot;Header key2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Value2&quot;</span><span class="p">.</span><span class="na">getBytes</span><span class="p">()))</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Ниже упрощенный пример, если надо оправить сообщение с текстовым значением</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.producerRecord</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.send.KafkaSendRecordsActionSupplier.producerRecord</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">kafka</span><span class="p">().</span><span class="na">send</span><span class="p">(</span><span class="n">producerRecord</span><span class="p">(</span><span class="s">&quot;I&#39;m a String!&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//опциональные уточняющие </span><span class="w"></span>
-<span class="w">            </span><span class="c1">//параметры те же самые, что в примере выше </span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">kafka</span><span class="p">().</span><span class="na">send</span><span class="p">(</span><span class="n">producerRecord</span><span class="p">(</span><span class="s">&quot;I&#39;m a String!&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//опциональные уточняющие </span>
+<span class="w">            </span><span class="c1">//параметры те же самые, что в примере выше </span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>

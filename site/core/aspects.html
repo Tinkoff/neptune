@@ -471,79 +471,79 @@
 </ol>
 <p>Maven</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;dependency&gt;</span>
-    <span class="nt">&lt;groupId&gt;</span>net.bytebuddy<span class="nt">&lt;/groupId&gt;</span>
-    <span class="nt">&lt;artifactId&gt;</span>byte-buddy<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>${actual_version}<span class="nt">&lt;/version&gt;</span>
-    <span class="cm">&lt;!--указать нужный scope--&gt;</span>
+<span class="w">    </span><span class="nt">&lt;groupId&gt;</span>net.bytebuddy<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">    </span><span class="nt">&lt;artifactId&gt;</span>byte-buddy<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">    </span><span class="nt">&lt;version&gt;</span>${actual_version}<span class="nt">&lt;/version&gt;</span>
+<span class="w">    </span><span class="cm">&lt;!--указать нужный scope--&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 </pre></div>
 </div>
 <p>Gradle</p>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="c1">//указать нужный scope</span><span class="w"></span>
-<span class="n">implementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;net.bytebuddy&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;byte-buddy&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="s1">&#39;actual_version&#39;</span><span class="w"></span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="c1">//указать нужный scope</span>
+<span class="n">implementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;net.bytebuddy&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;byte-buddy&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="s1">&#39;actual_version&#39;</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
 <li><p>Реализовать интерфейс</p></li>
 </ol>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">net.bytebuddy.asm.Advice</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">net.bytebuddy.description.method.MethodDescription</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">net.bytebuddy.description.type.TypeDescription</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">net.bytebuddy.implementation.bytecode.assign.Assigner</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">net.bytebuddy.matcher.ElementMatcher</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">net.bytebuddy.asm.Advice</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">net.bytebuddy.description.method.MethodDescription</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">net.bytebuddy.description.type.TypeDescription</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">net.bytebuddy.implementation.bytecode.assign.Assigner</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">net.bytebuddy.matcher.ElementMatcher</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.agent.NeptuneTransformParameters</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.agent.NeptuneTransformParameters</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.lang.reflect.Method</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.lang.reflect.Method</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">net.bytebuddy.matcher.ElementMatchers.*</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">net.bytebuddy.matcher.ElementMatchers.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeTransformParameters</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">NeptuneTransformParameters</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeTransformParameters</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">NeptuneTransformParameters</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">ElementMatcher</span><span class="o">&lt;?</span><span class="w"> </span><span class="kd">super</span><span class="w"> </span><span class="n">MethodDescription</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">methodMatcher</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//описание того, к каким методам применяется аспект</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">named</span><span class="p">(</span><span class="s">&quot;someMethod&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">ElementMatcher</span><span class="o">&lt;?</span><span class="w"> </span><span class="kd">super</span><span class="w"> </span><span class="n">MethodDescription</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">methodMatcher</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//описание того, к каким методам применяется аспект</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">named</span><span class="p">(</span><span class="s">&quot;someMethod&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Class</span><span class="o">&lt;?&gt;</span><span class="w"> </span><span class="n">interceptor</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//Класс-перехватчик</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">SomeInterceptor</span><span class="p">.</span><span class="na">class</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Class</span><span class="o">&lt;?&gt;</span><span class="w"> </span><span class="n">interceptor</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//Класс-перехватчик</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">SomeInterceptor</span><span class="p">.</span><span class="na">class</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">ElementMatcher</span><span class="o">&lt;?</span><span class="w"> </span><span class="kd">super</span><span class="w"> </span><span class="n">TypeDescription</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">typeMatcher</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//описание того, к методам каких классов применяется аспект</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">is</span><span class="p">(</span><span class="n">SomeClass</span><span class="p">.</span><span class="na">class</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">ElementMatcher</span><span class="o">&lt;?</span><span class="w"> </span><span class="kd">super</span><span class="w"> </span><span class="n">TypeDescription</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">typeMatcher</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//описание того, к методам каких классов применяется аспект</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">is</span><span class="p">(</span><span class="n">SomeClass</span><span class="p">.</span><span class="na">class</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="w">    </span>
-<span class="w">    </span><span class="c1">//перехватчик</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//Необязательно это должен быть вложенный класс, но</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//он обязательно должен быть публичным</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeInterceptor</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//перехватчик</span>
+<span class="w">    </span><span class="c1">//Необязательно это должен быть вложенный класс, но</span>
+<span class="w">    </span><span class="c1">//он обязательно должен быть публичным</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeInterceptor</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">        </span><span class="nd">@Advice.OnMethodEnter</span><span class="w"></span>
-<span class="w">        </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">interceptEnter</span><span class="p">(</span><span class="nd">@Advice.This</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">target</span><span class="p">,</span><span class="w"></span>
-<span class="w">                                          </span><span class="nd">@Advice.Origin</span><span class="w"> </span><span class="n">Method</span><span class="w"> </span><span class="n">method</span><span class="p">,</span><span class="w"></span>
-<span class="w">                                          </span><span class="nd">@Advice.AllArguments</span><span class="w"> </span><span class="n">Object</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">,</span><span class="w"></span>
-<span class="w">                                          </span><span class="nd">@Advice.Return</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">returned</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//логика в начале выполнения перехватываемого метода</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//данный метод не обязательный</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="nd">@Advice.OnMethodEnter</span>
+<span class="w">        </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">interceptEnter</span><span class="p">(</span><span class="nd">@Advice.This</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">target</span><span class="p">,</span>
+<span class="w">                                          </span><span class="nd">@Advice.Origin</span><span class="w"> </span><span class="n">Method</span><span class="w"> </span><span class="n">method</span><span class="p">,</span>
+<span class="w">                                          </span><span class="nd">@Advice.AllArguments</span><span class="w"> </span><span class="n">Object</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">,</span>
+<span class="w">                                          </span><span class="nd">@Advice.Return</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">returned</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">//логика в начале выполнения перехватываемого метода</span>
+<span class="w">            </span><span class="c1">//данный метод не обязательный</span>
+<span class="w">        </span><span class="p">}</span>
 
-<span class="w">        </span><span class="nd">@Advice.OnMethodExit</span><span class="w"></span>
-<span class="w">        </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">interceptExit</span><span class="p">(</span><span class="nd">@Advice.This</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">target</span><span class="p">,</span><span class="w"></span>
-<span class="w">                                         </span><span class="nd">@Advice.Origin</span><span class="w"> </span><span class="n">Method</span><span class="w"> </span><span class="n">method</span><span class="p">,</span><span class="w"></span>
-<span class="w">                                         </span><span class="nd">@Advice.AllArguments</span><span class="w"> </span><span class="n">Object</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">,</span><span class="w"></span>
-<span class="w">                                         </span><span class="nd">@Advice.Return</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">returned</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//логика в конце выполнения перехватываемого метода</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//данный метод не обязательный</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="nd">@Advice.OnMethodExit</span>
+<span class="w">        </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">interceptExit</span><span class="p">(</span><span class="nd">@Advice.This</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">target</span><span class="p">,</span>
+<span class="w">                                         </span><span class="nd">@Advice.Origin</span><span class="w"> </span><span class="n">Method</span><span class="w"> </span><span class="n">method</span><span class="p">,</span>
+<span class="w">                                         </span><span class="nd">@Advice.AllArguments</span><span class="w"> </span><span class="n">Object</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">,</span>
+<span class="w">                                         </span><span class="nd">@Advice.Return</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">returned</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">//логика в конце выполнения перехватываемого метода</span>
+<span class="w">            </span><span class="c1">//данный метод не обязательный</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Хорошая статья про <a class="reference external" href="https://medium.com/&#64;lnishada/introduction-to-byte-buddy-advice-annotations-48ac7dae6a94">используемые аннотации Byte Buddy</a></p>

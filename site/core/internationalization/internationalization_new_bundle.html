@@ -464,22 +464,22 @@
         <article role="main">
           <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Класс для описания бандла</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.localization.LocalizationBundlePartition</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.localization.LocalizationBundlePartition</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyLocalizationPartition</span><span class="w"></span>
-<span class="w">       </span><span class="c1">//необходимо унаследовать данный класс</span><span class="w"></span>
-<span class="w">       </span><span class="kd">extends</span><span class="w"> </span><span class="n">LocalizationBundlePartition</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyLocalizationPartition</span>
+<span class="w">       </span><span class="c1">//необходимо унаследовать данный класс</span>
+<span class="w">       </span><span class="kd">extends</span><span class="w"> </span><span class="n">LocalizationBundlePartition</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">MyLocalizationPartition</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//необходимо, чтобы конструктор</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// был доступен и не имел параметров</span><span class="w"></span>
-<span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="s">&quot;my.module&quot;</span><span class="w"> </span><span class="c1">//название бандла</span><span class="w"></span>
-<span class="w">                </span><span class="p">,</span><span class="w"> </span><span class="s">&quot;org.mypack&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">//имя корневых пакетов,</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// к которым относятся вложенные объекты</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// для локализации</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">MyLocalizationPartition</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//необходимо, чтобы конструктор</span>
+<span class="w">        </span><span class="c1">// был доступен и не имел параметров</span>
+<span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="s">&quot;my.module&quot;</span><span class="w"> </span><span class="c1">//название бандла</span>
+<span class="w">                </span><span class="p">,</span><span class="w"> </span><span class="s">&quot;org.mypack&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">//имя корневых пакетов,</span>
+<span class="w">        </span><span class="c1">// к которым относятся вложенные объекты</span>
+<span class="w">        </span><span class="c1">// для локализации</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>

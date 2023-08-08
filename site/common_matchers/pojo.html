@@ -466,69 +466,69 @@
 <h1>Для POJO<a class="headerlink" href="#pojo" title="Permalink to this heading">#</a></h1>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Примеры POJO</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomePojo</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomePojo</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
 
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">b</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">b</span><span class="p">;</span>
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="nf">getA</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="nf">getA</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">SomePojo</span><span class="w"> </span><span class="nf">setA</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">SomePojo</span><span class="w"> </span><span class="nf">setA</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="nf">getB</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">b</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="nf">getB</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">b</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">SomePojo</span><span class="w"> </span><span class="nf">setB</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">SomePojo</span><span class="w"> </span><span class="nf">setB</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Примеры использования матчера для POJO</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.MatcherAssert.assertThat</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.endsWith</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.startsWith</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.pojo</span><span class="w"></span>
-<span class="w">         </span><span class="p">.</span><span class="na">PojoGetterReturnsMatcher</span><span class="p">.</span><span class="na">getterReturns</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.MatcherAssert.assertThat</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.endsWith</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.startsWith</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.pojo</span>
+<span class="w">         </span><span class="p">.</span><span class="na">PojoGetterReturnsMatcher</span><span class="p">.</span><span class="na">getterReturns</span><span class="p">;</span>
 
-<span class="c1">//пример использования</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="c1">//пример использования</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">SomePojo</span><span class="w"> </span><span class="n">SOME_POJO</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SomePojo</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">setA</span><span class="p">(</span><span class="s">&quot;AB&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">setB</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">SomePojo</span><span class="w"> </span><span class="n">SOME_POJO</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SomePojo</span><span class="p">()</span>
+<span class="w">            </span><span class="p">.</span><span class="na">setA</span><span class="p">(</span><span class="s">&quot;AB&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="na">setB</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Проверка значения, &quot;</span><span class="w"></span>
-<span class="w">          </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;которое возвращает публичный get*-метод&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">SOME_POJO</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// можно проверять на</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// равенство указанному значению</span><span class="w"></span>
-<span class="w">            </span><span class="n">getterReturns</span><span class="p">(</span><span class="s">&quot;getA&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;AB&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Проверка значения, &quot;</span>
+<span class="w">          </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;которое возвращает публичный get*-метод&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">SOME_POJO</span><span class="p">,</span>
+<span class="w">            </span><span class="c1">// можно проверять на</span>
+<span class="w">            </span><span class="c1">// равенство указанному значению</span>
+<span class="w">            </span><span class="n">getterReturns</span><span class="p">(</span><span class="s">&quot;getA&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;AB&quot;</span><span class="p">));</span>
 
-<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">SOME_POJO</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//можно проверять на</span><span class="w"></span>
-<span class="w">            </span><span class="n">getterReturns</span><span class="p">(</span><span class="s">&quot;getA&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">getterReturns</span><span class="p">(</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// соответствие переданным критериям</span><span class="w"></span>
-<span class="w">                </span><span class="s">&quot;getA&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">startsWith</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">endsWith</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="p">))</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">SOME_POJO</span><span class="p">,</span>
+<span class="w">            </span><span class="c1">//можно проверять на</span>
+<span class="w">            </span><span class="n">getterReturns</span><span class="p">(</span><span class="s">&quot;getA&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">getterReturns</span><span class="p">(</span>
+<span class="w">                </span><span class="c1">// соответствие переданным критериям</span>
+<span class="w">                </span><span class="s">&quot;getA&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">startsWith</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">endsWith</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">))</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>

@@ -465,39 +465,39 @@
           <section class="tex2jax_ignore mathjax_ignore" id="hibernate">
 <h1>Hibernate. Записи с сортировкой<a class="headerlink" href="#hibernate" title="Permalink to this heading">#</a></h1>
 <p>Для сортировки используется механизм из Java Persistence API:</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.testng.annotations.Test</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.model.TestEntity</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.testng.annotations.Test</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.model.TestEntity</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofMillis</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofSeconds</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.allByOrder</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofMillis</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofSeconds</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.allByOrder</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">cb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hibernate</span><span class="p">().</span><span class="na">getCriteriaBuilder</span><span class="p">(</span><span class="n">TestEntity</span><span class="p">.</span><span class="na">class</span><span class="p">);</span><span class="w"> </span><span class="c1">// CriteriaBuilder для сущности TestEntity</span><span class="w"></span>
-<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">cq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hibernate</span><span class="p">().</span><span class="na">getCriteriaQuery</span><span class="p">(</span><span class="n">TestEntity</span><span class="p">.</span><span class="na">class</span><span class="p">);</span><span class="w"> </span><span class="c1">// CriteriaQuery для сущности TestEntity</span><span class="w"></span>
-<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cq</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">TestEntity</span><span class="p">.</span><span class="na">class</span><span class="p">);</span><span class="w"> </span><span class="c1">// Root для сущности TestEntity</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">cb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hibernate</span><span class="p">().</span><span class="na">getCriteriaBuilder</span><span class="p">(</span><span class="n">TestEntity</span><span class="p">.</span><span class="na">class</span><span class="p">);</span><span class="w"> </span><span class="c1">// CriteriaBuilder для сущности TestEntity</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">cq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hibernate</span><span class="p">().</span><span class="na">getCriteriaQuery</span><span class="p">(</span><span class="n">TestEntity</span><span class="p">.</span><span class="na">class</span><span class="p">);</span><span class="w"> </span><span class="c1">// CriteriaQuery для сущности TestEntity</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cq</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">TestEntity</span><span class="p">.</span><span class="na">class</span><span class="p">);</span><span class="w"> </span><span class="c1">// Root для сущности TestEntity</span>
 
-<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TestEntity</span><span class="o">&gt;</span><span class="w"> </span><span class="n">entities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hibernate</span><span class="p">().</span><span class="na">select</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//описание того ЧТО выбирается,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//есть следующие варианты: </span><span class="w"></span>
-<span class="w">            </span><span class="c1">// - allByOrder(Class&lt;R&gt; entity, javax.persistence.criteria.Order... orders)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// - allByOrder(Class&lt;R&gt; entity, java.util.List&lt;javax.persistence.criteria.Order&gt; orders)</span><span class="w"></span>
-<span class="w">            </span><span class="n">allByOrder</span><span class="p">(</span><span class="n">TestEntity</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="n">cb</span><span class="p">.</span><span class="na">desc</span><span class="p">(</span><span class="n">root</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">)))</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Необходимые параметры</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TestEntity</span><span class="o">&gt;</span><span class="w"> </span><span class="n">entities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hibernate</span><span class="p">().</span><span class="na">select</span><span class="p">(</span>
+<span class="w">            </span><span class="c1">//описание того ЧТО выбирается,</span>
+<span class="w">            </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">            </span><span class="c1">//терминологии</span>
+<span class="w">            </span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="c1">//есть следующие варианты: </span>
+<span class="w">            </span><span class="c1">// - allByOrder(Class&lt;R&gt; entity, javax.persistence.criteria.Order... orders)</span>
+<span class="w">            </span><span class="c1">// - allByOrder(Class&lt;R&gt; entity, java.util.List&lt;javax.persistence.criteria.Order&gt; orders)</span>
+<span class="w">            </span><span class="n">allByOrder</span><span class="p">(</span><span class="n">TestEntity</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="n">cb</span><span class="p">.</span><span class="na">desc</span><span class="p">(</span><span class="n">root</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">)))</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">            </span><span class="c1">//Необходимые параметры</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Возможности данной операции аналогичны возможностям <a class="reference internal" href="all.html"><span class="doc std std-doc">операции выбора всех записей</span></a>.</p>

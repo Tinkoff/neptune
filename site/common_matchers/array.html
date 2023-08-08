@@ -466,167 +466,167 @@
 <h1>Для массивов<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Примеры использования матчеров для массивов</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.MatcherAssert.assertThat</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.*</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span><span class="w"></span>
-<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsConsistsOfMatcher</span><span class="p">.</span><span class="na">arrayInOrder</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span><span class="w"></span>
-<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsConsistsOfMatcher</span><span class="p">.</span><span class="na">arrayOf</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span><span class="w"></span>
-<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsEachItemMatcher</span><span class="p">.</span><span class="na">eachOfArray</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span><span class="w"></span>
-<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsIncludesMatcher</span><span class="p">.</span><span class="na">arrayIncludes</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span><span class="w"></span>
-<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsIncludesMatcher</span><span class="p">.</span><span class="na">arrayIncludesInOrder</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span><span class="w"></span>
-<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsItemsMatcher</span><span class="p">.</span><span class="na">arrayHasItem</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span><span class="w"></span>
-<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsItemsMatcher</span><span class="p">.</span><span class="na">arrayHasItems</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.MatcherAssert.assertThat</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.*</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span>
+<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsConsistsOfMatcher</span><span class="p">.</span><span class="na">arrayInOrder</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span>
+<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsConsistsOfMatcher</span><span class="p">.</span><span class="na">arrayOf</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span>
+<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsEachItemMatcher</span><span class="p">.</span><span class="na">eachOfArray</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span>
+<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsIncludesMatcher</span><span class="p">.</span><span class="na">arrayIncludes</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span>
+<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsIncludesMatcher</span><span class="p">.</span><span class="na">arrayIncludesInOrder</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span>
+<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsItemsMatcher</span><span class="p">.</span><span class="na">arrayHasItem</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span>
+<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsItemsMatcher</span><span class="p">.</span><span class="na">arrayHasItems</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Integer</span><span class="o">[]</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Integer</span><span class="o">[]</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">};</span><span class="w"></span>
-
-
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что массив состоит только из &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;перечисленных элементов в указанном порядке&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayInOrder</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">));</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что массив состоит только из &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;перечисленных элементов в указанном порядке.&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;Элементы описаны матчерами, которым они должны соответствовать&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test2</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayInOrder</span><span class="p">(</span><span class="w"></span>
-<span class="w">               </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"></span>
-<span class="w">               </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
-<span class="w">               </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="p">));</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что массив состоит только из перечисленных элементов. &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;Порядок их следования значения не имеет.&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test3</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayOf</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">));</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что массив состоит только из перечисленных элементов. &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;Порядок их следования значения не имеет.&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;элементы описаны матчерами, которым они должны соответствовать&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test4</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayOf</span><span class="p">(</span><span class="w"></span>
-<span class="w">               </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"></span>
-<span class="w">               </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"></span>
-<span class="w">               </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="p">));</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Integer</span><span class="o">[]</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Integer</span><span class="o">[]</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">};</span>
 
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что массив включает &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;перечисленные элементы в указанном порядке&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test5</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayIncludesInOrder</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">));</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что массив состоит только из &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;перечисленных элементов в указанном порядке&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayInOrder</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что массив включает &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;перечисленные элементы в указанном порядке.&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;элементы описаны матчерами, которым они должны соответствовать&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test6</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayIncludesInOrder</span><span class="p">(</span><span class="w"></span>
-<span class="w">               </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
-<span class="w">               </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="p">));</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что массив состоит только из &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;перечисленных элементов в указанном порядке.&quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;Элементы описаны матчерами, которым они должны соответствовать&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test2</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayInOrder</span><span class="p">(</span>
+<span class="w">               </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+<span class="w">               </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+<span class="w">               </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">        </span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что массив состоит только из перечисленных элементов. &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;Порядок их следования значения не имеет.&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test3</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayOf</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что массив состоит только из перечисленных элементов. &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;Порядок их следования значения не имеет.&quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;элементы описаны матчерами, которым они должны соответствовать&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test4</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayOf</span><span class="p">(</span>
+<span class="w">               </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+<span class="w">               </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+<span class="w">               </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">        </span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
 
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что массив включает &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;перечисленные элементы. &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;Порядок их следования значения не имеет&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test7</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayIncludes</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">));</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что массив включает &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;перечисленные элементы в указанном порядке&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test5</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayIncludesInOrder</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что массив включает &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;перечисленные элементы. &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;Порядок их следования значения не имеет.&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;элементы описаны матчерами, которым они должны соответствовать&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test8</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayIncludes</span><span class="p">(</span><span class="w"></span>
-<span class="w">               </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"></span>
-<span class="w">               </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="p">));</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что массив включает &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;перечисленные элементы в указанном порядке.&quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;элементы описаны матчерами, которым они должны соответствовать&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test6</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayIncludesInOrder</span><span class="p">(</span>
+<span class="w">               </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+<span class="w">               </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">        </span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что массив состоит из элементов, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;каждый из которых соответствует указанным матчерам&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test9</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">eachOfArray</span><span class="p">(</span><span class="w"></span>
-<span class="w">               </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">),</span><span class="w"></span>
-<span class="w">               </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="p">));</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что массив включает элемент&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test10</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayHasItem</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что массив включает &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;перечисленные элементы. &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;Порядок их следования значения не имеет&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test7</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayIncludes</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что массив включает элемент.&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;элемент описан матчерами, которым он должен соответствовать&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test11</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayHasItem</span><span class="p">(</span><span class="w"></span>
-<span class="w">               </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
-<span class="w">               </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="p">));</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что массив включает &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;перечисленные элементы. &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;Порядок их следования значения не имеет.&quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;элементы описаны матчерами, которым они должны соответствовать&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test8</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayIncludes</span><span class="p">(</span>
+<span class="w">               </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+<span class="w">               </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="w">        </span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что массив включает элементы, соответствующие матчерам,&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;указанное количество раз&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test12</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayHasItems</span><span class="p">(</span><span class="w"></span>
-<span class="w">               </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="c1">//сколько раз в массиве должен встретиться объект,</span><span class="w"></span>
-<span class="w">               </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
-<span class="w">               </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что массив состоит из элементов, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;каждый из которых соответствует указанным матчерам&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test9</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">eachOfArray</span><span class="p">(</span>
+<span class="w">               </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">),</span>
+<span class="w">               </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="w">        </span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayHasItems</span><span class="p">(</span><span class="w"></span>
-<span class="w">               </span><span class="c1">//сколько раз в массиве должен встретиться объект</span><span class="w"></span>
-<span class="w">               </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="c1">//описано матчером</span><span class="w"></span>
-<span class="w">               </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
-<span class="w">               </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">)));</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что массив включает элемент&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test10</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayHasItem</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что массив включает элементы, равные указанному значению,&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;указанное количество раз&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test13</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayHasItems</span><span class="p">(</span><span class="w"></span>
-<span class="w">               </span><span class="mi">1</span><span class="p">,</span><span class="c1">//сколько раз в массиве должен встретиться объект,</span><span class="w"></span>
-<span class="w">               </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что массив включает элемент.&quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;элемент описан матчерами, которым он должен соответствовать&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test11</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayHasItem</span><span class="p">(</span>
+<span class="w">               </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+<span class="w">               </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="w">        </span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayHasItems</span><span class="p">(</span><span class="w"></span>
-<span class="w">               </span><span class="c1">//сколько раз в массиве должен встретиться объект</span><span class="w"></span>
-<span class="w">               </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="c1">// описано матчером</span><span class="w"></span>
-<span class="w">               </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что массив включает элементы, соответствующие матчерам,&quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;указанное количество раз&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test12</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayHasItems</span><span class="p">(</span>
+<span class="w">               </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="c1">//сколько раз в массиве должен встретиться объект,</span>
+<span class="w">               </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+<span class="w">               </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">        </span><span class="p">));</span>
+
+<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayHasItems</span><span class="p">(</span>
+<span class="w">               </span><span class="c1">//сколько раз в массиве должен встретиться объект</span>
+<span class="w">               </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="c1">//описано матчером</span>
+<span class="w">               </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+<span class="w">               </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">)));</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что массив включает элементы, равные указанному значению,&quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;указанное количество раз&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test13</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayHasItems</span><span class="p">(</span>
+<span class="w">               </span><span class="mi">1</span><span class="p">,</span><span class="c1">//сколько раз в массиве должен встретиться объект,</span>
+<span class="w">               </span><span class="mi">1</span><span class="p">)</span>
+<span class="w">        </span><span class="p">);</span>
+
+<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">arrayHasItems</span><span class="p">(</span>
+<span class="w">               </span><span class="c1">//сколько раз в массиве должен встретиться объект</span>
+<span class="w">               </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="c1">// описано матчером</span>
+<span class="w">               </span><span class="mi">1</span><span class="p">)</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>

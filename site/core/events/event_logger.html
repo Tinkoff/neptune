@@ -466,43 +466,43 @@
 <h1>Логгер событий<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Реализация интерфейса <code class="docutils literal notranslate"><span class="pre">ru.tinkoff.qa.neptune.core.api.event.firing.EventLogger</span></code>, который фиксирует в логгере / отчете ход выполнения шагов</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.EventLogger</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.EventLogger</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.Map</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.Map</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyEventLogger</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">EventLogger</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// реализовать данный интерфейс</span><span class="w"></span>
+<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyEventLogger</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">EventLogger</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// реализовать данный интерфейс</span>
 
-<span class="w">     </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">fireTheEventStarting</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">message</span><span class="p">,</span><span class="w"> </span><span class="c1">// заголовок шага</span><span class="w"></span>
-<span class="w">                                      </span><span class="c1">//набор параметров шага</span><span class="w"></span>
-<span class="w">                                      </span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">parameters</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="c1">//начало выполнения шага</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@Override</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">fireTheEventStarting</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">message</span><span class="p">,</span><span class="w"> </span><span class="c1">// заголовок шага</span>
+<span class="w">                                      </span><span class="c1">//набор параметров шага</span>
+<span class="w">                                      </span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">parameters</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="c1">//начало выполнения шага</span>
+<span class="w">     </span><span class="p">}</span>
 
-<span class="w">     </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">fireThrownException</span><span class="p">(</span><span class="n">Throwable</span><span class="w"> </span><span class="n">throwable</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="c1">//если выполнение шага завершилось выбросом исключения</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@Override</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">fireThrownException</span><span class="p">(</span><span class="n">Throwable</span><span class="w"> </span><span class="n">throwable</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="c1">//если выполнение шага завершилось выбросом исключения</span>
+<span class="w">     </span><span class="p">}</span>
 
-<span class="w">     </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">fireReturnedValue</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">resultDescription</span><span class="p">,</span><span class="w"> </span><span class="c1">// пояснение к результату</span><span class="w"></span>
-<span class="w">                                   </span><span class="n">Object</span><span class="w"> </span><span class="n">returned</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//вернувшийся результат</span><span class="w"></span>
-<span class="w">         </span><span class="c1">//если выполнение шага завершилось возвратом результата</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@Override</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">fireReturnedValue</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">resultDescription</span><span class="p">,</span><span class="w"> </span><span class="c1">// пояснение к результату</span>
+<span class="w">                                   </span><span class="n">Object</span><span class="w"> </span><span class="n">returned</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//вернувшийся результат</span>
+<span class="w">         </span><span class="c1">//если выполнение шага завершилось возвратом результата</span>
+<span class="w">     </span><span class="p">}</span>
 
-<span class="w">     </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">fireEventFinishing</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="c1">// Что происходит при завершении выполнения шага</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@Override</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">fireEventFinishing</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="c1">// Что происходит при завершении выполнения шага</span>
+<span class="w">     </span><span class="p">}</span>
 
-<span class="w">     </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">addParameters</span><span class="p">(</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">parameters</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="c1">//фиксирование параметров шага, которые не были переданы явно,</span><span class="w"></span>
-<span class="w">         </span><span class="c1">//а были вычислены в ходе выполнения шага</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
-<span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@Override</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">addParameters</span><span class="p">(</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">parameters</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="c1">//фиксирование параметров шага, которые не были переданы явно,</span>
+<span class="w">         </span><span class="c1">//а были вычислены в ходе выполнения шага</span>
+<span class="w">     </span><span class="p">}</span>
+<span class="w"> </span><span class="p">}</span>
 </pre></div>
 </div>
 </div>

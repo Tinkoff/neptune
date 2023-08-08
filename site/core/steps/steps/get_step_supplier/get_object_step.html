@@ -469,35 +469,35 @@
 <h2>Без возможности указания критериев<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-text">Шаг, который возвращает непустой (!=null) объект. Критерии для шага не предусматриваются</span><a class="headerlink" href="#id3" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.function.Function</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.function.Function</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">extends</span><span class="w"></span>
-<span class="w">        </span><span class="n">SequentialGetStepSupplier</span><span class="w"></span>
-<span class="w">        </span><span class="p">.</span><span class="na">GetSimpleStepSupplier</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">extends</span>
+<span class="w">        </span><span class="n">SequentialGetStepSupplier</span>
+<span class="w">        </span><span class="p">.</span><span class="na">GetSimpleStepSupplier</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyGetStepSupplier</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">this</span><span class="p">(</span><span class="n">myTestContext</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//описываем функцию,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//которая выполняет действия,</span><span class="w"></span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="c1">//и возвращает результат T</span><span class="w"></span>
-<span class="w">        </span><span class="p">});</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyGetStepSupplier</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">this</span><span class="p">(</span><span class="n">myTestContext</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//описываем функцию,</span>
+<span class="w">            </span><span class="c1">//которая выполняет действия,</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="c1">//и возвращает результат T</span>
+<span class="w">        </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyGetStepSupplier</span><span class="p">(</span><span class="n">Function</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">originalFunction</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//либо передаем функцию снаружи</span><span class="w"></span>
-<span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="n">originalFunction</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyGetStepSupplier</span><span class="p">(</span><span class="n">Function</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">originalFunction</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//либо передаем функцию снаружи</span>
+<span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="n">originalFunction</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="c1">//у объектов данного класса нет доступных методов,</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//с помощью которых можно указать критерии</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//у объектов данного класса нет доступных методов,</span>
+<span class="w">    </span><span class="c1">//с помощью которых можно указать критерии</span>
 
-<span class="w">    </span><span class="c1">//при необходимости, можно сделать доступными методы timeOut и pollingInterval</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//при необходимости, можно переопределить методы onStart, onSuccess, onFailure</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//при необходимости, можно сделать доступными методы timeOut и pollingInterval</span>
+<span class="w">    </span><span class="c1">//при необходимости, можно переопределить методы onStart, onSuccess, onFailure</span>
 
-<span class="w">    </span><span class="c1">//добавляем свои методы, если нужны</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//добавляем свои методы, если нужны</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -506,109 +506,109 @@
 <h2>С возможностью указания критериев<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
 <div class="literal-block-wrapper docutils container" id="id4">
 <div class="code-block-caption"><span class="caption-text">Шаг, который возвращает непустой (!=null) объект</span><a class="headerlink" href="#id4" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.function.Function</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.function.Function</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">extends</span><span class="w"></span>
-<span class="w">        </span><span class="n">SequentialGetStepSupplier</span><span class="w"></span>
-<span class="w">        </span><span class="p">.</span><span class="na">GetObjectStepSupplier</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">extends</span>
+<span class="w">        </span><span class="n">SequentialGetStepSupplier</span>
+<span class="w">        </span><span class="p">.</span><span class="na">GetObjectStepSupplier</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyGetStepSupplier</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">this</span><span class="p">(</span><span class="n">myTestContext</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//описываем функцию,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//которая выполняет действия,</span><span class="w"></span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="c1">//и возвращает результат T</span><span class="w"></span>
-<span class="w">        </span><span class="p">});</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyGetStepSupplier</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">this</span><span class="p">(</span><span class="n">myTestContext</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//описываем функцию,</span>
+<span class="w">            </span><span class="c1">//которая выполняет действия,</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="c1">//и возвращает результат T</span>
+<span class="w">        </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyGetStepSupplier</span><span class="p">(</span><span class="n">Function</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">originalFunction</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//либо передаем функцию снаружи</span><span class="w"></span>
-<span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="n">originalFunction</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyGetStepSupplier</span><span class="p">(</span><span class="n">Function</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">originalFunction</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//либо передаем функцию снаружи</span>
+<span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="n">originalFunction</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="c1">//у объектов данного класса есть публичные методы,</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//с помощью которых можно указать критерии.</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//-------------------------------------------------------------------</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//В данной реализации с помощью критериев проверяется на соответствие</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//само значение типа T. Если в рамках отведенного времени такое значение</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//получается, то результат возвращается в виде объекта типа T, иначе - null,</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//или выбрасывается исключение</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//у объектов данного класса есть публичные методы,</span>
+<span class="w">    </span><span class="c1">//с помощью которых можно указать критерии.</span>
+<span class="w">    </span><span class="c1">//-------------------------------------------------------------------</span>
+<span class="w">    </span><span class="c1">//В данной реализации с помощью критериев проверяется на соответствие</span>
+<span class="w">    </span><span class="c1">//само значение типа T. Если в рамках отведенного времени такое значение</span>
+<span class="w">    </span><span class="c1">//получается, то результат возвращается в виде объекта типа T, иначе - null,</span>
+<span class="w">    </span><span class="c1">//или выбрасывается исключение</span>
 
-<span class="w">    </span><span class="c1">//при необходимости, можно сделать доступными методы timeOut и pollingInterval</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//при необходимости, можно переопределить методы onStart, onSuccess, onFailure</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//при необходимости, можно сделать доступными методы timeOut и pollingInterval</span>
+<span class="w">    </span><span class="c1">//при необходимости, можно переопределить методы onStart, onSuccess, onFailure</span>
 
-<span class="w">    </span><span class="c1">//добавляем свои методы, если нужны</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//добавляем свои методы, если нужны</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id5">
 <div class="code-block-caption"><span class="caption-text">Шаг, который возвращает непустой (!=null) объект. Результирующее значение получается не прямым вычислением, а с помощью цепочки выполнения шагов / вычислительных функций</span><a class="headerlink" href="#id5" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.function.Function</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.function.Function</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">extends</span><span class="w"></span>
-<span class="w">        </span><span class="n">SequentialGetStepSupplier</span><span class="w"></span>
-<span class="w">        </span><span class="p">.</span><span class="na">GetObjectChainedStepSupplier</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">extends</span>
+<span class="w">        </span><span class="n">SequentialGetStepSupplier</span>
+<span class="w">        </span><span class="p">.</span><span class="na">GetObjectChainedStepSupplier</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyGetStepSupplier</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">this</span><span class="p">(</span><span class="n">m</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//описываем функцию,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//которая выполняет действия,</span><span class="w"></span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="c1">//и возвращает результат T</span><span class="w"></span>
-<span class="w">        </span><span class="p">});</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyGetStepSupplier</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">this</span><span class="p">(</span><span class="n">m</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//описываем функцию,</span>
+<span class="w">            </span><span class="c1">//которая выполняет действия,</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="c1">//и возвращает результат T</span>
+<span class="w">        </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyGetStepSupplier</span><span class="p">(</span><span class="n">Function</span><span class="o">&lt;</span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">originalFunction</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//либо передаем функцию снаружи</span><span class="w"></span>
-<span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="n">originalFunction</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyGetStepSupplier</span><span class="p">(</span><span class="n">Function</span><span class="o">&lt;</span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">originalFunction</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//либо передаем функцию снаружи</span>
+<span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="n">originalFunction</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="c1">//Здесь появляется новая опция.</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//Можно указать шаг, который должен предшествовать данному шагу.</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//У переданного шага тип входного параметра должен быть тот же,</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//а тип результирующего значения - расширяющий тип значения-&quot;посредника&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//данного шага. Оба шага образуют иерархическую последовательность выполнения</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//действий, т.е. в рамках данного шага будет выполнен тот, что был указан при</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//вызове метода.</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//Необязательно данный метод перекрывать и делать его публичным. Данным методом</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//можно воспользоваться при реализации внутренней логики класса или его объектов.</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">from</span><span class="p">(</span><span class="w"></span>
-<span class="w">        </span><span class="n">SequentialGetStepSupplier</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="o">?&gt;</span><span class="w"> </span><span class="n">from</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">from</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//Здесь появляется новая опция.</span>
+<span class="w">    </span><span class="c1">//Можно указать шаг, который должен предшествовать данному шагу.</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="c1">//У переданного шага тип входного параметра должен быть тот же,</span>
+<span class="w">    </span><span class="c1">//а тип результирующего значения - расширяющий тип значения-&quot;посредника&quot;</span>
+<span class="w">    </span><span class="c1">//данного шага. Оба шага образуют иерархическую последовательность выполнения</span>
+<span class="w">    </span><span class="c1">//действий, т.е. в рамках данного шага будет выполнен тот, что был указан при</span>
+<span class="w">    </span><span class="c1">//вызове метода.</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="c1">//Необязательно данный метод перекрывать и делать его публичным. Данным методом</span>
+<span class="w">    </span><span class="c1">//можно воспользоваться при реализации внутренней логики класса или его объектов.</span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">from</span><span class="p">(</span>
+<span class="w">        </span><span class="n">SequentialGetStepSupplier</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="o">?&gt;</span><span class="w"> </span><span class="n">from</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">from</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="c1">//Аналогично методу выше. Вместо подготовленного шага используем функцию</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">from</span><span class="p">(</span><span class="n">Function</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">M</span><span class="o">&gt;</span><span class="w"> </span><span class="n">from</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">from</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//Аналогично методу выше. Вместо подготовленного шага используем функцию</span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">from</span><span class="p">(</span><span class="n">Function</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">M</span><span class="o">&gt;</span><span class="w"> </span><span class="n">from</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">from</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="c1">//Аналогично методам выше. В данном случае значение &quot;посредник&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//данного шага используется напрямую.</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">from</span><span class="p">(</span><span class="n">M</span><span class="w"> </span><span class="n">from</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">from</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//Аналогично методам выше. В данном случае значение &quot;посредник&quot;</span>
+<span class="w">    </span><span class="c1">//данного шага используется напрямую.</span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">from</span><span class="p">(</span><span class="n">M</span><span class="w"> </span><span class="n">from</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">from</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="c1">//у объектов данного класса есть публичные методы,</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//с помощью которых можно указать критерии.</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//-------------------------------------------------------------------</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//В данной реализации с помощью критериев проверяется на соответствие</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//само значение типа T. Если в рамках отведенного времени такое значение</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//получается, то результат возвращается в виде объекта типа T, иначе - null,</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//или выбрасывается исключение</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//у объектов данного класса есть публичные методы,</span>
+<span class="w">    </span><span class="c1">//с помощью которых можно указать критерии.</span>
+<span class="w">    </span><span class="c1">//-------------------------------------------------------------------</span>
+<span class="w">    </span><span class="c1">//В данной реализации с помощью критериев проверяется на соответствие</span>
+<span class="w">    </span><span class="c1">//само значение типа T. Если в рамках отведенного времени такое значение</span>
+<span class="w">    </span><span class="c1">//получается, то результат возвращается в виде объекта типа T, иначе - null,</span>
+<span class="w">    </span><span class="c1">//или выбрасывается исключение</span>
 
-<span class="w">    </span><span class="c1">//при необходимости, можно сделать доступными методы timeOut и pollingInterval</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//при необходимости, можно переопределить методы onStart, onSuccess, onFailure</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//при необходимости, можно сделать доступными методы timeOut и pollingInterval</span>
+<span class="w">    </span><span class="c1">//при необходимости, можно переопределить методы onStart, onSuccess, onFailure</span>
 
-<span class="w">    </span><span class="c1">//добавляем свои методы, если нужны</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//добавляем свои методы, если нужны</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>

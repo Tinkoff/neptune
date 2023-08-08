@@ -466,96 +466,96 @@
 <h1>Выполнение действия (action-step)<a class="headerlink" href="#action-step" title="Permalink to this heading">#</a></h1>
 <p>Для этого используются наследники <code class="docutils literal notranslate"><span class="pre">ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier</span></code>.</p>
 <p>Ниже пример, демонстрирующий работу и принцип данного класса.</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Action</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Action</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.function.Function</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.function.Function</span><span class="p">;</span>
 
 <span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyActionStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span>
-<span class="w">    </span><span class="kd">extends</span><span class="w"> </span><span class="n">SequentialActionSupplier</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//Здесь нужно указывать тип самого класса или расширяющий тип</span><span class="w"></span>
-<span class="w">    </span><span class="n">MyActionStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//Наследники MyActionStepSupplier работают как Builder, и многие методы</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//возвращают ссылку на объект, от которого ини были вызваны</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kd">extends</span><span class="w"> </span><span class="n">SequentialActionSupplier</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">//Здесь нужно указывать тип самого класса или расширяющий тип</span>
+<span class="w">    </span><span class="n">MyActionStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span>
+<span class="w">    </span><span class="c1">//Наследники MyActionStepSupplier работают как Builder, и многие методы</span>
+<span class="w">    </span><span class="c1">//возвращают ссылку на объект, от которого ини были вызваны</span>
+<span class="p">{</span>
 <span class="w">    </span>
 <span class="w">    </span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">MyActionStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">someAction</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="n">Object</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="c1">//опционально</span><span class="w"></span>
-<span class="w">            </span><span class="n">Object</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w">  </span><span class="c1">//параметры шага</span><span class="w"></span>
-<span class="w">            </span><span class="n">Object</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//возвращает объект шага</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MyActionStepSupplier</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="cm">/*параметры конструктора*/</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">MyActionStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">someAction</span><span class="p">(</span>
+<span class="w">            </span><span class="n">Object</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="c1">//опционально</span>
+<span class="w">            </span><span class="n">Object</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w">  </span><span class="c1">//параметры шага</span>
+<span class="w">            </span><span class="n">Object</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//возвращает объект шага</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MyActionStepSupplier</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="cm">/*параметры конструктора*/</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"> </span><span class="c1">//в данном методе необходимо реализовать</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//действие, выполняемое шагом</span><span class="w"></span>
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">howToPerform</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//логика шага</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span><span class="w"> </span><span class="c1">//в данном методе необходимо реализовать</span>
+<span class="w">    </span><span class="c1">//действие, выполняемое шагом</span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">howToPerform</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//логика шага</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"> </span><span class="c1">//Результирующее действие-шаг возвращается данным методом</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//Добавлено для наглядности</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Action</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">get</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">get</span><span class="p">();</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span><span class="w"> </span><span class="c1">//Результирующее действие-шаг возвращается данным методом</span>
+<span class="w">    </span><span class="c1">//Добавлено для наглядности</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Action</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">get</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">get</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="c1">//C помощью метода `performOn` можно указать шаг, результатом которого является значение</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//типа T</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//У этого шага тип входного параметра тот же, что и у текущего.</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//</span><span class="w"></span>
-<span class="w">    </span><span class="c1">// Оба шага образуют иерархическую последовательность выполнения</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//действий, т.е. в рамках данного шага будет выполнен тот, что был указан при</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//вызове метода.</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//Необязательно метод `performOn` перекрывать и делать его публичным. Данным методом</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//можно воспользоваться при реализации внутренней логики класса или его объектов.</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">MyActionStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">on</span><span class="p">(</span><span class="n">SequentialGetStepSupplier</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="o">?&gt;</span><span class="w"> </span><span class="n">getStep</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">performOn</span><span class="p">(</span><span class="n">getStep</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//C помощью метода `performOn` можно указать шаг, результатом которого является значение</span>
+<span class="w">    </span><span class="c1">//типа T</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="c1">//У этого шага тип входного параметра тот же, что и у текущего.</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="c1">// Оба шага образуют иерархическую последовательность выполнения</span>
+<span class="w">    </span><span class="c1">//действий, т.е. в рамках данного шага будет выполнен тот, что был указан при</span>
+<span class="w">    </span><span class="c1">//вызове метода.</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="c1">//Необязательно метод `performOn` перекрывать и делать его публичным. Данным методом</span>
+<span class="w">    </span><span class="c1">//можно воспользоваться при реализации внутренней логики класса или его объектов.</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">MyActionStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">on</span><span class="p">(</span><span class="n">SequentialGetStepSupplier</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="o">?&gt;</span><span class="w"> </span><span class="n">getStep</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">performOn</span><span class="p">(</span><span class="n">getStep</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="c1">//Аналогично методу выше. Вместо подготовленного шага используем функцию</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">MyActionStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">on</span><span class="p">(</span><span class="n">Function</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">performOn</span><span class="p">(</span><span class="n">f</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//Аналогично методу выше. Вместо подготовленного шага используем функцию</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">MyActionStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">on</span><span class="p">(</span><span class="n">Function</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">performOn</span><span class="p">(</span><span class="n">f</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="c1">//Аналогично методам выше. Объект типа T используется напрямую</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">MyActionStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">on</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">t</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">performOn</span><span class="p">(</span><span class="n">t</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//Аналогично методам выше. Объект типа T используется напрямую</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">MyActionStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">on</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">t</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">performOn</span><span class="p">(</span><span class="n">t</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="c1">// Здесь можно описать действия, что выполнятся до начала шага.</span><span class="w"></span>
-<span class="w">    </span><span class="c1">// По умолчанию данный метод пустой, но не абстрактный, т.к. в большинстве случаев</span><span class="w"></span>
-<span class="w">    </span><span class="c1">// никаких дополнительных действий выполнять не нужно.</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">onStart</span><span class="p">(</span><span class="n">MyTestContext</span><span class="w"> </span><span class="n">myTestContext</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//Какая-то логика</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Здесь можно описать действия, что выполнятся до начала шага.</span>
+<span class="w">    </span><span class="c1">// По умолчанию данный метод пустой, но не абстрактный, т.к. в большинстве случаев</span>
+<span class="w">    </span><span class="c1">// никаких дополнительных действий выполнять не нужно.</span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">onStart</span><span class="p">(</span><span class="n">MyTestContext</span><span class="w"> </span><span class="n">myTestContext</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//Какая-то логика</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="c1">// Здесь можно описать действия, выполняемые после того, как было выброшено</span><span class="w"></span>
-<span class="w">    </span><span class="c1">// исключение.</span><span class="w"></span>
-<span class="w">    </span><span class="c1">// По умолчанию данный метод пустой, но не абстрактный, т.к. в большинстве случаев</span><span class="w"></span>
-<span class="w">    </span><span class="c1">// никаких дополнительных действий выполнять не нужно.</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">onFailure</span><span class="p">(</span><span class="n">MyTestContext</span><span class="w"> </span><span class="n">myTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">Throwable</span><span class="w"> </span><span class="n">throwable</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//Какая-то логика</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Здесь можно описать действия, выполняемые после того, как было выброшено</span>
+<span class="w">    </span><span class="c1">// исключение.</span>
+<span class="w">    </span><span class="c1">// По умолчанию данный метод пустой, но не абстрактный, т.к. в большинстве случаев</span>
+<span class="w">    </span><span class="c1">// никаких дополнительных действий выполнять не нужно.</span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">onFailure</span><span class="p">(</span><span class="n">MyTestContext</span><span class="w"> </span><span class="n">myTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">Throwable</span><span class="w"> </span><span class="n">throwable</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//Какая-то логика</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="c1">// Здесь описывается Map&lt;String, String&gt;, </span><span class="w"></span>
-<span class="w">    </span><span class="c1">// в котором ключ - название параметра, значение - значение параметра.</span><span class="w"></span>
-<span class="w">    </span><span class="c1">// Не всегда параметры можно передать до начала выполнения шага. </span><span class="w"></span>
-<span class="w">    </span><span class="c1">// Некоторые значения могут получиться в процессе </span><span class="w"></span>
-<span class="w">    </span><span class="c1">// выполнения шага.</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">additionalParameters</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//Возврат дополнительных динамических параметров, которые </span><span class="w"></span>
-<span class="w">        </span><span class="c1">// были рассчитаны уже в процессе выполнения шага</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Здесь описывается Map&lt;String, String&gt;, </span>
+<span class="w">    </span><span class="c1">// в котором ключ - название параметра, значение - значение параметра.</span>
+<span class="w">    </span><span class="c1">// Не всегда параметры можно передать до начала выполнения шага. </span>
+<span class="w">    </span><span class="c1">// Некоторые значения могут получиться в процессе </span>
+<span class="w">    </span><span class="c1">// выполнения шага.</span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">additionalParameters</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//Возврат дополнительных динамических параметров, которые </span>
+<span class="w">        </span><span class="c1">// были рассчитаны уже в процессе выполнения шага</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Небольшое пояснение к примеру:</p>

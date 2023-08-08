@@ -470,31 +470,31 @@
 <p>Чтобы этого избежать, можно использовать хуки.</p>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Хук</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hooks.ExecutionHook</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hooks.HookOrder</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hooks.ExecutionHook</span><span class="p">;</span>
+<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hooks.HookOrder</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">java.lang.reflect.Method</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">java.lang.reflect.Method</span><span class="p">;</span>
 
-<span class="w"> </span><span class="nd">@HookOrder</span><span class="p">(</span><span class="n">priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="c1">//одновременно может работать несколько хуков,</span><span class="w"></span>
-<span class="w"> </span><span class="c1">//и может понадобиться выстроить их выполнение в определенную последовательность.</span><span class="w"></span>
-<span class="w"> </span><span class="c1">//С помощью данной аннотации можно указывать приоритет выполнения того или иного хука.</span><span class="w"></span>
-<span class="w"> </span><span class="c1">//Чем меньше цифра, тем выше приоритет. Можно указать значение [0, 127].</span><span class="w"></span>
-<span class="w"> </span><span class="c1">//Аннотацию можно не указывать, в этом случае</span><span class="w"></span>
-<span class="w"> </span><span class="c1">//хуку присваивается низший приоритет (127).</span><span class="w"></span>
-<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyHook</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">ExecutionHook</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w"> </span><span class="nd">@HookOrder</span><span class="p">(</span><span class="n">priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="c1">//одновременно может работать несколько хуков,</span>
+<span class="w"> </span><span class="c1">//и может понадобиться выстроить их выполнение в определенную последовательность.</span>
+<span class="w"> </span><span class="c1">//С помощью данной аннотации можно указывать приоритет выполнения того или иного хука.</span>
+<span class="w"> </span><span class="c1">//Чем меньше цифра, тем выше приоритет. Можно указать значение [0, 127].</span>
+<span class="w"> </span><span class="c1">//Аннотацию можно не указывать, в этом случае</span>
+<span class="w"> </span><span class="c1">//хуку присваивается низший приоритет (127).</span>
+<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyHook</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">ExecutionHook</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">     </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">executeMethodHook</span><span class="p">(</span><span class="w"></span>
-<span class="w">                 </span><span class="n">Method</span><span class="w"> </span><span class="n">method</span><span class="p">,</span><span class="w"> </span><span class="c1">//метод, перед которым данный хук должен быть выполнен.</span><span class="w"></span>
-<span class="w">                 </span><span class="c1">// Можно использовать аннотации над методом или другую метаинформацию</span><span class="w"></span>
-<span class="w">                 </span><span class="n">Object</span><span class="w"> </span><span class="n">on</span><span class="p">,</span><span class="w"> </span><span class="c1">//объект класса-теста, перед методом которого</span><span class="w"></span>
-<span class="w">                 </span><span class="c1">// данный хук должен быть выполнен. Эта информация может быть полезна.</span><span class="w"></span>
-<span class="w">                 </span><span class="kt">boolean</span><span class="w"> </span><span class="n">isTest</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//метод - тест или нет.</span><span class="w"></span>
-<span class="w">         </span><span class="c1">//логика предварительного действия</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
-<span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@Override</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">executeMethodHook</span><span class="p">(</span>
+<span class="w">                 </span><span class="n">Method</span><span class="w"> </span><span class="n">method</span><span class="p">,</span><span class="w"> </span><span class="c1">//метод, перед которым данный хук должен быть выполнен.</span>
+<span class="w">                 </span><span class="c1">// Можно использовать аннотации над методом или другую метаинформацию</span>
+<span class="w">                 </span><span class="n">Object</span><span class="w"> </span><span class="n">on</span><span class="p">,</span><span class="w"> </span><span class="c1">//объект класса-теста, перед методом которого</span>
+<span class="w">                 </span><span class="c1">// данный хук должен быть выполнен. Эта информация может быть полезна.</span>
+<span class="w">                 </span><span class="kt">boolean</span><span class="w"> </span><span class="n">isTest</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//метод - тест или нет.</span>
+<span class="w">         </span><span class="c1">//логика предварительного действия</span>
+<span class="w">     </span><span class="p">}</span>
+<span class="w"> </span><span class="p">}</span>
 </pre></div>
 </div>
 </div>

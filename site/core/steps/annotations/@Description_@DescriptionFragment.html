@@ -474,112 +474,112 @@
 </ul>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">пример для класса-шага. Пример реализации ExampleGetParameterValue можно посмотреть <a class="reference internal" href="parameter_string_presentation.html"><span class="doc">тут</span></a></span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.Description</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.Description</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment</span><span class="p">;</span>
 
-<span class="c1">//Использование данной аннотации на уровне класса</span><span class="w"></span>
-<span class="c1">//присваивает название по умолчанию.</span><span class="w"></span>
-<span class="c1">//Может быть перекрыто на уровне класса-наследника</span><span class="w"></span>
-<span class="c1">//или собственного статического фабричного метода, см. ниже.</span><span class="w"></span>
-<span class="nd">@Description</span><span class="p">(</span><span class="s">&quot;Something with parameters [{a}, {b}, {c}]&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//Название может быть как</span><span class="w"></span>
-<span class="c1">// статическим, так и динамическим.</span><span class="w"></span>
-<span class="c1">// В случае с динамическим названием, параметры заключаются в {}</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyStepClass</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*extends a subclass of SequentialGetStepSupplier, or SequentialActionSupplier*/</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
+<span class="c1">//Использование данной аннотации на уровне класса</span>
+<span class="c1">//присваивает название по умолчанию.</span>
+<span class="c1">//Может быть перекрыто на уровне класса-наследника</span>
+<span class="c1">//или собственного статического фабричного метода, см. ниже.</span>
+<span class="nd">@Description</span><span class="p">(</span><span class="s">&quot;Something with parameters [{a}, {b}, {c}]&quot;</span><span class="p">)</span>
+<span class="c1">//Название может быть как</span>
+<span class="c1">// статическим, так и динамическим.</span>
+<span class="c1">// В случае с динамическим названием, параметры заключаются в {}</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyStepClass</span>
+<span class="w">    </span><span class="cm">/*extends a subclass of SequentialGetStepSupplier, or SequentialActionSupplier*/</span>
+<span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;a&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//значение, которое,</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//формирует динамическое название. Название фрагмента</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//должно соответствовать маске параметра, заключенного в {}</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;a&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//значение, которое,</span>
+<span class="w">    </span><span class="c1">//формирует динамическое название. Название фрагмента</span>
+<span class="w">    </span><span class="c1">//должно соответствовать маске параметра, заключенного в {}</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
 
-<span class="w">    </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;b&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">b</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;b&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">b</span><span class="p">;</span>
 
-<span class="w">    </span><span class="c1">//Строковое представление объекта не всегда бывает удобным для чтения.</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//Для таких случаев можно</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//использовать классы, реализующие интерфейс</span><span class="w"></span>
-<span class="w">    </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;c&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">makeReadableBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ExampleGetParameterValue</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">c</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//Строковое представление объекта не всегда бывает удобным для чтения.</span>
+<span class="w">    </span><span class="c1">//Для таких случаев можно</span>
+<span class="w">    </span><span class="c1">//использовать классы, реализующие интерфейс</span>
+<span class="w">    </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter</span>
+<span class="w">    </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;c&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">makeReadableBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ExampleGetParameterValue</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">c</span><span class="p">;</span>
 
-<span class="w">    </span><span class="c1">//пример присвоения названия на уровне метода</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@Description</span><span class="p">(</span><span class="s">&quot;Something else with parameters [{b}, {c}]&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">MyStepClass</span><span class="w"> </span><span class="nf">myStep</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="w"></span>
-<span class="w">                    </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;b&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                    </span><span class="n">makeReadableBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ExampleGetParameterValue</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="n">param</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;c&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">param2</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MyStepClass</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">param</span><span class="p">,</span><span class="w"> </span><span class="n">param2</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//пример присвоения названия на уровне метода</span>
+<span class="w">    </span><span class="nd">@Description</span><span class="p">(</span><span class="s">&quot;Something else with parameters [{b}, {c}]&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">MyStepClass</span><span class="w"> </span><span class="nf">myStep</span><span class="p">(</span>
+<span class="w">            </span><span class="nd">@DescriptionFragment</span><span class="p">(</span>
+<span class="w">                    </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;b&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">makeReadableBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ExampleGetParameterValue</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="n">param</span><span class="p">,</span>
+<span class="w">            </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;c&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">param2</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MyStepClass</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">param</span><span class="p">,</span><span class="w"> </span><span class="n">param2</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">пример для util-класса, создающего объекты критериев</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Criteria</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.Description</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Criteria</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.Description</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyCriteriaLib</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyCriteriaLib</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="nf">MyCriteriaLib</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="kd">super</span><span class="p">();</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="nf">MyCriteriaLib</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">super</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="c1">//Для критериев присвоение названия с помощью аннотаций</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//работает только на уровне статических фабричных методов</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@Description</span><span class="p">(</span><span class="s">&quot;Some criteria with parameters: {param1}, {param2}&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Criteria</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">someCriteria</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="w"></span>
-<span class="w">                    </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;param1&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                    </span><span class="n">makeReadableBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ExampleGetParameterValue</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">param1</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;param2&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">param2</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">condition</span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="cm">/* предикат*/</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//Для критериев присвоение названия с помощью аннотаций</span>
+<span class="w">    </span><span class="c1">//работает только на уровне статических фабричных методов</span>
+<span class="w">    </span><span class="nd">@Description</span><span class="p">(</span><span class="s">&quot;Some criteria with parameters: {param1}, {param2}&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Criteria</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">someCriteria</span><span class="p">(</span>
+<span class="w">            </span><span class="nd">@DescriptionFragment</span><span class="p">(</span>
+<span class="w">                    </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;param1&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">makeReadableBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ExampleGetParameterValue</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">param1</span><span class="p">,</span>
+<span class="w">            </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;param2&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">param2</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">condition</span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="cm">/* предикат*/</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Description</span><span class="p">(</span><span class="s">&quot;One more criteria with parameters: {param1}, {param2}&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Criteria</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">oneMoreCriteria</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;param1&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">param1</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;param2&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">param2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">condition</span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="cm">/* предикат*/</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Description</span><span class="p">(</span><span class="s">&quot;One more criteria with parameters: {param1}, {param2}&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Criteria</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">oneMoreCriteria</span><span class="p">(</span>
+<span class="w">            </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;param1&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">param1</span><span class="p">,</span>
+<span class="w">            </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;param2&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">param2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">condition</span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="cm">/* предикат*/</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-text">пример для произвольного объекта. Данный механизм можно использовать, если требуется <a class="reference internal" href="../../internationalization/internationalization.html"><span class="doc">интернационализация</span></a> объектов класса, который находится на поддержке и не входит в описанные выше примеры</span><a class="headerlink" href="#id3" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.Description</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SelfDescribed</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.Description</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SelfDescribed</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.localization.StepLocalization.translate</span><span class="p">;</span>
 
-<span class="nd">@Description</span><span class="p">(</span><span class="s">&quot;Some custom pojo {a} {b}&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyCustomObject</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">SelfDescribed</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@Description</span><span class="p">(</span><span class="s">&quot;Some custom pojo {a} {b}&quot;</span><span class="p">)</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyCustomObject</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">SelfDescribed</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;a&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//значение, которое,</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//формирует динамическое название. Название фрагмента</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//должно соответствовать маске параметра, заключенного в {}</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;a&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//значение, которое,</span>
+<span class="w">    </span><span class="c1">//формирует динамическое название. Название фрагмента</span>
+<span class="w">    </span><span class="c1">//должно соответствовать маске параметра, заключенного в {}</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
 
-<span class="w">    </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;b&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">b</span><span class="p">;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;b&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">b</span><span class="p">;</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>

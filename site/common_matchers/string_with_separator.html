@@ -466,38 +466,38 @@
 <h1>Для строки с разделителем<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Примеры использования матчера для строки с разделителем</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.MatcherAssert.assertThat</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span><span class="w"></span>
-<span class="w">              </span><span class="p">.</span><span class="na">SetOfObjectsConsistsOfMatcher</span><span class="p">.</span><span class="o">*</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.text</span><span class="w"></span>
-<span class="w">              </span><span class="p">.</span><span class="na">StringContainsWithSeparator</span><span class="p">.</span><span class="na">withSeparator</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.MatcherAssert.assertThat</span><span class="p">;</span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span>
+<span class="w">              </span><span class="p">.</span><span class="na">SetOfObjectsConsistsOfMatcher</span><span class="p">.</span><span class="o">*</span><span class="p">;</span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.text</span>
+<span class="w">              </span><span class="p">.</span><span class="na">StringContainsWithSeparator</span><span class="p">.</span><span class="na">withSeparator</span><span class="p">;</span>
 
 
-<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">     </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">TEST_STRING</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;A1,A2,A3,A4,A5&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="w">     </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">TEST_STRING</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;A1,A2,A3,A4,A5&quot;</span><span class="p">;</span>
 
-<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Проверка строки с разделителем&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Проверка строки с разделителем&quot;</span><span class="p">)</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">         </span><span class="c1">// проверка что строка с разделителем</span><span class="w"></span>
-<span class="w">         </span><span class="c1">// содержит только указанные под-строки в указанном порядке</span><span class="w"></span>
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">TEST_STRING</span><span class="p">,</span><span class="w"> </span><span class="n">withSeparator</span><span class="p">(</span><span class="s">&quot;,&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//разделитель</span><span class="w"></span>
-<span class="w">                 </span><span class="s">&quot;A1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A3&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A4&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A5&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">         </span><span class="c1">// проверка что строка с разделителем</span>
+<span class="w">         </span><span class="c1">// содержит только указанные под-строки в указанном порядке</span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">TEST_STRING</span><span class="p">,</span><span class="w"> </span><span class="n">withSeparator</span><span class="p">(</span><span class="s">&quot;,&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//разделитель</span>
+<span class="w">                 </span><span class="s">&quot;A1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A3&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A4&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A5&quot;</span><span class="p">));</span>
 
-<span class="w">         </span><span class="c1">//проверка что строка с разделителем</span><span class="w"></span>
-<span class="w">         </span><span class="c1">//содержит указанную подстроку (целиком между символами-разделителями)</span><span class="w"></span>
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">TEST_STRING</span><span class="p">,</span><span class="w"></span>
-<span class="w">                 </span><span class="n">withSeparator</span><span class="p">(</span><span class="s">&quot;,&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//разделитель</span><span class="w"></span>
-<span class="w">                         </span><span class="s">&quot;A1&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">         </span><span class="c1">//проверка что строка с разделителем</span>
+<span class="w">         </span><span class="c1">//содержит указанную подстроку (целиком между символами-разделителями)</span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">TEST_STRING</span><span class="p">,</span>
+<span class="w">                 </span><span class="n">withSeparator</span><span class="p">(</span><span class="s">&quot;,&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//разделитель</span>
+<span class="w">                         </span><span class="s">&quot;A1&quot;</span><span class="p">));</span>
 
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">TEST_STRING</span><span class="p">,</span><span class="w"> </span><span class="n">withSeparator</span><span class="p">(</span><span class="s">&quot;,&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//разделитель</span><span class="w"></span>
-<span class="w">                 </span><span class="c1">//матчер для массива строк</span><span class="w"></span>
-<span class="w">                 </span><span class="n">arrayOf</span><span class="p">(</span><span class="s">&quot;A1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A3&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A4&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A5&quot;</span><span class="p">)));</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
-<span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">TEST_STRING</span><span class="p">,</span><span class="w"> </span><span class="n">withSeparator</span><span class="p">(</span><span class="s">&quot;,&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//разделитель</span>
+<span class="w">                 </span><span class="c1">//матчер для массива строк</span>
+<span class="w">                 </span><span class="n">arrayOf</span><span class="p">(</span><span class="s">&quot;A1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A3&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A4&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A5&quot;</span><span class="p">)));</span>
+<span class="w">     </span><span class="p">}</span>
+<span class="w"> </span><span class="p">}</span>
 </pre></div>
 </div>
 </div>

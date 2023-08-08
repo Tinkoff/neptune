@@ -468,133 +468,133 @@
 <p>Данный раздел содержит документацию о том, как создать свой набор настроек.</p>
 <section id="id2">
 <h2>Как описывается свойство<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.PropertyDefaultValue</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.PropertyDescription</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.PropertyName</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.PropertyDefaultValue</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.PropertyDescription</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.PropertyName</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier</span><span class="p">;</span>
 
-<span class="c1">//Название свойства. Рекомендуется давать названия как в примере, </span><span class="w"></span>
-<span class="c1">//чтобы можно было использовать в качестве переменной среды.</span><span class="w"></span>
-<span class="c1">//Аннотация обязательная!!!!!</span><span class="w"></span>
-<span class="nd">@PropertyName</span><span class="p">(</span><span class="s">&quot;MY_PROPERTY&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//Значение свойства по умолчанию.</span><span class="w"></span>
-<span class="c1">// Будет возвращаться значение, прочитанное из этой строки и преобразованное в</span><span class="w"></span>
-<span class="c1">// значение типа T при соблюдении следующих условий:</span><span class="w"></span>
-<span class="c1">// - значение этого свойства не указано в neptune.properties и neptune.global.properties</span><span class="w"></span>
-<span class="c1">// - Результаты System.getenv() и System.getProperties() не содержат свойства</span><span class="w"></span>
-<span class="c1">// - окружение тестируемого приложения не содержит имя свойства в качестве ключа</span><span class="w"></span>
-<span class="c1">//Аннотация необязательная.</span><span class="w"></span>
-<span class="nd">@PropertyDefaultValue</span><span class="p">(</span><span class="s">&quot;Some default value&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//Аннотация ниже формирует описание свойства / комментарий к нему.</span><span class="w"></span>
-<span class="c1">//Аннотация не обязательная (но рекомендуется).</span><span class="w"></span>
-<span class="nd">@PropertyDescription</span><span class="p">(</span><span class="n">section</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Some logical section&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//Название раздела/группы свойств</span><span class="w"></span>
-<span class="w">        </span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;Description string 1&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание,</span><span class="w"></span>
-<span class="w">                </span><span class="s">&quot;Description string 2&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//построчно</span><span class="w"></span>
-<span class="w">                </span><span class="s">&quot;Description string 3&quot;</span><span class="p">})</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyProperty</span><span class="w"> </span><span class="kd">implements</span><span class="w"></span>
-<span class="w">        </span><span class="n">PropertySupplier</span><span class="o">&lt;</span><span class="w"> </span><span class="c1">//нужно реализовать этот интерфейс</span><span class="w"></span>
-<span class="w">                </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="c1">//тип объекта, в который преобразуется строка, </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// прочитанная из значения свойства</span><span class="w"></span>
-<span class="w">                </span><span class="n">R</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// Тип объекта, который может быть </span><span class="w"></span>
-<span class="w">                    </span><span class="c1">// преобразован в строку-значение. </span><span class="w"></span>
-<span class="w">                    </span><span class="c1">// Может совпадать с типом выше.</span><span class="w"></span>
+<span class="c1">//Название свойства. Рекомендуется давать названия как в примере, </span>
+<span class="c1">//чтобы можно было использовать в качестве переменной среды.</span>
+<span class="c1">//Аннотация обязательная!!!!!</span>
+<span class="nd">@PropertyName</span><span class="p">(</span><span class="s">&quot;MY_PROPERTY&quot;</span><span class="p">)</span>
+<span class="c1">//Значение свойства по умолчанию.</span>
+<span class="c1">// Будет возвращаться значение, прочитанное из этой строки и преобразованное в</span>
+<span class="c1">// значение типа T при соблюдении следующих условий:</span>
+<span class="c1">// - значение этого свойства не указано в neptune.properties и neptune.global.properties</span>
+<span class="c1">// - Результаты System.getenv() и System.getProperties() не содержат свойства</span>
+<span class="c1">// - окружение тестируемого приложения не содержит имя свойства в качестве ключа</span>
+<span class="c1">//Аннотация необязательная.</span>
+<span class="nd">@PropertyDefaultValue</span><span class="p">(</span><span class="s">&quot;Some default value&quot;</span><span class="p">)</span>
+<span class="c1">//Аннотация ниже формирует описание свойства / комментарий к нему.</span>
+<span class="c1">//Аннотация не обязательная (но рекомендуется).</span>
+<span class="nd">@PropertyDescription</span><span class="p">(</span><span class="n">section</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Some logical section&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//Название раздела/группы свойств</span>
+<span class="w">        </span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;Description string 1&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание,</span>
+<span class="w">                </span><span class="s">&quot;Description string 2&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//построчно</span>
+<span class="w">                </span><span class="s">&quot;Description string 3&quot;</span><span class="p">})</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyProperty</span><span class="w"> </span><span class="kd">implements</span>
+<span class="w">        </span><span class="n">PropertySupplier</span><span class="o">&lt;</span><span class="w"> </span><span class="c1">//нужно реализовать этот интерфейс</span>
+<span class="w">                </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="c1">//тип объекта, в который преобразуется строка, </span>
+<span class="w">                </span><span class="c1">// прочитанная из значения свойства</span>
+<span class="w">                </span><span class="n">R</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// Тип объекта, который может быть </span>
+<span class="w">                    </span><span class="c1">// преобразован в строку-значение. </span>
+<span class="w">                    </span><span class="c1">// Может совпадать с типом выше.</span>
 
-<span class="w">    </span><span class="c1">// Не обязательно так делать. </span><span class="w"></span>
-<span class="w">    </span><span class="c1">// Просто для быстрого доступа к значению свойства</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">MyProperty</span><span class="w"> </span><span class="n">PROPERTY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MyProperty</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Не обязательно так делать. </span>
+<span class="w">    </span><span class="c1">// Просто для быстрого доступа к значению свойства</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">MyProperty</span><span class="w"> </span><span class="n">PROPERTY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MyProperty</span><span class="p">();</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">readValuesToSet</span><span class="p">(</span><span class="n">R</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//тут можно описать алгоритм, к</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// ак преобразовать переданный объект в строку-значение свойства</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">PropertySupplier</span><span class="p">.</span><span class="na">super</span><span class="p">.</span><span class="na">readValuesToSet</span><span class="p">(</span><span class="n">value</span><span class="p">);</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//или своя реализация</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">readValuesToSet</span><span class="p">(</span><span class="n">R</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//тут можно описать алгоритм, к</span>
+<span class="w">        </span><span class="c1">// ак преобразовать переданный объект в строку-значение свойства</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">PropertySupplier</span><span class="p">.</span><span class="na">super</span><span class="p">.</span><span class="na">readValuesToSet</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">//или своя реализация</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//тут нужно описать алгоритм, </span><span class="w"></span>
-<span class="w">        </span><span class="c1">// как преобразовать строку-значение свойства</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">//алгоритм преобразования;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//тут нужно описать алгоритм, </span>
+<span class="w">        </span><span class="c1">// как преобразовать строку-значение свойства</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">//алгоритм преобразования;</span>
+<span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="nd">@Override</span><span class="w"> </span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="nf">returnIfNull</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//Тут можно описать, какое значение вернуть вместо null.</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">PropertySupplier</span><span class="p">.</span><span class="na">super</span><span class="p">.</span><span class="na">returnIfNull</span><span class="p">();</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//или своя реализация</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="nf">returnIfNull</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//Тут можно описать, какое значение вернуть вместо null.</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">PropertySupplier</span><span class="p">.</span><span class="na">super</span><span class="p">.</span><span class="na">returnIfNull</span><span class="p">();</span>
+<span class="w">        </span><span class="c1">//или своя реализация</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Вариант использования</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">org.my.pack.MyProperty.PROPERTY</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.my.pack.MyProperty.PROPERTY</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyUseCase</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyUseCase</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">useCase</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//чтение</span><span class="w"></span>
-<span class="w">        </span><span class="n">T</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PROPERTY</span><span class="p">.</span><span class="na">get</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">useCase</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//чтение</span>
+<span class="w">        </span><span class="n">T</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PROPERTY</span><span class="p">.</span><span class="na">get</span><span class="p">();</span>
 
-<span class="w">        </span><span class="n">R</span><span class="w"> </span><span class="n">newValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="c1">//инициализация</span><span class="w"></span>
+<span class="w">        </span><span class="n">R</span><span class="w"> </span><span class="n">newValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="c1">//инициализация</span>
 <span class="w">                </span>
-<span class="w">        </span><span class="c1">//Так можно менять значение</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//так делать не рекомендуется, просто демонстрация возможностей</span><span class="w"></span>
-<span class="w">        </span><span class="n">PROPERTY</span><span class="p">.</span><span class="na">accept</span><span class="p">(</span><span class="n">newValue</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//Так можно менять значение</span>
+<span class="w">        </span><span class="c1">//так делать не рекомендуется, просто демонстрация возможностей</span>
+<span class="w">        </span><span class="n">PROPERTY</span><span class="p">.</span><span class="na">accept</span><span class="p">(</span><span class="n">newValue</span><span class="p">);</span>
 
-<span class="w">        </span><span class="c1">//Обнуление свойства</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//так делать не рекомендуется, просто демонстрация возможностей</span><span class="w"></span>
-<span class="w">        </span><span class="n">PROPERTY</span><span class="p">.</span><span class="na">accept</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//Обнуление свойства</span>
+<span class="w">        </span><span class="c1">//так делать не рекомендуется, просто демонстрация возможностей</span>
+<span class="w">        </span><span class="n">PROPERTY</span><span class="p">.</span><span class="na">accept</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Так же можно группировать похожие по смыслу или функциям описания свойств / переменных окружения в перечисления.</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.PropertyDefaultValue</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.PropertyDescription</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.PropertyName</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.PropertyDefaultValue</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.PropertyDescription</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.PropertyName</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">enum</span><span class="w"> </span><span class="n">MyPropertyEnum</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">PropertySupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@PropertyName</span><span class="p">(</span><span class="s">&quot;MY_PROPERTY_1&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@PropertyDefaultValue</span><span class="p">(</span><span class="s">&quot;Some default value 1&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@PropertyDescription</span><span class="p">(</span><span class="n">section</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Some logical section&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;Description string 1&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                    </span><span class="s">&quot;Description string 2&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                    </span><span class="s">&quot;Description string 3&quot;</span><span class="p">}</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">enum</span><span class="w"> </span><span class="n">MyPropertyEnum</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">PropertySupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nd">@PropertyName</span><span class="p">(</span><span class="s">&quot;MY_PROPERTY_1&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nd">@PropertyDefaultValue</span><span class="p">(</span><span class="s">&quot;Some default value 1&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nd">@PropertyDescription</span><span class="p">(</span><span class="n">section</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Some logical section&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;Description string 1&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="s">&quot;Description string 2&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="s">&quot;Description string 3&quot;</span><span class="p">}</span>
 <span class="w">    </span><span class="p">)</span><span class="w">        </span>
-<span class="w">    </span><span class="n">PROPERTY_1</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">PROPERTY_1</span><span class="p">,</span>
 
-<span class="w">    </span><span class="nd">@PropertyName</span><span class="p">(</span><span class="s">&quot;MY_PROPERTY_2&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@PropertyDefaultValue</span><span class="p">(</span><span class="s">&quot;Some default value 2&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@PropertyDescription</span><span class="p">(</span><span class="n">section</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Some logical section&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;Description string 4&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                    </span><span class="s">&quot;Description string 5&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                    </span><span class="s">&quot;Description string 6&quot;</span><span class="p">}</span><span class="w"></span>
-<span class="w">    </span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">PROPERTY_2</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@PropertyName</span><span class="p">(</span><span class="s">&quot;MY_PROPERTY_2&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nd">@PropertyDefaultValue</span><span class="p">(</span><span class="s">&quot;Some default value 2&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nd">@PropertyDescription</span><span class="p">(</span><span class="n">section</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Some logical section&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;Description string 4&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="s">&quot;Description string 5&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="s">&quot;Description string 6&quot;</span><span class="p">}</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="w">    </span><span class="n">PROPERTY_2</span><span class="p">;</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"> </span><span class="c1">//при необходимости</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">readValuesToSet</span><span class="p">(</span><span class="n">R</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">PropertySupplier</span><span class="p">.</span><span class="na">super</span><span class="p">.</span><span class="na">readValuesToSet</span><span class="p">(</span><span class="n">value</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span><span class="w"> </span><span class="c1">//при необходимости</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">readValuesToSet</span><span class="p">(</span><span class="n">R</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">PropertySupplier</span><span class="p">.</span><span class="na">super</span><span class="p">.</span><span class="na">readValuesToSet</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">//алгоритм преобразования;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">//алгоритм преобразования;</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"> </span><span class="c1">//при необходимости</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="nf">returnIfNull</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">PropertySupplier</span><span class="p">.</span><span class="na">super</span><span class="p">.</span><span class="na">returnIfNull</span><span class="p">();</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span><span class="w"> </span><span class="c1">//при необходимости</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="nf">returnIfNull</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">PropertySupplier</span><span class="p">.</span><span class="na">super</span><span class="p">.</span><span class="na">returnIfNull</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <div class="toctree-wrapper compound">

@@ -466,37 +466,37 @@
 <h1>&#64;UseInjectors<a class="headerlink" href="#useinjectors" title="Permalink to this heading">#</a></h1>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Пример использования аннотации &#64;UseInjectors</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.Captor</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.CapturedDataInjector</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.annotations.UseInjectors</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.Captor</span><span class="p">;</span>
+<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.CapturedDataInjector</span><span class="p">;</span>
+<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.annotations.UseInjectors</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="w"> </span><span class="nd">@UseInjectors</span><span class="p">(</span><span class="n">MyInjector</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"> </span><span class="c1">//Класс объекта,</span><span class="w"></span>
-<span class="w"> </span><span class="c1">// который добавляет аттач к отчету / логу.</span><span class="w"></span>
-<span class="w"> </span><span class="c1">// Здесь можно указать несколько классов.</span><span class="w"></span>
-<span class="w"> </span><span class="c1">// Можно указать абстрактные классы,</span><span class="w"></span>
-<span class="w"> </span><span class="c1">// реализующие интерфейс CapturedDataInjector&lt;S&gt;, или интерфейсы,</span><span class="w"></span>
-<span class="w"> </span><span class="c1">// расширяющие CapturedDataInjector&lt;S&gt;.</span><span class="w"></span>
-<span class="w"> </span><span class="c1">// Если в classpath есть их неабстрактные наследники / имплементоры,</span><span class="w"></span>
-<span class="w"> </span><span class="c1">// тогда они будут использованы автоматически.</span><span class="w"></span>
-<span class="w"> </span><span class="c1">//</span><span class="w"></span>
-<span class="w"> </span><span class="c1">// ВАЖНО: Имплементоры CapturedDataInjector&lt;S&gt; не</span><span class="w"></span>
-<span class="w"> </span><span class="c1">// должны иметь объявленных конструкторов,</span><span class="w"></span>
-<span class="w"> </span><span class="c1">// или у них должны быть объявлены публичные конструкторы без параметров.</span><span class="w"></span>
-<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyCaptor</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">S</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Captor</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">S</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w"> </span><span class="nd">@UseInjectors</span><span class="p">(</span><span class="n">MyInjector</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"> </span><span class="c1">//Класс объекта,</span>
+<span class="w"> </span><span class="c1">// который добавляет аттач к отчету / логу.</span>
+<span class="w"> </span><span class="c1">// Здесь можно указать несколько классов.</span>
+<span class="w"> </span><span class="c1">// Можно указать абстрактные классы,</span>
+<span class="w"> </span><span class="c1">// реализующие интерфейс CapturedDataInjector&lt;S&gt;, или интерфейсы,</span>
+<span class="w"> </span><span class="c1">// расширяющие CapturedDataInjector&lt;S&gt;.</span>
+<span class="w"> </span><span class="c1">// Если в classpath есть их неабстрактные наследники / имплементоры,</span>
+<span class="w"> </span><span class="c1">// тогда они будут использованы автоматически.</span>
+<span class="w"> </span><span class="c1">//</span>
+<span class="w"> </span><span class="c1">// ВАЖНО: Имплементоры CapturedDataInjector&lt;S&gt; не</span>
+<span class="w"> </span><span class="c1">// должны иметь объявленных конструкторов,</span>
+<span class="w"> </span><span class="c1">// или у них должны быть объявлены публичные конструкторы без параметров.</span>
+<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyCaptor</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">S</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Captor</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">S</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">     </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyCaptor</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="kd">super</span><span class="p">(</span><span class="n">message</span><span class="p">);</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyCaptor</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="kd">super</span><span class="p">(</span><span class="n">message</span><span class="p">);</span>
+<span class="w">     </span><span class="p">}</span>
 
 <span class="w">     </span><span class="cm">/*</span>
 <span class="cm">     protected MyCaptor(String message,</span>
 <span class="cm">                        List&lt;? extends CapturedDataInjector&lt;S&gt;&gt; injectors) {</span>
 <span class="cm">         super(message, injectors);</span>
-<span class="cm">     }*/</span><span class="w"></span>
+<span class="cm">     }*/</span>
 
 
 <span class="w">     </span><span class="cm">/*</span>
@@ -512,8 +512,8 @@
 <span class="cm">     public MyCaptor() {</span>
 <span class="cm">         super();</span>
 <span class="cm">     }</span>
-<span class="cm">     */</span><span class="w"></span>
-<span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="cm">     */</span>
+<span class="w"> </span><span class="p">}</span>
 </pre></div>
 </div>
 </div>

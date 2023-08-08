@@ -465,19 +465,19 @@
           <section class="tex2jax_ignore mathjax_ignore" id="rabbit-mq-default-exchange-name">
 <h1>RABBIT_MQ_DEFAULT_EXCHANGE_NAME<a class="headerlink" href="#rabbit-mq-default-exchange-name" title="Permalink to this heading">#</a></h1>
 <p>Настройка, в которой указывается имя часто используемого exchange</p>
-<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c">#Значение свойства указывается так</span><span class="w"></span>
-<span class="na">RABBIT_MQ_DEFAULT_EXCHANGE_NAME</span><span class="o">=</span><span class="s">exchange.name</span><span class="w"></span>
+<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c1">#Значение свойства указывается так</span>
+<span class="na">RABBIT_MQ_DEFAULT_EXCHANGE_NAME</span><span class="o">=</span><span class="s">exchange.name</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_EXCHANGE_NAME</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.properties.RabbitMQRoutingProperties.DEFAULT_EXCHANGE_NAME</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeClass</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeClass</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someVoid</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//пример доступа до значения свойства</span><span class="w"></span>
-<span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">exchangeName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DEFAULT_EXCHANGE_NAME</span><span class="p">.</span><span class="na">get</span><span class="p">();</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someVoid</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//пример доступа до значения свойства</span>
+<span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">exchangeName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DEFAULT_EXCHANGE_NAME</span><span class="p">.</span><span class="na">get</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>

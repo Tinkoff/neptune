@@ -466,82 +466,82 @@
 <h1>Duration-свойства<a class="headerlink" href="#duration" title="Permalink to this heading">#</a></h1>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Свойство для указания единиц измерения времени</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.PropertyName</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.enums.EnumPropertySuppler</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.PropertyName</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.enums.EnumPropertySuppler</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.time.temporal.ChronoUnit</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.time.temporal.ChronoUnit</span><span class="p">;</span>
 
-<span class="nd">@PropertyName</span><span class="p">(</span><span class="s">&quot;MY_PROPERTY_CHRONO_UNIT&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyChronoUnitProperty</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">EnumPropertySuppler</span><span class="o">&lt;</span><span class="n">ChronoUnit</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@PropertyName</span><span class="p">(</span><span class="s">&quot;MY_PROPERTY_CHRONO_UNIT&quot;</span><span class="p">)</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyChronoUnitProperty</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">EnumPropertySuppler</span><span class="o">&lt;</span><span class="n">ChronoUnit</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">MyChronoUnitProperty</span><span class="w"> </span><span class="n">MY_CHRONO_UNIT_PROPERTY</span><span class="w"></span>
-<span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MyChronoUnitProperty</span><span class="p">();</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">MyChronoUnitProperty</span><span class="w"> </span><span class="n">MY_CHRONO_UNIT_PROPERTY</span>
+<span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MyChronoUnitProperty</span><span class="p">();</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Свойство для указания величины времени времени</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.PropertyName</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.longs.LongValuePropertySupplier</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.PropertyName</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.longs.LongValuePropertySupplier</span><span class="p">;</span>
 
-<span class="nd">@PropertyName</span><span class="p">(</span><span class="s">&quot;MY_PROPERTY_CHRONO_VALUE&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyChronoValueProperty</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">LongValuePropertySupplier</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@PropertyName</span><span class="p">(</span><span class="s">&quot;MY_PROPERTY_CHRONO_VALUE&quot;</span><span class="p">)</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyChronoValueProperty</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">LongValuePropertySupplier</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">MyChronoValueProperty</span><span class="w"> </span><span class="n">MY_CHRONO_VALUE_PROPERTY</span><span class="w"></span>
-<span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MyChronoValueProperty</span><span class="p">();</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">MyChronoValueProperty</span><span class="w"> </span><span class="n">MY_CHRONO_VALUE_PROPERTY</span>
+<span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MyChronoValueProperty</span><span class="p">();</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-text">Класс, который превращает значения свойств в Duration</span><a class="headerlink" href="#id3" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.duration.DurationSupplier</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.properties.duration.DurationSupplier</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">org.my.pack.MyChronoUnitProperty.MY_CHRONO_UNIT_PROPERTY</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">org.my.pack.MyChronoValueProperty.MY_CHRONO_VALUE_PROPERTY</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.my.pack.MyChronoUnitProperty.MY_CHRONO_UNIT_PROPERTY</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.my.pack.MyChronoValueProperty.MY_CHRONO_VALUE_PROPERTY</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyDurationSupplier</span><span class="w"> </span><span class="kd">extends</span><span class="w"></span>
-<span class="w">        </span><span class="n">DurationSupplier</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//&lt;--наследоваться от этого класса</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyDurationSupplier</span><span class="w"> </span><span class="kd">extends</span>
+<span class="w">        </span><span class="n">DurationSupplier</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//&lt;--наследоваться от этого класса</span>
 
-<span class="w">    </span><span class="c1">//просто, для быстрого доступа</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">DurationSupplier</span><span class="w"> </span><span class="n">MY_DURATION</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MyDurationSupplier</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//просто, для быстрого доступа</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">DurationSupplier</span><span class="w"> </span><span class="n">MY_DURATION</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MyDurationSupplier</span><span class="p">();</span>
 
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyDurationSupplier</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="n">MY_CHRONO_UNIT_PROPERTY</span><span class="p">,</span><span class="w"> </span><span class="n">MY_CHRONO_VALUE_PROPERTY</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyDurationSupplier</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="n">MY_CHRONO_UNIT_PROPERTY</span><span class="p">,</span><span class="w"> </span><span class="n">MY_CHRONO_VALUE_PROPERTY</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id4">
 <div class="code-block-caption"><span class="caption-text">Как указывается в <code class="docutils literal notranslate"><span class="pre">neptune.properties</span></code> / <code class="docutils literal notranslate"><span class="pre">neptune.global.properties</span></code></span><a class="headerlink" href="#id4" title="Permalink to this code">#</a></div>
-<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="na">MY_PROPERTY_CHRONO_UNIT</span><span class="o">=</span><span class="s">SECONDS</span><span class="w"></span>
-<span class="na">MY_PROPERTY_CHRONO_VALUE</span><span class="o">=</span><span class="s">5</span><span class="w"></span>
+<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="na">MY_PROPERTY_CHRONO_UNIT</span><span class="o">=</span><span class="s">SECONDS</span>
+<span class="na">MY_PROPERTY_CHRONO_VALUE</span><span class="o">=</span><span class="s">5</span>
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id5">
 <div class="code-block-caption"><span class="caption-text">Пример использования</span><a class="headerlink" href="#id5" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.time.Duration</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.time.Duration</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">org.my.pack.MyDurationSupplier.MY_DURATION</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.my.pack.MyDurationSupplier.MY_DURATION</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyUseCase</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyUseCase</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">useCase</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//чтение</span><span class="w"></span>
-<span class="w">    </span><span class="n">Duration</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MY_DURATION</span><span class="p">.</span><span class="na">get</span><span class="p">();</span><span class="w"> </span><span class="c1">//вернет 5 сек</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">useCase</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//чтение</span>
+<span class="w">    </span><span class="n">Duration</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MY_DURATION</span><span class="p">.</span><span class="na">get</span><span class="p">();</span><span class="w"> </span><span class="c1">//вернет 5 сек</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>

@@ -479,16 +479,16 @@
 </ul>
 <p>Значение свойства/переменной окружения <code class="docutils literal notranslate"><span class="pre">TESTNG_REFRESH_BEFORE</span></code> должно быть равно одному из перечисленных выше элементов,
 или оно может включать в себя несколько, через запятую.</p>
-<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c"># обновление происходит перед первым в очереди вызова (до ближайшего @Test-метода) методом</span><span class="w"></span>
-<span class="c"># с аннотацией @BeforeClass</span><span class="w"></span>
-<span class="na">TESTNG_REFRESH_BEFORE</span><span class="o">=</span><span class="s">CLASS_STARTING</span><span class="w"></span>
+<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c1"># обновление происходит перед первым в очереди вызова (до ближайшего @Test-метода) методом</span>
+<span class="c1"># с аннотацией @BeforeClass</span>
+<span class="na">TESTNG_REFRESH_BEFORE</span><span class="o">=</span><span class="s">CLASS_STARTING</span>
 </pre></div>
 </div>
-<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c"># обновление происходит перед первым в очереди вызова (до ближайшего @Test-метода) методом</span><span class="w"></span>
-<span class="c"># с аннотацией @BeforeClass или @BeforeMethod. Если перед @Test-методом методы с указанными аннотациями</span><span class="w"></span>
-<span class="c"># не вызывались, то обновление произойдет непосредственно перед началом самого теста. </span><span class="w"></span>
-<span class="c"># Данный цикл будет выполняться для всех тестов в рамках класса.</span><span class="w"></span>
-<span class="na">TESTNG_REFRESH_BEFORE</span><span class="o">=</span><span class="s">CLASS_STARTING,BEFORE_METHOD_STARTING,METHOD_STARTING</span><span class="w"></span>
+<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c1"># обновление происходит перед первым в очереди вызова (до ближайшего @Test-метода) методом</span>
+<span class="c1"># с аннотацией @BeforeClass или @BeforeMethod. Если перед @Test-методом методы с указанными аннотациями</span>
+<span class="c1"># не вызывались, то обновление произойдет непосредственно перед началом самого теста. </span>
+<span class="c1"># Данный цикл будет выполняться для всех тестов в рамках класса.</span>
+<span class="na">TESTNG_REFRESH_BEFORE</span><span class="o">=</span><span class="s">CLASS_STARTING,BEFORE_METHOD_STARTING,METHOD_STARTING</span>
 </pre></div>
 </div>
 <p>При этом учитывается иерархия методов TestNG. Порядок приведен ниже:</p>

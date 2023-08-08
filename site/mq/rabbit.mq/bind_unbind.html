@@ -473,244 +473,244 @@
 </ul>
 <section id="bind">
 <h2>Bind<a class="headerlink" href="#bind" title="Permalink to this heading">#</a></h2>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.ExchangesBindUnbindParameters.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.ExchangesBindUnbindParameters.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//bind source exchange </span><span class="w"></span>
-<span class="w">        </span><span class="c1">//to destination exchange</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">bind</span><span class="p">(</span><span class="n">exchanges</span><span class="p">(</span><span class="w"></span>
-<span class="w">                </span><span class="s">&quot;source&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//указываются source </span><span class="w"></span>
-<span class="w">                </span><span class="s">&quot;destination&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//и destination</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">withRoutingKey</span><span class="p">(</span><span class="s">&quot;routingKey&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//можно указать ключ маршрутизации </span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;key&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">// можно указать набор дополнительных </span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;key2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value2&quot;</span><span class="p">));</span><span class="w"> </span><span class="c1">//параметров</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//bind source exchange </span>
+<span class="w">        </span><span class="c1">//to destination exchange</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">bind</span><span class="p">(</span><span class="n">exchanges</span><span class="p">(</span>
+<span class="w">                </span><span class="s">&quot;source&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//указываются source </span>
+<span class="w">                </span><span class="s">&quot;destination&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//и destination</span>
+<span class="w">                </span><span class="p">.</span><span class="na">withRoutingKey</span><span class="p">(</span><span class="s">&quot;routingKey&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//можно указать ключ маршрутизации </span>
+<span class="w">                </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;key&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">// можно указать набор дополнительных </span>
+<span class="w">                </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;key2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value2&quot;</span><span class="p">));</span><span class="w"> </span><span class="c1">//параметров</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.ExchangesBindUnbindParameters.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.ExchangesBindUnbindParameters.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">bind</span><span class="p">(</span><span class="n">exchanges</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="cm">/*параметры*/</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//в качестве ключа маршрутизации используется</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">withDefaultRoutingKey</span><span class="p">()</span><span class="w"> </span><span class="c1">//значение RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//можно указать </span><span class="w"></span>
-<span class="w">            </span><span class="c1">//дополнительные параметры</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">bind</span><span class="p">(</span><span class="n">exchanges</span><span class="p">(</span>
+<span class="w">            </span><span class="cm">/*параметры*/</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//в качестве ключа маршрутизации используется</span>
+<span class="w">            </span><span class="p">.</span><span class="na">withDefaultRoutingKey</span><span class="p">()</span><span class="w"> </span><span class="c1">//значение RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME</span>
+<span class="w">            </span><span class="c1">//можно указать </span>
+<span class="w">            </span><span class="c1">//дополнительные параметры</span>
 <span class="w">        </span><span class="p">);</span><span class="w"> </span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.ExchangesBindUnbindParameters.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.ExchangesBindUnbindParameters.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//в качестве source exchange </span><span class="w"></span>
-<span class="w">        </span><span class="c1">//используется значение RABBIT_MQ_DEFAULT_EXCHANGE_NAME</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">bind</span><span class="p">(</span><span class="n">destinationExchange</span><span class="p">(</span><span class="s">&quot;destination&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//можно указать </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//дополнительные параметры</span><span class="w"></span>
-<span class="w">            </span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//в качестве destination exchange </span><span class="w"></span>
-<span class="w">            </span><span class="c1">//используется значение RABBIT_MQ_DEFAULT_EXCHANGE_NAME</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">bind</span><span class="p">(</span><span class="n">sourceExchange</span><span class="p">(</span><span class="s">&quot;source&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//можно указать </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//дополнительные параметры</span><span class="w"></span>
-<span class="w">            </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//в качестве source exchange </span>
+<span class="w">        </span><span class="c1">//используется значение RABBIT_MQ_DEFAULT_EXCHANGE_NAME</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">bind</span><span class="p">(</span><span class="n">destinationExchange</span><span class="p">(</span><span class="s">&quot;destination&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//можно указать </span>
+<span class="w">                </span><span class="c1">//дополнительные параметры</span>
+<span class="w">            </span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//в качестве destination exchange </span>
+<span class="w">            </span><span class="c1">//используется значение RABBIT_MQ_DEFAULT_EXCHANGE_NAME</span>
+<span class="w">            </span><span class="p">.</span><span class="na">bind</span><span class="p">(</span><span class="n">sourceExchange</span><span class="p">(</span><span class="s">&quot;source&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//можно указать </span>
+<span class="w">                </span><span class="c1">//дополнительные параметры</span>
+<span class="w">            </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.QueueBindUnbindParameters.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.QueueBindUnbindParameters.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//bind exchange and queue</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">bind</span><span class="p">(</span><span class="n">queueAndExchange</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;queue&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//очередь</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;exchange&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">// exchange</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">withRoutingKey</span><span class="p">(</span><span class="s">&quot;routingKey&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//можно указать ключ маршрутизации </span><span class="w"></span>
-<span class="w">             </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;testKey&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;testValue&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">// можно указать набор дополнительных </span><span class="w"></span>
-<span class="w">             </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;testKey&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;testValue&quot;</span><span class="p">));</span><span class="w"> </span><span class="c1">//параметров</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//bind exchange and queue</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">bind</span><span class="p">(</span><span class="n">queueAndExchange</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;queue&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//очередь</span>
+<span class="w">            </span><span class="s">&quot;exchange&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">// exchange</span>
+<span class="w">            </span><span class="p">.</span><span class="na">withRoutingKey</span><span class="p">(</span><span class="s">&quot;routingKey&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//можно указать ключ маршрутизации </span>
+<span class="w">             </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;testKey&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;testValue&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">// можно указать набор дополнительных </span>
+<span class="w">             </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;testKey&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;testValue&quot;</span><span class="p">));</span><span class="w"> </span><span class="c1">//параметров</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.QueueBindUnbindParameters.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.QueueBindUnbindParameters.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">bind</span><span class="p">(</span><span class="n">queueAndExchange</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">bind</span><span class="p">(</span><span class="n">queueAndExchange</span><span class="p">(</span>
 <span class="w">            </span><span class="cm">/*параметры*/</span><span class="p">)</span><span class="w"> </span>
-<span class="w">            </span><span class="c1">//в качестве ключа маршрутизации используется</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">withDefaultRoutingKey</span><span class="p">()</span><span class="w"> </span><span class="c1">//значение RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//можно указать </span><span class="w"></span>
-<span class="w">            </span><span class="c1">//дополнительные параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="c1">//в качестве ключа маршрутизации используется</span>
+<span class="w">            </span><span class="p">.</span><span class="na">withDefaultRoutingKey</span><span class="p">()</span><span class="w"> </span><span class="c1">//значение RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME</span>
+<span class="w">            </span><span class="c1">//можно указать </span>
+<span class="w">            </span><span class="c1">//дополнительные параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.QueueBindUnbindParameters.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.QueueBindUnbindParameters.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//в качестве exchange используется </span><span class="w"></span>
-<span class="w">        </span><span class="c1">// значение RABBIT_MQ_DEFAULT_EXCHANGE_NAME</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">bind</span><span class="p">(</span><span class="n">queueAndDefaultExchange</span><span class="p">(</span><span class="s">&quot;queue&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//можно указать </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//дополнительные параметры</span><span class="w"></span>
-<span class="w">            </span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//в качестве queue используется </span><span class="w"></span>
-<span class="w">            </span><span class="c1">// значение RABBIT_MQ_DEFAULT_QUEUE_NAME</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">bind</span><span class="p">(</span><span class="n">defaultQueueAndExchange</span><span class="p">(</span><span class="s">&quot;exchange&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//можно указать </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//дополнительные параметры</span><span class="w"></span>
-<span class="w">            </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//в качестве exchange используется </span>
+<span class="w">        </span><span class="c1">// значение RABBIT_MQ_DEFAULT_EXCHANGE_NAME</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">bind</span><span class="p">(</span><span class="n">queueAndDefaultExchange</span><span class="p">(</span><span class="s">&quot;queue&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//можно указать </span>
+<span class="w">                </span><span class="c1">//дополнительные параметры</span>
+<span class="w">            </span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//в качестве queue используется </span>
+<span class="w">            </span><span class="c1">// значение RABBIT_MQ_DEFAULT_QUEUE_NAME</span>
+<span class="w">            </span><span class="p">.</span><span class="na">bind</span><span class="p">(</span><span class="n">defaultQueueAndExchange</span><span class="p">(</span><span class="s">&quot;exchange&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//можно указать </span>
+<span class="w">                </span><span class="c1">//дополнительные параметры</span>
+<span class="w">            </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
 <section id="unbind">
 <h2>Unbind<a class="headerlink" href="#unbind" title="Permalink to this heading">#</a></h2>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.ExchangesBindUnbindParameters.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.ExchangesBindUnbindParameters.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//unbind source exchange </span><span class="w"></span>
-<span class="w">        </span><span class="c1">//and destination exchange</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">unbind</span><span class="p">(</span><span class="n">exchanges</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;source&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//указываются source </span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;destination&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//и destination</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">withRoutingKey</span><span class="p">(</span><span class="s">&quot;routingKey&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//можно указать ключ маршрутизации </span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;key&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">// можно указать набор дополнительных </span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;key2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value2&quot;</span><span class="p">));</span><span class="w"> </span><span class="c1">//параметров</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//unbind source exchange </span>
+<span class="w">        </span><span class="c1">//and destination exchange</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">unbind</span><span class="p">(</span><span class="n">exchanges</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;source&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//указываются source </span>
+<span class="w">            </span><span class="s">&quot;destination&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//и destination</span>
+<span class="w">            </span><span class="p">.</span><span class="na">withRoutingKey</span><span class="p">(</span><span class="s">&quot;routingKey&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//можно указать ключ маршрутизации </span>
+<span class="w">            </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;key&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">// можно указать набор дополнительных </span>
+<span class="w">            </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;key2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value2&quot;</span><span class="p">));</span><span class="w"> </span><span class="c1">//параметров</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.ExchangesBindUnbindParameters.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.ExchangesBindUnbindParameters.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">unbind</span><span class="p">(</span><span class="n">exchanges</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="cm">/*параметры*/</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//в качестве ключа маршрутизации используется</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">withDefaultRoutingKey</span><span class="p">()</span><span class="w"> </span><span class="c1">//значение RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//можно указать </span><span class="w"></span>
-<span class="w">            </span><span class="c1">//дополнительные параметры</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">unbind</span><span class="p">(</span><span class="n">exchanges</span><span class="p">(</span>
+<span class="w">            </span><span class="cm">/*параметры*/</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//в качестве ключа маршрутизации используется</span>
+<span class="w">            </span><span class="p">.</span><span class="na">withDefaultRoutingKey</span><span class="p">()</span><span class="w"> </span><span class="c1">//значение RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME</span>
+<span class="w">            </span><span class="c1">//можно указать </span>
+<span class="w">            </span><span class="c1">//дополнительные параметры</span>
 <span class="w">        </span><span class="p">);</span><span class="w"> </span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.ExchangesBindUnbindParameters.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.ExchangesBindUnbindParameters.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//в качестве source exchange </span><span class="w"></span>
-<span class="w">        </span><span class="c1">//используется значение RABBIT_MQ_DEFAULT_EXCHANGE_NAME</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">unbind</span><span class="p">(</span><span class="n">destinationExchange</span><span class="p">(</span><span class="s">&quot;destination&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//можно указать </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//дополнительные параметры</span><span class="w"></span>
-<span class="w">            </span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//в качестве destination exchange </span><span class="w"></span>
-<span class="w">            </span><span class="c1">//используется значение RABBIT_MQ_DEFAULT_EXCHANGE_NAME</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">unbind</span><span class="p">(</span><span class="n">sourceExchange</span><span class="p">(</span><span class="s">&quot;source&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//можно указать </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//дополнительные параметры</span><span class="w"></span>
-<span class="w">            </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//в качестве source exchange </span>
+<span class="w">        </span><span class="c1">//используется значение RABBIT_MQ_DEFAULT_EXCHANGE_NAME</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">unbind</span><span class="p">(</span><span class="n">destinationExchange</span><span class="p">(</span><span class="s">&quot;destination&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//можно указать </span>
+<span class="w">                </span><span class="c1">//дополнительные параметры</span>
+<span class="w">            </span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//в качестве destination exchange </span>
+<span class="w">            </span><span class="c1">//используется значение RABBIT_MQ_DEFAULT_EXCHANGE_NAME</span>
+<span class="w">            </span><span class="p">.</span><span class="na">unbind</span><span class="p">(</span><span class="n">sourceExchange</span><span class="p">(</span><span class="s">&quot;source&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//можно указать </span>
+<span class="w">                </span><span class="c1">//дополнительные параметры</span>
+<span class="w">            </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.QueueBindUnbindParameters.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.QueueBindUnbindParameters.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//unbind exchange and queue</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">unbind</span><span class="p">(</span><span class="n">queueAndExchange</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;queue&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//очередь</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;exchange&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">// exchange</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">withRoutingKey</span><span class="p">(</span><span class="s">&quot;routingKey&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//можно указать ключ маршрутизации </span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;key&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">// можно указать набор дополнительных </span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;key2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value2&quot;</span><span class="p">));</span><span class="w"> </span><span class="c1">//параметров</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//unbind exchange and queue</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">unbind</span><span class="p">(</span><span class="n">queueAndExchange</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;queue&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//очередь</span>
+<span class="w">            </span><span class="s">&quot;exchange&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">// exchange</span>
+<span class="w">            </span><span class="p">.</span><span class="na">withRoutingKey</span><span class="p">(</span><span class="s">&quot;routingKey&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//можно указать ключ маршрутизации </span>
+<span class="w">            </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;key&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">// можно указать набор дополнительных </span>
+<span class="w">            </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;key2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value2&quot;</span><span class="p">));</span><span class="w"> </span><span class="c1">//параметров</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.QueueBindUnbindParameters.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.QueueBindUnbindParameters.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">unbind</span><span class="p">(</span><span class="n">queueAndExchange</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">unbind</span><span class="p">(</span><span class="n">queueAndExchange</span><span class="p">(</span>
 <span class="w">            </span><span class="cm">/*параметры*/</span><span class="p">)</span><span class="w"> </span>
-<span class="w">            </span><span class="c1">//в качестве ключа маршрутизации используется</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">withDefaultRoutingKey</span><span class="p">()</span><span class="w"> </span><span class="c1">//значение RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//можно указать </span><span class="w"></span>
-<span class="w">            </span><span class="c1">//дополнительные параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="c1">//в качестве ключа маршрутизации используется</span>
+<span class="w">            </span><span class="p">.</span><span class="na">withDefaultRoutingKey</span><span class="p">()</span><span class="w"> </span><span class="c1">//значение RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME</span>
+<span class="w">            </span><span class="c1">//можно указать </span>
+<span class="w">            </span><span class="c1">//дополнительные параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.QueueBindUnbindParameters.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.binding.QueueBindUnbindParameters.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//в качестве exchange используется </span><span class="w"></span>
-<span class="w">        </span><span class="c1">// значение RABBIT_MQ_DEFAULT_EXCHANGE_NAME</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">unbind</span><span class="p">(</span><span class="n">queueAndDefaultExchange</span><span class="p">(</span><span class="s">&quot;queue&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//можно указать </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//дополнительные параметры</span><span class="w"></span>
-<span class="w">            </span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//в качестве queue используется </span><span class="w"></span>
-<span class="w">            </span><span class="c1">// значение RABBIT_MQ_DEFAULT_QUEUE_NAME</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">unbind</span><span class="p">(</span><span class="n">defaultQueueAndExchange</span><span class="p">(</span><span class="s">&quot;exchange&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//можно указать </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//дополнительные параметры</span><span class="w"></span>
-<span class="w">            </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//в качестве exchange используется </span>
+<span class="w">        </span><span class="c1">// значение RABBIT_MQ_DEFAULT_EXCHANGE_NAME</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">unbind</span><span class="p">(</span><span class="n">queueAndDefaultExchange</span><span class="p">(</span><span class="s">&quot;queue&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//можно указать </span>
+<span class="w">                </span><span class="c1">//дополнительные параметры</span>
+<span class="w">            </span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//в качестве queue используется </span>
+<span class="w">            </span><span class="c1">// значение RABBIT_MQ_DEFAULT_QUEUE_NAME</span>
+<span class="w">            </span><span class="p">.</span><span class="na">unbind</span><span class="p">(</span><span class="n">defaultQueueAndExchange</span><span class="p">(</span><span class="s">&quot;exchange&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//можно указать </span>
+<span class="w">                </span><span class="c1">//дополнительные параметры</span>
+<span class="w">            </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>

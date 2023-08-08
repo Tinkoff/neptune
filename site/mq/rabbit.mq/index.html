@@ -469,30 +469,30 @@
 Поддерживается как автономная работа, так и взаимодействие с окружением Spring.</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">maven/dependencies</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span>     <span class="nt">&lt;dependency&gt;</span>
-         <span class="nt">&lt;groupId&gt;</span>ru.tinkoff.qa.neptune<span class="nt">&lt;/groupId&gt;</span>
-         <span class="nt">&lt;artifactId&gt;</span>rabbit.mq<span class="nt">&lt;/artifactId&gt;</span>
-         <span class="nt">&lt;version&gt;</span>${LATEST_RELEASE_OR_BETA_VERSION}<span class="nt">&lt;/version&gt;</span>
-         <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
-     <span class="nt">&lt;/dependency&gt;</span>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="w">     </span><span class="nt">&lt;dependency&gt;</span>
+<span class="w">         </span><span class="nt">&lt;groupId&gt;</span>ru.tinkoff.qa.neptune<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">         </span><span class="nt">&lt;artifactId&gt;</span>rabbit.mq<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">         </span><span class="nt">&lt;version&gt;</span>${LATEST_RELEASE_OR_BETA_VERSION}<span class="nt">&lt;/version&gt;</span>
+<span class="w">         </span><span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+<span class="w">     </span><span class="nt">&lt;/dependency&gt;</span>
 
-     <span class="cm">&lt;!--Минимально необходимый набор зависимостей от amqp-client--&gt;</span>
-     <span class="nt">&lt;dependency&gt;</span>
-         <span class="nt">&lt;groupId&gt;</span>com.rabbitmq<span class="nt">&lt;/groupId&gt;</span>
-         <span class="nt">&lt;artifactId&gt;</span>amqp-client<span class="nt">&lt;/artifactId&gt;</span>
-         <span class="cm">&lt;!--Диапазон поддерживаемых версий--&gt;</span>
-         <span class="nt">&lt;version&gt;</span>[5.13.0,)<span class="nt">&lt;/version&gt;</span>
-     <span class="nt">&lt;/dependency&gt;</span>
+<span class="w">     </span><span class="cm">&lt;!--Минимально необходимый набор зависимостей от amqp-client--&gt;</span>
+<span class="w">     </span><span class="nt">&lt;dependency&gt;</span>
+<span class="w">         </span><span class="nt">&lt;groupId&gt;</span>com.rabbitmq<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">         </span><span class="nt">&lt;artifactId&gt;</span>amqp-client<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">         </span><span class="cm">&lt;!--Диапазон поддерживаемых версий--&gt;</span>
+<span class="w">         </span><span class="nt">&lt;version&gt;</span>[5.13.0,)<span class="nt">&lt;/version&gt;</span>
+<span class="w">     </span><span class="nt">&lt;/dependency&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Добавить в build.gradle</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="n">dependencies</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
-<span class="w">     </span><span class="c1">//Минимально необходимый набор зависимостей от amqp-client</span><span class="w"></span>
-<span class="w">     </span><span class="n">implementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;com.rabbitmq&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;amqp-client&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="s1">&#39;[5.13.0,)&#39;</span><span class="w"></span>
-<span class="w">     </span><span class="n">testImplementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;ru.tinkoff.qa.neptune&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;rabbit.mq&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="n">LATEST_RELEASE_OR_BETA_VERSION</span><span class="w"></span>
-<span class="w"> </span><span class="o">}</span><span class="w"></span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="n">dependencies</span><span class="w"> </span><span class="o">{</span>
+<span class="w">     </span><span class="c1">//Минимально необходимый набор зависимостей от amqp-client</span>
+<span class="w">     </span><span class="n">implementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;com.rabbitmq&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;amqp-client&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="s1">&#39;[5.13.0,)&#39;</span>
+<span class="w">     </span><span class="n">testImplementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;ru.tinkoff.qa.neptune&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;rabbit.mq&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="n">LATEST_RELEASE_OR_BETA_VERSION</span>
+<span class="w"> </span><span class="o">}</span>
 </pre></div>
 </div>
 </div>

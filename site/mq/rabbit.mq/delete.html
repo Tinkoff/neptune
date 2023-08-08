@@ -472,69 +472,69 @@
 </ul>
 <section id="exchange-delete">
 <h2>Exchange delete<a class="headerlink" href="#exchange-delete" title="Permalink to this heading">#</a></h2>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.delete.ExchangeDeleteParameters.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.delete.ExchangeDeleteParameters.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="n">exchange</span><span class="p">(</span><span class="s">&quot;exchange2&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//имя exchange</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">ifUnused</span><span class="p">());</span><span class="w"> </span><span class="c1">//if unused</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="n">exchange</span><span class="p">(</span><span class="s">&quot;exchange2&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//имя exchange</span>
+<span class="w">                </span><span class="p">.</span><span class="na">ifUnused</span><span class="p">());</span><span class="w"> </span><span class="c1">//if unused</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.delete.ExchangeDeleteParameters.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.delete.ExchangeDeleteParameters.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//в качестве имени удаляемого exchange используется значение </span><span class="w"></span>
-<span class="w">        </span><span class="c1">//RABBIT_MQ_DEFAULT_EXCHANGE_NAME</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="n">exchange</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//можно указать </span><span class="w"></span>
-<span class="w">            </span><span class="c1">//дополнительные параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//в качестве имени удаляемого exchange используется значение </span>
+<span class="w">        </span><span class="c1">//RABBIT_MQ_DEFAULT_EXCHANGE_NAME</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="n">exchange</span><span class="p">()</span>
+<span class="w">            </span><span class="c1">//можно указать </span>
+<span class="w">            </span><span class="c1">//дополнительные параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
 <section id="queue-delete">
 <h2>Queue delete<a class="headerlink" href="#queue-delete" title="Permalink to this heading">#</a></h2>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.delete.QueueDeleteParameters.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.delete.QueueDeleteParameters.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="n">queue</span><span class="p">(</span><span class="w"></span>
-<span class="w">                </span><span class="s">&quot;queue&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//имя очереди</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">ifUnused</span><span class="p">()</span><span class="w"> </span><span class="c1">//if unused</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">ifEmpty</span><span class="p">());</span><span class="w"> </span><span class="c1">//if empty</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="n">queue</span><span class="p">(</span>
+<span class="w">                </span><span class="s">&quot;queue&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//имя очереди</span>
+<span class="w">                </span><span class="p">.</span><span class="na">ifUnused</span><span class="p">()</span><span class="w"> </span><span class="c1">//if unused</span>
+<span class="w">                </span><span class="p">.</span><span class="na">ifEmpty</span><span class="p">());</span><span class="w"> </span><span class="c1">//if empty</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.delete.QueueDeleteParameters.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.delete.QueueDeleteParameters.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//в качестве имени удаляемой очереди используется </span><span class="w"></span>
-<span class="w">        </span><span class="c1">//значение RABBIT_MQ_DEFAULT_QUEUE_NAME</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="n">queue</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//можно указать </span><span class="w"></span>
-<span class="w">            </span><span class="c1">//дополнительные параметры</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//в качестве имени удаляемой очереди используется </span>
+<span class="w">        </span><span class="c1">//значение RABBIT_MQ_DEFAULT_QUEUE_NAME</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="n">queue</span><span class="p">()</span>
+<span class="w">            </span><span class="c1">//можно указать </span>
+<span class="w">            </span><span class="c1">//дополнительные параметры</span>
 <span class="w">        </span><span class="p">);</span><span class="w"> </span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>

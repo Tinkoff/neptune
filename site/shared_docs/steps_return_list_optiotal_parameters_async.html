@@ -463,67 +463,67 @@
         </div>
         <article role="main">
           <details class="summary-">
-<summary>Уточняющие параметры шага, который возвращает лист. Шаг предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать</span><span class="w"></span>
-<span class="c1">//каждый элемент результирующего листа.</span><span class="w"></span>
-<span class="c1">// Так же доступны criteriaOr(criteria...),</span><span class="w"></span>
-<span class="c1">// criteriaOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// criteriaNot(criteria...)</span><span class="w"></span>
-<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;каждый элемент, который попадет в результирующий лист&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">// можно указать время,</span><span class="w"></span>
-<span class="c1">// за которое нужные элементы должны быть получены</span><span class="w"></span>
-<span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//Можно указать, что должно быть выброшено исключение,</span><span class="w"></span>
-<span class="c1">// если непустой лист не удалось получить (не было ни одного элемента,</span><span class="w"></span>
-<span class="c1">//который бы соответствовал перечисленным критериям,</span><span class="w"></span>
-<span class="c1">// или непустой лист просто не был получен)</span><span class="w"></span>
-<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span><span class="w"></span>
-<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//1. можно указать сколько объектов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//нужно вернуть</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnListOfSize</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//2. можно указать, до элемента с каким индексом</span><span class="w"></span>
-<span class="c1">//нужно собрать результирующие элементы,</span><span class="w"></span>
-<span class="c1">//индекс - индекс объекта в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnBeforeIndex</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//.returnAfterIndex(8) либо после какого элемента</span><span class="w"></span>
-<span class="c1">//----------------------------------------------</span><span class="w"></span>
-<span class="c1">//3. Либо можно перечислить индексы элементов,</span><span class="w"></span>
-<span class="c1">// которые следует вернуть.</span><span class="w"></span>
-<span class="c1">//Индексы - индексы объектов в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnItemsOfIndexes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-----------------------------------------------</span><span class="w"></span>
-<span class="c1">//4. можно указать, при достижении какого количества</span><span class="w"></span>
-<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//должен быть возвращен результат</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//----------------------------------------------</span><span class="w"></span>
-<span class="c1">//5. можно указать, при достижении каких условий,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать лист ВСЕХ объектов,</span><span class="w"></span>
-<span class="c1">//соответствующих критериям,</span><span class="w"></span>
-<span class="c1">//можно возвращать результирующий лист/суб-лист</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span><span class="w"></span>
-<span class="c1">// returnOnConditionOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// returnOnConditionNot(criteria...)</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span><span class="w"></span>
-<span class="c1">//или весь суб-лист подходящих по критериям элементов,</span><span class="w"></span>
-<span class="c1">// который должен вернуться как результат,</span><span class="w"></span>
-<span class="c1">// не соответствует каким-то критериям -</span><span class="w"></span>
-<span class="c1">// будет выброшено исключение с подробным описанием</span><span class="w"></span>
+<summary>Уточняющие параметры шага, который возвращает лист. Шаг предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span>
+<span class="c1">//которым должен соответствовать</span>
+<span class="c1">//каждый элемент результирующего листа.</span>
+<span class="c1">// Так же доступны criteriaOr(criteria...),</span>
+<span class="c1">// criteriaOnlyOne(criteria...)</span>
+<span class="c1">// criteriaNot(criteria...)</span>
+<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="s">&quot;каждый элемент, который попадет в результирующий лист&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">// можно указать время,</span>
+<span class="c1">// за которое нужные элементы должны быть получены</span>
+<span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//Можно указать, что должно быть выброшено исключение,</span>
+<span class="c1">// если непустой лист не удалось получить (не было ни одного элемента,</span>
+<span class="c1">//который бы соответствовал перечисленным критериям,</span>
+<span class="c1">// или непустой лист просто не был получен)</span>
+<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span>
+<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//1. можно указать сколько объектов,</span>
+<span class="c1">//которые соответствуют критериям,</span>
+<span class="c1">//нужно вернуть</span>
+<span class="p">.</span><span class="na">returnListOfSize</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//2. можно указать, до элемента с каким индексом</span>
+<span class="c1">//нужно собрать результирующие элементы,</span>
+<span class="c1">//индекс - индекс объекта в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnBeforeIndex</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="c1">//.returnAfterIndex(8) либо после какого элемента</span>
+<span class="c1">//----------------------------------------------</span>
+<span class="c1">//3. Либо можно перечислить индексы элементов,</span>
+<span class="c1">// которые следует вернуть.</span>
+<span class="c1">//Индексы - индексы объектов в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnItemsOfIndexes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span>
+<span class="c1">//-----------------------------------------------</span>
+<span class="c1">//4. можно указать, при достижении какого количества</span>
+<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span>
+<span class="c1">//должен быть возвращен результат</span>
+<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+<span class="c1">//----------------------------------------------</span>
+<span class="c1">//5. можно указать, при достижении каких условий,</span>
+<span class="c1">//которым должен соответствовать лист ВСЕХ объектов,</span>
+<span class="c1">//соответствующих критериям,</span>
+<span class="c1">//можно возвращать результирующий лист/суб-лист</span>
+<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span>
+<span class="c1">// returnOnConditionOnlyOne(criteria...)</span>
+<span class="c1">// returnOnConditionNot(criteria...)</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span>
+<span class="c1">//или весь суб-лист подходящих по критериям элементов,</span>
+<span class="c1">// который должен вернуться как результат,</span>
+<span class="c1">// не соответствует каким-то критериям -</span>
+<span class="c1">// будет выброшено исключение с подробным описанием</span>
 </pre></div>
 </div>
 </details>

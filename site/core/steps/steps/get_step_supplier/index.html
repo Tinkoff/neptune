@@ -466,125 +466,125 @@
 <h1>Возврат результата (get-step)<a class="headerlink" href="#get-step" title="Permalink to this heading">#</a></h1>
 <p>Для этого используются наследники <code class="docutils literal notranslate"><span class="pre">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier</span></code>.</p>
 <p>Ниже пример, демонстрирующий работу и принцип данного класса.</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.time.Duration</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.function.Function</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.time.Duration</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.function.Function</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.FunctionFactory</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.FunctionFactory</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="o">&gt;</span><span class="w"></span>
-<span class="w">        </span><span class="kd">extends</span><span class="w"> </span><span class="n">SequentialGetStepSupplier</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//Здесь нужно указывать тип самого класса или расширяющий тип</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="o">&gt;</span>
+<span class="w">        </span><span class="kd">extends</span><span class="w"> </span><span class="n">SequentialGetStepSupplier</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="p">,</span>
+<span class="w">        </span><span class="c1">//Здесь нужно указывать тип самого класса или расширяющий тип</span>
 <span class="w">        </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="o">&gt;&gt;</span><span class="w"> </span>
-<span class="w">        </span><span class="c1">//Наследники SequentialGetStepSupplier работают как Builder, и многие методы</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//возвращают ссылку на объект, от которого ини были вызваны</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//Наследники SequentialGetStepSupplier работают как Builder, и многие методы</span>
+<span class="w">        </span><span class="c1">//возвращают ссылку на объект, от которого ини были вызваны</span>
+<span class="p">{</span>
 
 
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="o">&lt;</span><span class="n">S</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">SequentialGetStepSupplier</span><span class="p">(</span><span class="w"></span>
-<span class="w">        </span><span class="n">Function</span><span class="o">&lt;</span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">S</span><span class="o">&gt;</span><span class="w"> </span><span class="n">stepFunction</span><span class="p">,</span><span class="w"> </span><span class="c1">//Функция описывает то, </span><span class="w"></span>
-<span class="w">        </span><span class="c1">// что шаг выполняет непосредственно         </span><span class="w"></span>
-<span class="w">        </span><span class="n">FunctionFactory</span><span class="o">&lt;</span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">S</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="o">&gt;</span><span class="w"> </span><span class="n">functionFactory</span><span class="p">,</span><span class="w"> </span><span class="c1">//Класс, </span><span class="w"></span>
-<span class="w">        </span><span class="c1">//реализующий данный интерфейс: </span><span class="w"></span>
-<span class="w">        </span><span class="c1">// - описывает, как объект S превращается в объект T</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//---------------------------------------------------</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// - описывает алгоритм работы таймаута ожидания результата, который</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// должен соответствовать переданным критериям</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//---------------------------------------------------</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// - описывает алгоритм проверки значения T на соответствие</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// переданным критериям. Проверять на соответствие критериям можно: </span><span class="w"></span>
-<span class="w">        </span><span class="c1">//      сам объект T, если P и T - один и тот же тип</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//      каждый элемент массива, если T - это массив элементов P</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//      каждый элемент коллекции, если T - это коллекция элементов P</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//      какую-то производную величину от T, например объект P возвращается</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//      get* методом объекта T.</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//Описанные выше нюансы зависят от дизайна и назначения шага</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//---------------------------------------------------</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// - описывает, какие исключения следует игнорировать в ходе </span><span class="w"></span>
-<span class="w">        </span><span class="c1">// выполнения шага</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//---------------------------------------------------</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// - описывает какие исключения должны быть выброшены, если </span><span class="w"></span>
-<span class="w">        </span><span class="c1">// за отведенное время шаг вернул пустой результат (пустым результатом </span><span class="w"></span>
-<span class="w">        </span><span class="c1">// можно считать null, пустой массив или пустую коллекцию, в зависимости от </span><span class="w"></span>
-<span class="w">        </span><span class="c1">// дизайна шага и его назначения)</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//---------------------------------------------------</span><span class="w"></span>
-<span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="c1">//опционально</span><span class="w"></span>
-<span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w">  </span><span class="c1">//параметры шага</span><span class="w"></span>
-<span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">c</span><span class="w"></span>
-<span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="n">stepFunction</span><span class="p">,</span><span class="w"> </span><span class="n">functionFactory</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="o">&lt;</span><span class="n">S</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">SequentialGetStepSupplier</span><span class="p">(</span>
+<span class="w">        </span><span class="n">Function</span><span class="o">&lt;</span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">S</span><span class="o">&gt;</span><span class="w"> </span><span class="n">stepFunction</span><span class="p">,</span><span class="w"> </span><span class="c1">//Функция описывает то, </span>
+<span class="w">        </span><span class="c1">// что шаг выполняет непосредственно         </span>
+<span class="w">        </span><span class="n">FunctionFactory</span><span class="o">&lt;</span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">S</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="o">&gt;</span><span class="w"> </span><span class="n">functionFactory</span><span class="p">,</span><span class="w"> </span><span class="c1">//Класс, </span>
+<span class="w">        </span><span class="c1">//реализующий данный интерфейс: </span>
+<span class="w">        </span><span class="c1">// - описывает, как объект S превращается в объект T</span>
+<span class="w">        </span><span class="c1">//---------------------------------------------------</span>
+<span class="w">        </span><span class="c1">// - описывает алгоритм работы таймаута ожидания результата, который</span>
+<span class="w">        </span><span class="c1">// должен соответствовать переданным критериям</span>
+<span class="w">        </span><span class="c1">//---------------------------------------------------</span>
+<span class="w">        </span><span class="c1">// - описывает алгоритм проверки значения T на соответствие</span>
+<span class="w">        </span><span class="c1">// переданным критериям. Проверять на соответствие критериям можно: </span>
+<span class="w">        </span><span class="c1">//      сам объект T, если P и T - один и тот же тип</span>
+<span class="w">        </span><span class="c1">//      каждый элемент массива, если T - это массив элементов P</span>
+<span class="w">        </span><span class="c1">//      каждый элемент коллекции, если T - это коллекция элементов P</span>
+<span class="w">        </span><span class="c1">//      какую-то производную величину от T, например объект P возвращается</span>
+<span class="w">        </span><span class="c1">//      get* методом объекта T.</span>
+<span class="w">        </span><span class="c1">//Описанные выше нюансы зависят от дизайна и назначения шага</span>
+<span class="w">        </span><span class="c1">//---------------------------------------------------</span>
+<span class="w">        </span><span class="c1">// - описывает, какие исключения следует игнорировать в ходе </span>
+<span class="w">        </span><span class="c1">// выполнения шага</span>
+<span class="w">        </span><span class="c1">//---------------------------------------------------</span>
+<span class="w">        </span><span class="c1">// - описывает какие исключения должны быть выброшены, если </span>
+<span class="w">        </span><span class="c1">// за отведенное время шаг вернул пустой результат (пустым результатом </span>
+<span class="w">        </span><span class="c1">// можно считать null, пустой массив или пустую коллекцию, в зависимости от </span>
+<span class="w">        </span><span class="c1">// дизайна шага и его назначения)</span>
+<span class="w">        </span><span class="c1">//---------------------------------------------------</span>
+<span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="c1">//опционально</span>
+<span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w">  </span><span class="c1">//параметры шага</span>
+<span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">c</span>
+<span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="n">stepFunction</span><span class="p">,</span><span class="w"> </span><span class="n">functionFactory</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="w">    </span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="o">&gt;</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">something</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="n">Object</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">Object</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">Object</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="cm">/*параметры конструктора*/</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="o">&gt;</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">something</span><span class="p">(</span>
+<span class="w">            </span><span class="n">Object</span><span class="w"> </span><span class="n">a</span><span class="p">,</span>
+<span class="w">            </span><span class="n">Object</span><span class="w"> </span><span class="n">b</span><span class="p">,</span>
+<span class="w">            </span><span class="n">Object</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="cm">/*параметры конструктора*/</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="c1">//Добавлено для наглядности</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//В большинстве случаев данный метод перекрывать не требуется</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@Override</span><span class="w"> </span><span class="c1">//Результирующая функция-шаг возвращается данным методом.</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Function</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">get</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">get</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//Добавлено для наглядности</span>
+<span class="w">    </span><span class="c1">//В большинстве случаев данный метод перекрывать не требуется</span>
+<span class="w">    </span><span class="nd">@Override</span><span class="w"> </span><span class="c1">//Результирующая функция-шаг возвращается данным методом.</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Function</span><span class="o">&lt;</span><span class="n">MyTestContext</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">get</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">get</span><span class="p">();</span>
 <span class="w">    </span><span class="p">}</span><span class="w">    </span>
 
-<span class="w">    </span><span class="c1">//Если конечный результат, соответствующий критериям, может быть</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//возвращен не сразу, то следует предусмотреть возможность</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//указывать приемлемый интервал времени, за который этот результат</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//должен быть получен.</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">timeOut</span><span class="p">(</span><span class="n">Duration</span><span class="w"> </span><span class="n">timeOut</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">timeOut</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//Если конечный результат, соответствующий критериям, может быть</span>
+<span class="w">    </span><span class="c1">//возвращен не сразу, то следует предусмотреть возможность</span>
+<span class="w">    </span><span class="c1">//указывать приемлемый интервал времени, за который этот результат</span>
+<span class="w">    </span><span class="c1">//должен быть получен.</span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">timeOut</span><span class="p">(</span><span class="n">Duration</span><span class="w"> </span><span class="n">timeOut</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">timeOut</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="c1">//Если между попытками получить необходимый результат нужно делать паузу</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//(в рамках отведенного времени), то надо иметь возможность</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//указывать продолжительность этой паузы. Как в примере ниже.</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">pollingInterval</span><span class="p">(</span><span class="n">Duration</span><span class="w"> </span><span class="n">pollingTime</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">pollingInterval</span><span class="p">(</span><span class="n">pollingTime</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//Если между попытками получить необходимый результат нужно делать паузу</span>
+<span class="w">    </span><span class="c1">//(в рамках отведенного времени), то надо иметь возможность</span>
+<span class="w">    </span><span class="c1">//указывать продолжительность этой паузы. Как в примере ниже.</span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">MyGetStepSupplier</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">pollingInterval</span><span class="p">(</span><span class="n">Duration</span><span class="w"> </span><span class="n">pollingTime</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">pollingInterval</span><span class="p">(</span><span class="n">pollingTime</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="c1">// Здесь можно описать действия, что выполнятся до начала шага.</span><span class="w"></span>
-<span class="w">    </span><span class="c1">// По умолчанию данный метод пустой, но не абстрактный, т.к. в большинстве случаев</span><span class="w"></span>
-<span class="w">    </span><span class="c1">// никаких дополнительных действий выполнять не нужно.</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">onStart</span><span class="p">(</span><span class="n">M</span><span class="w"> </span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//Какая-то логика</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Здесь можно описать действия, что выполнятся до начала шага.</span>
+<span class="w">    </span><span class="c1">// По умолчанию данный метод пустой, но не абстрактный, т.к. в большинстве случаев</span>
+<span class="w">    </span><span class="c1">// никаких дополнительных действий выполнять не нужно.</span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">onStart</span><span class="p">(</span><span class="n">M</span><span class="w"> </span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//Какая-то логика</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="c1">// Здесь можно описать действия, выполняемые после того, как результат был вычислен.</span><span class="w"></span>
-<span class="w">    </span><span class="c1">// По умолчанию данный метод пустой, но не абстрактный, т.к. в большинстве случаев</span><span class="w"></span>
-<span class="w">    </span><span class="c1">// никаких дополнительных действий выполнять не нужно.</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">onSuccess</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">t</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//Какая-то логика</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Здесь можно описать действия, выполняемые после того, как результат был вычислен.</span>
+<span class="w">    </span><span class="c1">// По умолчанию данный метод пустой, но не абстрактный, т.к. в большинстве случаев</span>
+<span class="w">    </span><span class="c1">// никаких дополнительных действий выполнять не нужно.</span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">onSuccess</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">t</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//Какая-то логика</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="c1">// Здесь можно описать действия, выполняемые после того, как было выброшено</span><span class="w"></span>
-<span class="w">    </span><span class="c1">// исключение, которое либо не удалось проигнорировать в процессе вычисления,</span><span class="w"></span>
-<span class="w">    </span><span class="c1">// либо было выброшено потому, что выполнение шага не дало ожидаемого результата.</span><span class="w"></span>
-<span class="w">    </span><span class="c1">// По умолчанию данный метод пустой, но не абстрактный, т.к. в большинстве случаев</span><span class="w"></span>
-<span class="w">    </span><span class="c1">// никаких дополнительных действий выполнять не нужно.</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">onFailure</span><span class="p">(</span><span class="n">M</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">Throwable</span><span class="w"> </span><span class="n">throwable</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//Какая-то логика</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Здесь можно описать действия, выполняемые после того, как было выброшено</span>
+<span class="w">    </span><span class="c1">// исключение, которое либо не удалось проигнорировать в процессе вычисления,</span>
+<span class="w">    </span><span class="c1">// либо было выброшено потому, что выполнение шага не дало ожидаемого результата.</span>
+<span class="w">    </span><span class="c1">// По умолчанию данный метод пустой, но не абстрактный, т.к. в большинстве случаев</span>
+<span class="w">    </span><span class="c1">// никаких дополнительных действий выполнять не нужно.</span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">onFailure</span><span class="p">(</span><span class="n">M</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">Throwable</span><span class="w"> </span><span class="n">throwable</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//Какая-то логика</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="c1">// Здесь описывается Map&lt;String, String&gt;, </span><span class="w"></span>
-<span class="w">    </span><span class="c1">// в котором ключ - название параметра, значение - значение параметра.</span><span class="w"></span>
-<span class="w">    </span><span class="c1">// Не всегда параметры можно передать до начала выполнения шага. </span><span class="w"></span>
-<span class="w">    </span><span class="c1">// Некоторые значения могут получиться в процессе </span><span class="w"></span>
-<span class="w">    </span><span class="c1">// выполнения шага.</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">additionalParameters</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//Возврат дополнительных динамических параметров, которые </span><span class="w"></span>
-<span class="w">        </span><span class="c1">// были рассчитаны уже в процессе выполнения шага</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Здесь описывается Map&lt;String, String&gt;, </span>
+<span class="w">    </span><span class="c1">// в котором ключ - название параметра, значение - значение параметра.</span>
+<span class="w">    </span><span class="c1">// Не всегда параметры можно передать до начала выполнения шага. </span>
+<span class="w">    </span><span class="c1">// Некоторые значения могут получиться в процессе </span>
+<span class="w">    </span><span class="c1">// выполнения шага.</span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">additionalParameters</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//Возврат дополнительных динамических параметров, которые </span>
+<span class="w">        </span><span class="c1">// были рассчитаны уже в процессе выполнения шага</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Небольшое пояснение к примеру:</p>

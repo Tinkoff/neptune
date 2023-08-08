@@ -469,67 +469,67 @@
 <p>Возможности данной операции аналогичны возможностям <a class="reference internal" href="Id.html"><span class="doc std std-doc">операции выбора по id</span></a>.</p>
 <section id="id1">
 <h2>HQL/SQL/JPQL. Запись.<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.testng.annotations.Test</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.model.TestEntity</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.testng.annotations.Test</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.model.TestEntity</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofMillis</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofSeconds</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.allByQuery</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byQuery</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofMillis</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofSeconds</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.allByQuery</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byQuery</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// выбор одной записи</span><span class="w"></span>
-<span class="w">        </span><span class="n">TestEntity</span><span class="w"> </span><span class="n">entity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hibernate</span><span class="p">().</span><span class="na">select</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//описание того ЧТО выбирается,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;Test entity&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">byQuery</span><span class="p">(</span><span class="n">TestEntity</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;select e from test_entities e where id = 1&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Необходимые параметры</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// выбор одной записи</span>
+<span class="w">        </span><span class="n">TestEntity</span><span class="w"> </span><span class="n">entity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hibernate</span><span class="p">().</span><span class="na">select</span><span class="p">(</span>
+<span class="w">            </span><span class="c1">//описание того ЧТО выбирается,</span>
+<span class="w">            </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">            </span><span class="c1">//терминологии</span>
+<span class="w">            </span><span class="s">&quot;Test entity&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">byQuery</span><span class="p">(</span><span class="n">TestEntity</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;select e from test_entities e where id = 1&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">            </span><span class="c1">//Необходимые параметры</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
 <section id="id2">
 <h2>HQL/SQL/JPQL. Записи.<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.testng.annotations.Test</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.model.TestEntity</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.testng.annotations.Test</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.model.TestEntity</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofMillis</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofSeconds</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.allByQuery</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byQuery</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofMillis</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofSeconds</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.allByQuery</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byQuery</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// выбор нескольких записей</span><span class="w"></span>
-<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TestEntity</span><span class="o">&gt;</span><span class="w"> </span><span class="n">entities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hibernate</span><span class="p">().</span><span class="na">select</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//описание того ЧТО выбирается,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;Test entity&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">allByQuery</span><span class="p">(</span><span class="n">TestEntity</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;select e from test_entities e where name = &#39;Some name&#39;&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Необходимые параметры</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// выбор нескольких записей</span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TestEntity</span><span class="o">&gt;</span><span class="w"> </span><span class="n">entities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hibernate</span><span class="p">().</span><span class="na">select</span><span class="p">(</span>
+<span class="w">            </span><span class="c1">//описание того ЧТО выбирается,</span>
+<span class="w">            </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">            </span><span class="c1">//терминологии</span>
+<span class="w">            </span><span class="s">&quot;Test entity&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">allByQuery</span><span class="p">(</span><span class="n">TestEntity</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;select e from test_entities e where name = &#39;Some name&#39;&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">            </span><span class="c1">//Необходимые параметры</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>

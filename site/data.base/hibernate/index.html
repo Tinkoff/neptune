@@ -469,66 +469,66 @@ CRUD-операций и операций поиска данных. Являе�
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">maven/dependencies</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;dependencies&gt;</span>
-     <span class="nt">&lt;dependency&gt;</span>
-         <span class="cm">&lt;!--it is necessary to have this in classpath--&gt;</span>
-         <span class="cm">&lt;!--or anything that depends on this transitively--&gt;</span>
-         <span class="nt">&lt;groupId&gt;</span>org.hibernate<span class="nt">&lt;/groupId&gt;</span>
-         <span class="nt">&lt;artifactId&gt;</span>hibernate-core<span class="nt">&lt;/artifactId&gt;</span>
-         <span class="cm">&lt;!--range of supported versions--&gt;</span>
-         <span class="nt">&lt;version&gt;</span>[5.6.0.Final,)<span class="nt">&lt;/version&gt;</span>
-     <span class="nt">&lt;/dependency&gt;</span>
+<span class="w">     </span><span class="nt">&lt;dependency&gt;</span>
+<span class="w">         </span><span class="cm">&lt;!--it is necessary to have this in classpath--&gt;</span>
+<span class="w">         </span><span class="cm">&lt;!--or anything that depends on this transitively--&gt;</span>
+<span class="w">         </span><span class="nt">&lt;groupId&gt;</span>org.hibernate<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">         </span><span class="nt">&lt;artifactId&gt;</span>hibernate-core<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">         </span><span class="cm">&lt;!--range of supported versions--&gt;</span>
+<span class="w">         </span><span class="nt">&lt;version&gt;</span>[5.6.0.Final,)<span class="nt">&lt;/version&gt;</span>
+<span class="w">     </span><span class="nt">&lt;/dependency&gt;</span>
 
-     <span class="cm">&lt;!--it is optional--&gt;</span>
-     <span class="cm">&lt;!--These dependencies are needed to unlock usage of QueryDsl JPA--&gt;</span>
-     <span class="nt">&lt;dependency&gt;</span>
-         <span class="nt">&lt;groupId&gt;</span>com.querydsl<span class="nt">&lt;/groupId&gt;</span>
-         <span class="nt">&lt;artifactId&gt;</span>querydsl-jpa<span class="nt">&lt;/artifactId&gt;</span>
-         <span class="cm">&lt;!--range of supported versions--&gt;</span>
-         <span class="nt">&lt;version&gt;</span>[5.0.0,)<span class="nt">&lt;/version&gt;</span>
-         <span class="cm">&lt;!-- scope is needed when main functionality doesn&#39;t use QueryDsl --&gt;</span>
-         <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
-     <span class="nt">&lt;/dependency&gt;</span>
-     <span class="nt">&lt;dependency&gt;</span>
-         <span class="nt">&lt;groupId&gt;</span>com.querydsl<span class="nt">&lt;/groupId&gt;</span>
-         <span class="nt">&lt;artifactId&gt;</span>querydsl-core<span class="nt">&lt;/artifactId&gt;</span>
-         <span class="cm">&lt;!--range of supported versions--&gt;</span>
-         <span class="nt">&lt;version&gt;</span>[5.0.0,)<span class="nt">&lt;/version&gt;</span>
-         <span class="cm">&lt;!-- scope is needed when main functionality doesn&#39;t use QueryDsl --&gt;</span>
-         <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
-     <span class="nt">&lt;/dependency&gt;</span>
+<span class="w">     </span><span class="cm">&lt;!--it is optional--&gt;</span>
+<span class="w">     </span><span class="cm">&lt;!--These dependencies are needed to unlock usage of QueryDsl JPA--&gt;</span>
+<span class="w">     </span><span class="nt">&lt;dependency&gt;</span>
+<span class="w">         </span><span class="nt">&lt;groupId&gt;</span>com.querydsl<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">         </span><span class="nt">&lt;artifactId&gt;</span>querydsl-jpa<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">         </span><span class="cm">&lt;!--range of supported versions--&gt;</span>
+<span class="w">         </span><span class="nt">&lt;version&gt;</span>[5.0.0,)<span class="nt">&lt;/version&gt;</span>
+<span class="w">         </span><span class="cm">&lt;!-- scope is needed when main functionality doesn&#39;t use QueryDsl --&gt;</span>
+<span class="w">         </span><span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+<span class="w">     </span><span class="nt">&lt;/dependency&gt;</span>
+<span class="w">     </span><span class="nt">&lt;dependency&gt;</span>
+<span class="w">         </span><span class="nt">&lt;groupId&gt;</span>com.querydsl<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">         </span><span class="nt">&lt;artifactId&gt;</span>querydsl-core<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">         </span><span class="cm">&lt;!--range of supported versions--&gt;</span>
+<span class="w">         </span><span class="nt">&lt;version&gt;</span>[5.0.0,)<span class="nt">&lt;/version&gt;</span>
+<span class="w">         </span><span class="cm">&lt;!-- scope is needed when main functionality doesn&#39;t use QueryDsl --&gt;</span>
+<span class="w">         </span><span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+<span class="w">     </span><span class="nt">&lt;/dependency&gt;</span>
 
-     <span class="nt">&lt;dependency&gt;</span>
-         <span class="nt">&lt;groupId&gt;</span>ru.tinkoff.qa.neptune<span class="nt">&lt;/groupId&gt;</span>
-         <span class="nt">&lt;artifactId&gt;</span>hibernate<span class="nt">&lt;/artifactId&gt;</span>
-         <span class="nt">&lt;version&gt;</span>${LATEST_RELEASE_OR_BETA_VERSION}<span class="nt">&lt;/version&gt;</span>
-         <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
-     <span class="nt">&lt;/dependency&gt;</span>
+<span class="w">     </span><span class="nt">&lt;dependency&gt;</span>
+<span class="w">         </span><span class="nt">&lt;groupId&gt;</span>ru.tinkoff.qa.neptune<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">         </span><span class="nt">&lt;artifactId&gt;</span>hibernate<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">         </span><span class="nt">&lt;version&gt;</span>${LATEST_RELEASE_OR_BETA_VERSION}<span class="nt">&lt;/version&gt;</span>
+<span class="w">         </span><span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+<span class="w">     </span><span class="nt">&lt;/dependency&gt;</span>
 
-     <span class="nt">&lt;dependency&gt;</span>
-         <span class="nt">&lt;groupId&gt;</span>ru.tinkoff.qa.neptune<span class="nt">&lt;/groupId&gt;</span>
-         <span class="nt">&lt;artifactId&gt;</span>hibernate<span class="nt">&lt;/artifactId&gt;</span>
-         <span class="nt">&lt;version&gt;</span>${LATEST_RELEASE_OR_BETA_VERSION}<span class="nt">&lt;/version&gt;</span>
-         <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
-     <span class="nt">&lt;/dependency&gt;</span>
- <span class="nt">&lt;/dependencies&gt;</span>
+<span class="w">     </span><span class="nt">&lt;dependency&gt;</span>
+<span class="w">         </span><span class="nt">&lt;groupId&gt;</span>ru.tinkoff.qa.neptune<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">         </span><span class="nt">&lt;artifactId&gt;</span>hibernate<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">         </span><span class="nt">&lt;version&gt;</span>${LATEST_RELEASE_OR_BETA_VERSION}<span class="nt">&lt;/version&gt;</span>
+<span class="w">         </span><span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+<span class="w">     </span><span class="nt">&lt;/dependency&gt;</span>
+<span class="w"> </span><span class="nt">&lt;/dependencies&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-text">Добавить в build.gradle</span><a class="headerlink" href="#id3" title="Permalink to this code">#</a></div>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="n">dependencies</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
-<span class="w">     </span><span class="c1">//it is necessary to have this in classpath</span><span class="w"></span>
-<span class="w">     </span><span class="c1">//or anything that depends on this transitively</span><span class="w"></span>
-<span class="w">     </span><span class="n">implementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;org.hibernate&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;hibernate-ogm-mongodb&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="s1">&#39;[5.6.0.Final,)&#39;</span><span class="w"> </span><span class="c1">//range of supported versions</span><span class="w"></span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="n">dependencies</span><span class="w"> </span><span class="o">{</span>
+<span class="w">     </span><span class="c1">//it is necessary to have this in classpath</span>
+<span class="w">     </span><span class="c1">//or anything that depends on this transitively</span>
+<span class="w">     </span><span class="n">implementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;org.hibernate&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;hibernate-ogm-mongodb&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="s1">&#39;[5.6.0.Final,)&#39;</span><span class="w"> </span><span class="c1">//range of supported versions</span>
 
-<span class="w">     </span><span class="c1">//it is optional</span><span class="w"></span>
-<span class="w">     </span><span class="c1">//These dependencies are needed to unlock usage of QueryDsl JPA</span><span class="w"></span>
-<span class="w">     </span><span class="c1">//When main functionality doesn&#39;t use QueryDsl then &#39;testImplementation&#39; is ok</span><span class="w"></span>
-<span class="w">     </span><span class="n">implementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;com.querydsl&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;querydsl-core&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="s1">&#39;[5.0.0,)&#39;</span><span class="w"> </span><span class="c1">//range of supported versions</span><span class="w"></span>
-<span class="w">     </span><span class="n">implementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;com.querydsl&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;querydsl-jpa&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="s1">&#39;[5.0.0,)&#39;</span><span class="w"></span>
+<span class="w">     </span><span class="c1">//it is optional</span>
+<span class="w">     </span><span class="c1">//These dependencies are needed to unlock usage of QueryDsl JPA</span>
+<span class="w">     </span><span class="c1">//When main functionality doesn&#39;t use QueryDsl then &#39;testImplementation&#39; is ok</span>
+<span class="w">     </span><span class="n">implementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;com.querydsl&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;querydsl-core&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="s1">&#39;[5.0.0,)&#39;</span><span class="w"> </span><span class="c1">//range of supported versions</span>
+<span class="w">     </span><span class="n">implementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;com.querydsl&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;querydsl-jpa&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="s1">&#39;[5.0.0,)&#39;</span>
 
-<span class="w">     </span><span class="n">testImplementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;ru.tinkoff.qa.neptune&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;hibernate&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="n">LATEST_RELEASE_OR_BETA_VERSION</span><span class="w"></span>
-<span class="w"> </span><span class="o">}</span><span class="w"></span>
+<span class="w">     </span><span class="n">testImplementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;ru.tinkoff.qa.neptune&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;hibernate&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="n">LATEST_RELEASE_OR_BETA_VERSION</span>
+<span class="w"> </span><span class="o">}</span>
 </pre></div>
 </div>
 </div>

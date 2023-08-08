@@ -464,146 +464,146 @@
         <article role="main">
           <section class="tex2jax_ignore mathjax_ignore" id="iterable">
 <h1>Шаги, которые возвращают элемент из Iterable&lt;?&gt;<a class="headerlink" href="#iterable" title="Permalink to this heading">#</a></h1>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="c1">// В данном примере выполняется шаг, который</span><span class="w"></span>
-<span class="w">    </span><span class="c1">// возвращает элемент из набора объектов. </span><span class="w"></span>
-<span class="w">    </span><span class="c1">// В ходе вычислений получается набор объектов, </span><span class="w"></span>
-<span class="w">    </span><span class="c1">// из которого берется либо первый попавшийся объект, </span><span class="w"></span>
-<span class="w">    </span><span class="c1">// либо он фильтруется по опциональным</span><span class="w"></span>
-<span class="w">    </span><span class="c1">// уточняющим результат параметрам.</span><span class="w"></span>
-<span class="w">    </span><span class="c1">// Возвращает нужный объект, </span><span class="w"></span>
-<span class="w">    </span><span class="c1">// если его удается вычислить, </span><span class="w"></span>
-<span class="w">    </span><span class="c1">// либо null - в противном случае.</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// В данном примере выполняется шаг, который</span>
+<span class="w">    </span><span class="c1">// возвращает элемент из набора объектов. </span>
+<span class="w">    </span><span class="c1">// В ходе вычислений получается набор объектов, </span>
+<span class="w">    </span><span class="c1">// из которого берется либо первый попавшийся объект, </span>
+<span class="w">    </span><span class="c1">// либо он фильтруется по опциональным</span>
+<span class="w">    </span><span class="c1">// уточняющим результат параметрам.</span>
+<span class="w">    </span><span class="c1">// Возвращает нужный объект, </span>
+<span class="w">    </span><span class="c1">// если его удается вычислить, </span>
+<span class="w">    </span><span class="c1">// либо null - в противном случае.</span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">        </span><span class="c1">//схематичный вызов контекста, </span><span class="w"></span>
-<span class="w">        </span><span class="c1">// в рамках которого выполняется шаг</span><span class="w"></span>
-<span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">someContext</span><span class="p">()</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">someIterableItem</span><span class="p">(</span><span class="cm">/*необходимые параметры*/</span><span class="p">)</span><span class="w"> </span><span class="c1">//вызов выполняемого</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//шага</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">someParam</span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="c1">//могут быть опциональные параметры,</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">someOtherParam</span><span class="p">(</span><span class="n">param2</span><span class="p">)</span><span class="w"> </span><span class="c1">//характерные для того или иного шага.</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//-----------------------------------------------</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// Можно указать опциональные уточняющие параметры    </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//------------------------------------------------</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//    </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// В зависимости от реализации, шаг может вычислять</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// значение с использованием некоторых промежуточных </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// шагов, выполняемых в рамках того же контекста. </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// Так же, в зависимости от реализации, могут быть</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// использованы ранее вычисленные значения.</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// Не во всех реализациях этот метод может </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// быть публично доступен. Он может вызываться неявно</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// при создании объекта шага. Данный пример просто</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// показывает принцип.  </span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">someRootValue</span><span class="p">()</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//схематичный вызов контекста, </span>
+<span class="w">        </span><span class="c1">// в рамках которого выполняется шаг</span>
+<span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">someContext</span><span class="p">()</span>
+<span class="w">                </span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">someIterableItem</span><span class="p">(</span><span class="cm">/*необходимые параметры*/</span><span class="p">)</span><span class="w"> </span><span class="c1">//вызов выполняемого</span>
+<span class="w">                </span><span class="c1">//шага</span>
+<span class="w">                </span><span class="p">.</span><span class="na">someParam</span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="c1">//могут быть опциональные параметры,</span>
+<span class="w">                </span><span class="p">.</span><span class="na">someOtherParam</span><span class="p">(</span><span class="n">param2</span><span class="p">)</span><span class="w"> </span><span class="c1">//характерные для того или иного шага.</span>
+<span class="w">                </span><span class="c1">//-----------------------------------------------</span>
+<span class="w">                </span><span class="c1">// Можно указать опциональные уточняющие параметры    </span>
+<span class="w">                </span><span class="c1">//------------------------------------------------</span>
+<span class="w">                </span><span class="c1">//    </span>
+<span class="w">                </span><span class="c1">// В зависимости от реализации, шаг может вычислять</span>
+<span class="w">                </span><span class="c1">// значение с использованием некоторых промежуточных </span>
+<span class="w">                </span><span class="c1">// шагов, выполняемых в рамках того же контекста. </span>
+<span class="w">                </span><span class="c1">// Так же, в зависимости от реализации, могут быть</span>
+<span class="w">                </span><span class="c1">// использованы ранее вычисленные значения.</span>
+<span class="w">                </span><span class="c1">// Не во всех реализациях этот метод может </span>
+<span class="w">                </span><span class="c1">// быть публично доступен. Он может вызываться неявно</span>
+<span class="w">                </span><span class="c1">// при создании объекта шага. Данный пример просто</span>
+<span class="w">                </span><span class="c1">// показывает принцип.  </span>
+<span class="w">                </span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">someRootValue</span><span class="p">()</span>
 <span class="w">                    </span><span class="cm">/*</span>
 <span class="cm">                     * опциональные параметры промежуточного шага</span>
-<span class="cm">                     */</span><span class="w"></span>
+<span class="cm">                     */</span>
 <span class="w">                </span><span class="p">)</span><span class="w">    </span>
 <span class="w">            </span><span class="p">);</span><span class="w"> </span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <details class="summary-iterable">
-<summary>Уточняющие параметры шага, который возвращает элемент Iterable<?>. Шаг не предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать</span><span class="w"></span>
-<span class="c1">//результирующий элемент из набора.</span><span class="w"></span>
-<span class="c1">// Так же доступны criteriaOr(criteria...),</span><span class="w"></span>
-<span class="c1">// criteriaOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// criteriaNot(criteria...)</span><span class="w"></span>
-<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;результирующий элемент из набора&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Можно указать, что должно быть выброшено исключение,</span><span class="w"></span>
-<span class="c1">// если не был получен результирующий элемент (не было ни одного элемента,</span><span class="w"></span>
-<span class="c1">//который бы соответствовал перечисленным критериям,</span><span class="w"></span>
-<span class="c1">// или непустой набор просто не был получен)</span><span class="w"></span>
-<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span><span class="w"></span>
-<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//1. Можно указать индекс элемента, который следует вернуть.</span><span class="w"></span>
-<span class="c1">//Индекс - индекс объекта в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnItemOfIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-----------------------------------------------</span><span class="w"></span>
-<span class="c1">//2. можно указать, при достижении какого количества</span><span class="w"></span>
-<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//должен быть возвращен результат</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//3. можно указать, при достижении каких условий,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать набор ВСЕХ объектов,</span><span class="w"></span>
-<span class="c1">//соответствующих критериям,</span><span class="w"></span>
-<span class="c1">//можно возвращать результирующий элемент</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">iterable</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span><span class="w"></span>
-<span class="c1">// returnOnConditionOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// returnOnConditionNot(criteria...)</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span><span class="w"></span>
-<span class="c1">//или весь набор подходящих по критериям элементов,</span><span class="w"></span>
-<span class="c1">// из которого должен быть взят результат,</span><span class="w"></span>
-<span class="c1">// не соответствует каким-то критериям -</span><span class="w"></span>
-<span class="c1">// будет выброшено исключение с подробным описанием</span><span class="w"></span>
+<summary>Уточняющие параметры шага, который возвращает элемент Iterable<?>. Шаг не предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span>
+<span class="c1">//которым должен соответствовать</span>
+<span class="c1">//результирующий элемент из набора.</span>
+<span class="c1">// Так же доступны criteriaOr(criteria...),</span>
+<span class="c1">// criteriaOnlyOne(criteria...)</span>
+<span class="c1">// criteriaNot(criteria...)</span>
+<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="s">&quot;результирующий элемент из набора&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Можно указать, что должно быть выброшено исключение,</span>
+<span class="c1">// если не был получен результирующий элемент (не было ни одного элемента,</span>
+<span class="c1">//который бы соответствовал перечисленным критериям,</span>
+<span class="c1">// или непустой набор просто не был получен)</span>
+<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span>
+<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//1. Можно указать индекс элемента, который следует вернуть.</span>
+<span class="c1">//Индекс - индекс объекта в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnItemOfIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">//-----------------------------------------------</span>
+<span class="c1">//2. можно указать, при достижении какого количества</span>
+<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span>
+<span class="c1">//должен быть возвращен результат</span>
+<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//3. можно указать, при достижении каких условий,</span>
+<span class="c1">//которым должен соответствовать набор ВСЕХ объектов,</span>
+<span class="c1">//соответствующих критериям,</span>
+<span class="c1">//можно возвращать результирующий элемент</span>
+<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">iterable</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span>
+<span class="c1">// returnOnConditionOnlyOne(criteria...)</span>
+<span class="c1">// returnOnConditionNot(criteria...)</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span>
+<span class="c1">//или весь набор подходящих по критериям элементов,</span>
+<span class="c1">// из которого должен быть взят результат,</span>
+<span class="c1">// не соответствует каким-то критериям -</span>
+<span class="c1">// будет выброшено исключение с подробным описанием</span>
 </pre></div>
 </div>
 </details><details class="summary-iterable">
-<summary>Уточняющие параметры шага, который возвращает элемент Iterable<?>. Шаг предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать</span><span class="w"></span>
-<span class="c1">//результирующий элемент из набора.</span><span class="w"></span>
-<span class="c1">// Так же доступны criteriaOr(criteria...),</span><span class="w"></span>
-<span class="c1">// criteriaOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// criteriaNot(criteria...)</span><span class="w"></span>
-<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;результирующий элемент из набора&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">// можно указать время,</span><span class="w"></span>
-<span class="c1">// за которое нужные элемент должен быть получен</span><span class="w"></span>
-<span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Можно указать, что должно быть выброшено исключение,</span><span class="w"></span>
-<span class="c1">// если не был получен результирующий элемент (не было ни одного элемента,</span><span class="w"></span>
-<span class="c1">//который бы соответствовал перечисленным критериям,</span><span class="w"></span>
-<span class="c1">// или непустой набор просто не был получен)</span><span class="w"></span>
-<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span><span class="w"></span>
-<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//1. Можно указать индекс элемента, который следует вернуть.</span><span class="w"></span>
-<span class="c1">//Индекс - индекс объекта в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnItemOfIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-----------------------------------------------</span><span class="w"></span>
-<span class="c1">//2. можно указать, при достижении какого количества</span><span class="w"></span>
-<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//должен быть возвращен результат</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//3. можно указать, при достижении каких условий,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать набор ВСЕХ объектов,</span><span class="w"></span>
-<span class="c1">//соответствующих критериям,</span><span class="w"></span>
-<span class="c1">//можно возвращать результирующий элемент</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">iterable</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span><span class="w"></span>
-<span class="c1">// returnOnConditionOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// returnOnConditionNot(criteria...)</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span><span class="w"></span>
-<span class="c1">//или весь набор подходящих по критериям элементов,</span><span class="w"></span>
-<span class="c1">// из которого должен быть взят результат,</span><span class="w"></span>
-<span class="c1">// не соответствует каким-то критериям -</span><span class="w"></span>
-<span class="c1">// будет выброшено исключение с подробным описанием</span><span class="w"></span>
+<summary>Уточняющие параметры шага, который возвращает элемент Iterable<?>. Шаг предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span>
+<span class="c1">//которым должен соответствовать</span>
+<span class="c1">//результирующий элемент из набора.</span>
+<span class="c1">// Так же доступны criteriaOr(criteria...),</span>
+<span class="c1">// criteriaOnlyOne(criteria...)</span>
+<span class="c1">// criteriaNot(criteria...)</span>
+<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="s">&quot;результирующий элемент из набора&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">// можно указать время,</span>
+<span class="c1">// за которое нужные элемент должен быть получен</span>
+<span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Можно указать, что должно быть выброшено исключение,</span>
+<span class="c1">// если не был получен результирующий элемент (не было ни одного элемента,</span>
+<span class="c1">//который бы соответствовал перечисленным критериям,</span>
+<span class="c1">// или непустой набор просто не был получен)</span>
+<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span>
+<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//1. Можно указать индекс элемента, который следует вернуть.</span>
+<span class="c1">//Индекс - индекс объекта в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnItemOfIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">//-----------------------------------------------</span>
+<span class="c1">//2. можно указать, при достижении какого количества</span>
+<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span>
+<span class="c1">//должен быть возвращен результат</span>
+<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//3. можно указать, при достижении каких условий,</span>
+<span class="c1">//которым должен соответствовать набор ВСЕХ объектов,</span>
+<span class="c1">//соответствующих критериям,</span>
+<span class="c1">//можно возвращать результирующий элемент</span>
+<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">iterable</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span>
+<span class="c1">// returnOnConditionOnlyOne(criteria...)</span>
+<span class="c1">// returnOnConditionNot(criteria...)</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span>
+<span class="c1">//или весь набор подходящих по критериям элементов,</span>
+<span class="c1">// из которого должен быть взят результат,</span>
+<span class="c1">// не соответствует каким-то критериям -</span>
+<span class="c1">// будет выброшено исключение с подробным описанием</span>
 </pre></div>
 </div>
 </details><p>Про критерии подробно <a class="reference internal" href="../../criteria/index.html"><span class="doc std std-doc">здесь</span></a></p>

@@ -470,41 +470,41 @@
 <li><p><a class="reference external" href="https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/reactive/ReactiveSortingRepository.html">ReactiveSortingRepository</a></p></li>
 <li><p><a class="reference external" href="https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/reactive/RxJava3SortingRepository.html">RxJava3SortingRepository</a></p></li>
 </ul>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.boot.test.context.SpringBootTest</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.boot.test.context.SpringBootTest</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">org.springframework.data.domain.Sort.Direction.ASC</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.allBySorting</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.springframework.data.domain.Sort.Direction.ASC</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.allBySorting</span><span class="p">;</span>
 
-<span class="nd">@SpringBootTest</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@SpringBootTest</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Autowired</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">TestRepository</span><span class="w"> </span><span class="n">testRepository</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Autowired</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">TestRepository</span><span class="w"> </span><span class="n">testRepository</span><span class="p">;</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TestEntity</span><span class="o">&gt;</span><span class="w"> </span><span class="n">entities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">springData</span><span class="p">().</span><span class="na">find</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//описание того ЧТО выбирается,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//есть следующие варианты: </span><span class="w"></span>
-<span class="w">            </span><span class="c1">// - allBySorting(T, org.springframework.data.domain.Sort)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// - allBySorting(T, java.lang.String...)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// - allBySorting(T, java.util.List&lt;org.springframework.data.domain.Sort.Order&gt;)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// - allBySorting(T, org.springframework.data.domain.Sort.Order...)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// где T - тип расширяющий org.springframework.data.repository.Repository</span><span class="w"></span>
-<span class="w">            </span><span class="n">allBySorting</span><span class="p">(</span><span class="n">testRepository</span><span class="p">,</span><span class="w"> </span><span class="n">ASC</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;name&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Необходимые параметры</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TestEntity</span><span class="o">&gt;</span><span class="w"> </span><span class="n">entities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">springData</span><span class="p">().</span><span class="na">find</span><span class="p">(</span>
+<span class="w">            </span><span class="c1">//описание того ЧТО выбирается,</span>
+<span class="w">            </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">            </span><span class="c1">//терминологии</span>
+<span class="w">            </span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="c1">//есть следующие варианты: </span>
+<span class="w">            </span><span class="c1">// - allBySorting(T, org.springframework.data.domain.Sort)</span>
+<span class="w">            </span><span class="c1">// - allBySorting(T, java.lang.String...)</span>
+<span class="w">            </span><span class="c1">// - allBySorting(T, java.util.List&lt;org.springframework.data.domain.Sort.Order&gt;)</span>
+<span class="w">            </span><span class="c1">// - allBySorting(T, org.springframework.data.domain.Sort.Order...)</span>
+<span class="w">            </span><span class="c1">// где T - тип расширяющий org.springframework.data.repository.Repository</span>
+<span class="w">            </span><span class="n">allBySorting</span><span class="p">(</span><span class="n">testRepository</span><span class="p">,</span><span class="w"> </span><span class="n">ASC</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;name&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//</span>
+<span class="w">                </span><span class="c1">//Необходимые параметры</span>
+<span class="w">                </span><span class="c1">//</span>
 <span class="w">        </span><span class="p">);</span><span class="w"> </span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Возможности данной операции аналогичны возможностям <a class="reference internal" href="all.html"><span class="doc std std-doc">операции выбора всех записей</span></a>.</p>

@@ -472,112 +472,112 @@
 </ul>
 <section id="exchange-declare">
 <h2>Exchange declare<a class="headerlink" href="#exchange-declare" title="Permalink to this heading">#</a></h2>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.declare.DeclareExchangeParameters.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.declare.DeclareExchangeParameters.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">declare</span><span class="p">(</span><span class="n">newExchange</span><span class="p">(</span><span class="s">&quot;exchange&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//название </span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">type</span><span class="p">(</span><span class="s">&quot;type&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//тип можно указать</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">durable</span><span class="p">()</span><span class="w"> </span><span class="c1">//можно указать</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">autoDelete</span><span class="p">()</span><span class="w"> </span><span class="c1">//можно указать</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">internal</span><span class="p">()</span><span class="w"> </span><span class="c1">//можно указать</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;key&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">// можно указать набор дополнительных </span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;key2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value2&quot;</span><span class="p">));</span><span class="w"> </span><span class="c1">//параметров</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">declare</span><span class="p">(</span><span class="n">newExchange</span><span class="p">(</span><span class="s">&quot;exchange&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//название </span>
+<span class="w">                </span><span class="p">.</span><span class="na">type</span><span class="p">(</span><span class="s">&quot;type&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//тип можно указать</span>
+<span class="w">                </span><span class="p">.</span><span class="na">durable</span><span class="p">()</span><span class="w"> </span><span class="c1">//можно указать</span>
+<span class="w">                </span><span class="p">.</span><span class="na">autoDelete</span><span class="p">()</span><span class="w"> </span><span class="c1">//можно указать</span>
+<span class="w">                </span><span class="p">.</span><span class="na">internal</span><span class="p">()</span><span class="w"> </span><span class="c1">//можно указать</span>
+<span class="w">                </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;key&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">// можно указать набор дополнительных </span>
+<span class="w">                </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;key2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value2&quot;</span><span class="p">));</span><span class="w"> </span><span class="c1">//параметров</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.declare.DeclareExchangeParameters.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.declare.DeclareExchangeParameters.*</span><span class="p">;</span>
 
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//в качестве имени нового exchange используется </span><span class="w"></span>
-<span class="w">        </span><span class="c1">// значение RABBIT_MQ_DEFAULT_EXCHANGE_NAME</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">declare</span><span class="p">(</span><span class="n">newExchange</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//можно указать </span><span class="w"></span>
-<span class="w">            </span><span class="c1">//дополнительные параметры</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//в качестве имени нового exchange используется </span>
+<span class="w">        </span><span class="c1">// значение RABBIT_MQ_DEFAULT_EXCHANGE_NAME</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">declare</span><span class="p">(</span><span class="n">newExchange</span><span class="p">()</span>
+<span class="w">            </span><span class="c1">//можно указать </span>
+<span class="w">            </span><span class="c1">//дополнительные параметры</span>
 <span class="w">        </span><span class="p">);</span><span class="w"> </span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.declare.DeclareExchangeParameters.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.declare.DeclareExchangeParameters.*</span><span class="p">;</span>
 
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">declare</span><span class="p">(</span><span class="n">newExchange</span><span class="p">(</span><span class="s">&quot;exchange&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Пассивное объявление exchange</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">declare</span><span class="p">(</span><span class="n">newExchange</span><span class="p">(</span><span class="s">&quot;exchange&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//Пассивное объявление exchange</span>
 <span class="w">                </span><span class="p">.</span><span class="na">passive</span><span class="p">()</span><span class="w"> </span>
 <span class="w">                </span><span class="cm">/*.type(&quot;type&quot;) //игнорируется</span>
 <span class="cm">                .durable() //игнорируется</span>
 <span class="cm">                .autoDelete() //игнорируется</span>
 <span class="cm">                .internal() //игнорируется</span>
 <span class="cm">                .argument(&quot;key&quot;, &quot;value&quot;) //игнорируется</span>
-<span class="cm">                .argument(&quot;key2&quot;, &quot;value2&quot;)*/</span><span class="p">);</span><span class="w"> </span><span class="c1">//игнорируется</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="cm">                .argument(&quot;key2&quot;, &quot;value2&quot;)*/</span><span class="p">);</span><span class="w"> </span><span class="c1">//игнорируется</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
 <section id="queue-declare">
 <h2>Queue declare<a class="headerlink" href="#queue-declare" title="Permalink to this heading">#</a></h2>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.declare.DeclareQueueParameters.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.declare.DeclareQueueParameters.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">declare</span><span class="p">(</span><span class="n">newQueue</span><span class="p">(</span><span class="s">&quot;queue&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//название </span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">exclusive</span><span class="p">()</span><span class="w"> </span><span class="c1">//можно указать</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">autoDelete</span><span class="p">()</span><span class="w"> </span><span class="c1">//можно указать</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">durable</span><span class="p">()</span><span class="w"> </span><span class="c1">//можно указать</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value&quot;</span><span class="p">)</span><span class="c1">// можно указать набор дополнительных </span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;name2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value2&quot;</span><span class="p">));</span><span class="w"> </span><span class="c1">//параметров</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">declare</span><span class="p">(</span><span class="n">newQueue</span><span class="p">(</span><span class="s">&quot;queue&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//название </span>
+<span class="w">                </span><span class="p">.</span><span class="na">exclusive</span><span class="p">()</span><span class="w"> </span><span class="c1">//можно указать</span>
+<span class="w">                </span><span class="p">.</span><span class="na">autoDelete</span><span class="p">()</span><span class="w"> </span><span class="c1">//можно указать</span>
+<span class="w">                </span><span class="p">.</span><span class="na">durable</span><span class="p">()</span><span class="w"> </span><span class="c1">//можно указать</span>
+<span class="w">                </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value&quot;</span><span class="p">)</span><span class="c1">// можно указать набор дополнительных </span>
+<span class="w">                </span><span class="p">.</span><span class="na">argument</span><span class="p">(</span><span class="s">&quot;name2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value2&quot;</span><span class="p">));</span><span class="w"> </span><span class="c1">//параметров</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.declare.DeclareQueueParameters.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.declare.DeclareQueueParameters.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//в качестве имени новой очереди используется </span><span class="w"></span>
-<span class="w">        </span><span class="c1">// значение RABBIT_MQ_DEFAULT_QUEUE_NAME</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">declare</span><span class="p">(</span><span class="n">newQueue</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//можно указать </span><span class="w"></span>
-<span class="w">            </span><span class="c1">//дополнительные параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//в качестве имени новой очереди используется </span>
+<span class="w">        </span><span class="c1">// значение RABBIT_MQ_DEFAULT_QUEUE_NAME</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">declare</span><span class="p">(</span><span class="n">newQueue</span><span class="p">()</span>
+<span class="w">            </span><span class="c1">//можно указать </span>
+<span class="w">            </span><span class="c1">//дополнительные параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.declare.ServerNamedQueueSequentialGetSupplier.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.declare.ServerNamedQueueSequentialGetSupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="c1">//Создание новой очереди самим сервером без передачи параметров  </span><span class="w"></span>
-<span class="w">      </span><span class="c1">//возвращается имя новой очереди  </span><span class="w"></span>
-<span class="w">      </span><span class="n">String</span><span class="w"> </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">declare</span><span class="p">(</span><span class="n">newQueueServerNamed</span><span class="p">());</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">//Создание новой очереди самим сервером без передачи параметров  </span>
+<span class="w">      </span><span class="c1">//возвращается имя новой очереди  </span>
+<span class="w">      </span><span class="n">String</span><span class="w"> </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">declare</span><span class="p">(</span><span class="n">newQueueServerNamed</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>

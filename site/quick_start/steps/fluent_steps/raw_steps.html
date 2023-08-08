@@ -467,30 +467,30 @@
 <p>Их можно использовать, чтобы сгруппировать в коде/логе/репорте множество простых действий/шагов в один произвольный шаг верхнего уровня.</p>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Произвольный шаг, описанный в тесте</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Step.</span><span class="n">$</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Step.</span><span class="n">$</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//Шаг просто выполняется и ничего не возвращает</span><span class="w"></span>
-<span class="w">        </span><span class="n">$</span><span class="p">(</span><span class="s">&quot;Given: что-то в некотором состоянии&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">           </span><span class="c1">//Некоторые действия</span><span class="w"></span>
-<span class="w">        </span><span class="p">});</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//Шаг просто выполняется и ничего не возвращает</span>
+<span class="w">        </span><span class="n">$</span><span class="p">(</span><span class="s">&quot;Given: что-то в некотором состоянии&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">           </span><span class="c1">//Некоторые действия</span>
+<span class="w">        </span><span class="p">});</span>
 
-<span class="w">        </span><span class="c1">//Шаг выполняется и возвращает какое-то значение</span><span class="w"></span>
-<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">$</span><span class="p">(</span><span class="s">&quot;When: что-то делаем и получаем&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Некоторые действия</span><span class="w"></span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="c1">//возврат некоторого значения</span><span class="w"></span>
-<span class="w">        </span><span class="p">});</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//Шаг выполняется и возвращает какое-то значение</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">$</span><span class="p">(</span><span class="s">&quot;When: что-то делаем и получаем&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">//Некоторые действия</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="c1">//возврат некоторого значения</span>
+<span class="w">        </span><span class="p">});</span>
 
-<span class="w">        </span><span class="n">$</span><span class="p">(</span><span class="s">&quot;Then: проверяем то, что получили&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="n">assetThat</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="cm">/*Параметры проверки*/</span><span class="p">);</span><span class="w"></span>
-<span class="w">        </span><span class="p">});</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">$</span><span class="p">(</span><span class="s">&quot;Then: проверяем то, что получили&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">assetThat</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="cm">/*Параметры проверки*/</span><span class="p">);</span>
+<span class="w">        </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>

@@ -465,43 +465,43 @@
           <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>Произвольный вызов метода репозитория<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
 <p>Возможности данной операции аналогичны возможностям <a class="reference internal" href="Id.html"><span class="doc std std-doc">операции выбора по id</span></a>.</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.boot.test.context.SpringBootTest</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.boot.test.context.SpringBootTest</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.allByInvocation</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byInvocation</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.allByInvocation</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.byInvocation</span><span class="p">;</span>
 
-<span class="nd">@SpringBootTest</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@SpringBootTest</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Autowired</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">TestRepository</span><span class="w"> </span><span class="n">testRepository</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Autowired</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">TestRepository</span><span class="w"> </span><span class="n">testRepository</span><span class="p">;</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">TestEntity</span><span class="w"> </span><span class="n">entity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">springData</span><span class="p">().</span><span class="na">find</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//описание того ЧТО выбирается,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;Test entity&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">byInvocation</span><span class="p">(</span><span class="n">testRepository</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="n">r</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="na">findSomething</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ABCD&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">123</span><span class="p">))</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Необходимые параметры</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">TestEntity</span><span class="w"> </span><span class="n">entity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">springData</span><span class="p">().</span><span class="na">find</span><span class="p">(</span>
+<span class="w">            </span><span class="c1">//описание того ЧТО выбирается,</span>
+<span class="w">            </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">            </span><span class="c1">//терминологии</span>
+<span class="w">            </span><span class="s">&quot;Test entity&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">byInvocation</span><span class="p">(</span><span class="n">testRepository</span><span class="p">,</span>
+<span class="w">                </span><span class="n">r</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="na">findSomething</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ABCD&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">123</span><span class="p">))</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">            </span><span class="c1">//Необходимые параметры</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">        </span><span class="p">);</span>
 
-<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TestEntity</span><span class="o">&gt;</span><span class="w"> </span><span class="n">entities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">springData</span><span class="p">().</span><span class="na">find</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">allByInvocation</span><span class="p">(</span><span class="n">testRepository</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="n">r</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="na">findEntities</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ABCD&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">123</span><span class="p">))</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Необходимые параметры</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TestEntity</span><span class="o">&gt;</span><span class="w"> </span><span class="n">entities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">springData</span><span class="p">().</span><span class="na">find</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">allByInvocation</span><span class="p">(</span><span class="n">testRepository</span><span class="p">,</span>
+<span class="w">                </span><span class="n">r</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="na">findEntities</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ABCD&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">123</span><span class="p">))</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">            </span><span class="c1">//Необходимые параметры</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>

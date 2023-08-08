@@ -466,172 +466,172 @@
 <h1>Для java.lang.Iterable<a class="headerlink" href="#java-lang-iterable" title="Permalink to this heading">#</a></h1>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Примеры использования матчеров для Iterable</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.MatcherAssert.assertThat</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.*</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span><span class="w"></span>
-<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsConsistsOfMatcher</span><span class="p">.</span><span class="na">iterableInOrder</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span><span class="w"></span>
-<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsConsistsOfMatcher</span><span class="p">.</span><span class="na">iterableOf</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span><span class="w"></span>
-<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsEachItemMatcher</span><span class="p">.</span><span class="na">eachOfIterable</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span><span class="w"></span>
-<span class="w">             </span><span class="n">SetOfObjectsIncludesMatcher</span><span class="p">.</span><span class="na">iterableIncludes</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span><span class="w"></span>
-<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsIncludesMatcher</span><span class="p">.</span><span class="na">iterableIncludesInOrder</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span><span class="w"></span>
-<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsItemsMatcher</span><span class="p">.</span><span class="na">iterableHasItem</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span><span class="w"></span>
-<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsItemsMatcher</span><span class="p">.</span><span class="na">iterableHasItems</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.MatcherAssert.assertThat</span><span class="p">;</span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.*</span><span class="p">;</span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span>
+<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsConsistsOfMatcher</span><span class="p">.</span><span class="na">iterableInOrder</span><span class="p">;</span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span>
+<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsConsistsOfMatcher</span><span class="p">.</span><span class="na">iterableOf</span><span class="p">;</span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span>
+<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsEachItemMatcher</span><span class="p">.</span><span class="na">eachOfIterable</span><span class="p">;</span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span>
+<span class="w">             </span><span class="n">SetOfObjectsIncludesMatcher</span><span class="p">.</span><span class="na">iterableIncludes</span><span class="p">;</span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span>
+<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsIncludesMatcher</span><span class="p">.</span><span class="na">iterableIncludesInOrder</span><span class="p">;</span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span>
+<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsItemsMatcher</span><span class="p">.</span><span class="na">iterableHasItem</span><span class="p">;</span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.iterables</span>
+<span class="w">             </span><span class="p">.</span><span class="na">SetOfObjectsItemsMatcher</span><span class="p">.</span><span class="na">iterableHasItems</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">     </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Iterable</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">List</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span><span class="w"></span>
-
-
-<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; состоит только из &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;перечисленных элементов в указанном порядке&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableInOrder</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">));</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
-
-<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; состоит только из &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;перечисленных элементов в указанном порядке.&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;Элементы описаны матчерами, которым они должны соответствовать&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test2</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableInOrder</span><span class="p">(</span><span class="w"></span>
-<span class="w">                 </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"></span>
-<span class="w">                 </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
-<span class="w">                 </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="p">));</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
-
-<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; состоит только из &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;перечисленных элементов.&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;Порядок их следования значения не имеет.&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test3</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableOf</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">));</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
-
-<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; состоит только из &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;перечисленных элементов. &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;Порядок их следования значения не имеет.&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;элементы описаны матчерами, которым они должны соответствовать&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test4</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableOf</span><span class="p">(</span><span class="w"></span>
-<span class="w">                 </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"></span>
-<span class="w">                 </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"></span>
-<span class="w">                 </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="p">));</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Iterable</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">List</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span>
 
 
-<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; включает &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;перечисленные элементы в указанном порядке&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test5</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableIncludesInOrder</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">));</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; состоит только из &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;перечисленных элементов в указанном порядке&quot;</span><span class="p">)</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableInOrder</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">));</span>
+<span class="w">     </span><span class="p">}</span>
 
-<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; включает &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;перечисленные элементы в указанном порядке.&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;элементы описаны матчерами, которым они должны соответствовать&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test6</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableIncludesInOrder</span><span class="p">(</span><span class="w"></span>
-<span class="w">                 </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
-<span class="w">                 </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="p">));</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; состоит только из &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;перечисленных элементов в указанном порядке.&quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;Элементы описаны матчерами, которым они должны соответствовать&quot;</span><span class="p">)</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test2</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableInOrder</span><span class="p">(</span>
+<span class="w">                 </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+<span class="w">                 </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+<span class="w">                 </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">         </span><span class="p">));</span>
+<span class="w">     </span><span class="p">}</span>
+
+<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; состоит только из &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;перечисленных элементов.&quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;Порядок их следования значения не имеет.&quot;</span><span class="p">)</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test3</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableOf</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">));</span>
+<span class="w">     </span><span class="p">}</span>
+
+<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; состоит только из &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;перечисленных элементов. &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;Порядок их следования значения не имеет.&quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;элементы описаны матчерами, которым они должны соответствовать&quot;</span><span class="p">)</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test4</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableOf</span><span class="p">(</span>
+<span class="w">                 </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+<span class="w">                 </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+<span class="w">                 </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">         </span><span class="p">));</span>
+<span class="w">     </span><span class="p">}</span>
 
 
-<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; включает &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;перечисленные элементы. &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;Порядок их следования значения не имеет&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test7</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableIncludes</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">));</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; включает &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;перечисленные элементы в указанном порядке&quot;</span><span class="p">)</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test5</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableIncludesInOrder</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">));</span>
+<span class="w">     </span><span class="p">}</span>
 
-<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; включает &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;перечисленные элементы. &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;Порядок их следования значения не имеет.&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;элементы описаны матчерами, которым они должны соответствовать&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test8</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableIncludes</span><span class="p">(</span><span class="w"></span>
-<span class="w">                 </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"></span>
-<span class="w">                 </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
-<span class="w">          </span><span class="p">));</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; включает &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;перечисленные элементы в указанном порядке.&quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;элементы описаны матчерами, которым они должны соответствовать&quot;</span><span class="p">)</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test6</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableIncludesInOrder</span><span class="p">(</span>
+<span class="w">                 </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+<span class="w">                 </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">         </span><span class="p">));</span>
+<span class="w">     </span><span class="p">}</span>
 
-<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; состоит из элементов, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;каждый из которых соответствует указанным матчерам&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test9</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">eachOfIterable</span><span class="p">(</span><span class="w"></span>
-<span class="w">                 </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">),</span><span class="w"></span>
-<span class="w">                 </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="p">));</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
 
-<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; включает элемент&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test10</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableHasItem</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; включает &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;перечисленные элементы. &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;Порядок их следования значения не имеет&quot;</span><span class="p">)</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test7</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableIncludes</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">));</span>
+<span class="w">     </span><span class="p">}</span>
 
-<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; включает элемент.&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;элемент описан матчерами, которым он должен соответствовать&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test11</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableHasItem</span><span class="p">(</span><span class="w"></span>
-<span class="w">                 </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
-<span class="w">                 </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="p">));</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; включает &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;перечисленные элементы. &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;Порядок их следования значения не имеет.&quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;элементы описаны матчерами, которым они должны соответствовать&quot;</span><span class="p">)</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test8</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableIncludes</span><span class="p">(</span>
+<span class="w">                 </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+<span class="w">                 </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="w">          </span><span class="p">));</span>
+<span class="w">     </span><span class="p">}</span>
 
-<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; включает элементы, соответствующие матчерам,&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;указанное количество раз&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test12</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableHasItems</span><span class="p">(</span><span class="w"></span>
-<span class="w">                 </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="c1">//сколько раз в Iterable&lt;&gt; должен встретиться объект,</span><span class="w"></span>
-<span class="w">                 </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
-<span class="w">                 </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="p">));</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; состоит из элементов, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;каждый из которых соответствует указанным матчерам&quot;</span><span class="p">)</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test9</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">eachOfIterable</span><span class="p">(</span>
+<span class="w">                 </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">),</span>
+<span class="w">                 </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="w">         </span><span class="p">));</span>
+<span class="w">     </span><span class="p">}</span>
 
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableHasItems</span><span class="p">(</span><span class="w"></span>
-<span class="w">                 </span><span class="c1">//сколько раз в Iterable&lt;&gt; должен встретиться объект</span><span class="w"></span>
-<span class="w">                 </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="c1">//описано матчером</span><span class="w"></span>
-<span class="w">                 </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
-<span class="w">                 </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="p">));</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; включает элемент&quot;</span><span class="p">)</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test10</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableHasItem</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span>
+<span class="w">     </span><span class="p">}</span>
 
-<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; включает элементы, равные указанному значению,&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">             </span><span class="s">&quot;указанное количество раз&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test13</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableHasItems</span><span class="p">(</span><span class="w"></span>
-<span class="w">                 </span><span class="mi">1</span><span class="p">,</span><span class="c1">//сколько раз в Iterable&lt;&gt; должен встретиться объект,</span><span class="w"></span>
-<span class="w">                 </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="p">);</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; включает элемент.&quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;элемент описан матчерами, которым он должен соответствовать&quot;</span><span class="p">)</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test11</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableHasItem</span><span class="p">(</span>
+<span class="w">                 </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+<span class="w">                 </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="w">         </span><span class="p">));</span>
+<span class="w">     </span><span class="p">}</span>
 
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableHasItems</span><span class="p">(</span><span class="w"></span>
-<span class="w">                 </span><span class="c1">//сколько раз в Iterable&lt;&gt; должен встретиться объект</span><span class="w"></span>
-<span class="w">                 </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="c1">// описано матчером</span><span class="w"></span>
-<span class="w">                 </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="p">);</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
-<span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; включает элементы, соответствующие матчерам,&quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;указанное количество раз&quot;</span><span class="p">)</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test12</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableHasItems</span><span class="p">(</span>
+<span class="w">                 </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="c1">//сколько раз в Iterable&lt;&gt; должен встретиться объект,</span>
+<span class="w">                 </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+<span class="w">                 </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">         </span><span class="p">));</span>
+
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableHasItems</span><span class="p">(</span>
+<span class="w">                 </span><span class="c1">//сколько раз в Iterable&lt;&gt; должен встретиться объект</span>
+<span class="w">                 </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="c1">//описано матчером</span>
+<span class="w">                 </span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+<span class="w">                 </span><span class="n">instanceOf</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">         </span><span class="p">));</span>
+<span class="w">     </span><span class="p">}</span>
+
+<span class="w">     </span><span class="nd">@Test</span><span class="p">(</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Проверка на то, &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;что что Iterable&lt;&gt; включает элементы, равные указанному значению,&quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="s">&quot;указанное количество раз&quot;</span><span class="p">)</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test13</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableHasItems</span><span class="p">(</span>
+<span class="w">                 </span><span class="mi">1</span><span class="p">,</span><span class="c1">//сколько раз в Iterable&lt;&gt; должен встретиться объект,</span>
+<span class="w">                 </span><span class="mi">1</span><span class="p">)</span>
+<span class="w">         </span><span class="p">);</span>
+
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">iterableHasItems</span><span class="p">(</span>
+<span class="w">                 </span><span class="c1">//сколько раз в Iterable&lt;&gt; должен встретиться объект</span>
+<span class="w">                 </span><span class="n">lessThan</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="c1">// описано матчером</span>
+<span class="w">                 </span><span class="mi">1</span><span class="p">)</span>
+<span class="w">         </span><span class="p">);</span>
+<span class="w">     </span><span class="p">}</span>
+<span class="w"> </span><span class="p">}</span>
 </pre></div>
 </div>
 </div>

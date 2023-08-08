@@ -473,365 +473,365 @@
 </ul>
 <section id="id1">
 <h2>Получение сообщений<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">com.rabbitmq.client.GetResponse</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">com.rabbitmq.client.GetResponse</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofSeconds</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetResponseSupplier.responses</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofSeconds</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetResponseSupplier.responses</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//получение сообщений целиком  </span><span class="w"></span>
-<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">GetResponse</span><span class="o">&gt;</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">response</span><span class="p">(</span><span class="s">&quot;test_queue&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//название очереди</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Параметр необязательный. Если его не указывать, будет использовано значение</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//свойства RABBIT_MQ_DEFAULT_QUEUE_NAME</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">autoAck</span><span class="p">()</span><span class="w"> </span><span class="c1">//можно указать, что auto acknowledge</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//опции, уточняющие результат</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//получение сообщений целиком  </span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">GetResponse</span><span class="o">&gt;</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">response</span><span class="p">(</span><span class="s">&quot;test_queue&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//название очереди</span>
+<span class="w">                </span><span class="c1">//Параметр необязательный. Если его не указывать, будет использовано значение</span>
+<span class="w">                </span><span class="c1">//свойства RABBIT_MQ_DEFAULT_QUEUE_NAME</span>
+<span class="w">                </span><span class="p">.</span><span class="na">autoAck</span><span class="p">()</span><span class="w"> </span><span class="c1">//можно указать, что auto acknowledge</span>
+<span class="w">                </span><span class="c1">//опции, уточняющие результат</span>
+<span class="w">                </span><span class="c1">//</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <details class="summary-">
-<summary>Уточняющие параметры шага, который возвращает лист. Шаг предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать</span><span class="w"></span>
-<span class="c1">//каждый элемент результирующего листа.</span><span class="w"></span>
-<span class="c1">// Так же доступны criteriaOr(criteria...),</span><span class="w"></span>
-<span class="c1">// criteriaOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// criteriaNot(criteria...)</span><span class="w"></span>
-<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;каждый элемент, который попадет в результирующий лист&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">// можно указать время,</span><span class="w"></span>
-<span class="c1">// за которое нужные элементы должны быть получены</span><span class="w"></span>
-<span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//Можно указать, что должно быть выброшено исключение,</span><span class="w"></span>
-<span class="c1">// если непустой лист не удалось получить (не было ни одного элемента,</span><span class="w"></span>
-<span class="c1">//который бы соответствовал перечисленным критериям,</span><span class="w"></span>
-<span class="c1">// или непустой лист просто не был получен)</span><span class="w"></span>
-<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span><span class="w"></span>
-<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//1. можно указать сколько объектов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//нужно вернуть</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnListOfSize</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//2. можно указать, до элемента с каким индексом</span><span class="w"></span>
-<span class="c1">//нужно собрать результирующие элементы,</span><span class="w"></span>
-<span class="c1">//индекс - индекс объекта в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnBeforeIndex</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//.returnAfterIndex(8) либо после какого элемента</span><span class="w"></span>
-<span class="c1">//----------------------------------------------</span><span class="w"></span>
-<span class="c1">//3. Либо можно перечислить индексы элементов,</span><span class="w"></span>
-<span class="c1">// которые следует вернуть.</span><span class="w"></span>
-<span class="c1">//Индексы - индексы объектов в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnItemsOfIndexes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-----------------------------------------------</span><span class="w"></span>
-<span class="c1">//4. можно указать, при достижении какого количества</span><span class="w"></span>
-<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//должен быть возвращен результат</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//----------------------------------------------</span><span class="w"></span>
-<span class="c1">//5. можно указать, при достижении каких условий,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать лист ВСЕХ объектов,</span><span class="w"></span>
-<span class="c1">//соответствующих критериям,</span><span class="w"></span>
-<span class="c1">//можно возвращать результирующий лист/суб-лист</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span><span class="w"></span>
-<span class="c1">// returnOnConditionOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// returnOnConditionNot(criteria...)</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span><span class="w"></span>
-<span class="c1">//или весь суб-лист подходящих по критериям элементов,</span><span class="w"></span>
-<span class="c1">// который должен вернуться как результат,</span><span class="w"></span>
-<span class="c1">// не соответствует каким-то критериям -</span><span class="w"></span>
-<span class="c1">// будет выброшено исключение с подробным описанием</span><span class="w"></span>
+<summary>Уточняющие параметры шага, который возвращает лист. Шаг предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span>
+<span class="c1">//которым должен соответствовать</span>
+<span class="c1">//каждый элемент результирующего листа.</span>
+<span class="c1">// Так же доступны criteriaOr(criteria...),</span>
+<span class="c1">// criteriaOnlyOne(criteria...)</span>
+<span class="c1">// criteriaNot(criteria...)</span>
+<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="s">&quot;каждый элемент, который попадет в результирующий лист&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">// можно указать время,</span>
+<span class="c1">// за которое нужные элементы должны быть получены</span>
+<span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//Можно указать, что должно быть выброшено исключение,</span>
+<span class="c1">// если непустой лист не удалось получить (не было ни одного элемента,</span>
+<span class="c1">//который бы соответствовал перечисленным критериям,</span>
+<span class="c1">// или непустой лист просто не был получен)</span>
+<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span>
+<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//1. можно указать сколько объектов,</span>
+<span class="c1">//которые соответствуют критериям,</span>
+<span class="c1">//нужно вернуть</span>
+<span class="p">.</span><span class="na">returnListOfSize</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//2. можно указать, до элемента с каким индексом</span>
+<span class="c1">//нужно собрать результирующие элементы,</span>
+<span class="c1">//индекс - индекс объекта в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnBeforeIndex</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="c1">//.returnAfterIndex(8) либо после какого элемента</span>
+<span class="c1">//----------------------------------------------</span>
+<span class="c1">//3. Либо можно перечислить индексы элементов,</span>
+<span class="c1">// которые следует вернуть.</span>
+<span class="c1">//Индексы - индексы объектов в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnItemsOfIndexes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span>
+<span class="c1">//-----------------------------------------------</span>
+<span class="c1">//4. можно указать, при достижении какого количества</span>
+<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span>
+<span class="c1">//должен быть возвращен результат</span>
+<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+<span class="c1">//----------------------------------------------</span>
+<span class="c1">//5. можно указать, при достижении каких условий,</span>
+<span class="c1">//которым должен соответствовать лист ВСЕХ объектов,</span>
+<span class="c1">//соответствующих критериям,</span>
+<span class="c1">//можно возвращать результирующий лист/суб-лист</span>
+<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span>
+<span class="c1">// returnOnConditionOnlyOne(criteria...)</span>
+<span class="c1">// returnOnConditionNot(criteria...)</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span>
+<span class="c1">//или весь суб-лист подходящих по критериям элементов,</span>
+<span class="c1">// который должен вернуться как результат,</span>
+<span class="c1">// не соответствует каким-то критериям -</span>
+<span class="c1">// будет выброшено исключение с подробным описанием</span>
 </pre></div>
 </div>
 </details><section id="id2">
 <h3>Данные сообщений RabbitMQ, собранные в лист<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">com.rabbitmq.client.GetResponse</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">com.rabbitmq.client.GetResponse</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetResponseSupplier.responses</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetResponseSupplier.responses</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">SomeData</span><span class="o">&gt;</span><span class="w"> </span><span class="n">someDataList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">response</span><span class="p">(</span><span class="cm">/*параметры*/</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//опции, уточняющие результат</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">thenGetList</span><span class="p">(</span><span class="w"></span>
-<span class="w">                    </span><span class="s">&quot;Описание / название результирующего листа&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того ЧТО следует получить,</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">                    </span><span class="n">getResponse</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                        </span><span class="c1">//Алгоритм функции, которая получает данные</span><span class="w"></span>
-<span class="w">                        </span><span class="c1">//из каждого сообщения</span><span class="w"></span>
-<span class="w">                        </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//эти объекты</span><span class="w"></span>
-<span class="w">                        </span><span class="c1">//будут собраны в результирующий лист</span><span class="w"></span>
-<span class="w">                    </span><span class="p">}</span><span class="w"></span>
-<span class="w">                </span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//опции, уточняющие результат</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">SomeData</span><span class="o">&gt;</span><span class="w"> </span><span class="n">someDataList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">response</span><span class="p">(</span><span class="cm">/*параметры*/</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//опции, уточняющие результат</span>
+<span class="w">                </span><span class="c1">//</span>
+<span class="w">                </span><span class="p">.</span><span class="na">thenGetList</span><span class="p">(</span>
+<span class="w">                    </span><span class="s">&quot;Описание / название результирующего листа&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того ЧТО следует получить,</span>
+<span class="w">                    </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">                    </span><span class="c1">//терминологии</span>
+<span class="w">                    </span><span class="n">getResponse</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="c1">//Алгоритм функции, которая получает данные</span>
+<span class="w">                        </span><span class="c1">//из каждого сообщения</span>
+<span class="w">                        </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//эти объекты</span>
+<span class="w">                        </span><span class="c1">//будут собраны в результирующий лист</span>
+<span class="w">                    </span><span class="p">}</span>
+<span class="w">                </span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//опции, уточняющие результат</span>
+<span class="w">                </span><span class="c1">//</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <details class="summary-">
-<summary>Уточняющие параметры шага, который возвращает лист. Шаг не предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать</span><span class="w"></span>
-<span class="c1">//каждый элемент результирующего листа.</span><span class="w"></span>
-<span class="c1">// Так же доступны criteriaOr(criteria...),</span><span class="w"></span>
-<span class="c1">// criteriaOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// criteriaNot(criteria...)</span><span class="w"></span>
-<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;каждый элемент, который попадет в результирующий лист&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//Можно указать, что должно быть выброшено исключение,</span><span class="w"></span>
-<span class="c1">// если непустой лист не удалось получить (не было ни одного элемента,</span><span class="w"></span>
-<span class="c1">//который бы соответствовал перечисленным критериям,</span><span class="w"></span>
-<span class="c1">// или непустой лист просто не был получен)</span><span class="w"></span>
-<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span><span class="w"></span>
-<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//1. можно указать сколько объектов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//нужно вернуть</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnListOfSize</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//2. можно указать, до элемента с каким индексом</span><span class="w"></span>
-<span class="c1">//нужно собрать результирующие элементы,</span><span class="w"></span>
-<span class="c1">//индекс - индекс объекта в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnBeforeIndex</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//.returnAfterIndex(8) либо после какого элемента</span><span class="w"></span>
-<span class="c1">//----------------------------------------------</span><span class="w"></span>
-<span class="c1">//3. Либо можно перечислить индексы элементов,</span><span class="w"></span>
-<span class="c1">// которые следует вернуть.</span><span class="w"></span>
-<span class="c1">//Индексы - индексы объектов в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnItemsOfIndexes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//4. можно указать, при достижении какого количества</span><span class="w"></span>
-<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//должен быть возвращен результат</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//5. можно указать, при достижении каких условий,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать лист ВСЕХ объектов,</span><span class="w"></span>
-<span class="c1">//соответствующих критериям,</span><span class="w"></span>
-<span class="c1">//можно возвращать результирующий лист/суб-лист</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span><span class="w"></span>
-<span class="c1">// returnOnConditionOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// returnOnConditionNot(criteria...)</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span><span class="w"></span>
-<span class="c1">//или весь суб-лист подходящих по критериям элементов,</span><span class="w"></span>
-<span class="c1">// который должен вернуться как результат,</span><span class="w"></span>
-<span class="c1">// не соответствует каким-то критериям -</span><span class="w"></span>
-<span class="c1">// будет выброшено исключение с подробным описанием</span><span class="w"></span>
+<summary>Уточняющие параметры шага, который возвращает лист. Шаг не предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span>
+<span class="c1">//которым должен соответствовать</span>
+<span class="c1">//каждый элемент результирующего листа.</span>
+<span class="c1">// Так же доступны criteriaOr(criteria...),</span>
+<span class="c1">// criteriaOnlyOne(criteria...)</span>
+<span class="c1">// criteriaNot(criteria...)</span>
+<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="s">&quot;каждый элемент, который попадет в результирующий лист&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//Можно указать, что должно быть выброшено исключение,</span>
+<span class="c1">// если непустой лист не удалось получить (не было ни одного элемента,</span>
+<span class="c1">//который бы соответствовал перечисленным критериям,</span>
+<span class="c1">// или непустой лист просто не был получен)</span>
+<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span>
+<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//1. можно указать сколько объектов,</span>
+<span class="c1">//которые соответствуют критериям,</span>
+<span class="c1">//нужно вернуть</span>
+<span class="p">.</span><span class="na">returnListOfSize</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//2. можно указать, до элемента с каким индексом</span>
+<span class="c1">//нужно собрать результирующие элементы,</span>
+<span class="c1">//индекс - индекс объекта в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnBeforeIndex</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="c1">//.returnAfterIndex(8) либо после какого элемента</span>
+<span class="c1">//----------------------------------------------</span>
+<span class="c1">//3. Либо можно перечислить индексы элементов,</span>
+<span class="c1">// которые следует вернуть.</span>
+<span class="c1">//Индексы - индексы объектов в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnItemsOfIndexes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//4. можно указать, при достижении какого количества</span>
+<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span>
+<span class="c1">//должен быть возвращен результат</span>
+<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//5. можно указать, при достижении каких условий,</span>
+<span class="c1">//которым должен соответствовать лист ВСЕХ объектов,</span>
+<span class="c1">//соответствующих критериям,</span>
+<span class="c1">//можно возвращать результирующий лист/суб-лист</span>
+<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span>
+<span class="c1">// returnOnConditionOnlyOne(criteria...)</span>
+<span class="c1">// returnOnConditionNot(criteria...)</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span>
+<span class="c1">//или весь суб-лист подходящих по критериям элементов,</span>
+<span class="c1">// который должен вернуться как результат,</span>
+<span class="c1">// не соответствует каким-то критериям -</span>
+<span class="c1">// будет выброшено исключение с подробным описанием</span>
 </pre></div>
 </div>
-</details><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+</details><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">com.rabbitmq.client.GetResponse</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">com.rabbitmq.client.GetResponse</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetResponseSupplier.responses</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetResponseSupplier.responses</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">SomeData</span><span class="o">&gt;</span><span class="w"> </span><span class="n">someDataList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">response</span><span class="p">(</span><span class="cm">/*параметры*/</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//опции, уточняющие результат</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">thenGetList</span><span class="p">(</span><span class="w"></span>
-<span class="w">                    </span><span class="s">&quot;Описание / название результирующего листа&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того ЧТО следует получить,</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">                    </span><span class="n">SomeBodyClass</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//Класс, в объект которого </span><span class="w"></span>
-<span class="w">                    </span><span class="c1">// десериализуется тело каждого сообщения.</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">// Так же можно использовать объект </span><span class="w"></span>
-<span class="w">                    </span><span class="c1">// com.fasterxml.jackson.core.type.TypeReference</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">// Функция, с помощью которой извлекаются данные</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">// из десериализованного тела сообщения.</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">// Она не обязательная. Если ее не указывать,</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">// то вернется объект List&lt;SomeBodyClass&gt;.</span><span class="w"></span>
-<span class="w">                    </span><span class="n">someBodyObject</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                        </span><span class="c1">//Алгоритм функции, которая получает данные</span><span class="w"></span>
-<span class="w">                        </span><span class="c1">//из каждого десериализованного тела сообщения</span><span class="w"></span>
-<span class="w">                        </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//эти объекты</span><span class="w"></span>
-<span class="w">                        </span><span class="c1">//будут собраны в результирующий лист</span><span class="w"></span>
-<span class="w">                    </span><span class="p">}</span><span class="w"></span>
-<span class="w">                </span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// Указывается объект класса </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// c помощью которого десериализуется тело каждого сообщения.</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// Вызов метода необязателен. По умолчанию используется</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// значение свойства RABBIT_MQ_DEFAULT_DATA_TRANSFORMER</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">withDataTransformer</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CustomDataTransformer</span><span class="p">())</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//опции, уточняющие результат</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">SomeData</span><span class="o">&gt;</span><span class="w"> </span><span class="n">someDataList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">response</span><span class="p">(</span><span class="cm">/*параметры*/</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//опции, уточняющие результат</span>
+<span class="w">                </span><span class="c1">//</span>
+<span class="w">                </span><span class="p">.</span><span class="na">thenGetList</span><span class="p">(</span>
+<span class="w">                    </span><span class="s">&quot;Описание / название результирующего листа&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того ЧТО следует получить,</span>
+<span class="w">                    </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">                    </span><span class="c1">//терминологии</span>
+<span class="w">                    </span><span class="n">SomeBodyClass</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//Класс, в объект которого </span>
+<span class="w">                    </span><span class="c1">// десериализуется тело каждого сообщения.</span>
+<span class="w">                    </span><span class="c1">// Так же можно использовать объект </span>
+<span class="w">                    </span><span class="c1">// com.fasterxml.jackson.core.type.TypeReference</span>
+<span class="w">                    </span><span class="c1">//</span>
+<span class="w">                    </span><span class="c1">// Функция, с помощью которой извлекаются данные</span>
+<span class="w">                    </span><span class="c1">// из десериализованного тела сообщения.</span>
+<span class="w">                    </span><span class="c1">// Она не обязательная. Если ее не указывать,</span>
+<span class="w">                    </span><span class="c1">// то вернется объект List&lt;SomeBodyClass&gt;.</span>
+<span class="w">                    </span><span class="n">someBodyObject</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="c1">//Алгоритм функции, которая получает данные</span>
+<span class="w">                        </span><span class="c1">//из каждого десериализованного тела сообщения</span>
+<span class="w">                        </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//эти объекты</span>
+<span class="w">                        </span><span class="c1">//будут собраны в результирующий лист</span>
+<span class="w">                    </span><span class="p">}</span>
+<span class="w">                </span><span class="p">)</span>
+<span class="w">                </span><span class="c1">// Указывается объект класса </span>
+<span class="w">                </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer,</span>
+<span class="w">                </span><span class="c1">// c помощью которого десериализуется тело каждого сообщения.</span>
+<span class="w">                </span><span class="c1">// Вызов метода необязателен. По умолчанию используется</span>
+<span class="w">                </span><span class="c1">// значение свойства RABBIT_MQ_DEFAULT_DATA_TRANSFORMER</span>
+<span class="w">                </span><span class="p">.</span><span class="na">withDataTransformer</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CustomDataTransformer</span><span class="p">())</span>
+<span class="w">                </span><span class="c1">//опции, уточняющие результат</span>
+<span class="w">                </span><span class="c1">//</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
 <section id="id3">
 <h3>Объект данных из сообщений RabbitMQ<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">com.rabbitmq.client.GetResponse</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">com.rabbitmq.client.GetResponse</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetResponseSupplier.responses</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetResponseSupplier.responses</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">SomeData</span><span class="w"> </span><span class="n">someData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">response</span><span class="p">(</span><span class="cm">/*параметры*/</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//опции, уточняющие результат</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">thenGetItem</span><span class="p">(</span><span class="w"></span>
-<span class="w">                    </span><span class="s">&quot;Описание / название результирующего объекта&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span><span class="w"></span>
-<span class="w">                    </span><span class="c1">// ЧТО следует получить,</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">                    </span><span class="n">getResponse</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                        </span><span class="c1">//Алгоритм функции, которая получает данные</span><span class="w"></span>
-<span class="w">                        </span><span class="c1">//из каждого сообщения</span><span class="w"></span>
-<span class="w">                        </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//один из этих </span><span class="w"></span>
-<span class="w">                        </span><span class="c1">//объектов возвращается как результат,</span><span class="w"></span>
-<span class="w">                        </span><span class="c1">//первый попавшийся или с учетом уточнений</span><span class="w"></span>
-<span class="w">                </span><span class="p">})</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//опции, уточняющие результат</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">SomeData</span><span class="w"> </span><span class="n">someData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">response</span><span class="p">(</span><span class="cm">/*параметры*/</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//опции, уточняющие результат</span>
+<span class="w">                </span><span class="c1">//</span>
+<span class="w">                </span><span class="p">.</span><span class="na">thenGetItem</span><span class="p">(</span>
+<span class="w">                    </span><span class="s">&quot;Описание / название результирующего объекта&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span>
+<span class="w">                    </span><span class="c1">// ЧТО следует получить,</span>
+<span class="w">                    </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">                    </span><span class="c1">//терминологии</span>
+<span class="w">                    </span><span class="n">getResponse</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="c1">//Алгоритм функции, которая получает данные</span>
+<span class="w">                        </span><span class="c1">//из каждого сообщения</span>
+<span class="w">                        </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//один из этих </span>
+<span class="w">                        </span><span class="c1">//объектов возвращается как результат,</span>
+<span class="w">                        </span><span class="c1">//первый попавшийся или с учетом уточнений</span>
+<span class="w">                </span><span class="p">})</span>
+<span class="w">                </span><span class="c1">//опции, уточняющие результат</span>
+<span class="w">                </span><span class="c1">//</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <details class="summary-iterable">
-<summary>Уточняющие параметры шага, который возвращает элемент Iterable<?>. Шаг не предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать</span><span class="w"></span>
-<span class="c1">//результирующий элемент из набора.</span><span class="w"></span>
-<span class="c1">// Так же доступны criteriaOr(criteria...),</span><span class="w"></span>
-<span class="c1">// criteriaOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// criteriaNot(criteria...)</span><span class="w"></span>
-<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;результирующий элемент из набора&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Можно указать, что должно быть выброшено исключение,</span><span class="w"></span>
-<span class="c1">// если не был получен результирующий элемент (не было ни одного элемента,</span><span class="w"></span>
-<span class="c1">//который бы соответствовал перечисленным критериям,</span><span class="w"></span>
-<span class="c1">// или непустой набор просто не был получен)</span><span class="w"></span>
-<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span><span class="w"></span>
-<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//1. Можно указать индекс элемента, который следует вернуть.</span><span class="w"></span>
-<span class="c1">//Индекс - индекс объекта в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnItemOfIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-----------------------------------------------</span><span class="w"></span>
-<span class="c1">//2. можно указать, при достижении какого количества</span><span class="w"></span>
-<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//должен быть возвращен результат</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//3. можно указать, при достижении каких условий,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать набор ВСЕХ объектов,</span><span class="w"></span>
-<span class="c1">//соответствующих критериям,</span><span class="w"></span>
-<span class="c1">//можно возвращать результирующий элемент</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">iterable</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span><span class="w"></span>
-<span class="c1">// returnOnConditionOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// returnOnConditionNot(criteria...)</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span><span class="w"></span>
-<span class="c1">//или весь набор подходящих по критериям элементов,</span><span class="w"></span>
-<span class="c1">// из которого должен быть взят результат,</span><span class="w"></span>
-<span class="c1">// не соответствует каким-то критериям -</span><span class="w"></span>
-<span class="c1">// будет выброшено исключение с подробным описанием</span><span class="w"></span>
+<summary>Уточняющие параметры шага, который возвращает элемент Iterable<?>. Шаг не предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span>
+<span class="c1">//которым должен соответствовать</span>
+<span class="c1">//результирующий элемент из набора.</span>
+<span class="c1">// Так же доступны criteriaOr(criteria...),</span>
+<span class="c1">// criteriaOnlyOne(criteria...)</span>
+<span class="c1">// criteriaNot(criteria...)</span>
+<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="s">&quot;результирующий элемент из набора&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Можно указать, что должно быть выброшено исключение,</span>
+<span class="c1">// если не был получен результирующий элемент (не было ни одного элемента,</span>
+<span class="c1">//который бы соответствовал перечисленным критериям,</span>
+<span class="c1">// или непустой набор просто не был получен)</span>
+<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span>
+<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//1. Можно указать индекс элемента, который следует вернуть.</span>
+<span class="c1">//Индекс - индекс объекта в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnItemOfIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">//-----------------------------------------------</span>
+<span class="c1">//2. можно указать, при достижении какого количества</span>
+<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span>
+<span class="c1">//должен быть возвращен результат</span>
+<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//3. можно указать, при достижении каких условий,</span>
+<span class="c1">//которым должен соответствовать набор ВСЕХ объектов,</span>
+<span class="c1">//соответствующих критериям,</span>
+<span class="c1">//можно возвращать результирующий элемент</span>
+<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">iterable</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span>
+<span class="c1">// returnOnConditionOnlyOne(criteria...)</span>
+<span class="c1">// returnOnConditionNot(criteria...)</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span>
+<span class="c1">//или весь набор подходящих по критериям элементов,</span>
+<span class="c1">// из которого должен быть взят результат,</span>
+<span class="c1">// не соответствует каким-то критериям -</span>
+<span class="c1">// будет выброшено исключение с подробным описанием</span>
 </pre></div>
 </div>
-</details><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+</details><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">com.rabbitmq.client.GetResponse</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">com.rabbitmq.client.GetResponse</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetResponseSupplier.responses</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.GetResponseSupplier.responses</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">SomeData</span><span class="w"> </span><span class="n">someData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">response</span><span class="p">(</span><span class="cm">/*параметры*/</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//опции, уточняющие результат</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">thenGetItem</span><span class="p">(</span><span class="w"></span>
-<span class="w">                    </span><span class="s">&quot;Описание / название результирующего объекта&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span><span class="w"></span>
-<span class="w">                    </span><span class="c1">// ЧТО следует получить,</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">                    </span><span class="n">SomeBodyClass</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//Класс, в объект которого </span><span class="w"></span>
-<span class="w">                    </span><span class="c1">// десериализуется тело каждого сообщения.</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">// Так же можно использовать объект </span><span class="w"></span>
-<span class="w">                    </span><span class="c1">// com.fasterxml.jackson.core.type.TypeReference</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">// Функция, с помощью которой извлекаются данные</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">// из десериализованного тела сообщения.</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">// Она не обязательная. Если ее не указывать,</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">// то вернется объект SomeBodyClass.</span><span class="w"></span>
-<span class="w">                    </span><span class="n">someBodyObject</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                        </span><span class="c1">//Алгоритм функции, которая получает данные</span><span class="w"></span>
-<span class="w">                        </span><span class="c1">//из каждого десериализованного тела сообщения</span><span class="w"></span>
-<span class="w">                        </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//один из этих </span><span class="w"></span>
-<span class="w">                        </span><span class="c1">//объектов возвращается как результат,</span><span class="w"></span>
-<span class="w">                        </span><span class="c1">//первый попавшийся или с учетом уточнений</span><span class="w"></span>
-<span class="w">                    </span><span class="p">}</span><span class="w"></span>
-<span class="w">                </span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// Указывается объект класса </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// c помощью которого десериализуется тело каждого сообщения.</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// Вызов метода необязателен. По умолчанию используется</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// значение свойства RABBIT_MQ_DEFAULT_DATA_TRANSFORMER</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">withDataTransformer</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CustomDataTransformer</span><span class="p">())</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//опции, уточняющие результат</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">SomeData</span><span class="w"> </span><span class="n">someData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">response</span><span class="p">(</span><span class="cm">/*параметры*/</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//опции, уточняющие результат</span>
+<span class="w">                </span><span class="c1">//</span>
+<span class="w">                </span><span class="p">.</span><span class="na">thenGetItem</span><span class="p">(</span>
+<span class="w">                    </span><span class="s">&quot;Описание / название результирующего объекта&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span>
+<span class="w">                    </span><span class="c1">// ЧТО следует получить,</span>
+<span class="w">                    </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">                    </span><span class="c1">//терминологии</span>
+<span class="w">                    </span><span class="n">SomeBodyClass</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//Класс, в объект которого </span>
+<span class="w">                    </span><span class="c1">// десериализуется тело каждого сообщения.</span>
+<span class="w">                    </span><span class="c1">// Так же можно использовать объект </span>
+<span class="w">                    </span><span class="c1">// com.fasterxml.jackson.core.type.TypeReference</span>
+<span class="w">                    </span><span class="c1">//</span>
+<span class="w">                    </span><span class="c1">// Функция, с помощью которой извлекаются данные</span>
+<span class="w">                    </span><span class="c1">// из десериализованного тела сообщения.</span>
+<span class="w">                    </span><span class="c1">// Она не обязательная. Если ее не указывать,</span>
+<span class="w">                    </span><span class="c1">// то вернется объект SomeBodyClass.</span>
+<span class="w">                    </span><span class="n">someBodyObject</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="c1">//Алгоритм функции, которая получает данные</span>
+<span class="w">                        </span><span class="c1">//из каждого десериализованного тела сообщения</span>
+<span class="w">                        </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//один из этих </span>
+<span class="w">                        </span><span class="c1">//объектов возвращается как результат,</span>
+<span class="w">                        </span><span class="c1">//первый попавшийся или с учетом уточнений</span>
+<span class="w">                    </span><span class="p">}</span>
+<span class="w">                </span><span class="p">)</span>
+<span class="w">                </span><span class="c1">// Указывается объект класса </span>
+<span class="w">                </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer,</span>
+<span class="w">                </span><span class="c1">// c помощью которого десериализуется тело каждого сообщения.</span>
+<span class="w">                </span><span class="c1">// Вызов метода необязателен. По умолчанию используется</span>
+<span class="w">                </span><span class="c1">// значение свойства RABBIT_MQ_DEFAULT_DATA_TRANSFORMER</span>
+<span class="w">                </span><span class="p">.</span><span class="na">withDataTransformer</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CustomDataTransformer</span><span class="p">())</span>
+<span class="w">                </span><span class="c1">//опции, уточняющие результат</span>
+<span class="w">                </span><span class="c1">//</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
@@ -842,514 +842,514 @@
 из которых извлекаются данные. Данные получаются как бы напрямую.</p>
 <section id="rabbitmq-java">
 <h3>Получение данных сообщений RabbitMQ как Java-объект<a class="headerlink" href="#rabbitmq-java" title="Permalink to this heading">#</a></h3>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofSeconds</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetIterableItemSupplier.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofSeconds</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetIterableItemSupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">SomeData</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">rabbitIterableItem</span><span class="p">(</span><span class="w"></span>
-<span class="w">                </span><span class="s">&quot;Описание / название результирующего объекта&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// ЧТО следует получить,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">                </span><span class="s">&quot;test_queue&quot;</span><span class="p">,</span><span class="w">  </span><span class="c1">//Название очереди</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Параметр необязательный. Если его не указывать, будет использовано значение</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//свойства RABBIT_MQ_DEFAULT_QUEUE_NAME</span><span class="w"></span>
-<span class="w">                </span><span class="n">SomeBodyClass</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//Класс, в объект которого </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// десериализуется тело каждого сообщения.</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// Так же можно использовать объект </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// com.fasterxml.jackson.core.type.TypeReference</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// Функция, с помощью которой извлекаются данные</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// из десериализованного тела сообщения.</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// Она не обязательная. Если ее не указывать,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// то вернется объект SomeBodyClass.</span><span class="w"></span>
-<span class="w">                </span><span class="n">someBodyObject</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//Алгоритм функции, которая получает данные</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//из каждого десериализованного тела сообщения</span><span class="w"></span>
-<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//один из этих </span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//объектов возвращается как результат,</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//первый попавшийся или с учетом уточнений</span><span class="w"></span>
-<span class="w">                </span><span class="p">})</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// Указывается объект класса </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// c помощью которого десериализуется тело каждого сообщения.</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// Вызов метода необязателен. По умолчанию используется</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// значение свойства RABBIT_MQ_DEFAULT_DATA_TRANSFORMER</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">withDataTransformer</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CustomDataTransformer</span><span class="p">())</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//можно указать, что auto acknowledge</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">autoAck</span><span class="p">()</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//опции, уточняющие результат</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">SomeData</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">rabbitIterableItem</span><span class="p">(</span>
+<span class="w">                </span><span class="s">&quot;Описание / название результирующего объекта&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span>
+<span class="w">                </span><span class="c1">// ЧТО следует получить,</span>
+<span class="w">                </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">                </span><span class="c1">//терминологии</span>
+<span class="w">                </span><span class="s">&quot;test_queue&quot;</span><span class="p">,</span><span class="w">  </span><span class="c1">//Название очереди</span>
+<span class="w">                </span><span class="c1">//Параметр необязательный. Если его не указывать, будет использовано значение</span>
+<span class="w">                </span><span class="c1">//свойства RABBIT_MQ_DEFAULT_QUEUE_NAME</span>
+<span class="w">                </span><span class="n">SomeBodyClass</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//Класс, в объект которого </span>
+<span class="w">                </span><span class="c1">// десериализуется тело каждого сообщения.</span>
+<span class="w">                </span><span class="c1">// Так же можно использовать объект </span>
+<span class="w">                </span><span class="c1">// com.fasterxml.jackson.core.type.TypeReference</span>
+<span class="w">                </span><span class="c1">//</span>
+<span class="w">                </span><span class="c1">// Функция, с помощью которой извлекаются данные</span>
+<span class="w">                </span><span class="c1">// из десериализованного тела сообщения.</span>
+<span class="w">                </span><span class="c1">// Она не обязательная. Если ее не указывать,</span>
+<span class="w">                </span><span class="c1">// то вернется объект SomeBodyClass.</span>
+<span class="w">                </span><span class="n">someBodyObject</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="c1">//Алгоритм функции, которая получает данные</span>
+<span class="w">                    </span><span class="c1">//из каждого десериализованного тела сообщения</span>
+<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//один из этих </span>
+<span class="w">                    </span><span class="c1">//объектов возвращается как результат,</span>
+<span class="w">                    </span><span class="c1">//первый попавшийся или с учетом уточнений</span>
+<span class="w">                </span><span class="p">})</span>
+<span class="w">                </span><span class="c1">// Указывается объект класса </span>
+<span class="w">                </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer,</span>
+<span class="w">                </span><span class="c1">// c помощью которого десериализуется тело каждого сообщения.</span>
+<span class="w">                </span><span class="c1">// Вызов метода необязателен. По умолчанию используется</span>
+<span class="w">                </span><span class="c1">// значение свойства RABBIT_MQ_DEFAULT_DATA_TRANSFORMER</span>
+<span class="w">                </span><span class="p">.</span><span class="na">withDataTransformer</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CustomDataTransformer</span><span class="p">())</span>
+<span class="w">                </span><span class="c1">//можно указать, что auto acknowledge</span>
+<span class="w">                </span><span class="p">.</span><span class="na">autoAck</span><span class="p">()</span>
+<span class="w">                </span><span class="c1">//опции, уточняющие результат</span>
+<span class="w">                </span><span class="c1">//</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <details class="summary-iterable">
-<summary>Уточняющие параметры шага, который возвращает элемент Iterable<?>. Шаг предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать</span><span class="w"></span>
-<span class="c1">//результирующий элемент из набора.</span><span class="w"></span>
-<span class="c1">// Так же доступны criteriaOr(criteria...),</span><span class="w"></span>
-<span class="c1">// criteriaOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// criteriaNot(criteria...)</span><span class="w"></span>
-<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;результирующий элемент из набора&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">// можно указать время,</span><span class="w"></span>
-<span class="c1">// за которое нужные элемент должен быть получен</span><span class="w"></span>
-<span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Можно указать, что должно быть выброшено исключение,</span><span class="w"></span>
-<span class="c1">// если не был получен результирующий элемент (не было ни одного элемента,</span><span class="w"></span>
-<span class="c1">//который бы соответствовал перечисленным критериям,</span><span class="w"></span>
-<span class="c1">// или непустой набор просто не был получен)</span><span class="w"></span>
-<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span><span class="w"></span>
-<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//1. Можно указать индекс элемента, который следует вернуть.</span><span class="w"></span>
-<span class="c1">//Индекс - индекс объекта в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnItemOfIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-----------------------------------------------</span><span class="w"></span>
-<span class="c1">//2. можно указать, при достижении какого количества</span><span class="w"></span>
-<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//должен быть возвращен результат</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//3. можно указать, при достижении каких условий,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать набор ВСЕХ объектов,</span><span class="w"></span>
-<span class="c1">//соответствующих критериям,</span><span class="w"></span>
-<span class="c1">//можно возвращать результирующий элемент</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">iterable</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span><span class="w"></span>
-<span class="c1">// returnOnConditionOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// returnOnConditionNot(criteria...)</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span><span class="w"></span>
-<span class="c1">//или весь набор подходящих по критериям элементов,</span><span class="w"></span>
-<span class="c1">// из которого должен быть взят результат,</span><span class="w"></span>
-<span class="c1">// не соответствует каким-то критериям -</span><span class="w"></span>
-<span class="c1">// будет выброшено исключение с подробным описанием</span><span class="w"></span>
+<summary>Уточняющие параметры шага, который возвращает элемент Iterable<?>. Шаг предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span>
+<span class="c1">//которым должен соответствовать</span>
+<span class="c1">//результирующий элемент из набора.</span>
+<span class="c1">// Так же доступны criteriaOr(criteria...),</span>
+<span class="c1">// criteriaOnlyOne(criteria...)</span>
+<span class="c1">// criteriaNot(criteria...)</span>
+<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="s">&quot;результирующий элемент из набора&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">// можно указать время,</span>
+<span class="c1">// за которое нужные элемент должен быть получен</span>
+<span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Можно указать, что должно быть выброшено исключение,</span>
+<span class="c1">// если не был получен результирующий элемент (не было ни одного элемента,</span>
+<span class="c1">//который бы соответствовал перечисленным критериям,</span>
+<span class="c1">// или непустой набор просто не был получен)</span>
+<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span>
+<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//1. Можно указать индекс элемента, который следует вернуть.</span>
+<span class="c1">//Индекс - индекс объекта в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnItemOfIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">//-----------------------------------------------</span>
+<span class="c1">//2. можно указать, при достижении какого количества</span>
+<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span>
+<span class="c1">//должен быть возвращен результат</span>
+<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//3. можно указать, при достижении каких условий,</span>
+<span class="c1">//которым должен соответствовать набор ВСЕХ объектов,</span>
+<span class="c1">//соответствующих критериям,</span>
+<span class="c1">//можно возвращать результирующий элемент</span>
+<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">iterable</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span>
+<span class="c1">// returnOnConditionOnlyOne(criteria...)</span>
+<span class="c1">// returnOnConditionNot(criteria...)</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span>
+<span class="c1">//или весь набор подходящих по критериям элементов,</span>
+<span class="c1">// из которого должен быть взят результат,</span>
+<span class="c1">// не соответствует каким-то критериям -</span>
+<span class="c1">// будет выброшено исключение с подробным описанием</span>
 </pre></div>
 </div>
 </details><p>Ниже пример, как можно получить текст одного из прочитанных сообщений</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetIterableItemSupplier.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetIterableItemSupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// Возвращает сообщение из очереди.</span><span class="w"></span>
-<span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">rabbitRawMessage</span><span class="p">(</span><span class="w"></span>
-<span class="w">                </span><span class="s">&quot;queue&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//Название очереди</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Параметр необязательный. Если его не указывать, будет использовано значение</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//свойства RABBIT_MQ_DEFAULT_QUEUE_NAME</span><span class="w"></span>
-<span class="w">                </span><span class="n">UTF_8</span><span class="p">)</span><span class="w"> </span><span class="c1">//Кодировка, параметр необязательный</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//можно указать, что auto acknowledge</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">autoAck</span><span class="p">()</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//опции, уточняющие результат,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Возвращает сообщение из очереди.</span>
+<span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">rabbitRawMessage</span><span class="p">(</span>
+<span class="w">                </span><span class="s">&quot;queue&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//Название очереди</span>
+<span class="w">                </span><span class="c1">//Параметр необязательный. Если его не указывать, будет использовано значение</span>
+<span class="w">                </span><span class="c1">//свойства RABBIT_MQ_DEFAULT_QUEUE_NAME</span>
+<span class="w">                </span><span class="n">UTF_8</span><span class="p">)</span><span class="w"> </span><span class="c1">//Кодировка, параметр необязательный</span>
+<span class="w">                </span><span class="c1">//можно указать, что auto acknowledge</span>
+<span class="w">                </span><span class="p">.</span><span class="na">autoAck</span><span class="p">()</span>
+<span class="w">                </span><span class="c1">//опции, уточняющие результат,</span>
+<span class="w">                </span><span class="c1">//</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
 <section id="id5">
 <h3>Получение данных сообщений RabbitMQ, собранных в лист<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h3>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofSeconds</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetIterableSupplier.*</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofSeconds</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetIterableSupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">  </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">List</span><span class="o">&lt;</span><span class="n">SomeData</span><span class="o">&gt;</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">rabbitIterable</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;Описание / название результирующего листа&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того ЧТО следует получить,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;test_queue&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//Название очереди</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Параметр необязательный. Если его не указывать, будет использовано значение</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//свойства RABBIT_MQ_DEFAULT_QUEUE_NAME</span><span class="w"></span>
-<span class="w">            </span><span class="n">SomeBodyClass</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//Класс, в объект которого </span><span class="w"></span>
-<span class="w">            </span><span class="c1">// десериализуется тело каждого сообщения.</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// Так же можно использовать объект </span><span class="w"></span>
-<span class="w">            </span><span class="c1">// com.fasterxml.jackson.core.type.TypeReference</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// Функция, с помощью которой извлекаются данные</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// из десериализованного тела сообщения.</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// Она не обязательная. Если ее не указывать,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// то вернется объект List&lt;SomeBodyClass&gt;.</span><span class="w"></span>
-<span class="w">            </span><span class="n">someBodyObject</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Алгоритм функции, которая получает данные</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//из каждого десериализованного тела сообщения</span><span class="w"></span>
-<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//эти объекты</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//будут собраны в результирующий лист</span><span class="w"></span>
-<span class="w">            </span><span class="p">})</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// Указывается объект класса </span><span class="w"></span>
-<span class="w">            </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// c помощью которого десериализуется тело каждого сообщения.</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// Вызов метода необязателен. По умолчанию используется</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// значение свойства RABBIT_MQ_DEFAULT_DATA_TRANSFORMER</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">withDataTransformer</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CustomDataTransformer</span><span class="p">())</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//можно указать, что auto acknowledge</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">autoAck</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//опции, уточняющие результат</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="nd">@Test</span>
+<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">List</span><span class="o">&lt;</span><span class="n">SomeData</span><span class="o">&gt;</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">rabbitIterable</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;Описание / название результирующего листа&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того ЧТО следует получить,</span>
+<span class="w">            </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">            </span><span class="c1">//терминологии</span>
+<span class="w">            </span><span class="s">&quot;test_queue&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//Название очереди</span>
+<span class="w">            </span><span class="c1">//Параметр необязательный. Если его не указывать, будет использовано значение</span>
+<span class="w">            </span><span class="c1">//свойства RABBIT_MQ_DEFAULT_QUEUE_NAME</span>
+<span class="w">            </span><span class="n">SomeBodyClass</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//Класс, в объект которого </span>
+<span class="w">            </span><span class="c1">// десериализуется тело каждого сообщения.</span>
+<span class="w">            </span><span class="c1">// Так же можно использовать объект </span>
+<span class="w">            </span><span class="c1">// com.fasterxml.jackson.core.type.TypeReference</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">            </span><span class="c1">// Функция, с помощью которой извлекаются данные</span>
+<span class="w">            </span><span class="c1">// из десериализованного тела сообщения.</span>
+<span class="w">            </span><span class="c1">// Она не обязательная. Если ее не указывать,</span>
+<span class="w">            </span><span class="c1">// то вернется объект List&lt;SomeBodyClass&gt;.</span>
+<span class="w">            </span><span class="n">someBodyObject</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="c1">//Алгоритм функции, которая получает данные</span>
+<span class="w">                </span><span class="c1">//из каждого десериализованного тела сообщения</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//эти объекты</span>
+<span class="w">                </span><span class="c1">//будут собраны в результирующий лист</span>
+<span class="w">            </span><span class="p">})</span>
+<span class="w">            </span><span class="c1">// Указывается объект класса </span>
+<span class="w">            </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer,</span>
+<span class="w">            </span><span class="c1">// c помощью которого десериализуется тело каждого сообщения.</span>
+<span class="w">            </span><span class="c1">// Вызов метода необязателен. По умолчанию используется</span>
+<span class="w">            </span><span class="c1">// значение свойства RABBIT_MQ_DEFAULT_DATA_TRANSFORMER</span>
+<span class="w">            </span><span class="p">.</span><span class="na">withDataTransformer</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CustomDataTransformer</span><span class="p">())</span>
+<span class="w">            </span><span class="c1">//можно указать, что auto acknowledge</span>
+<span class="w">            </span><span class="p">.</span><span class="na">autoAck</span><span class="p">()</span>
+<span class="w">            </span><span class="c1">//опции, уточняющие результат</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <details class="summary-">
-<summary>Уточняющие параметры шага, который возвращает лист. Шаг предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать</span><span class="w"></span>
-<span class="c1">//каждый элемент результирующего листа.</span><span class="w"></span>
-<span class="c1">// Так же доступны criteriaOr(criteria...),</span><span class="w"></span>
-<span class="c1">// criteriaOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// criteriaNot(criteria...)</span><span class="w"></span>
-<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;каждый элемент, который попадет в результирующий лист&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">// можно указать время,</span><span class="w"></span>
-<span class="c1">// за которое нужные элементы должны быть получены</span><span class="w"></span>
-<span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//Можно указать, что должно быть выброшено исключение,</span><span class="w"></span>
-<span class="c1">// если непустой лист не удалось получить (не было ни одного элемента,</span><span class="w"></span>
-<span class="c1">//который бы соответствовал перечисленным критериям,</span><span class="w"></span>
-<span class="c1">// или непустой лист просто не был получен)</span><span class="w"></span>
-<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span><span class="w"></span>
-<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//1. можно указать сколько объектов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//нужно вернуть</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnListOfSize</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//2. можно указать, до элемента с каким индексом</span><span class="w"></span>
-<span class="c1">//нужно собрать результирующие элементы,</span><span class="w"></span>
-<span class="c1">//индекс - индекс объекта в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnBeforeIndex</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//.returnAfterIndex(8) либо после какого элемента</span><span class="w"></span>
-<span class="c1">//----------------------------------------------</span><span class="w"></span>
-<span class="c1">//3. Либо можно перечислить индексы элементов,</span><span class="w"></span>
-<span class="c1">// которые следует вернуть.</span><span class="w"></span>
-<span class="c1">//Индексы - индексы объектов в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnItemsOfIndexes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-----------------------------------------------</span><span class="w"></span>
-<span class="c1">//4. можно указать, при достижении какого количества</span><span class="w"></span>
-<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//должен быть возвращен результат</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//----------------------------------------------</span><span class="w"></span>
-<span class="c1">//5. можно указать, при достижении каких условий,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать лист ВСЕХ объектов,</span><span class="w"></span>
-<span class="c1">//соответствующих критериям,</span><span class="w"></span>
-<span class="c1">//можно возвращать результирующий лист/суб-лист</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span><span class="w"></span>
-<span class="c1">// returnOnConditionOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// returnOnConditionNot(criteria...)</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span><span class="w"></span>
-<span class="c1">//или весь суб-лист подходящих по критериям элементов,</span><span class="w"></span>
-<span class="c1">// который должен вернуться как результат,</span><span class="w"></span>
-<span class="c1">// не соответствует каким-то критериям -</span><span class="w"></span>
-<span class="c1">// будет выброшено исключение с подробным описанием</span><span class="w"></span>
+<summary>Уточняющие параметры шага, который возвращает лист. Шаг предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span>
+<span class="c1">//которым должен соответствовать</span>
+<span class="c1">//каждый элемент результирующего листа.</span>
+<span class="c1">// Так же доступны criteriaOr(criteria...),</span>
+<span class="c1">// criteriaOnlyOne(criteria...)</span>
+<span class="c1">// criteriaNot(criteria...)</span>
+<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="s">&quot;каждый элемент, который попадет в результирующий лист&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">// можно указать время,</span>
+<span class="c1">// за которое нужные элементы должны быть получены</span>
+<span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//Можно указать, что должно быть выброшено исключение,</span>
+<span class="c1">// если непустой лист не удалось получить (не было ни одного элемента,</span>
+<span class="c1">//который бы соответствовал перечисленным критериям,</span>
+<span class="c1">// или непустой лист просто не был получен)</span>
+<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span>
+<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//1. можно указать сколько объектов,</span>
+<span class="c1">//которые соответствуют критериям,</span>
+<span class="c1">//нужно вернуть</span>
+<span class="p">.</span><span class="na">returnListOfSize</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//2. можно указать, до элемента с каким индексом</span>
+<span class="c1">//нужно собрать результирующие элементы,</span>
+<span class="c1">//индекс - индекс объекта в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnBeforeIndex</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="c1">//.returnAfterIndex(8) либо после какого элемента</span>
+<span class="c1">//----------------------------------------------</span>
+<span class="c1">//3. Либо можно перечислить индексы элементов,</span>
+<span class="c1">// которые следует вернуть.</span>
+<span class="c1">//Индексы - индексы объектов в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnItemsOfIndexes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span>
+<span class="c1">//-----------------------------------------------</span>
+<span class="c1">//4. можно указать, при достижении какого количества</span>
+<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span>
+<span class="c1">//должен быть возвращен результат</span>
+<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+<span class="c1">//----------------------------------------------</span>
+<span class="c1">//5. можно указать, при достижении каких условий,</span>
+<span class="c1">//которым должен соответствовать лист ВСЕХ объектов,</span>
+<span class="c1">//соответствующих критериям,</span>
+<span class="c1">//можно возвращать результирующий лист/суб-лист</span>
+<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span>
+<span class="c1">// returnOnConditionOnlyOne(criteria...)</span>
+<span class="c1">// returnOnConditionNot(criteria...)</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span>
+<span class="c1">//или весь суб-лист подходящих по критериям элементов,</span>
+<span class="c1">// который должен вернуться как результат,</span>
+<span class="c1">// не соответствует каким-то критериям -</span>
+<span class="c1">// будет выброшено исключение с подробным описанием</span>
 </pre></div>
 </div>
 </details><p>Ниже пример, как можно получить тексты прочитанных сообщений</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetIterableSupplier.*</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetIterableSupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">  </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="c1">// Возвращает сообщения из очереди.</span><span class="w"></span>
-<span class="w">      </span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">rabbitIterableOfRawMessages</span><span class="p">(</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;queue&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//Название очереди</span><span class="w"></span>
-<span class="w">              </span><span class="c1">//Параметр необязательный. Если его не указывать, будет использовано значение</span><span class="w"></span>
-<span class="w">              </span><span class="c1">//свойства RABBIT_MQ_DEFAULT_QUEUE_NAME</span><span class="w"></span>
-<span class="w">              </span><span class="n">UTF_8</span><span class="p">)</span><span class="w"> </span><span class="c1">//Кодировка, параметр необязательный</span><span class="w"></span>
-<span class="w">              </span><span class="c1">//можно указать, что auto acknowledge</span><span class="w"></span>
-<span class="w">              </span><span class="p">.</span><span class="na">autoAck</span><span class="p">()</span><span class="w"></span>
-<span class="w">          </span><span class="c1">//опции, уточняющие результат,</span><span class="w"></span>
-<span class="w">          </span><span class="c1">//</span><span class="w"></span>
-<span class="w">      </span><span class="p">);</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="nd">@Test</span>
+<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// Возвращает сообщения из очереди.</span>
+<span class="w">      </span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">rabbitIterableOfRawMessages</span><span class="p">(</span>
+<span class="w">              </span><span class="s">&quot;queue&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//Название очереди</span>
+<span class="w">              </span><span class="c1">//Параметр необязательный. Если его не указывать, будет использовано значение</span>
+<span class="w">              </span><span class="c1">//свойства RABBIT_MQ_DEFAULT_QUEUE_NAME</span>
+<span class="w">              </span><span class="n">UTF_8</span><span class="p">)</span><span class="w"> </span><span class="c1">//Кодировка, параметр необязательный</span>
+<span class="w">              </span><span class="c1">//можно указать, что auto acknowledge</span>
+<span class="w">              </span><span class="p">.</span><span class="na">autoAck</span><span class="p">()</span>
+<span class="w">          </span><span class="c1">//опции, уточняющие результат,</span>
+<span class="w">          </span><span class="c1">//</span>
+<span class="w">      </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
 <section id="id6">
 <h3>Получение данных сообщений RabbitMQ, собранных в массив<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h3>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofSeconds</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofSeconds</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetArraySupplier.*</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetArraySupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">  </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="n">ArrayItemClass</span><span class="o">[]</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">rabbitArray</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;Описание / название результирующего массива&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того ЧТО следует получить,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;test_queue&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//Название очереди</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Параметр необязательный. Если его не указывать, будет использовано значение</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//свойства RABBIT_MQ_DEFAULT_QUEUE_NAME</span><span class="w"></span>
-<span class="w">            </span><span class="n">SomeBodyClass</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//Класс, в объект которого </span><span class="w"></span>
-<span class="w">            </span><span class="c1">// десериализуется тело каждого сообщения.</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// Так же можно использовать объект </span><span class="w"></span>
-<span class="w">            </span><span class="c1">// com.fasterxml.jackson.core.type.TypeReference</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">            </span><span class="n">ArrayItemClass</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//Класс каждого элемента получаемого массива</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// Параметр обязателен, если из каждого десериализованного</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// тела сообщения нужно получить какие-то данные,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// из которых будет собран результирующий массив.</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// Получение этих данных описывается функцией ниже.</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// Функция, с помощью которой извлекаются данные</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// из десериализованного тела сообщения.</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// Она не обязательная. Если ее не указывать,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// то вернется объект SomeBodyClass[]</span><span class="w"></span>
-<span class="w">            </span><span class="n">someBodyObject</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Алгоритм функции, которая получает данные</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//из каждого десериализованного тела сообщения</span><span class="w"></span>
-<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">someArrayItemObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//эти объекты</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//будут собраны в результирующий массив</span><span class="w"></span>
-<span class="w">            </span><span class="p">})</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// Указывается объект класса </span><span class="w"></span>
-<span class="w">            </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// c помощью которого десериализуется тело каждого сообщения.</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// Вызов метода необязателен. По умолчанию используется</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// значение свойства RABBIT_MQ_DEFAULT_DATA_TRANSFORMER</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">withDataTransformer</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CustomDataTransformer</span><span class="p">())</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//можно указать, что auto acknowledge</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">autoAck</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//опции, уточняющие результат,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">      </span><span class="p">);</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="nd">@Test</span>
+<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ArrayItemClass</span><span class="o">[]</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">rabbitArray</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;Описание / название результирующего массива&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того ЧТО следует получить,</span>
+<span class="w">            </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">            </span><span class="c1">//терминологии</span>
+<span class="w">            </span><span class="s">&quot;test_queue&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//Название очереди</span>
+<span class="w">            </span><span class="c1">//Параметр необязательный. Если его не указывать, будет использовано значение</span>
+<span class="w">            </span><span class="c1">//свойства RABBIT_MQ_DEFAULT_QUEUE_NAME</span>
+<span class="w">            </span><span class="n">SomeBodyClass</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//Класс, в объект которого </span>
+<span class="w">            </span><span class="c1">// десериализуется тело каждого сообщения.</span>
+<span class="w">            </span><span class="c1">// Так же можно использовать объект </span>
+<span class="w">            </span><span class="c1">// com.fasterxml.jackson.core.type.TypeReference</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">            </span><span class="n">ArrayItemClass</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//Класс каждого элемента получаемого массива</span>
+<span class="w">            </span><span class="c1">// Параметр обязателен, если из каждого десериализованного</span>
+<span class="w">            </span><span class="c1">// тела сообщения нужно получить какие-то данные,</span>
+<span class="w">            </span><span class="c1">// из которых будет собран результирующий массив.</span>
+<span class="w">            </span><span class="c1">// Получение этих данных описывается функцией ниже.</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">            </span><span class="c1">// Функция, с помощью которой извлекаются данные</span>
+<span class="w">            </span><span class="c1">// из десериализованного тела сообщения.</span>
+<span class="w">            </span><span class="c1">// Она не обязательная. Если ее не указывать,</span>
+<span class="w">            </span><span class="c1">// то вернется объект SomeBodyClass[]</span>
+<span class="w">            </span><span class="n">someBodyObject</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="c1">//Алгоритм функции, которая получает данные</span>
+<span class="w">                </span><span class="c1">//из каждого десериализованного тела сообщения</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">someArrayItemObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//эти объекты</span>
+<span class="w">                </span><span class="c1">//будут собраны в результирующий массив</span>
+<span class="w">            </span><span class="p">})</span>
+<span class="w">            </span><span class="c1">// Указывается объект класса </span>
+<span class="w">            </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer,</span>
+<span class="w">            </span><span class="c1">// c помощью которого десериализуется тело каждого сообщения.</span>
+<span class="w">            </span><span class="c1">// Вызов метода необязателен. По умолчанию используется</span>
+<span class="w">            </span><span class="c1">// значение свойства RABBIT_MQ_DEFAULT_DATA_TRANSFORMER</span>
+<span class="w">            </span><span class="p">.</span><span class="na">withDataTransformer</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CustomDataTransformer</span><span class="p">())</span>
+<span class="w">            </span><span class="c1">//можно указать, что auto acknowledge</span>
+<span class="w">            </span><span class="p">.</span><span class="na">autoAck</span><span class="p">()</span>
+<span class="w">            </span><span class="c1">//опции, уточняющие результат,</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">      </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <details class="summary-">
-<summary>Уточняющие параметры шага, который возвращает массив. Шаг предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать</span><span class="w"></span>
-<span class="c1">//каждый элемент результирующего массива.</span><span class="w"></span>
-<span class="c1">// Так же доступны criteriaOr(criteria...),</span><span class="w"></span>
-<span class="c1">// criteriaOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// criteriaNot(criteria...)</span><span class="w"></span>
-<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;каждый элемент, который попадет в результирующий массив&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//----------------------------------------------</span><span class="w"></span>
-<span class="c1">// можно указать время,</span><span class="w"></span>
-<span class="c1">// за которое нужные элементы должны быть получены</span><span class="w"></span>
-<span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//----------------------------------------------</span><span class="w"></span>
-<span class="c1">//Можно указать, что должно быть выброшено исключение,</span><span class="w"></span>
-<span class="c1">// если непустой массив не удалось получить (не было ни одного элемента,</span><span class="w"></span>
-<span class="c1">//который бы соответствовал перечисленным критериям,</span><span class="w"></span>
-<span class="c1">// или непустой массив просто не был получен)</span><span class="w"></span>
-<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span><span class="w"></span>
-<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span><span class="w"></span>
-<span class="c1">//----------------------------------------------</span><span class="w"></span>
-<span class="c1">//1. можно указать сколько объектов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//нужно вернуть</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnArrayOfLength</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//2. можно указать, до элемента с каким индексом</span><span class="w"></span>
-<span class="c1">//нужно собрать результирующие элементы,</span><span class="w"></span>
-<span class="c1">//индекс - индекс объекта в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnBeforeIndex</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//.returnAfterIndex(8) либо после какого элемента</span><span class="w"></span>
-<span class="c1">//----------------------------------------------</span><span class="w"></span>
-<span class="c1">//3. Либо можно перечислить индексы элементов,</span><span class="w"></span>
-<span class="c1">// которые следует вернуть.</span><span class="w"></span>
-<span class="c1">//Индексы - индексы объектов в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnItemsOfIndexes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-----------------------------------------------</span><span class="w"></span>
-<span class="c1">//4. можно указать, при достижении какого количества</span><span class="w"></span>
-<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//должен быть возвращен результат</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnIfEntireLength</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//----------------------------------------------</span><span class="w"></span>
-<span class="c1">//5. можно указать, при достижении каких условий,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать массив ВСЕХ объектов,</span><span class="w"></span>
-<span class="c1">//соответствующих критериям,</span><span class="w"></span>
-<span class="c1">//можно возвращать результирующий массив/суб-массив</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span><span class="w"></span>
-<span class="c1">// returnOnConditionOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// returnOnConditionNot(criteria...)</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span><span class="w"></span>
-<span class="c1">//или весь суб-массив подходящих по критериям элементов,</span><span class="w"></span>
-<span class="c1">// который должен вернуться как результат,</span><span class="w"></span>
-<span class="c1">// не соответствует каким-то критериям -</span><span class="w"></span>
-<span class="c1">// будет выброшено исключение с подробным описанием</span><span class="w"></span>
+<summary>Уточняющие параметры шага, который возвращает массив. Шаг предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span>
+<span class="c1">//которым должен соответствовать</span>
+<span class="c1">//каждый элемент результирующего массива.</span>
+<span class="c1">// Так же доступны criteriaOr(criteria...),</span>
+<span class="c1">// criteriaOnlyOne(criteria...)</span>
+<span class="c1">// criteriaNot(criteria...)</span>
+<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="s">&quot;каждый элемент, который попадет в результирующий массив&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//----------------------------------------------</span>
+<span class="c1">// можно указать время,</span>
+<span class="c1">// за которое нужные элементы должны быть получены</span>
+<span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="c1">//----------------------------------------------</span>
+<span class="c1">//Можно указать, что должно быть выброшено исключение,</span>
+<span class="c1">// если непустой массив не удалось получить (не было ни одного элемента,</span>
+<span class="c1">//который бы соответствовал перечисленным критериям,</span>
+<span class="c1">// или непустой массив просто не был получен)</span>
+<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span>
+<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span>
+<span class="c1">//----------------------------------------------</span>
+<span class="c1">//1. можно указать сколько объектов,</span>
+<span class="c1">//которые соответствуют критериям,</span>
+<span class="c1">//нужно вернуть</span>
+<span class="p">.</span><span class="na">returnArrayOfLength</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//2. можно указать, до элемента с каким индексом</span>
+<span class="c1">//нужно собрать результирующие элементы,</span>
+<span class="c1">//индекс - индекс объекта в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnBeforeIndex</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="c1">//.returnAfterIndex(8) либо после какого элемента</span>
+<span class="c1">//----------------------------------------------</span>
+<span class="c1">//3. Либо можно перечислить индексы элементов,</span>
+<span class="c1">// которые следует вернуть.</span>
+<span class="c1">//Индексы - индексы объектов в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnItemsOfIndexes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span>
+<span class="c1">//-----------------------------------------------</span>
+<span class="c1">//4. можно указать, при достижении какого количества</span>
+<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span>
+<span class="c1">//должен быть возвращен результат</span>
+<span class="p">.</span><span class="na">returnIfEntireLength</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+<span class="c1">//----------------------------------------------</span>
+<span class="c1">//5. можно указать, при достижении каких условий,</span>
+<span class="c1">//которым должен соответствовать массив ВСЕХ объектов,</span>
+<span class="c1">//соответствующих критериям,</span>
+<span class="c1">//можно возвращать результирующий массив/суб-массив</span>
+<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span>
+<span class="c1">// returnOnConditionOnlyOne(criteria...)</span>
+<span class="c1">// returnOnConditionNot(criteria...)</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span>
+<span class="c1">//или весь суб-массив подходящих по критериям элементов,</span>
+<span class="c1">// который должен вернуться как результат,</span>
+<span class="c1">// не соответствует каким-то критериям -</span>
+<span class="c1">// будет выброшено исключение с подробным описанием</span>
 </pre></div>
 </div>
 </details><p>Ниже пример, как можно получить тексты прочитанных сообщений в виде массива</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetArraySupplier.*</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetArraySupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">  </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="c1">// Возвращает сообщения из очереди.</span><span class="w"></span>
-<span class="w">      </span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">rabbitArrayOfRawMessages</span><span class="p">(</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;queue&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//Название очереди</span><span class="w"></span>
-<span class="w">              </span><span class="c1">//Параметр необязательный. Если его не указывать, будет использовано значение</span><span class="w"></span>
-<span class="w">              </span><span class="c1">//свойства RABBIT_MQ_DEFAULT_QUEUE_NAME</span><span class="w"></span>
-<span class="w">              </span><span class="n">UTF_8</span><span class="p">)</span><span class="w"> </span><span class="c1">//Кодировка, параметр необязательный</span><span class="w"></span>
-<span class="w">              </span><span class="c1">//можно указать, что auto acknowledge</span><span class="w"></span>
-<span class="w">              </span><span class="p">.</span><span class="na">autoAck</span><span class="p">()</span><span class="w"></span>
-<span class="w">          </span><span class="c1">//опции, уточняющие результат,</span><span class="w"></span>
-<span class="w">          </span><span class="c1">//</span><span class="w"></span>
-<span class="w">      </span><span class="p">);</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="nd">@Test</span>
+<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// Возвращает сообщения из очереди.</span>
+<span class="w">      </span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">rabbitArrayOfRawMessages</span><span class="p">(</span>
+<span class="w">              </span><span class="s">&quot;queue&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//Название очереди</span>
+<span class="w">              </span><span class="c1">//Параметр необязательный. Если его не указывать, будет использовано значение</span>
+<span class="w">              </span><span class="c1">//свойства RABBIT_MQ_DEFAULT_QUEUE_NAME</span>
+<span class="w">              </span><span class="n">UTF_8</span><span class="p">)</span><span class="w"> </span><span class="c1">//Кодировка, параметр необязательный</span>
+<span class="w">              </span><span class="c1">//можно указать, что auto acknowledge</span>
+<span class="w">              </span><span class="p">.</span><span class="na">autoAck</span><span class="p">()</span>
+<span class="w">          </span><span class="c1">//опции, уточняющие результат,</span>
+<span class="w">          </span><span class="c1">//</span>
+<span class="w">      </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
 <section id="id7">
 <h3>Получение данных сообщений RabbitMQ как элемент массива<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h3>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofSeconds</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">java.time.Duration.ofSeconds</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetArrayItemSupplier.*</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.get.RabbitMqBasicGetArrayItemSupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">  </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="n">ArrayItemClass</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">rabbitArrayItem</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;Описание / название результирующего элемента массива&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того ЧТО следует получить,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;test_queue&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//Название очереди</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Параметр необязательный. Если его не указывать, будет использовано значение</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//свойства RABBIT_MQ_DEFAULT_QUEUE_NAME</span><span class="w"></span>
-<span class="w">            </span><span class="n">SomeBodyClass</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//Класс, в объект которого </span><span class="w"></span>
-<span class="w">            </span><span class="c1">// десериализуется тело каждого сообщения.</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// Так же можно использовать объект </span><span class="w"></span>
-<span class="w">            </span><span class="c1">// com.fasterxml.jackson.core.type.TypeReference</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">            </span><span class="n">ArrayItemClass</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//Класс каждого элемента массива, из </span><span class="w"></span>
-<span class="w">            </span><span class="c1">// которого будет выбран результирующий объект.</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// Параметр обязателен, если из каждого десериализованного</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// тела сообщения нужно получить какие-то данные,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// из которых будет выбран результат.</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// Функция, с помощью которой извлекаются данные</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// из десериализованного тела сообщения.</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// Она не обязательная. Если ее не указывать,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// то вернется объект SomeBodyClass</span><span class="w"></span>
-<span class="w">            </span><span class="n">someBodyObject</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Алгоритм функции, которая получает данные</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//из каждого десериализованного тела сообщения</span><span class="w"></span>
-<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">someArrayItemObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//один из этих </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//объектов возвращается как результат,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//первый попавшийся или с учетом уточнений</span><span class="w"></span>
-<span class="w">            </span><span class="p">})</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// Указывается объект класса </span><span class="w"></span>
-<span class="w">            </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// c помощью которого десериализуется тело каждого сообщения.</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// Вызов метода необязателен. По умолчанию используется</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// значение свойства RABBIT_MQ_DEFAULT_DATA_TRANSFORMER</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">withDataTransformer</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CustomDataTransformer</span><span class="p">())</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//можно указать, что auto acknowledge</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">autoAck</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//опции, уточняющие результат,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">      </span><span class="p">);</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="nd">@Test</span>
+<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ArrayItemClass</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">read</span><span class="p">(</span><span class="n">rabbitArrayItem</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;Описание / название результирующего элемента массива&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того ЧТО следует получить,</span>
+<span class="w">            </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">            </span><span class="c1">//терминологии</span>
+<span class="w">            </span><span class="s">&quot;test_queue&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//Название очереди</span>
+<span class="w">            </span><span class="c1">//Параметр необязательный. Если его не указывать, будет использовано значение</span>
+<span class="w">            </span><span class="c1">//свойства RABBIT_MQ_DEFAULT_QUEUE_NAME</span>
+<span class="w">            </span><span class="n">SomeBodyClass</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//Класс, в объект которого </span>
+<span class="w">            </span><span class="c1">// десериализуется тело каждого сообщения.</span>
+<span class="w">            </span><span class="c1">// Так же можно использовать объект </span>
+<span class="w">            </span><span class="c1">// com.fasterxml.jackson.core.type.TypeReference</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">            </span><span class="n">ArrayItemClass</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//Класс каждого элемента массива, из </span>
+<span class="w">            </span><span class="c1">// которого будет выбран результирующий объект.</span>
+<span class="w">            </span><span class="c1">// Параметр обязателен, если из каждого десериализованного</span>
+<span class="w">            </span><span class="c1">// тела сообщения нужно получить какие-то данные,</span>
+<span class="w">            </span><span class="c1">// из которых будет выбран результат.</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">            </span><span class="c1">// Функция, с помощью которой извлекаются данные</span>
+<span class="w">            </span><span class="c1">// из десериализованного тела сообщения.</span>
+<span class="w">            </span><span class="c1">// Она не обязательная. Если ее не указывать,</span>
+<span class="w">            </span><span class="c1">// то вернется объект SomeBodyClass</span>
+<span class="w">            </span><span class="n">someBodyObject</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="c1">//Алгоритм функции, которая получает данные</span>
+<span class="w">                </span><span class="c1">//из каждого десериализованного тела сообщения</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">someArrayItemObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//один из этих </span>
+<span class="w">                </span><span class="c1">//объектов возвращается как результат,</span>
+<span class="w">                </span><span class="c1">//первый попавшийся или с учетом уточнений</span>
+<span class="w">            </span><span class="p">})</span>
+<span class="w">            </span><span class="c1">// Указывается объект класса </span>
+<span class="w">            </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer,</span>
+<span class="w">            </span><span class="c1">// c помощью которого десериализуется тело каждого сообщения.</span>
+<span class="w">            </span><span class="c1">// Вызов метода необязателен. По умолчанию используется</span>
+<span class="w">            </span><span class="c1">// значение свойства RABBIT_MQ_DEFAULT_DATA_TRANSFORMER</span>
+<span class="w">            </span><span class="p">.</span><span class="na">withDataTransformer</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CustomDataTransformer</span><span class="p">())</span>
+<span class="w">            </span><span class="c1">//можно указать, что auto acknowledge</span>
+<span class="w">            </span><span class="p">.</span><span class="na">autoAck</span><span class="p">()</span>
+<span class="w">            </span><span class="c1">//опции, уточняющие результат,</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">      </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <details class="summary-">
-<summary>Уточняющие параметры шага, который возвращает элемент массива. Шаг предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать</span><span class="w"></span>
-<span class="c1">//результирующий элемент из массива.</span><span class="w"></span>
-<span class="c1">// Так же доступны criteriaOr(criteria...),</span><span class="w"></span>
-<span class="c1">// criteriaOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// criteriaNot(criteria...)</span><span class="w"></span>
-<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;результирующий элемент из массива&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">// можно указать время,</span><span class="w"></span>
-<span class="c1">// за которое нужные элемент должен быть получен</span><span class="w"></span>
-<span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//-----------------------------------------------</span><span class="w"></span>
-<span class="c1">//Можно указать, что должно быть выброшено исключение,</span><span class="w"></span>
-<span class="c1">// если не был получен результирующий элемент (не было ни одного элемента,</span><span class="w"></span>
-<span class="c1">// который бы соответствовал перечисленным критериям,</span><span class="w"></span>
-<span class="c1">// или непустой массив просто не был получен)</span><span class="w"></span>
-<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span><span class="w"></span>
-<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span><span class="w"></span>
-<span class="c1">//-----------------------------------------------</span><span class="w"></span>
-<span class="c1">//1. Можно указать индекс элемента, который следует вернуть.</span><span class="w"></span>
-<span class="c1">//Индекс - индекс объекта в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnItemOfIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-----------------------------------------------</span><span class="w"></span>
-<span class="c1">//2. можно указать, при достижении какого количества</span><span class="w"></span>
-<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//должен быть возвращен результат</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnIfEntireLength</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//-----------------------------------------------</span><span class="w"></span>
-<span class="c1">//3. можно указать, при достижении каких условий,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать набор ВСЕХ объектов,</span><span class="w"></span>
-<span class="c1">//соответствующих критериям,</span><span class="w"></span>
-<span class="c1">//можно возвращать результирующий элемент</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span><span class="w"></span>
-<span class="c1">// returnOnConditionOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// returnOnConditionNot(criteria...)</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span><span class="w"></span>
-<span class="c1">//или весь суб-массив подходящих по критериям элементов,</span><span class="w"></span>
-<span class="c1">// из которого должен быть взят результат,</span><span class="w"></span>
-<span class="c1">// не соответствует каким-то критериям -</span><span class="w"></span>
-<span class="c1">// будет выброшено исключение с подробным описанием</span><span class="w"></span>
+<summary>Уточняющие параметры шага, который возвращает элемент массива. Шаг предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span>
+<span class="c1">//которым должен соответствовать</span>
+<span class="c1">//результирующий элемент из массива.</span>
+<span class="c1">// Так же доступны criteriaOr(criteria...),</span>
+<span class="c1">// criteriaOnlyOne(criteria...)</span>
+<span class="c1">// criteriaNot(criteria...)</span>
+<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="s">&quot;результирующий элемент из массива&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">// можно указать время,</span>
+<span class="c1">// за которое нужные элемент должен быть получен</span>
+<span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="c1">//-----------------------------------------------</span>
+<span class="c1">//Можно указать, что должно быть выброшено исключение,</span>
+<span class="c1">// если не был получен результирующий элемент (не было ни одного элемента,</span>
+<span class="c1">// который бы соответствовал перечисленным критериям,</span>
+<span class="c1">// или непустой массив просто не был получен)</span>
+<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span>
+<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span>
+<span class="c1">//-----------------------------------------------</span>
+<span class="c1">//1. Можно указать индекс элемента, который следует вернуть.</span>
+<span class="c1">//Индекс - индекс объекта в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnItemOfIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">//-----------------------------------------------</span>
+<span class="c1">//2. можно указать, при достижении какого количества</span>
+<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span>
+<span class="c1">//должен быть возвращен результат</span>
+<span class="p">.</span><span class="na">returnIfEntireLength</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+<span class="c1">//-----------------------------------------------</span>
+<span class="c1">//3. можно указать, при достижении каких условий,</span>
+<span class="c1">//которым должен соответствовать набор ВСЕХ объектов,</span>
+<span class="c1">//соответствующих критериям,</span>
+<span class="c1">//можно возвращать результирующий элемент</span>
+<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span>
+<span class="c1">// returnOnConditionOnlyOne(criteria...)</span>
+<span class="c1">// returnOnConditionNot(criteria...)</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span>
+<span class="c1">//или весь суб-массив подходящих по критериям элементов,</span>
+<span class="c1">// из которого должен быть взят результат,</span>
+<span class="c1">// не соответствует каким-то критериям -</span>
+<span class="c1">// будет выброшено исключение с подробным описанием</span>
 </pre></div>
 </div>
 </details></section>

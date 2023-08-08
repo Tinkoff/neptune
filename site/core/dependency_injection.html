@@ -470,31 +470,31 @@
 дублированию кода в <cite>&#64;Before*</cite>-методах или чрезмерному использованию механизма наследования.</p>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Класс, выполняющий внедрение зависимостей / инициализацию полей</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.dependency.injection.DependencyInjector</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.dependency.injection.DependencyInjector</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">java.lang.reflect.Field</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">java.lang.reflect.Field</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyDependencyInjector</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">DependencyInjector</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyDependencyInjector</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">DependencyInjector</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">     </span><span class="c1">//прежде чем этот метод вызывается, происходит</span><span class="w"></span>
-<span class="w">     </span><span class="c1">//проверка на то, чтобы поле не было статическим и финальным,</span><span class="w"></span>
-<span class="w">     </span><span class="c1">//так же заполнению подлежат поля,</span><span class="w"></span>
-<span class="w">     </span><span class="c1">//значения которых в момент вызова == null,</span><span class="w"></span>
-<span class="w">     </span><span class="c1">//либо поля примитивных типов (можно, но не рекомендуется)</span><span class="w"></span>
-<span class="w">     </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">toSet</span><span class="p">(</span><span class="n">Field</span><span class="w"> </span><span class="n">field</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="c1">//проверяется дополнительное условие, что можно заполнять поле;</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="c1">//прежде чем этот метод вызывается, происходит</span>
+<span class="w">     </span><span class="c1">//проверка на то, чтобы поле не было статическим и финальным,</span>
+<span class="w">     </span><span class="c1">//так же заполнению подлежат поля,</span>
+<span class="w">     </span><span class="c1">//значения которых в момент вызова == null,</span>
+<span class="w">     </span><span class="c1">//либо поля примитивных типов (можно, но не рекомендуется)</span>
+<span class="w">     </span><span class="nd">@Override</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">toSet</span><span class="p">(</span><span class="n">Field</span><span class="w"> </span><span class="n">field</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="c1">//проверяется дополнительное условие, что можно заполнять поле;</span>
+<span class="w">     </span><span class="p">}</span>
 
-<span class="w">     </span><span class="c1">//если поле можно заполнять, то тогда формируется значение для этого поля,</span><span class="w"></span>
-<span class="w">     </span><span class="c1">//используя аннотации над полем или какую-либо другую метаинформацию данного поля ;</span><span class="w"></span>
-<span class="w">     </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="nf">getValueToSet</span><span class="p">(</span><span class="n">Field</span><span class="w"> </span><span class="n">field</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="c1">//сформированное значение</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
-<span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="c1">//если поле можно заполнять, то тогда формируется значение для этого поля,</span>
+<span class="w">     </span><span class="c1">//используя аннотации над полем или какую-либо другую метаинформацию данного поля ;</span>
+<span class="w">     </span><span class="nd">@Override</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="nf">getValueToSet</span><span class="p">(</span><span class="n">Field</span><span class="w"> </span><span class="n">field</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="c1">//сформированное значение</span>
+<span class="w">     </span><span class="p">}</span>
+<span class="w"> </span><span class="p">}</span>
 </pre></div>
 </div>
 </div>

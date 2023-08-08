@@ -470,22 +470,22 @@
 помогают представить фрагменты названий / значения параметров шагов в читаемом виде, когда это нужно</p>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Пример реализации <code class="docutils literal notranslate"><span class="pre">ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter</span></code></span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ExampleGetParameterValue</span><span class="w"></span>
-<span class="w">         </span><span class="c1">//Данный интерфейс имеет тип-параметр.</span><span class="w"></span>
-<span class="w">         </span><span class="kd">implements</span><span class="w"> </span><span class="n">ParameterValueGetter</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span><span class="w"></span>
-<span class="w">     </span><span class="c1">//Реализация должна иметь тот же тип-парамер (либо родительский тип),</span><span class="w"></span>
-<span class="w">     </span><span class="c1">// что и тип поля класса / параметра сигнатуры метода,</span><span class="w"></span>
-<span class="w">     </span><span class="c1">//для которого данная реализация используется.</span><span class="w"></span>
-<span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">     </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">getParameterValue</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">fieldValue</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="cm">/*Преобразование объекта в читаемую строку*/</span><span class="p">;</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
-<span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ExampleGetParameterValue</span>
+<span class="w">         </span><span class="c1">//Данный интерфейс имеет тип-параметр.</span>
+<span class="w">         </span><span class="kd">implements</span><span class="w"> </span><span class="n">ParameterValueGetter</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span>
+<span class="w">     </span><span class="c1">//Реализация должна иметь тот же тип-парамер (либо родительский тип),</span>
+<span class="w">     </span><span class="c1">// что и тип поля класса / параметра сигнатуры метода,</span>
+<span class="w">     </span><span class="c1">//для которого данная реализация используется.</span>
+<span class="w"> </span><span class="p">{</span>
+<span class="w">     </span><span class="nd">@Override</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">getParameterValue</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">fieldValue</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="cm">/*Преобразование объекта в читаемую строку*/</span><span class="p">;</span>
+<span class="w">     </span><span class="p">}</span>
+<span class="w"> </span><span class="p">}</span>
 </pre></div>
 </div>
 </div>

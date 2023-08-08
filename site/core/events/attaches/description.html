@@ -465,34 +465,34 @@
           <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>Название / сообщение аттача<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
 <p>Рекомендуется указывать название аттача через аннотацию <a class="reference internal" href="../../steps/annotations/%40Description_%40DescriptionFragment.html"><span class="doc std std-doc">&#64;Description</span></a></p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.Captor</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.CapturedDataInjector</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.Description</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.Captor</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.CapturedDataInjector</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.Description</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="nd">@Description</span><span class="p">(</span><span class="s">&quot;My attachment&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">// сообщение / название аттача,</span><span class="w"></span>
-<span class="c1">//которое наследуется, </span><span class="w"></span>
-<span class="c1">//может быть перекрыто другой аннотацией @Description</span><span class="w"></span>
-<span class="c1">//в классе-наследнике</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyCaptor</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">S</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Captor</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">S</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@Description</span><span class="p">(</span><span class="s">&quot;My attachment&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">// сообщение / название аттача,</span>
+<span class="c1">//которое наследуется, </span>
+<span class="c1">//может быть перекрыто другой аннотацией @Description</span>
+<span class="c1">//в классе-наследнике</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyCaptor</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">S</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Captor</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">S</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyCaptor</span><span class="p">(</span><span class="n">List</span><span class="o">&lt;?</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">CapturedDataInjector</span><span class="o">&lt;</span><span class="n">S</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">injectors</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="n">injectors</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">MyCaptor</span><span class="p">(</span><span class="n">List</span><span class="o">&lt;?</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">CapturedDataInjector</span><span class="o">&lt;</span><span class="n">S</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">injectors</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="n">injectors</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="w">    </span>
 <span class="w">    </span><span class="cm">/*</span>
 <span class="cm">    protected MyCaptor(String message,</span>
 <span class="cm">                       List&lt;? extends CapturedDataInjector&lt;S&gt;&gt; injectors) {</span>
 <span class="cm">        super(message, injectors);</span>
-<span class="cm">    }*/</span><span class="w"></span>
+<span class="cm">    }*/</span>
 
 <span class="w">    </span><span class="cm">/*</span>
 <span class="cm">    public MyCaptor(String message) {</span>
 <span class="cm">        super(message);</span>
-<span class="cm">    }*/</span><span class="w"></span>
+<span class="cm">    }*/</span>
 <span class="w">    </span>
 
 <span class="w">    </span><span class="cm">/*</span>
@@ -503,7 +503,7 @@
 <span class="cm">        super();</span>
 <span class="cm">    }</span>
 <span class="cm">    */</span><span class="w">    </span>
-<span class="p">}</span><span class="w"></span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>

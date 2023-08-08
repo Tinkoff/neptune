@@ -470,74 +470,74 @@
 <li><p><a class="reference external" href="https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/reactive/ReactiveCrudRepository.html">ReactiveCrudRepository</a></p></li>
 <li><p><a class="reference external" href="https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/reactive/RxJava3CrudRepository.html">RxJava3CrudRepository</a></p></li>
 </ul>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.boot.test.context.SpringBootTest</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.boot.test.context.SpringBootTest</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.*</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.select.common.CommonSelectStepFactory.*</span><span class="p">;</span>
 
-<span class="nd">@SpringBootTest</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@SpringBootTest</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Autowired</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">TestRepository</span><span class="w"> </span><span class="n">testRepository</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Autowired</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">TestRepository</span><span class="w"> </span><span class="n">testRepository</span><span class="p">;</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">        </span><span class="c1">//удаление записи, выбранной с помощью запроса</span><span class="w"></span>
-<span class="w">        </span><span class="n">springData</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//описание того ЧТО следует удалить,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;Test entity&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//тип запроса зависит от того,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// какие интерфейсы расширяет интерфейс-репозиторий</span><span class="w"></span>
-<span class="w">            </span><span class="n">byId</span><span class="p">(</span><span class="n">testRepository</span><span class="p">,</span><span class="w"> </span><span class="mi">1L</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//опциональные параметры find-операции</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//удаление записи, выбранной с помощью запроса</span>
+<span class="w">        </span><span class="n">springData</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span>
+<span class="w">            </span><span class="c1">//описание того ЧТО следует удалить,</span>
+<span class="w">            </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">            </span><span class="c1">//терминологии</span>
+<span class="w">            </span><span class="s">&quot;Test entity&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="c1">//тип запроса зависит от того,</span>
+<span class="w">            </span><span class="c1">// какие интерфейсы расширяет интерфейс-репозиторий</span>
+<span class="w">            </span><span class="n">byId</span><span class="p">(</span><span class="n">testRepository</span><span class="p">,</span><span class="w"> </span><span class="mi">1L</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//опциональные параметры find-операции</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">        </span><span class="p">);</span>
 
-<span class="w">        </span><span class="c1">//удаление записей, выбранных с помощью запроса</span><span class="w"></span>
-<span class="w">        </span><span class="n">springData</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">byIds</span><span class="p">(</span><span class="n">testRepository</span><span class="p">,</span><span class="w"> </span><span class="mi">1L</span><span class="p">,</span><span class="w"> </span><span class="mi">2L</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//опциональные параметры find-операции</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//удаление записей, выбранных с помощью запроса</span>
+<span class="w">        </span><span class="n">springData</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">byIds</span><span class="p">(</span><span class="n">testRepository</span><span class="p">,</span><span class="w"> </span><span class="mi">1L</span><span class="p">,</span><span class="w"> </span><span class="mi">2L</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//опциональные параметры find-операции</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">        </span><span class="p">);</span>
 
-<span class="w">        </span><span class="c1">//ранее полученная запись</span><span class="w"></span>
-<span class="w">        </span><span class="n">TestEntity</span><span class="w"> </span><span class="n">testEntity</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//ранее полученная запись</span><span class="w"></span>
-<span class="w">        </span><span class="n">TestEntity</span><span class="w"> </span><span class="n">testEntity2</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//ранее полученная запись</span>
+<span class="w">        </span><span class="n">TestEntity</span><span class="w"> </span><span class="n">testEntity</span><span class="p">;</span>
+<span class="w">        </span><span class="c1">//ранее полученная запись</span>
+<span class="w">        </span><span class="n">TestEntity</span><span class="w"> </span><span class="n">testEntity2</span><span class="p">;</span>
 
-<span class="w">        </span><span class="c1">//прямое удаление записи</span><span class="w"></span>
-<span class="w">        </span><span class="n">springData</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;Test entity&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">testRepository</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">testEntity</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//прямое удаление записи</span>
+<span class="w">        </span><span class="n">springData</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;Test entity&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">testRepository</span><span class="p">,</span>
+<span class="w">            </span><span class="n">testEntity</span><span class="p">);</span>
 
-<span class="w">        </span><span class="c1">//прямое удаление нескольких записей</span><span class="w"></span>
-<span class="w">        </span><span class="n">springData</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">testRepository</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">testEntity</span><span class="p">,</span><span class="w"> </span><span class="n">testEntity2</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//прямое удаление нескольких записей</span>
+<span class="w">        </span><span class="n">springData</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">testRepository</span><span class="p">,</span>
+<span class="w">            </span><span class="n">testEntity</span><span class="p">,</span><span class="w"> </span><span class="n">testEntity2</span><span class="p">);</span>
 
-<span class="w">        </span><span class="c1">//прямое удаление коллекции записей</span><span class="w"></span>
-<span class="w">        </span><span class="n">springData</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">testRepository</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">List</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="n">testEntity</span><span class="p">,</span><span class="w"> </span><span class="n">testEntity2</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//прямое удаление коллекции записей</span>
+<span class="w">        </span><span class="n">springData</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">testRepository</span><span class="p">,</span>
+<span class="w">            </span><span class="n">List</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="n">testEntity</span><span class="p">,</span><span class="w"> </span><span class="n">testEntity2</span><span class="p">));</span>
 
-<span class="w">        </span><span class="c1">//удаление записей по ID</span><span class="w"></span>
-<span class="w">        </span><span class="n">springData</span><span class="p">().</span><span class="na">deleteByIds</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">testRepository</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="mi">1L</span><span class="p">,</span><span class="w"> </span><span class="mi">2L</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//удаление записей по ID</span>
+<span class="w">        </span><span class="n">springData</span><span class="p">().</span><span class="na">deleteByIds</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">testRepository</span><span class="p">,</span>
+<span class="w">            </span><span class="mi">1L</span><span class="p">,</span><span class="w"> </span><span class="mi">2L</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>

@@ -467,17 +467,17 @@
 <p>С помощью данной аннотации можно указать максимальную глубину отображения шага в логе/репорте</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">пример</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter</span><span class="p">;</span>
 
-<span class="nd">@MaxDepthOfReporting</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="c1">//Указанное значение должно быть</span><span class="w"></span>
-<span class="c1">//в диапазоне от 0 до максимального значения Integer</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyStepClass</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*extends a subclass of SequentialGetStepSupplier, or SequentialActionSupplier*/</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
+<span class="nd">@MaxDepthOfReporting</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="c1">//Указанное значение должно быть</span>
+<span class="c1">//в диапазоне от 0 до максимального значения Integer</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyStepClass</span>
+<span class="w">    </span><span class="cm">/*extends a subclass of SequentialGetStepSupplier, or SequentialActionSupplier*/</span>
+<span class="p">{</span>
 
-<span class="p">}</span><span class="w"></span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>

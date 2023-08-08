@@ -473,41 +473,41 @@
 </ul>
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-text">maven/dependencies</span><a class="headerlink" href="#id3" title="Permalink to this code">#</a></div>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span>     <span class="nt">&lt;dependency&gt;</span>
-         <span class="cm">&lt;!--необходимо иметь в classpath--&gt;</span>
-         <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
-         <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
-         <span class="cm">&lt;!--диапазон поддерживаемых версий--&gt;</span>
-         <span class="nt">&lt;version&gt;</span>[2.6.1,)<span class="nt">&lt;/version&gt;</span>
-     <span class="nt">&lt;/dependency&gt;</span>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="w">     </span><span class="nt">&lt;dependency&gt;</span>
+<span class="w">         </span><span class="cm">&lt;!--необходимо иметь в classpath--&gt;</span>
+<span class="w">         </span><span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">         </span><span class="nt">&lt;artifactId&gt;</span>spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">         </span><span class="cm">&lt;!--диапазон поддерживаемых версий--&gt;</span>
+<span class="w">         </span><span class="nt">&lt;version&gt;</span>[2.6.1,)<span class="nt">&lt;/version&gt;</span>
+<span class="w">     </span><span class="nt">&lt;/dependency&gt;</span>
 
-     <span class="nt">&lt;dependency&gt;</span>
-         <span class="cm">&lt;!--необходимо иметь в test classpath--&gt;</span>
-         <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
-         <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-test<span class="nt">&lt;/artifactId&gt;</span>
-         <span class="cm">&lt;!--диапазон поддерживаемых версий--&gt;</span>
-         <span class="nt">&lt;version&gt;</span>[2.6.1,)<span class="nt">&lt;/version&gt;</span>
-         <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
-     <span class="nt">&lt;/dependency&gt;</span>
+<span class="w">     </span><span class="nt">&lt;dependency&gt;</span>
+<span class="w">         </span><span class="cm">&lt;!--необходимо иметь в test classpath--&gt;</span>
+<span class="w">         </span><span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">         </span><span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-test<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">         </span><span class="cm">&lt;!--диапазон поддерживаемых версий--&gt;</span>
+<span class="w">         </span><span class="nt">&lt;version&gt;</span>[2.6.1,)<span class="nt">&lt;/version&gt;</span>
+<span class="w">         </span><span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+<span class="w">     </span><span class="nt">&lt;/dependency&gt;</span>
 
-     <span class="nt">&lt;dependency&gt;</span>
-         <span class="nt">&lt;groupId&gt;</span>ru.tinkoff.qa.neptune<span class="nt">&lt;/groupId&gt;</span>
-         <span class="nt">&lt;artifactId&gt;</span>spring.mock.mvc<span class="nt">&lt;/artifactId&gt;</span>
-         <span class="nt">&lt;version&gt;</span>${LATEST_RELEASE_OR_BETA_VERSION}<span class="nt">&lt;/version&gt;</span>
-         <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
-     <span class="nt">&lt;/dependency&gt;</span>
+<span class="w">     </span><span class="nt">&lt;dependency&gt;</span>
+<span class="w">         </span><span class="nt">&lt;groupId&gt;</span>ru.tinkoff.qa.neptune<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">         </span><span class="nt">&lt;artifactId&gt;</span>spring.mock.mvc<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">         </span><span class="nt">&lt;version&gt;</span>${LATEST_RELEASE_OR_BETA_VERSION}<span class="nt">&lt;/version&gt;</span>
+<span class="w">         </span><span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+<span class="w">     </span><span class="nt">&lt;/dependency&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id4">
 <div class="code-block-caption"><span class="caption-text">Добавить в build.gradle</span><a class="headerlink" href="#id4" title="Permalink to this code">#</a></div>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="n">dependencies</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
-<span class="w">     </span><span class="c1">//необходимо иметь в classpath</span><span class="w"></span>
-<span class="w">     </span><span class="n">implementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;org.springframework.boot&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;spring-boot-starter&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="s1">&#39;[2.6.1,)&#39;</span><span class="w"> </span><span class="c1">//диапазон поддерживаемых версий</span><span class="w"></span>
-<span class="w">     </span><span class="c1">//необходимо иметь в test classpath</span><span class="w"></span>
-<span class="w">     </span><span class="n">testImplementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;org.springframework.boot&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;spring-boot-starter-test&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="s1">&#39;[2.6.1,)&#39;</span><span class="w"> </span><span class="c1">//диапазон поддерживаемых версий</span><span class="w"></span>
-<span class="w">     </span><span class="n">testImplementation</span><span class="w">  </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;ru.tinkoff.qa.neptune&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;spring.mock.mvc&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="n">LATEST_RELEASE_OR_BETA_VERSION</span><span class="w"></span>
-<span class="w"> </span><span class="o">}</span><span class="w"></span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="n">dependencies</span><span class="w"> </span><span class="o">{</span>
+<span class="w">     </span><span class="c1">//необходимо иметь в classpath</span>
+<span class="w">     </span><span class="n">implementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;org.springframework.boot&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;spring-boot-starter&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="s1">&#39;[2.6.1,)&#39;</span><span class="w"> </span><span class="c1">//диапазон поддерживаемых версий</span>
+<span class="w">     </span><span class="c1">//необходимо иметь в test classpath</span>
+<span class="w">     </span><span class="n">testImplementation</span><span class="w"> </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;org.springframework.boot&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;spring-boot-starter-test&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="s1">&#39;[2.6.1,)&#39;</span><span class="w"> </span><span class="c1">//диапазон поддерживаемых версий</span>
+<span class="w">     </span><span class="n">testImplementation</span><span class="w">  </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;ru.tinkoff.qa.neptune&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;spring.mock.mvc&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="n">LATEST_RELEASE_OR_BETA_VERSION</span>
+<span class="w"> </span><span class="o">}</span>
 </pre></div>
 </div>
 </div>
@@ -522,54 +522,54 @@
 </ul>
 <section id="id1">
 <h3>Тест с использованием Mock MVC, без реализации шагов<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="nd">@SpringBootTest</span><span class="w"></span>
-<span class="nd">@AutoConfigureMockMvc</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="nd">@SpringBootTest</span>
+<span class="nd">@AutoConfigureMockMvc</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Autowired</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">ObjectMapper</span><span class="w"> </span><span class="n">objectMapper</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Autowired</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">ObjectMapper</span><span class="w"> </span><span class="n">objectMapper</span><span class="p">;</span>
 
-<span class="w">    </span><span class="nd">@Autowired</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">MockMvc</span><span class="w"> </span><span class="n">mockMvc</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Autowired</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">MockMvc</span><span class="w"> </span><span class="n">mockMvc</span><span class="p">;</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">semeAPITest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">bodyContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mockMvc</span><span class="p">.</span><span class="na">perform</span><span class="p">(</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;/something&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">APPLICATION_JSON</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">content</span><span class="p">(</span><span class="n">objectMapper</span><span class="p">.</span><span class="na">writeValueAsString</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">())))</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Если текущее ожидание не выполнилось, </span><span class="w"></span>
-<span class="w">            </span><span class="c1">//на нем тест остановится и последующие ожидания не будут</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//проверены. Хотелось бы видеть более полную картину несоответствий</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//до того, как начать багофикс</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">andExpect</span><span class="p">(</span><span class="n">status</span><span class="p">().</span><span class="na">isOk</span><span class="p">())</span><span class="w"> </span><span class="c1">//хотелось бы частые ожидания иметь </span><span class="w"></span>
-<span class="w">            </span><span class="c1">//в более доступном и коротком виде</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//По умолчанию не поддерживается десериализация, </span><span class="w"></span>
-<span class="w">            </span><span class="c1">//тело можно провалидировать по xpath/jsonpath/текстовому контенту</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">andExpect</span><span class="p">(</span><span class="n">jsonPath</span><span class="p">(</span><span class="s">&quot;$.successOrder&quot;</span><span class="p">).</span><span class="na">value</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//либо получить тело ответа как сырой текст</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">andReturn</span><span class="p">().</span><span class="na">getResponse</span><span class="p">().</span><span class="na">getContentAsString</span><span class="p">(</span><span class="n">StandardCharsets</span><span class="p">.</span><span class="na">UTF_8</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">semeAPITest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">bodyContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mockMvc</span><span class="p">.</span><span class="na">perform</span><span class="p">(</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;/something&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">APPLICATION_JSON</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="na">content</span><span class="p">(</span><span class="n">objectMapper</span><span class="p">.</span><span class="na">writeValueAsString</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">())))</span>
+<span class="w">            </span><span class="c1">//Если текущее ожидание не выполнилось, </span>
+<span class="w">            </span><span class="c1">//на нем тест остановится и последующие ожидания не будут</span>
+<span class="w">            </span><span class="c1">//проверены. Хотелось бы видеть более полную картину несоответствий</span>
+<span class="w">            </span><span class="c1">//до того, как начать багофикс</span>
+<span class="w">            </span><span class="p">.</span><span class="na">andExpect</span><span class="p">(</span><span class="n">status</span><span class="p">().</span><span class="na">isOk</span><span class="p">())</span><span class="w"> </span><span class="c1">//хотелось бы частые ожидания иметь </span>
+<span class="w">            </span><span class="c1">//в более доступном и коротком виде</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">            </span><span class="c1">//По умолчанию не поддерживается десериализация, </span>
+<span class="w">            </span><span class="c1">//тело можно провалидировать по xpath/jsonpath/текстовому контенту</span>
+<span class="w">            </span><span class="p">.</span><span class="na">andExpect</span><span class="p">(</span><span class="n">jsonPath</span><span class="p">(</span><span class="s">&quot;$.successOrder&quot;</span><span class="p">).</span><span class="na">value</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="w">            </span><span class="c1">//либо получить тело ответа как сырой текст</span>
+<span class="w">            </span><span class="p">.</span><span class="na">andReturn</span><span class="p">().</span><span class="na">getResponse</span><span class="p">().</span><span class="na">getContentAsString</span><span class="p">(</span><span class="n">StandardCharsets</span><span class="p">.</span><span class="na">UTF_8</span><span class="p">);</span>
 
-<span class="w">        </span><span class="c1">//и явно вызвать десериализацию</span><span class="w"></span>
-<span class="w">        </span><span class="n">SomeResponseDto</span><span class="w"> </span><span class="n">responseDto</span><span class="w"></span>
-<span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="n">objectMapper</span><span class="p">.</span><span class="na">readValue</span><span class="p">(</span><span class="n">bodyContent</span><span class="p">,</span><span class="w"> </span><span class="n">SomeResponseDto</span><span class="p">.</span><span class="na">class</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//и явно вызвать десериализацию</span>
+<span class="w">        </span><span class="n">SomeResponseDto</span><span class="w"> </span><span class="n">responseDto</span>
+<span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="n">objectMapper</span><span class="p">.</span><span class="na">readValue</span><span class="p">(</span><span class="n">bodyContent</span><span class="p">,</span><span class="w"> </span><span class="n">SomeResponseDto</span><span class="p">.</span><span class="na">class</span><span class="p">);</span>
 
-<span class="w">        </span><span class="c1">//дельнейшие вычисления</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//проверка поля ответа</span><span class="w"></span>
-<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="s">&quot;Some field value&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">responseDto</span><span class="p">.</span><span class="na">getSomething</span><span class="p">(),</span><span class="w"></span>
-<span class="w">            </span><span class="n">is</span><span class="p">(</span><span class="n">someExpectedValue</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//дельнейшие вычисления</span>
+<span class="w">        </span><span class="c1">//проверка поля ответа</span>
+<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="s">&quot;Some field value&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">responseDto</span><span class="p">.</span><span class="na">getSomething</span><span class="p">(),</span>
+<span class="w">            </span><span class="n">is</span><span class="p">(</span><span class="n">someExpectedValue</span><span class="p">));</span>
 
-<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">someCalculatedValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="c1">//вычисление чего-то с использованием </span><span class="w"></span>
-<span class="w">            </span><span class="c1">//responseDto</span><span class="w"></span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">someCalculatedValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="c1">//вычисление чего-то с использованием </span>
+<span class="w">            </span><span class="c1">//responseDto</span>
 
-<span class="w">            </span><span class="n">assertThat</span><span class="p">(</span><span class="s">&quot;Some calculated value&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="n">someCalculatedValue</span><span class="p">.</span><span class="na">getSomethingElse</span><span class="p">(),</span><span class="w"></span>
-<span class="w">                </span><span class="n">is</span><span class="p">(</span><span class="n">someExpeсtedValue2</span><span class="p">));</span><span class="w"></span>
+<span class="w">            </span><span class="n">assertThat</span><span class="p">(</span><span class="s">&quot;Some calculated value&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="n">someCalculatedValue</span><span class="p">.</span><span class="na">getSomethingElse</span><span class="p">(),</span>
+<span class="w">                </span><span class="n">is</span><span class="p">(</span><span class="n">someExpeсtedValue2</span><span class="p">));</span>
 
-<span class="w">        </span><span class="c1">//и т.д.</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//и т.д.</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
@@ -577,122 +577,122 @@
 <h3>Тест с использованием Mock MVC и с реализацией шагов<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
 <p>Предположим, что результат интеграционного теста должен быть оформлен в отчет, описывающий по шагам,
 какие действия выполняются и каков их результат. Тогда</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="nd">@SpringBootTest</span><span class="w"></span>
-<span class="nd">@AutoConfigureMockMvc</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="nd">@SpringBootTest</span>
+<span class="nd">@AutoConfigureMockMvc</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Autowired</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">ObjectMapper</span><span class="w"> </span><span class="n">objectMapper</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Autowired</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">ObjectMapper</span><span class="w"> </span><span class="n">objectMapper</span><span class="p">;</span>
 
-<span class="w">    </span><span class="nd">@Autowired</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">MockMvc</span><span class="w"> </span><span class="n">mockMvc</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Autowired</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">MockMvc</span><span class="w"> </span><span class="n">mockMvc</span><span class="p">;</span>
 
-<span class="w">    </span><span class="nd">@Step</span><span class="p">(</span><span class="s">&quot;Подготовить тело запроса&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">prepareRequestBody</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">objectMapper</span><span class="p">.</span><span class="na">writeValueAsString</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">());</span><span class="w"></span>
-<span class="w">        </span><span class="n">addAttachment</span><span class="p">(</span><span class="s">&quot;Request body&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;application/json&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">body</span><span class="p">);</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">body</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Step</span><span class="p">(</span><span class="s">&quot;Подготовить тело запроса&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">prepareRequestBody</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">objectMapper</span><span class="p">.</span><span class="na">writeValueAsString</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">());</span>
+<span class="w">        </span><span class="n">addAttachment</span><span class="p">(</span><span class="s">&quot;Request body&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;application/json&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">body</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">body</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Step</span><span class="p">(</span><span class="s">&quot;Подготавливаем запрос GET /something&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">MockHttpServletRequestBuilder</span><span class="w"> </span><span class="nf">prepareRequest</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">body</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">getRequest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get</span><span class="p">(</span><span class="s">&quot;/something&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">APPLICATION_JSON</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">content</span><span class="p">(</span><span class="n">body</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Step</span><span class="p">(</span><span class="s">&quot;Подготавливаем запрос GET /something&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">MockHttpServletRequestBuilder</span><span class="w"> </span><span class="nf">prepareRequest</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">body</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">getRequest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get</span><span class="p">(</span><span class="s">&quot;/something&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">APPLICATION_JSON</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="na">content</span><span class="p">(</span><span class="n">body</span><span class="p">);</span>
 
-<span class="w">        </span><span class="c1">//делаем аттачи, фиксируем параметры и т.д.</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">getRequest</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//делаем аттачи, фиксируем параметры и т.д.</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">getRequest</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Step</span><span class="p">(</span><span class="s">&quot;Выполняем запрос и возвращаем прочитанное тело&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">SomeResponseDto</span><span class="w"> </span><span class="nf">getSomeResponseDto</span><span class="p">(</span><span class="w"></span>
-<span class="w">        </span><span class="n">MockHttpServletRequestBuilder</span><span class="w"> </span><span class="n">requestBuilder</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Step</span><span class="p">(</span><span class="s">&quot;Выполняем запрос и возвращаем прочитанное тело&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">SomeResponseDto</span><span class="w"> </span><span class="nf">getSomeResponseDto</span><span class="p">(</span>
+<span class="w">        </span><span class="n">MockHttpServletRequestBuilder</span><span class="w"> </span><span class="n">requestBuilder</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">bodyContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mockMvc</span><span class="p">.</span><span class="na">perform</span><span class="p">(</span><span class="n">requestBuilder</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">andExpect</span><span class="p">(</span><span class="n">status</span><span class="p">().</span><span class="na">isOk</span><span class="p">())</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">andExpect</span><span class="p">(</span><span class="n">jsonPath</span><span class="p">(</span><span class="s">&quot;$.successOrder&quot;</span><span class="p">).</span><span class="na">value</span><span class="p">(</span><span class="n">count</span><span class="p">))</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">andReturn</span><span class="p">().</span><span class="na">getResponse</span><span class="p">().</span><span class="na">getContentAsString</span><span class="p">(</span><span class="n">StandardCharsets</span><span class="p">.</span><span class="na">UTF_8</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">bodyContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mockMvc</span><span class="p">.</span><span class="na">perform</span><span class="p">(</span><span class="n">requestBuilder</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="na">andExpect</span><span class="p">(</span><span class="n">status</span><span class="p">().</span><span class="na">isOk</span><span class="p">())</span>
+<span class="w">            </span><span class="p">.</span><span class="na">andExpect</span><span class="p">(</span><span class="n">jsonPath</span><span class="p">(</span><span class="s">&quot;$.successOrder&quot;</span><span class="p">).</span><span class="na">value</span><span class="p">(</span><span class="n">count</span><span class="p">))</span>
+<span class="w">            </span><span class="p">.</span><span class="na">andReturn</span><span class="p">().</span><span class="na">getResponse</span><span class="p">().</span><span class="na">getContentAsString</span><span class="p">(</span><span class="n">StandardCharsets</span><span class="p">.</span><span class="na">UTF_8</span><span class="p">);</span>
 
-<span class="w">        </span><span class="n">addAttachment</span><span class="p">(</span><span class="s">&quot;Response body&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;application/json&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">bodyContent</span><span class="p">);</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">objectMapper</span><span class="p">.</span><span class="na">readValue</span><span class="p">(</span><span class="n">bodyContent</span><span class="p">,</span><span class="w"> </span><span class="n">SomeResponseDto</span><span class="p">.</span><span class="na">class</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">addAttachment</span><span class="p">(</span><span class="s">&quot;Response body&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;application/json&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">bodyContent</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">objectMapper</span><span class="p">.</span><span class="na">readValue</span><span class="p">(</span><span class="n">bodyContent</span><span class="p">,</span><span class="w"> </span><span class="n">SomeResponseDto</span><span class="p">.</span><span class="na">class</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Step</span><span class="p">(</span><span class="s">&quot;Проверить тело ответа&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">assertSomeDTO</span><span class="p">(</span><span class="n">SomeResponseDto</span><span class="w"> </span><span class="n">toCheck</span><span class="p">,</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">expected</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="s">&quot;Some field value&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">responseDto</span><span class="p">.</span><span class="na">getSomething</span><span class="p">(),</span><span class="w"></span>
-<span class="w">            </span><span class="n">is</span><span class="p">(</span><span class="n">expected</span><span class="p">));</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Step</span><span class="p">(</span><span class="s">&quot;Проверить тело ответа&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">assertSomeDTO</span><span class="p">(</span><span class="n">SomeResponseDto</span><span class="w"> </span><span class="n">toCheck</span><span class="p">,</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">expected</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="s">&quot;Some field value&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">responseDto</span><span class="p">.</span><span class="na">getSomething</span><span class="p">(),</span>
+<span class="w">            </span><span class="n">is</span><span class="p">(</span><span class="n">expected</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Step</span><span class="p">(</span><span class="s">&quot;Проверить полученное у тела значение&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">assertSomeCalculatedValue</span><span class="p">(</span><span class="n">SomeCalculatedValue</span><span class="w"> </span><span class="n">toCheck</span><span class="p">,</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">expected</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="s">&quot;Some calculated value&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">someCalculatedValue</span><span class="p">.</span><span class="na">getSomethingElse</span><span class="p">(),</span><span class="w"></span>
-<span class="w">            </span><span class="n">is</span><span class="p">(</span><span class="n">expected</span><span class="p">));</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Step</span><span class="p">(</span><span class="s">&quot;Проверить полученное у тела значение&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">assertSomeCalculatedValue</span><span class="p">(</span><span class="n">SomeCalculatedValue</span><span class="w"> </span><span class="n">toCheck</span><span class="p">,</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">expected</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="s">&quot;Some calculated value&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">someCalculatedValue</span><span class="p">.</span><span class="na">getSomethingElse</span><span class="p">(),</span>
+<span class="w">            </span><span class="n">is</span><span class="p">(</span><span class="n">expected</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
 
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">semeAPITest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//Тест стал короче, НО!!!!</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//У нас появился толстый слой шагов, который надо организовывать </span><span class="w"></span>
-<span class="w">        </span><span class="c1">//и поддерживать.</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//Может начаться дублирование кода, если аналогичные действия</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//встречаются в других тестах.</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//Организация библиотеки шагов сделает тест непрозрачным, </span><span class="w"></span>
-<span class="w">        </span><span class="c1">//в перспективе затруднит модификацию/рефактринг тестов</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">semeAPITest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//Тест стал короче, НО!!!!</span>
+<span class="w">        </span><span class="c1">//У нас появился толстый слой шагов, который надо организовывать </span>
+<span class="w">        </span><span class="c1">//и поддерживать.</span>
+<span class="w">        </span><span class="c1">//Может начаться дублирование кода, если аналогичные действия</span>
+<span class="w">        </span><span class="c1">//встречаются в других тестах.</span>
+<span class="w">        </span><span class="c1">//Организация библиотеки шагов сделает тест непрозрачным, </span>
+<span class="w">        </span><span class="c1">//в перспективе затруднит модификацию/рефактринг тестов</span>
 
-<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prepareRequestBody</span><span class="p">();</span><span class="w"></span>
-<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prepareRequest</span><span class="p">(</span><span class="n">body</span><span class="p">);</span><span class="w"></span>
-<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">dto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getSomeResponseDto</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">);</span><span class="w"></span>
-<span class="w">        </span><span class="n">assertSomeDTO</span><span class="p">(</span><span class="n">dto</span><span class="p">,</span><span class="w"> </span><span class="n">someExpectedValue</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prepareRequestBody</span><span class="p">();</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prepareRequest</span><span class="p">(</span><span class="n">body</span><span class="p">);</span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">dto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getSomeResponseDto</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">);</span>
+<span class="w">        </span><span class="n">assertSomeDTO</span><span class="p">(</span><span class="n">dto</span><span class="p">,</span><span class="w"> </span><span class="n">someExpectedValue</span><span class="p">);</span>
 
-<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">someCalculatedValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="c1">//вычисление чего-то с использованием </span><span class="w"></span>
-<span class="w">            </span><span class="c1">//responseDto</span><span class="w"></span>
-<span class="w">            </span><span class="n">assertSomeCalculatedValue</span><span class="p">(</span><span class="n">someCalculatedValue</span><span class="p">,</span><span class="w"> </span><span class="n">someExpectedValue2</span><span class="p">);</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//и т.д.</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">someCalculatedValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="c1">//вычисление чего-то с использованием </span>
+<span class="w">            </span><span class="c1">//responseDto</span>
+<span class="w">            </span><span class="n">assertSomeCalculatedValue</span><span class="p">(</span><span class="n">someCalculatedValue</span><span class="p">,</span><span class="w"> </span><span class="n">someExpectedValue2</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">//и т.д.</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
 <section id="mock-mvc-neptune">
 <h3>Тест с использованием Mock MVC и Neptune<a class="headerlink" href="#mock-mvc-neptune" title="Permalink to this heading">#</a></h3>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="nd">@SpringBootTest</span><span class="w"></span>
-<span class="nd">@AutoConfigureMockMvc</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="nd">@SpringBootTest</span>
+<span class="nd">@AutoConfigureMockMvc</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Autowired</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">ObjectMapper</span><span class="w"> </span><span class="n">objectMapper</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Autowired</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">ObjectMapper</span><span class="w"> </span><span class="n">objectMapper</span><span class="p">;</span>
 
-<span class="w">    </span><span class="c1">//Поле ниже можно не объявлять</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//@Autowired</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//private MockMvc mockMvc;</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//Поле ниже можно не объявлять</span>
+<span class="w">    </span><span class="c1">//@Autowired</span>
+<span class="w">    </span><span class="c1">//private MockMvc mockMvc;</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"> </span><span class="c1">//все описанное в тесте сформирует шаги разной вложенности</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//и автоматически сформирует аттачи</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">semeAPITest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">SomeResponseDto</span><span class="w"> </span><span class="n">responseDto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mockMvcGet</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="n">response</span><span class="p">(</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;/something&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">APPLICATION_JSON</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">content</span><span class="p">(</span><span class="n">objectMapper</span><span class="p">.</span><span class="na">writeValueAsString</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">())))</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// будут проверены все ожидания    </span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">expectStatus</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span><span class="w"> </span><span class="c1">//проваленные будут выделены в отчете</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">expectJsonPathValue</span><span class="p">(</span><span class="s">&quot;$.successOrder&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//предусмотрен механизм десериализации   </span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">thenGetBody</span><span class="p">(</span><span class="n">SomeResponseDto</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="w"> </span><span class="c1">//все описанное в тесте сформирует шаги разной вложенности</span>
+<span class="w">    </span><span class="c1">//и автоматически сформирует аттачи</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">semeAPITest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">SomeResponseDto</span><span class="w"> </span><span class="n">responseDto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mockMvcGet</span><span class="p">(</span>
+<span class="w">            </span><span class="n">response</span><span class="p">(</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;/something&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="n">APPLICATION_JSON</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="na">content</span><span class="p">(</span><span class="n">objectMapper</span><span class="p">.</span><span class="na">writeValueAsString</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">SomeDTO</span><span class="p">())))</span>
+<span class="w">                </span><span class="c1">// будут проверены все ожидания    </span>
+<span class="w">                </span><span class="p">.</span><span class="na">expectStatus</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span><span class="w"> </span><span class="c1">//проваленные будут выделены в отчете</span>
+<span class="w">                </span><span class="p">.</span><span class="na">expectJsonPathValue</span><span class="p">(</span><span class="s">&quot;$.successOrder&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//предусмотрен механизм десериализации   </span>
+<span class="w">                </span><span class="p">.</span><span class="na">thenGetBody</span><span class="p">(</span><span class="n">SomeResponseDto</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">        </span><span class="p">);</span>
 
-<span class="w">        </span><span class="n">check</span><span class="p">(</span><span class="s">&quot;Response body&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">responseDto</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">match</span><span class="p">(</span><span class="s">&quot;Some field value&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="n">SomeResponseDto</span><span class="p">::</span><span class="n">getSomething</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="n">is</span><span class="p">(</span><span class="n">someExpectedValue</span><span class="p">)),</span><span class="w"></span>
-<span class="w">            </span><span class="n">match</span><span class="p">(</span><span class="s">&quot;Some calculated value&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="n">dto</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="cm">/*вычисление чего-то с использованием*/</span><span class="p">},</span><span class="w"></span>
-<span class="w">                </span><span class="n">is</span><span class="p">(</span><span class="n">someExpeсtedValue2</span><span class="p">)));</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">check</span><span class="p">(</span><span class="s">&quot;Response body&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">responseDto</span><span class="p">,</span>
+<span class="w">            </span><span class="n">match</span><span class="p">(</span><span class="s">&quot;Some field value&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="n">SomeResponseDto</span><span class="p">::</span><span class="n">getSomething</span><span class="p">,</span>
+<span class="w">                </span><span class="n">is</span><span class="p">(</span><span class="n">someExpectedValue</span><span class="p">)),</span>
+<span class="w">            </span><span class="n">match</span><span class="p">(</span><span class="s">&quot;Some calculated value&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="n">dto</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="cm">/*вычисление чего-то с использованием*/</span><span class="p">},</span>
+<span class="w">                </span><span class="n">is</span><span class="p">(</span><span class="n">someExpeсtedValue2</span><span class="p">)));</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <div class="toctree-wrapper compound">

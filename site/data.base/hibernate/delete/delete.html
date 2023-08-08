@@ -464,48 +464,48 @@
         <article role="main">
           <section class="tex2jax_ignore mathjax_ignore" id="hibernate-delete">
 <h1>Hibernate. Delete-операции<a class="headerlink" href="#hibernate-delete" title="Permalink to this heading">#</a></h1>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.testng.annotations.Test</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.model.TestEntity</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.testng.annotations.Test</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.model.TestEntity</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byId</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byIds</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.HibernateContext.hibernate</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byId</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.select.common.CommonSelectStepFactory.byIds</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// удаление записи, выбранной с помощью запроса</span><span class="w"></span>
-<span class="w">        </span><span class="n">hibernate</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="s">&quot;Test entity&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">byId</span><span class="p">(</span><span class="n">TestEntity</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="mi">1L</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//опциональные параметры выбираемой для последующего удаления записи</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// удаление записи, выбранной с помощью запроса</span>
+<span class="w">        </span><span class="n">hibernate</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="s">&quot;Test entity&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">byId</span><span class="p">(</span><span class="n">TestEntity</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="mi">1L</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//опциональные параметры выбираемой для последующего удаления записи</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">        </span><span class="p">);</span>
 
-<span class="w">        </span><span class="c1">// удаление записей, выбранных с помощью запроса</span><span class="w"></span>
-<span class="w">        </span><span class="n">hibernate</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">byIds</span><span class="p">(</span><span class="n">TestEntity</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="mi">1L</span><span class="p">,</span><span class="w"> </span><span class="mi">2L</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//опциональные параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// удаление записей, выбранных с помощью запроса</span>
+<span class="w">        </span><span class="n">hibernate</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">byIds</span><span class="p">(</span><span class="n">TestEntity</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="mi">1L</span><span class="p">,</span><span class="w"> </span><span class="mi">2L</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//опциональные параметры</span>
+<span class="w">        </span><span class="p">);</span>
 
-<span class="w">        </span><span class="n">TestEntity</span><span class="w"> </span><span class="n">testEntity</span><span class="p">;</span><span class="w"> </span><span class="c1">//ранее полученная запись</span><span class="w"></span>
-<span class="w">        </span><span class="n">TestEntity</span><span class="w"> </span><span class="n">testEntity2</span><span class="p">;</span><span class="w"> </span><span class="c1">//ранее полученная запись</span><span class="w"></span>
+<span class="w">        </span><span class="n">TestEntity</span><span class="w"> </span><span class="n">testEntity</span><span class="p">;</span><span class="w"> </span><span class="c1">//ранее полученная запись</span>
+<span class="w">        </span><span class="n">TestEntity</span><span class="w"> </span><span class="n">testEntity2</span><span class="p">;</span><span class="w"> </span><span class="c1">//ранее полученная запись</span>
 
-<span class="w">        </span><span class="c1">// прямое удаление записи</span><span class="w"></span>
-<span class="w">        </span><span class="n">hibernate</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="s">&quot;Test entity&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">testEntity</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// прямое удаление записи</span>
+<span class="w">        </span><span class="n">hibernate</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="s">&quot;Test entity&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">testEntity</span><span class="p">);</span>
 
-<span class="w">        </span><span class="c1">// прямое удаление нескольких записей</span><span class="w"></span>
-<span class="w">        </span><span class="n">hibernate</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">testEntity</span><span class="p">,</span><span class="w"> </span><span class="n">testEntity2</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// прямое удаление нескольких записей</span>
+<span class="w">        </span><span class="n">hibernate</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">testEntity</span><span class="p">,</span><span class="w"> </span><span class="n">testEntity2</span><span class="p">);</span>
 
-<span class="w">        </span><span class="c1">// прямое удаление коллекции записей</span><span class="w"></span>
-<span class="w">        </span><span class="n">hibernate</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">List</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="n">testEntity</span><span class="p">,</span><span class="w"> </span><span class="n">testEntity2</span><span class="p">));</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// прямое удаление коллекции записей</span>
+<span class="w">        </span><span class="n">hibernate</span><span class="p">().</span><span class="na">delete</span><span class="p">(</span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">List</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="n">testEntity</span><span class="p">,</span><span class="w"> </span><span class="n">testEntity2</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>

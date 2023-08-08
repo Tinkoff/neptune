@@ -469,40 +469,40 @@
 <a class="reference internal" href="USE_JPA_CONFIG.html"><span class="doc std std-doc">USE_JPA_CONFIG</span></a><code class="docutils literal notranslate"><span class="pre">=true</span></code></p>
 <p>Пример persistence.xml:</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
-<span class="nt">&lt;persistence</span> <span class="na">version=</span><span class="s">&quot;2.1&quot;</span>
-    <span class="na">xmlns=</span><span class="s">&quot;http://xmlns.jcp.org/xml/ns/persistence&quot;</span> <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
-    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd&quot;</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;persistence-unit</span> <span class="na">name=</span><span class="s">&quot;MySql&quot;</span> <span class="na">transaction-type=</span><span class="s">&quot;JTA&quot;</span><span class="nt">&gt;</span>
-        <span class="cm">&lt;!-- Перечисление классов-маппингов таблиц/коллекций из БД --&gt;</span>
-        <span class="nt">&lt;class&gt;</span>org.example.entities.TestEntity<span class="nt">&lt;/class&gt;</span>      
-        <span class="nt">&lt;properties&gt;</span>
-            <span class="cm">&lt;!-- Настройки соединения с БД --&gt;</span>
-            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;javax.persistence.jdbc.driver&quot;</span> <span class="na">value=</span><span class="s">&quot;com.mysql.jdbc.Driver&quot;</span> <span class="nt">/&gt;</span>
-            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;javax.persistence.jdbc.url&quot;</span> <span class="na">value=</span><span class="s">&quot;jdbc:mysql://localhost:3306/test&quot;</span> <span class="nt">/&gt;</span>
-            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;javax.persistence.jdbc.user&quot;</span> <span class="na">value=</span><span class="s">&quot;root&quot;</span> <span class="nt">/&gt;</span>
-            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;javax.persistence.jdbc.password&quot;</span> <span class="na">value=</span><span class="s">&quot;password&quot;</span> <span class="nt">/&gt;</span>          
-        <span class="nt">&lt;/properties&gt;</span>
-    <span class="nt">&lt;/persistence-unit&gt;</span>
+<span class="nt">&lt;persistence</span><span class="w"> </span><span class="na">version=</span><span class="s">&quot;2.1&quot;</span>
+<span class="w">    </span><span class="na">xmlns=</span><span class="s">&quot;http://xmlns.jcp.org/xml/ns/persistence&quot;</span><span class="w"> </span><span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+<span class="w">    </span><span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;persistence-unit</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;MySql&quot;</span><span class="w"> </span><span class="na">transaction-type=</span><span class="s">&quot;JTA&quot;</span><span class="nt">&gt;</span>
+<span class="w">        </span><span class="cm">&lt;!-- Перечисление классов-маппингов таблиц/коллекций из БД --&gt;</span>
+<span class="w">        </span><span class="nt">&lt;class&gt;</span>org.example.entities.TestEntity<span class="nt">&lt;/class&gt;</span><span class="w">      </span>
+<span class="w">        </span><span class="nt">&lt;properties&gt;</span>
+<span class="w">            </span><span class="cm">&lt;!-- Настройки соединения с БД --&gt;</span>
+<span class="w">            </span><span class="nt">&lt;property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;javax.persistence.jdbc.driver&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;com.mysql.jdbc.Driver&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">            </span><span class="nt">&lt;property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;javax.persistence.jdbc.url&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;jdbc:mysql://localhost:3306/test&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">            </span><span class="nt">&lt;property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;javax.persistence.jdbc.user&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;root&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">            </span><span class="nt">&lt;property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;javax.persistence.jdbc.password&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;password&quot;</span><span class="w"> </span><span class="nt">/&gt;</span><span class="w">          </span>
+<span class="w">        </span><span class="nt">&lt;/properties&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/persistence-unit&gt;</span>
 <span class="nt">&lt;/persistence&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c">#Значение свойства указывается так</span><span class="w"></span>
-<span class="na">PERSISTENCE_UNITS</span><span class="o">=</span><span class="s">MySql,OracleTest</span><span class="w"></span>
+<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c1">#Значение свойства указывается так</span>
+<span class="na">PERSISTENCE_UNITS</span><span class="o">=</span><span class="s">MySql,OracleTest</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.properties.ConnectionConfig.PERSISTENCE_UNITS</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.properties.ConnectionConfig.PERSISTENCE_UNITS</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeClass</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeClass</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someVoid</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//пример доступа до значения свойства</span><span class="w"></span>
-<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PERSISTENCE_UNITS</span><span class="p">.</span><span class="na">get</span><span class="p">();</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someVoid</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//пример доступа до значения свойства</span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PERSISTENCE_UNITS</span><span class="p">.</span><span class="na">get</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>

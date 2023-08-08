@@ -466,38 +466,38 @@
 <h1>Объединения матчеров AND, OR, XOR, NOT<a class="headerlink" href="#and-or-xor-not" title="Permalink to this heading">#</a></h1>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Примеры объединений матчеров</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nn">org.mypack</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.MatcherAssert.assertThat</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.common</span><span class="w"></span>
-<span class="w">             </span><span class="p">.</span><span class="na">all</span><span class="p">.</span><span class="na">AllCriteriaMatcher</span><span class="p">.</span><span class="na">all</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.common</span><span class="w"></span>
-<span class="w">             </span><span class="p">.</span><span class="na">any</span><span class="p">.</span><span class="na">AnyMatcher</span><span class="p">.</span><span class="na">anyOne</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.common</span><span class="w"></span>
-<span class="w">             </span><span class="p">.</span><span class="na">not</span><span class="p">.</span><span class="na">NotMatcher</span><span class="p">.</span><span class="na">notOf</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.common</span><span class="w"></span>
-<span class="w">             </span><span class="p">.</span><span class="na">only</span><span class="p">.</span><span class="na">one</span><span class="p">.</span><span class="na">OnlyOneMatcher</span><span class="p">.</span><span class="na">onlyOne</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.MatcherAssert.assertThat</span><span class="p">;</span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.common</span>
+<span class="w">             </span><span class="p">.</span><span class="na">all</span><span class="p">.</span><span class="na">AllCriteriaMatcher</span><span class="p">.</span><span class="na">all</span><span class="p">;</span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.common</span>
+<span class="w">             </span><span class="p">.</span><span class="na">any</span><span class="p">.</span><span class="na">AnyMatcher</span><span class="p">.</span><span class="na">anyOne</span><span class="p">;</span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.common</span>
+<span class="w">             </span><span class="p">.</span><span class="na">not</span><span class="p">.</span><span class="na">NotMatcher</span><span class="p">.</span><span class="na">notOf</span><span class="p">;</span>
+<span class="w"> </span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.hamcrest.common</span>
+<span class="w">             </span><span class="p">.</span><span class="na">only</span><span class="p">.</span><span class="na">one</span><span class="p">.</span><span class="na">OnlyOneMatcher</span><span class="p">.</span><span class="na">onlyOne</span><span class="p">;</span>
 
-<span class="w"> </span><span class="c1">//пример использования</span><span class="w"></span>
-<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w"> </span><span class="c1">//пример использования</span>
+<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">     </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="n">T</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="c1">//инициализация;</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@Test</span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">T</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="c1">//инициализация;</span>
 
-<span class="w">         </span><span class="c1">//значение должно соответствовать всем перечисленным критериям</span><span class="w"></span>
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">all</span><span class="p">(</span><span class="n">matcher1</span><span class="p">,</span><span class="w"> </span><span class="n">matcher3</span><span class="p">,</span><span class="w"> </span><span class="n">matcher2</span><span class="p">,</span><span class="w"> </span><span class="n">matcher4</span><span class="p">));</span><span class="w"></span>
+<span class="w">         </span><span class="c1">//значение должно соответствовать всем перечисленным критериям</span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">all</span><span class="p">(</span><span class="n">matcher1</span><span class="p">,</span><span class="w"> </span><span class="n">matcher3</span><span class="p">,</span><span class="w"> </span><span class="n">matcher2</span><span class="p">,</span><span class="w"> </span><span class="n">matcher4</span><span class="p">));</span>
 
-<span class="w">         </span><span class="c1">//значение не должно соответствовать ни одному из перечисленных критериев</span><span class="w"></span>
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">notOf</span><span class="p">(</span><span class="n">matcher1</span><span class="p">,</span><span class="w"> </span><span class="n">matcher3</span><span class="p">,</span><span class="w"> </span><span class="n">matcher2</span><span class="p">,</span><span class="w"> </span><span class="n">matcher4</span><span class="p">));</span><span class="w"></span>
+<span class="w">         </span><span class="c1">//значение не должно соответствовать ни одному из перечисленных критериев</span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">notOf</span><span class="p">(</span><span class="n">matcher1</span><span class="p">,</span><span class="w"> </span><span class="n">matcher3</span><span class="p">,</span><span class="w"> </span><span class="n">matcher2</span><span class="p">,</span><span class="w"> </span><span class="n">matcher4</span><span class="p">));</span>
 
-<span class="w">         </span><span class="c1">//значение должно соответствовать любому (любым) из перечисленных критериев</span><span class="w"></span>
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">anyOne</span><span class="p">(</span><span class="n">matcher1</span><span class="p">,</span><span class="w"> </span><span class="n">matcher3</span><span class="p">,</span><span class="w"> </span><span class="n">matcher2</span><span class="p">,</span><span class="w"> </span><span class="n">matcher4</span><span class="p">));</span><span class="w"></span>
+<span class="w">         </span><span class="c1">//значение должно соответствовать любому (любым) из перечисленных критериев</span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">anyOne</span><span class="p">(</span><span class="n">matcher1</span><span class="p">,</span><span class="w"> </span><span class="n">matcher3</span><span class="p">,</span><span class="w"> </span><span class="n">matcher2</span><span class="p">,</span><span class="w"> </span><span class="n">matcher4</span><span class="p">));</span>
 
-<span class="w">         </span><span class="c1">//значение должно соответствовать только одному из перечисленных критериев</span><span class="w"></span>
-<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">onlyOne</span><span class="p">(</span><span class="n">matcher1</span><span class="p">,</span><span class="w"> </span><span class="n">matcher3</span><span class="p">,</span><span class="w"> </span><span class="n">matcher2</span><span class="p">,</span><span class="w"> </span><span class="n">matcher4</span><span class="p">));</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
-<span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">         </span><span class="c1">//значение должно соответствовать только одному из перечисленных критериев</span>
+<span class="w">         </span><span class="n">assertThat</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">onlyOne</span><span class="p">(</span><span class="n">matcher1</span><span class="p">,</span><span class="w"> </span><span class="n">matcher3</span><span class="p">,</span><span class="w"> </span><span class="n">matcher2</span><span class="p">,</span><span class="w"> </span><span class="n">matcher4</span><span class="p">));</span>
+<span class="w">     </span><span class="p">}</span>
+<span class="w"> </span><span class="p">}</span>
 </pre></div>
 </div>
 </div>

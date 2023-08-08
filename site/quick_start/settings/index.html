@@ -507,89 +507,89 @@
 <section id="maven">
 <h4>Генерация для Maven<a class="headerlink" href="#maven" title="Permalink to this heading">#</a></h4>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;build&gt;</span>
-  <span class="nt">&lt;plugins&gt;</span>
-    <span class="nt">&lt;plugin&gt;</span>
-      <span class="nt">&lt;groupId&gt;</span>org.codehaus.mojo<span class="nt">&lt;/groupId&gt;</span>
-      <span class="nt">&lt;artifactId&gt;</span>exec-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
-      <span class="nt">&lt;version&gt;</span>3.0.0<span class="nt">&lt;/version&gt;</span>
-      <span class="nt">&lt;executions&gt;</span>
-        <span class="nt">&lt;execution&gt;</span>
-          <span class="nt">&lt;id&gt;</span>generate properties<span class="nt">&lt;/id&gt;</span>
-          <span class="nt">&lt;phase&gt;</span>test-compile<span class="nt">&lt;/phase&gt;</span>
-          <span class="cm">&lt;!--&lt;phase&gt;compile&lt;/phase&gt; тоже можно--&gt;</span>
-          <span class="nt">&lt;goals&gt;</span>
-            <span class="nt">&lt;goal&gt;</span>java<span class="nt">&lt;/goal&gt;</span>
-          <span class="nt">&lt;/goals&gt;</span>
-          <span class="nt">&lt;configuration&gt;</span>
-            <span class="nt">&lt;mainClass&gt;</span>ru.tinkoff.qa.neptune.core.api.properties.NeptunePropertyGenerator<span class="nt">&lt;/mainClass&gt;</span>
-             <span class="cm">&lt;!--необходимо, если настройки генерируются для тестовых классов--&gt;</span> 
-            <span class="nt">&lt;classpathScope&gt;</span>test<span class="nt">&lt;/classpathScope&gt;</span> 
-            <span class="nt">&lt;arguments&gt;</span>
-              <span class="cm">&lt;!--генерировать neptune.properties (false), </span>
+<span class="w">  </span><span class="nt">&lt;plugins&gt;</span>
+<span class="w">    </span><span class="nt">&lt;plugin&gt;</span>
+<span class="w">      </span><span class="nt">&lt;groupId&gt;</span>org.codehaus.mojo<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">      </span><span class="nt">&lt;artifactId&gt;</span>exec-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">      </span><span class="nt">&lt;version&gt;</span>3.0.0<span class="nt">&lt;/version&gt;</span>
+<span class="w">      </span><span class="nt">&lt;executions&gt;</span>
+<span class="w">        </span><span class="nt">&lt;execution&gt;</span>
+<span class="w">          </span><span class="nt">&lt;id&gt;</span>generate<span class="w"> </span>properties<span class="nt">&lt;/id&gt;</span>
+<span class="w">          </span><span class="nt">&lt;phase&gt;</span>test-compile<span class="nt">&lt;/phase&gt;</span>
+<span class="w">          </span><span class="cm">&lt;!--&lt;phase&gt;compile&lt;/phase&gt; тоже можно--&gt;</span>
+<span class="w">          </span><span class="nt">&lt;goals&gt;</span>
+<span class="w">            </span><span class="nt">&lt;goal&gt;</span>java<span class="nt">&lt;/goal&gt;</span>
+<span class="w">          </span><span class="nt">&lt;/goals&gt;</span>
+<span class="w">          </span><span class="nt">&lt;configuration&gt;</span>
+<span class="w">            </span><span class="nt">&lt;mainClass&gt;</span>ru.tinkoff.qa.neptune.core.api.properties.NeptunePropertyGenerator<span class="nt">&lt;/mainClass&gt;</span>
+<span class="w">             </span><span class="cm">&lt;!--необходимо, если настройки генерируются для тестовых классов--&gt;</span><span class="w"> </span>
+<span class="w">            </span><span class="nt">&lt;classpathScope&gt;</span>test<span class="nt">&lt;/classpathScope&gt;</span><span class="w"> </span>
+<span class="w">            </span><span class="nt">&lt;arguments&gt;</span>
+<span class="w">              </span><span class="cm">&lt;!--генерировать neptune.properties (false), </span>
 <span class="cm">              или neptune.global.properties (true)--&gt;</span>
-              <span class="nt">&lt;argument&gt;</span>false<span class="nt">&lt;/argument&gt;</span>
-              <span class="cm">&lt;!--наследовать свойства из neptune.global.properties (true)</span>
+<span class="w">              </span><span class="nt">&lt;argument&gt;</span>false<span class="nt">&lt;/argument&gt;</span>
+<span class="w">              </span><span class="cm">&lt;!--наследовать свойства из neptune.global.properties (true)</span>
 <span class="cm">               или нет (false)--&gt;</span>
-              <span class="nt">&lt;argument&gt;</span>false<span class="nt">&lt;/argument&gt;</span>
-              <span class="cm">&lt;!--Где расположить сгенерированный файл--&gt;</span>
-              <span class="nt">&lt;argument&gt;</span>${basedir}/src/test/resources<span class="nt">&lt;/argument&gt;</span>  
-              <span class="cm">&lt;!--или ${basedir}/src/main/resources--&gt;</span>
-              <span class="cm">&lt;!--или любая другая директория--&gt;</span>
-            <span class="nt">&lt;/arguments&gt;</span>
-          <span class="nt">&lt;/configuration&gt;</span>
-        <span class="nt">&lt;/execution&gt;</span>
-      <span class="nt">&lt;/executions&gt;</span>
-    <span class="nt">&lt;/plugin&gt;</span>    
-  <span class="nt">&lt;/plugins&gt;</span>
+<span class="w">              </span><span class="nt">&lt;argument&gt;</span>false<span class="nt">&lt;/argument&gt;</span>
+<span class="w">              </span><span class="cm">&lt;!--Где расположить сгенерированный файл--&gt;</span>
+<span class="w">              </span><span class="nt">&lt;argument&gt;</span>${basedir}/src/test/resources<span class="nt">&lt;/argument&gt;</span><span class="w">  </span>
+<span class="w">              </span><span class="cm">&lt;!--или ${basedir}/src/main/resources--&gt;</span>
+<span class="w">              </span><span class="cm">&lt;!--или любая другая директория--&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/arguments&gt;</span>
+<span class="w">          </span><span class="nt">&lt;/configuration&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/execution&gt;</span>
+<span class="w">      </span><span class="nt">&lt;/executions&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/plugin&gt;</span><span class="w">    </span>
+<span class="w">  </span><span class="nt">&lt;/plugins&gt;</span>
 <span class="nt">&lt;/build&gt;</span>
 </pre></div>
 </div>
 </section>
 <section id="gradle">
 <h4>Генерация для Gradle<a class="headerlink" href="#gradle" title="Permalink to this heading">#</a></h4>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">task</span><span class="w"> </span><span class="nf">generateProperties</span><span class="o">(</span><span class="nl">type:</span><span class="w"> </span><span class="n">JavaExec</span><span class="o">)</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">classpath</span><span class="w"> </span><span class="n">sourceSets</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">runtimeClasspath</span><span class="w"> </span><span class="c1">//или sourceSets.main.runtimeClasspath</span><span class="w"></span>
-<span class="w">    </span><span class="n">main</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ru.tinkoff.qa.neptune.core.api.properties.NeptunePropertyGenerator&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//генерировать neptune.properties (false), или neptune.global.properties (true).</span><span class="w"></span>
-<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="kc">false</span><span class="o">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//наследовать свойства из neptune.global.properties (true) </span><span class="w"></span>
-<span class="w">            </span><span class="c1">// или нет (false).</span><span class="w"></span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">task</span><span class="w"> </span><span class="nf">generateProperties</span><span class="o">(</span><span class="nl">type:</span><span class="w"> </span><span class="n">JavaExec</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">classpath</span><span class="w"> </span><span class="n">sourceSets</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">runtimeClasspath</span><span class="w"> </span><span class="c1">//или sourceSets.main.runtimeClasspath</span>
+<span class="w">    </span><span class="n">main</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ru.tinkoff.qa.neptune.core.api.properties.NeptunePropertyGenerator&quot;</span>
+<span class="w">    </span><span class="c1">//генерировать neptune.properties (false), или neptune.global.properties (true).</span>
+<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="kc">false</span><span class="o">,</span>
+<span class="w">            </span><span class="c1">//наследовать свойства из neptune.global.properties (true) </span>
+<span class="w">            </span><span class="c1">// или нет (false).</span>
 <span class="w">            </span><span class="kc">false</span><span class="o">,</span><span class="w">  </span>
-<span class="w">            </span><span class="c1">//Где расположить сгенерированный файл.</span><span class="w"></span>
-<span class="w">            </span><span class="s2">&quot;$projectDir/src/test/resources&quot;</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//или $projectDir/src/main/resources</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//или любая другая директория</span><span class="w"></span>
-<span class="o">}</span><span class="w"></span>
+<span class="w">            </span><span class="c1">//Где расположить сгенерированный файл.</span>
+<span class="w">            </span><span class="s2">&quot;$projectDir/src/test/resources&quot;</span>
+<span class="w">            </span><span class="c1">//или $projectDir/src/main/resources</span>
+<span class="w">            </span><span class="c1">//или любая другая директория</span>
+<span class="o">}</span>
 </pre></div>
 </div>
 </section>
 <section id="properties">
 <h4>Сгенерированный *.properties<a class="headerlink" href="#properties" title="Permalink to this heading">#</a></h4>
 <p>Получится файл, как в примере ниже. Набор свойств зависит от подключенных модулей</p>
-<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c">#Neptune properties and some properties of JDK or 3rd party frameworks are defined there</span><span class="w"></span>
-<span class="c">#===========================General properties. Report</span><span class="w"></span>
-<span class="c">#To limit report/log output or not by depth of step performing</span><span class="w"></span>
-<span class="c">#It is about steps which are built by `ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier`</span><span class="w"></span>
-<span class="c">#and `ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier`</span><span class="w"></span>
-<span class="na">TO_LIMIT_REPORT_DEPTH</span><span class="o">=</span><span class="s">true</span><span class="w"></span>
-<span class="c">#===========================General properties. Report captures/Attachments</span><span class="w"></span>
-<span class="c">#Defines events to make log attachments</span><span class="w"></span>
-<span class="c">#Available values: SUCCESS, FAILURE, SUCCESS_AND_FAILURE</span><span class="w"></span>
-<span class="na">DO_CAPTURES_OF</span><span class="o">=</span><span class="w"></span>
-<span class="c">#===========================General properties. Resource management</span><span class="w"></span>
-<span class="c">#Is it necessary to free unused resources, e.g. opened browser, connections to databases etc.</span><span class="w"></span>
-<span class="na">TO_FREE_RESOURCES_ON_INACTIVITY</span><span class="o">=</span><span class="w"></span>
-<span class="c">#Time unit (see java.time.temporal.ChronoUnit) of time to wait for activity</span><span class="w"></span>
-<span class="c">#It have sense when value of the property &#39;TO_FREE_RESOURCES_ON_INACTIVITY&#39; is &#39;true&#39;</span><span class="w"></span>
-<span class="na">TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT</span><span class="o">=</span><span class="s">SECONDS</span><span class="w"></span>
-<span class="c">#Value of time to wait for activity</span><span class="w"></span>
-<span class="c">#It have sense when value of the property &#39;TO_FREE_RESOURCES_ON_INACTIVITY&#39; is &#39;true&#39;</span><span class="w"></span>
-<span class="na">TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE</span><span class="o">=</span><span class="s">30</span><span class="w"></span>
-<span class="c">#===========================Report localization</span><span class="w"></span>
-<span class="c">#Defines default locale</span><span class="w"></span>
-<span class="na">DEFAULT_LOCALE</span><span class="o">=</span><span class="w"></span>
-<span class="c">#Define localisation mechanism</span><span class="w"></span>
-<span class="na">DEFAULT_LOCALIZATION_ENGINE</span><span class="o">=</span><span class="w"></span>
+<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c1">#Neptune properties and some properties of JDK or 3rd party frameworks are defined there</span>
+<span class="c1">#===========================General properties. Report</span>
+<span class="c1">#To limit report/log output or not by depth of step performing</span>
+<span class="c1">#It is about steps which are built by `ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier`</span>
+<span class="c1">#and `ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier`</span>
+<span class="na">TO_LIMIT_REPORT_DEPTH</span><span class="o">=</span><span class="s">true</span>
+<span class="c1">#===========================General properties. Report captures/Attachments</span>
+<span class="c1">#Defines events to make log attachments</span>
+<span class="c1">#Available values: SUCCESS, FAILURE, SUCCESS_AND_FAILURE</span>
+<span class="na">DO_CAPTURES_OF</span><span class="o">=</span>
+<span class="c1">#===========================General properties. Resource management</span>
+<span class="c1">#Is it necessary to free unused resources, e.g. opened browser, connections to databases etc.</span>
+<span class="na">TO_FREE_RESOURCES_ON_INACTIVITY</span><span class="o">=</span>
+<span class="c1">#Time unit (see java.time.temporal.ChronoUnit) of time to wait for activity</span>
+<span class="c1">#It have sense when value of the property &#39;TO_FREE_RESOURCES_ON_INACTIVITY&#39; is &#39;true&#39;</span>
+<span class="na">TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT</span><span class="o">=</span><span class="s">SECONDS</span>
+<span class="c1">#Value of time to wait for activity</span>
+<span class="c1">#It have sense when value of the property &#39;TO_FREE_RESOURCES_ON_INACTIVITY&#39; is &#39;true&#39;</span>
+<span class="na">TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE</span><span class="o">=</span><span class="s">30</span>
+<span class="c1">#===========================Report localization</span>
+<span class="c1">#Defines default locale</span>
+<span class="na">DEFAULT_LOCALE</span><span class="o">=</span>
+<span class="c1">#Define localisation mechanism</span>
+<span class="na">DEFAULT_LOCALIZATION_ENGINE</span><span class="o">=</span>
 </pre></div>
 </div>
 </section>
@@ -597,14 +597,14 @@
 </section>
 <section id="id2">
 <h2>Формат значений свойств<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
-<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c"># Обычный способ указания значения свойства</span><span class="w"></span>
-<span class="na">DEFAULT_APPLICATION_HOST_PROPERTY</span><span class="o">=</span><span class="s">my.app.host</span><span class="w"></span>
+<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c1"># Обычный способ указания значения свойства</span>
+<span class="na">DEFAULT_APPLICATION_HOST_PROPERTY</span><span class="o">=</span><span class="s">my.app.host</span>
 
-<span class="c"># Так же можно указывать составные значения.</span><span class="w"></span>
-<span class="c"># Такие значения задаются маской, в которой значения </span><span class="w"></span>
-<span class="c"># других свойств заключаются в ${}</span><span class="w"></span>
-<span class="c"># Так же можно использовать свойства тестируемого приложения, переменные среды.</span><span class="w"></span>
-<span class="na">SOME_PATH_URL_PROPERTY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">http://${DEFAULT_APPLICATION_HOST_PROPERTY}/path/to/something</span><span class="w"></span>
+<span class="c1"># Так же можно указывать составные значения.</span>
+<span class="c1"># Такие значения задаются маской, в которой значения </span>
+<span class="c1"># других свойств заключаются в ${}</span>
+<span class="c1"># Так же можно использовать свойства тестируемого приложения, переменные среды.</span>
+<span class="na">SOME_PATH_URL_PROPERTY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">http://${DEFAULT_APPLICATION_HOST_PROPERTY}/path/to/something</span>
 </pre></div>
 </div>
 <div class="toctree-wrapper compound">

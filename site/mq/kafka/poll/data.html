@@ -474,222 +474,222 @@
 </ul>
 <section id="id1">
 <h2>Получение объекта данных Kafka<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.*</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">SomeData</span><span class="w"> </span><span class="n">someDataItem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedItem</span><span class="p">(</span><span class="w"></span>
-<span class="w">                </span><span class="s">&quot;Описание / название результирующего объекта&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// ЧТО следует получить,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeKeyTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для ключа</span><span class="w"></span>
-<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeValueTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для значения</span><span class="w"></span>
-<span class="w">                </span><span class="n">consumerRecord</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//Алгоритм функции, которая получает данные</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//из каждого сообщения</span><span class="w"></span>
-<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//один из этих </span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//объектов возвращается как результат,</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//первый попавшийся или с учетом уточнений</span><span class="w"></span>
-<span class="w">                </span><span class="p">})</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Можно перечислить топики, из которых следует прочесть </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//данные сообщений.</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Если значение свойства DEFAULT_TOPICS_FOR_POLL непустое,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//и нет необходимости указывать другие топики для чтения,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//то метод можно не вызывать</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">fromTopics</span><span class="p">(</span><span class="s">&quot;testTopic&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;testTopic2&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Можно указать свойства и их значения,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//которые могут дополнить/заменить свойства, </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//получаемые при помощи KAFKA_CONSUMER_PROPERTIES.</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//ВНИМАНИЕ!!!!! Нельзя указывать свойство `auto.offset.reset`. </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// Это приведет к IllegalArgumentException</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">setProperty</span><span class="p">(</span><span class="n">GROUP_ID_CONFIG</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;someGroupId&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Можно указать действие, с момента начала выполнения которого</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//начнется чтение сообщений из топиков. Предполагается, что прочитанные сообщения - </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//результат указанного действия. При этом свойство `auto.offset.reset` текущего консъюмера</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//меняется на `latest`. Если действие не указывать, будут прочитаны все сообщения из топиков,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//и значение свойства `auto.offset.reset` текущего консъюмера равно `earliest`</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">pollLatestWith</span><span class="p">(</span><span class="s">&quot;Название или описание действия&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//тут можно выполнять шаги из других контекстов </span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//или другой исполняемый код.</span><span class="w"></span>
-<span class="w">                </span><span class="p">})</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//другие уточняющие параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">SomeData</span><span class="w"> </span><span class="n">someDataItem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedItem</span><span class="p">(</span>
+<span class="w">                </span><span class="s">&quot;Описание / название результирующего объекта&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span>
+<span class="w">                </span><span class="c1">// ЧТО следует получить,</span>
+<span class="w">                </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">                </span><span class="c1">//терминологии</span>
+<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeKeyTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для ключа</span>
+<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeValueTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для значения</span>
+<span class="w">                </span><span class="n">consumerRecord</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="c1">//Алгоритм функции, которая получает данные</span>
+<span class="w">                    </span><span class="c1">//из каждого сообщения</span>
+<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//один из этих </span>
+<span class="w">                    </span><span class="c1">//объектов возвращается как результат,</span>
+<span class="w">                    </span><span class="c1">//первый попавшийся или с учетом уточнений</span>
+<span class="w">                </span><span class="p">})</span>
+<span class="w">                </span><span class="c1">//Можно перечислить топики, из которых следует прочесть </span>
+<span class="w">                </span><span class="c1">//данные сообщений.</span>
+<span class="w">                </span><span class="c1">//Если значение свойства DEFAULT_TOPICS_FOR_POLL непустое,</span>
+<span class="w">                </span><span class="c1">//и нет необходимости указывать другие топики для чтения,</span>
+<span class="w">                </span><span class="c1">//то метод можно не вызывать</span>
+<span class="w">                </span><span class="p">.</span><span class="na">fromTopics</span><span class="p">(</span><span class="s">&quot;testTopic&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;testTopic2&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//Можно указать свойства и их значения,</span>
+<span class="w">                </span><span class="c1">//которые могут дополнить/заменить свойства, </span>
+<span class="w">                </span><span class="c1">//получаемые при помощи KAFKA_CONSUMER_PROPERTIES.</span>
+<span class="w">                </span><span class="c1">//ВНИМАНИЕ!!!!! Нельзя указывать свойство `auto.offset.reset`. </span>
+<span class="w">                </span><span class="c1">// Это приведет к IllegalArgumentException</span>
+<span class="w">                </span><span class="p">.</span><span class="na">setProperty</span><span class="p">(</span><span class="n">GROUP_ID_CONFIG</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;someGroupId&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//Можно указать действие, с момента начала выполнения которого</span>
+<span class="w">                </span><span class="c1">//начнется чтение сообщений из топиков. Предполагается, что прочитанные сообщения - </span>
+<span class="w">                </span><span class="c1">//результат указанного действия. При этом свойство `auto.offset.reset` текущего консъюмера</span>
+<span class="w">                </span><span class="c1">//меняется на `latest`. Если действие не указывать, будут прочитаны все сообщения из топиков,</span>
+<span class="w">                </span><span class="c1">//и значение свойства `auto.offset.reset` текущего консъюмера равно `earliest`</span>
+<span class="w">                </span><span class="p">.</span><span class="na">pollLatestWith</span><span class="p">(</span><span class="s">&quot;Название или описание действия&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="c1">//тут можно выполнять шаги из других контекстов </span>
+<span class="w">                    </span><span class="c1">//или другой исполняемый код.</span>
+<span class="w">                </span><span class="p">})</span>
+<span class="w">                </span><span class="c1">//другие уточняющие параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <details class="summary-iterable">
-<summary>Уточняющие параметры шага, который возвращает элемент Iterable<?>. Шаг предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать</span><span class="w"></span>
-<span class="c1">//результирующий элемент из набора.</span><span class="w"></span>
-<span class="c1">// Так же доступны criteriaOr(criteria...),</span><span class="w"></span>
-<span class="c1">// criteriaOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// criteriaNot(criteria...)</span><span class="w"></span>
-<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;результирующий элемент из набора&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">// можно указать время,</span><span class="w"></span>
-<span class="c1">// за которое нужные элемент должен быть получен</span><span class="w"></span>
-<span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Можно указать, что должно быть выброшено исключение,</span><span class="w"></span>
-<span class="c1">// если не был получен результирующий элемент (не было ни одного элемента,</span><span class="w"></span>
-<span class="c1">//который бы соответствовал перечисленным критериям,</span><span class="w"></span>
-<span class="c1">// или непустой набор просто не был получен)</span><span class="w"></span>
-<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span><span class="w"></span>
-<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//1. Можно указать индекс элемента, который следует вернуть.</span><span class="w"></span>
-<span class="c1">//Индекс - индекс объекта в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnItemOfIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-----------------------------------------------</span><span class="w"></span>
-<span class="c1">//2. можно указать, при достижении какого количества</span><span class="w"></span>
-<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//должен быть возвращен результат</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//3. можно указать, при достижении каких условий,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать набор ВСЕХ объектов,</span><span class="w"></span>
-<span class="c1">//соответствующих критериям,</span><span class="w"></span>
-<span class="c1">//можно возвращать результирующий элемент</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">iterable</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span><span class="w"></span>
-<span class="c1">// returnOnConditionOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// returnOnConditionNot(criteria...)</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span><span class="w"></span>
-<span class="c1">//или весь набор подходящих по критериям элементов,</span><span class="w"></span>
-<span class="c1">// из которого должен быть взят результат,</span><span class="w"></span>
-<span class="c1">// не соответствует каким-то критериям -</span><span class="w"></span>
-<span class="c1">// будет выброшено исключение с подробным описанием</span><span class="w"></span>
+<summary>Уточняющие параметры шага, который возвращает элемент Iterable<?>. Шаг предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span>
+<span class="c1">//которым должен соответствовать</span>
+<span class="c1">//результирующий элемент из набора.</span>
+<span class="c1">// Так же доступны criteriaOr(criteria...),</span>
+<span class="c1">// criteriaOnlyOne(criteria...)</span>
+<span class="c1">// criteriaNot(criteria...)</span>
+<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="s">&quot;результирующий элемент из набора&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">// можно указать время,</span>
+<span class="c1">// за которое нужные элемент должен быть получен</span>
+<span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Можно указать, что должно быть выброшено исключение,</span>
+<span class="c1">// если не был получен результирующий элемент (не было ни одного элемента,</span>
+<span class="c1">//который бы соответствовал перечисленным критериям,</span>
+<span class="c1">// или непустой набор просто не был получен)</span>
+<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span>
+<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//1. Можно указать индекс элемента, который следует вернуть.</span>
+<span class="c1">//Индекс - индекс объекта в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnItemOfIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">//-----------------------------------------------</span>
+<span class="c1">//2. можно указать, при достижении какого количества</span>
+<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span>
+<span class="c1">//должен быть возвращен результат</span>
+<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//3. можно указать, при достижении каких условий,</span>
+<span class="c1">//которым должен соответствовать набор ВСЕХ объектов,</span>
+<span class="c1">//соответствующих критериям,</span>
+<span class="c1">//можно возвращать результирующий элемент</span>
+<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">iterable</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span>
+<span class="c1">// returnOnConditionOnlyOne(criteria...)</span>
+<span class="c1">// returnOnConditionNot(criteria...)</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span>
+<span class="c1">//или весь набор подходящих по критериям элементов,</span>
+<span class="c1">// из которого должен быть взят результат,</span>
+<span class="c1">// не соответствует каким-то критериям -</span>
+<span class="c1">// будет выброшено исключение с подробным описанием</span>
 </pre></div>
 </div>
 </details><p>Ниже другие варианты получения объекта из очередей</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">SomeData</span><span class="w"> </span><span class="n">someDataItem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedItemKeyData</span><span class="p">(</span><span class="w"></span>
-<span class="w">                </span><span class="s">&quot;Описание / название результирующего объекта&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// ЧТО следует получить,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeKeyTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для ключа</span><span class="w"></span>
-<span class="w">                </span><span class="n">keyData</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//Алгоритм функции, которая получает данные</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//из каждого ключа сообщения</span><span class="w"></span>
-<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//один из этих </span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//объектов возвращается как результат,</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//первый попавшийся или с учетом уточнений</span><span class="w"></span>
-<span class="w">                </span><span class="p">})</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//уточняющие параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">SomeData</span><span class="w"> </span><span class="n">someDataItem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedItemKeyData</span><span class="p">(</span>
+<span class="w">                </span><span class="s">&quot;Описание / название результирующего объекта&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span>
+<span class="w">                </span><span class="c1">// ЧТО следует получить,</span>
+<span class="w">                </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">                </span><span class="c1">//терминологии</span>
+<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeKeyTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для ключа</span>
+<span class="w">                </span><span class="n">keyData</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="c1">//Алгоритм функции, которая получает данные</span>
+<span class="w">                    </span><span class="c1">//из каждого ключа сообщения</span>
+<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//один из этих </span>
+<span class="w">                    </span><span class="c1">//объектов возвращается как результат,</span>
+<span class="w">                    </span><span class="c1">//первый попавшийся или с учетом уточнений</span>
+<span class="w">                </span><span class="p">})</span>
+<span class="w">            </span><span class="c1">//уточняющие параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//возврат одного из ключей сообщений</span><span class="w"></span>
-<span class="w">        </span><span class="n">SomeKeyType</span><span class="w"> </span><span class="n">someKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedKey</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">SomeKeyTypeDeserializer</span><span class="p">())</span><span class="w"> </span><span class="c1">//десериализатор для ключа</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//уточняющие параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//возврат одного из ключей сообщений</span>
+<span class="w">        </span><span class="n">SomeKeyType</span><span class="w"> </span><span class="n">someKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedKey</span><span class="p">(</span>
+<span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">SomeKeyTypeDeserializer</span><span class="p">())</span><span class="w"> </span><span class="c1">//десериализатор для ключа</span>
+<span class="w">            </span><span class="c1">//уточняющие параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//возврат одного из ключей сообщений</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//в виде текста</span><span class="w"></span>
-<span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">someKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedKey</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//уточняющие параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//возврат одного из ключей сообщений</span>
+<span class="w">        </span><span class="c1">//в виде текста</span>
+<span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">someKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedKey</span><span class="p">()</span>
+<span class="w">            </span><span class="c1">//уточняющие параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">SomeData</span><span class="w"> </span><span class="n">someDataItem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedItemValueData</span><span class="p">(</span><span class="w"></span>
-<span class="w">                </span><span class="s">&quot;Описание / название результирующего объекта&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// ЧТО следует получить,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeValueTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для значения</span><span class="w"></span>
-<span class="w">                </span><span class="n">valueData</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//Алгоритм функции, которая получает данные</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//из каждого значения сообщения</span><span class="w"></span>
-<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//один из этих </span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//объектов возвращается как результат,</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//первый попавшийся или с учетом уточнений</span><span class="w"></span>
-<span class="w">                </span><span class="p">})</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//уточняющие параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">SomeData</span><span class="w"> </span><span class="n">someDataItem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedItemValueData</span><span class="p">(</span>
+<span class="w">                </span><span class="s">&quot;Описание / название результирующего объекта&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span>
+<span class="w">                </span><span class="c1">// ЧТО следует получить,</span>
+<span class="w">                </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">                </span><span class="c1">//терминологии</span>
+<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeValueTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для значения</span>
+<span class="w">                </span><span class="n">valueData</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="c1">//Алгоритм функции, которая получает данные</span>
+<span class="w">                    </span><span class="c1">//из каждого значения сообщения</span>
+<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//один из этих </span>
+<span class="w">                    </span><span class="c1">//объектов возвращается как результат,</span>
+<span class="w">                    </span><span class="c1">//первый попавшийся или с учетом уточнений</span>
+<span class="w">                </span><span class="p">})</span>
+<span class="w">            </span><span class="c1">//уточняющие параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//возврат одного из значений сообщений</span><span class="w"></span>
-<span class="w">        </span><span class="n">SomeValueType</span><span class="w"> </span><span class="n">someDataItem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedValue</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">SomeValueTypeDeserializer</span><span class="p">())</span><span class="w"> </span><span class="c1">//десериализатор для значения</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//уточняющие параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//возврат одного из значений сообщений</span>
+<span class="w">        </span><span class="n">SomeValueType</span><span class="w"> </span><span class="n">someDataItem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedValue</span><span class="p">(</span>
+<span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">SomeValueTypeDeserializer</span><span class="p">())</span><span class="w"> </span><span class="c1">//десериализатор для значения</span>
+<span class="w">            </span><span class="c1">//уточняющие параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableItemSupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//возврат одного из значений сообщений</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//в виде текста</span><span class="w"></span>
-<span class="w">        </span><span class="n">SomeValueType</span><span class="w"> </span><span class="n">someDataItem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedValue</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//уточняющие параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//возврат одного из значений сообщений</span>
+<span class="w">        </span><span class="c1">//в виде текста</span>
+<span class="w">        </span><span class="n">SomeValueType</span><span class="w"> </span><span class="n">someDataItem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedValue</span><span class="p">()</span>
+<span class="w">            </span><span class="c1">//уточняющие параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
@@ -697,492 +697,492 @@
 <h2>Получение объектов данных Kafka<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
 <section id="id3">
 <h3>В виде листа<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.*</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">SomeData</span><span class="o">&gt;</span><span class="w"> </span><span class="n">someDataList</span><span class="w"></span>
-<span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedList</span><span class="p">(</span><span class="s">&quot;Описание / название результирующего листа&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// ЧТО следует получить,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeKeyTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для ключа</span><span class="w"></span>
-<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeValueTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для значения</span><span class="w"></span>
-<span class="w">                </span><span class="n">cr</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//Алгоритм функции, которая получает данные</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//из каждого сообщения</span><span class="w"></span>
-<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//эти объекты</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//будут собраны в результирующий лист</span><span class="w"></span>
-<span class="w">                </span><span class="p">})</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Можно перечислить топики, из которых следует прочесть </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//данные сообщений.</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Если значение свойства DEFAULT_TOPICS_FOR_POLL непустое,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//и нет необходимости указывать другие топики для чтения,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//то метод можно не вызывать</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">fromTopics</span><span class="p">(</span><span class="s">&quot;testTopic&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;testTopic2&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Можно указать свойства и их значения,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//которые могут дополнить/заменить свойства, </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//получаемые при помощи KAFKA_CONSUMER_PROPERTIES.</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//ВНИМАНИЕ!!!!! Нельзя указывать свойство `auto.offset.reset`. </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// Это приведет к IllegalArgumentException</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">setProperty</span><span class="p">(</span><span class="n">GROUP_ID_CONFIG</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;someGroupId&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Можно указать действие, с момента начала выполнения которого</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//начнется чтение сообщений из топиков. Предполагается, что прочитанные сообщения - </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//результат указанного действия. При этом свойство `auto.offset.reset` текущего консъюмера</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//меняется на `latest`. Если действие не указывать, будут прочитаны все сообщения из топиков,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//и значение свойства `auto.offset.reset` текущего консъюмера равно `earliest`</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">pollLatestWith</span><span class="p">(</span><span class="s">&quot;Название или описание действия&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//тут можно выполнять шаги из других контекстов </span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//или другой исполняемый код.</span><span class="w"></span>
-<span class="w">                </span><span class="p">})</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//другие уточняющие параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">SomeData</span><span class="o">&gt;</span><span class="w"> </span><span class="n">someDataList</span>
+<span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedList</span><span class="p">(</span><span class="s">&quot;Описание / название результирующего листа&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span>
+<span class="w">                </span><span class="c1">// ЧТО следует получить,</span>
+<span class="w">                </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">                </span><span class="c1">//терминологии</span>
+<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeKeyTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для ключа</span>
+<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeValueTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для значения</span>
+<span class="w">                </span><span class="n">cr</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="c1">//Алгоритм функции, которая получает данные</span>
+<span class="w">                    </span><span class="c1">//из каждого сообщения</span>
+<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//эти объекты</span>
+<span class="w">                    </span><span class="c1">//будут собраны в результирующий лист</span>
+<span class="w">                </span><span class="p">})</span>
+<span class="w">                </span><span class="c1">//Можно перечислить топики, из которых следует прочесть </span>
+<span class="w">                </span><span class="c1">//данные сообщений.</span>
+<span class="w">                </span><span class="c1">//Если значение свойства DEFAULT_TOPICS_FOR_POLL непустое,</span>
+<span class="w">                </span><span class="c1">//и нет необходимости указывать другие топики для чтения,</span>
+<span class="w">                </span><span class="c1">//то метод можно не вызывать</span>
+<span class="w">                </span><span class="p">.</span><span class="na">fromTopics</span><span class="p">(</span><span class="s">&quot;testTopic&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;testTopic2&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//Можно указать свойства и их значения,</span>
+<span class="w">                </span><span class="c1">//которые могут дополнить/заменить свойства, </span>
+<span class="w">                </span><span class="c1">//получаемые при помощи KAFKA_CONSUMER_PROPERTIES.</span>
+<span class="w">                </span><span class="c1">//ВНИМАНИЕ!!!!! Нельзя указывать свойство `auto.offset.reset`. </span>
+<span class="w">                </span><span class="c1">// Это приведет к IllegalArgumentException</span>
+<span class="w">                </span><span class="p">.</span><span class="na">setProperty</span><span class="p">(</span><span class="n">GROUP_ID_CONFIG</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;someGroupId&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//Можно указать действие, с момента начала выполнения которого</span>
+<span class="w">                </span><span class="c1">//начнется чтение сообщений из топиков. Предполагается, что прочитанные сообщения - </span>
+<span class="w">                </span><span class="c1">//результат указанного действия. При этом свойство `auto.offset.reset` текущего консъюмера</span>
+<span class="w">                </span><span class="c1">//меняется на `latest`. Если действие не указывать, будут прочитаны все сообщения из топиков,</span>
+<span class="w">                </span><span class="c1">//и значение свойства `auto.offset.reset` текущего консъюмера равно `earliest`</span>
+<span class="w">                </span><span class="p">.</span><span class="na">pollLatestWith</span><span class="p">(</span><span class="s">&quot;Название или описание действия&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="c1">//тут можно выполнять шаги из других контекстов </span>
+<span class="w">                    </span><span class="c1">//или другой исполняемый код.</span>
+<span class="w">                </span><span class="p">})</span>
+<span class="w">                </span><span class="c1">//другие уточняющие параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <details class="summary-">
-<summary>Уточняющие параметры шага, который возвращает лист. Шаг предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать</span><span class="w"></span>
-<span class="c1">//каждый элемент результирующего листа.</span><span class="w"></span>
-<span class="c1">// Так же доступны criteriaOr(criteria...),</span><span class="w"></span>
-<span class="c1">// criteriaOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// criteriaNot(criteria...)</span><span class="w"></span>
-<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;каждый элемент, который попадет в результирующий лист&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">// можно указать время,</span><span class="w"></span>
-<span class="c1">// за которое нужные элементы должны быть получены</span><span class="w"></span>
-<span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//Можно указать, что должно быть выброшено исключение,</span><span class="w"></span>
-<span class="c1">// если непустой лист не удалось получить (не было ни одного элемента,</span><span class="w"></span>
-<span class="c1">//который бы соответствовал перечисленным критериям,</span><span class="w"></span>
-<span class="c1">// или непустой лист просто не был получен)</span><span class="w"></span>
-<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span><span class="w"></span>
-<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//1. можно указать сколько объектов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//нужно вернуть</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnListOfSize</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//2. можно указать, до элемента с каким индексом</span><span class="w"></span>
-<span class="c1">//нужно собрать результирующие элементы,</span><span class="w"></span>
-<span class="c1">//индекс - индекс объекта в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnBeforeIndex</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//.returnAfterIndex(8) либо после какого элемента</span><span class="w"></span>
-<span class="c1">//----------------------------------------------</span><span class="w"></span>
-<span class="c1">//3. Либо можно перечислить индексы элементов,</span><span class="w"></span>
-<span class="c1">// которые следует вернуть.</span><span class="w"></span>
-<span class="c1">//Индексы - индексы объектов в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnItemsOfIndexes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-----------------------------------------------</span><span class="w"></span>
-<span class="c1">//4. можно указать, при достижении какого количества</span><span class="w"></span>
-<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//должен быть возвращен результат</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//----------------------------------------------</span><span class="w"></span>
-<span class="c1">//5. можно указать, при достижении каких условий,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать лист ВСЕХ объектов,</span><span class="w"></span>
-<span class="c1">//соответствующих критериям,</span><span class="w"></span>
-<span class="c1">//можно возвращать результирующий лист/суб-лист</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span><span class="w"></span>
-<span class="c1">// returnOnConditionOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// returnOnConditionNot(criteria...)</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span><span class="w"></span>
-<span class="c1">//или весь суб-лист подходящих по критериям элементов,</span><span class="w"></span>
-<span class="c1">// который должен вернуться как результат,</span><span class="w"></span>
-<span class="c1">// не соответствует каким-то критериям -</span><span class="w"></span>
-<span class="c1">// будет выброшено исключение с подробным описанием</span><span class="w"></span>
+<summary>Уточняющие параметры шага, который возвращает лист. Шаг предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span>
+<span class="c1">//которым должен соответствовать</span>
+<span class="c1">//каждый элемент результирующего листа.</span>
+<span class="c1">// Так же доступны criteriaOr(criteria...),</span>
+<span class="c1">// criteriaOnlyOne(criteria...)</span>
+<span class="c1">// criteriaNot(criteria...)</span>
+<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="s">&quot;каждый элемент, который попадет в результирующий лист&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">// можно указать время,</span>
+<span class="c1">// за которое нужные элементы должны быть получены</span>
+<span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//Можно указать, что должно быть выброшено исключение,</span>
+<span class="c1">// если непустой лист не удалось получить (не было ни одного элемента,</span>
+<span class="c1">//который бы соответствовал перечисленным критериям,</span>
+<span class="c1">// или непустой лист просто не был получен)</span>
+<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span>
+<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//1. можно указать сколько объектов,</span>
+<span class="c1">//которые соответствуют критериям,</span>
+<span class="c1">//нужно вернуть</span>
+<span class="p">.</span><span class="na">returnListOfSize</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//2. можно указать, до элемента с каким индексом</span>
+<span class="c1">//нужно собрать результирующие элементы,</span>
+<span class="c1">//индекс - индекс объекта в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnBeforeIndex</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="c1">//.returnAfterIndex(8) либо после какого элемента</span>
+<span class="c1">//----------------------------------------------</span>
+<span class="c1">//3. Либо можно перечислить индексы элементов,</span>
+<span class="c1">// которые следует вернуть.</span>
+<span class="c1">//Индексы - индексы объектов в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnItemsOfIndexes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span>
+<span class="c1">//-----------------------------------------------</span>
+<span class="c1">//4. можно указать, при достижении какого количества</span>
+<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span>
+<span class="c1">//должен быть возвращен результат</span>
+<span class="p">.</span><span class="na">returnIfEntireSize</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+<span class="c1">//----------------------------------------------</span>
+<span class="c1">//5. можно указать, при достижении каких условий,</span>
+<span class="c1">//которым должен соответствовать лист ВСЕХ объектов,</span>
+<span class="c1">//соответствующих критериям,</span>
+<span class="c1">//можно возвращать результирующий лист/суб-лист</span>
+<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span>
+<span class="c1">// returnOnConditionOnlyOne(criteria...)</span>
+<span class="c1">// returnOnConditionNot(criteria...)</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span>
+<span class="c1">//или весь суб-лист подходящих по критериям элементов,</span>
+<span class="c1">// который должен вернуться как результат,</span>
+<span class="c1">// не соответствует каким-то критериям -</span>
+<span class="c1">// будет выброшено исключение с подробным описанием</span>
 </pre></div>
 </div>
 </details><p>Ниже другие варианты получения объектов из очередей</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.*</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">SomeData</span><span class="o">&gt;</span><span class="w"> </span><span class="n">someDataList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedListKeyData</span><span class="p">(</span><span class="w"></span>
-<span class="w">                </span><span class="s">&quot;Описание / название результирующего листа&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// ЧТО следует получить,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeKeyTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для ключа</span><span class="w"></span>
-<span class="w">                </span><span class="n">keyData</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//Алгоритм функции, которая получает данные</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//из каждого ключа сообщения</span><span class="w"></span>
-<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//эти объекты</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//будут собраны в результирующий лист</span><span class="w"></span>
-<span class="w">                </span><span class="p">})</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//уточняющие параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">SomeData</span><span class="o">&gt;</span><span class="w"> </span><span class="n">someDataList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedListKeyData</span><span class="p">(</span>
+<span class="w">                </span><span class="s">&quot;Описание / название результирующего листа&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span>
+<span class="w">                </span><span class="c1">// ЧТО следует получить,</span>
+<span class="w">                </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">                </span><span class="c1">//терминологии</span>
+<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeKeyTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для ключа</span>
+<span class="w">                </span><span class="n">keyData</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="c1">//Алгоритм функции, которая получает данные</span>
+<span class="w">                    </span><span class="c1">//из каждого ключа сообщения</span>
+<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//эти объекты</span>
+<span class="w">                    </span><span class="c1">//будут собраны в результирующий лист</span>
+<span class="w">                </span><span class="p">})</span>
+<span class="w">            </span><span class="c1">//уточняющие параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.*</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//возврат листа ключей сообщений</span><span class="w"></span>
-<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">SomeKeyType</span><span class="o">&gt;</span><span class="w"> </span><span class="n">someKeyList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedKeys</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">SomeKeyTypeDeserializer</span><span class="p">())</span><span class="w"> </span><span class="c1">//десериализатор для ключа</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//уточняющие параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//возврат листа ключей сообщений</span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">SomeKeyType</span><span class="o">&gt;</span><span class="w"> </span><span class="n">someKeyList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedKeys</span><span class="p">(</span>
+<span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">SomeKeyTypeDeserializer</span><span class="p">())</span><span class="w"> </span><span class="c1">//десериализатор для ключа</span>
+<span class="w">            </span><span class="c1">//уточняющие параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.*</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//возврат листа ключей сообщений</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//в виде текстов</span><span class="w"></span>
-<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">someKeyList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedKeys</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//уточняющие параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//возврат листа ключей сообщений</span>
+<span class="w">        </span><span class="c1">//в виде текстов</span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">someKeyList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedKeys</span><span class="p">()</span>
+<span class="w">            </span><span class="c1">//уточняющие параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.*</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">SomeData</span><span class="o">&gt;</span><span class="w"> </span><span class="n">someDataList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedListValueData</span><span class="p">(</span><span class="w"></span>
-<span class="w">                </span><span class="s">&quot;Описание / название результирующего листа&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// ЧТО следует получить,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeValueTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для значения</span><span class="w"></span>
-<span class="w">                </span><span class="n">valueData</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//Алгоритм функции, которая получает данные</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//из каждого значения сообщения</span><span class="w"></span>
-<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//эти объекты</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//будут собраны в результирующий лист</span><span class="w"></span>
-<span class="w">                </span><span class="p">})</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//уточняющие параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">SomeData</span><span class="o">&gt;</span><span class="w"> </span><span class="n">someDataList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedListValueData</span><span class="p">(</span>
+<span class="w">                </span><span class="s">&quot;Описание / название результирующего листа&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span>
+<span class="w">                </span><span class="c1">// ЧТО следует получить,</span>
+<span class="w">                </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">                </span><span class="c1">//терминологии</span>
+<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeValueTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для значения</span>
+<span class="w">                </span><span class="n">valueData</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="c1">//Алгоритм функции, которая получает данные</span>
+<span class="w">                    </span><span class="c1">//из каждого значения сообщения</span>
+<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//эти объекты</span>
+<span class="w">                    </span><span class="c1">//будут собраны в результирующий лист</span>
+<span class="w">                </span><span class="p">})</span>
+<span class="w">            </span><span class="c1">//уточняющие параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.*</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//возврат листа значений сообщений</span><span class="w"></span>
-<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">SomeValueType</span><span class="o">&gt;</span><span class="w"> </span><span class="n">someValueList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedValues</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">SomeValueTypeDeserializer</span><span class="p">())</span><span class="w"> </span><span class="c1">//десериализатор для значения</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//уточняющие параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//возврат листа значений сообщений</span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">SomeValueType</span><span class="o">&gt;</span><span class="w"> </span><span class="n">someValueList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedValues</span><span class="p">(</span>
+<span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">SomeValueTypeDeserializer</span><span class="p">())</span><span class="w"> </span><span class="c1">//десериализатор для значения</span>
+<span class="w">            </span><span class="c1">//уточняющие параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.*</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollIterableSupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//возврат листа значений сообщений</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//в виде текстов</span><span class="w"></span>
-<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">someValueList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedValues</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//уточняющие параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//возврат листа значений сообщений</span>
+<span class="w">        </span><span class="c1">//в виде текстов</span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">someValueList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedValues</span><span class="p">()</span>
+<span class="w">            </span><span class="c1">//уточняющие параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
 <section id="id4">
 <h3>В виде массива<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.*</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">SomeData</span><span class="o">[]</span><span class="w"> </span><span class="n">someDataArray</span><span class="w"></span>
-<span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedArray</span><span class="p">(</span><span class="s">&quot;Описание / название результирующего массива&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// ЧТО следует получить,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeKeyTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для ключа</span><span class="w"></span>
-<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeValueTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для значения</span><span class="w"></span>
-<span class="w">                </span><span class="n">SomeData</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//класс результирующего массива</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//так же можно использовать объект</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//com.fasterxml.jackson.core.type.TypeReference</span><span class="w"></span>
-<span class="w">                </span><span class="n">cr</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//Алгоритм функции, которая получает данные</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//из каждого сообщения</span><span class="w"></span>
-<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//эти объекты</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//будут собраны в результирующий массив</span><span class="w"></span>
-<span class="w">                </span><span class="p">})</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Можно перечислить топики, из которых следует прочесть </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//данные сообщений.</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Если значение свойства DEFAULT_TOPICS_FOR_POLL непустое,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//и нет необходимости указывать другие топики для чтения,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//то метод можно не вызывать</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">fromTopics</span><span class="p">(</span><span class="s">&quot;testTopic&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;testTopic2&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Можно указать свойства и их значения,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//которые могут дополнить/заменить свойства, </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//получаемые при помощи KAFKA_CONSUMER_PROPERTIES.</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//ВНИМАНИЕ!!!!! Нельзя указывать свойство `auto.offset.reset`. </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// Это приведет к IllegalArgumentException</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">setProperty</span><span class="p">(</span><span class="n">GROUP_ID_CONFIG</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;someGroupId&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Можно указать действие, с момента начала выполнения которого</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//начнется чтение сообщений из топиков. Предполагается, что прочитанные сообщения - </span><span class="w"></span>
-<span class="w">                </span><span class="c1">//результат указанного действия. При этом свойство `auto.offset.reset` текущего консъюмера</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//меняется на `latest`. Если действие не указывать, будут прочитаны все сообщения из топиков,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//и значение свойства `auto.offset.reset` текущего консъюмера равно `earliest`</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">pollLatestWith</span><span class="p">(</span><span class="s">&quot;Название или описание действия&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//тут можно выполнять шаги из других контекстов </span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//или другой исполняемый код.</span><span class="w"></span>
-<span class="w">                </span><span class="p">})</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//опции, уточняющие результат</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">SomeData</span><span class="o">[]</span><span class="w"> </span><span class="n">someDataArray</span>
+<span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedArray</span><span class="p">(</span><span class="s">&quot;Описание / название результирующего массива&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span>
+<span class="w">                </span><span class="c1">// ЧТО следует получить,</span>
+<span class="w">                </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">                </span><span class="c1">//терминологии</span>
+<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeKeyTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для ключа</span>
+<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeValueTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для значения</span>
+<span class="w">                </span><span class="n">SomeData</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//класс результирующего массива</span>
+<span class="w">                </span><span class="c1">//так же можно использовать объект</span>
+<span class="w">                </span><span class="c1">//com.fasterxml.jackson.core.type.TypeReference</span>
+<span class="w">                </span><span class="n">cr</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="c1">//Алгоритм функции, которая получает данные</span>
+<span class="w">                    </span><span class="c1">//из каждого сообщения</span>
+<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//эти объекты</span>
+<span class="w">                    </span><span class="c1">//будут собраны в результирующий массив</span>
+<span class="w">                </span><span class="p">})</span>
+<span class="w">                </span><span class="c1">//Можно перечислить топики, из которых следует прочесть </span>
+<span class="w">                </span><span class="c1">//данные сообщений.</span>
+<span class="w">                </span><span class="c1">//Если значение свойства DEFAULT_TOPICS_FOR_POLL непустое,</span>
+<span class="w">                </span><span class="c1">//и нет необходимости указывать другие топики для чтения,</span>
+<span class="w">                </span><span class="c1">//то метод можно не вызывать</span>
+<span class="w">                </span><span class="p">.</span><span class="na">fromTopics</span><span class="p">(</span><span class="s">&quot;testTopic&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;testTopic2&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//Можно указать свойства и их значения,</span>
+<span class="w">                </span><span class="c1">//которые могут дополнить/заменить свойства, </span>
+<span class="w">                </span><span class="c1">//получаемые при помощи KAFKA_CONSUMER_PROPERTIES.</span>
+<span class="w">                </span><span class="c1">//ВНИМАНИЕ!!!!! Нельзя указывать свойство `auto.offset.reset`. </span>
+<span class="w">                </span><span class="c1">// Это приведет к IllegalArgumentException</span>
+<span class="w">                </span><span class="p">.</span><span class="na">setProperty</span><span class="p">(</span><span class="n">GROUP_ID_CONFIG</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;someGroupId&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//Можно указать действие, с момента начала выполнения которого</span>
+<span class="w">                </span><span class="c1">//начнется чтение сообщений из топиков. Предполагается, что прочитанные сообщения - </span>
+<span class="w">                </span><span class="c1">//результат указанного действия. При этом свойство `auto.offset.reset` текущего консъюмера</span>
+<span class="w">                </span><span class="c1">//меняется на `latest`. Если действие не указывать, будут прочитаны все сообщения из топиков,</span>
+<span class="w">                </span><span class="c1">//и значение свойства `auto.offset.reset` текущего консъюмера равно `earliest`</span>
+<span class="w">                </span><span class="p">.</span><span class="na">pollLatestWith</span><span class="p">(</span><span class="s">&quot;Название или описание действия&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="c1">//тут можно выполнять шаги из других контекстов </span>
+<span class="w">                    </span><span class="c1">//или другой исполняемый код.</span>
+<span class="w">                </span><span class="p">})</span>
+<span class="w">                </span><span class="c1">//опции, уточняющие результат</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <details class="summary-">
-<summary>Уточняющие параметры шага, который возвращает массив. Шаг предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать</span><span class="w"></span>
-<span class="c1">//каждый элемент результирующего массива.</span><span class="w"></span>
-<span class="c1">// Так же доступны criteriaOr(criteria...),</span><span class="w"></span>
-<span class="c1">// criteriaOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// criteriaNot(criteria...)</span><span class="w"></span>
-<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;каждый элемент, который попадет в результирующий массив&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//----------------------------------------------</span><span class="w"></span>
-<span class="c1">// можно указать время,</span><span class="w"></span>
-<span class="c1">// за которое нужные элементы должны быть получены</span><span class="w"></span>
-<span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//----------------------------------------------</span><span class="w"></span>
-<span class="c1">//Можно указать, что должно быть выброшено исключение,</span><span class="w"></span>
-<span class="c1">// если непустой массив не удалось получить (не было ни одного элемента,</span><span class="w"></span>
-<span class="c1">//который бы соответствовал перечисленным критериям,</span><span class="w"></span>
-<span class="c1">// или непустой массив просто не был получен)</span><span class="w"></span>
-<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span><span class="w"></span>
-<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span><span class="w"></span>
-<span class="c1">//----------------------------------------------</span><span class="w"></span>
-<span class="c1">//1. можно указать сколько объектов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//нужно вернуть</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnArrayOfLength</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-------------------------------------------</span><span class="w"></span>
-<span class="c1">//2. можно указать, до элемента с каким индексом</span><span class="w"></span>
-<span class="c1">//нужно собрать результирующие элементы,</span><span class="w"></span>
-<span class="c1">//индекс - индекс объекта в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnBeforeIndex</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//.returnAfterIndex(8) либо после какого элемента</span><span class="w"></span>
-<span class="c1">//----------------------------------------------</span><span class="w"></span>
-<span class="c1">//3. Либо можно перечислить индексы элементов,</span><span class="w"></span>
-<span class="c1">// которые следует вернуть.</span><span class="w"></span>
-<span class="c1">//Индексы - индексы объектов в наборе элементов,</span><span class="w"></span>
-<span class="c1">//которые соответствуют критериям</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnItemsOfIndexes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"></span>
-<span class="c1">//-----------------------------------------------</span><span class="w"></span>
-<span class="c1">//4. можно указать, при достижении какого количества</span><span class="w"></span>
-<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span><span class="w"></span>
-<span class="c1">//должен быть возвращен результат</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnIfEntireLength</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span><span class="w"></span>
-<span class="c1">//----------------------------------------------</span><span class="w"></span>
-<span class="c1">//5. можно указать, при достижении каких условий,</span><span class="w"></span>
-<span class="c1">//которым должен соответствовать массив ВСЕХ объектов,</span><span class="w"></span>
-<span class="c1">//соответствующих критериям,</span><span class="w"></span>
-<span class="c1">//можно возвращать результирующий массив/суб-массив</span><span class="w"></span>
-<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span><span class="w"></span>
-<span class="p">})</span><span class="w"></span>
-<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span><span class="w"></span>
-<span class="c1">// returnOnConditionOnlyOne(criteria...)</span><span class="w"></span>
-<span class="c1">// returnOnConditionNot(criteria...)</span><span class="w"></span>
-<span class="c1">//------------------------------------------</span><span class="w"></span>
-<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span><span class="w"></span>
-<span class="c1">//или весь суб-массив подходящих по критериям элементов,</span><span class="w"></span>
-<span class="c1">// который должен вернуться как результат,</span><span class="w"></span>
-<span class="c1">// не соответствует каким-то критериям -</span><span class="w"></span>
-<span class="c1">// будет выброшено исключение с подробным описанием</span><span class="w"></span>
+<summary>Уточняющие параметры шага, который возвращает массив. Шаг предусматривает время на ожидание</summary><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Можно указать один или несколько критериев,</span>
+<span class="c1">//которым должен соответствовать</span>
+<span class="c1">//каждый элемент результирующего массива.</span>
+<span class="c1">// Так же доступны criteriaOr(criteria...),</span>
+<span class="c1">// criteriaOnlyOne(criteria...)</span>
+<span class="c1">// criteriaNot(criteria...)</span>
+<span class="p">.</span><span class="na">criteria</span><span class="p">(</span><span class="s">&quot;Описание критерия, которому должен соответствовать &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="s">&quot;каждый элемент, который попадет в результирующий массив&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//----------------------------------------------</span>
+<span class="c1">// можно указать время,</span>
+<span class="c1">// за которое нужные элементы должны быть получены</span>
+<span class="p">.</span><span class="na">timeOut</span><span class="p">(</span><span class="n">ofSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="c1">//----------------------------------------------</span>
+<span class="c1">//Можно указать, что должно быть выброшено исключение,</span>
+<span class="c1">// если непустой массив не удалось получить (не было ни одного элемента,</span>
+<span class="c1">//который бы соответствовал перечисленным критериям,</span>
+<span class="c1">// или непустой массив просто не был получен)</span>
+<span class="p">.</span><span class="na">throwOnNoResult</span><span class="p">()</span>
+<span class="c1">//ТАКЖЕ ЕСТЬ СЛЕДУЮЩИЕ ОПЦИИ:</span>
+<span class="c1">//----------------------------------------------</span>
+<span class="c1">//1. можно указать сколько объектов,</span>
+<span class="c1">//которые соответствуют критериям,</span>
+<span class="c1">//нужно вернуть</span>
+<span class="p">.</span><span class="na">returnArrayOfLength</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1">//-------------------------------------------</span>
+<span class="c1">//2. можно указать, до элемента с каким индексом</span>
+<span class="c1">//нужно собрать результирующие элементы,</span>
+<span class="c1">//индекс - индекс объекта в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnBeforeIndex</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="c1">//.returnAfterIndex(8) либо после какого элемента</span>
+<span class="c1">//----------------------------------------------</span>
+<span class="c1">//3. Либо можно перечислить индексы элементов,</span>
+<span class="c1">// которые следует вернуть.</span>
+<span class="c1">//Индексы - индексы объектов в наборе элементов,</span>
+<span class="c1">//которые соответствуют критериям</span>
+<span class="p">.</span><span class="na">returnItemsOfIndexes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span>
+<span class="c1">//-----------------------------------------------</span>
+<span class="c1">//4. можно указать, при достижении какого количества</span>
+<span class="c1">//ВСЕХ объектов, которые соответствуют критериям,</span>
+<span class="c1">//должен быть возвращен результат</span>
+<span class="p">.</span><span class="na">returnIfEntireLength</span><span class="p">(</span><span class="n">isEqual</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+<span class="c1">//----------------------------------------------</span>
+<span class="c1">//5. можно указать, при достижении каких условий,</span>
+<span class="c1">//которым должен соответствовать массив ВСЕХ объектов,</span>
+<span class="c1">//соответствующих критериям,</span>
+<span class="c1">//можно возвращать результирующий массив/суб-массив</span>
+<span class="p">.</span><span class="na">returnOnCondition</span><span class="p">(</span><span class="s">&quot;Описание условия&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/*предикат, как работает критерий*/</span>
+<span class="p">})</span>
+<span class="c1">//так же доступны returnOnConditionOr(criteria...),</span>
+<span class="c1">// returnOnConditionOnlyOne(criteria...)</span>
+<span class="c1">// returnOnConditionNot(criteria...)</span>
+<span class="c1">//------------------------------------------</span>
+<span class="c1">//Если не нашлось столько подходящих объектов, чтобы вернуть результат,</span>
+<span class="c1">//или весь суб-массив подходящих по критериям элементов,</span>
+<span class="c1">// который должен вернуться как результат,</span>
+<span class="c1">// не соответствует каким-то критериям -</span>
+<span class="c1">// будет выброшено исключение с подробным описанием</span>
 </pre></div>
 </div>
 </details><p>Ниже другие варианты получения массива объектов из очередей</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">SomeData</span><span class="o">[]</span><span class="w"> </span><span class="n">someDataArray</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedArrayKeyData</span><span class="p">(</span><span class="w"></span>
-<span class="w">                </span><span class="s">&quot;Описание / название результирующего массива&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// ЧТО следует получить,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeKeyTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для ключа</span><span class="w"></span>
-<span class="w">                </span><span class="n">SomeData</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//класс результирующего массива</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//так же можно использовать объект</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//com.fasterxml.jackson.core.type.TypeReference</span><span class="w"></span>
-<span class="w">                </span><span class="n">keyData</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//Алгоритм функции, которая получает данные</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//из каждого ключа сообщения</span><span class="w"></span>
-<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//эти объекты</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//будут собраны в результирующий массив</span><span class="w"></span>
-<span class="w">                </span><span class="p">})</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//уточняющие параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">SomeData</span><span class="o">[]</span><span class="w"> </span><span class="n">someDataArray</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedArrayKeyData</span><span class="p">(</span>
+<span class="w">                </span><span class="s">&quot;Описание / название результирующего массива&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span>
+<span class="w">                </span><span class="c1">// ЧТО следует получить,</span>
+<span class="w">                </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">                </span><span class="c1">//терминологии</span>
+<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeKeyTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для ключа</span>
+<span class="w">                </span><span class="n">SomeData</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//класс результирующего массива</span>
+<span class="w">                </span><span class="c1">//так же можно использовать объект</span>
+<span class="w">                </span><span class="c1">//com.fasterxml.jackson.core.type.TypeReference</span>
+<span class="w">                </span><span class="n">keyData</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="c1">//Алгоритм функции, которая получает данные</span>
+<span class="w">                    </span><span class="c1">//из каждого ключа сообщения</span>
+<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//эти объекты</span>
+<span class="w">                    </span><span class="c1">//будут собраны в результирующий массив</span>
+<span class="w">                </span><span class="p">})</span>
+<span class="w">            </span><span class="c1">//уточняющие параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//возврат массива ключей сообщений</span><span class="w"></span>
-<span class="w">        </span><span class="n">SomeKeyType</span><span class="o">[]</span><span class="w"> </span><span class="n">someKeyArray</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedArrayKeys</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="n">SomeKeyType</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//класс результирующего массива</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// так же можно использовать объект</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//com.fasterxml.jackson.core.type.TypeReference</span><span class="w"></span>
-<span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">SomeKeyTypeDeserializer</span><span class="p">())</span><span class="w"> </span><span class="c1">//десериализатор для ключа</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//уточняющие параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//возврат массива ключей сообщений</span>
+<span class="w">        </span><span class="n">SomeKeyType</span><span class="o">[]</span><span class="w"> </span><span class="n">someKeyArray</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedArrayKeys</span><span class="p">(</span>
+<span class="w">            </span><span class="n">SomeKeyType</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//класс результирующего массива</span>
+<span class="w">            </span><span class="c1">// так же можно использовать объект</span>
+<span class="w">            </span><span class="c1">//com.fasterxml.jackson.core.type.TypeReference</span>
+<span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">SomeKeyTypeDeserializer</span><span class="p">())</span><span class="w"> </span><span class="c1">//десериализатор для ключа</span>
+<span class="w">            </span><span class="c1">//уточняющие параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//возврат массива ключей сообщений</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//в виде текстов</span><span class="w"></span>
-<span class="w">        </span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">someKeyArray</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedArrayKeys</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//уточняющие параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//возврат массива ключей сообщений</span>
+<span class="w">        </span><span class="c1">//в виде текстов</span>
+<span class="w">        </span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">someKeyArray</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedArrayKeys</span><span class="p">()</span>
+<span class="w">            </span><span class="c1">//уточняющие параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">SomeData</span><span class="o">[]</span><span class="w"> </span><span class="n">someDataArray</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedArrayValueData</span><span class="p">(</span><span class="w"></span>
-<span class="w">                </span><span class="s">&quot;Описание / название результирующего массива&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span><span class="w"></span>
-<span class="w">                </span><span class="c1">// ЧТО следует получить,</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeValueTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для значения</span><span class="w"></span>
-<span class="w">                </span><span class="n">SomeData</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//класс результирующего массива</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//так же можно использовать объект</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//com.fasterxml.jackson.core.type.TypeReference</span><span class="w"></span>
-<span class="w">                </span><span class="n">valueData</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//Алгоритм функции, которая получает данные</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//из каждого значения сообщения</span><span class="w"></span>
-<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//эти объекты</span><span class="w"></span>
-<span class="w">                    </span><span class="c1">//будут собраны в результирующий массив</span><span class="w"></span>
-<span class="w">                </span><span class="p">})</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//уточняющие параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">SomeData</span><span class="o">[]</span><span class="w"> </span><span class="n">someDataArray</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedArrayValueData</span><span class="p">(</span>
+<span class="w">                </span><span class="s">&quot;Описание / название результирующего массива&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">//описание того </span>
+<span class="w">                </span><span class="c1">// ЧТО следует получить,</span>
+<span class="w">                </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">                </span><span class="c1">//терминологии</span>
+<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">SomeValueTypeDeserializer</span><span class="p">(),</span><span class="w"> </span><span class="c1">//десериализатор для значения</span>
+<span class="w">                </span><span class="n">SomeData</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//класс результирующего массива</span>
+<span class="w">                </span><span class="c1">//так же можно использовать объект</span>
+<span class="w">                </span><span class="c1">//com.fasterxml.jackson.core.type.TypeReference</span>
+<span class="w">                </span><span class="n">valueData</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="c1">//Алгоритм функции, которая получает данные</span>
+<span class="w">                    </span><span class="c1">//из каждого значения сообщения</span>
+<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">someDataObject</span><span class="p">;</span><span class="w"> </span><span class="c1">//эти объекты</span>
+<span class="w">                    </span><span class="c1">//будут собраны в результирующий массив</span>
+<span class="w">                </span><span class="p">})</span>
+<span class="w">            </span><span class="c1">//уточняющие параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//возврат массива значений сообщений</span><span class="w"></span>
-<span class="w">        </span><span class="n">SomeValueType</span><span class="o">[]</span><span class="w"> </span><span class="n">someValueArray</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedArrayValues</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="n">SomeValueType</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//класс результирующего массива</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// так же можно использовать объект</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//com.fasterxml.jackson.core.type.TypeReference</span><span class="w"></span>
-<span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">SomeValueTypeDeserializer</span><span class="p">())</span><span class="w"> </span><span class="c1">//десериализатор для значения</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//уточняющие параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//возврат массива значений сообщений</span>
+<span class="w">        </span><span class="n">SomeValueType</span><span class="o">[]</span><span class="w"> </span><span class="n">someValueArray</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedArrayValues</span><span class="p">(</span>
+<span class="w">            </span><span class="n">SomeValueType</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="c1">//класс результирующего массива</span>
+<span class="w">            </span><span class="c1">// так же можно использовать объект</span>
+<span class="w">            </span><span class="c1">//com.fasterxml.jackson.core.type.TypeReference</span>
+<span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">SomeValueTypeDeserializer</span><span class="p">())</span><span class="w"> </span><span class="c1">//десериализатор для значения</span>
+<span class="w">            </span><span class="c1">//уточняющие параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.KafkaStepContext.kafka</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.kafka.functions.poll.KafkaPollArraySupplier.*</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//возврат массива значений сообщений</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//в виде текстов</span><span class="w"></span>
-<span class="w">        </span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">someValueArray</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedArrayValues</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//уточняющие параметры</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//возврат массива значений сообщений</span>
+<span class="w">        </span><span class="c1">//в виде текстов</span>
+<span class="w">        </span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">someValueArray</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kafka</span><span class="p">().</span><span class="na">poll</span><span class="p">(</span><span class="n">consumedArrayValues</span><span class="p">()</span>
+<span class="w">            </span><span class="c1">//уточняющие параметры</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>

@@ -474,44 +474,44 @@
 <span class="cp">&quot;https://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd&quot;&gt;</span>
 
 <span class="nt">&lt;hibernate-configuration&gt;</span>
-    <span class="nt">&lt;session-factory&gt;</span>
-        <span class="cm">&lt;!-- Настройки соединения с БД --&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;hibernate.connection.driver_class&quot;</span><span class="nt">&gt;</span>com.mysql.jdbc.Driver<span class="nt">&lt;/property&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;hibernate.connection.url&quot;</span><span class="nt">&gt;</span>jdbc:mysql://localhost:3306/test<span class="nt">&lt;/property&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;hibernate.connection.username&quot;</span><span class="nt">&gt;</span>root<span class="nt">&lt;/property&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;hibernate.connection.password&quot;</span><span class="nt">&gt;</span>password<span class="nt">&lt;/property&gt;</span>
-      
-        <span class="cm">&lt;!-- Настройки SQL диалекта --&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;dialect&quot;</span><span class="nt">&gt;</span>org.hibernate.dialect.MySQLDialect<span class="nt">&lt;/property&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;hibernate.current_session_context_class&quot;</span><span class="nt">&gt;</span>thread<span class="nt">&lt;/property&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;hibernate.connection.CharSet&quot;</span><span class="nt">&gt;</span>utf8<span class="nt">&lt;/property&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;hibernate.connection.characterEncoding&quot;</span><span class="nt">&gt;</span>utf8<span class="nt">&lt;/property&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;hibernate.connection.useUnicode&quot;</span><span class="nt">&gt;</span>true<span class="nt">&lt;/property&gt;</span>
+<span class="w">    </span><span class="nt">&lt;session-factory&gt;</span>
+<span class="w">        </span><span class="cm">&lt;!-- Настройки соединения с БД --&gt;</span>
+<span class="w">        </span><span class="nt">&lt;property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;hibernate.connection.driver_class&quot;</span><span class="nt">&gt;</span>com.mysql.jdbc.Driver<span class="nt">&lt;/property&gt;</span>
+<span class="w">        </span><span class="nt">&lt;property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;hibernate.connection.url&quot;</span><span class="nt">&gt;</span>jdbc:mysql://localhost:3306/test<span class="nt">&lt;/property&gt;</span>
+<span class="w">        </span><span class="nt">&lt;property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;hibernate.connection.username&quot;</span><span class="nt">&gt;</span>root<span class="nt">&lt;/property&gt;</span>
+<span class="w">        </span><span class="nt">&lt;property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;hibernate.connection.password&quot;</span><span class="nt">&gt;</span>password<span class="nt">&lt;/property&gt;</span>
+<span class="w">      </span>
+<span class="w">        </span><span class="cm">&lt;!-- Настройки SQL диалекта --&gt;</span>
+<span class="w">        </span><span class="nt">&lt;property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;dialect&quot;</span><span class="nt">&gt;</span>org.hibernate.dialect.MySQLDialect<span class="nt">&lt;/property&gt;</span>
+<span class="w">        </span><span class="nt">&lt;property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;hibernate.current_session_context_class&quot;</span><span class="nt">&gt;</span>thread<span class="nt">&lt;/property&gt;</span>
+<span class="w">        </span><span class="nt">&lt;property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;hibernate.connection.CharSet&quot;</span><span class="nt">&gt;</span>utf8<span class="nt">&lt;/property&gt;</span>
+<span class="w">        </span><span class="nt">&lt;property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;hibernate.connection.characterEncoding&quot;</span><span class="nt">&gt;</span>utf8<span class="nt">&lt;/property&gt;</span>
+<span class="w">        </span><span class="nt">&lt;property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;hibernate.connection.useUnicode&quot;</span><span class="nt">&gt;</span>true<span class="nt">&lt;/property&gt;</span>
 
-        <span class="cm">&lt;!-- Перечисление классов-маппингов таблиц/коллекций из БД или пакетов с ними --&gt;</span>
-        <span class="nt">&lt;mapping</span> <span class="na">package=</span><span class="s">&quot;org.example.entities&quot;</span> <span class="nt">/&gt;</span>
+<span class="w">        </span><span class="cm">&lt;!-- Перечисление классов-маппингов таблиц/коллекций из БД или пакетов с ними --&gt;</span>
+<span class="w">        </span><span class="nt">&lt;mapping</span><span class="w"> </span><span class="na">package=</span><span class="s">&quot;org.example.entities&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
 
-    <span class="nt">&lt;/session-factory&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/session-factory&gt;</span>
 <span class="nt">&lt;/hibernate-configuration&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c">#Значение свойства указывается так</span><span class="w"></span>
-<span class="na">HIBERNATE_CONFIG_FILENAMES</span><span class="o">=</span><span class="s">mysql.cfg.xml,oracletest.cfg.xml</span><span class="w"></span>
+<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c1">#Значение свойства указывается так</span>
+<span class="na">HIBERNATE_CONFIG_FILENAMES</span><span class="o">=</span><span class="s">mysql.cfg.xml,oracletest.cfg.xml</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.properties.ConnectionConfig.HIBERNATE_CONFIG_FILENAMES</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.properties.ConnectionConfig.HIBERNATE_CONFIG_FILENAMES</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeClass</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeClass</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someVoid</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//пример доступа до значения свойства</span><span class="w"></span>
-<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">fileNames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HIBERNATE_CONFIG_FILENAMES</span><span class="p">.</span><span class="na">get</span><span class="p">();</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someVoid</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//пример доступа до значения свойства</span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">fileNames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HIBERNATE_CONFIG_FILENAMES</span><span class="p">.</span><span class="na">get</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>

@@ -466,34 +466,34 @@
 <h1>Критерии<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
 <p>Варианты использования критериев подробно описаны <a class="reference internal" href="../../../quick_start/steps/criteria/index.html"><span class="doc std std-doc">здесь</span></a></p>
 <p>Ниже описан рекомендуемый способ описания библиотеки критериев</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Criteria</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.Description</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Criteria</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.Description</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyCriteriaLib</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyCriteriaLib</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="nf">MyCriteriaLib</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="kd">super</span><span class="p">();</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="nf">MyCriteriaLib</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">super</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="w">    </span>
-<span class="w">    </span><span class="nd">@Description</span><span class="p">(</span><span class="s">&quot;Название/описания критерия. Параметры: {someParam1}, {someParam2}&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Criteria</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">someCriteria</span><span class="p">(</span><span class="w"></span>
-<span class="w">        </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;someParam1&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">param1</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;someParam2&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">param2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">condition</span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="cm">/* предикат*/</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Description</span><span class="p">(</span><span class="s">&quot;Название/описания критерия. Параметры: {someParam1}, {someParam2}&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Criteria</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">someCriteria</span><span class="p">(</span>
+<span class="w">        </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;someParam1&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">param1</span><span class="p">,</span>
+<span class="w">        </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;someParam2&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">param2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">condition</span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="cm">/* предикат*/</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Description</span><span class="p">(</span><span class="s">&quot;Название/описания критерия. Параметры: {someParam1}, {someParam2}&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Criteria</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">oneMoreCriteria</span><span class="p">(</span><span class="w"></span>
-<span class="w">        </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;someParam1&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">param1</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;someParam2&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">param2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">condition</span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="cm">/* предикат*/</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Description</span><span class="p">(</span><span class="s">&quot;Название/описания критерия. Параметры: {someParam1}, {someParam2}&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Criteria</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">oneMoreCriteria</span><span class="p">(</span>
+<span class="w">        </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;someParam1&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">param1</span><span class="p">,</span>
+<span class="w">        </span><span class="nd">@DescriptionFragment</span><span class="p">(</span><span class="s">&quot;someParam2&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">param2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">condition</span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="cm">/* предикат*/</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Документация про аннотации <a class="reference internal" href="../annotations/%40Description_%40DescriptionFragment.html"><span class="doc std std-doc">&#64;Description и &#64;DescriptionFragment</span></a></p>

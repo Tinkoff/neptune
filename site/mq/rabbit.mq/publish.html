@@ -470,36 +470,36 @@
 <li><p><a class="reference internal" href="settings/RABBIT_MQ_DEFAULT_EXCHANGE_NAME.html"><span class="doc std std-doc">Свойство RABBIT_MQ_DEFAULT_EXCHANGE_NAME</span></a></p></li>
 <li><p><a class="reference internal" href="../../quick_start/steps/pattern_steps/action_steps.html"><span class="doc std std-doc">Шаги, выполняющие действие</span></a></p></li>
 </ul>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.publish.RabbitMqPublishSupplier.rabbitTextMessage</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.publish.RabbitMqPublishSupplier.rabbitTextMessage</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//публикация сообщения, переданного текстом</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">publish</span><span class="p">(</span><span class="n">rabbitTextMessage</span><span class="p">(</span><span class="s">&quot;Hello world&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//публикуемый текст</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">exchange</span><span class="p">(</span><span class="s">&quot;exchange1&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//необязательный вызов</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//по умолчанию используется значение свойства RABBIT_MQ_DEFAULT_EXCHANGE_NAME</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">routingKey</span><span class="p">(</span><span class="s">&quot;routing_key1&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//необязательный вызов</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//по умолчанию используется значение свойства RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">immediate</span><span class="p">()</span><span class="w"> </span><span class="c1">//и при необходимости </span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">mandatory</span><span class="p">()</span><span class="w"> </span><span class="c1">//можно указать набор дополнительных </span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">header</span><span class="p">(</span><span class="s">&quot;header1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value1&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//параметров</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">replyTo</span><span class="p">(</span><span class="s">&quot;ReplyTo&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">deliveryMode</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">priority</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="s">&quot;plain text&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">contentEncoding</span><span class="p">(</span><span class="s">&quot;UTF-8&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">correlationId</span><span class="p">(</span><span class="s">&quot;!@#4&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">expiration</span><span class="p">(</span><span class="s">&quot;1234567&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">messageId</span><span class="p">(</span><span class="s">&quot;hjhjkhjk&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">timestamp</span><span class="p">(</span><span class="n">timeStamp</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">userId</span><span class="p">(</span><span class="s">&quot;UserId&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">appId</span><span class="p">(</span><span class="s">&quot;AppId&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">clusterId</span><span class="p">(</span><span class="s">&quot;ClasterId&quot;</span><span class="p">));</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//публикация сообщения, переданного текстом</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">publish</span><span class="p">(</span><span class="n">rabbitTextMessage</span><span class="p">(</span><span class="s">&quot;Hello world&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//публикуемый текст</span>
+<span class="w">                </span><span class="p">.</span><span class="na">exchange</span><span class="p">(</span><span class="s">&quot;exchange1&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//необязательный вызов</span>
+<span class="w">                </span><span class="c1">//по умолчанию используется значение свойства RABBIT_MQ_DEFAULT_EXCHANGE_NAME</span>
+<span class="w">                </span><span class="p">.</span><span class="na">routingKey</span><span class="p">(</span><span class="s">&quot;routing_key1&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//необязательный вызов</span>
+<span class="w">                </span><span class="c1">//по умолчанию используется значение свойства RABBIT_MQ_DEFAULT_ROUTING_KEY_NAME</span>
+<span class="w">                </span><span class="p">.</span><span class="na">immediate</span><span class="p">()</span><span class="w"> </span><span class="c1">//и при необходимости </span>
+<span class="w">                </span><span class="p">.</span><span class="na">mandatory</span><span class="p">()</span><span class="w"> </span><span class="c1">//можно указать набор дополнительных </span>
+<span class="w">                </span><span class="p">.</span><span class="na">header</span><span class="p">(</span><span class="s">&quot;header1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value1&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//параметров</span>
+<span class="w">                </span><span class="p">.</span><span class="na">replyTo</span><span class="p">(</span><span class="s">&quot;ReplyTo&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="na">deliveryMode</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="na">priority</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="na">contentType</span><span class="p">(</span><span class="s">&quot;plain text&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="na">contentEncoding</span><span class="p">(</span><span class="s">&quot;UTF-8&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="na">correlationId</span><span class="p">(</span><span class="s">&quot;!@#4&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="na">expiration</span><span class="p">(</span><span class="s">&quot;1234567&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="na">messageId</span><span class="p">(</span><span class="s">&quot;hjhjkhjk&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="na">timestamp</span><span class="p">(</span><span class="n">timeStamp</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="na">userId</span><span class="p">(</span><span class="s">&quot;UserId&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="na">appId</span><span class="p">(</span><span class="s">&quot;AppId&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="na">clusterId</span><span class="p">(</span><span class="s">&quot;ClasterId&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <section id="id1">
@@ -509,52 +509,52 @@
 <li><p><a class="reference internal" href="settings/RABBIT_MQ_DEFAULT_DATA_TRANSFORMER.html"><span class="doc std std-doc">Свойство RABBIT_MQ_DEFAULT_DATA_TRANSFORMER</span></a></p></li>
 <li><p><a class="reference internal" href="../../core/serialize_deserialize.html"><span class="doc std std-doc">Сериализация и десериализация</span></a></p></li>
 </ul>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">com.fasterxml.jackson.core.type.TypeReference</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">com.fasterxml.jackson.core.type.TypeReference</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer</span><span class="p">;</span>
 
-<span class="c1">//Описываем сериализацию и десериализацию для текущего проекта</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyDataTransformer</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">DataTransformer</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="c1">//Описываем сериализацию и десериализацию для текущего проекта</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyDataTransformer</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">DataTransformer</span><span class="w"> </span><span class="p">{</span>
 
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="nf">deserialize</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">message</span><span class="p">,</span><span class="w"> </span><span class="n">Class</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">cls</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//тут описываем механизм десериализации</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="nf">deserialize</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">message</span><span class="p">,</span><span class="w"> </span><span class="n">Class</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">cls</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//тут описываем механизм десериализации</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="nf">deserialize</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">TypeReference</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">type</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//тут описываем механизм десериализации</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="nf">deserialize</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">TypeReference</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">type</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//тут описываем механизм десериализации</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">serialize</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">obj</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//тут описываем механизм сериализации</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">serialize</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">obj</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//тут описываем механизм сериализации</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.publish.RabbitMqPublishSupplier.rabbitSerializedMessage</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.RabbitMqStepContext.rabbitMq</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.rabbit.mq.function.publish.RabbitMqPublishSupplier.rabbitSerializedMessage</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//передача объекта, сериализуемого в строку</span><span class="w"></span>
-<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">publish</span><span class="p">(</span><span class="n">rabbitSerializedMessage</span><span class="p">(</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//объект, который надо превратить в сообщение</span><span class="w"></span>
-<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">DraftDto</span><span class="p">().</span><span class="na">setName</span><span class="p">(</span><span class="s">&quot;test&quot;</span><span class="p">))</span><span class="w"> </span><span class="c1">// и опубликовать</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//необязательный вызов</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//по умолчанию используется значение свойства RABBIT_MQ_DEFAULT_DATA_TRANSFORMER</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">withDataTransformer</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">MyDataTransformer</span><span class="p">())</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//можно указать </span><span class="w"></span>
-<span class="w">            </span><span class="c1">//прочие дополнительные параметры</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//см пример выше</span><span class="w"></span>
-<span class="w">            </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//передача объекта, сериализуемого в строку</span>
+<span class="w">        </span><span class="n">rabbitMq</span><span class="p">().</span><span class="na">publish</span><span class="p">(</span><span class="n">rabbitSerializedMessage</span><span class="p">(</span>
+<span class="w">                </span><span class="c1">//объект, который надо превратить в сообщение</span>
+<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">DraftDto</span><span class="p">().</span><span class="na">setName</span><span class="p">(</span><span class="s">&quot;test&quot;</span><span class="p">))</span><span class="w"> </span><span class="c1">// и опубликовать</span>
+<span class="w">                </span><span class="c1">//необязательный вызов</span>
+<span class="w">                </span><span class="c1">//по умолчанию используется значение свойства RABBIT_MQ_DEFAULT_DATA_TRANSFORMER</span>
+<span class="w">                </span><span class="p">.</span><span class="na">withDataTransformer</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">MyDataTransformer</span><span class="p">())</span>
+<span class="w">            </span><span class="c1">//можно указать </span>
+<span class="w">            </span><span class="c1">//прочие дополнительные параметры</span>
+<span class="w">            </span><span class="c1">//см пример выше</span>
+<span class="w">            </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>

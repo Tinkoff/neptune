@@ -465,7 +465,7 @@
           <section class="tex2jax_ignore mathjax_ignore" id="junit5">
 <h1>Настройки интеграции с JUnit5<a class="headerlink" href="#junit5" title="Permalink to this heading">#</a></h1>
 <p>Необходимо включить свойство <a class="reference external" href="https://junit.org/junit5/docs/current/user-guide/#extensions-registration-automatic-enabling">junit.jupiter.extensions.autodetection.enabled</a></p>
-<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="na">junit.jupiter.extensions.autodetection.enabled</span><span class="o">=</span><span class="s">true</span><span class="w"></span>
+<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="na">junit.jupiter.extensions.autodetection.enabled</span><span class="o">=</span><span class="s">true</span>
 </pre></div>
 </div>
 <p>Ниже список свойств, который дополняет <a class="reference internal" href="../../quick_start/settings/index.html"><span class="doc std std-doc">базовые</span></a></p>
@@ -480,16 +480,16 @@
 </ul>
 <p>Значение свойства/переменной окружения <code class="docutils literal notranslate"><span class="pre">JUNIT5_REFRESH_BEFORE</span></code> должно быть равно одному из перечисленных выше элементов,
 или оно может включать в себя несколько, через запятую.</p>
-<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c"># обновление происходит перед первым в очереди вызова (до ближайшего @Test-метода) методом</span><span class="w"></span>
-<span class="c"># с аннотацией @BeforeClass</span><span class="w"></span>
-<span class="na">JUNIT5_REFRESH_BEFORE</span><span class="o">=</span><span class="s">ALL_STARTING</span><span class="w"></span>
+<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c1"># обновление происходит перед первым в очереди вызова (до ближайшего @Test-метода) методом</span>
+<span class="c1"># с аннотацией @BeforeClass</span>
+<span class="na">JUNIT5_REFRESH_BEFORE</span><span class="o">=</span><span class="s">ALL_STARTING</span>
 </pre></div>
 </div>
-<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c"># обновление происходит перед первым в очереди вызова (до ближайшего тест-метода) методом</span><span class="w"></span>
-<span class="c"># с аннотацией @BeforeAll или @BeforeEach. Если перед тест-методом методы с указанными аннотациями</span><span class="w"></span>
-<span class="c"># не вызывались, то обновление произойдет непосредственно перед началом самого теста. </span><span class="w"></span>
-<span class="c"># Данный цикл будет выполняться для всех тестов в рамках класса.</span><span class="w"></span>
-<span class="na">JUNIT5_REFRESH_BEFORE</span><span class="o">=</span><span class="s">ALL_STARTING,EACH_STARTING,TEST_STARTING</span><span class="w"></span>
+<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c1"># обновление происходит перед первым в очереди вызова (до ближайшего тест-метода) методом</span>
+<span class="c1"># с аннотацией @BeforeAll или @BeforeEach. Если перед тест-методом методы с указанными аннотациями</span>
+<span class="c1"># не вызывались, то обновление произойдет непосредственно перед началом самого теста. </span>
+<span class="c1"># Данный цикл будет выполняться для всех тестов в рамках класса.</span>
+<span class="na">JUNIT5_REFRESH_BEFORE</span><span class="o">=</span><span class="s">ALL_STARTING,EACH_STARTING,TEST_STARTING</span>
 </pre></div>
 </div>
 <p>При этом учитывается иерархия методов JUnit5. Порядок приведен ниже:</p>

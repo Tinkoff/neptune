@@ -467,20 +467,20 @@
 <p>Интеграция <em>Neptune</em> и <a class="reference external" href="https://docs.qameta.io/allure/">Allure</a>.</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Добавить в maven/dependencies</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span>     <span class="nt">&lt;dependency&gt;</span>
-         <span class="nt">&lt;groupId&gt;</span>ru.tinkoff.qa.neptune<span class="nt">&lt;/groupId&gt;</span>
-         <span class="nt">&lt;artifactId&gt;</span>allure.integration<span class="nt">&lt;/artifactId&gt;</span>
-         <span class="nt">&lt;version&gt;</span>${LATEST_RELEASE_OR_BETA_VERSION}<span class="nt">&lt;/version&gt;</span>
-         <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
-     <span class="nt">&lt;/dependency&gt;</span>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="w">     </span><span class="nt">&lt;dependency&gt;</span>
+<span class="w">         </span><span class="nt">&lt;groupId&gt;</span>ru.tinkoff.qa.neptune<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">         </span><span class="nt">&lt;artifactId&gt;</span>allure.integration<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">         </span><span class="nt">&lt;version&gt;</span>${LATEST_RELEASE_OR_BETA_VERSION}<span class="nt">&lt;/version&gt;</span>
+<span class="w">         </span><span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+<span class="w">     </span><span class="nt">&lt;/dependency&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Добавить в build.gradle</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="n">dependencies</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
-<span class="w">     </span><span class="n">testImplementation</span><span class="w">  </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;ru.tinkoff.qa.neptune&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;allure.integration&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="n">LATEST_RELEASE_OR_BETA_VERSION</span><span class="w"></span>
-<span class="w"> </span><span class="o">}</span><span class="w"></span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="n">dependencies</span><span class="w"> </span><span class="o">{</span>
+<span class="w">     </span><span class="n">testImplementation</span><span class="w">  </span><span class="nl">group:</span><span class="w"> </span><span class="s1">&#39;ru.tinkoff.qa.neptune&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;allure.integration&#39;</span><span class="o">,</span><span class="w"> </span><span class="nl">version:</span><span class="w"> </span><span class="n">LATEST_RELEASE_OR_BETA_VERSION</span>
+<span class="w"> </span><span class="o">}</span>
 </pre></div>
 </div>
 </div>

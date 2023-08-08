@@ -467,100 +467,100 @@
 <p>С помощью аннотации можно обозначить произвольные параметры шагов и менять строковые представления их значений.</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">пример для класса-шага. Пример реализации ExampleGetParameterValue можно посмотреть <a class="reference internal" href="parameter_string_presentation.html"><span class="doc">тут</span></a></span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
 
-<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter</span><span class="p">;</span>
 
-<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyStepClass</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/*extends a subclass of SequentialGetStepSupplier, or SequentialActionSupplier*/</span><span class="w"></span>
-<span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyStepClass</span>
+<span class="w">    </span><span class="cm">/*extends a subclass of SequentialGetStepSupplier, or SequentialActionSupplier*/</span>
+<span class="w"> </span><span class="p">{</span>
 
-<span class="w">     </span><span class="nd">@StepParameter</span><span class="p">(</span><span class="s">&quot;Parameter A&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//Так обозначается название параметра.</span><span class="w"></span>
-<span class="w">     </span><span class="c1">//Параметр и его значение будут выведены в консоль, лог или репорт.</span><span class="w"></span>
-<span class="w">     </span><span class="kd">private</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@StepParameter</span><span class="p">(</span><span class="s">&quot;Parameter A&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">//Так обозначается название параметра.</span>
+<span class="w">     </span><span class="c1">//Параметр и его значение будут выведены в консоль, лог или репорт.</span>
+<span class="w">     </span><span class="kd">private</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
 
-<span class="w">     </span><span class="nd">@StepParameter</span><span class="p">(</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Parameter B&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">             </span><span class="c1">//Если на момент выполнения построенного шага</span><span class="w"></span>
-<span class="w">             </span><span class="n">doNotReportNullValues</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span><span class="w"> </span><span class="c1">//это поле не будет заполнено,</span><span class="w"></span>
-<span class="w">             </span><span class="c1">//тогда параметр со значением не будут выведены</span><span class="w"></span>
-<span class="w">             </span><span class="c1">//в консоль, лог или репорт</span><span class="w"></span>
-<span class="w">     </span><span class="kd">private</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">b</span><span class="p">;</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@StepParameter</span><span class="p">(</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Parameter B&quot;</span><span class="p">,</span>
+<span class="w">             </span><span class="c1">//Если на момент выполнения построенного шага</span>
+<span class="w">             </span><span class="n">doNotReportNullValues</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span><span class="w"> </span><span class="c1">//это поле не будет заполнено,</span>
+<span class="w">             </span><span class="c1">//тогда параметр со значением не будут выведены</span>
+<span class="w">             </span><span class="c1">//в консоль, лог или репорт</span>
+<span class="w">     </span><span class="kd">private</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">b</span><span class="p">;</span>
 
-<span class="w">     </span><span class="nd">@StepParameter</span><span class="p">(</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Parameter C&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">             </span><span class="c1">//Строковое представление объекта не всегда бывает удобным для чтения.</span><span class="w"></span>
-<span class="w">             </span><span class="c1">//Для таких случаев можно</span><span class="w"></span>
-<span class="w">             </span><span class="c1">//использовать классы, реализующие интерфейс</span><span class="w"></span>
-<span class="w">             </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter</span><span class="w"></span>
-<span class="w">             </span><span class="n">makeReadableBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ExampleGetParameterValue</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="kd">private</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">c</span><span class="p">;</span><span class="w"></span>
+<span class="w">     </span><span class="nd">@StepParameter</span><span class="p">(</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Parameter C&quot;</span><span class="p">,</span>
+<span class="w">             </span><span class="c1">//Строковое представление объекта не всегда бывает удобным для чтения.</span>
+<span class="w">             </span><span class="c1">//Для таких случаев можно</span>
+<span class="w">             </span><span class="c1">//использовать классы, реализующие интерфейс</span>
+<span class="w">             </span><span class="c1">// ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter</span>
+<span class="w">             </span><span class="n">makeReadableBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ExampleGetParameterValue</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">     </span><span class="kd">private</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">c</span><span class="p">;</span>
 
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="n">MyStepClass</span><span class="w"> </span><span class="nf">setA</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="k">this</span><span class="p">.</span><span class="na">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w"></span>
-<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">;</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="n">MyStepClass</span><span class="w"> </span><span class="nf">setA</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="k">this</span><span class="p">.</span><span class="na">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
+<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">;</span>
+<span class="w">     </span><span class="p">}</span>
 
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="n">MyStepClass</span><span class="w"> </span><span class="nf">setB</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="k">this</span><span class="p">.</span><span class="na">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="p">;</span><span class="w"></span>
-<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">;</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="n">MyStepClass</span><span class="w"> </span><span class="nf">setB</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="k">this</span><span class="p">.</span><span class="na">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="p">;</span>
+<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">;</span>
+<span class="w">     </span><span class="p">}</span>
 
-<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="n">MyStepClass</span><span class="w"> </span><span class="nf">setC</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="k">this</span><span class="p">.</span><span class="na">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="p">;</span><span class="w"></span>
-<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">;</span><span class="w"></span>
-<span class="w">     </span><span class="p">}</span><span class="w"></span>
-<span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="n">MyStepClass</span><span class="w"> </span><span class="nf">setC</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="k">this</span><span class="p">.</span><span class="na">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="p">;</span>
+<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">;</span>
+<span class="w">     </span><span class="p">}</span>
+<span class="w"> </span><span class="p">}</span>
 </pre></div>
 </div>
 </div>
 <p>Бывает параметров много, и они повторяются в различных классах-шагах. Тогда их можно группировать в POJO</p>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">пример для произвольного POJO</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ParameterPojo</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">StepParameterPojo</span><span class="p">{</span><span class="w"> </span><span class="c1">//такие POJO</span><span class="w"></span>
-<span class="w">    </span><span class="c1">//должны реализовывать данный интерфейс</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ParameterPojo</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">StepParameterPojo</span><span class="p">{</span><span class="w"> </span><span class="c1">//такие POJO</span>
+<span class="w">    </span><span class="c1">//должны реализовывать данный интерфейс</span>
 
-<span class="w">    </span><span class="nd">@StepParameter</span><span class="p">(</span><span class="s">&quot;Pojo Parameter 1&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">Boolean</span><span class="w"> </span><span class="n">param1</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@StepParameter</span><span class="p">(</span><span class="s">&quot;Pojo Parameter 1&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">Boolean</span><span class="w"> </span><span class="n">param1</span><span class="p">;</span>
 
-<span class="w">    </span><span class="nd">@StepParameter</span><span class="p">(</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Pojo Parameter 2&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">doNotReportNullValues</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">param2</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@StepParameter</span><span class="p">(</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Pojo Parameter 2&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">doNotReportNullValues</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">param2</span><span class="p">;</span>
 
-<span class="w">    </span><span class="nd">@StepParameter</span><span class="p">(</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Pojo Parameter 3&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">             </span><span class="n">makeReadableBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ExampleGetParameterValue</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">param3</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@StepParameter</span><span class="p">(</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Pojo Parameter 3&quot;</span><span class="p">,</span>
+<span class="w">             </span><span class="n">makeReadableBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ExampleGetParameterValue</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">param3</span><span class="p">;</span>
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Boolean</span><span class="w"> </span><span class="nf">getParam1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">param1</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Boolean</span><span class="w"> </span><span class="nf">getParam1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">param1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">ParameterPojo</span><span class="w"> </span><span class="nf">setParam1</span><span class="p">(</span><span class="n">Boolean</span><span class="w"> </span><span class="n">param1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">param1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">param1</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">ParameterPojo</span><span class="w"> </span><span class="nf">setParam1</span><span class="p">(</span><span class="n">Boolean</span><span class="w"> </span><span class="n">param1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">param1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">param1</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">getParam2</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">param2</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">getParam2</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">param2</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">ParameterPojo</span><span class="w"> </span><span class="nf">setParam2</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">param2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">param2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">param2</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">ParameterPojo</span><span class="w"> </span><span class="nf">setParam2</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">param2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">param2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">param2</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="nf">getParam3</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">param3</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="nf">getParam3</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">param3</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">ParameterPojo</span><span class="w"> </span><span class="nf">setParam3</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">param3</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">param3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">param3</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">ParameterPojo</span><span class="w"> </span><span class="nf">setParam3</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">param3</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">param3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">param3</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>

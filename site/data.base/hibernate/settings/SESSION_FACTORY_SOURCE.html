@@ -477,60 +477,60 @@
 <li><p><a class="reference internal" href="HIBERNATE_CONFIG_FILENAMES.html"><span class="doc std std-doc">HIBERNATE_CONFIG_FILENAMES</span></a></p></li>
 </ul>
 <p>Ниже пример того, как указывается значение свойства <code class="docutils literal notranslate"><span class="pre">SESSION_FACTORY_SOURCE</span></code>, отличное от дефолтного</p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">org.hibernate.SessionFactory</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.Set</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.session.factory.SessionFactorySource</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">org.hibernate.SessionFactory</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.Set</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.session.factory.SessionFactorySource</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">CustomSessionFactorySource</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">SessionFactorySource</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">CustomSessionFactorySource</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">SessionFactorySource</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="n">Set</span><span class="o">&lt;</span><span class="n">SessionFactory</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">getSetOfSessionFactories</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//алгоритм создания </span><span class="w"></span>
-<span class="w">        </span><span class="c1">// или получения объектов SessionFactory</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="n">Set</span><span class="o">&lt;</span><span class="n">SessionFactory</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">getSetOfSessionFactories</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//алгоритм создания </span>
+<span class="w">        </span><span class="c1">// или получения объектов SessionFactory</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c">#Значение свойства указывается так</span><span class="w"></span>
-<span class="na">SESSION_FACTORY_SOURCE</span><span class="o">=</span><span class="s">org.my.pack.CustomSessionFactorySource;</span><span class="w"></span>
+<div class="highlight-properties notranslate"><div class="highlight"><pre><span></span><span class="c1">#Значение свойства указывается так</span>
+<span class="na">SESSION_FACTORY_SOURCE</span><span class="o">=</span><span class="s">org.my.pack.CustomSessionFactorySource;</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.properties</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">SessionFactorySourceProperty</span><span class="p">.</span><span class="na">SESSION_FACTORY_SOURCE_PROPERTY</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.properties</span>
+<span class="w">    </span><span class="p">.</span><span class="na">SessionFactorySourceProperty</span><span class="p">.</span><span class="na">SESSION_FACTORY_SOURCE_PROPERTY</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeClass</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeClass</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someVoid</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//пример доступа до значения свойства</span><span class="w"></span>
-<span class="w">        </span><span class="n">SessionFactorySource</span><span class="w"> </span><span class="n">factorySource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SESSION_FACTORY_SOURCE_PROPERTY</span><span class="p">.</span><span class="na">get</span><span class="p">();</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someVoid</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//пример доступа до значения свойства</span>
+<span class="w">        </span><span class="n">SessionFactorySource</span><span class="w"> </span><span class="n">factorySource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SESSION_FACTORY_SOURCE_PROPERTY</span><span class="p">.</span><span class="na">get</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Ниже пример, если модуль используется для тестирования Spring-приложения вместе с инструментами <a class="reference external" href="https://docs.spring.io/spring-framework/docs/current/reference/html/testing.html">Spring Test</a></p>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">org.hibernate.SessionFactory</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.Set</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.session.factory.SessionFactorySource</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">org.hibernate.SessionFactory</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.Set</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.hibernate.session.factory.SessionFactorySource</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.boot.starter</span><span class="w"></span>
-<span class="w">    </span><span class="p">.</span><span class="na">application</span><span class="p">.</span><span class="na">contexts</span><span class="p">.</span><span class="na">CurrentApplicationContextTestExecutionListener</span><span class="p">.</span><span class="na">getCurrentApplicationContext</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.boot.starter</span>
+<span class="w">    </span><span class="p">.</span><span class="na">application</span><span class="p">.</span><span class="na">contexts</span><span class="p">.</span><span class="na">CurrentApplicationContextTestExecutionListener</span><span class="p">.</span><span class="na">getCurrentApplicationContext</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">CustomSessionFactorySource</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">SessionFactorySource</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">CustomSessionFactorySource</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">SessionFactorySource</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="n">Set</span><span class="o">&lt;</span><span class="n">SessionFactory</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">getSetOfSessionFactories</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//простой пример, как можно получить нужный набор из проинициализированного </span><span class="w"></span>
-<span class="w">        </span><span class="c1">//Spring-контекста приложения</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">HashSet</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="n">getCurrentApplicationContext</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">getBeansOfType</span><span class="p">(</span><span class="n">SessionFactory</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">values</span><span class="p">()</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="n">Set</span><span class="o">&lt;</span><span class="n">SessionFactory</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">getSetOfSessionFactories</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//простой пример, как можно получить нужный набор из проинициализированного </span>
+<span class="w">        </span><span class="c1">//Spring-контекста приложения</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">HashSet</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="n">getCurrentApplicationContext</span><span class="p">()</span>
+<span class="w">            </span><span class="p">.</span><span class="na">getBeansOfType</span><span class="p">(</span><span class="n">SessionFactory</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="na">values</span><span class="p">()</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Полезная ссылка: <a class="reference internal" href="../../../spring/spring.boot.sterter.html"><span class="doc std std-doc">Neptune Spring boot starter</span></a></p>

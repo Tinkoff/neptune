@@ -464,30 +464,30 @@
         <article role="main">
           <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Проверка значения матчерами, объединенными в OR-выражение</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.*</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.check.CheckActionSupplier.check</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.check.MatchAction.match</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.check.MatchAction.matchAny</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import static</span><span class="w"> </span><span class="nn">org.hamcrest.Matchers.*</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.check.CheckActionSupplier.check</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.check.MatchAction.match</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.check.MatchAction.matchAny</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">tezt</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">number</span><span class="p">;</span><span class="w"> </span><span class="c1">//= алгоритм и действия, чтобы получить число</span><span class="w"></span>
-<span class="w">        </span><span class="n">check</span><span class="p">(</span><span class="n">number</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="n">match</span><span class="p">(</span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">0</span><span class="p">)),</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//перечисляются 2 и более критерия.</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//Проверяемые значения должны соответствовать любому/любым из них</span><span class="w"></span>
-<span class="w">                </span><span class="n">matchAny</span><span class="p">(</span><span class="n">lessThan</span><span class="p">(</span><span class="mi">1000</span><span class="p">),</span><span class="w"> </span><span class="n">greaterThanOrEqualTo</span><span class="p">(</span><span class="mi">200</span><span class="p">)));</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">tezt</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">number</span><span class="p">;</span><span class="w"> </span><span class="c1">//= алгоритм и действия, чтобы получить число</span>
+<span class="w">        </span><span class="n">check</span><span class="p">(</span><span class="n">number</span><span class="p">,</span>
+<span class="w">                </span><span class="n">match</span><span class="p">(</span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">0</span><span class="p">)),</span>
+<span class="w">                </span><span class="c1">//перечисляются 2 и более критерия.</span>
+<span class="w">                </span><span class="c1">//Проверяемые значения должны соответствовать любому/любым из них</span>
+<span class="w">                </span><span class="n">matchAny</span><span class="p">(</span><span class="n">lessThan</span><span class="p">(</span><span class="mi">1000</span><span class="p">),</span><span class="w"> </span><span class="n">greaterThanOrEqualTo</span><span class="p">(</span><span class="mi">200</span><span class="p">)));</span>
 
-<span class="w">        </span><span class="c1">//пример с пояснением. Оно должно описывать, ЧТО проверяется</span><span class="w"></span>
-<span class="w">        </span><span class="n">check</span><span class="p">(</span><span class="s">&quot;Число, которое было получено&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="n">number</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="n">match</span><span class="p">(</span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">0</span><span class="p">)),</span><span class="w"></span>
-<span class="w">                </span><span class="n">matchAny</span><span class="p">(</span><span class="n">lessThan</span><span class="p">(</span><span class="mi">1000</span><span class="p">),</span><span class="w"> </span><span class="n">greaterThanOrEqualTo</span><span class="p">(</span><span class="mi">200</span><span class="p">)));</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//пример с пояснением. Оно должно описывать, ЧТО проверяется</span>
+<span class="w">        </span><span class="n">check</span><span class="p">(</span><span class="s">&quot;Число, которое было получено&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="n">number</span><span class="p">,</span>
+<span class="w">                </span><span class="n">match</span><span class="p">(</span><span class="n">greaterThan</span><span class="p">(</span><span class="mi">0</span><span class="p">)),</span>
+<span class="w">                </span><span class="n">matchAny</span><span class="p">(</span><span class="n">lessThan</span><span class="p">(</span><span class="mi">1000</span><span class="p">),</span><span class="w"> </span><span class="n">greaterThanOrEqualTo</span><span class="p">(</span><span class="mi">200</span><span class="p">)));</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="p">}</span><span class="w"></span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>

@@ -473,130 +473,130 @@
 <p>Возможности данной операции аналогичны возможностям <a class="reference internal" href="Id.html"><span class="doc std std-doc">операции выбора по id</span></a>.</p>
 <section id="query-dsl">
 <h2>Query DSL. Выбор записи.<a class="headerlink" href="#query-dsl" title="Permalink to this heading">#</a></h2>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.boot.test.context.SpringBootTest</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.boot.test.context.SpringBootTest</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">com.querydsl.core.types.dsl.BooleanExpression</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.select.querydsl.QueryDSLSelectStepFactory.byPredicate</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">com.querydsl.core.types.dsl.BooleanExpression</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.select.querydsl.QueryDSLSelectStepFactory.byPredicate</span><span class="p">;</span>
 
-<span class="nd">@SpringBootTest</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@SpringBootTest</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Autowired</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">TestRepository</span><span class="w"> </span><span class="n">testRepository</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Autowired</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">TestRepository</span><span class="w"> </span><span class="n">testRepository</span><span class="p">;</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">QTestEntity</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">QTestEntity</span><span class="p">.</span><span class="na">qTestEntity</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="n">BooleanExpression</span><span class="w"> </span><span class="n">predicate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="na">id</span><span class="p">.</span><span class="na">eq</span><span class="p">(</span><span class="mi">1L</span><span class="p">)</span><span class="w"> </span><span class="c1">//динамически построенный</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">and</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="na">name</span><span class="p">.</span><span class="na">eq</span><span class="p">(</span><span class="s">&quot;Test name&quot;</span><span class="p">))</span><span class="w"> </span><span class="c1">//запрос</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">and</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="na">listData</span><span class="p">.</span><span class="na">contains</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">QTestEntity</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">QTestEntity</span><span class="p">.</span><span class="na">qTestEntity</span><span class="p">;</span>
+<span class="w">        </span><span class="n">BooleanExpression</span><span class="w"> </span><span class="n">predicate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="na">id</span><span class="p">.</span><span class="na">eq</span><span class="p">(</span><span class="mi">1L</span><span class="p">)</span><span class="w"> </span><span class="c1">//динамически построенный</span>
+<span class="w">            </span><span class="p">.</span><span class="na">and</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="na">name</span><span class="p">.</span><span class="na">eq</span><span class="p">(</span><span class="s">&quot;Test name&quot;</span><span class="p">))</span><span class="w"> </span><span class="c1">//запрос</span>
+<span class="w">            </span><span class="p">.</span><span class="na">and</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="na">listData</span><span class="p">.</span><span class="na">contains</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">));</span>
 
-<span class="w">        </span><span class="n">TestEntity</span><span class="w"> </span><span class="n">entity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">springData</span><span class="p">().</span><span class="na">find</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//описание того ЧТО выбирается,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;Test entity&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">byPredicate</span><span class="p">(</span><span class="n">testRepository</span><span class="p">,</span><span class="w"> </span><span class="n">predicate</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Необходимые параметры</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">TestEntity</span><span class="w"> </span><span class="n">entity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">springData</span><span class="p">().</span><span class="na">find</span><span class="p">(</span>
+<span class="w">            </span><span class="c1">//описание того ЧТО выбирается,</span>
+<span class="w">            </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">            </span><span class="c1">//терминологии</span>
+<span class="w">            </span><span class="s">&quot;Test entity&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">byPredicate</span><span class="p">(</span><span class="n">testRepository</span><span class="p">,</span><span class="w"> </span><span class="n">predicate</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">            </span><span class="c1">//Необходимые параметры</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
 <section id="id1">
 <h2>Query DSL. Выбор записей.<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.boot.test.context.SpringBootTest</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.boot.test.context.SpringBootTest</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
 
-<span class="kn">import static</span><span class="w"> </span><span class="nn">com.querydsl.core.types.dsl.BooleanExpression</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">org.springframework.data.domain.Sort.Direction.ASC</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.select.querydsl.QueryDSLSelectStepFactory.allByPredicate</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.select.querydsl.QueryDSLSelectStepFactory.allOrdered</span><span class="p">;</span><span class="w"></span>
-<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.select.querydsl.QueryDSLSelectStepFactory.asAPageByPredicate</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">com.querydsl.core.types.dsl.BooleanExpression</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">org.springframework.data.domain.Sort.Direction.ASC</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.SpringDataContext.springData</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.select.querydsl.QueryDSLSelectStepFactory.allByPredicate</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.select.querydsl.QueryDSLSelectStepFactory.allOrdered</span><span class="p">;</span>
+<span class="kn">import static</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.spring.data.select.querydsl.QueryDSLSelectStepFactory.asAPageByPredicate</span><span class="p">;</span>
 
-<span class="nd">@SpringBootTest</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="nd">@SpringBootTest</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTest</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Autowired</span><span class="w"></span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">TestRepository</span><span class="w"> </span><span class="n">testRepository</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Autowired</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">TestRepository</span><span class="w"> </span><span class="n">testRepository</span><span class="p">;</span>
 
-<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">QTestEntity</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">QTestEntity</span><span class="p">.</span><span class="na">qTestEntity</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="n">BooleanExpression</span><span class="w"> </span><span class="n">predicate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="na">id</span><span class="p">.</span><span class="na">eq</span><span class="p">(</span><span class="mi">1L</span><span class="p">)</span><span class="w"> </span><span class="c1">//динамически построенный</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">and</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="na">name</span><span class="p">.</span><span class="na">eq</span><span class="p">(</span><span class="s">&quot;Test name&quot;</span><span class="p">))</span><span class="w"> </span><span class="c1">//запрос</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="na">and</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="na">listData</span><span class="p">.</span><span class="na">contains</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">QTestEntity</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">QTestEntity</span><span class="p">.</span><span class="na">qTestEntity</span><span class="p">;</span>
+<span class="w">        </span><span class="n">BooleanExpression</span><span class="w"> </span><span class="n">predicate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="na">id</span><span class="p">.</span><span class="na">eq</span><span class="p">(</span><span class="mi">1L</span><span class="p">)</span><span class="w"> </span><span class="c1">//динамически построенный</span>
+<span class="w">            </span><span class="p">.</span><span class="na">and</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="na">name</span><span class="p">.</span><span class="na">eq</span><span class="p">(</span><span class="s">&quot;Test name&quot;</span><span class="p">))</span><span class="w"> </span><span class="c1">//запрос</span>
+<span class="w">            </span><span class="p">.</span><span class="na">and</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="na">listData</span><span class="p">.</span><span class="na">contains</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">));</span>
 
-<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TestEntity</span><span class="o">&gt;</span><span class="w"> </span><span class="n">entities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">springData</span><span class="p">().</span><span class="na">find</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//описание того ЧТО выбирается,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//в свободной форме или бизнес</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//терминологии</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">allByPredicate</span><span class="p">(</span><span class="n">testRepository</span><span class="p">,</span><span class="w"> </span><span class="n">predicate</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Необходимые параметры</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TestEntity</span><span class="o">&gt;</span><span class="w"> </span><span class="n">entities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">springData</span><span class="p">().</span><span class="na">find</span><span class="p">(</span>
+<span class="w">            </span><span class="c1">//описание того ЧТО выбирается,</span>
+<span class="w">            </span><span class="c1">//в свободной форме или бизнес</span>
+<span class="w">            </span><span class="c1">//терминологии</span>
+<span class="w">            </span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">allByPredicate</span><span class="p">(</span><span class="n">testRepository</span><span class="p">,</span><span class="w"> </span><span class="n">predicate</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">            </span><span class="c1">//Необходимые параметры</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">        </span><span class="p">);</span>
 
-<span class="w">        </span><span class="c1">//с сортировкой</span><span class="w"></span>
-<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TestEntity</span><span class="o">&gt;</span><span class="w"> </span><span class="n">entities2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">springData</span><span class="p">().</span><span class="na">find</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//есть следующие варианты: </span><span class="w"></span>
-<span class="w">            </span><span class="c1">// - allByPredicate(T, com.querydsl.core.types.Predicate, org.springframework.data.domain.Sort)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// - allByPredicate(T, com.querydsl.core.types.Predicate, java.lang.String...)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// - allByPredicate(T, com.querydsl.core.types.Predicate, java.util.List&lt;org.springframework.data.domain.Sort.Order&gt;)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// - allByPredicate(T, com.querydsl.core.types.Predicate, org.springframework.data.domain.Sort.Order...)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// где T - тип расширяющий org.springframework.data.repository.Repository и один/несколько из перечисленных</span><span class="w"></span>
-<span class="w">            </span><span class="c1">// выше допустимых интерфейсов,</span><span class="w"></span>
-<span class="w">            </span><span class="n">allByPredicate</span><span class="p">(</span><span class="n">testRepository</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="n">predicate</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="n">ASC</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;name&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Необходимые параметры</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//с сортировкой</span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TestEntity</span><span class="o">&gt;</span><span class="w"> </span><span class="n">entities2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">springData</span><span class="p">().</span><span class="na">find</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="c1">//есть следующие варианты: </span>
+<span class="w">            </span><span class="c1">// - allByPredicate(T, com.querydsl.core.types.Predicate, org.springframework.data.domain.Sort)</span>
+<span class="w">            </span><span class="c1">// - allByPredicate(T, com.querydsl.core.types.Predicate, java.lang.String...)</span>
+<span class="w">            </span><span class="c1">// - allByPredicate(T, com.querydsl.core.types.Predicate, java.util.List&lt;org.springframework.data.domain.Sort.Order&gt;)</span>
+<span class="w">            </span><span class="c1">// - allByPredicate(T, com.querydsl.core.types.Predicate, org.springframework.data.domain.Sort.Order...)</span>
+<span class="w">            </span><span class="c1">// где T - тип расширяющий org.springframework.data.repository.Repository и один/несколько из перечисленных</span>
+<span class="w">            </span><span class="c1">// выше допустимых интерфейсов,</span>
+<span class="w">            </span><span class="n">allByPredicate</span><span class="p">(</span><span class="n">testRepository</span><span class="p">,</span>
+<span class="w">                </span><span class="n">predicate</span><span class="p">,</span>
+<span class="w">                </span><span class="n">ASC</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;name&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">            </span><span class="c1">//Необходимые параметры</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">        </span><span class="p">);</span>
 
-<span class="w">        </span><span class="c1">//с сортировкой, </span><span class="w"></span>
-<span class="w">        </span><span class="c1">// использование com.querydsl.core.types.OrderSpecifier</span><span class="w"></span>
-<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TestEntity</span><span class="o">&gt;</span><span class="w"> </span><span class="n">entities3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">springData</span><span class="p">().</span><span class="na">find</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//репозиторий и сортировка по свойству записи</span><span class="w"></span>
-<span class="w">            </span><span class="n">allOrdered</span><span class="p">(</span><span class="n">testRepository</span><span class="p">,</span><span class="w"> </span><span class="n">Order</span><span class="p">.</span><span class="na">ASC</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="na">id</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//дополнительные варианты</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">orderSpecifier</span><span class="p">(</span><span class="n">Order</span><span class="p">.</span><span class="na">DESC</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="na">name</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//сортировки</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">orderSpecifier</span><span class="p">(</span><span class="n">Order</span><span class="p">.</span><span class="na">ASC</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="na">arrayData</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//опционально, запрос, выпирающий записи, если не указывать - будут</span><span class="w"></span>
-<span class="w">                </span><span class="c1">// выбраны все записи с сортировкой</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">predicate</span><span class="p">(</span><span class="n">predicate</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//Необходимые параметры</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//с сортировкой, </span>
+<span class="w">        </span><span class="c1">// использование com.querydsl.core.types.OrderSpecifier</span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TestEntity</span><span class="o">&gt;</span><span class="w"> </span><span class="n">entities3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">springData</span><span class="p">().</span><span class="na">find</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="c1">//репозиторий и сортировка по свойству записи</span>
+<span class="w">            </span><span class="n">allOrdered</span><span class="p">(</span><span class="n">testRepository</span><span class="p">,</span><span class="w"> </span><span class="n">Order</span><span class="p">.</span><span class="na">ASC</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="na">id</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//дополнительные варианты</span>
+<span class="w">                </span><span class="p">.</span><span class="na">orderSpecifier</span><span class="p">(</span><span class="n">Order</span><span class="p">.</span><span class="na">DESC</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="na">name</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//сортировки</span>
+<span class="w">                </span><span class="p">.</span><span class="na">orderSpecifier</span><span class="p">(</span><span class="n">Order</span><span class="p">.</span><span class="na">ASC</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="na">arrayData</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//опционально, запрос, выпирающий записи, если не указывать - будут</span>
+<span class="w">                </span><span class="c1">// выбраны все записи с сортировкой</span>
+<span class="w">                </span><span class="p">.</span><span class="na">predicate</span><span class="p">(</span><span class="n">predicate</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">            </span><span class="c1">//Необходимые параметры</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">        </span><span class="p">);</span>
 
-<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TestEntity</span><span class="o">&gt;</span><span class="w"> </span><span class="n">entities4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">springData</span><span class="p">().</span><span class="na">find</span><span class="p">(</span><span class="w"></span>
-<span class="w">            </span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="n">asAPageByPredicate</span><span class="p">(</span><span class="n">testRepository</span><span class="p">,</span><span class="w"> </span><span class="n">predicate</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//опциональный параметр, значение которого должно быть &gt; 0</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">number</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//опциональный параметр, значение которого должно быть &gt; 1</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="na">size</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="c1">//опциональные варианты сортировки</span><span class="w"></span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TestEntity</span><span class="o">&gt;</span><span class="w"> </span><span class="n">entities4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">springData</span><span class="p">().</span><span class="na">find</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;Test entities&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">asAPageByPredicate</span><span class="p">(</span><span class="n">testRepository</span><span class="p">,</span><span class="w"> </span><span class="n">predicate</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//опциональный параметр, значение которого должно быть &gt; 0</span>
+<span class="w">                </span><span class="p">.</span><span class="na">number</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//опциональный параметр, значение которого должно быть &gt; 1</span>
+<span class="w">                </span><span class="p">.</span><span class="na">size</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="w">                </span><span class="c1">//опциональные варианты сортировки</span>
 <span class="w">                </span><span class="p">.</span><span class="na">orderSpecifier</span><span class="p">(</span><span class="n">Order</span><span class="p">.</span><span class="na">DESC</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="na">name</span><span class="p">)</span><span class="w"> </span>
-<span class="w">                </span><span class="p">.</span><span class="na">orderSpecifier</span><span class="p">(</span><span class="n">Order</span><span class="p">.</span><span class="na">ASC</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="na">arrayData</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//опциональные параметры выбираемых записей</span><span class="w"></span>
-<span class="w">            </span><span class="c1">//</span><span class="w"></span>
-<span class="w">        </span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">                </span><span class="p">.</span><span class="na">orderSpecifier</span><span class="p">(</span><span class="n">Order</span><span class="p">.</span><span class="na">ASC</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="na">arrayData</span><span class="p">)</span>
+<span class="w">            </span><span class="c1">//опциональные параметры выбираемых записей</span>
+<span class="w">            </span><span class="c1">//</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>

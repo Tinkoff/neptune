@@ -464,40 +464,40 @@
         <article role="main">
           <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>Аттач текста<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTextCaptor</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">StringCaptor</span><span class="o">&lt;</span><span class="w"> </span><span class="c1">//&lt;- нужно унаследовать данный класс</span><span class="w"></span>
-<span class="w">    </span><span class="n">T</span><span class="w"> </span><span class="c1">//тип объекта, который может быть превращен в текст</span><span class="w"></span>
-<span class="w">    </span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTextCaptor</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">StringCaptor</span><span class="o">&lt;</span><span class="w"> </span><span class="c1">//&lt;- нужно унаследовать данный класс</span>
+<span class="w">    </span><span class="n">T</span><span class="w"> </span><span class="c1">//тип объекта, который может быть превращен в текст</span>
+<span class="w">    </span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="nf">getCaptured</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">toBeCaptured</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">// Возвращает объект, с помощью которого формируется текст</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// если такой объект нельзя получить, метод должен возвращать null</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="nf">getCaptured</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">toBeCaptured</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">// Возвращает объект, с помощью которого формируется текст</span>
+<span class="w">        </span><span class="c1">// если такой объект нельзя получить, метод должен возвращать null</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">StringBuilder</span><span class="w"> </span><span class="nf">getData</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">caught</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">// возвращает текст,</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// если такой объект нельзя получить, метод должен возвращать null</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">StringBuilder</span><span class="w"> </span><span class="nf">getData</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">caught</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">// возвращает текст,</span>
+<span class="w">        </span><span class="c1">// если такой объект нельзя получить, метод должен возвращать null</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">org.my.pack</span><span class="p">;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.captors.CapturedStringInjector</span><span class="p">;</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ru.tinkoff.qa.neptune.core.api.event.firing.captors.CapturedStringInjector</span><span class="p">;</span>
 
-<span class="c1">//Данная реализация интерфейса будет использована автоматически</span><span class="w"></span>
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTextInjector</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">CapturedStringInjector</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="c1">//Данная реализация интерфейса будет использована автоматически</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyTextInjector</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">CapturedStringInjector</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Override</span><span class="w"></span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">inject</span><span class="p">(</span><span class="n">StringBuilder</span><span class="w"> </span><span class="n">toBeInjected</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//логика прикрепления картинки к отчету / логу</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">inject</span><span class="p">(</span><span class="n">StringBuilder</span><span class="w"> </span><span class="n">toBeInjected</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//логика прикрепления картинки к отчету / логу</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Либо можно воспользоваться следующими готовыми классами:</p>
