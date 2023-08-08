@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.hamcrest.Matcher;
-import org.openqa.selenium.devtools.v112.network.Network;
+import org.openqa.selenium.devtools.v115.network.Network;
 import ru.tinkoff.qa.neptune.core.api.data.format.DataTransformer;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NeptuneFeatureMatcher;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.NullValueMismatch;
